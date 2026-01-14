@@ -2,112 +2,213 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DS/Algo Learning Platform</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>DSAlgo Learn - Master Data Structures & Algorithms</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
 </head>
 <body>
-    <div class="app-container">
+    <!-- Mobile Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- App Container -->
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="logo">
+                <span class="logo-icon">{ }</span>
+                <span class="logo-text">DSAlgo<span class="logo-accent">Learn</span></span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h1>DS/Algo</h1>
-                <p>Learning Journey</p>
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search problems..." autocomplete="off">
+                    <button class="search-clear" id="searchClear">&times;</button>
+                </div>
             </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search problems...">
-            </div>
-            <nav class="problem-tree" id="problemTree">
-                <div class="loading">Loading problems...</div>
+            <nav class="problem-nav" id="problemNav">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading problems...</p>
+                </div>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main" id="main">
             <!-- Welcome Screen -->
-            <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome" id="welcomeScreen">
                 <div class="welcome-content">
-                    <h1>Welcome to DS/Algo Learning Platform</h1>
-                    <p>Master Data Structures and Algorithms through hands-on practice</p>
-                    <div class="features">
-                        <div class="feature">
-                            <span class="feature-icon">📚</span>
-                            <h3>Comprehensive Problems</h3>
-                            <p>Curated problems covering all major topics</p>
+                    <div class="welcome-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h1>Master DS & Algorithms</h1>
+                    <p class="welcome-subtitle">Practice with 80+ curated problems in Python & Go</p>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                                </svg>
+                            </div>
+                            <h3>Comprehensive</h3>
+                            <p>Arrays, Trees, Graphs, DP & more</p>
                         </div>
-                        <div class="feature">
-                            <span class="feature-icon">🐍</span>
-                            <h3>Python & Go</h3>
-                            <p>Run code in Python or Go directly</p>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                                </svg>
+                            </div>
+                            <h3>Run Code</h3>
+                            <p>Execute Python & Go instantly</p>
                         </div>
-                        <div class="feature">
-                            <span class="feature-icon">💡</span>
-                            <h3>Hints Available</h3>
-                            <p>Get hints when you're stuck</p>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                            </div>
+                            <h3>Hints</h3>
+                            <p>Get help when you're stuck</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                                </svg>
+                            </div>
+                            <h3>Responsive</h3>
+                            <p>Learn on any device</p>
                         </div>
                     </div>
-                    <p class="get-started">👈 Select a problem from the sidebar to begin</p>
+
+                    <div class="cta-section">
+                        <button class="cta-btn" id="startBtn">
+                            <span>Start Learning</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Problem View -->
-            <div class="problem-view" id="problemView" style="display: none;">
-                <div class="problem-header">
-                    <h2 id="problemTitle">Problem Title</h2>
-                    <div class="breadcrumb" id="breadcrumb"></div>
+            <div class="problem-view" id="problemView">
+                <!-- Tab Navigation for Mobile -->
+                <div class="tab-nav" id="tabNav">
+                    <button class="tab-btn active" data-tab="description">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        <span>Problem</span>
+                    </button>
+                    <button class="tab-btn" data-tab="code">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                        <span>Code</span>
+                    </button>
+                    <button class="tab-btn" data-tab="output">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                        </svg>
+                        <span>Output</span>
+                    </button>
                 </div>
 
-                <div class="content-panels">
-                    <!-- Problem Description Panel -->
-                    <div class="panel description-panel">
-                        <div class="panel-header">
-                            <h3>Problem Description</h3>
-                            <button class="hint-btn" id="hintBtn" onclick="toggleHints()">
-                                💡 Show Hints
-                            </button>
-                        </div>
+                <!-- Problem Header -->
+                <div class="problem-header">
+                    <div class="problem-info">
+                        <div class="breadcrumb" id="breadcrumb"></div>
+                        <h1 id="problemTitle">Problem Title</h1>
+                    </div>
+                    <button class="hint-toggle" id="hintToggle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                        <span>Hints</span>
+                    </button>
+                </div>
+
+                <!-- Content Panels -->
+                <div class="content-wrapper">
+                    <!-- Description Panel -->
+                    <div class="panel description-panel active" id="descriptionPanel">
                         <div class="panel-content" id="problemDescription">
+                            <p>Select a problem to begin.</p>
                         </div>
                     </div>
 
-                    <!-- Code Editor Panel -->
-                    <div class="panel code-panel">
-                        <div class="panel-header">
-                            <h3>Code Editor</h3>
-                            <div class="language-selector">
-                                <button class="lang-btn active" data-lang="python" onclick="switchLanguage('python')">
-                                    🐍 Python
+                    <!-- Code Panel -->
+                    <div class="panel code-panel" id="codePanel">
+                        <div class="code-header">
+                            <div class="lang-switcher">
+                                <button class="lang-btn active" data-lang="python">
+                                    <span class="lang-icon">Py</span>
+                                    <span>Python</span>
                                 </button>
-                                <button class="lang-btn" data-lang="golang" onclick="switchLanguage('golang')">
-                                    🔷 Go
+                                <button class="lang-btn" data-lang="golang">
+                                    <span class="lang-icon">Go</span>
+                                    <span>Go</span>
                                 </button>
                             </div>
+                            <button class="reset-btn" id="resetBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="editor-container">
+                        <div class="editor-wrapper">
                             <textarea id="codeEditor"></textarea>
                         </div>
-                        <div class="editor-actions">
-                            <button class="run-btn" onclick="runCode()">
-                                ▶ Run Code
-                            </button>
-                            <button class="reset-btn" onclick="resetCode()">
-                                ↺ Reset
+                        <div class="code-actions">
+                            <button class="run-btn" id="runBtn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                <span>Run Code</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Output Panel -->
-                    <div class="panel output-panel">
-                        <div class="panel-header">
-                            <h3>Output</h3>
-                            <button class="clear-btn" onclick="clearOutput()">Clear</button>
+                    <div class="panel output-panel" id="outputPanel">
+                        <div class="output-header">
+                            <span>Output</span>
+                            <button class="clear-btn" id="clearBtn">Clear</button>
                         </div>
-                        <div class="terminal" id="outputTerminal">
-                            <div class="terminal-content" id="terminalContent">
-                                <span class="terminal-prompt">$</span> Click "Run Code" to execute...
-                            </div>
+                        <div class="terminal" id="terminal">
+                            <pre id="terminalContent"><span class="terminal-prompt">$</span> Click "Run Code" to execute...</pre>
                         </div>
                     </div>
                 </div>
@@ -115,9 +216,10 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/go/go.min.js"></script>
-    <script src="app.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
