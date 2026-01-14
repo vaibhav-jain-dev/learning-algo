@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS/Algo Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>DS/Algo</h1>
+                <p>Learning Journey</p>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search problems...">
+            </div>
+            <nav class="problem-tree" id="problemTree">
+                <div class="loading">Loading problems...</div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-content">
+                    <h1>Welcome to DS/Algo Learning Platform</h1>
+                    <p>Master Data Structures and Algorithms through hands-on practice</p>
+                    <div class="features">
+                        <div class="feature">
+                            <span class="feature-icon">📚</span>
+                            <h3>Comprehensive Problems</h3>
+                            <p>Curated problems covering all major topics</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🐍</span>
+                            <h3>Python & Go</h3>
+                            <p>Run code in Python or Go directly</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">💡</span>
+                            <h3>Hints Available</h3>
+                            <p>Get hints when you're stuck</p>
+                        </div>
+                    </div>
+                    <p class="get-started">👈 Select a problem from the sidebar to begin</p>
+                </div>
+            </div>
+
+            <!-- Problem View -->
+            <div class="problem-view" id="problemView" style="display: none;">
+                <div class="problem-header">
+                    <h2 id="problemTitle">Problem Title</h2>
+                    <div class="breadcrumb" id="breadcrumb"></div>
+                </div>
+
+                <div class="content-panels">
+                    <!-- Problem Description Panel -->
+                    <div class="panel description-panel">
+                        <div class="panel-header">
+                            <h3>Problem Description</h3>
+                            <button class="hint-btn" id="hintBtn" onclick="toggleHints()">
+                                💡 Show Hints
+                            </button>
+                        </div>
+                        <div class="panel-content" id="problemDescription">
+                        </div>
+                    </div>
+
+                    <!-- Code Editor Panel -->
+                    <div class="panel code-panel">
+                        <div class="panel-header">
+                            <h3>Code Editor</h3>
+                            <div class="language-selector">
+                                <button class="lang-btn active" data-lang="python" onclick="switchLanguage('python')">
+                                    🐍 Python
+                                </button>
+                                <button class="lang-btn" data-lang="golang" onclick="switchLanguage('golang')">
+                                    🔷 Go
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-container">
+                            <textarea id="codeEditor"></textarea>
+                        </div>
+                        <div class="editor-actions">
+                            <button class="run-btn" onclick="runCode()">
+                                ▶ Run Code
+                            </button>
+                            <button class="reset-btn" onclick="resetCode()">
+                                ↺ Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Panel -->
+                    <div class="panel output-panel">
+                        <div class="panel-header">
+                            <h3>Output</h3>
+                            <button class="clear-btn" onclick="clearOutput()">Clear</button>
+                        </div>
+                        <div class="terminal" id="outputTerminal">
+                            <div class="terminal-content" id="terminalContent">
+                                <span class="terminal-prompt">$</span> Click "Run Code" to execute...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/go/go.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

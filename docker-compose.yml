@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  dsalgo-learning:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dsalgo-learning-ui
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./problems:/app/problems:ro
+      - ./server:/app/server:ro
+      - ./frontend:/app/frontend:ro
+    environment:
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:size=100M,mode=1777
