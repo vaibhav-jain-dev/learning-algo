@@ -52,10 +52,11 @@ COPY --from=builder /build/server ./server
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 
-# Create non-root user
+# Create non-root user and state directory
 RUN useradd -m -s /bin/bash dsalgo && \
     chown -R dsalgo:dsalgo /app /tmp && \
-    mkdir -p /go && chown -R dsalgo:dsalgo /go
+    mkdir -p /go /app/state && \
+    chown -R dsalgo:dsalgo /go /app/state
 
 USER dsalgo
 

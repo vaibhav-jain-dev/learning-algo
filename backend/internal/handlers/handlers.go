@@ -23,13 +23,14 @@ const problemsDir = "./problems"
 
 // Handlers holds all HTTP handlers
 type Handlers struct {
-	pythonPool *kernel.PythonPool
-	goPool     *kernel.GoPool
-	md         goldmark.Markdown
+	pythonPool  *kernel.PythonPool
+	goPool      *kernel.GoPool
+	execManager *kernel.ExecutionManager
+	md          goldmark.Markdown
 }
 
 // New creates a new Handlers instance
-func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool) *Handlers {
+func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool, execManager *kernel.ExecutionManager) *Handlers {
 	md := goldmark.New(
 		goldmark.WithExtensions(extension.GFM),
 		goldmark.WithRendererOptions(
@@ -39,9 +40,10 @@ func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool) *Handlers {
 	)
 
 	return &Handlers{
-		pythonPool: pythonPool,
-		goPool:     goPool,
-		md:         md,
+		pythonPool:  pythonPool,
+		goPool:      goPool,
+		execManager: execManager,
+		md:          md,
 	}
 }
 
@@ -95,24 +97,20 @@ func (h *Handlers) GetProblem(c *fiber.Ctx) error {
 
 	fullPath := filepath.Join(problemsDir, path)
 
-	// Read problem.md
 	mdPath := filepath.Join(fullPath, "problem.md")
 	mdContent, err := os.ReadFile(mdPath)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "problem not found"})
 	}
 
-	// Convert markdown to HTML
 	var buf bytes.Buffer
 	if err := h.md.Convert(mdContent, &buf); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to parse markdown"})
 	}
 
-	// Read Python code
 	pythonPath := filepath.Join(fullPath, "python_code.py")
 	pythonCode, _ := os.ReadFile(pythonPath)
 
-	// Read Go code
 	goPath := filepath.Join(fullPath, "golang_code.go")
 	goCode, _ := os.ReadFile(goPath)
 
@@ -124,38 +122,60 @@ func (h *Handlers) GetProblem(c *fiber.Ctx) error {
 	})
 }
 
-// RunCode executes code via API
+// RunCode executes code via API (async with execution manager)
 func (h *Handlers) RunCode(c *fiber.Ctx) error {
 	var req models.ExecuteRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid request"})
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
-	var result *kernel.ExecutionResult
-	var err error
-
-	switch req.Language {
-	case "python":
-		result, err = h.pythonPool.Execute(ctx, req.Code)
-	case "go", "golang":
-		result, err = h.goPool.Execute(ctx, req.Code)
-	default:
+	if req.Language != "python" && req.Language != "go" && req.Language != "golang" {
 		return c.Status(400).JSON(fiber.Map{"error": "unsupported language"})
 	}
 
+	exec, err := h.execManager.Execute(req.Code, req.Language)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return c.JSON(models.ExecuteResponse{
-		Output:   result.Output,
-		Error:    result.Error,
-		ExitCode: result.ExitCode,
-		Duration: result.Duration.Milliseconds(),
+	return c.JSON(fiber.Map{
+		"id":    exec.ID,
+		"state": exec.State,
 	})
+}
+
+// GetExecution returns execution status
+func (h *Handlers) GetExecution(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "id required"})
+	}
+
+	exec := h.execManager.Get(id)
+	if exec == nil {
+		return c.Status(404).JSON(fiber.Map{"error": "execution not found"})
+	}
+
+	return c.JSON(exec.ToJSON())
+}
+
+// StopExecution stops a running execution
+func (h *Handlers) StopExecution(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "id required"})
+	}
+
+	if err := h.execManager.Stop(id); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{"status": "stopped"})
+}
+
+// Stats returns kernel pool statistics
+func (h *Handlers) Stats(c *fiber.Ctx) error {
+	return c.JSON(h.execManager.Stats())
 }
 
 // ProblemTree returns HTMX partial for problem tree
@@ -175,24 +195,20 @@ func (h *Handlers) ProblemContent(c *fiber.Ctx) error {
 
 	fullPath := filepath.Join(problemsDir, path)
 
-	// Read problem.md
 	mdPath := filepath.Join(fullPath, "problem.md")
 	mdContent, err := os.ReadFile(mdPath)
 	if err != nil {
 		return c.Status(404).SendString("problem not found")
 	}
 
-	// Convert markdown to HTML
 	var buf bytes.Buffer
 	if err := h.md.Convert(mdContent, &buf); err != nil {
 		return c.Status(500).SendString("failed to parse markdown")
 	}
 
-	// Read Python code
 	pythonPath := filepath.Join(fullPath, "python_code.py")
 	pythonCode, _ := os.ReadFile(pythonPath)
 
-	// Read Go code
 	goPath := filepath.Join(fullPath, "golang_code.go")
 	goCode, _ := os.ReadFile(goPath)
 
@@ -204,17 +220,19 @@ func (h *Handlers) ProblemContent(c *fiber.Ctx) error {
 	}, "")
 }
 
-// Execute handles HTMX code execution
+// Execute handles HTMX code execution (returns execution ID for WebSocket tracking)
 func (h *Handlers) Execute(c *fiber.Ctx) error {
 	code := c.FormValue("code")
 	language := c.FormValue("language")
 
 	if code == "" {
 		return c.Render("partials/output", fiber.Map{
-			"Error": "No code provided",
+			"Error":   "No code provided",
+			"Loading": false,
 		}, "")
 	}
 
+	// For HTMX fallback (non-WebSocket), do synchronous execution
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -228,13 +246,15 @@ func (h *Handlers) Execute(c *fiber.Ctx) error {
 		result, err = h.goPool.Execute(ctx, code)
 	default:
 		return c.Render("partials/output", fiber.Map{
-			"Error": "Unsupported language: " + language,
+			"Error":   "Unsupported language: " + language,
+			"Loading": false,
 		}, "")
 	}
 
 	if err != nil {
 		return c.Render("partials/output", fiber.Map{
-			"Error": err.Error(),
+			"Error":   err.Error(),
+			"Loading": false,
 		}, "")
 	}
 
@@ -243,13 +263,37 @@ func (h *Handlers) Execute(c *fiber.Ctx) error {
 		"Error":    result.Error,
 		"Duration": result.Duration.Milliseconds(),
 		"ExitCode": result.ExitCode,
+		"Loading":  false,
 	}, "")
 }
 
-// GetOutput returns execution output (for polling)
+// GetOutput returns execution output by ID
 func (h *Handlers) GetOutput(c *fiber.Ctx) error {
-	// This could be used for async execution tracking
-	return c.SendString("Output not available")
+	id := c.Params("id")
+	if id == "" {
+		return c.Render("partials/output", fiber.Map{
+			"Error": "No execution ID provided",
+		}, "")
+	}
+
+	exec := h.execManager.Get(id)
+	if exec == nil {
+		return c.Render("partials/output", fiber.Map{
+			"Error": "Execution not found",
+		}, "")
+	}
+
+	state := exec.GetState()
+	loading := state == kernel.StateRunning
+
+	return c.Render("partials/output", fiber.Map{
+		"Output":   exec.Output,
+		"Error":    exec.Error,
+		"Duration": exec.Duration,
+		"ExitCode": exec.ExitCode,
+		"Loading":  loading,
+		"ID":       exec.ID,
+	}, "")
 }
 
 // buildProblemTree recursively builds the problem tree
@@ -269,9 +313,7 @@ func (h *Handlers) buildProblemTree(dir string) []*models.TreeNode {
 		path := filepath.Join(dir, entry.Name())
 		relPath, _ := filepath.Rel(problemsDir, path)
 
-		// Check if this is a problem directory
 		if _, err := os.Stat(filepath.Join(path, "problem.md")); err == nil {
-			// Read title from problem.md
 			title := h.getProblemTitle(filepath.Join(path, "problem.md"))
 			nodes = append(nodes, &models.TreeNode{
 				Name: title,
@@ -279,7 +321,6 @@ func (h *Handlers) buildProblemTree(dir string) []*models.TreeNode {
 				Path: relPath,
 			})
 		} else {
-			// This is a category/subcategory folder
 			children := h.buildProblemTree(path)
 			if len(children) > 0 {
 				nodes = append(nodes, &models.TreeNode{
@@ -291,7 +332,6 @@ func (h *Handlers) buildProblemTree(dir string) []*models.TreeNode {
 		}
 	}
 
-	// Sort nodes: folders first, then problems
 	sort.Slice(nodes, func(i, j int) bool {
 		if nodes[i].Type != nodes[j].Type {
 			return nodes[i].Type == "folder"
@@ -312,7 +352,6 @@ func (h *Handlers) getProblemTitle(path string) string {
 	scanner := bufio.NewScanner(file)
 	if scanner.Scan() {
 		line := scanner.Text()
-		// Remove markdown heading prefix
 		line = strings.TrimPrefix(line, "# ")
 		line = strings.TrimPrefix(line, "## ")
 		return strings.TrimSpace(line)
@@ -322,7 +361,6 @@ func (h *Handlers) getProblemTitle(path string) string {
 }
 
 func formatName(name string) string {
-	// Convert kebab-case to Title Case
 	words := strings.Split(name, "-")
 	for i, word := range words {
 		if len(word) > 0 {

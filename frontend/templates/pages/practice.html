@@ -35,7 +35,10 @@
                 </div>
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="resetCode()">Reset</button>
-                    <button class="btn btn-primary" onclick="runCode()">
+                    <button id="stop-btn" class="btn btn-danger hidden" onclick="stopExecution()">
+                        Stop
+                    </button>
+                    <button id="run-btn" class="btn btn-primary" onclick="runCode()">
                         <span class="run-icon">▶</span> Run
                     </button>
                 </div>
@@ -56,10 +59,233 @@
 </div>
 
 <script>
+// State management
+const STATE_KEY = 'dsalgo_execution_state';
 let currentLanguage = 'python';
 let originalCode = { python: '', go: '' };
 let currentCode = { python: '', go: '' };
+let ws = null;
+let currentExecutionId = null;
+let isRunning = false;
 
+// WebSocket connection
+function connectWebSocket() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${protocol}//${window.location.host}/ws/execute`);
+
+    ws.onopen = () => {
+        console.log('WebSocket connected');
+        // Check for pending execution on reconnect
+        const savedState = loadState();
+        if (savedState && savedState.id && savedState.state === 'running') {
+            reconnectToExecution(savedState.id);
+        }
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleExecutionUpdate(data);
+    };
+
+    ws.onclose = () => {
+        console.log('WebSocket disconnected, reconnecting...');
+        setTimeout(connectWebSocket, 2000);
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+}
+
+function handleExecutionUpdate(data) {
+    const outputContainer = document.getElementById('output-container');
+
+    switch (data.type) {
+        case 'started':
+            currentExecutionId = data.id;
+            setRunningState(true);
+            saveState({ id: data.id, state: 'running' });
+            outputContainer.innerHTML = renderLoading(data.id);
+            break;
+
+        case 'update':
+            if (data.state === 'running') {
+                outputContainer.innerHTML = renderLoading(data.id);
+            } else {
+                setRunningState(false);
+                outputContainer.innerHTML = renderOutput(data);
+                saveState({ id: data.id, state: data.state });
+            }
+            break;
+
+        case 'stopped':
+            setRunningState(false);
+            outputContainer.innerHTML = renderOutput({
+                state: 'stopped',
+                error: 'Execution stopped by user'
+            });
+            clearState();
+            break;
+
+        case 'error':
+            setRunningState(false);
+            outputContainer.innerHTML = renderOutput({
+                state: 'error',
+                error: data.error
+            });
+            clearState();
+            break;
+    }
+}
+
+function renderLoading(id) {
+    return `
+        <div class="output-loading">
+            <div class="output-header">
+                <span class="loading-spinner"></span>
+                <span class="status-text">Running...</span>
+            </div>
+            <div class="loading-info">
+                <p>Execution ID: ${id}</p>
+                <p>You can close this tab and come back - execution state is preserved.</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderOutput(data) {
+    const isError = data.state === 'error' || data.state === 'stopped' || data.error;
+    const statusIcon = isError ? '❌' : '✓';
+    const statusText = isError ? 'Error' : 'Success';
+    const statusClass = isError ? 'output-error' : 'output-success';
+
+    let output = data.output || '';
+    let error = data.error || '';
+    let duration = data.duration || 0;
+
+    return `
+        <div class="output-result ${isError ? 'has-error' : ''}">
+            <div class="${statusClass}">
+                <div class="output-header">
+                    <span class="status-icon">${statusIcon}</span>
+                    <span class="status-text">${statusText}</span>
+                    ${duration ? `<span class="duration">${duration}ms</span>` : ''}
+                </div>
+                ${error ? `<pre class="error-output">${escapeHtml(error)}</pre>` : ''}
+                ${output ? `<pre class="success-output">${escapeHtml(output)}</pre>` : (!error ? '<pre class="success-output">(no output)</pre>' : '')}
+            </div>
+        </div>
+    `;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function setRunningState(running) {
+    isRunning = running;
+    const runBtn = document.getElementById('run-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const editor = document.getElementById('code-editor');
+
+    if (running) {
+        runBtn.disabled = true;
+        runBtn.classList.add('disabled');
+        stopBtn.classList.remove('hidden');
+        editor.disabled = true;
+    } else {
+        runBtn.disabled = false;
+        runBtn.classList.remove('disabled');
+        stopBtn.classList.add('hidden');
+        editor.disabled = false;
+        currentExecutionId = null;
+    }
+}
+
+function runCode() {
+    if (isRunning) return;
+
+    const code = document.getElementById('code-editor').value;
+    currentCode[currentLanguage] = code;
+
+    if (!code.trim()) {
+        document.getElementById('output-container').innerHTML = renderOutput({
+            state: 'error',
+            error: 'No code provided'
+        });
+        showTab('output');
+        return;
+    }
+
+    showTab('output');
+    document.getElementById('output-container').innerHTML = '<div class="loading">Connecting...</div>';
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            action: 'execute',
+            code: code,
+            language: currentLanguage
+        }));
+    } else {
+        // Fallback to HTMX if WebSocket not available
+        htmx.ajax('POST', '/htmx/execute', {
+            target: '#output-container',
+            swap: 'innerHTML',
+            values: { code: code, language: currentLanguage }
+        });
+    }
+}
+
+function stopExecution() {
+    if (!currentExecutionId) return;
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            action: 'stop',
+            id: currentExecutionId
+        }));
+    }
+}
+
+function reconnectToExecution(id) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        setRunningState(true);
+        showTab('output');
+        document.getElementById('output-container').innerHTML = renderLoading(id);
+        currentExecutionId = id;
+
+        ws.send(JSON.stringify({
+            action: 'reconnect',
+            id: id
+        }));
+    }
+}
+
+// State persistence
+function saveState(state) {
+    try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    } catch (e) {}
+}
+
+function loadState() {
+    try {
+        const state = localStorage.getItem(STATE_KEY);
+        return state ? JSON.parse(state) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function clearState() {
+    try {
+        localStorage.removeItem(STATE_KEY);
+    } catch (e) {}
+}
+
+// Tab management
 function showTab(tabName) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -68,15 +294,11 @@ function showTab(tabName) {
 }
 
 function setLanguage(lang) {
-    // Save current code
+    if (isRunning) return;
     currentCode[currentLanguage] = document.getElementById('code-editor').value;
-
-    // Switch language
     currentLanguage = lang;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-
-    // Load code for new language
     document.getElementById('code-editor').value = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
 }
 
@@ -84,10 +306,12 @@ function getDefaultCode(lang) {
     if (lang === 'python') {
         return `def main():
     # Write your code here
+    # Allowed: math, collections, heapq, itertools, etc.
+    # Blocked: os, subprocess, socket, etc.
     result = [1, 2, 3, 4, 5]
     return result
 
-# main() will be called automatically`;
+# main() must be defined and return a value`;
     } else {
         return `package main
 
@@ -95,6 +319,8 @@ import "fmt"
 
 func main() {
     // Write your code here
+    // Allowed: fmt, math, sort, strings, etc.
+    // Blocked: os/exec, net, syscall, etc.
     result := []int{1, 2, 3, 4, 5}
     fmt.Println(result)
 }`;
@@ -102,28 +328,10 @@ func main() {
 }
 
 function resetCode() {
+    if (isRunning) return;
     const code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
     document.getElementById('code-editor').value = code;
     currentCode[currentLanguage] = code;
-}
-
-function runCode() {
-    const code = document.getElementById('code-editor').value;
-    currentCode[currentLanguage] = code;
-
-    const outputContainer = document.getElementById('output-container');
-    outputContainer.innerHTML = '<div class="loading">Executing...</div>';
-    showTab('output');
-
-    // Use HTMX to submit
-    htmx.ajax('POST', '/htmx/execute', {
-        target: '#output-container',
-        swap: 'innerHTML',
-        values: {
-            code: code,
-            language: currentLanguage
-        }
-    });
 }
 
 function loadProblem(path) {
@@ -136,6 +344,7 @@ function loadProblem(path) {
 }
 
 function loadProblemCode(pythonCode, goCode) {
+    if (isRunning) return;
     originalCode.python = pythonCode || getDefaultCode('python');
     originalCode.go = goCode || getDefaultCode('go');
     currentCode.python = originalCode.python;
@@ -148,21 +357,27 @@ function filterTree(query) {
     const tree = document.getElementById('problem-tree');
     const items = tree.querySelectorAll('.tree-item');
     const folders = tree.querySelectorAll('.tree-folder');
-
     query = query.toLowerCase();
-
     items.forEach(item => {
         const text = item.textContent.toLowerCase();
         item.style.display = text.includes(query) ? '' : 'none';
     });
-
-    // Show folders that have visible children
     folders.forEach(folder => {
         const hasVisible = folder.querySelector('.tree-item:not([style*="display: none"])');
         folder.style.display = hasVisible ? '' : 'none';
     });
 }
 
-// Initialize with default code
+// Initialize
 document.getElementById('code-editor').value = getDefaultCode('python');
+connectWebSocket();
+
+// Check for saved state on page load
+window.addEventListener('load', () => {
+    const savedState = loadState();
+    if (savedState && savedState.state === 'running') {
+        showTab('output');
+        document.getElementById('output-container').innerHTML = '<div class="loading">Reconnecting...</div>';
+    }
+});
 </script>

@@ -7,40 +7,88 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
 )
 
-// GoKernel implements a Go execution environment
-// Go requires compilation, so we use a warm compiler approach
-type GoKernel struct {
-	workDir     string
-	mu          sync.Mutex
-	healthy     bool
-	id          int
-	memoryLimit int64
+// Blocked Go packages for security
+var blockedGoPackages = []string{
+	"os/exec",
+	"net", "net/http", "net/url", "net/smtp", "net/rpc",
+	"syscall",
+	"unsafe",
+	"plugin",
+	"runtime/debug",
+	"reflect",
+	"os/signal",
+	"debug/",
+	"go/",
+	"internal/",
+	"testing",
+	"crypto/",
+	"encoding/gob",
+	"encoding/xml",
+	"html/template",
+	"text/template",
+	"database/sql",
+	"log/syslog",
+	"mime",
+	"path/filepath",
 }
 
-// NewGoKernel creates a new Go kernel
-func NewGoKernel(id int, memoryLimit int64) (*GoKernel, error) {
-	// Create working directory
+// Allowed Go packages for algorithm problems
+var allowedGoPackages = map[string]bool{
+	"fmt":           true,
+	"math":          true,
+	"math/rand":     true,
+	"sort":          true,
+	"strings":       true,
+	"strconv":       true,
+	"unicode":       true,
+	"container/heap": true,
+	"container/list": true,
+	"container/ring": true,
+	"encoding/json":  true,
+	"time":           true,
+	"errors":         true,
+	"bytes":          true,
+	"bufio":          true,
+	"io":             true,
+	"regexp":         true,
+	"slices":         true,
+	"maps":           true,
+	"cmp":            true,
+}
+
+// GoKernel implements a Go execution environment with security sandbox
+type GoKernel struct {
+	workDir   string
+	mu        sync.Mutex
+	healthy   bool
+	id        int
+	memLimit  int64
+}
+
+// NewGoKernel creates a new Go kernel (implements KernelFactory)
+func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
 	workDir, err := os.MkdirTemp("", fmt.Sprintf("go_kernel_%d_*", id))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 
 	k := &GoKernel{
-		workDir:     workDir,
-		id:          id,
-		memoryLimit: memoryLimit,
-		healthy:     true,
+		workDir:  workDir,
+		id:       id,
+		memLimit: memoryLimit,
+		healthy:  true,
 	}
 
-	// Pre-warm Go compiler by compiling a simple program
+	// Pre-warm Go compiler
 	warmupCode := `package main
 import "fmt"
-func main() { fmt.Println("warmup") }
+func main() { fmt.Println("ready") }
 `
 	if err := k.compile(warmupCode); err != nil {
 		os.RemoveAll(workDir)
@@ -48,6 +96,61 @@ func main() { fmt.Println("warmup") }
 	}
 
 	return k, nil
+}
+
+// validateCode checks code for blocked packages
+func (k *GoKernel) validateCode(code string) error {
+	// Extract imports
+	importRegex := regexp.MustCompile(`import\s+(?:\(\s*([^)]+)\s*\)|"([^"]+)")`)
+	matches := importRegex.FindAllStringSubmatch(code, -1)
+
+	var imports []string
+	for _, match := range matches {
+		if match[1] != "" {
+			// Multi-line import
+			lines := strings.Split(match[1], "\n")
+			for _, line := range lines {
+				line = strings.TrimSpace(line)
+				if line != "" {
+					// Extract package from quotes
+					pkgMatch := regexp.MustCompile(`"([^"]+)"`).FindStringSubmatch(line)
+					if len(pkgMatch) > 1 {
+						imports = append(imports, pkgMatch[1])
+					}
+				}
+			}
+		} else if match[2] != "" {
+			imports = append(imports, match[2])
+		}
+	}
+
+	// Check for blocked packages
+	for _, pkg := range imports {
+		for _, blocked := range blockedGoPackages {
+			if strings.HasPrefix(pkg, blocked) || pkg == blocked {
+				return fmt.Errorf("package '%s' is not allowed for security reasons", pkg)
+			}
+		}
+		// Check if package is in allowed list (or is a standard allowed one)
+		basePackage := strings.Split(pkg, "/")[0]
+		if !allowedGoPackages[pkg] && !allowedGoPackages[basePackage] {
+			return fmt.Errorf("package '%s' is not in the allowed list", pkg)
+		}
+	}
+
+	// Check for dangerous function calls
+	dangerousCalls := []string{
+		"os.Exit", "os.Remove", "os.Rename", "os.Mkdir", "os.Create",
+		"os.Open", "os.WriteFile", "os.ReadFile",
+		"exec.Command", "exec.Run",
+	}
+	for _, call := range dangerousCalls {
+		if strings.Contains(code, call) {
+			return fmt.Errorf("function '%s' is not allowed for security reasons", call)
+		}
+	}
+
+	return nil
 }
 
 func (k *GoKernel) compile(code string) error {
@@ -61,13 +164,17 @@ func (k *GoKernel) compile(code string) error {
 	cmd.Env = append(os.Environ(),
 		"GOCACHE="+filepath.Join(k.workDir, "cache"),
 		"GOPATH="+filepath.Join(k.workDir, "gopath"),
+		"CGO_ENABLED=0",
 	)
 
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("compilation failed: %s", stderr.String())
+		errStr := stderr.String()
+		// Clean up error message
+		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		return fmt.Errorf("compilation failed:\n%s", errStr)
 	}
 
 	return nil
@@ -84,17 +191,25 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 
 	start := time.Now()
 
-	// Compile the code
-	if err := k.compile(code); err != nil {
-		duration := time.Since(start)
+	// Validate code for security
+	if err := k.validateCode(code); err != nil {
 		return &ExecutionResult{
 			Error:    err.Error(),
 			ExitCode: 1,
-			Duration: duration,
+			Duration: time.Since(start),
 		}, nil
 	}
 
-	// Run the compiled program
+	// Compile the code
+	if err := k.compile(code); err != nil {
+		return &ExecutionResult{
+			Error:    err.Error(),
+			ExitCode: 1,
+			Duration: time.Since(start),
+		}, nil
+	}
+
+	// Run with timeout
 	programPath := filepath.Join(k.workDir, "program")
 	cmd := exec.CommandContext(ctx, programPath)
 	cmd.Dir = k.workDir
@@ -103,7 +218,6 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
-	// Set timeout
 	done := make(chan error, 1)
 	go func() {
 		done <- cmd.Run()
@@ -115,22 +229,20 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 			cmd.Process.Kill()
 		}
 		return &ExecutionResult{
-			Error:    "execution timed out",
+			Error:    "Execution cancelled or timed out",
 			ExitCode: -1,
 			Duration: time.Since(start),
 		}, nil
 	case err := <-done:
 		duration := time.Since(start)
-
-		result := &ExecutionResult{
-			Duration: duration,
-		}
+		result := &ExecutionResult{Duration: duration}
 
 		if err != nil {
-			result.Error = stderr.String()
-			if result.Error == "" {
-				result.Error = err.Error()
+			errStr := stderr.String()
+			if errStr == "" {
+				errStr = err.Error()
 			}
+			result.Error = errStr
 			result.ExitCode = 1
 		} else {
 			result.Output = strings.TrimSpace(stdout.String())
@@ -146,7 +258,6 @@ func (k *GoKernel) Reset() error {
 	k.mu.Lock()
 	defer k.mu.Unlock()
 
-	// Clean up old files but keep the directory
 	entries, err := os.ReadDir(k.workDir)
 	if err != nil {
 		return err
@@ -176,36 +287,21 @@ func (k *GoKernel) Stop() error {
 	return os.RemoveAll(k.workDir)
 }
 
-// GoPool manages a pool of Go kernels
+// GoPool manages a pool of Go kernels with standby mode
 type GoPool struct {
 	*Pool
-	memoryLimit int64
 }
 
 // NewGoPool creates a new Go kernel pool
-func NewGoPool(size int, memoryLimit int64) *GoPool {
+func NewGoPool(maxSize int, memoryLimit int64, idleTimeout time.Duration) *GoPool {
 	return &GoPool{
-		Pool:        NewPool(size, memoryLimit),
-		memoryLimit: memoryLimit,
+		Pool: NewPool(PoolConfig{
+			MaxSize:     maxSize,
+			MemoryLimit: memoryLimit,
+			IdleTimeout: idleTimeout,
+			Factory:     NewGoKernel,
+		}),
 	}
-}
-
-// Start initializes all kernels in the pool
-func (p *GoPool) Start() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	for i := 0; i < p.size; i++ {
-		k, err := NewGoKernel(i, p.memoryLimit)
-		if err != nil {
-			return fmt.Errorf("failed to create Go kernel %d: %w", i, err)
-		}
-		p.kernels = append(p.kernels, k)
-		p.available <- k
-	}
-
-	p.running = true
-	return nil
 }
 
 // Execute runs code using an available kernel

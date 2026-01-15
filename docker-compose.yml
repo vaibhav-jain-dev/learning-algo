@@ -12,6 +12,8 @@ networks:
 volumes:
   dsalgo-learn-go-cache:
     name: dsalgo-learn-go-cache
+  dsalgo-learn-state:
+    name: dsalgo-learn-state
 
 services:
   dsalgo-learn-app:
@@ -29,6 +31,8 @@ services:
       - ./frontend:/app/frontend:ro
       # Go build cache for kernel warmup
       - dsalgo-learn-go-cache:/tmp/go-cache
+      # State persistence for execution tracking
+      - dsalgo-learn-state:/app/state
     environment:
       - PORT=8080
       - PYTHONUNBUFFERED=1
@@ -37,6 +41,8 @@ services:
       - PYTHON_KERNEL_COUNT=3
       - GO_KERNEL_COUNT=2
       - KERNEL_MEMORY_LIMIT=256M
+      # State persistence directory
+      - STATE_DIR=/app/state
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -83,9 +89,11 @@ services:
       - ./frontend:/app/frontend:ro
       - ./problems:/app/problems:ro
       - dsalgo-learn-go-cache:/tmp/go-cache
+      - dsalgo-learn-state:/app/state
     environment:
       - PORT=8080
       - DEV_MODE=true
+      - STATE_DIR=/app/state
     networks:
       - dsalgo-learn-network
     tmpfs:

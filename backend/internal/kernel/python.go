@@ -13,23 +13,63 @@ import (
 	"time"
 )
 
+// Python kernel script with security sandbox
 const pythonKernelScript = `
 import sys
 import json
 import traceback
 import signal
+import builtins
+
+# Security: Disable dangerous functions
+BLOCKED_BUILTINS = ['eval', 'exec', 'compile', '__import__', 'open', 'input']
+BLOCKED_MODULES = [
+    'os', 'subprocess', 'shutil', 'pathlib',
+    'socket', 'urllib', 'http', 'ftplib', 'smtplib',
+    'pickle', 'shelve', 'marshal',
+    'ctypes', 'multiprocessing', 'threading',
+    'pty', 'fcntl', 'resource', 'grp', 'pwd',
+    'importlib', 'pkgutil', 'zipimport',
+    'sys', 'builtins',
+]
+
+# Allowed modules for algorithms
+ALLOWED_MODULES = [
+    'math', 'random', 'collections', 'heapq', 'bisect',
+    'itertools', 'functools', 'operator', 'string',
+    'copy', 'types', 're', 'json', 'datetime', 'time',
+    'decimal', 'fractions', 'statistics',
+    'dataclasses', 'enum', 'typing',
+]
+
+# Safe builtins
+safe_builtins = {k: v for k, v in builtins.__dict__.items() if k not in BLOCKED_BUILTINS}
+
+# Custom __import__ that blocks dangerous modules
+original_import = builtins.__import__
+def safe_import(name, globals=None, locals=None, fromlist=(), level=0):
+    base_module = name.split('.')[0]
+    if base_module in BLOCKED_MODULES:
+        raise ImportError(f"Module '{name}' is not allowed for security reasons")
+    if base_module not in ALLOWED_MODULES and not name.startswith('_'):
+        raise ImportError(f"Module '{name}' is not in the allowed list")
+    return original_import(name, globals, locals, fromlist, level)
+
+safe_builtins['__import__'] = safe_import
 
 def timeout_handler(signum, frame):
-    raise TimeoutError("Execution timed out")
+    raise TimeoutError("Execution timed out (10 second limit)")
 
 signal.signal(signal.SIGALRM, timeout_handler)
 
 def format_result(value):
-    """Format the result for display"""
     if value is None:
         return "None"
     if isinstance(value, (list, tuple, dict)):
-        return json.dumps(value, indent=2, default=str)
+        try:
+            return json.dumps(value, indent=2, default=str)
+        except:
+            return str(value)
     return str(value)
 
 while True:
@@ -40,34 +80,31 @@ while True:
 
         data = json.loads(line.strip())
         code = data.get("code", "")
-        timeout = data.get("timeout", 10)
+        timeout = min(data.get("timeout", 10), 10)
 
-        # Set timeout
         signal.alarm(timeout)
 
-        # Create execution namespace
-        namespace = {"__builtins__": __builtins__}
+        # Create restricted namespace
+        namespace = {"__builtins__": safe_builtins}
 
-        # Execute user code
         exec(code, namespace)
 
-        # Call main() if it exists
         result = None
         output_lines = []
 
         if "main" in namespace and callable(namespace["main"]):
-            # Capture print output
-            import io
+            import io as _io
             old_stdout = sys.stdout
-            sys.stdout = captured = io.StringIO()
-
+            sys.stdout = captured = _io.StringIO()
             try:
                 result = namespace["main"]()
             finally:
                 output_lines = captured.getvalue().split('\n')
                 sys.stdout = old_stdout
+        else:
+            raise ValueError("Code must define a main() function that returns a value")
 
-        signal.alarm(0)  # Cancel timeout
+        signal.alarm(0)
 
         response = {
             "success": True,
@@ -77,22 +114,22 @@ while True:
         }
 
     except TimeoutError as e:
-        response = {
-            "success": False,
-            "error": str(e),
-            "error_type": "timeout"
-        }
+        signal.alarm(0)
+        response = {"success": False, "error": str(e), "error_type": "timeout"}
+    except ImportError as e:
+        signal.alarm(0)
+        response = {"success": False, "error": str(e), "error_type": "security"}
     except SyntaxError as e:
-        response = {
-            "success": False,
-            "error": f"Syntax Error: {e.msg} at line {e.lineno}",
-            "error_type": "syntax"
-        }
+        signal.alarm(0)
+        response = {"success": False, "error": f"Syntax Error: {e.msg} at line {e.lineno}", "error_type": "syntax"}
     except Exception as e:
+        signal.alarm(0)
+        tb = traceback.format_exc()
+        tb_lines = [l for l in tb.split('\n') if '<string>' in l or not l.strip().startswith('File')]
         response = {
             "success": False,
             "error": str(e),
-            "traceback": traceback.format_exc(),
+            "traceback": '\n'.join(tb_lines[-5:]) if tb_lines else "",
             "error_type": type(e).__name__
         }
 
@@ -101,56 +138,61 @@ while True:
 
 // PythonKernel implements a persistent Python execution environment
 type PythonKernel struct {
-	cmd     *exec.Cmd
-	stdin   io.WriteCloser
-	stdout  *bufio.Reader
-	mu      sync.Mutex
-	healthy bool
-	id      int
+	cmd        *exec.Cmd
+	stdin      io.WriteCloser
+	stdout     *bufio.Reader
+	mu         sync.Mutex
+	healthy    bool
+	id         int
+	memLimit   int64
+	scriptPath string
 }
 
-// NewPythonKernel creates a new Python kernel
-func NewPythonKernel(id int, memoryLimit int64) (*PythonKernel, error) {
-	k := &PythonKernel{id: id}
-	if err := k.start(memoryLimit); err != nil {
+// NewPythonKernel creates a new Python kernel (implements KernelFactory)
+func NewPythonKernel(id int, memoryLimit int64) (Kernel, error) {
+	k := &PythonKernel{id: id, memLimit: memoryLimit}
+	if err := k.start(); err != nil {
 		return nil, err
 	}
 	return k, nil
 }
 
-func (k *PythonKernel) start(memoryLimit int64) error {
-	// Create temp file for kernel script
+func (k *PythonKernel) start() error {
 	tmpFile, err := os.CreateTemp("", "python_kernel_*.py")
 	if err != nil {
 		return fmt.Errorf("failed to create kernel script: %w", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	k.scriptPath = tmpFile.Name()
 
 	if _, err := tmpFile.WriteString(pythonKernelScript); err != nil {
+		os.Remove(k.scriptPath)
 		return fmt.Errorf("failed to write kernel script: %w", err)
 	}
 	tmpFile.Close()
 
-	// Start Python process
-	k.cmd = exec.Command("python3", "-u", tmpFile.Name())
+	k.cmd = exec.Command("python3", "-u", "-B", k.scriptPath)
 	k.cmd.Env = append(os.Environ(),
 		"PYTHONUNBUFFERED=1",
 		"PYTHONDONTWRITEBYTECODE=1",
+		"PYTHONHASHSEED=0",
 	)
 
 	stdin, err := k.cmd.StdinPipe()
 	if err != nil {
+		os.Remove(k.scriptPath)
 		return fmt.Errorf("failed to get stdin: %w", err)
 	}
 	k.stdin = stdin
 
 	stdout, err := k.cmd.StdoutPipe()
 	if err != nil {
+		os.Remove(k.scriptPath)
 		return fmt.Errorf("failed to get stdout: %w", err)
 	}
 	k.stdout = bufio.NewReader(stdout)
 
 	if err := k.cmd.Start(); err != nil {
+		os.Remove(k.scriptPath)
 		return fmt.Errorf("failed to start Python: %w", err)
 	}
 
@@ -169,7 +211,6 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 
 	start := time.Now()
 
-	// Send code to kernel
 	request := map[string]interface{}{
 		"code":    code,
 		"timeout": 10,
@@ -182,7 +223,6 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 		return nil, fmt.Errorf("failed to send code: %w", err)
 	}
 
-	// Read response with timeout
 	type readResult struct {
 		line string
 		err  error
@@ -197,7 +237,11 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 	select {
 	case <-ctx.Done():
 		k.healthy = false
-		return nil, ctx.Err()
+		return &ExecutionResult{
+			Error:    "Execution cancelled",
+			ExitCode: -1,
+			Duration: time.Since(start),
+		}, nil
 	case result := <-resultCh:
 		if result.err != nil {
 			k.healthy = false
@@ -219,10 +263,7 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 		}
 
 		duration := time.Since(start)
-
-		execResult := &ExecutionResult{
-			Duration: duration,
-		}
+		execResult := &ExecutionResult{Duration: duration}
 
 		if response.Success {
 			var output strings.Builder
@@ -242,7 +283,7 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 			var errMsg strings.Builder
 			errMsg.WriteString(response.Error)
 			if response.Traceback != "" {
-				errMsg.WriteString("\n\n")
+				errMsg.WriteString("\n")
 				errMsg.WriteString(response.Traceback)
 			}
 			execResult.Error = errMsg.String()
@@ -258,12 +299,15 @@ func (k *PythonKernel) Reset() error {
 	k.mu.Lock()
 	defer k.mu.Unlock()
 
+	if k.scriptPath != "" {
+		os.Remove(k.scriptPath)
+	}
 	if k.cmd != nil && k.cmd.Process != nil {
 		k.cmd.Process.Kill()
 		k.cmd.Wait()
 	}
 
-	return k.start(0)
+	return k.start()
 }
 
 // IsHealthy checks if the kernel is healthy
@@ -277,6 +321,9 @@ func (k *PythonKernel) Stop() error {
 	defer k.mu.Unlock()
 
 	k.healthy = false
+	if k.scriptPath != "" {
+		os.Remove(k.scriptPath)
+	}
 	if k.stdin != nil {
 		k.stdin.Close()
 	}
@@ -287,36 +334,21 @@ func (k *PythonKernel) Stop() error {
 	return nil
 }
 
-// PythonPool manages a pool of Python kernels
+// PythonPool manages a pool of Python kernels with standby mode
 type PythonPool struct {
 	*Pool
-	memoryLimit int64
 }
 
 // NewPythonPool creates a new Python kernel pool
-func NewPythonPool(size int, memoryLimit int64) *PythonPool {
+func NewPythonPool(maxSize int, memoryLimit int64, idleTimeout time.Duration) *PythonPool {
 	return &PythonPool{
-		Pool:        NewPool(size, memoryLimit),
-		memoryLimit: memoryLimit,
+		Pool: NewPool(PoolConfig{
+			MaxSize:     maxSize,
+			MemoryLimit: memoryLimit,
+			IdleTimeout: idleTimeout,
+			Factory:     NewPythonKernel,
+		}),
 	}
-}
-
-// Start initializes all kernels in the pool
-func (p *PythonPool) Start() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	for i := 0; i < p.size; i++ {
-		k, err := NewPythonKernel(i, p.memoryLimit)
-		if err != nil {
-			return fmt.Errorf("failed to create Python kernel %d: %w", i, err)
-		}
-		p.kernels = append(p.kernels, k)
-		p.available <- k
-	}
-
-	p.running = true
-	return nil
 }
 
 // Execute runs code using an available kernel
