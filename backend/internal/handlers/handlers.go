@@ -228,6 +228,64 @@ func (h *Handlers) Stats(c *fiber.Ctx) error {
 	return c.JSON(h.execManager.Stats())
 }
 
+// DebugTopics returns debug info about topics
+func (h *Handlers) DebugTopics(c *fiber.Ctx) error {
+	cwd, _ := os.Getwd()
+
+	// Check if topics directory exists
+	topicsExists := false
+	if _, err := os.Stat(topicsDir); err == nil {
+		topicsExists = true
+	}
+
+	// List topics directory contents
+	var topicsDirContents []string
+	entries, err := os.ReadDir(topicsDir)
+	if err == nil {
+		for _, e := range entries {
+			topicsDirContents = append(topicsDirContents, e.Name())
+		}
+	}
+
+	// Get indexed categories
+	categories := h.topicIndexer.GetAllCategories()
+	var categoryInfo []fiber.Map
+	for _, cat := range categories {
+		topicNames := []string{}
+		for _, t := range cat.Topics {
+			topicNames = append(topicNames, t.Slug)
+		}
+		categoryInfo = append(categoryInfo, fiber.Map{
+			"slug":       cat.Slug,
+			"title":      cat.Title,
+			"topicCount": len(cat.Topics),
+			"topics":     topicNames,
+		})
+	}
+
+	// Test specific file
+	testPath := filepath.Join(topicsDir, "design-patterns", "factory-method", "content.md")
+	testFileExists := false
+	var testFileSize int64
+	if info, err := os.Stat(testPath); err == nil {
+		testFileExists = true
+		testFileSize = info.Size()
+	}
+
+	return c.JSON(fiber.Map{
+		"cwd":               cwd,
+		"topicsDir":         topicsDir,
+		"topicsExists":      topicsExists,
+		"topicsDirContents": topicsDirContents,
+		"categories":        categoryInfo,
+		"testFile": fiber.Map{
+			"path":   testPath,
+			"exists": testFileExists,
+			"size":   testFileSize,
+		},
+	})
+}
+
 // ProblemTree returns HTMX partial for problem tree
 func (h *Handlers) ProblemTree(c *fiber.Ctx) error {
 	tree := h.buildProblemTree(problemsDir)
