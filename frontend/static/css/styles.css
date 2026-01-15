@@ -689,6 +689,56 @@ body {
     cursor: not-allowed;
 }
 
+/* Code Block Run/Copy Buttons */
+.code-block-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.code-block-wrapper pre {
+    margin: 0;
+    padding-right: 100px;
+}
+
+.code-run-btn,
+.code-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.code-run-btn:hover,
+.code-copy-btn:hover {
+    opacity: 1;
+}
+
+.code-run-btn {
+    right: 60px;
+    background: var(--accent-color);
+    color: white;
+}
+
+.code-run-btn:hover {
+    background: #2563eb;
+}
+
+.code-copy-btn {
+    right: 0.5rem;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.code-copy-btn:hover {
+    background: var(--border-color);
+}
+
 /* Topic Pages */
 .topic-page {
     max-width: 1200px;

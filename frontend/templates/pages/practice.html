@@ -153,6 +153,8 @@ func main() {
                 currentCode[currentLanguage] = editor.getValue();
             });
 
+            // Expose editor globally for code block run buttons
+            window.editor = editor;
             editorInitialized = true;
             currentCode.python = getDefaultCode('python');
             currentCode.go = getDefaultCode('go');

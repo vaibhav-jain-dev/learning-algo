@@ -14,8 +14,93 @@
 (function() {
     var pythonCode = {{safeJS .PythonCode}};
     var goCode = {{safeJS .GolangCode}};
+
     document.getElementById('load-code-btn').onclick = function() {
         loadProblemCode(pythonCode, goCode);
     };
+
+    // Add "Run" buttons to code blocks
+    var codeBlocks = document.querySelectorAll('.problem-description pre code');
+    codeBlocks.forEach(function(block) {
+        var pre = block.parentElement;
+        if (!pre) return;
+
+        // Detect language from class
+        var lang = 'python';
+        var classes = block.className || '';
+        if (classes.indexOf('go') !== -1 || classes.indexOf('golang') !== -1) {
+            lang = 'go';
+        } else if (classes.indexOf('python') !== -1 || classes.indexOf('py') !== -1) {
+            lang = 'python';
+        }
+
+        // Create wrapper for positioning
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        // Create Run button
+        var runBtn = document.createElement('button');
+        runBtn.className = 'code-run-btn';
+        runBtn.innerHTML = '▶ Run';
+        runBtn.title = 'Run this code in editor';
+        runBtn.onclick = function() {
+            var code = block.textContent || block.innerText;
+            runCodeFromBlock(code, lang);
+        };
+        wrapper.appendChild(runBtn);
+
+        // Create Copy button
+        var copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.innerHTML = 'Copy';
+        copyBtn.title = 'Copy code to clipboard';
+        copyBtn.onclick = function() {
+            var code = block.textContent || block.innerText;
+            navigator.clipboard.writeText(code).then(function() {
+                copyBtn.innerHTML = 'Copied!';
+                setTimeout(function() {
+                    copyBtn.innerHTML = 'Copy';
+                }, 2000);
+            });
+        };
+        wrapper.appendChild(copyBtn);
+    });
+
+    // Highlight code blocks
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('.problem-description pre code').forEach(function(block) {
+            hljs.highlightElement(block);
+        });
+    }
 })();
+
+// Function to run code from a code block
+function runCodeFromBlock(code, lang) {
+    // Set the language
+    if (typeof setLanguage === 'function') {
+        setLanguage(lang);
+    }
+
+    // Set the code in editor
+    if (typeof editor !== 'undefined' && editor) {
+        editor.setValue(code);
+    } else {
+        var fallback = document.getElementById('code-editor-fallback');
+        if (fallback) fallback.value = code;
+    }
+
+    // Switch to code tab and run
+    if (typeof showTab === 'function') {
+        showTab('code');
+    }
+
+    // Optionally auto-run after a short delay
+    setTimeout(function() {
+        if (typeof runCode === 'function') {
+            runCode();
+        }
+    }, 300);
+}
 </script>
