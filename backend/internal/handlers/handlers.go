@@ -20,7 +20,7 @@ import (
 )
 
 const problemsDir = "./problems"
-const topicsDir = "./topics"
+const topicsDir = "../topics"
 
 // Handlers holds all HTTP handlers
 type Handlers struct {
