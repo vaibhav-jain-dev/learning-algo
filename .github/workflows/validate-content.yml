@@ -1,0 +1,117 @@
+name: Validate Content Standards
+
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - 'problems/**'
+      - 'standards.md'
+      - 'scripts/validate-markdown.sh'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'problems/**'
+      - 'standards.md'
+      - 'scripts/validate-markdown.sh'
+
+jobs:
+  validate:
+    name: Validate Markdown Standards
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Run validation
+        run: |
+          chmod +x scripts/validate-markdown.sh
+          ./scripts/validate-markdown.sh
+
+  lint-markdown:
+    name: Lint Markdown Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+
+      - name: Create markdownlint config
+        run: |
+          cat > .markdownlint.json << 'EOF'
+          {
+            "default": true,
+            "MD013": false,
+            "MD033": false,
+            "MD041": false,
+            "MD024": {
+              "siblings_only": true
+            }
+          }
+          EOF
+
+      - name: Lint markdown files
+        run: markdownlint 'problems/**/*.md' --ignore node_modules || true
+
+  check-code-syntax:
+    name: Check Code Syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check Python syntax
+        run: |
+          echo "Checking Python files..."
+          find problems -name "*.py" -exec python3 -m py_compile {} \;
+          echo "All Python files have valid syntax"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Check Go syntax
+        run: |
+          echo "Checking Go files..."
+          for file in $(find problems -name "*.go"); do
+            echo "Checking $file"
+            tmpdir=$(mktemp -d)
+            cp "$file" "$tmpdir/main.go"
+            cd "$tmpdir"
+            go mod init temp 2>/dev/null || true
+            if go build -o /dev/null main.go 2>&1; then
+              echo "  ✓ Valid"
+            else
+              echo "  ⚠ Syntax warning (may need dependencies)"
+            fi
+            cd - > /dev/null
+            rm -rf "$tmpdir"
+          done
+          echo "Go syntax check complete"

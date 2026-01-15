@@ -1,0 +1,21 @@
+<div class="problem-content">
+    <div class="problem-description">
+        {{safeHTML .Description}}
+    </div>
+
+    <div class="problem-actions">
+        <button class="btn btn-primary" id="load-code-btn">
+            Open in Editor
+        </button>
+    </div>
+</div>
+
+<script>
+(function() {
+    var pythonCode = {{safeJS .PythonCode}};
+    var goCode = {{safeJS .GolangCode}};
+    document.getElementById('load-code-btn').onclick = function() {
+        loadProblemCode(pythonCode, goCode);
+    };
+})();
+</script>

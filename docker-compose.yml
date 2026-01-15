@@ -1,21 +1,19 @@
 # DSAlgo Learn Platform - Docker Compose
-# All names prefixed with 'dsalgo-learn-' to avoid conflicts
+# Fast Code Runner with persistent kernel pools
+# Memory limit: 2GB total
 
 version: '3.8'
 
-# Custom network with unique name
 networks:
   dsalgo-learn-network:
     name: dsalgo-learn-network
     driver: bridge
 
-# Named volume for Go cache
 volumes:
   dsalgo-learn-go-cache:
     name: dsalgo-learn-go-cache
 
 services:
-  # Main application service
   dsalgo-learn-app:
     build:
       context: .
@@ -28,42 +26,72 @@ services:
     volumes:
       # Mount for live development
       - ./problems:/app/problems:ro
-      - ./backend:/app/backend:ro
       - ./frontend:/app/frontend:ro
-      # Go build cache
+      # Go build cache for kernel warmup
       - dsalgo-learn-go-cache:/tmp/go-cache
     environment:
-      - FLASK_ENV=development
+      - PORT=8080
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
+      # Kernel pool configuration
+      - PYTHON_KERNEL_COUNT=3
+      - GO_KERNEL_COUNT=2
+      - KERNEL_MEMORY_LIMIT=256M
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
     # Security settings
     security_opt:
       - no-new-privileges:true
-    # Temporary filesystem for code execution
+    # Temporary filesystem for code execution (500MB for kernels)
     tmpfs:
-      - /tmp:size=200M,mode=1777
-    # Resource limits
+      - /tmp:size=500M,mode=1777
+    # Resource limits - 2GB total
     deploy:
       resources:
         limits:
           cpus: '2'
-          memory: 1G
+          memory: 2G
         reservations:
           cpus: '0.5'
-          memory: 256M
-    # Healthcheck
+          memory: 512M
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
-    # Logging
+      start_period: 15s
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+  # Development mode with hot reload
+  dsalgo-learn-dev:
+    profiles:
+      - dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: dsalgo-learn-platform:dev
+    container_name: dsalgo-learn-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app/backend:ro
+      - ./frontend:/app/frontend:ro
+      - ./problems:/app/problems:ro
+      - dsalgo-learn-go-cache:/tmp/go-cache
+    environment:
+      - PORT=8080
+      - DEV_MODE=true
+    networks:
+      - dsalgo-learn-network
+    tmpfs:
+      - /tmp:size=500M,mode=1777
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G

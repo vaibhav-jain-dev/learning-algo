@@ -1,0 +1,168 @@
+<div class="practice-page">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Problems</h2>
+            <input type="search" id="search" placeholder="Search problems..."
+                   onkeyup="filterTree(this.value)">
+        </div>
+        <div id="problem-tree" hx-get="/htmx/problem-tree" hx-trigger="load" hx-swap="innerHTML">
+            <div class="loading">Loading problems...</div>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('description')">Description</button>
+            <button class="tab" onclick="showTab('code')">Code</button>
+            <button class="tab" onclick="showTab('output')">Output</button>
+        </div>
+
+        <div id="description-tab" class="tab-content active">
+            <div id="problem-description">
+                <div class="placeholder">
+                    <h2>Select a Problem</h2>
+                    <p>Choose a problem from the sidebar to get started.</p>
+                    <p>You can also run custom code using the editor below.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="code-tab" class="tab-content">
+            <div class="editor-header">
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="python" onclick="setLanguage('python')">Python</button>
+                    <button class="lang-btn" data-lang="go" onclick="setLanguage('go')">Go</button>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="resetCode()">Reset</button>
+                    <button class="btn btn-primary" onclick="runCode()">
+                        <span class="run-icon">▶</span> Run
+                    </button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <textarea id="code-editor" placeholder="Enter your code here..."></textarea>
+            </div>
+        </div>
+
+        <div id="output-tab" class="tab-content">
+            <div id="output-container">
+                <div class="placeholder">
+                    <p>Run your code to see output here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentLanguage = 'python';
+let originalCode = { python: '', go: '' };
+let currentCode = { python: '', go: '' };
+
+function showTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.tab-content#${tabName}-tab`).classList.add('active');
+    document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+}
+
+function setLanguage(lang) {
+    // Save current code
+    currentCode[currentLanguage] = document.getElementById('code-editor').value;
+
+    // Switch language
+    currentLanguage = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+
+    // Load code for new language
+    document.getElementById('code-editor').value = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
+}
+
+function getDefaultCode(lang) {
+    if (lang === 'python') {
+        return `def main():
+    # Write your code here
+    result = [1, 2, 3, 4, 5]
+    return result
+
+# main() will be called automatically`;
+    } else {
+        return `package main
+
+import "fmt"
+
+func main() {
+    // Write your code here
+    result := []int{1, 2, 3, 4, 5}
+    fmt.Println(result)
+}`;
+    }
+}
+
+function resetCode() {
+    const code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
+    document.getElementById('code-editor').value = code;
+    currentCode[currentLanguage] = code;
+}
+
+function runCode() {
+    const code = document.getElementById('code-editor').value;
+    currentCode[currentLanguage] = code;
+
+    const outputContainer = document.getElementById('output-container');
+    outputContainer.innerHTML = '<div class="loading">Executing...</div>';
+    showTab('output');
+
+    // Use HTMX to submit
+    htmx.ajax('POST', '/htmx/execute', {
+        target: '#output-container',
+        swap: 'innerHTML',
+        values: {
+            code: code,
+            language: currentLanguage
+        }
+    });
+}
+
+function loadProblem(path) {
+    htmx.ajax('GET', '/htmx/problem-content/' + path, {
+        target: '#problem-description',
+        swap: 'innerHTML'
+    }).then(() => {
+        showTab('description');
+    });
+}
+
+function loadProblemCode(pythonCode, goCode) {
+    originalCode.python = pythonCode || getDefaultCode('python');
+    originalCode.go = goCode || getDefaultCode('go');
+    currentCode.python = originalCode.python;
+    currentCode.go = originalCode.go;
+    document.getElementById('code-editor').value = currentCode[currentLanguage];
+    showTab('code');
+}
+
+function filterTree(query) {
+    const tree = document.getElementById('problem-tree');
+    const items = tree.querySelectorAll('.tree-item');
+    const folders = tree.querySelectorAll('.tree-folder');
+
+    query = query.toLowerCase();
+
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(query) ? '' : 'none';
+    });
+
+    // Show folders that have visible children
+    folders.forEach(folder => {
+        const hasVisible = folder.querySelector('.tree-item:not([style*="display: none"])');
+        folder.style.display = hasVisible ? '' : 'none';
+    });
+}
+
+// Initialize with default code
+document.getElementById('code-editor').value = getDefaultCode('python');
+</script>
