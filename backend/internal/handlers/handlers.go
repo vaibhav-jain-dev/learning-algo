@@ -20,6 +20,7 @@ import (
 )
 
 const problemsDir = "./problems"
+const topicsDir = "./topics"
 
 // Handlers holds all HTTP handlers
 type Handlers struct {
@@ -91,12 +92,28 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	title := formatName(topic)
 	categoryTitle := formatName(category)
 
+	// Try to load content from content.md file
+	contentPath := filepath.Join(topicsDir, category, topic, "content.md")
+	var contentHTML string
+	var hasContent bool
+
+	mdContent, err := os.ReadFile(contentPath)
+	if err == nil && len(mdContent) > 0 {
+		var buf bytes.Buffer
+		if err := h.md.Convert(mdContent, &buf); err == nil {
+			contentHTML = buf.String()
+			hasContent = true
+		}
+	}
+
 	return c.Render("pages/topic-detail", fiber.Map{
 		"Title":         title + " - " + categoryTitle,
 		"Topic":         title,
 		"Category":      categoryTitle,
 		"CategorySlug":  category,
 		"TopicSlug":     topic,
+		"Content":       contentHTML,
+		"HasContent":    hasContent,
 	})
 }
 
