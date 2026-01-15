@@ -17,6 +17,7 @@ import (
 
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/models"
+	"github.com/vaibhav-jain-dev/learning-algo/internal/topics"
 )
 
 const problemsDir = "./problems"
@@ -24,10 +25,11 @@ const topicsDir = "./topics"
 
 // Handlers holds all HTTP handlers
 type Handlers struct {
-	pythonPool  *kernel.PythonPool
-	goPool      *kernel.GoPool
-	execManager *kernel.ExecutionManager
-	md          goldmark.Markdown
+	pythonPool   *kernel.PythonPool
+	goPool       *kernel.GoPool
+	execManager  *kernel.ExecutionManager
+	topicIndexer *topics.TopicIndexer
+	md           goldmark.Markdown
 }
 
 // New creates a new Handlers instance
@@ -40,11 +42,15 @@ func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool, execManager *kern
 		),
 	)
 
+	// Initialize topic indexer with 5 minute cache TTL
+	topicIndexer := topics.NewTopicIndexer(topicsDir, 5*time.Minute)
+
 	return &Handlers{
-		pythonPool:  pythonPool,
-		goPool:      goPool,
-		execManager: execManager,
-		md:          md,
+		pythonPool:   pythonPool,
+		goPool:       goPool,
+		execManager:  execManager,
+		topicIndexer: topicIndexer,
+		md:           md,
 	}
 }
 
@@ -64,22 +70,31 @@ func (h *Handlers) Practice(c *fiber.Ctx) error {
 
 // SystemDesign renders the system design page
 func (h *Handlers) SystemDesign(c *fiber.Ctx) error {
-	return c.Render("pages/system-design", fiber.Map{
-		"Title": "System Design",
+	category := h.topicIndexer.GetCategory("system-design")
+	return c.Render("pages/topic-list", fiber.Map{
+		"Title":       "System Design",
+		"Category":    category,
+		"CategorySlug": "system-design",
 	})
 }
 
 // DesignPatterns renders the design patterns page
 func (h *Handlers) DesignPatterns(c *fiber.Ctx) error {
-	return c.Render("pages/design-patterns", fiber.Map{
-		"Title": "Design Patterns",
+	category := h.topicIndexer.GetCategory("design-patterns")
+	return c.Render("pages/topic-list", fiber.Map{
+		"Title":       "Design Patterns",
+		"Category":    category,
+		"CategorySlug": "design-patterns",
 	})
 }
 
 // MachineCoding renders the machine coding page
 func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
-	return c.Render("pages/machine-coding", fiber.Map{
-		"Title": "Machine Coding",
+	category := h.topicIndexer.GetCategory("machine-coding")
+	return c.Render("pages/topic-list", fiber.Map{
+		"Title":       "Machine Coding",
+		"Category":    category,
+		"CategorySlug": "machine-coding",
 	})
 }
 
