@@ -200,6 +200,7 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	}
 
 	// Compile the code
+	compileStart := time.Now()
 	if err := k.compile(code); err != nil {
 		return &ExecutionResult{
 			Error:    err.Error(),
@@ -207,6 +208,7 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 			Duration: time.Since(start),
 		}, nil
 	}
+	compileTime := time.Since(compileStart)
 
 	// Run with timeout
 	programPath := filepath.Join(k.workDir, "program")
@@ -217,6 +219,7 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
+	execStart := time.Now()
 	done := make(chan error, 1)
 	go func() {
 		done <- cmd.Run()
@@ -233,8 +236,18 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 			Duration: time.Since(start),
 		}, nil
 	case err := <-done:
+		execTime := time.Since(execStart)
 		duration := time.Since(start)
 		result := &ExecutionResult{Duration: duration}
+
+		// Add metrics for Go execution
+		result.Metrics = &ExecutionMetrics{
+			TimeMs:        float64(execTime.Microseconds()) / 1000.0,
+			MemoryCurrent: 0, // Go doesn't easily expose this
+			MemoryPeak:    0,
+			MemoryFmt:     fmt.Sprintf("Compile: %.2fms", float64(compileTime.Microseconds())/1000.0),
+			MemoryPeakFmt: fmt.Sprintf("Run: %.2fms", float64(execTime.Microseconds())/1000.0),
+		}
 
 		if err != nil {
 			errStr := stderr.String()

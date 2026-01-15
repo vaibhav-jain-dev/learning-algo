@@ -398,22 +398,40 @@ func main() {
 
         // Show execution metrics if available
         if (metrics && !isError) {
+            // Check if this is Go metrics (compile/run time) or Python (memory)
+            var isGoMetrics = metrics.memory_fmt && metrics.memory_fmt.indexOf('Compile') !== -1;
+
             html += '<div class="execution-metrics">' +
                 '<div class="metrics-header">Performance Metrics</div>' +
                 '<div class="metrics-grid">' +
                 '<div class="metric">' +
                 '<span class="metric-label">Execution Time:</span>' +
                 '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
-                '</div>' +
-                '<div class="metric">' +
-                '<span class="metric-label">Memory Used:</span>' +
-                '<span class="metric-value">' + (metrics.memory_fmt || metrics.memory_current_fmt || '0 B') + '</span>' +
-                '</div>' +
-                '<div class="metric">' +
-                '<span class="metric-label">Peak Memory:</span>' +
-                '<span class="metric-value">' + (metrics.memory_peak_fmt || '0 B') + '</span>' +
-                '</div>' +
-                '</div></div>';
+                '</div>';
+
+            if (isGoMetrics) {
+                // Go: show compile and run time
+                html += '<div class="metric">' +
+                    '<span class="metric-label">Compile Time:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_fmt || '0ms') + '</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">Run Time:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_peak_fmt || '0ms') + '</span>' +
+                    '</div>';
+            } else {
+                // Python: show memory
+                html += '<div class="metric">' +
+                    '<span class="metric-label">Memory Used:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_fmt || metrics.memory_current_fmt || '0 B') + '</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">Peak Memory:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_peak_fmt || '0 B') + '</span>' +
+                    '</div>';
+            }
+
+            html += '</div></div>';
         }
 
         html += '</div></div>';
