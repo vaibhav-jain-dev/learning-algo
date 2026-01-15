@@ -6,6 +6,7 @@
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/animations.css">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <!-- Highlight.js for markdown code blocks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
@@ -39,15 +40,42 @@
     <main class="main">
         {{embed}}
     </main>
+    <!-- Algorithm Visualization Engine -->
+    <script src="/static/js/visualizations.js"></script>
     <script>
         // Re-highlight code blocks after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function(evt) {
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
+            // Re-initialize visualizations if needed
+            initializeVisualizations();
         });
         // Initial highlight
         hljs.highlightAll();
+
+        // Initialize visualizations on page load
+        function initializeVisualizations() {
+            // Auto-initialize any visualization containers with data attributes
+            document.querySelectorAll('[data-viz-type]').forEach(function(container) {
+                if (container.dataset.vizInitialized) return;
+                container.dataset.vizInitialized = 'true';
+
+                const type = container.dataset.vizType;
+                const demoFn = container.dataset.vizDemo;
+
+                if (demoFn && window[demoFn]) {
+                    window[demoFn](container.id);
+                }
+            });
+        }
+
+        // Run on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeVisualizations);
+        } else {
+            initializeVisualizations();
+        }
     </script>
 </body>
 </html>

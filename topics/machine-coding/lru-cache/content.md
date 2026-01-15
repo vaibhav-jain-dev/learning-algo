@@ -12,6 +12,81 @@ LRU Cache is one of the most asked machine coding questions because:
 - **System design foundation:** Core component of caching layers
 - **Complexity requirement:** Must achieve O(1) for both operations
 
+## Intuitive Understanding
+
+### Real-World Metaphor: The Desk Stack
+
+<div class="metaphor-card">
+  <div class="metaphor-icon">📚</div>
+  <div class="metaphor-title">Think of a Stack of Papers on Your Desk</div>
+  <div class="metaphor-description">
+    Imagine you have limited desk space for documents. When you use a document, you put it on top.
+    When your desk is full and you need space for a new document, you throw away the one at the bottom
+    (the one you haven't touched in the longest time).
+  </div>
+  <div class="metaphor-mapping">
+    <div class="mapping-item">
+      <span class="real">Document</span>
+      <span class="arrow">→</span>
+      <span class="concept">Cache Entry (key-value pair)</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Desk space</span>
+      <span class="arrow">→</span>
+      <span class="concept">Cache capacity</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Top of stack</span>
+      <span class="arrow">→</span>
+      <span class="concept">Most Recently Used (MRU)</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Bottom of stack</span>
+      <span class="arrow">→</span>
+      <span class="concept">Least Recently Used (LRU)</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Using a document</span>
+      <span class="arrow">→</span>
+      <span class="concept">get() operation</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Adding new document</span>
+      <span class="arrow">→</span>
+      <span class="concept">put() operation</span>
+    </div>
+  </div>
+</div>
+
+### Interactive Visualization
+
+Try the interactive step-by-step visualization below to see how LRU Cache works:
+
+<div id="lru-cache-demo" data-viz-type="lru-cache" data-viz-demo="createLRUCacheDemo"></div>
+
+### The "Aha!" Thinking Process
+
+<div class="think-aloud">
+  <div class="thought-bubble">
+    <div class="thought-text">
+      "I need O(1) lookup... HashMap gives me that. But HashMap doesn't track order..."
+    </div>
+  </div>
+  <div class="thought-bubble">
+    <div class="thought-text">
+      "I need to track access order... A linked list can do that. But finding an item in a list is O(n)..."
+    </div>
+  </div>
+  <div class="thought-bubble">
+    <div class="thought-text">
+      "Wait! What if the HashMap stores pointers to the linked list nodes? Then I get O(1) lookup AND O(1) order updates!"
+    </div>
+  </div>
+  <div class="realization">
+    <span class="insight">Key Insight:</span> HashMap + Doubly Linked List = O(1) for everything!
+  </div>
+</div>
+
 ## Mental Model & Thinking Process
 
 ### The Core Challenge

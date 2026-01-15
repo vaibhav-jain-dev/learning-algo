@@ -8,6 +8,51 @@
 
 Given `n` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
 
+## Intuitive Understanding
+
+<div class="metaphor-card">
+  <div class="metaphor-icon">🌧️</div>
+  <div class="metaphor-title">Think of Mountains and Valleys After Rain</div>
+  <div class="metaphor-description">
+    Imagine you're looking at a cross-section of mountains. When it rains, water fills up the valleys.
+    At each position, water can only rise as high as the SHORTER of the two tallest mountains on either side.
+    Why? Because water would spill over the shorter side!
+  </div>
+  <div class="metaphor-mapping">
+    <div class="mapping-item">
+      <span class="real">Mountain height</span>
+      <span class="arrow">→</span>
+      <span class="concept">height[i] value</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Tallest mountain to left</span>
+      <span class="arrow">→</span>
+      <span class="concept">maxLeft</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Tallest mountain to right</span>
+      <span class="arrow">→</span>
+      <span class="concept">maxRight</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Water level at point</span>
+      <span class="arrow">→</span>
+      <span class="concept">min(maxLeft, maxRight)</span>
+    </div>
+    <div class="mapping-item">
+      <span class="real">Water trapped at point</span>
+      <span class="arrow">→</span>
+      <span class="concept">waterLevel - height[i]</span>
+    </div>
+  </div>
+</div>
+
+### Interactive Visualization
+
+Step through the two-pointer algorithm to see how it works:
+
+<div id="water-trap-demo" data-viz-type="water-trap" data-viz-demo="createWaterTrappingDemo"></div>
+
 ## Visual Understanding
 
 ```
