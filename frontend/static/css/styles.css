@@ -520,43 +520,63 @@ body {
     flex: 1;
     display: flex;
     overflow: hidden;
+    position: relative;
+    min-height: 300px;
 }
 
-#code-editor {
+#code-editor-wrapper {
     flex: 1;
     width: 100%;
     height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#code-editor-fallback {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    resize: none;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: 1rem;
+    background: #212121;
+    color: #eee;
 }
 
 /* CodeMirror customizations */
-#code-editor .CodeMirror {
+#code-editor-wrapper .CodeMirror {
     height: 100%;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     line-height: 1.6;
 }
 
-#code-editor .CodeMirror-gutters {
+#code-editor-wrapper .CodeMirror-gutters {
     border-right: 1px solid #404040;
 }
 
-#code-editor .CodeMirror-linenumber {
+#code-editor-wrapper .CodeMirror-linenumber {
     color: #6e6e6e;
     padding-right: 10px;
 }
 
-#code-editor .CodeMirror-matchingbracket {
+#code-editor-wrapper .CodeMirror-matchingbracket {
     background: rgba(255, 255, 255, 0.1);
     color: #fff !important;
     border-bottom: 1px solid #61dafb;
 }
 
-#code-editor .CodeMirror-nonmatchingbracket {
+#code-editor-wrapper .CodeMirror-nonmatchingbracket {
     color: #ff6b6b !important;
 }
 
 /* CodeMirror read-only state */
-#code-editor .CodeMirror-readonly {
+#code-editor-wrapper .CodeMirror-readonly {
     opacity: 0.7;
     cursor: not-allowed;
 }

@@ -12,12 +12,12 @@
 
     <div class="content">
         <div class="tabs">
-            <button class="tab active" onclick="showTab('description')">Description</button>
-            <button class="tab" onclick="showTab('code')">Code</button>
+            <button class="tab" onclick="showTab('description')">Description</button>
+            <button class="tab active" onclick="showTab('code')">Code</button>
             <button class="tab" onclick="showTab('output')">Output</button>
         </div>
 
-        <div id="description-tab" class="tab-content active">
+        <div id="description-tab" class="tab-content">
             <div id="problem-description">
                 <div class="placeholder">
                     <h2>Select a Problem</h2>
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div id="code-tab" class="tab-content">
+        <div id="code-tab" class="tab-content active">
             <div class="editor-header">
                 <div class="language-selector">
                     <button class="lang-btn active" data-lang="python" onclick="setLanguage('python')">Python</button>
@@ -47,7 +47,8 @@
                 </div>
             </div>
             <div class="editor-container">
-                <div id="code-editor"></div>
+                <textarea id="code-editor-fallback" style="display:none;"></textarea>
+                <div id="code-editor-wrapper"></div>
             </div>
         </div>
 
@@ -62,413 +63,33 @@
 </div>
 
 <script>
-// State management
-const STATE_KEY = 'dsalgo_execution_state';
-let currentLanguage = 'python';
-let originalCode = { python: '', go: '' };
-let currentCode = { python: '', go: '' };
-let ws = null;
-let currentExecutionId = null;
-let isRunning = false;
-let editor = null;
+(function() {
+    // State management
+    const STATE_KEY = 'dsalgo_execution_state';
+    let currentLanguage = 'python';
+    let originalCode = { python: '', go: '' };
+    let currentCode = { python: '', go: '' };
+    let ws = null;
+    let currentExecutionId = null;
+    let isRunning = false;
+    let editor = null;
+    let editorInitialized = false;
 
-// Initialize CodeMirror
-function initEditor() {
-    const editorElement = document.getElementById('code-editor');
-    editor = CodeMirror(editorElement, {
-        value: getDefaultCode('python'),
-        mode: 'python',
-        theme: 'material-darker',
-        lineNumbers: true,
-        indentUnit: 4,
-        tabSize: 4,
-        indentWithTabs: false,
-        matchBrackets: true,
-        autoCloseBrackets: true,
-        foldGutter: true,
-        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        extraKeys: {
-            'Tab': function(cm) {
-                if (cm.somethingSelected()) {
-                    cm.indentSelection('add');
-                } else {
-                    cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
-                        Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
-                }
-            },
-            'Shift-Tab': function(cm) {
-                cm.indentSelection('subtract');
-            },
-            'Ctrl-Enter': function(cm) {
-                runCode();
-            },
-            'Cmd-Enter': function(cm) {
-                runCode();
-            },
-            'Ctrl-S': function(cm) {
-                formatCode();
-                return false;
-            },
-            'Cmd-S': function(cm) {
-                formatCode();
-                return false;
-            }
-        }
-    });
-
-    // Set editor height
-    editor.setSize('100%', '100%');
-
-    // Save code on change
-    editor.on('change', function() {
-        currentCode[currentLanguage] = editor.getValue();
-    });
-}
-
-// Format code (basic indentation fix)
-function formatCode() {
-    if (isRunning || !editor) return;
-
-    const code = editor.getValue();
-    let formatted = code;
-
-    if (currentLanguage === 'python') {
-        formatted = formatPython(code);
-    } else if (currentLanguage === 'go') {
-        formatted = formatGo(code);
-    }
-
-    editor.setValue(formatted);
-}
-
-function formatPython(code) {
-    // Basic Python formatting
-    const lines = code.split('\n');
-    let formatted = [];
-    let indentLevel = 0;
-    const indentSize = 4;
-
-    for (let line of lines) {
-        let trimmed = line.trim();
-
-        // Decrease indent before these keywords
-        if (trimmed.startsWith('elif ') || trimmed.startsWith('else:') ||
-            trimmed.startsWith('except') || trimmed.startsWith('finally:') ||
-            trimmed.startsWith('except:')) {
-            indentLevel = Math.max(0, indentLevel - 1);
-        }
-
-        // Add the line with proper indentation if not empty
-        if (trimmed) {
-            formatted.push(' '.repeat(indentLevel * indentSize) + trimmed);
-        } else {
-            formatted.push('');
-        }
-
-        // Increase indent after these patterns
-        if (trimmed.endsWith(':') && !trimmed.startsWith('#')) {
-            indentLevel++;
-        }
-
-        // Decrease indent for certain keywords already handled
-        if (trimmed.startsWith('return ') || trimmed === 'return' ||
-            trimmed === 'break' || trimmed === 'continue' || trimmed === 'pass') {
-            // Next line should be at same or lower level
-        }
-    }
-
-    return formatted.join('\n');
-}
-
-function formatGo(code) {
-    // Basic Go formatting
-    const lines = code.split('\n');
-    let formatted = [];
-    let indentLevel = 0;
-    const indentChar = '\t';
-
-    for (let line of lines) {
-        let trimmed = line.trim();
-
-        // Decrease indent for closing braces
-        if (trimmed.startsWith('}') || trimmed.startsWith(')')) {
-            indentLevel = Math.max(0, indentLevel - 1);
-        }
-
-        // Add the line with proper indentation
-        if (trimmed) {
-            formatted.push(indentChar.repeat(indentLevel) + trimmed);
-        } else {
-            formatted.push('');
-        }
-
-        // Increase indent after opening braces
-        if (trimmed.endsWith('{') || trimmed.endsWith('(')) {
-            indentLevel++;
-        }
-    }
-
-    return formatted.join('\n');
-}
-
-// WebSocket connection
-function connectWebSocket() {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    ws = new WebSocket(`${protocol}//${window.location.host}/ws/execute`);
-
-    ws.onopen = () => {
-        console.log('WebSocket connected');
-        // Check for pending execution on reconnect
-        const savedState = loadState();
-        if (savedState && savedState.id && savedState.state === 'running') {
-            reconnectToExecution(savedState.id);
-        }
-    };
-
-    ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        handleExecutionUpdate(data);
-    };
-
-    ws.onclose = () => {
-        console.log('WebSocket disconnected, reconnecting...');
-        setTimeout(connectWebSocket, 2000);
-    };
-
-    ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-    };
-}
-
-function handleExecutionUpdate(data) {
-    const outputContainer = document.getElementById('output-container');
-
-    switch (data.type) {
-        case 'started':
-            currentExecutionId = data.id;
-            setRunningState(true);
-            saveState({ id: data.id, state: 'running' });
-            outputContainer.innerHTML = renderLoading(data.id);
-            break;
-
-        case 'update':
-            if (data.state === 'running') {
-                outputContainer.innerHTML = renderLoading(data.id);
-            } else {
-                setRunningState(false);
-                outputContainer.innerHTML = renderOutput(data);
-                saveState({ id: data.id, state: data.state });
-            }
-            break;
-
-        case 'stopped':
-            setRunningState(false);
-            outputContainer.innerHTML = renderOutput({
-                state: 'stopped',
-                error: 'Execution stopped by user'
-            });
-            clearState();
-            break;
-
-        case 'error':
-            setRunningState(false);
-            outputContainer.innerHTML = renderOutput({
-                state: 'error',
-                error: data.error
-            });
-            clearState();
-            break;
-    }
-}
-
-function renderLoading(id) {
-    return `
-        <div class="output-loading">
-            <div class="output-header">
-                <span class="loading-spinner"></span>
-                <span class="status-text">Running...</span>
-            </div>
-            <div class="loading-info">
-                <p>Execution ID: ${id}</p>
-                <p>You can close this tab and come back - execution state is preserved.</p>
-            </div>
-        </div>
-    `;
-}
-
-function renderOutput(data) {
-    const isError = data.state === 'error' || data.state === 'stopped' || data.error;
-    const statusIcon = isError ? '✗' : '✓';
-    const statusText = isError ? 'Error' : 'Success';
-    const statusClass = isError ? 'output-error' : 'output-success';
-
-    let output = data.output || '';
-    let error = data.error || '';
-    let duration = data.duration || 0;
-
-    return `
-        <div class="output-result ${isError ? 'has-error' : ''}">
-            <div class="${statusClass}">
-                <div class="output-header">
-                    <span class="status-icon">${statusIcon}</span>
-                    <span class="status-text">${statusText}</span>
-                    ${duration ? `<span class="duration">${duration}ms</span>` : ''}
-                </div>
-                ${error ? `<pre class="error-output">${escapeHtml(error)}</pre>` : ''}
-                ${output ? `<pre class="success-output">${escapeHtml(output)}</pre>` : (!error ? '<pre class="success-output">(no output)</pre>' : '')}
-            </div>
-        </div>
-    `;
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function setRunningState(running) {
-    isRunning = running;
-    const runBtn = document.getElementById('run-btn');
-    const stopBtn = document.getElementById('stop-btn');
-
-    if (running) {
-        runBtn.disabled = true;
-        runBtn.classList.add('disabled');
-        stopBtn.classList.remove('hidden');
-        if (editor) editor.setOption('readOnly', true);
-    } else {
-        runBtn.disabled = false;
-        runBtn.classList.remove('disabled');
-        stopBtn.classList.add('hidden');
-        if (editor) editor.setOption('readOnly', false);
-        currentExecutionId = null;
-    }
-}
-
-function runCode() {
-    if (isRunning || !editor) return;
-
-    const code = editor.getValue();
-    currentCode[currentLanguage] = code;
-
-    if (!code.trim()) {
-        document.getElementById('output-container').innerHTML = renderOutput({
-            state: 'error',
-            error: 'No code provided'
-        });
-        showTab('output');
-        return;
-    }
-
-    showTab('output');
-    document.getElementById('output-container').innerHTML = '<div class="loading">Connecting...</div>';
-
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            action: 'execute',
-            code: code,
-            language: currentLanguage
-        }));
-    } else {
-        // Fallback to HTMX if WebSocket not available
-        htmx.ajax('POST', '/htmx/execute', {
-            target: '#output-container',
-            swap: 'innerHTML',
-            values: { code: code, language: currentLanguage }
-        });
-    }
-}
-
-function stopExecution() {
-    if (!currentExecutionId) return;
-
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            action: 'stop',
-            id: currentExecutionId
-        }));
-    }
-}
-
-function reconnectToExecution(id) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        setRunningState(true);
-        showTab('output');
-        document.getElementById('output-container').innerHTML = renderLoading(id);
-        currentExecutionId = id;
-
-        ws.send(JSON.stringify({
-            action: 'reconnect',
-            id: id
-        }));
-    }
-}
-
-// State persistence
-function saveState(state) {
-    try {
-        localStorage.setItem(STATE_KEY, JSON.stringify(state));
-    } catch (e) {}
-}
-
-function loadState() {
-    try {
-        const state = localStorage.getItem(STATE_KEY);
-        return state ? JSON.parse(state) : null;
-    } catch (e) {
-        return null;
-    }
-}
-
-function clearState() {
-    try {
-        localStorage.removeItem(STATE_KEY);
-    } catch (e) {}
-}
-
-// Tab management
-function showTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector(`.tab-content#${tabName}-tab`).classList.add('active');
-    document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
-
-    // Refresh editor when showing code tab
-    if (tabName === 'code' && editor) {
-        setTimeout(() => editor.refresh(), 10);
-    }
-}
-
-function setLanguage(lang) {
-    if (isRunning || !editor) return;
-
-    // Save current code
-    currentCode[currentLanguage] = editor.getValue();
-    currentLanguage = lang;
-
-    // Update language buttons
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-
-    // Set editor mode and content
-    const mode = lang === 'go' ? 'text/x-go' : 'python';
-    editor.setOption('mode', mode);
-    editor.setValue(currentCode[lang] || originalCode[lang] || getDefaultCode(lang));
-}
-
-function getDefaultCode(lang) {
-    if (lang === 'python') {
-        return `def main():
+    // Default code templates
+    function getDefaultCode(lang) {
+        if (lang === 'python') {
+            return `def main():
     # Write your code here
     # Allowed: math, collections, heapq, itertools, etc.
     # Blocked: os, subprocess, socket, etc.
     result = [1, 2, 3, 4, 5]
+    print(result)
     return result
 
-# main() must be defined and return a value`;
-    } else {
-        return `package main
+if __name__ == "__main__":
+    main()`;
+        } else {
+            return `package main
 
 import "fmt"
 
@@ -479,63 +100,508 @@ func main() {
     result := []int{1, 2, 3, 4, 5}
     fmt.Println(result)
 }`;
+        }
     }
-}
 
-function resetCode() {
-    if (isRunning || !editor) return;
-    const code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
-    editor.setValue(code);
-    currentCode[currentLanguage] = code;
-}
+    // Initialize CodeMirror
+    function initEditor() {
+        if (editorInitialized) return;
 
-function loadProblem(path) {
-    htmx.ajax('GET', '/htmx/problem-content/' + path, {
-        target: '#problem-description',
-        swap: 'innerHTML'
-    }).then(() => {
-        showTab('description');
-    });
-}
+        const wrapper = document.getElementById('code-editor-wrapper');
+        if (!wrapper) return;
 
-function loadProblemCode(pythonCode, goCode) {
-    if (isRunning) return;
-    originalCode.python = pythonCode || getDefaultCode('python');
-    originalCode.go = goCode || getDefaultCode('go');
-    currentCode.python = originalCode.python;
-    currentCode.go = originalCode.go;
+        // Check if CodeMirror is available
+        if (typeof CodeMirror === 'undefined') {
+            console.error('CodeMirror not loaded, using fallback textarea');
+            useFallbackEditor();
+            return;
+        }
 
-    if (editor) {
-        editor.setValue(currentCode[currentLanguage]);
+        try {
+            editor = CodeMirror(wrapper, {
+                value: getDefaultCode('python'),
+                mode: 'python',
+                theme: 'material-darker',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                extraKeys: {
+                    'Tab': function(cm) {
+                        if (cm.somethingSelected()) {
+                            cm.indentSelection('add');
+                        } else {
+                            cm.replaceSelection('    ', 'end', '+input');
+                        }
+                    },
+                    'Shift-Tab': function(cm) {
+                        cm.indentSelection('subtract');
+                    },
+                    'Ctrl-Enter': function() { runCode(); },
+                    'Cmd-Enter': function() { runCode(); },
+                    'Ctrl-S': function() { formatCode(); return false; },
+                    'Cmd-S': function() { formatCode(); return false; }
+                }
+            });
+
+            editor.setSize('100%', '100%');
+            editor.on('change', function() {
+                currentCode[currentLanguage] = editor.getValue();
+            });
+
+            editorInitialized = true;
+            currentCode.python = getDefaultCode('python');
+            currentCode.go = getDefaultCode('go');
+
+            // Refresh after a short delay to ensure proper rendering
+            setTimeout(function() {
+                if (editor) editor.refresh();
+            }, 100);
+
+        } catch (e) {
+            console.error('Failed to initialize CodeMirror:', e);
+            useFallbackEditor();
+        }
     }
-    showTab('code');
-}
 
-function filterTree(query) {
-    const tree = document.getElementById('problem-tree');
-    const items = tree.querySelectorAll('.tree-item');
-    const folders = tree.querySelectorAll('.tree-folder');
-    query = query.toLowerCase();
-    items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query) ? '' : 'none';
-    });
-    folders.forEach(folder => {
-        const hasVisible = folder.querySelector('.tree-item:not([style*="display: none"])');
-        folder.style.display = hasVisible ? '' : 'none';
-    });
-}
+    // Fallback to textarea if CodeMirror fails
+    function useFallbackEditor() {
+        const wrapper = document.getElementById('code-editor-wrapper');
+        const fallback = document.getElementById('code-editor-fallback');
+        if (wrapper) wrapper.style.display = 'none';
+        if (fallback) {
+            fallback.style.display = 'block';
+            fallback.value = getDefaultCode('python');
+            fallback.style.width = '100%';
+            fallback.style.height = '100%';
+            fallback.style.fontFamily = 'monospace';
+            fallback.style.fontSize = '14px';
+            fallback.style.padding = '1rem';
+            fallback.style.border = 'none';
+            fallback.style.resize = 'none';
+            fallback.style.backgroundColor = '#212121';
+            fallback.style.color = '#eee';
+        }
+        currentCode.python = getDefaultCode('python');
+        currentCode.go = getDefaultCode('go');
+        editorInitialized = true;
+    }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
+    // Get code from editor (works with both CodeMirror and fallback)
+    function getCode() {
+        if (editor) {
+            return editor.getValue();
+        }
+        const fallback = document.getElementById('code-editor-fallback');
+        return fallback ? fallback.value : '';
+    }
+
+    // Set code in editor
+    function setCode(code) {
+        if (editor) {
+            editor.setValue(code);
+        } else {
+            const fallback = document.getElementById('code-editor-fallback');
+            if (fallback) fallback.value = code;
+        }
+    }
+
+    // Format code
+    window.formatCode = function() {
+        if (isRunning) return;
+
+        const code = getCode();
+        let formatted = code;
+
+        if (currentLanguage === 'python') {
+            formatted = formatPython(code);
+        } else if (currentLanguage === 'go') {
+            formatted = formatGo(code);
+        }
+
+        setCode(formatted);
+    };
+
+    function formatPython(code) {
+        const lines = code.split('\n');
+        let formatted = [];
+        let indentLevel = 0;
+        const indentSize = 4;
+
+        for (let line of lines) {
+            let trimmed = line.trim();
+
+            if (trimmed.startsWith('elif ') || trimmed.startsWith('else:') ||
+                trimmed.startsWith('except') || trimmed.startsWith('finally:')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+
+            if (trimmed) {
+                formatted.push(' '.repeat(indentLevel * indentSize) + trimmed);
+            } else {
+                formatted.push('');
+            }
+
+            if (trimmed.endsWith(':') && !trimmed.startsWith('#')) {
+                indentLevel++;
+            }
+        }
+
+        return formatted.join('\n');
+    }
+
+    function formatGo(code) {
+        const lines = code.split('\n');
+        let formatted = [];
+        let indentLevel = 0;
+
+        for (let line of lines) {
+            let trimmed = line.trim();
+
+            if (trimmed.startsWith('}') || trimmed.startsWith(')')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+
+            if (trimmed) {
+                formatted.push('\t'.repeat(indentLevel) + trimmed);
+            } else {
+                formatted.push('');
+            }
+
+            if (trimmed.endsWith('{') || trimmed.endsWith('(')) {
+                indentLevel++;
+            }
+        }
+
+        return formatted.join('\n');
+    }
+
+    // WebSocket connection
+    function connectWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(protocol + '//' + window.location.host + '/ws/execute');
+
+        ws.onopen = function() {
+            console.log('WebSocket connected');
+            const savedState = loadState();
+            if (savedState && savedState.id && savedState.state === 'running') {
+                reconnectToExecution(savedState.id);
+            }
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            handleExecutionUpdate(data);
+        };
+
+        ws.onclose = function() {
+            console.log('WebSocket disconnected, reconnecting...');
+            setTimeout(connectWebSocket, 2000);
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+    }
+
+    function handleExecutionUpdate(data) {
+        const outputContainer = document.getElementById('output-container');
+        if (!outputContainer) return;
+
+        switch (data.type) {
+            case 'started':
+                currentExecutionId = data.id;
+                setRunningState(true);
+                saveState({ id: data.id, state: 'running' });
+                outputContainer.innerHTML = renderLoading(data.id);
+                break;
+
+            case 'update':
+                if (data.state === 'running') {
+                    outputContainer.innerHTML = renderLoading(data.id);
+                } else {
+                    setRunningState(false);
+                    outputContainer.innerHTML = renderOutput(data);
+                    saveState({ id: data.id, state: data.state });
+                }
+                break;
+
+            case 'stopped':
+                setRunningState(false);
+                outputContainer.innerHTML = renderOutput({
+                    state: 'stopped',
+                    error: 'Execution stopped by user'
+                });
+                clearState();
+                break;
+
+            case 'error':
+                setRunningState(false);
+                outputContainer.innerHTML = renderOutput({
+                    state: 'error',
+                    error: data.error
+                });
+                clearState();
+                break;
+        }
+    }
+
+    function renderLoading(id) {
+        return '<div class="output-loading">' +
+            '<div class="output-header">' +
+            '<span class="loading-spinner"></span>' +
+            '<span class="status-text">Running...</span>' +
+            '</div>' +
+            '<div class="loading-info">' +
+            '<p>Execution ID: ' + id + '</p>' +
+            '<p>You can close this tab and come back - execution state is preserved.</p>' +
+            '</div></div>';
+    }
+
+    function renderOutput(data) {
+        const isError = data.state === 'error' || data.state === 'stopped' || data.error;
+        const statusIcon = isError ? '✗' : '✓';
+        const statusText = isError ? 'Error' : 'Success';
+        const statusClass = isError ? 'output-error' : 'output-success';
+
+        let output = data.output || '';
+        let error = data.error || '';
+        let duration = data.duration || 0;
+
+        let html = '<div class="output-result ' + (isError ? 'has-error' : '') + '">' +
+            '<div class="' + statusClass + '">' +
+            '<div class="output-header">' +
+            '<span class="status-icon">' + statusIcon + '</span>' +
+            '<span class="status-text">' + statusText + '</span>';
+
+        if (duration) {
+            html += '<span class="duration">' + duration + 'ms</span>';
+        }
+
+        html += '</div>';
+
+        if (error) {
+            html += '<pre class="error-output">' + escapeHtml(error) + '</pre>';
+        }
+        if (output) {
+            html += '<pre class="success-output">' + escapeHtml(output) + '</pre>';
+        } else if (!error) {
+            html += '<pre class="success-output">(no output)</pre>';
+        }
+
+        html += '</div></div>';
+        return html;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function setRunningState(running) {
+        isRunning = running;
+        const runBtn = document.getElementById('run-btn');
+        const stopBtn = document.getElementById('stop-btn');
+
+        if (running) {
+            if (runBtn) {
+                runBtn.disabled = true;
+                runBtn.classList.add('disabled');
+            }
+            if (stopBtn) stopBtn.classList.remove('hidden');
+            if (editor) editor.setOption('readOnly', true);
+        } else {
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.classList.remove('disabled');
+            }
+            if (stopBtn) stopBtn.classList.add('hidden');
+            if (editor) editor.setOption('readOnly', false);
+            currentExecutionId = null;
+        }
+    }
+
+    window.runCode = function() {
+        if (isRunning) return;
+
+        const code = getCode();
+        currentCode[currentLanguage] = code;
+
+        if (!code.trim()) {
+            document.getElementById('output-container').innerHTML = renderOutput({
+                state: 'error',
+                error: 'No code provided'
+            });
+            showTab('output');
+            return;
+        }
+
+        showTab('output');
+        document.getElementById('output-container').innerHTML = '<div class="loading">Connecting...</div>';
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                action: 'execute',
+                code: code,
+                language: currentLanguage
+            }));
+        } else {
+            htmx.ajax('POST', '/htmx/execute', {
+                target: '#output-container',
+                swap: 'innerHTML',
+                values: { code: code, language: currentLanguage }
+            });
+        }
+    };
+
+    window.stopExecution = function() {
+        if (!currentExecutionId) return;
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                action: 'stop',
+                id: currentExecutionId
+            }));
+        }
+    };
+
+    function reconnectToExecution(id) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            setRunningState(true);
+            showTab('output');
+            document.getElementById('output-container').innerHTML = renderLoading(id);
+            currentExecutionId = id;
+
+            ws.send(JSON.stringify({
+                action: 'reconnect',
+                id: id
+            }));
+        }
+    }
+
+    function saveState(state) {
+        try {
+            localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            const state = localStorage.getItem(STATE_KEY);
+            return state ? JSON.parse(state) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function clearState() {
+        try {
+            localStorage.removeItem(STATE_KEY);
+        } catch (e) {}
+    }
+
+    window.showTab = function(tabName) {
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+
+        var tabContent = document.getElementById(tabName + '-tab');
+        if (tabContent) tabContent.classList.add('active');
+
+        document.querySelectorAll('.tab').forEach(function(t) {
+            if (t.getAttribute('onclick') && t.getAttribute('onclick').indexOf(tabName) !== -1) {
+                t.classList.add('active');
+            }
+        });
+
+        if (tabName === 'code' && editor) {
+            setTimeout(function() { editor.refresh(); }, 10);
+        }
+    };
+
+    window.setLanguage = function(lang) {
+        if (isRunning) return;
+
+        currentCode[currentLanguage] = getCode();
+        currentLanguage = lang;
+
+        document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+        var langBtn = document.querySelector('.lang-btn[data-lang="' + lang + '"]');
+        if (langBtn) langBtn.classList.add('active');
+
+        if (editor) {
+            var mode = lang === 'go' ? 'text/x-go' : 'python';
+            editor.setOption('mode', mode);
+        }
+
+        setCode(currentCode[lang] || originalCode[lang] || getDefaultCode(lang));
+    };
+
+    window.resetCode = function() {
+        if (isRunning) return;
+        var code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
+        setCode(code);
+        currentCode[currentLanguage] = code;
+    };
+
+    window.loadProblem = function(path) {
+        htmx.ajax('GET', '/htmx/problem-content/' + path, {
+            target: '#problem-description',
+            swap: 'innerHTML'
+        }).then(function() {
+            showTab('description');
+        });
+    };
+
+    window.loadProblemCode = function(pythonCode, goCode) {
+        if (isRunning) return;
+        originalCode.python = pythonCode || getDefaultCode('python');
+        originalCode.go = goCode || getDefaultCode('go');
+        currentCode.python = originalCode.python;
+        currentCode.go = originalCode.go;
+
+        setCode(currentCode[currentLanguage]);
+        showTab('code');
+    };
+
+    window.filterTree = function(query) {
+        var tree = document.getElementById('problem-tree');
+        if (!tree) return;
+
+        var items = tree.querySelectorAll('.tree-item');
+        var folders = tree.querySelectorAll('.tree-folder');
+        query = query.toLowerCase();
+
+        items.forEach(function(item) {
+            var text = item.textContent.toLowerCase();
+            item.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+        });
+
+        folders.forEach(function(folder) {
+            var hasVisible = folder.querySelector('.tree-item:not([style*="display: none"])');
+            folder.style.display = hasVisible ? '' : 'none';
+        });
+    };
+
+    // Initialize immediately
     initEditor();
     connectWebSocket();
 
-    // Check for saved state on page load
-    const savedState = loadState();
-    if (savedState && savedState.state === 'running') {
-        showTab('output');
-        document.getElementById('output-container').innerHTML = '<div class="loading">Reconnecting...</div>';
+    // Also try on DOMContentLoaded in case scripts loaded late
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!editorInitialized) initEditor();
+        });
     }
-});
+
+    // Handle HTMX page swaps
+    document.body.addEventListener('htmx:afterSettle', function() {
+        if (!editorInitialized) initEditor();
+        if (editor) editor.refresh();
+    });
+})();
 </script>
