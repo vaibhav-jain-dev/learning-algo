@@ -15,7 +15,13 @@ from flask_cors import CORS
 import markdown
 
 app = Flask(__name__, static_folder='/app/frontend', static_url_path='')
-CORS(app)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 PROBLEMS_DIR = Path('/app/problems')
 EXECUTION_TIMEOUT = 10  # seconds
