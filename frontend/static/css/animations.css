@@ -1,0 +1,1120 @@
+/*
+ * Algorithm Visualization Animations
+ * Provides intuitive visual learning through CSS animations
+ */
+
+/* ===========================================
+   CSS Custom Properties for Animations
+   =========================================== */
+:root {
+  --anim-primary: #4f46e5;
+  --anim-secondary: #10b981;
+  --anim-accent: #f59e0b;
+  --anim-danger: #ef4444;
+  --anim-highlight: #fef3c7;
+  --anim-duration-fast: 0.3s;
+  --anim-duration-normal: 0.6s;
+  --anim-duration-slow: 1.2s;
+  --anim-duration-step: 1.5s;
+}
+
+/* ===========================================
+   Array Visualization
+   =========================================== */
+.array-viz {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+  min-height: 200px;
+  overflow-x: auto;
+}
+
+.array-viz .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 8px 12px;
+  background: var(--anim-primary);
+  color: white;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: all var(--anim-duration-normal) ease;
+  position: relative;
+}
+
+.array-viz .cell.highlight {
+  background: var(--anim-accent);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+.array-viz .cell.comparing {
+  background: var(--anim-secondary);
+  animation: pulse 0.5s ease infinite;
+}
+
+.array-viz .cell.sorted {
+  background: var(--anim-secondary);
+}
+
+.array-viz .cell.swapping {
+  animation: swap-bounce 0.5s ease;
+}
+
+.array-viz .cell.pointer-left::before {
+  content: 'L';
+  position: absolute;
+  bottom: -25px;
+  font-size: 12px;
+  color: #60a5fa;
+}
+
+.array-viz .cell.pointer-right::before {
+  content: 'R';
+  position: absolute;
+  bottom: -25px;
+  font-size: 12px;
+  color: #f87171;
+}
+
+/* Bar chart style for sorting visualization */
+.array-viz.bars .cell {
+  width: 30px;
+  min-width: 30px;
+  padding: 0;
+  transition: height var(--anim-duration-normal) ease;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes swap-bounce {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(-20px); }
+  75% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+/* ===========================================
+   Linked List Visualization
+   =========================================== */
+.linkedlist-viz {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 30px;
+  background: #1e293b;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.linkedlist-viz .node {
+  display: flex;
+  align-items: center;
+  animation: fadeSlideIn 0.5s ease forwards;
+}
+
+.linkedlist-viz .node-box {
+  display: flex;
+  border: 2px solid var(--anim-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.linkedlist-viz .node-value {
+  padding: 12px 16px;
+  background: var(--anim-primary);
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.linkedlist-viz .node-next {
+  padding: 12px 8px;
+  background: #374151;
+  color: #9ca3af;
+  font-size: 12px;
+  border-left: 2px solid var(--anim-primary);
+}
+
+.linkedlist-viz .arrow {
+  width: 40px;
+  height: 2px;
+  background: var(--anim-secondary);
+  position: relative;
+}
+
+.linkedlist-viz .arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -4px;
+  border: 5px solid transparent;
+  border-left-color: var(--anim-secondary);
+}
+
+.linkedlist-viz .node.highlight .node-box {
+  border-color: var(--anim-accent);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+.linkedlist-viz .node.highlight .node-value {
+  background: var(--anim-accent);
+}
+
+.linkedlist-viz .null-ptr {
+  padding: 12px 16px;
+  color: #ef4444;
+  font-family: monospace;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===========================================
+   Tree Visualization
+   =========================================== */
+.tree-viz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.tree-viz .tree-level {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.tree-viz .tree-node {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--anim-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: monospace;
+  position: relative;
+  transition: all var(--anim-duration-normal) ease;
+}
+
+.tree-viz .tree-node.visiting {
+  background: var(--anim-accent);
+  animation: tree-pulse 0.8s ease infinite;
+}
+
+.tree-viz .tree-node.visited {
+  background: var(--anim-secondary);
+}
+
+.tree-viz .tree-node::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  width: 2px;
+  height: 25px;
+  background: #4b5563;
+}
+
+.tree-viz .tree-level:first-child .tree-node::before {
+  display: none;
+}
+
+@keyframes tree-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(245, 158, 11, 0);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+  }
+}
+
+/* ===========================================
+   Hash Table Visualization
+   =========================================== */
+.hashtable-viz {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.hashtable-viz .bucket {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hashtable-viz .bucket-index {
+  width: 40px;
+  padding: 8px;
+  background: #374151;
+  color: #9ca3af;
+  text-align: center;
+  font-family: monospace;
+  border-radius: 4px;
+}
+
+.hashtable-viz .bucket-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-height: 40px;
+  padding: 4px;
+  background: #0f172a;
+  border-radius: 4px;
+}
+
+.hashtable-viz .entry {
+  padding: 8px 12px;
+  background: var(--anim-primary);
+  color: white;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+.hashtable-viz .entry.collision {
+  background: var(--anim-accent);
+}
+
+.hashtable-viz .entry.highlight {
+  animation: hash-highlight 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hash-highlight {
+  0%, 100% { box-shadow: 0 0 0 rgba(245, 158, 11, 0); }
+  50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.8); }
+}
+
+/* ===========================================
+   Stack/Queue Visualization
+   =========================================== */
+.stack-viz {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+.stack-viz .stack-item {
+  padding: 12px 40px;
+  background: var(--anim-primary);
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  border-radius: 4px;
+  animation: stack-push 0.3s ease;
+}
+
+.stack-viz .stack-item.popping {
+  animation: stack-pop 0.3s ease forwards;
+}
+
+.stack-viz .stack-item:last-child {
+  background: var(--anim-accent);
+}
+
+.stack-viz .stack-base {
+  width: 150px;
+  height: 4px;
+  background: #4b5563;
+  border-radius: 2px;
+}
+
+@keyframes stack-push {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stack-pop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.queue-viz {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.queue-viz .queue-item {
+  padding: 12px 20px;
+  background: var(--anim-primary);
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.queue-viz .queue-item:first-child {
+  background: var(--anim-danger);
+}
+
+.queue-viz .queue-item:last-child {
+  background: var(--anim-secondary);
+}
+
+.queue-viz .queue-label {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0 8px;
+}
+
+/* ===========================================
+   Step-by-Step Animation Container
+   =========================================== */
+.step-animation {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.step-animation .step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #374151;
+}
+
+.step-animation .step-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.step-animation .step-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.step-animation .step-btn {
+  padding: 8px 16px;
+  background: var(--anim-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.step-animation .step-btn:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+}
+
+.step-animation .step-btn:disabled {
+  background: #4b5563;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.step-animation .step-btn.play {
+  background: var(--anim-secondary);
+}
+
+.step-animation .step-btn.play:hover {
+  background: #059669;
+}
+
+.step-animation .step-content {
+  min-height: 250px;
+}
+
+.step-animation .step-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: #0f172a;
+  border-radius: 8px;
+  border-left: 4px solid var(--anim-primary);
+}
+
+.step-animation .step-number {
+  color: var(--anim-accent);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.step-animation .step-description {
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.step-animation .step-code {
+  margin-top: 10px;
+  padding: 10px;
+  background: #1e293b;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #a5f3fc;
+  font-size: 14px;
+}
+
+/* Progress bar */
+.step-animation .step-progress {
+  display: flex;
+  gap: 4px;
+  margin-top: 15px;
+}
+
+.step-animation .step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #374151;
+  transition: all 0.3s ease;
+}
+
+.step-animation .step-dot.active {
+  background: var(--anim-primary);
+  transform: scale(1.2);
+}
+
+.step-animation .step-dot.completed {
+  background: var(--anim-secondary);
+}
+
+/* ===========================================
+   Two Pointers Visualization
+   =========================================== */
+.two-pointers-viz {
+  position: relative;
+  padding: 40px 20px 60px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.two-pointers-viz .array-container {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.two-pointers-viz .pointer {
+  position: absolute;
+  bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.5s ease;
+}
+
+.two-pointers-viz .pointer-arrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 12px solid;
+}
+
+.two-pointers-viz .pointer-label {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.two-pointers-viz .pointer.left .pointer-arrow {
+  border-bottom-color: #60a5fa;
+}
+
+.two-pointers-viz .pointer.left .pointer-label {
+  color: #60a5fa;
+}
+
+.two-pointers-viz .pointer.right .pointer-arrow {
+  border-bottom-color: #f87171;
+}
+
+.two-pointers-viz .pointer.right .pointer-label {
+  color: #f87171;
+}
+
+.two-pointers-viz .pointer.mid .pointer-arrow {
+  border-bottom-color: var(--anim-accent);
+}
+
+.two-pointers-viz .pointer.mid .pointer-label {
+  color: var(--anim-accent);
+}
+
+/* ===========================================
+   Sliding Window Visualization
+   =========================================== */
+.sliding-window-viz {
+  position: relative;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.sliding-window-viz .window-frame {
+  position: absolute;
+  top: 15px;
+  height: calc(100% - 50px);
+  border: 3px solid var(--anim-accent);
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.1);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+.sliding-window-viz .window-label {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--anim-accent);
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* ===========================================
+   DP Table Visualization
+   =========================================== */
+.dp-table-viz {
+  overflow-x: auto;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.dp-table-viz table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  margin: 0 auto;
+}
+
+.dp-table-viz th,
+.dp-table-viz td {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  font-family: monospace;
+  border-radius: 4px;
+}
+
+.dp-table-viz th {
+  background: #374151;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.dp-table-viz td {
+  background: #0f172a;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.dp-table-viz td.computing {
+  background: var(--anim-accent);
+  animation: dp-compute 0.5s ease;
+}
+
+.dp-table-viz td.computed {
+  background: var(--anim-primary);
+}
+
+.dp-table-viz td.path {
+  background: var(--anim-secondary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+@keyframes dp-compute {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); background: var(--anim-accent); }
+  100% { transform: scale(1); }
+}
+
+/* ===========================================
+   Graph Visualization
+   =========================================== */
+.graph-viz {
+  position: relative;
+  min-height: 300px;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.graph-viz .graph-node {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--anim-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.graph-viz .graph-node:hover {
+  transform: scale(1.1);
+}
+
+.graph-viz .graph-node.visited {
+  background: var(--anim-secondary);
+}
+
+.graph-viz .graph-node.current {
+  background: var(--anim-accent);
+  animation: graph-pulse 0.8s ease infinite;
+}
+
+.graph-viz .graph-node.in-queue {
+  background: #8b5cf6;
+}
+
+.graph-viz .graph-edge {
+  position: absolute;
+  height: 2px;
+  background: #4b5563;
+  transform-origin: left center;
+  z-index: 1;
+}
+
+.graph-viz .graph-edge.visited {
+  background: var(--anim-secondary);
+  height: 3px;
+}
+
+.graph-viz .graph-edge.directed::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -4px;
+  border: 5px solid transparent;
+  border-left-color: #4b5563;
+}
+
+@keyframes graph-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+}
+
+/* ===========================================
+   Cache Visualization (LRU/LFU)
+   =========================================== */
+.cache-viz {
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.cache-viz .cache-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.cache-viz .cache-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.cache-viz .stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cache-viz .stat-value {
+  color: var(--anim-secondary);
+  font-weight: bold;
+}
+
+.cache-viz .cache-content {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.cache-viz .cache-label {
+  padding: 8px 12px;
+  background: #374151;
+  color: #9ca3af;
+  font-size: 12px;
+  border-radius: 4px 0 0 4px;
+}
+
+.cache-viz .cache-items {
+  display: flex;
+  gap: 2px;
+  padding: 8px;
+  background: #0f172a;
+  border-radius: 0 4px 4px 0;
+  min-width: 300px;
+}
+
+.cache-viz .cache-item {
+  padding: 8px 12px;
+  background: var(--anim-primary);
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.cache-viz .cache-item.new {
+  animation: cache-add 0.3s ease;
+}
+
+.cache-viz .cache-item.accessed {
+  background: var(--anim-secondary);
+  animation: cache-access 0.3s ease;
+}
+
+.cache-viz .cache-item.evicting {
+  background: var(--anim-danger);
+  animation: cache-evict 0.3s ease forwards;
+}
+
+.cache-viz .cache-item:first-child::before {
+  content: 'MRU →';
+  font-size: 10px;
+  color: #9ca3af;
+  position: absolute;
+  top: -18px;
+}
+
+.cache-viz .cache-item:last-child::after {
+  content: '← LRU';
+  font-size: 10px;
+  color: #9ca3af;
+  position: absolute;
+  top: -18px;
+}
+
+@keyframes cache-add {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cache-access {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes cache-evict {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+/* ===========================================
+   Water Trapping Visualization
+   =========================================== */
+.water-trap-viz {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  padding: 20px;
+  padding-bottom: 40px;
+  background: #1e293b;
+  border-radius: 8px;
+  min-height: 250px;
+}
+
+.water-trap-viz .bar {
+  width: 40px;
+  background: #6b7280;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.water-trap-viz .bar-value {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #9ca3af;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.water-trap-viz .bar.highlight {
+  background: var(--anim-accent);
+}
+
+.water-trap-viz .water {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(96, 165, 250, 0.6);
+  border-radius: 4px 4px 0 0;
+  animation: water-fill 0.5s ease;
+}
+
+@keyframes water-fill {
+  from { height: 0; }
+}
+
+/* ===========================================
+   Intuitive Metaphor Cards
+   =========================================== */
+.metaphor-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  border-left: 4px solid var(--anim-primary);
+}
+
+.metaphor-card .metaphor-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.metaphor-card .metaphor-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.metaphor-card .metaphor-description {
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.metaphor-card .metaphor-mapping {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #374151;
+}
+
+.metaphor-card .mapping-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+
+.metaphor-card .mapping-item .real {
+  color: var(--anim-accent);
+  font-weight: 500;
+}
+
+.metaphor-card .mapping-item .arrow {
+  color: #6b7280;
+}
+
+.metaphor-card .mapping-item .concept {
+  color: var(--anim-secondary);
+  font-weight: 500;
+}
+
+/* ===========================================
+   Think Aloud Section
+   =========================================== */
+.think-aloud {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.think-aloud .thought-bubble {
+  position: relative;
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid #374151;
+}
+
+.think-aloud .thought-bubble::before {
+  content: '💭';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  font-size: 20px;
+}
+
+.think-aloud .thought-bubble .thought-text {
+  color: #e2e8f0;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.think-aloud .realization {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+  border-left: 3px solid var(--anim-secondary);
+  padding: 16px;
+  margin-top: 12px;
+  border-radius: 0 8px 8px 0;
+}
+
+.think-aloud .realization::before {
+  content: '💡';
+  margin-right: 8px;
+}
+
+.think-aloud .realization .insight {
+  color: var(--anim-secondary);
+  font-weight: 600;
+}
+
+/* ===========================================
+   Complexity Animation
+   =========================================== */
+.complexity-viz {
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.complexity-viz .complexity-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  height: 200px;
+  padding: 20px;
+}
+
+.complexity-viz .complexity-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.complexity-viz .bar-fill {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 1s ease;
+}
+
+.complexity-viz .bar-fill.o1 {
+  background: var(--anim-secondary);
+  height: 20px;
+}
+
+.complexity-viz .bar-fill.ologn {
+  background: #22c55e;
+  height: 40px;
+}
+
+.complexity-viz .bar-fill.on {
+  background: var(--anim-accent);
+  height: 80px;
+}
+
+.complexity-viz .bar-fill.onlogn {
+  background: #f97316;
+  height: 120px;
+}
+
+.complexity-viz .bar-fill.on2 {
+  background: var(--anim-danger);
+  height: 180px;
+}
+
+.complexity-viz .bar-label {
+  color: #9ca3af;
+  font-family: monospace;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* ===========================================
+   Responsive Design
+   =========================================== */
+@media (max-width: 768px) {
+  .array-viz,
+  .linkedlist-viz,
+  .queue-viz {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .step-animation .step-controls {
+    flex-wrap: wrap;
+  }
+
+  .step-animation .step-btn {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .dp-table-viz th,
+  .dp-table-viz td {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+}
