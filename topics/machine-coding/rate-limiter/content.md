@@ -4,317 +4,387 @@
 
 Design a rate limiter that controls the rate of requests a client can make to an API. Support configurable limits like "100 requests per minute per user".
 
-**Difficulty:** L2 - Intermediate (Requires understanding of distributed systems)
-**Common In:** System Design Interviews, Machine Coding Rounds
-**Companies:** Stripe, Cloudflare, AWS, Google, Uber, Netflix
-
----
-
-## Intuitive Understanding
-
-<div class="metaphor-card">
-  <div class="metaphor-icon">🚰</div>
-  <div class="metaphor-title">Think of a Water Tank with a Tap</div>
-  <div class="metaphor-description">
-    Imagine a water tank (Token Bucket) with:
-    - A steady drip filling it (tokens added at fixed rate)
-    - A maximum capacity (bucket can't overflow)
-    - People taking cups of water (requests consuming tokens)
-
-    If someone tries to take water when the tank is empty, they must wait.
-    If they wait long enough, more water drips in. The tank smooths out bursty demand.
-  </div>
-  <div class="metaphor-mapping">
-    <div class="mapping-item">
-      <span class="real">Water in tank</span>
-      <span class="arrow">→</span>
-      <span class="concept">Available tokens</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Drip rate</span>
-      <span class="arrow">→</span>
-      <span class="concept">Refill rate (tokens/sec)</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Tank capacity</span>
-      <span class="arrow">→</span>
-      <span class="concept">Bucket capacity (burst limit)</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Taking a cup</span>
-      <span class="arrow">→</span>
-      <span class="concept">Consuming a token</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Tank empty - must wait</span>
-      <span class="arrow">→</span>
-      <span class="concept">Rate limited - 429 response</span>
-    </div>
-  </div>
-</div>
-
-### The 20-Year Insight
-
-**Novice thinks:** "Just count requests and reject if over limit"
-
-**Expert knows:** "Rate limiting is about **fairness, predictability, and graceful degradation**. The algorithm choice affects user experience. Token bucket allows bursts for interactive users. Sliding window prevents gaming at boundaries. In distributed systems, you're trading off accuracy vs latency vs consistency."
-
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  The Real Challenges of Production Rate Limiting                   │
-│                                                                    │
-│  1. DISTRIBUTED STATE                                              │
-│     └─ How do 50 servers agree on a user's request count?          │
-│                                                                    │
-│  2. CLOCK SYNCHRONIZATION                                          │
-│     └─ Different servers have slightly different clocks            │
-│                                                                    │
-│  3. RACE CONDITIONS                                                │
-│     └─ 1000 requests hit different servers simultaneously          │
-│                                                                    │
-│  4. PERFORMANCE                                                    │
-│     └─ Rate limiter can't be slower than the request itself        │
-│                                                                    │
-│  5. FAILURE MODES                                                  │
-│     └─ What happens when Redis is down?                            │
-└────────────────────────────────────────────────────────────────────┘
-```
-
----
-
 ## Requirements
 
-### Functional Requirements
-- Limit requests per time window (e.g., 100 req/min)
-- Support per-user, per-IP, per-API-key limits
-- Return remaining quota and reset time
-- Handle concurrent requests correctly
-
-### Non-Functional Requirements
-- Low latency (< 1ms overhead)
-- High availability (can't block all requests if limiter fails)
-- Accurate (minimize over/under counting)
-- Scalable (millions of users)
+- Limit requests per time window
+- Support per-user/per-IP limits
+- Return remaining quota
+- Handle concurrent requests
 
 ---
 
-## Algorithms Deep Dive
+## Solution Breakdown
 
-### 1. Token Bucket
+### Part 1: Why Do We Need Rate Limiting?
 
-**How it works:**
-- Bucket holds tokens up to a maximum capacity
-- Tokens added at a fixed rate (e.g., 10/second)
-- Each request consumes one or more tokens
-- If not enough tokens, request is rejected
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
-```
-Time 0:     [████████████] 10 tokens (full)
-Request 1:  [███████████-] 9 tokens
-Request 2:  [██████████--] 8 tokens
-...
-Request 10: [------------] 0 tokens
-Request 11: REJECTED (no tokens)
-After 1s:   [██████████--] 10 new tokens added
-```
+**Protection Against:**
+- **DoS attacks** - Malicious users flooding your API
+- **Misbehaving clients** - Buggy code in infinite loops
+- **Resource exhaustion** - Preventing database/server overload
+- **Cost control** - Limiting expensive operations
 
-**Pros:**
-- Allows bursts (great for interactive users)
-- Smooth rate limiting
-- Memory efficient (just store count + timestamp)
+**Business Use Cases:**
+- API monetization (free tier: 100 req/day, paid: unlimited)
+- Fair usage policies
+- Protecting downstream services
 
-**Cons:**
-- Burst can overwhelm downstream services
-- Complex to implement distributed version
+</div>
 
-**Best for:** APIs where occasional bursts are acceptable
+### Part 2: The Core Algorithms Compared
 
-### 2. Leaky Bucket
-
-**How it works:**
-- Requests enter a queue (bucket)
-- Requests "leak" out at a fixed rate
-- If queue is full, requests are rejected
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
 ```
-Queue: [R1][R2][R3][R4][  ][  ] capacity=6
-
-Processing: R1 leaks out every 100ms (10 req/s)
-            ↓
-            [R2][R3][R4][  ][  ][  ]
-
-New request arrives:
-            [R2][R3][R4][R5][  ][  ]
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    RATE LIMITING ALGORITHMS                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  1. TOKEN BUCKET                                                        │
+│     ┌─────────┐                                                         │
+│     │ ● ● ● ● │ ← Bucket (capacity = 4)                                │
+│     │ ● ●     │                                                         │
+│     └────┬────┘                                                         │
+│          │ Tokens added at fixed rate (e.g., 1/sec)                     │
+│          ▼                                                              │
+│     Request consumes 1 token. No token = rejected                       │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  2. SLIDING WINDOW                                                      │
+│     ◄────────── 60 seconds ──────────►                                 │
+│     ┌─────────────────────────────────┐                                │
+│     │  ▪ ▪   ▪ ▪ ▪    ▪ ▪  ▪         │ ← Count requests in window    │
+│     └─────────────────────────────────┘                                │
+│              Window slides with time →                                  │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  3. FIXED WINDOW                                                        │
+│     │◄── Window 1 ──►│◄── Window 2 ──►│                                │
+│     ┌────────────────┬────────────────┐                                │
+│     │ ▪ ▪ ▪ ▪ ▪ ▪ ▪  │  ▪ ▪ ▪        │                                │
+│     └────────────────┴────────────────┘                                │
+│        Count = 7         Count = 3                                      │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  4. LEAKY BUCKET                                                        │
+│     ┌─────────┐                                                         │
+│     │ ▼ ▼ ▼ ▼ │ ← Requests enter bucket                                │
+│     │ ● ● ● ● │                                                         │
+│     └────┬────┘                                                         │
+│          │ ← Processed at fixed rate (leak)                            │
+│          ▼                                                              │
+│     Overflow = rejected                                                 │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Pros:**
-- Constant output rate (smooth traffic)
-- Protects downstream services
+</div>
 
-**Cons:**
-- Doesn't allow bursts
-- Requests may wait in queue
+### Part 3: Token Bucket Deep Dive
 
-**Best for:** When downstream service needs constant traffic rate
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
-### 3. Fixed Window Counter
+**Why Token Bucket is Often Preferred:**
 
-**How it works:**
-- Divide time into fixed windows (e.g., 1-minute windows)
-- Count requests in current window
-- Reset count at window boundary
+1. **Allows Bursts**: If bucket is full (say 20 tokens), user can make 20 requests immediately
+2. **Smooth Refill**: Tokens accumulate continuously, not in chunks
+3. **Simple State**: Only need `tokens` and `last_update_time`
+4. **Memory Efficient**: O(1) per client
 
+**The Math:**
 ```
-Window 1 (00:00-00:59): 45/100 requests
-Window 2 (01:00-01:59): 0/100 requests
-Window 3 (02:00-02:59): 78/100 requests
+current_tokens = min(capacity, old_tokens + (time_elapsed × rate))
 ```
 
-**Pros:**
-- Simple to implement
-- Memory efficient (one counter per window)
+**Example**: Rate = 10/sec, Capacity = 20
+- At t=0: 20 tokens (full)
+- User makes 15 requests: 5 tokens left
+- After 1 second: 5 + 10 = 15 tokens
+- After 0.5 seconds: 5 + 5 = 10 tokens
 
-**Cons:**
-- Boundary problem: 100 requests at 00:59, 100 more at 01:00 = 200 in 1 minute
+</div>
 
-**Best for:** Simple use cases, internal services
+### Part 4: Why NOT Fixed Window?
 
-### 4. Sliding Window Log
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
 
-**How it works:**
-- Store timestamp of each request
-- Count requests in last N seconds by filtering timestamps
-- Remove old timestamps
+**The Boundary Problem:**
+
+```
+Limit: 100 requests per minute
+
+Window 1 (00:00 - 01:00)     Window 2 (01:00 - 02:00)
+        ↓                            ↓
+[.....▪▪▪▪▪▪▪▪▪▪] 100 req   [▪▪▪▪▪▪▪▪▪▪.....] 100 req
+       ↑                     ↑
+    At 00:59               At 01:00
+
+Result: 200 requests in 2 seconds! (00:59 to 01:01)
+```
+
+**Solution**: Sliding window uses weighted average of current + previous window
+
+</div>
+
+### Part 5: Sliding Window Counter Explained
+
+<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+**The Weighted Average Trick:**
+
+```
+Window size: 60 seconds
+Limit: 100 requests
+
+Previous window (00:00-01:00): 84 requests
+Current window (01:00-02:00): 36 requests so far
+Current time: 01:15 (25% into current window)
+
+Weighted count = 84 × (1 - 0.25) + 36 × 1.0
+               = 84 × 0.75 + 36
+               = 63 + 36
+               = 99
+
+→ Still under 100, request allowed!
+```
+
+**Why this works**: Approximates how many requests happened in last 60 seconds without storing each timestamp
+
+</div>
+
+---
+
+## Algorithm Comparison
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+
+| Algorithm | Pros | Cons | Best For |
+|-----------|------|------|----------|
+| **Token Bucket** | Allows bursts, simple | Memory per client | API rate limiting |
+| **Leaky Bucket** | Smooth output rate | No burst handling | Network traffic shaping |
+| **Fixed Window** | Very simple | Boundary spike problem | Rough estimates |
+| **Sliding Window** | Accurate, no boundary issues | More computation | Strict rate limiting |
+| **Sliding Log** | Most accurate | O(n) memory per client | When accuracy critical |
+
+</div>
+
+---
+
+## Alternative Approaches
+
+### Alternative 1: Redis-based (Distributed)
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+```lua
+-- Redis Lua script for atomic token bucket
+local key = KEYS[1]
+local rate = tonumber(ARGV[1])
+local capacity = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+local requested = tonumber(ARGV[4])
+
+local data = redis.call('HMGET', key, 'tokens', 'last_update')
+local tokens = tonumber(data[1]) or capacity
+local last_update = tonumber(data[2]) or now
+
+-- Refill tokens
+local elapsed = now - last_update
+tokens = math.min(capacity, tokens + elapsed * rate)
+
+-- Check and consume
+if tokens >= requested then
+    tokens = tokens - requested
+    redis.call('HMSET', key, 'tokens', tokens, 'last_update', now)
+    redis.call('EXPIRE', key, 3600)
+    return {1, tokens}  -- allowed, remaining
+else
+    return {0, tokens}  -- denied, remaining
+end
+```
+
+**Why Lua script?** Atomic execution - no race conditions between read and write
+
+</div>
+
+### Alternative 2: Leaky Bucket (for Traffic Shaping)
 
 ```python
-timestamps = [10:00:01, 10:00:15, 10:00:45, 10:01:02, 10:01:30]
+class LeakyBucket:
+    """Process requests at constant rate - no bursts"""
+    def __init__(self, rate: float, capacity: int):
+        self.rate = rate  # requests per second
+        self.capacity = capacity
+        self.water = 0  # current queue size
+        self.last_leak = time.time()
 
-Current time: 10:01:45
-Window: 1 minute
+    def allow(self) -> bool:
+        self._leak()
+        if self.water < self.capacity:
+            self.water += 1
+            return True
+        return False
 
-Requests in window: [10:00:45, 10:01:02, 10:01:30] = 3 requests
-(10:00:01 and 10:00:15 are outside window)
+    def _leak(self):
+        now = time.time()
+        leaked = (now - self.last_leak) * self.rate
+        self.water = max(0, self.water - leaked)
+        self.last_leak = now
 ```
 
-**Pros:**
-- Most accurate
-- No boundary problem
+### Alternative 3: Sliding Window Log (Most Accurate)
 
-**Cons:**
-- Memory intensive (store all timestamps)
-- Expensive computation
+```python
+class SlidingWindowLog:
+    """Store each request timestamp - most accurate but O(n) space"""
+    def __init__(self, limit: int, window_seconds: int):
+        self.limit = limit
+        self.window = window_seconds
+        self.logs = {}  # key -> list of timestamps
 
-**Best for:** When accuracy is critical, low-volume APIs
+    def allow(self, key: str) -> bool:
+        now = time.time()
+        cutoff = now - self.window
 
-### 5. Sliding Window Counter (Hybrid)
+        # Clean old entries
+        if key in self.logs:
+            self.logs[key] = [t for t in self.logs[key] if t > cutoff]
+        else:
+            self.logs[key] = []
 
-**How it works:**
-- Combine fixed window efficiency with sliding window accuracy
-- Weighted count based on position in current window
-
+        if len(self.logs[key]) < self.limit:
+            self.logs[key].append(now)
+            return True
+        return False
 ```
-Previous window: 42 requests
-Current window: 18 requests
-Current position: 30% into window
 
-Weighted count = 42 * 0.7 + 18 * 1.0 = 29.4 + 18 = 47.4 requests
-```
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
 
-**Pros:**
-- Memory efficient
-- Good accuracy
-- Simple to implement
+**When to use Sliding Log:**
+- When you need exact counts (compliance requirements)
+- Low request volume
+- When memory isn't a concern
 
-**Cons:**
-- Approximation, not exact
+**Avoid when:**
+- High traffic (storing millions of timestamps)
+- Need sub-millisecond performance
 
-**Best for:** Most production use cases (best balance)
+</div>
 
 ---
 
-## Algorithm Comparison Matrix
+## Pros and Cons Analysis
 
-| Algorithm | Accuracy | Memory | Burst Handling | Complexity | Distributed |
-|-----------|----------|--------|----------------|------------|-------------|
-| Token Bucket | Good | O(1) | ✅ Allows | Medium | Hard |
-| Leaky Bucket | Good | O(1) | ❌ Smooths | Medium | Hard |
-| Fixed Window | Fair | O(1) | ⚠️ Edge case | Easy | Easy |
-| Sliding Log | Exact | O(n) | ❌ None | Easy | Medium |
-| Sliding Counter | Good | O(1) | ⚠️ Partial | Medium | Easy |
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
+
+### Token Bucket Pros
+
+- **O(1) time and space** per operation
+- **Allows bursts** - good UX for legitimate users
+- **Simple to implement** - just two variables
+- **Memory efficient** - constant per client
+- **Easy to distribute** - works well with Redis
+
+</div>
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
+
+### Token Bucket Cons
+
+- **Burst can overwhelm** - if all clients burst simultaneously
+- **Memory per client** - need to track each key
+- **Clock sync issues** - in distributed systems
+- **No request queuing** - just accept/reject
+- **Cleanup needed** - stale buckets waste memory
+
+</div>
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| `allow(key)` | O(1) | O(1) |
+| **Total Space** | - | O(n) where n = unique clients |
+
+**Memory per client:**
+- Token Bucket: ~24 bytes (tokens + timestamp + lock)
+- Sliding Window: ~48 bytes (two counters + timestamps)
+- Sliding Log: O(k) where k = requests in window
+
+---
+
+## Common Extensions
+
+1. **Multi-tier limits**: "100/min AND 1000/hour" - chain multiple limiters
+2. **Burst credits**: Allow occasional bursts above limit
+3. **Priority queues**: VIP users get higher limits
+4. **Rate limit headers**: Return `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+5. **Graceful degradation**: Return cached response instead of 429
+
+---
+
+## Interview Tips
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+1. **Start with requirements** - Per-user? Per-IP? Global?
+2. **Explain trade-offs** - Why token bucket over sliding window?
+3. **Discuss distributed case** - How to share state across servers?
+4. **Mention race conditions** - Why Redis Lua scripts?
+5. **HTTP headers** - `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+6. **Status code** - 429 Too Many Requests
+
+**Common Follow-ups:**
+- How to handle clock skew?
+- How to rate limit by API key + IP combined?
+- How to implement tiered rate limits (free vs paid)?
+
+</div>
 
 ---
 
 ## Implementation
 
-### Python - Production-Grade Token Bucket
+### Python - Token Bucket
 
 ```python
 import time
 import threading
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
-from abc import ABC, abstractmethod
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 @dataclass
 class RateLimitResult:
-    """Result of a rate limit check."""
     allowed: bool
     remaining: int
     reset_at: float
-    retry_after: Optional[float] = None
-
-
-class RateLimitStrategy(ABC):
-    """Abstract base for rate limiting algorithms."""
-
-    @abstractmethod
-    def allow(self, key: str, tokens: int = 1) -> RateLimitResult:
-        pass
-
-    @abstractmethod
-    def get_state(self, key: str) -> dict:
-        pass
 
 
 class TokenBucket:
-    """
-    Thread-safe token bucket implementation.
-
-    Allows bursts up to capacity, refills at a steady rate.
-    """
-
     def __init__(self, rate: float, capacity: int):
-        """
-        Args:
-            rate: Tokens added per second
-            capacity: Maximum tokens in bucket
-        """
-        self.rate = rate
+        self.rate = rate  # tokens per second
         self.capacity = capacity
-        self.tokens = float(capacity)
+        self.tokens = capacity
         self.last_update = time.time()
         self.lock = threading.Lock()
 
-    def _refill(self, now: float) -> None:
-        """Add tokens based on elapsed time."""
-        elapsed = now - self.last_update
-        self.tokens = min(self.capacity, self.tokens + elapsed * self.rate)
-        self.last_update = now
-
     def allow(self, tokens: int = 1) -> RateLimitResult:
-        """
-        Attempt to consume tokens.
-
-        Returns:
-            RateLimitResult with allowed status and metadata
-        """
         with self.lock:
             now = time.time()
-            self._refill(now)
+
+            # Refill tokens
+            elapsed = now - self.last_update
+            self.tokens = min(self.capacity, self.tokens + elapsed * self.rate)
+            self.last_update = now
 
             if self.tokens >= tokens:
                 self.tokens -= tokens
@@ -324,336 +394,91 @@ class TokenBucket:
                     reset_at=now + (self.capacity - self.tokens) / self.rate
                 )
 
-            # Calculate when enough tokens will be available
-            tokens_needed = tokens - self.tokens
-            wait_time = tokens_needed / self.rate
-
             return RateLimitResult(
                 allowed=False,
                 remaining=0,
-                reset_at=now + wait_time,
-                retry_after=wait_time
+                reset_at=now + (tokens - self.tokens) / self.rate
             )
 
-    def get_state(self) -> dict:
-        """Return current bucket state for debugging."""
-        with self.lock:
-            now = time.time()
-            self._refill(now)
-            return {
-                "tokens": self.tokens,
-                "capacity": self.capacity,
-                "rate": self.rate,
-            }
-
-
-class SlidingWindowCounter:
-    """
-    Sliding window counter implementation.
-
-    More accurate than fixed window, more efficient than sliding log.
-    """
-
-    def __init__(self, limit: int, window_seconds: int):
-        self.limit = limit
-        self.window_seconds = window_seconds
-        self.prev_count = 0
-        self.curr_count = 0
-        self.curr_window_start = 0
-        self.lock = threading.Lock()
-
-    def allow(self, tokens: int = 1) -> RateLimitResult:
-        with self.lock:
-            now = time.time()
-            current_window = int(now // self.window_seconds)
-
-            # Rotate windows if needed
-            if current_window != self.curr_window_start:
-                if current_window == self.curr_window_start + 1:
-                    self.prev_count = self.curr_count
-                else:
-                    self.prev_count = 0  # Gap in requests
-                self.curr_count = 0
-                self.curr_window_start = current_window
-
-            # Calculate weighted count
-            window_progress = (now % self.window_seconds) / self.window_seconds
-            weighted_count = self.prev_count * (1 - window_progress) + self.curr_count
-
-            reset_at = (current_window + 1) * self.window_seconds
-
-            if weighted_count + tokens > self.limit:
-                retry_after = reset_at - now
-                return RateLimitResult(
-                    allowed=False,
-                    remaining=0,
-                    reset_at=reset_at,
-                    retry_after=retry_after
-                )
-
-            self.curr_count += tokens
-            remaining = max(0, int(self.limit - weighted_count - tokens))
-
-            return RateLimitResult(
-                allowed=True,
-                remaining=remaining,
-                reset_at=reset_at
-            )
-
-    def get_state(self) -> dict:
-        with self.lock:
-            now = time.time()
-            window_progress = (now % self.window_seconds) / self.window_seconds
-            weighted = self.prev_count * (1 - window_progress) + self.curr_count
-            return {
-                "prev_count": self.prev_count,
-                "curr_count": self.curr_count,
-                "weighted_count": weighted,
-                "limit": self.limit,
-            }
-
-
-class LeakyBucket:
-    """
-    Leaky bucket implementation.
-
-    Smooths traffic to a constant rate, queuing excess requests.
-    """
-
-    def __init__(self, rate: float, capacity: int):
-        """
-        Args:
-            rate: Requests processed per second
-            capacity: Maximum queue size
-        """
-        self.rate = rate
-        self.capacity = capacity
-        self.water = 0.0  # Current water level (pending requests)
-        self.last_leak = time.time()
-        self.lock = threading.Lock()
-
-    def _leak(self, now: float) -> None:
-        """Remove water based on elapsed time."""
-        elapsed = now - self.last_leak
-        leaked = elapsed * self.rate
-        self.water = max(0, self.water - leaked)
-        self.last_leak = now
-
-    def allow(self, tokens: int = 1) -> RateLimitResult:
-        with self.lock:
-            now = time.time()
-            self._leak(now)
-
-            if self.water + tokens <= self.capacity:
-                self.water += tokens
-                remaining = int(self.capacity - self.water)
-                leak_time = self.water / self.rate
-                return RateLimitResult(
-                    allowed=True,
-                    remaining=remaining,
-                    reset_at=now + leak_time
-                )
-
-            # Bucket full - calculate when space available
-            overflow = self.water + tokens - self.capacity
-            wait_time = overflow / self.rate
-
-            return RateLimitResult(
-                allowed=False,
-                remaining=0,
-                reset_at=now + wait_time,
-                retry_after=wait_time
-            )
-
-
-# ============================================================
-# RATE LIMITER SERVICE
-# ============================================================
 
 class RateLimiter:
-    """
-    Production-grade rate limiter service.
-
-    Features:
-    - Multiple algorithm support
-    - Per-key limiting
-    - Configurable rules
-    - Metrics collection
-    """
-
-    def __init__(
-        self,
-        algorithm: str = "token_bucket",
-        default_rate: float = 10.0,
-        default_capacity: int = 20,
-        default_window: int = 60,
-        default_limit: int = 100
-    ):
-        self.algorithm = algorithm
-        self.default_rate = default_rate
-        self.default_capacity = default_capacity
-        self.default_window = default_window
-        self.default_limit = default_limit
-
-        self.buckets: Dict[str, RateLimitStrategy] = {}
+    def __init__(self, rate: float, capacity: int):
+        self.rate = rate
+        self.capacity = capacity
+        self.buckets = {}
         self.lock = threading.Lock()
-        self.metrics = {
-            "allowed": 0,
-            "rejected": 0,
-            "by_key": {}
-        }
 
-    def _create_bucket(self, key: str) -> RateLimitStrategy:
-        """Create rate limit bucket for key."""
-        if self.algorithm == "token_bucket":
-            return TokenBucket(self.default_rate, self.default_capacity)
-        elif self.algorithm == "sliding_window":
-            return SlidingWindowCounter(self.default_limit, self.default_window)
-        elif self.algorithm == "leaky_bucket":
-            return LeakyBucket(self.default_rate, self.default_capacity)
-        else:
-            return TokenBucket(self.default_rate, self.default_capacity)
-
-    def _get_bucket(self, key: str) -> RateLimitStrategy:
-        """Get or create bucket for key."""
+    def _get_bucket(self, key: str) -> TokenBucket:
         with self.lock:
             if key not in self.buckets:
-                self.buckets[key] = self._create_bucket(key)
+                self.buckets[key] = TokenBucket(self.rate, self.capacity)
             return self.buckets[key]
 
     def allow(self, key: str, tokens: int = 1) -> RateLimitResult:
-        """
-        Check if request is allowed.
-
-        Args:
-            key: Unique identifier (user ID, IP, API key)
-            tokens: Number of tokens to consume (default 1)
-
-        Returns:
-            RateLimitResult with decision and metadata
-        """
         bucket = self._get_bucket(key)
-        result = bucket.allow(tokens)
-
-        # Update metrics
-        if result.allowed:
-            self.metrics["allowed"] += 1
-        else:
-            self.metrics["rejected"] += 1
-
-        if key not in self.metrics["by_key"]:
-            self.metrics["by_key"][key] = {"allowed": 0, "rejected": 0}
-        self.metrics["by_key"][key]["allowed" if result.allowed else "rejected"] += 1
-
-        return result
-
-    def get_metrics(self) -> dict:
-        """Return limiter metrics."""
-        return dict(self.metrics)
-
-    def cleanup_old_buckets(self, max_idle_seconds: int = 3600) -> int:
-        """Remove buckets that haven't been used recently."""
-        # In production, would check last access time
-        return 0
+        return bucket.allow(tokens)
 
 
-# ============================================================
-# HTTP MIDDLEWARE
-# ============================================================
+# Usage
+limiter = RateLimiter(rate=10, capacity=20)  # 10 req/sec, burst 20
 
-def rate_limit_middleware(limiter: RateLimiter, key_extractor):
-    """
-    Create rate limiting middleware for web frameworks.
-
-    Example:
-        limiter = RateLimiter()
-        middleware = rate_limit_middleware(limiter, lambda req: req.user_id)
-    """
-    def middleware(request):
-        key = key_extractor(request)
-        result = limiter.allow(key)
-
-        # Set rate limit headers
-        headers = {
-            "X-RateLimit-Limit": str(limiter.default_limit),
-            "X-RateLimit-Remaining": str(result.remaining),
-            "X-RateLimit-Reset": str(int(result.reset_at)),
-        }
-
-        if not result.allowed:
-            headers["Retry-After"] = str(int(result.retry_after or 1))
-            return {
-                "status": 429,
-                "headers": headers,
-                "body": {"error": "Rate limit exceeded"}
-            }
-
-        return {"headers": headers, "continue": True}
-
-    return middleware
-
-
-# ============================================================
-# USAGE EXAMPLES
-# ============================================================
-
-if __name__ == "__main__":
-    # Token Bucket example
-    print("=== Token Bucket ===")
-    limiter = RateLimiter(algorithm="token_bucket", default_rate=5, default_capacity=10)
-
-    for i in range(15):
-        result = limiter.allow("user:123")
-        status = "✓" if result.allowed else "✗"
-        print(f"Request {i+1:2d}: {status} | Remaining: {result.remaining}")
-
-    print(f"\nMetrics: {limiter.get_metrics()}")
-
-    # Sliding Window example
-    print("\n=== Sliding Window ===")
-    limiter2 = RateLimiter(algorithm="sliding_window", default_limit=5, default_window=10)
-
-    for i in range(8):
-        result = limiter2.allow("api_key:abc")
-        status = "✓" if result.allowed else "✗"
-        retry = f"(retry in {result.retry_after:.1f}s)" if result.retry_after else ""
-        print(f"Request {i+1}: {status} | Remaining: {result.remaining} {retry}")
-
-    print(f"\nMetrics: {limiter2.get_metrics()}")
+for i in range(25):
+    result = limiter.allow("user:123")
+    print(f"Request {i+1}: {'✓' if result.allowed else '✗'} (remaining: {result.remaining})")
 ```
 
-### Go - Distributed Rate Limiter with Redis
+### Python - Sliding Window Counter
+
+```python
+import time
+import threading
+from collections import defaultdict
+
+class SlidingWindowLimiter:
+    def __init__(self, limit: int, window_seconds: int):
+        self.limit = limit
+        self.window_seconds = window_seconds
+        self.counters = defaultdict(lambda: defaultdict(int))
+        self.lock = threading.Lock()
+
+    def allow(self, key: str) -> tuple[bool, int, float]:
+        now = time.time()
+        current_window = int(now // self.window_seconds)
+        previous_window = current_window - 1
+        window_progress = (now % self.window_seconds) / self.window_seconds
+
+        with self.lock:
+            prev_count = self.counters[key].get(previous_window, 0)
+            curr_count = self.counters[key].get(current_window, 0)
+
+            # Weighted count
+            weighted = prev_count * (1 - window_progress) + curr_count
+
+            if weighted >= self.limit:
+                reset_at = (current_window + 1) * self.window_seconds
+                return False, 0, reset_at
+
+            self.counters[key][current_window] = curr_count + 1
+
+            # Cleanup old windows
+            for window in list(self.counters[key].keys()):
+                if window < previous_window:
+                    del self.counters[key][window]
+
+            remaining = int(self.limit - weighted - 1)
+            reset_at = (current_window + 1) * self.window_seconds
+            return True, remaining, reset_at
+```
+
+### Go - Token Bucket
 
 ```go
 package main
 
 import (
-	"context"
-	"fmt"
 	"sync"
 	"time"
 )
-
-// ============================================================
-// PRODUCTION RATE LIMITER IN GO
-// Features: Multiple algorithms, distributed support, metrics
-// ============================================================
-
-type RateLimitResult struct {
-	Allowed    bool
-	Remaining  int
-	ResetAt    time.Time
-	RetryAfter time.Duration
-}
-
-type RateLimiter interface {
-	Allow(key string, tokens int) RateLimitResult
-	GetState(key string) map[string]interface{}
-}
-
-// ============================================================
-// TOKEN BUCKET
-// ============================================================
 
 type TokenBucket struct {
 	rate       float64
@@ -672,336 +497,54 @@ func NewTokenBucket(rate, capacity float64) *TokenBucket {
 	}
 }
 
-func (tb *TokenBucket) refill(now time.Time) {
-	elapsed := now.Sub(tb.lastUpdate).Seconds()
-	tb.tokens = min(tb.capacity, tb.tokens+elapsed*tb.rate)
-	tb.lastUpdate = now
-}
-
-func (tb *TokenBucket) Allow(tokens int) RateLimitResult {
+func (tb *TokenBucket) Allow(tokens float64) bool {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
 	now := time.Now()
-	tb.refill(now)
+	elapsed := now.Sub(tb.lastUpdate).Seconds()
 
-	tokensF := float64(tokens)
-	if tb.tokens >= tokensF {
-		tb.tokens -= tokensF
-		resetTime := now.Add(time.Duration((tb.capacity-tb.tokens)/tb.rate) * time.Second)
-		return RateLimitResult{
-			Allowed:   true,
-			Remaining: int(tb.tokens),
-			ResetAt:   resetTime,
-		}
+	tb.tokens = min(tb.capacity, tb.tokens+elapsed*tb.rate)
+	tb.lastUpdate = now
+
+	if tb.tokens >= tokens {
+		tb.tokens -= tokens
+		return true
 	}
+	return false
+}
 
-	tokensNeeded := tokensF - tb.tokens
-	waitTime := time.Duration(tokensNeeded/tb.rate*1000) * time.Millisecond
+func (tb *TokenBucket) Remaining() int {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+	return int(tb.tokens)
+}
 
-	return RateLimitResult{
-		Allowed:    false,
-		Remaining:  0,
-		ResetAt:    now.Add(waitTime),
-		RetryAfter: waitTime,
+type RateLimiter struct {
+	rate     float64
+	capacity float64
+	buckets  map[string]*TokenBucket
+	mu       sync.RWMutex
+}
+
+func NewRateLimiter(rate, capacity float64) *RateLimiter {
+	return &RateLimiter{
+		rate:     rate,
+		capacity: capacity,
+		buckets:  make(map[string]*TokenBucket),
 	}
 }
 
-// ============================================================
-// SLIDING WINDOW COUNTER
-// ============================================================
-
-type SlidingWindowCounter struct {
-	limit           int
-	windowSeconds   int
-	prevCount       int
-	currCount       int
-	currWindowStart int64
-	mu              sync.Mutex
-}
-
-func NewSlidingWindowCounter(limit, windowSeconds int) *SlidingWindowCounter {
-	return &SlidingWindowCounter{
-		limit:         limit,
-		windowSeconds: windowSeconds,
+func (rl *RateLimiter) Allow(key string) bool {
+	rl.mu.Lock()
+	bucket, exists := rl.buckets[key]
+	if !exists {
+		bucket = NewTokenBucket(rl.rate, rl.capacity)
+		rl.buckets[key] = bucket
 	}
-}
+	rl.mu.Unlock()
 
-func (sw *SlidingWindowCounter) Allow(tokens int) RateLimitResult {
-	sw.mu.Lock()
-	defer sw.mu.Unlock()
-
-	now := time.Now()
-	nowSec := now.Unix()
-	currentWindow := nowSec / int64(sw.windowSeconds)
-
-	// Rotate windows
-	if currentWindow != sw.currWindowStart {
-		if currentWindow == sw.currWindowStart+1 {
-			sw.prevCount = sw.currCount
-		} else {
-			sw.prevCount = 0
-		}
-		sw.currCount = 0
-		sw.currWindowStart = currentWindow
-	}
-
-	// Calculate weighted count
-	windowProgress := float64(nowSec%int64(sw.windowSeconds)) / float64(sw.windowSeconds)
-	weightedCount := float64(sw.prevCount)*(1-windowProgress) + float64(sw.currCount)
-
-	resetAt := time.Unix((currentWindow+1)*int64(sw.windowSeconds), 0)
-
-	if int(weightedCount)+tokens > sw.limit {
-		retryAfter := resetAt.Sub(now)
-		return RateLimitResult{
-			Allowed:    false,
-			Remaining:  0,
-			ResetAt:    resetAt,
-			RetryAfter: retryAfter,
-		}
-	}
-
-	sw.currCount += tokens
-	remaining := max(0, sw.limit-int(weightedCount)-tokens)
-
-	return RateLimitResult{
-		Allowed:   true,
-		Remaining: remaining,
-		ResetAt:   resetAt,
-	}
-}
-
-// ============================================================
-// DISTRIBUTED RATE LIMITER (with simulated Redis)
-// ============================================================
-
-type DistributedRateLimiter struct {
-	store         sync.Map // Simulates Redis
-	limit         int
-	windowSeconds int
-	mu            sync.Mutex
-}
-
-func NewDistributedRateLimiter(limit, windowSeconds int) *DistributedRateLimiter {
-	return &DistributedRateLimiter{
-		limit:         limit,
-		windowSeconds: windowSeconds,
-	}
-}
-
-func (d *DistributedRateLimiter) Allow(key string, tokens int) RateLimitResult {
-	now := time.Now()
-	currentWindow := now.Unix() / int64(d.windowSeconds)
-	windowKey := fmt.Sprintf("%s:%d", key, currentWindow)
-	prevWindowKey := fmt.Sprintf("%s:%d", key, currentWindow-1)
-
-	// Atomic increment (in Redis: INCR)
-	d.mu.Lock()
-
-	// Get previous window count
-	prevCount := 0
-	if val, ok := d.store.Load(prevWindowKey); ok {
-		prevCount = val.(int)
-	}
-
-	// Get current window count
-	currCount := 0
-	if val, ok := d.store.Load(windowKey); ok {
-		currCount = val.(int)
-	}
-
-	// Calculate weighted
-	windowProgress := float64(now.Unix()%int64(d.windowSeconds)) / float64(d.windowSeconds)
-	weightedCount := float64(prevCount)*(1-windowProgress) + float64(currCount)
-
-	resetAt := time.Unix((currentWindow+1)*int64(d.windowSeconds), 0)
-
-	if int(weightedCount)+tokens > d.limit {
-		d.mu.Unlock()
-		return RateLimitResult{
-			Allowed:    false,
-			Remaining:  0,
-			ResetAt:    resetAt,
-			RetryAfter: resetAt.Sub(now),
-		}
-	}
-
-	// Increment counter
-	d.store.Store(windowKey, currCount+tokens)
-	d.mu.Unlock()
-
-	remaining := max(0, d.limit-int(weightedCount)-tokens)
-	return RateLimitResult{
-		Allowed:   true,
-		Remaining: remaining,
-		ResetAt:   resetAt,
-	}
-}
-
-// ============================================================
-// RATE LIMITER SERVICE
-// ============================================================
-
-type RateLimiterService struct {
-	algorithm    string
-	buckets      sync.Map
-	rate         float64
-	capacity     float64
-	limit        int
-	windowSecs   int
-
-	// Metrics
-	allowed  int64
-	rejected int64
-	mu       sync.Mutex
-}
-
-func NewRateLimiterService(algorithm string, options map[string]interface{}) *RateLimiterService {
-	s := &RateLimiterService{
-		algorithm:  algorithm,
-		rate:       10.0,
-		capacity:   20.0,
-		limit:      100,
-		windowSecs: 60,
-	}
-
-	if v, ok := options["rate"].(float64); ok {
-		s.rate = v
-	}
-	if v, ok := options["capacity"].(float64); ok {
-		s.capacity = v
-	}
-	if v, ok := options["limit"].(int); ok {
-		s.limit = v
-	}
-	if v, ok := options["window"].(int); ok {
-		s.windowSecs = v
-	}
-
-	return s
-}
-
-func (s *RateLimiterService) Allow(key string) RateLimitResult {
-	// Get or create limiter for key
-	limiter, _ := s.buckets.LoadOrStore(key, s.createLimiter())
-
-	var result RateLimitResult
-	switch l := limiter.(type) {
-	case *TokenBucket:
-		result = l.Allow(1)
-	case *SlidingWindowCounter:
-		result = l.Allow(1)
-	}
-
-	// Update metrics
-	s.mu.Lock()
-	if result.Allowed {
-		s.allowed++
-	} else {
-		s.rejected++
-	}
-	s.mu.Unlock()
-
-	return result
-}
-
-func (s *RateLimiterService) createLimiter() interface{} {
-	switch s.algorithm {
-	case "sliding_window":
-		return NewSlidingWindowCounter(s.limit, s.windowSecs)
-	default:
-		return NewTokenBucket(s.rate, s.capacity)
-	}
-}
-
-func (s *RateLimiterService) GetMetrics() map[string]int64 {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	return map[string]int64{
-		"allowed":  s.allowed,
-		"rejected": s.rejected,
-	}
-}
-
-// ============================================================
-// HTTP MIDDLEWARE
-// ============================================================
-
-type RateLimitMiddleware struct {
-	limiter      *RateLimiterService
-	keyExtractor func(r interface{}) string
-}
-
-func NewRateLimitMiddleware(
-	limiter *RateLimiterService,
-	keyExtractor func(r interface{}) string,
-) *RateLimitMiddleware {
-	return &RateLimitMiddleware{
-		limiter:      limiter,
-		keyExtractor: keyExtractor,
-	}
-}
-
-func (m *RateLimitMiddleware) Handle(request interface{}) (map[string]string, bool) {
-	key := m.keyExtractor(request)
-	result := m.limiter.Allow(key)
-
-	headers := map[string]string{
-		"X-RateLimit-Remaining": fmt.Sprintf("%d", result.Remaining),
-		"X-RateLimit-Reset":     fmt.Sprintf("%d", result.ResetAt.Unix()),
-	}
-
-	if !result.Allowed {
-		headers["Retry-After"] = fmt.Sprintf("%d", int(result.RetryAfter.Seconds()))
-	}
-
-	return headers, result.Allowed
-}
-
-// ============================================================
-// USAGE
-// ============================================================
-
-func main() {
-	ctx := context.Background()
-	_ = ctx // Would use for cancellation in production
-
-	// Token bucket example
-	fmt.Println("=== Token Bucket ===")
-	service := NewRateLimiterService("token_bucket", map[string]interface{}{
-		"rate":     5.0,
-		"capacity": 10.0,
-	})
-
-	for i := 0; i < 15; i++ {
-		result := service.Allow("user:123")
-		status := "✓"
-		if !result.Allowed {
-			status = "✗"
-		}
-		fmt.Printf("Request %2d: %s | Remaining: %d\n", i+1, status, result.Remaining)
-	}
-
-	fmt.Printf("Metrics: %v\n", service.GetMetrics())
-
-	// Sliding window example
-	fmt.Println("\n=== Sliding Window ===")
-	service2 := NewRateLimiterService("sliding_window", map[string]interface{}{
-		"limit":  5,
-		"window": 10,
-	})
-
-	for i := 0; i < 8; i++ {
-		result := service2.Allow("api:xyz")
-		status := "✓"
-		retryInfo := ""
-		if !result.Allowed {
-			status = "✗"
-			retryInfo = fmt.Sprintf(" (retry in %.1fs)", result.RetryAfter.Seconds())
-		}
-		fmt.Printf("Request %d: %s | Remaining: %d%s\n", i+1, status, result.Remaining, retryInfo)
-	}
+	return bucket.Allow(1)
 }
 
 func min(a, b float64) float64 {
@@ -1011,272 +554,15 @@ func min(a, b float64) float64 {
 	return b
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
+func main() {
+	limiter := NewRateLimiter(5, 10) // 5 req/sec, burst 10
+
+	for i := 0; i < 15; i++ {
+		if limiter.Allow("user:123") {
+			println("Request", i+1, "allowed")
+		} else {
+			println("Request", i+1, "denied")
+		}
 	}
-	return b
 }
 ```
-
----
-
-## Production War Stories
-
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">💥</span>
-    <span class="war-story-title">The Rate Limiter That Blocked Everyone</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>Company:</strong> API-first startup</p>
-    <p><strong>The Setup:</strong> Redis-based rate limiter. When Redis was slow, the check timed out.</p>
-    <p><strong>The Bug:</strong> On timeout, the code threw an exception which was caught by a generic handler that returned 429 (rate limited) instead of letting the request through.</p>
-
-```python
-# BEFORE: Timeout = block everyone
-def check_rate_limit(key):
-    try:
-        return redis.check(key, timeout=100ms)
-    except TimeoutError:
-        raise RateLimitException()  # BUG: Blocks everyone!
-
-# AFTER: Fail open for availability
-def check_rate_limit(key):
-    try:
-        return redis.check(key, timeout=100ms)
-    except TimeoutError:
-        logger.warning("Rate limit check timed out, allowing request")
-        return RateLimitResult(allowed=True, degraded=True)
-```
-
-    <p><strong>Lesson:</strong> Rate limiters should "fail open" - when in doubt, let the request through. Better to occasionally exceed limits than block legitimate traffic.</p>
-  </div>
-</div>
-
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">🔥</span>
-    <span class="war-story-title">The Fixed Window Exploit</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>The Setup:</strong> Simple fixed window: 100 requests per minute.</p>
-    <p><strong>The Exploit:</strong> Attacker discovered window boundaries. Sent 100 requests at 11:59:59, then 100 more at 12:00:00. Result: 200 requests in 2 seconds.</p>
-
-```python
-# BEFORE: Fixed window with boundary exploit
-def check(key):
-    window = int(time.time() / 60)  # 1-minute windows
-    count = redis.incr(f"{key}:{window}")
-    return count <= 100
-
-# AFTER: Sliding window counter
-def check(key):
-    now = time.time()
-    current_window = int(now / 60)
-    prev_window = current_window - 1
-    window_progress = (now % 60) / 60
-
-    prev_count = redis.get(f"{key}:{prev_window}") or 0
-    curr_count = redis.get(f"{key}:{current_window}") or 0
-
-    weighted = prev_count * (1 - window_progress) + curr_count
-    if weighted >= 100:
-        return False
-
-    redis.incr(f"{key}:{current_window}")
-    return True
-```
-
-    <p><strong>Lesson:</strong> Fixed window is vulnerable at boundaries. Use sliding window for public APIs.</p>
-  </div>
-</div>
-
----
-
-## Distributed Rate Limiting
-
-### The Challenge
-
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  Server A                    Server B                              │
-│  ┌─────────┐                 ┌─────────┐                          │
-│  │ Count=5 │                 │ Count=4 │   <- Different counts!   │
-│  └─────────┘                 └─────────┘                          │
-│                                                                    │
-│  User sends requests load-balanced between servers                 │
-│  Each server thinks user is under limit                           │
-│  Combined: 9 requests, limit was 5!                               │
-└────────────────────────────────────────────────────────────────────┘
-```
-
-### Solution: Centralized Counter
-
-```python
-# Redis Lua script for atomic rate limiting
-SLIDING_WINDOW_LUA = """
-local key = KEYS[1]
-local limit = tonumber(ARGV[1])
-local window = tonumber(ARGV[2])
-local now = tonumber(ARGV[3])
-
-local current_window = math.floor(now / window)
-local prev_window = current_window - 1
-local window_progress = (now % window) / window
-
-local curr_key = key .. ":" .. current_window
-local prev_key = key .. ":" .. prev_window
-
-local prev_count = tonumber(redis.call('GET', prev_key) or 0)
-local curr_count = tonumber(redis.call('GET', curr_key) or 0)
-
-local weighted = prev_count * (1 - window_progress) + curr_count
-
-if weighted >= limit then
-    return {0, math.ceil(limit - weighted), (current_window + 1) * window}
-end
-
-redis.call('INCR', curr_key)
-redis.call('EXPIRE', curr_key, window * 2)
-
-return {1, math.ceil(limit - weighted - 1), (current_window + 1) * window}
-"""
-
-class DistributedRateLimiter:
-    def __init__(self, redis_client, limit, window_seconds):
-        self.redis = redis_client
-        self.limit = limit
-        self.window = window_seconds
-        self.script = redis_client.register_script(SLIDING_WINDOW_LUA)
-
-    def allow(self, key: str) -> RateLimitResult:
-        now = time.time()
-        result = self.script(
-            keys=[key],
-            args=[self.limit, self.window, now]
-        )
-        allowed, remaining, reset_at = result
-        return RateLimitResult(
-            allowed=bool(allowed),
-            remaining=remaining,
-            reset_at=reset_at
-        )
-```
-
-### Trade-offs in Distributed Systems
-
-| Approach | Accuracy | Latency | Availability |
-|----------|----------|---------|--------------|
-| Centralized Redis | Exact | +1-5ms | Single point |
-| Redis Cluster | Exact | +2-10ms | High |
-| Local + Periodic Sync | Approximate | +0ms | Very High |
-| Sticky Sessions | Per-server accurate | +0ms | High |
-
----
-
-## Expert-Level FAQs
-
-<details>
-<summary><strong>Q: How do you handle rate limiting for APIs with different costs?</strong></summary>
-
-**A:** Use weighted tokens. A complex query costs more tokens than a simple one.
-
-```python
-class WeightedRateLimiter:
-    ENDPOINT_WEIGHTS = {
-        "GET /users": 1,
-        "POST /search": 5,
-        "POST /export": 20,
-        "GET /analytics": 10,
-    }
-
-    def check(self, key: str, endpoint: str) -> bool:
-        weight = self.ENDPOINT_WEIGHTS.get(endpoint, 1)
-        return self.bucket.allow(key, tokens=weight)
-```
-</details>
-
-<details>
-<summary><strong>Q: How do you implement graduated rate limiting?</strong></summary>
-
-**A:** Apply different limits based on user tier or behavior.
-
-```python
-class GraduatedRateLimiter:
-    TIER_LIMITS = {
-        "free": {"rate": 10, "capacity": 20},
-        "basic": {"rate": 50, "capacity": 100},
-        "premium": {"rate": 200, "capacity": 500},
-        "enterprise": {"rate": 1000, "capacity": 2000},
-    }
-
-    def get_limits(self, user_id: str) -> dict:
-        tier = self.user_service.get_tier(user_id)
-        return self.TIER_LIMITS.get(tier, self.TIER_LIMITS["free"])
-
-    def check(self, user_id: str) -> RateLimitResult:
-        limits = self.get_limits(user_id)
-        bucket = self.get_or_create_bucket(user_id, limits)
-        return bucket.allow(1)
-```
-</details>
-
-<details>
-<summary><strong>Q: How do you handle rate limit bursting for mobile apps?</strong></summary>
-
-**A:** Mobile apps often batch requests. Allow larger bursts but maintain average rate.
-
-```python
-# Standard API: 10/s rate, 20 capacity (2s burst)
-api_limiter = TokenBucket(rate=10, capacity=20)
-
-# Mobile API: 10/s rate, 100 capacity (10s burst)
-# Same average rate, but allows batching
-mobile_limiter = TokenBucket(rate=10, capacity=100)
-```
-</details>
-
-<details>
-<summary><strong>Q: How do you prevent API key sharing/abuse?</strong></summary>
-
-**A:** Implement multiple limits and anomaly detection.
-
-```python
-class MultiLayerRateLimiter:
-    def check(self, api_key: str, ip: str, user_agent: str) -> bool:
-        # Layer 1: Per API key
-        if not self.api_key_limiter.allow(api_key):
-            return False
-
-        # Layer 2: Per IP per API key (detect shared keys)
-        ip_key = f"{api_key}:{ip}"
-        if not self.ip_limiter.allow(ip_key):
-            return False
-
-        # Layer 3: Track unique IPs per key (anomaly detection)
-        unique_ips = self.track_unique_ip(api_key, ip)
-        if unique_ips > 100:  # Too many IPs = shared key
-            self.flag_for_review(api_key)
-
-        return True
-```
-</details>
-
----
-
-## Interview Tips
-
-1. **Start simple:** Begin with fixed window, then discuss limitations
-2. **Know the trade-offs:** Memory vs accuracy vs latency
-3. **Discuss distribution:** How to handle multiple servers
-4. **Consider edge cases:** What if Redis is down? Clock skew?
-5. **Mention headers:** X-RateLimit-Limit, X-RateLimit-Remaining, Retry-After
-6. **Think about UX:** Gradual degradation vs hard cutoff
-
-## Related Topics
-
-- [Caching](/topic/system-design/caching)
-- [Load Balancing](/topic/system-design/load-balancing)
-- [Circuit Breaker](/topic/system-design/circuit-breaker)
-- [API Gateway](/topic/system-design/api-gateway)
