@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>DSAlgo Learn - SDE3 Interview Preparation Platform</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-root" id="appRoot">
+
+        <!-- ==================== LANDING PAGE ==================== -->
+        <div class="page landing-page active" id="landingPage">
+            <header class="landing-header">
+                <div class="logo">
+                    <span class="logo-icon">{ }</span>
+                    <span class="logo-text">DSAlgo<span class="logo-accent">Learn</span></span>
+                </div>
+            </header>
+
+            <main class="landing-main">
+                <div class="landing-hero">
+                    <div class="hero-badge">SDE3 Interview Prep</div>
+                    <h1>Master System Design & Algorithms</h1>
+                    <p>Comprehensive preparation for senior engineering interviews with real-world examples, brain diagrams, and 80+ coding problems</p>
+                </div>
+
+                <div class="landing-cards">
+                    <!-- System Design Card -->
+                    <div class="landing-card" onclick="navigateTo('system-design')">
+                        <div class="card-icon system-design-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
+                                <circle cx="8" cy="10" r="2"/><circle cx="16" cy="10" r="2"/><path d="M10 10h4"/>
+                            </svg>
+                        </div>
+                        <h2>System Design</h2>
+                        <p>Deep dive into distributed systems, databases, caching, messaging queues with real-world examples from Netflix, Uber, Twitter</p>
+                        <div class="card-features">
+                            <span>Cross-linked Topics</span>
+                            <span>Brain Diagrams</span>
+                            <span>Real Examples</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Basic Problems Card -->
+                    <div class="landing-card" onclick="navigateTo('basic-problems')">
+                        <div class="card-icon basic-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <h2>Basic Problems</h2>
+                        <p>Foundation problems with 3 different solutions each. Understand trade-offs, pros & cons with detailed diagrams</p>
+                        <div class="card-features">
+                            <span>3 Solutions Each</span>
+                            <span>Trade-off Analysis</span>
+                            <span>Visual Diagrams</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Complex Problems Card -->
+                    <div class="landing-card" onclick="navigateTo('complex-problems')">
+                        <div class="card-icon complex-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </div>
+                        <h2>Complex Problems</h2>
+                        <p>Advanced SDE3 level problems combining multiple concepts. Real interview questions from FAANG companies</p>
+                        <div class="card-features">
+                            <span>FAANG Level</span>
+                            <span>Multi-Concept</span>
+                            <span>Interview Ready</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Design Patterns Card -->
+                    <div class="landing-card" onclick="navigateTo('design-patterns')">
+                        <div class="card-icon patterns-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <h2>Design Patterns</h2>
+                        <p>Gang of Four patterns with Python & Go examples. Pros, cons, caveats, and when to use each pattern</p>
+                        <div class="card-features">
+                            <span>Python & Go</span>
+                            <span>Real Examples</span>
+                            <span>Trade-offs</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Machine Coding Card -->
+                    <div class="landing-card" onclick="navigateTo('machine-coding')">
+                        <div class="card-icon machine-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8"/><path d="M12 17v4"/>
+                                <path d="M7 8l3 3-3 3"/><path d="M13 14h4"/>
+                            </svg>
+                        </div>
+                        <h2>Machine Coding</h2>
+                        <p>Build real systems from scratch. LRU Cache, Rate Limiter, Parking Lot with multiple design patterns</p>
+                        <div class="card-features">
+                            <span>Python & Go</span>
+                            <span>Multi-Pattern</span>
+                            <span>Interview Ready</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- DS/Algo Practice Card -->
+                    <div class="landing-card" onclick="navigateTo('practice')">
+                        <div class="card-icon practice-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                            </svg>
+                        </div>
+                        <h2>DS/Algo Practice</h2>
+                        <p>80+ curated problems with runnable Python & Go code. Arrays, Trees, Graphs, DP and more</p>
+                        <div class="card-features">
+                            <span>80+ Problems</span>
+                            <span>Run Code</span>
+                            <span>All Topics</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="landing-stats">
+                    <div class="stat">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label">System Design Topics</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">23</span>
+                        <span class="stat-label">Design Patterns</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">80+</span>
+                        <span class="stat-label">Coding Problems</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Machine Coding</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ==================== SYSTEM DESIGN PAGE ==================== -->
+        <div class="page dashboard-page" id="systemDesignPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>System Design</h1>
+                    <span class="dash-subtitle">Deep dive with real-world examples</span>
+                </div>
+                <button class="brain-btn" onclick="toggleBrainDiagram()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0 0 20 10 10 0 0 0 0-20"/>
+                        <path d="M8 12a4 4 0 0 1 8 0"/><path d="M12 8v8"/>
+                    </svg>
+                    <span>Brain Map</span>
+                </button>
+            </header>
+
+            <!-- Brain Diagram Modal -->
+            <div class="brain-modal" id="brainModal">
+                <div class="brain-modal-content">
+                    <button class="brain-close" onclick="toggleBrainDiagram()">&times;</button>
+                    <h2>System Design Brain Map</h2>
+                    <div class="brain-diagram" id="brainDiagram"></div>
+                </div>
+            </div>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="sdSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search topics..." id="sdSearch">
+                    </div>
+                    <nav class="topic-nav" id="sdTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="sdMain">
+                    <div class="topic-content" id="sdContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
+                            </svg>
+                            <p>Select a topic from the sidebar to begin</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== BASIC PROBLEMS PAGE ==================== -->
+        <div class="page dashboard-page" id="basicProblemsPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Basic Problems</h1>
+                    <span class="dash-subtitle">3 solutions with trade-offs</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="bpSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search problems..." id="bpSearch">
+                    </div>
+                    <nav class="topic-nav" id="bpTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="bpMain">
+                    <div class="topic-content" id="bpContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            </svg>
+                            <p>Select a problem from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== COMPLEX PROBLEMS PAGE ==================== -->
+        <div class="page dashboard-page" id="complexProblemsPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Complex Problems</h1>
+                    <span class="dash-subtitle">SDE3 Interview Level</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="cpSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search problems..." id="cpSearch">
+                    </div>
+                    <nav class="topic-nav" id="cpTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="cpMain">
+                    <div class="topic-content" id="cpContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                            <p>Select a problem from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== DESIGN PATTERNS PAGE ==================== -->
+        <div class="page dashboard-page" id="designPatternsPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Design Patterns</h1>
+                    <span class="dash-subtitle">Python & Go with trade-offs</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="dpSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search patterns..." id="dpSearch">
+                    </div>
+                    <nav class="topic-nav" id="dpTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="dpMain">
+                    <div class="topic-content" id="dpContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <p>Select a design pattern from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== MACHINE CODING PAGE ==================== -->
+        <div class="page dashboard-page" id="machineCodingPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Machine Coding</h1>
+                    <span class="dash-subtitle">Build systems with multiple patterns</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="mcSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search problems..." id="mcSearch">
+                    </div>
+                    <nav class="topic-nav" id="mcTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="mcMain">
+                    <div class="topic-content" id="mcContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M7 8l3 3-3 3"/><path d="M13 14h4"/>
+                            </svg>
+                            <p>Select a machine coding problem from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== PRACTICE PAGE (ORIGINAL) ==================== -->
+        <div class="page practice-page" id="practicePage">
+            <!-- Mobile Navigation Overlay -->
+            <div class="nav-overlay" id="navOverlay"></div>
+
+            <!-- Header -->
+            <header class="header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="logo">
+                    <span class="logo-icon">{ }</span>
+                    <span class="logo-text">DSAlgo<span class="logo-accent">Learn</span></span>
+                </div>
+                <div class="header-actions"></div>
+            </header>
+
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="search-container">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search problems..." autocomplete="off">
+                        <button class="search-clear" id="searchClear">&times;</button>
+                    </div>
+                </div>
+                <nav class="problem-nav" id="problemNav">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Loading problems...</p>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main" id="main">
+                <!-- Welcome Screen -->
+                <div class="welcome" id="welcomeScreen">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <h1>DS/Algo Practice</h1>
+                        <p class="welcome-subtitle">80+ curated problems in Python & Go</p>
+                        <div class="cta-section">
+                            <button class="cta-btn" id="startBtn">
+                                <span>Browse Problems</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem View -->
+                <div class="problem-view" id="problemView">
+                    <div class="tab-nav" id="tabNav">
+                        <button class="tab-btn active" data-tab="description">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            </svg>
+                            <span>Problem</span>
+                        </button>
+                        <button class="tab-btn" data-tab="code">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                            </svg>
+                            <span>Code</span>
+                        </button>
+                        <button class="tab-btn" data-tab="output">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                            </svg>
+                            <span>Output</span>
+                        </button>
+                    </div>
+
+                    <div class="problem-header">
+                        <div class="problem-info">
+                            <div class="breadcrumb" id="breadcrumb"></div>
+                            <h1 id="problemTitle">Problem Title</h1>
+                        </div>
+                        <button class="hint-toggle" id="hintToggle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                            <span>Hints</span>
+                        </button>
+                    </div>
+
+                    <div class="content-wrapper">
+                        <div class="panel description-panel active" id="descriptionPanel">
+                            <div class="panel-content" id="problemDescription">
+                                <p>Select a problem to begin.</p>
+                            </div>
+                        </div>
+                        <div class="panel code-panel" id="codePanel">
+                            <div class="code-header">
+                                <div class="lang-switcher">
+                                    <button class="lang-btn active" data-lang="python">
+                                        <span class="lang-icon">Py</span><span>Python</span>
+                                    </button>
+                                    <button class="lang-btn" data-lang="golang">
+                                        <span class="lang-icon">Go</span><span>Go</span>
+                                    </button>
+                                </div>
+                                <button class="reset-btn" id="resetBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="editor-wrapper">
+                                <textarea id="codeEditor"></textarea>
+                            </div>
+                            <div class="code-actions">
+                                <button class="run-btn" id="runBtn">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    <span>Run Code</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel output-panel" id="outputPanel">
+                            <div class="output-header">
+                                <span>Output</span>
+                                <button class="clear-btn" id="clearBtn">Clear</button>
+                            </div>
+                            <div class="terminal" id="terminal">
+                                <pre id="terminalContent"><span class="terminal-prompt">$</span> Click "Run Code" to execute...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/go/go.min.js"></script>
+    <script src="js/dashboard-data.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
