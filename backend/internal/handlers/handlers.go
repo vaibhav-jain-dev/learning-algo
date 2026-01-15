@@ -97,9 +97,6 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	var contentHTML string
 	var hasContent bool
 
-	// Debug: Get current working directory
-	cwd, _ := os.Getwd()
-
 	mdContent, err := os.ReadFile(contentPath)
 	if err == nil && len(mdContent) > 0 {
 		var buf bytes.Buffer
@@ -107,13 +104,6 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 			contentHTML = buf.String()
 			hasContent = true
 		}
-	}
-
-	// Debug info in response header
-	c.Set("X-Debug-CWD", cwd)
-	c.Set("X-Debug-Path", contentPath)
-	if err != nil {
-		c.Set("X-Debug-Error", err.Error())
 	}
 
 	return c.Render("pages/topic-detail", fiber.Map{

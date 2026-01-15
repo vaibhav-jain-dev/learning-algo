@@ -51,9 +51,10 @@ WORKDIR /app
 # Copy built binary from builder
 COPY --from=builder /build/server ./server
 
-# Copy frontend and problems
+# Copy frontend, problems, and topics
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
+COPY topics/ ./topics/
 
 # Create non-root user, state directory, Go cache, and kernel work directory
 RUN useradd -m -s /bin/bash dsalgo && \
