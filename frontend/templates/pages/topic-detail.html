@@ -1,0 +1,137 @@
+<div class="topic-detail-page">
+    <nav class="breadcrumb">
+        <a href="/{{if eq .CategorySlug "system-design"}}system-design{{else if eq .CategorySlug "design-patterns"}}design-patterns{{else}}machine-coding{{end}}">← Back to {{.Category}}</a>
+    </nav>
+
+    <div class="topic-header">
+        <span class="topic-badge">{{.Category}}</span>
+        <h1>{{.Topic}}</h1>
+    </div>
+
+    <div class="coming-soon-card">
+        <div class="coming-soon-icon">🚧</div>
+        <h2>Content Coming Soon</h2>
+        <p>We're working on detailed content for <strong>{{.Topic}}</strong>.</p>
+        <p>This will include:</p>
+        <ul>
+            <li>Comprehensive explanation</li>
+            <li>Code examples in Python and Go</li>
+            <li>Visual diagrams</li>
+            <li>Practice problems</li>
+            <li>Interview tips</li>
+        </ul>
+        <div class="actions">
+            <a href="/practice" class="btn btn-primary">Practice DSA Problems</a>
+            <a href="/{{if eq .CategorySlug "system-design"}}system-design{{else if eq .CategorySlug "design-patterns"}}design-patterns{{else}}machine-coding{{end}}" class="btn btn-secondary">Browse Other Topics</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.topic-detail-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.breadcrumb {
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.topic-header {
+    margin-bottom: 2rem;
+}
+
+.topic-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.topic-header h1 {
+    margin: 0.5rem 0 0 0;
+    font-size: 2.5rem;
+}
+
+.coming-soon-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    text-align: center;
+}
+
+.coming-soon-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card h2 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.coming-soon-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card ul {
+    text-align: left;
+    max-width: 300px;
+    margin: 1.5rem auto;
+    color: var(--text-secondary);
+}
+
+.coming-soon-card li {
+    margin-bottom: 0.5rem;
+}
+
+.coming-soon-card .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.coming-soon-card .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.coming-soon-card .btn-primary {
+    background: var(--accent-color);
+    color: white;
+}
+
+.coming-soon-card .btn-primary:hover {
+    background: #2563eb;
+}
+
+.coming-soon-card .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.coming-soon-card .btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+</style>

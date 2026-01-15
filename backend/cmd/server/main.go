@@ -83,6 +83,7 @@ func main() {
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
+	app.Get("/topic/:category/:topic", h.TopicDetail)
 
 	// API routes
 	api := app.Group("/api")

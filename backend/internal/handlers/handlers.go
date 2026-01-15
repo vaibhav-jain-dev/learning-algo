@@ -82,6 +82,24 @@ func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
 	})
 }
 
+// TopicDetail renders a specific topic page
+func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
+	category := c.Params("category")
+	topic := c.Params("topic")
+
+	// Format the title
+	title := formatName(topic)
+	categoryTitle := formatName(category)
+
+	return c.Render("pages/topic-detail", fiber.Map{
+		"Title":         title + " - " + categoryTitle,
+		"Topic":         title,
+		"Category":      categoryTitle,
+		"CategorySlug":  category,
+		"TopicSlug":     topic,
+	})
+}
+
 // ListProblems returns all problems as JSON
 func (h *Handlers) ListProblems(c *fiber.Ctx) error {
 	tree := h.buildProblemTree(problemsDir)
