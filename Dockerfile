@@ -7,12 +7,18 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /build
 
-# Copy go mod files
-COPY backend/go.mod backend/go.sum ./
+# Copy go.mod first
+COPY backend/go.mod ./
+
+# Download dependencies and generate go.sum with correct checksums from proxy
 RUN go mod download
 
-# Copy backend source
-COPY backend/ ./
+# Copy backend source (excluding go.sum which may have stale checksums)
+COPY backend/cmd ./cmd
+COPY backend/internal ./internal
+
+# Verify module consistency
+RUN go mod verify
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server
