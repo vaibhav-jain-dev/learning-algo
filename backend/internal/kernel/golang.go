@@ -97,15 +97,25 @@ func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
 		healthy:  true,
 	}
 
-	// Pre-warm Go compiler
+	// Pre-warm Go compiler using 'go run'
 	warmupCode := `package main
 import "fmt"
 func main() { fmt.Println("ready") }
 `
-	if err := k.compile(warmupCode); err != nil {
+	warmupFile := filepath.Join(workDir, "warmup.go")
+	if err := os.WriteFile(warmupFile, []byte(warmupCode), 0644); err != nil {
+		os.RemoveAll(workDir)
+		return nil, fmt.Errorf("failed to write warmup code: %w", err)
+	}
+
+	cmd := exec.Command("go", "run", warmupFile)
+	cmd.Dir = workDir
+	cmd.Env = append(os.Environ(), "CGO_ENABLED=0")
+	if err := cmd.Run(); err != nil {
 		os.RemoveAll(workDir)
 		return nil, fmt.Errorf("failed to warm up Go compiler: %w", err)
 	}
+	os.Remove(warmupFile)
 
 	return k, nil
 }
@@ -165,39 +175,15 @@ func (k *GoKernel) validateCode(code string) error {
 	return nil
 }
 
-func (k *GoKernel) compile(code string) error {
+func (k *GoKernel) writeCode(code string) (string, error) {
 	mainFile := filepath.Join(k.workDir, "main.go")
 	if err := os.WriteFile(mainFile, []byte(code), 0644); err != nil {
-		return fmt.Errorf("failed to write code: %w", err)
+		return "", fmt.Errorf("failed to write code: %w", err)
 	}
-
-	programPath := filepath.Join(k.workDir, "program")
-	cmd := exec.Command("go", "build", "-o", programPath, mainFile)
-	cmd.Dir = k.workDir
-	// Use system Go cache for faster compilation
-	cmd.Env = append(os.Environ(),
-		"CGO_ENABLED=0",
-	)
-
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
-
-	if err := cmd.Run(); err != nil {
-		errStr := stderr.String()
-		// Clean up error message
-		errStr = strings.ReplaceAll(errStr, k.workDir, "")
-		return fmt.Errorf("compilation failed:\n%s", errStr)
-	}
-
-	// Ensure the binary is executable
-	if err := os.Chmod(programPath, 0755); err != nil {
-		return fmt.Errorf("failed to set execute permission: %w", err)
-	}
-
-	return nil
+	return mainFile, nil
 }
 
-// Execute runs Go code
+// Execute runs Go code using 'go run' to avoid binary permission issues
 func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, error) {
 	k.mu.Lock()
 	defer k.mu.Unlock()
@@ -217,21 +203,21 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		}, nil
 	}
 
-	// Compile the code
-	compileStart := time.Now()
-	if err := k.compile(code); err != nil {
+	// Write code to file
+	mainFile, err := k.writeCode(code)
+	if err != nil {
 		return &ExecutionResult{
 			Error:    err.Error(),
 			ExitCode: 1,
 			Duration: time.Since(start),
 		}, nil
 	}
-	compileTime := time.Since(compileStart)
 
-	// Run with timeout
-	programPath := filepath.Join(k.workDir, "program")
-	cmd := exec.CommandContext(ctx, programPath)
+	// Use 'go run' instead of separate compile + execute
+	// This avoids binary permission issues on tmpfs with noexec
+	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
 	cmd.Dir = k.workDir
+	cmd.Env = append(os.Environ(), "CGO_ENABLED=0")
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -261,10 +247,10 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		// Add metrics for Go execution
 		result.Metrics = &ExecutionMetrics{
 			TimeMs:        float64(execTime.Microseconds()) / 1000.0,
-			MemoryCurrent: 0, // Go doesn't easily expose this
+			MemoryCurrent: 0,
 			MemoryPeak:    0,
-			MemoryFmt:     fmt.Sprintf("Compile: %.2fms", float64(compileTime.Microseconds())/1000.0),
-			MemoryPeakFmt: fmt.Sprintf("Run: %.2fms", float64(execTime.Microseconds())/1000.0),
+			MemoryFmt:     fmt.Sprintf("Total: %.2fms", float64(execTime.Microseconds())/1000.0),
+			MemoryPeakFmt: "go run (compile+run)",
 		}
 
 		if err != nil {
@@ -272,6 +258,9 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 			if errStr == "" {
 				errStr = err.Error()
 			}
+			// Clean up error paths
+			errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
+			errStr = strings.ReplaceAll(errStr, k.workDir, "")
 			result.Error = errStr
 			result.ExitCode = 1
 		} else {
