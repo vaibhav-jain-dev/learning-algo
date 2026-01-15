@@ -398,8 +398,8 @@ func main() {
 
         // Show execution metrics if available
         if (metrics && !isError) {
-            // Check if this is Go metrics (compile/run time) or Python (memory)
-            var isGoMetrics = metrics.memory_fmt && metrics.memory_fmt.indexOf('Compile') !== -1;
+            // Check if this is Go (no memory tracking) or Python (has memory)
+            var isGoMetrics = metrics.memory_current === 0 && metrics.memory_peak === 0;
 
             html += '<div class="execution-metrics">' +
                 '<div class="metrics-header">Performance Metrics</div>' +
@@ -409,18 +409,8 @@ func main() {
                 '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
                 '</div>';
 
-            if (isGoMetrics) {
-                // Go: show compile and run time
-                html += '<div class="metric">' +
-                    '<span class="metric-label">Compile Time:</span>' +
-                    '<span class="metric-value">' + (metrics.memory_fmt || '0ms') + '</span>' +
-                    '</div>' +
-                    '<div class="metric">' +
-                    '<span class="metric-label">Run Time:</span>' +
-                    '<span class="metric-value">' + (metrics.memory_peak_fmt || '0ms') + '</span>' +
-                    '</div>';
-            } else {
-                // Python: show memory
+            if (!isGoMetrics) {
+                // Python: show memory stats
                 html += '<div class="metric">' +
                     '<span class="metric-label">Memory Used:</span>' +
                     '<span class="metric-value">' + (metrics.memory_fmt || metrics.memory_current_fmt || '0 B') + '</span>' +
@@ -590,13 +580,74 @@ func main() {
     };
 
     window.loadProblem = function(path) {
+        // Update URL without reload
+        history.pushState({ problem: path }, '', '/practice?problem=' + encodeURIComponent(path));
+
         htmx.ajax('GET', '/htmx/problem-content/' + path, {
             target: '#problem-description',
             swap: 'innerHTML'
         }).then(function() {
             showTab('description');
+            // Make sections collapsible after content loads
+            setTimeout(makeCollapsible, 100);
         });
     };
+
+    // Make sections collapsible (Hints, Approach, etc.)
+    function makeCollapsible() {
+        var sections = ['Hints', 'Approach', 'Explanation', 'Visual Walkthrough', 'Common Mistakes'];
+        var content = document.getElementById('problem-description');
+        if (!content) return;
+
+        var headings = content.querySelectorAll('h2, h3');
+        headings.forEach(function(heading) {
+            var text = heading.textContent.trim();
+            var shouldCollapse = sections.some(function(s) {
+                return text.toLowerCase().indexOf(s.toLowerCase()) !== -1;
+            });
+
+            if (shouldCollapse && !heading.classList.contains('collapsible')) {
+                heading.classList.add('collapsible', 'collapsed');
+                heading.innerHTML = '<span class="collapse-icon">▶</span> ' + text;
+                heading.style.cursor = 'pointer';
+
+                // Hide content until next heading
+                var next = heading.nextElementSibling;
+                var contentElements = [];
+                while (next && !['H2', 'H3'].includes(next.tagName)) {
+                    contentElements.push(next);
+                    next = next.nextElementSibling;
+                }
+
+                // Wrap in collapsible div
+                if (contentElements.length > 0) {
+                    var wrapper = document.createElement('div');
+                    wrapper.className = 'collapsible-content collapsed';
+                    contentElements.forEach(function(el) {
+                        wrapper.appendChild(el.cloneNode(true));
+                    });
+                    contentElements.forEach(function(el) { el.remove(); });
+                    heading.after(wrapper);
+
+                    heading.onclick = function() {
+                        var isCollapsed = heading.classList.contains('collapsed');
+                        heading.classList.toggle('collapsed');
+                        wrapper.classList.toggle('collapsed');
+                        heading.querySelector('.collapse-icon').textContent = isCollapsed ? '▼' : '▶';
+                    };
+                }
+            }
+        });
+    }
+
+    // Load problem from URL on page load
+    function loadProblemFromURL() {
+        var params = new URLSearchParams(window.location.search);
+        var problem = params.get('problem');
+        if (problem) {
+            loadProblem(problem);
+        }
+    }
 
     window.loadProblemCode = function(pythonCode, goCode) {
         if (isRunning) return;
@@ -631,11 +682,20 @@ func main() {
     // Initialize immediately
     initEditor();
     connectWebSocket();
+    loadProblemFromURL();
+
+    // Handle browser back/forward
+    window.onpopstate = function(event) {
+        if (event.state && event.state.problem) {
+            loadProblem(event.state.problem);
+        }
+    };
 
     // Also try on DOMContentLoaded in case scripts loaded late
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             if (!editorInitialized) initEditor();
+            loadProblemFromURL();
         });
     }
 

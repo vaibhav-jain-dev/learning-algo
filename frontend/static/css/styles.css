@@ -927,5 +927,40 @@ body {
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
-    border: 0;
+}
+
+/* Collapsible Sections */
+.collapsible {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.collapsible:hover {
+    color: var(--accent-color);
+}
+
+.collapse-icon {
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    display: inline-block;
+    width: 1rem;
+}
+
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 2000px;
+    opacity: 1;
+}
+
+.collapsible-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
 }
