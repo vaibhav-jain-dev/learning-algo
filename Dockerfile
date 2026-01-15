@@ -10,15 +10,12 @@ WORKDIR /build
 # Copy go.mod first
 COPY backend/go.mod ./
 
-# Download dependencies and generate go.sum with correct checksums from proxy
-RUN go mod download
-
-# Copy backend source (excluding go.sum which may have stale checksums)
+# Copy backend source
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
 
-# Verify module consistency
-RUN go mod verify
+# Download dependencies and generate go.sum
+RUN go mod tidy
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server
