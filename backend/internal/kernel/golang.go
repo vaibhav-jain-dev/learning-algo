@@ -161,9 +161,8 @@ func (k *GoKernel) compile(code string) error {
 
 	cmd := exec.Command("go", "build", "-o", "program", "main.go")
 	cmd.Dir = k.workDir
+	// Use system Go cache for faster compilation
 	cmd.Env = append(os.Environ(),
-		"GOCACHE="+filepath.Join(k.workDir, "cache"),
-		"GOPATH="+filepath.Join(k.workDir, "gopath"),
 		"CGO_ENABLED=0",
 	)
 

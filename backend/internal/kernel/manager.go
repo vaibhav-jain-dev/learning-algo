@@ -40,8 +40,12 @@ func NewExecutionManager(pythonPool *PythonPool, goPool *GoPool, stateDir string
 
 // Execute starts a new code execution
 func (em *ExecutionManager) Execute(code, language string) (*Execution, error) {
-	// Create new execution
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	// Set timeout based on language (Go needs more time for compilation)
+	timeout := 10 * time.Second
+	if language == "go" || language == "golang" {
+		timeout = 30 * time.Second
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 
 	exec := &Execution{
 		ID:        uuid.New().String(),

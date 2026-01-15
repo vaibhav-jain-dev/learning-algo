@@ -34,6 +34,9 @@
                     <button class="lang-btn" data-lang="go" onclick="setLanguage('go')">Go</button>
                 </div>
                 <div class="actions">
+                    <button class="btn btn-secondary" onclick="formatCode()" title="Format Code">
+                        Format
+                    </button>
                     <button class="btn btn-secondary" onclick="resetCode()">Reset</button>
                     <button id="stop-btn" class="btn btn-danger hidden" onclick="stopExecution()">
                         Stop
@@ -44,7 +47,7 @@
                 </div>
             </div>
             <div class="editor-container">
-                <textarea id="code-editor" placeholder="Enter your code here..."></textarea>
+                <div id="code-editor"></div>
             </div>
         </div>
 
@@ -67,6 +70,146 @@ let currentCode = { python: '', go: '' };
 let ws = null;
 let currentExecutionId = null;
 let isRunning = false;
+let editor = null;
+
+// Initialize CodeMirror
+function initEditor() {
+    const editorElement = document.getElementById('code-editor');
+    editor = CodeMirror(editorElement, {
+        value: getDefaultCode('python'),
+        mode: 'python',
+        theme: 'material-darker',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+            'Tab': function(cm) {
+                if (cm.somethingSelected()) {
+                    cm.indentSelection('add');
+                } else {
+                    cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
+                        Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+                }
+            },
+            'Shift-Tab': function(cm) {
+                cm.indentSelection('subtract');
+            },
+            'Ctrl-Enter': function(cm) {
+                runCode();
+            },
+            'Cmd-Enter': function(cm) {
+                runCode();
+            },
+            'Ctrl-S': function(cm) {
+                formatCode();
+                return false;
+            },
+            'Cmd-S': function(cm) {
+                formatCode();
+                return false;
+            }
+        }
+    });
+
+    // Set editor height
+    editor.setSize('100%', '100%');
+
+    // Save code on change
+    editor.on('change', function() {
+        currentCode[currentLanguage] = editor.getValue();
+    });
+}
+
+// Format code (basic indentation fix)
+function formatCode() {
+    if (isRunning || !editor) return;
+
+    const code = editor.getValue();
+    let formatted = code;
+
+    if (currentLanguage === 'python') {
+        formatted = formatPython(code);
+    } else if (currentLanguage === 'go') {
+        formatted = formatGo(code);
+    }
+
+    editor.setValue(formatted);
+}
+
+function formatPython(code) {
+    // Basic Python formatting
+    const lines = code.split('\n');
+    let formatted = [];
+    let indentLevel = 0;
+    const indentSize = 4;
+
+    for (let line of lines) {
+        let trimmed = line.trim();
+
+        // Decrease indent before these keywords
+        if (trimmed.startsWith('elif ') || trimmed.startsWith('else:') ||
+            trimmed.startsWith('except') || trimmed.startsWith('finally:') ||
+            trimmed.startsWith('except:')) {
+            indentLevel = Math.max(0, indentLevel - 1);
+        }
+
+        // Add the line with proper indentation if not empty
+        if (trimmed) {
+            formatted.push(' '.repeat(indentLevel * indentSize) + trimmed);
+        } else {
+            formatted.push('');
+        }
+
+        // Increase indent after these patterns
+        if (trimmed.endsWith(':') && !trimmed.startsWith('#')) {
+            indentLevel++;
+        }
+
+        // Decrease indent for certain keywords already handled
+        if (trimmed.startsWith('return ') || trimmed === 'return' ||
+            trimmed === 'break' || trimmed === 'continue' || trimmed === 'pass') {
+            // Next line should be at same or lower level
+        }
+    }
+
+    return formatted.join('\n');
+}
+
+function formatGo(code) {
+    // Basic Go formatting
+    const lines = code.split('\n');
+    let formatted = [];
+    let indentLevel = 0;
+    const indentChar = '\t';
+
+    for (let line of lines) {
+        let trimmed = line.trim();
+
+        // Decrease indent for closing braces
+        if (trimmed.startsWith('}') || trimmed.startsWith(')')) {
+            indentLevel = Math.max(0, indentLevel - 1);
+        }
+
+        // Add the line with proper indentation
+        if (trimmed) {
+            formatted.push(indentChar.repeat(indentLevel) + trimmed);
+        } else {
+            formatted.push('');
+        }
+
+        // Increase indent after opening braces
+        if (trimmed.endsWith('{') || trimmed.endsWith('(')) {
+            indentLevel++;
+        }
+    }
+
+    return formatted.join('\n');
+}
 
 // WebSocket connection
 function connectWebSocket() {
@@ -155,7 +298,7 @@ function renderLoading(id) {
 
 function renderOutput(data) {
     const isError = data.state === 'error' || data.state === 'stopped' || data.error;
-    const statusIcon = isError ? '❌' : '✓';
+    const statusIcon = isError ? '✗' : '✓';
     const statusText = isError ? 'Error' : 'Success';
     const statusClass = isError ? 'output-error' : 'output-success';
 
@@ -188,26 +331,25 @@ function setRunningState(running) {
     isRunning = running;
     const runBtn = document.getElementById('run-btn');
     const stopBtn = document.getElementById('stop-btn');
-    const editor = document.getElementById('code-editor');
 
     if (running) {
         runBtn.disabled = true;
         runBtn.classList.add('disabled');
         stopBtn.classList.remove('hidden');
-        editor.disabled = true;
+        if (editor) editor.setOption('readOnly', true);
     } else {
         runBtn.disabled = false;
         runBtn.classList.remove('disabled');
         stopBtn.classList.add('hidden');
-        editor.disabled = false;
+        if (editor) editor.setOption('readOnly', false);
         currentExecutionId = null;
     }
 }
 
 function runCode() {
-    if (isRunning) return;
+    if (isRunning || !editor) return;
 
-    const code = document.getElementById('code-editor').value;
+    const code = editor.getValue();
     currentCode[currentLanguage] = code;
 
     if (!code.trim()) {
@@ -291,15 +433,28 @@ function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelector(`.tab-content#${tabName}-tab`).classList.add('active');
     document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+    // Refresh editor when showing code tab
+    if (tabName === 'code' && editor) {
+        setTimeout(() => editor.refresh(), 10);
+    }
 }
 
 function setLanguage(lang) {
-    if (isRunning) return;
-    currentCode[currentLanguage] = document.getElementById('code-editor').value;
+    if (isRunning || !editor) return;
+
+    // Save current code
+    currentCode[currentLanguage] = editor.getValue();
     currentLanguage = lang;
+
+    // Update language buttons
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-    document.getElementById('code-editor').value = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
+
+    // Set editor mode and content
+    const mode = lang === 'go' ? 'text/x-go' : 'python';
+    editor.setOption('mode', mode);
+    editor.setValue(currentCode[lang] || originalCode[lang] || getDefaultCode(lang));
 }
 
 function getDefaultCode(lang) {
@@ -328,9 +483,9 @@ func main() {
 }
 
 function resetCode() {
-    if (isRunning) return;
+    if (isRunning || !editor) return;
     const code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
-    document.getElementById('code-editor').value = code;
+    editor.setValue(code);
     currentCode[currentLanguage] = code;
 }
 
@@ -349,7 +504,10 @@ function loadProblemCode(pythonCode, goCode) {
     originalCode.go = goCode || getDefaultCode('go');
     currentCode.python = originalCode.python;
     currentCode.go = originalCode.go;
-    document.getElementById('code-editor').value = currentCode[currentLanguage];
+
+    if (editor) {
+        editor.setValue(currentCode[currentLanguage]);
+    }
     showTab('code');
 }
 
@@ -369,11 +527,11 @@ function filterTree(query) {
 }
 
 // Initialize
-document.getElementById('code-editor').value = getDefaultCode('python');
-connectWebSocket();
+document.addEventListener('DOMContentLoaded', function() {
+    initEditor();
+    connectWebSocket();
 
-// Check for saved state on page load
-window.addEventListener('load', () => {
+    // Check for saved state on page load
     const savedState = loadState();
     if (savedState && savedState.state === 'running') {
         showTab('output');
