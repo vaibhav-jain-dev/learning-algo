@@ -1,0 +1,2059 @@
+<div class="guide-page">
+    <nav class="breadcrumb">
+        <a href="/">Home</a>
+    </nav>
+
+    <div class="guide-header">
+        <span class="guide-badge">Go API Development</span>
+        <h1>Go API Development Guide</h1>
+        <p class="guide-description">Master Go for API development - from basics to advanced concurrency patterns</p>
+    </div>
+
+    <div class="guide-nav">
+        <a href="#basic" class="guide-nav-link active" data-section="basic">Basic</a>
+        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">Intermediate</a>
+        <a href="#advanced" class="guide-nav-link" data-section="advanced">Advanced</a>
+    </div>
+
+    <!-- BASIC SECTION -->
+    <section id="basic" class="guide-section">
+        <h2>Basic - Foundations for Go API Development</h2>
+
+        <div class="topic-block">
+            <h3>Understanding Pointers in Go</h3>
+            <p>Pointers are fundamental in Go. A pointer holds the memory address of a value. Understanding pointers is crucial for API development because they affect how data is passed, modified, and shared.</p>
+
+            <h4>What is a Pointer?</h4>
+            <p>A pointer stores the memory address of another variable. The <code>*</code> operator is used to declare a pointer type and to dereference (access the value at the address). The <code>&</code> operator gets the address of a variable.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    // Regular variable
+    x := 42
+
+    // Pointer to x (stores the memory address of x)
+    ptr := &x
+
+    fmt.Println("Value of x:", x)           // 42
+    fmt.Println("Address of x:", &x)        // 0x... (memory address)
+    fmt.Println("Pointer ptr holds:", ptr)  // Same address as &x
+    fmt.Println("Value at ptr:", *ptr)      // 42 (dereferencing)
+
+    // Modifying through pointer changes original
+    *ptr = 100
+    fmt.Println("x after modification:", x) // 100
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Why Use Pointers in APIs?</h4>
+            <ul>
+                <li><strong>Efficiency:</strong> Pass large structs by reference instead of copying</li>
+                <li><strong>Mutability:</strong> Allow functions to modify caller's data</li>
+                <li><strong>Optional values:</strong> nil pointers represent "no value"</li>
+            </ul>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+// User represents an API resource
+type User struct {
+    ID    int
+    Name  string
+    Email string
+}
+
+// Pass by value - cannot modify original
+func updateNameByValue(u User, name string) {
+    u.Name = name // Only modifies the copy
+}
+
+// Pass by pointer - can modify original
+func updateNameByPointer(u *User, name string) {
+    u.Name = name // Modifies the original
+}
+
+// Using pointer for optional fields (nil = not provided)
+type UpdateRequest struct {
+    Name  *string // nil means "don't update"
+    Email *string
+}
+
+func main() {
+    user := User{ID: 1, Name: "Alice", Email: "alice@example.com"}
+
+    // By value - no change
+    updateNameByValue(user, "Bob")
+    fmt.Println("After value update:", user.Name) // Still "Alice"
+
+    // By pointer - changes original
+    updateNameByPointer(&user, "Bob")
+    fmt.Println("After pointer update:", user.Name) // Now "Bob"
+
+    // Optional field example
+    newName := "Charlie"
+    req := UpdateRequest{Name: &newName, Email: nil}
+
+    if req.Name != nil {
+        fmt.Println("Update name to:", *req.Name)
+    }
+    if req.Email == nil {
+        fmt.Println("Email not provided, keep existing")
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Different Ways to Create Pointers</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+type Config struct {
+    Host string
+    Port int
+}
+
+func main() {
+    // Method 1: Using & operator
+    config1 := Config{Host: "localhost", Port: 8080}
+    ptr1 := &config1
+
+    // Method 2: Using new() - returns pointer to zero value
+    ptr2 := new(Config) // *Config pointing to zero-valued Config
+    ptr2.Host = "localhost"
+    ptr2.Port = 8080
+
+    // Method 3: Composite literal with &
+    ptr3 := &Config{Host: "localhost", Port: 8080}
+
+    fmt.Printf("ptr1: %+v\n", *ptr1)
+    fmt.Printf("ptr2: %+v\n", *ptr2)
+    fmt.Printf("ptr3: %+v\n", *ptr3)
+
+    // Pointer to primitive types
+    intPtr := new(int)
+    *intPtr = 42
+    fmt.Println("int pointer value:", *intPtr)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Structs and Methods</h3>
+            <p>Structs are Go's way to define custom types. Methods allow you to attach behavior to structs - essential for building clean API handlers and services.</p>
+
+            <h4>Defining Structs</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+// Basic struct for API response
+type APIResponse struct {
+    Status  int
+    Message string
+    Data    interface{}
+}
+
+// Nested structs for complex data
+type Address struct {
+    Street  string
+    City    string
+    Country string
+}
+
+type User struct {
+    ID        int
+    Name      string
+    Email     string
+    Address   Address   // Embedded struct
+    CreatedAt time.Time
+    UpdatedAt *time.Time // Pointer for optional field
+}
+
+func main() {
+    // Creating struct instances
+    response := APIResponse{
+        Status:  200,
+        Message: "Success",
+        Data:    map[string]string{"key": "value"},
+    }
+
+    user := User{
+        ID:    1,
+        Name:  "Alice",
+        Email: "alice@example.com",
+        Address: Address{
+            Street:  "123 Main St",
+            City:    "New York",
+            Country: "USA",
+        },
+        CreatedAt: time.Now(),
+        UpdatedAt: nil, // Not yet updated
+    }
+
+    fmt.Printf("Response: %+v\n", response)
+    fmt.Printf("User: %+v\n", user)
+    fmt.Printf("User's City: %s\n", user.Address.City)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Methods on Structs</h4>
+            <p>Methods can have value receivers or pointer receivers. Use pointer receivers when:</p>
+            <ul>
+                <li>The method needs to modify the receiver</li>
+                <li>The struct is large (avoids copying)</li>
+                <li>Consistency - if one method needs a pointer, use pointers for all</li>
+            </ul>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type User struct {
+    ID    int    `json:"id"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Age   int    `json:"age"`
+}
+
+// Value receiver - cannot modify the struct
+func (u User) FullInfo() string {
+    return fmt.Sprintf("User %d: %s (%s)", u.ID, u.Name, u.Email)
+}
+
+// Pointer receiver - can modify the struct
+func (u *User) SetEmail(email string) {
+    u.Email = email
+}
+
+// Pointer receiver - for large structs or consistency
+func (u *User) ToJSON() ([]byte, error) {
+    return json.Marshal(u)
+}
+
+// Validation method
+func (u *User) Validate() error {
+    if u.Name == "" {
+        return fmt.Errorf("name is required")
+    }
+    if u.Email == "" {
+        return fmt.Errorf("email is required")
+    }
+    if u.Age < 0 {
+        return fmt.Errorf("age cannot be negative")
+    }
+    return nil
+}
+
+func main() {
+    user := User{ID: 1, Name: "Alice", Email: "alice@example.com", Age: 25}
+
+    // Value receiver method
+    fmt.Println(user.FullInfo())
+
+    // Pointer receiver method - modifies the struct
+    user.SetEmail("newalice@example.com")
+    fmt.Println("After SetEmail:", user.Email)
+
+    // ToJSON
+    jsonData, _ := user.ToJSON()
+    fmt.Println("JSON:", string(jsonData))
+
+    // Validation
+    if err := user.Validate(); err != nil {
+        fmt.Println("Validation error:", err)
+    } else {
+        fmt.Println("User is valid")
+    }
+
+    // Invalid user
+    invalidUser := User{ID: 2, Age: -5}
+    if err := invalidUser.Validate(); err != nil {
+        fmt.Println("Validation error:", err)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Struct Embedding (Composition)</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+// Base model with common fields
+type BaseModel struct {
+    ID        int
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+// Methods on BaseModel
+func (b *BaseModel) SetTimestamps() {
+    now := time.Now()
+    if b.CreatedAt.IsZero() {
+        b.CreatedAt = now
+    }
+    b.UpdatedAt = now
+}
+
+// User embeds BaseModel - inherits its fields and methods
+type User struct {
+    BaseModel        // Embedded (anonymous field)
+    Name      string
+    Email     string
+}
+
+// Product also embeds BaseModel
+type Product struct {
+    BaseModel
+    Name  string
+    Price float64
+}
+
+func main() {
+    user := User{
+        Name:  "Alice",
+        Email: "alice@example.com",
+    }
+
+    // Access embedded fields directly
+    user.ID = 1
+    user.SetTimestamps() // Method from BaseModel
+
+    fmt.Printf("User ID: %d\n", user.ID)
+    fmt.Printf("User Name: %s\n", user.Name)
+    fmt.Printf("Created: %v\n", user.CreatedAt.Format(time.RFC3339))
+
+    product := Product{
+        Name:  "Laptop",
+        Price: 999.99,
+    }
+    product.ID = 100
+    product.SetTimestamps()
+
+    fmt.Printf("Product: %s ($%.2f), Created: %v\n",
+        product.Name, product.Price, product.CreatedAt.Format(time.RFC3339))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Interfaces for API Design</h3>
+            <p>Interfaces define behavior contracts. They enable loose coupling and are essential for testable API code.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+// Interface defines the contract
+type Repository interface {
+    FindByID(id int) (interface{}, error)
+    Save(entity interface{}) error
+}
+
+// Mock implementation for testing
+type MockUserRepository struct {
+    users map[int]string
+}
+
+func NewMockUserRepository() *MockUserRepository {
+    return &MockUserRepository{
+        users: map[int]string{
+            1: "Alice",
+            2: "Bob",
+        },
+    }
+}
+
+func (r *MockUserRepository) FindByID(id int) (interface{}, error) {
+    if name, ok := r.users[id]; ok {
+        return name, nil
+    }
+    return nil, fmt.Errorf("user not found")
+}
+
+func (r *MockUserRepository) Save(entity interface{}) error {
+    fmt.Printf("Saved: %v\n", entity)
+    return nil
+}
+
+// Service depends on interface, not concrete type
+type UserService struct {
+    repo Repository
+}
+
+func NewUserService(repo Repository) *UserService {
+    return &UserService{repo: repo}
+}
+
+func (s *UserService) GetUser(id int) (interface{}, error) {
+    return s.repo.FindByID(id)
+}
+
+func main() {
+    // Inject mock repository
+    repo := NewMockUserRepository()
+    service := NewUserService(repo)
+
+    user, err := service.GetUser(1)
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+    fmt.Println("Found user:", user)
+
+    _, err = service.GetUser(99)
+    if err != nil {
+        fmt.Println("Error:", err)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Error Handling in Go</h3>
+            <p>Go uses explicit error handling. Functions return errors as values - no exceptions.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// Custom error types
+var (
+    ErrNotFound     = errors.New("resource not found")
+    ErrUnauthorized = errors.New("unauthorized access")
+    ErrValidation   = errors.New("validation failed")
+)
+
+// Wrapping errors with context
+type User struct {
+    ID    int
+    Name  string
+    Email string
+}
+
+func findUser(id int) (*User, error) {
+    // Simulate database lookup
+    if id <= 0 {
+        return nil, fmt.Errorf("findUser: invalid id %d: %w", id, ErrValidation)
+    }
+    if id == 99 {
+        return nil, fmt.Errorf("findUser id=%d: %w", id, ErrNotFound)
+    }
+    return &User{ID: id, Name: "Alice", Email: "alice@example.com"}, nil
+}
+
+func main() {
+    // Success case
+    user, err := findUser(1)
+    if err != nil {
+        fmt.Println("Error:", err)
+    } else {
+        fmt.Printf("Found: %+v\n", user)
+    }
+
+    // Error case - check specific error type
+    _, err = findUser(99)
+    if err != nil {
+        // Using errors.Is to check wrapped errors
+        if errors.Is(err, ErrNotFound) {
+            fmt.Println("User not found - return 404")
+        } else if errors.Is(err, ErrValidation) {
+            fmt.Println("Validation error - return 400")
+        } else {
+            fmt.Println("Unknown error:", err)
+        }
+    }
+
+    // Validation error
+    _, err = findUser(-1)
+    if errors.Is(err, ErrValidation) {
+        fmt.Println("Bad request:", err)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Slices and Maps</h3>
+            <p>Essential data structures for API development - handling collections and key-value data.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+type User struct {
+    ID   int
+    Name string
+}
+
+func main() {
+    // Slices - dynamic arrays
+    users := []User{
+        {ID: 1, Name: "Alice"},
+        {ID: 2, Name: "Bob"},
+    }
+
+    // Append to slice
+    users = append(users, User{ID: 3, Name: "Charlie"})
+
+    // Iterate
+    fmt.Println("All users:")
+    for i, u := range users {
+        fmt.Printf("  %d: %+v\n", i, u)
+    }
+
+    // Slice with capacity (performance optimization)
+    moreUsers := make([]User, 0, 100) // len=0, cap=100
+    moreUsers = append(moreUsers, User{ID: 4, Name: "David"})
+    fmt.Printf("Length: %d, Capacity: %d\n", len(moreUsers), cap(moreUsers))
+
+    // Maps - key-value store
+    userMap := make(map[int]User)
+    userMap[1] = User{ID: 1, Name: "Alice"}
+    userMap[2] = User{ID: 2, Name: "Bob"}
+
+    // Check if key exists
+    if user, exists := userMap[1]; exists {
+        fmt.Printf("Found: %+v\n", user)
+    }
+
+    if _, exists := userMap[99]; !exists {
+        fmt.Println("User 99 not found")
+    }
+
+    // Delete from map
+    delete(userMap, 2)
+    fmt.Printf("After delete, map size: %d\n", len(userMap))
+
+    // Map literal
+    statusCodes := map[string]int{
+        "OK":        200,
+        "Created":   201,
+        "NotFound":  404,
+        "ServerErr": 500,
+    }
+    fmt.Println("OK status:", statusCodes["OK"])
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERMEDIATE SECTION -->
+    <section id="intermediate" class="guide-section">
+        <h2>Intermediate - Essential API Development Skills</h2>
+
+        <div class="topic-block">
+            <h3>Goroutines - Concurrent Execution</h3>
+            <p>Goroutines are lightweight threads managed by Go runtime. They're the foundation of Go's concurrency model and essential for high-performance APIs.</p>
+
+            <h4>Basic Goroutines</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func fetchUser(id int, wg *sync.WaitGroup) {
+    defer wg.Done() // Signal completion when function returns
+
+    // Simulate API call
+    time.Sleep(100 * time.Millisecond)
+    fmt.Printf("Fetched user %d\n", id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    userIDs := []int{1, 2, 3, 4, 5}
+
+    start := time.Now()
+
+    // Launch goroutines for concurrent fetching
+    for _, id := range userIDs {
+        wg.Add(1)
+        go fetchUser(id, &wg)
+    }
+
+    // Wait for all goroutines to complete
+    wg.Wait()
+
+    fmt.Printf("Fetched %d users in %v\n", len(userIDs), time.Since(start))
+    // Note: Sequential would take 500ms, concurrent takes ~100ms
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Channels - Goroutine Communication</h4>
+            <p>Channels are Go's way to communicate between goroutines safely. "Don't communicate by sharing memory; share memory by communicating."</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+type Result struct {
+    UserID int
+    Data   string
+    Error  error
+}
+
+func fetchUserData(id int, results chan<- Result) {
+    // Simulate API call
+    time.Sleep(50 * time.Millisecond)
+
+    // Send result through channel
+    results <- Result{
+        UserID: id,
+        Data:   fmt.Sprintf("User %d data", id),
+        Error:  nil,
+    }
+}
+
+func main() {
+    userIDs := []int{1, 2, 3, 4, 5}
+
+    // Buffered channel - won't block until buffer is full
+    results := make(chan Result, len(userIDs))
+
+    // Launch goroutines
+    for _, id := range userIDs {
+        go fetchUserData(id, results)
+    }
+
+    // Collect results
+    for i := 0; i < len(userIDs); i++ {
+        result := <-results // Receive from channel
+        if result.Error != nil {
+            fmt.Printf("Error for user %d: %v\n", result.UserID, result.Error)
+        } else {
+            fmt.Printf("Got: %s\n", result.Data)
+        }
+    }
+
+    close(results) // Close channel when done
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Select Statement - Handling Multiple Channels</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+
+    go func() {
+        time.Sleep(100 * time.Millisecond)
+        ch1 <- "Result from service 1"
+    }()
+
+    go func() {
+        time.Sleep(50 * time.Millisecond)
+        ch2 <- "Result from service 2"
+    }()
+
+    // Receive from whichever channel is ready first
+    for i := 0; i < 2; i++ {
+        select {
+        case msg1 := <-ch1:
+            fmt.Println("Received:", msg1)
+        case msg2 := <-ch2:
+            fmt.Println("Received:", msg2)
+        }
+    }
+
+    // Select with timeout
+    timeout := make(chan string)
+    go func() {
+        time.Sleep(200 * time.Millisecond)
+        timeout <- "slow result"
+    }()
+
+    select {
+    case result := <-timeout:
+        fmt.Println("Got:", result)
+    case <-time.After(100 * time.Millisecond):
+        fmt.Println("Timeout! Service too slow")
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Common Mistakes and How to Avoid Them</h3>
+
+            <h4>Mistake 1: Goroutine Leak</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+// BAD: Goroutine leaks if channel is never read
+func leakyGoroutine() {
+    ch := make(chan int)
+    go func() {
+        // This goroutine will block forever if no one reads from ch
+        ch <- 42
+        fmt.Println("This may never print")
+    }()
+    // If we return here without reading from ch, goroutine leaks!
+}
+
+// GOOD: Use context for cancellation
+func properGoroutine(ctx context.Context) {
+    ch := make(chan int, 1) // Buffered channel won't block
+
+    go func() {
+        select {
+        case ch <- 42:
+            fmt.Println("Sent value")
+        case <-ctx.Done():
+            fmt.Println("Cancelled, cleaning up")
+            return
+        }
+    }()
+
+    // Wait briefly then cancel
+    time.Sleep(10 * time.Millisecond)
+}
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+    defer cancel()
+
+    properGoroutine(ctx)
+
+    fmt.Println("Main function completed")
+    time.Sleep(50 * time.Millisecond)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Mistake 2: Race Conditions</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+// BAD: Race condition - multiple goroutines accessing shared state
+type BadCounter struct {
+    count int
+}
+
+// GOOD: Use mutex to protect shared state
+type SafeCounter struct {
+    mu    sync.Mutex
+    count int
+}
+
+func (c *SafeCounter) Increment() {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    c.count++
+}
+
+func (c *SafeCounter) Value() int {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    return c.count
+}
+
+// BETTER: Use atomic operations for simple counters
+// import "sync/atomic"
+// var counter int64
+// atomic.AddInt64(&counter, 1)
+
+func main() {
+    counter := &SafeCounter{}
+    var wg sync.WaitGroup
+
+    // 1000 goroutines incrementing safely
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            counter.Increment()
+        }()
+    }
+
+    wg.Wait()
+    fmt.Printf("Final count: %d (expected 1000)\n", counter.Value())
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Mistake 3: Nil Pointer Dereference</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+type User struct {
+    Name string
+    Profile *Profile
+}
+
+type Profile struct {
+    Bio string
+}
+
+func main() {
+    // User without profile
+    user := User{Name: "Alice", Profile: nil}
+
+    // BAD: This would panic
+    // fmt.Println(user.Profile.Bio) // panic: nil pointer dereference
+
+    // GOOD: Always check for nil
+    if user.Profile != nil {
+        fmt.Println("Bio:", user.Profile.Bio)
+    } else {
+        fmt.Println("No profile set")
+    }
+
+    // GOOD: Using safe accessor method
+    fmt.Println("Bio:", user.GetBio())
+}
+
+// Safe accessor that handles nil
+func (u *User) GetBio() string {
+    if u.Profile == nil {
+        return ""
+    }
+    return u.Profile.Bio
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Mistake 4: Loop Variable Capture in Goroutines</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+func main() {
+    var wg sync.WaitGroup
+
+    ids := []int{1, 2, 3, 4, 5}
+
+    fmt.Println("BAD - capturing loop variable:")
+    for _, id := range ids {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            // BAD: id is shared, will likely print same value
+            fmt.Printf("  Processing %d\n", id)
+        }()
+    }
+    wg.Wait()
+
+    fmt.Println("\nGOOD - passing as parameter:")
+    for _, id := range ids {
+        wg.Add(1)
+        go func(userID int) {
+            defer wg.Done()
+            // GOOD: userID is a copy, correct value
+            fmt.Printf("  Processing %d\n", userID)
+        }(id) // Pass id as argument
+    }
+    wg.Wait()
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Mistake 5: Ignoring Errors</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type User struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+}
+
+func main() {
+    jsonData := []byte(`{"id": 1, "name": "Alice"}`)
+
+    // BAD: Ignoring error
+    var user1 User
+    json.Unmarshal(jsonData, &user1) // Error ignored!
+
+    // GOOD: Always handle errors
+    var user2 User
+    if err := json.Unmarshal(jsonData, &user2); err != nil {
+        fmt.Println("Failed to parse JSON:", err)
+        return
+    }
+    fmt.Printf("Parsed user: %+v\n", user2)
+
+    // Invalid JSON example
+    badJSON := []byte(`{"id": "not a number"}`)
+    var user3 User
+    if err := json.Unmarshal(badJSON, &user3); err != nil {
+        fmt.Println("Error parsing bad JSON:", err)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Context for Request Handling</h3>
+            <p>Context carries deadlines, cancellation signals, and request-scoped values across API boundaries.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+func fetchFromDB(ctx context.Context, query string) (string, error) {
+    // Create a channel for the result
+    resultCh := make(chan string, 1)
+
+    go func() {
+        // Simulate slow database query
+        time.Sleep(200 * time.Millisecond)
+        resultCh <- "DB Result: " + query
+    }()
+
+    // Wait for result or context cancellation
+    select {
+    case result := <-resultCh:
+        return result, nil
+    case <-ctx.Done():
+        return "", ctx.Err()
+    }
+}
+
+func handleRequest(ctx context.Context) {
+    // Add timeout to context
+    ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+    defer cancel()
+
+    result, err := fetchFromDB(ctx, "SELECT * FROM users")
+    if err != nil {
+        if err == context.DeadlineExceeded {
+            fmt.Println("Request timed out")
+        } else if err == context.Canceled {
+            fmt.Println("Request was cancelled")
+        } else {
+            fmt.Println("Error:", err)
+        }
+        return
+    }
+
+    fmt.Println("Got:", result)
+}
+
+func main() {
+    ctx := context.Background()
+
+    fmt.Println("Request with 100ms timeout (DB takes 200ms):")
+    handleRequest(ctx)
+
+    // Increase timeout
+    fmt.Println("\nRequest with longer timeout:")
+    ctx2, cancel := context.WithTimeout(ctx, 300*time.Millisecond)
+    defer cancel()
+
+    result, err := fetchFromDB(ctx2, "SELECT * FROM products")
+    if err != nil {
+        fmt.Println("Error:", err)
+    } else {
+        fmt.Println("Success:", result)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>JSON Handling for APIs</h3>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type User struct {
+    ID        int    `json:"id"`
+    Name      string `json:"name"`
+    Email     string `json:"email,omitempty"`    // Omit if empty
+    Password  string `json:"-"`                   // Never include in JSON
+    IsAdmin   bool   `json:"is_admin"`
+    CreatedAt string `json:"created_at,omitempty"`
+}
+
+type APIResponse struct {
+    Success bool        `json:"success"`
+    Data    interface{} `json:"data,omitempty"`
+    Error   string      `json:"error,omitempty"`
+}
+
+func main() {
+    // Struct to JSON
+    user := User{
+        ID:       1,
+        Name:     "Alice",
+        Email:    "alice@example.com",
+        Password: "secret123", // Won't appear in JSON
+        IsAdmin:  false,
+    }
+
+    jsonData, _ := json.MarshalIndent(user, "", "  ")
+    fmt.Println("User JSON:")
+    fmt.Println(string(jsonData))
+
+    // API Response
+    response := APIResponse{
+        Success: true,
+        Data:    user,
+    }
+
+    jsonResp, _ := json.MarshalIndent(response, "", "  ")
+    fmt.Println("\nAPI Response:")
+    fmt.Println(string(jsonResp))
+
+    // JSON to Struct
+    input := []byte(`{"id": 2, "name": "Bob", "is_admin": true}`)
+    var newUser User
+    json.Unmarshal(input, &newUser)
+    fmt.Printf("\nParsed User: %+v\n", newUser)
+
+    // Handling unknown fields with map
+    rawJSON := []byte(`{"id": 3, "name": "Charlie", "extra_field": "value"}`)
+    var data map[string]interface{}
+    json.Unmarshal(rawJSON, &data)
+    fmt.Printf("Raw data: %v\n", data)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADVANCED SECTION -->
+    <section id="advanced" class="guide-section">
+        <h2>Advanced - High-Performance API Patterns</h2>
+
+        <div class="topic-block">
+            <h3>Worker Pool Pattern</h3>
+            <p>Process multiple tasks concurrently with a fixed number of workers - essential for rate limiting and resource management.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+type Job struct {
+    ID      int
+    Payload string
+}
+
+type Result struct {
+    JobID   int
+    Output  string
+    Error   error
+}
+
+func worker(id int, jobs <-chan Job, results chan<- Result, wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    for job := range jobs {
+        // Simulate processing
+        time.Sleep(50 * time.Millisecond)
+
+        results <- Result{
+            JobID:  job.ID,
+            Output: fmt.Sprintf("Worker %d processed job %d: %s", id, job.ID, job.Payload),
+            Error:  nil,
+        }
+    }
+}
+
+func main() {
+    numWorkers := 3
+    numJobs := 10
+
+    jobs := make(chan Job, numJobs)
+    results := make(chan Result, numJobs)
+
+    var wg sync.WaitGroup
+
+    // Start workers
+    fmt.Printf("Starting %d workers...\n", numWorkers)
+    for w := 1; w <= numWorkers; w++ {
+        wg.Add(1)
+        go worker(w, jobs, results, &wg)
+    }
+
+    // Send jobs
+    start := time.Now()
+    for j := 1; j <= numJobs; j++ {
+        jobs <- Job{ID: j, Payload: fmt.Sprintf("Task %d data", j)}
+    }
+    close(jobs) // No more jobs
+
+    // Wait for workers in separate goroutine
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    // Collect results
+    for result := range results {
+        fmt.Println(result.Output)
+    }
+
+    fmt.Printf("\nProcessed %d jobs in %v\n", numJobs, time.Since(start))
+    fmt.Printf("Sequential would take: %v\n", time.Duration(numJobs)*50*time.Millisecond)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Rate Limiter Implementation</h3>
+            <p>Control request rates using Go's time.Ticker and channels.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+type RateLimiter struct {
+    tokens   chan struct{}
+    interval time.Duration
+    stop     chan struct{}
+}
+
+func NewRateLimiter(ratePerSecond int) *RateLimiter {
+    rl := &RateLimiter{
+        tokens:   make(chan struct{}, ratePerSecond),
+        interval: time.Second / time.Duration(ratePerSecond),
+        stop:     make(chan struct{}),
+    }
+
+    // Fill initial tokens
+    for i := 0; i < ratePerSecond; i++ {
+        rl.tokens <- struct{}{}
+    }
+
+    // Refill tokens periodically
+    go func() {
+        ticker := time.NewTicker(rl.interval)
+        defer ticker.Stop()
+
+        for {
+            select {
+            case <-ticker.C:
+                select {
+                case rl.tokens <- struct{}{}:
+                default: // Bucket full
+                }
+            case <-rl.stop:
+                return
+            }
+        }
+    }()
+
+    return rl
+}
+
+func (rl *RateLimiter) Allow() bool {
+    select {
+    case <-rl.tokens:
+        return true
+    default:
+        return false
+    }
+}
+
+func (rl *RateLimiter) Wait() {
+    <-rl.tokens
+}
+
+func (rl *RateLimiter) Stop() {
+    close(rl.stop)
+}
+
+func main() {
+    // Allow 5 requests per second
+    limiter := NewRateLimiter(5)
+    defer limiter.Stop()
+
+    var wg sync.WaitGroup
+
+    start := time.Now()
+
+    // Try to make 10 requests quickly
+    for i := 1; i <= 10; i++ {
+        wg.Add(1)
+        go func(reqID int) {
+            defer wg.Done()
+
+            limiter.Wait() // Block until allowed
+            elapsed := time.Since(start)
+            fmt.Printf("Request %d processed at %v\n", reqID, elapsed.Round(time.Millisecond))
+        }(i)
+    }
+
+    wg.Wait()
+    fmt.Printf("\nAll requests completed in %v\n", time.Since(start).Round(time.Millisecond))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Circuit Breaker Pattern</h3>
+            <p>Prevent cascading failures by stopping requests to failing services.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "errors"
+    "fmt"
+    "sync"
+    "time"
+)
+
+type State int
+
+const (
+    StateClosed State = iota
+    StateOpen
+    StateHalfOpen
+)
+
+type CircuitBreaker struct {
+    mu            sync.Mutex
+    state         State
+    failures      int
+    successes     int
+    threshold     int
+    resetTimeout  time.Duration
+    lastFailure   time.Time
+}
+
+func NewCircuitBreaker(threshold int, resetTimeout time.Duration) *CircuitBreaker {
+    return &CircuitBreaker{
+        state:        StateClosed,
+        threshold:    threshold,
+        resetTimeout: resetTimeout,
+    }
+}
+
+func (cb *CircuitBreaker) Execute(fn func() error) error {
+    cb.mu.Lock()
+
+    // Check if circuit should transition from Open to HalfOpen
+    if cb.state == StateOpen {
+        if time.Since(cb.lastFailure) > cb.resetTimeout {
+            cb.state = StateHalfOpen
+            cb.failures = 0
+            fmt.Println("Circuit: Open -> HalfOpen")
+        } else {
+            cb.mu.Unlock()
+            return errors.New("circuit breaker is open")
+        }
+    }
+    cb.mu.Unlock()
+
+    // Execute the function
+    err := fn()
+
+    cb.mu.Lock()
+    defer cb.mu.Unlock()
+
+    if err != nil {
+        cb.failures++
+        cb.lastFailure = time.Now()
+
+        if cb.failures >= cb.threshold {
+            cb.state = StateOpen
+            fmt.Printf("Circuit: -> Open (failures: %d)\n", cb.failures)
+        }
+        return err
+    }
+
+    // Success
+    if cb.state == StateHalfOpen {
+        cb.successes++
+        if cb.successes >= 2 {
+            cb.state = StateClosed
+            cb.successes = 0
+            fmt.Println("Circuit: HalfOpen -> Closed")
+        }
+    }
+    cb.failures = 0
+    return nil
+}
+
+func main() {
+    cb := NewCircuitBreaker(3, 500*time.Millisecond)
+
+    callCount := 0
+
+    // Simulated external service
+    callService := func() error {
+        callCount++
+        if callCount <= 4 || callCount > 7 {
+            return errors.New("service unavailable")
+        }
+        return nil // Success for calls 5, 6, 7
+    }
+
+    // Make 10 calls
+    for i := 1; i <= 10; i++ {
+        err := cb.Execute(callService)
+        if err != nil {
+            fmt.Printf("Call %d: Failed - %v\n", i, err)
+        } else {
+            fmt.Printf("Call %d: Success\n", i)
+        }
+
+        // Small delay between calls
+        time.Sleep(100 * time.Millisecond)
+    }
+
+    // Wait for reset timeout
+    fmt.Println("\nWaiting for circuit to reset...")
+    time.Sleep(600 * time.Millisecond)
+
+    // Try again after reset
+    callCount = 5 // Force success
+    err := cb.Execute(callService)
+    if err != nil {
+        fmt.Printf("After reset: Failed - %v\n", err)
+    } else {
+        fmt.Println("After reset: Success")
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Graceful Shutdown</h3>
+            <p>Handle shutdown signals properly to complete in-flight requests.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "sync"
+    "time"
+)
+
+type Server struct {
+    wg      sync.WaitGroup
+    running bool
+    mu      sync.Mutex
+}
+
+func (s *Server) HandleRequest(ctx context.Context, reqID int) {
+    s.mu.Lock()
+    if !s.running {
+        s.mu.Unlock()
+        fmt.Printf("Request %d rejected: server shutting down\n", reqID)
+        return
+    }
+    s.wg.Add(1)
+    s.mu.Unlock()
+
+    defer s.wg.Done()
+
+    fmt.Printf("Request %d: Started\n", reqID)
+
+    // Simulate work with context awareness
+    select {
+    case <-time.After(200 * time.Millisecond):
+        fmt.Printf("Request %d: Completed\n", reqID)
+    case <-ctx.Done():
+        fmt.Printf("Request %d: Cancelled\n", reqID)
+    }
+}
+
+func (s *Server) Start() {
+    s.mu.Lock()
+    s.running = true
+    s.mu.Unlock()
+    fmt.Println("Server started")
+}
+
+func (s *Server) Shutdown(timeout time.Duration) {
+    fmt.Println("Initiating graceful shutdown...")
+
+    s.mu.Lock()
+    s.running = false
+    s.mu.Unlock()
+
+    // Wait for in-flight requests with timeout
+    done := make(chan struct{})
+    go func() {
+        s.wg.Wait()
+        close(done)
+    }()
+
+    select {
+    case <-done:
+        fmt.Println("All requests completed, shutdown successful")
+    case <-time.After(timeout):
+        fmt.Println("Shutdown timeout, some requests may be incomplete")
+    }
+}
+
+func main() {
+    server := &Server{}
+    server.Start()
+
+    ctx := context.Background()
+
+    // Simulate incoming requests
+    for i := 1; i <= 3; i++ {
+        go server.HandleRequest(ctx, i)
+        time.Sleep(50 * time.Millisecond)
+    }
+
+    // Wait a bit then initiate shutdown
+    time.Sleep(100 * time.Millisecond)
+
+    // Try to send more requests during shutdown
+    go server.HandleRequest(ctx, 99)
+
+    server.Shutdown(500 * time.Millisecond)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Concurrent Map with sync.Map</h3>
+            <p>Thread-safe map for concurrent access patterns common in caching.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+type Cache struct {
+    data sync.Map
+}
+
+func (c *Cache) Set(key string, value interface{}) {
+    c.data.Store(key, value)
+}
+
+func (c *Cache) Get(key string) (interface{}, bool) {
+    return c.data.Load(key)
+}
+
+func (c *Cache) GetOrSet(key string, defaultValue interface{}) interface{} {
+    actual, _ := c.data.LoadOrStore(key, defaultValue)
+    return actual
+}
+
+func (c *Cache) Delete(key string) {
+    c.data.Delete(key)
+}
+
+func (c *Cache) Range(fn func(key, value interface{}) bool) {
+    c.data.Range(fn)
+}
+
+func main() {
+    cache := &Cache{}
+    var wg sync.WaitGroup
+
+    // Concurrent writes
+    for i := 0; i < 10; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            key := fmt.Sprintf("user:%d", id)
+            cache.Set(key, fmt.Sprintf("User %d data", id))
+        }(i)
+    }
+
+    wg.Wait()
+
+    // Read values
+    if value, ok := cache.Get("user:5"); ok {
+        fmt.Println("Found:", value)
+    }
+
+    // GetOrSet - atomic check and set
+    result := cache.GetOrSet("user:100", "New User 100")
+    fmt.Println("GetOrSet result:", result)
+
+    // Second call returns existing value
+    result2 := cache.GetOrSet("user:100", "Different Value")
+    fmt.Println("Second GetOrSet:", result2)
+
+    // Iterate all entries
+    fmt.Println("\nAll cache entries:")
+    cache.Range(func(key, value interface{}) bool {
+        fmt.Printf("  %s: %s\n", key, value)
+        return true // Continue iteration
+    })
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Semaphore for Concurrency Limiting</h3>
+            <p>Limit concurrent operations using a weighted semaphore pattern.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "sync"
+    "time"
+)
+
+type Semaphore struct {
+    sem chan struct{}
+}
+
+func NewSemaphore(maxConcurrent int) *Semaphore {
+    return &Semaphore{
+        sem: make(chan struct{}, maxConcurrent),
+    }
+}
+
+func (s *Semaphore) Acquire(ctx context.Context) error {
+    select {
+    case s.sem <- struct{}{}:
+        return nil
+    case <-ctx.Done():
+        return ctx.Err()
+    }
+}
+
+func (s *Semaphore) Release() {
+    <-s.sem
+}
+
+func main() {
+    // Allow max 3 concurrent operations
+    sem := NewSemaphore(3)
+    var wg sync.WaitGroup
+
+    ctx := context.Background()
+    start := time.Now()
+
+    // Try to run 10 operations concurrently
+    for i := 1; i <= 10; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+
+            // Acquire semaphore
+            if err := sem.Acquire(ctx); err != nil {
+                fmt.Printf("Op %d: Failed to acquire\n", id)
+                return
+            }
+            defer sem.Release()
+
+            // Do work
+            elapsed := time.Since(start).Round(time.Millisecond)
+            fmt.Printf("Op %d: Started at %v\n", id, elapsed)
+            time.Sleep(100 * time.Millisecond)
+
+            elapsed = time.Since(start).Round(time.Millisecond)
+            fmt.Printf("Op %d: Completed at %v\n", id, elapsed)
+        }(i)
+    }
+
+    wg.Wait()
+    fmt.Printf("\nAll operations completed in %v\n", time.Since(start).Round(time.Millisecond))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Fan-Out/Fan-In Pattern</h3>
+            <p>Distribute work across multiple goroutines and collect results.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+// Fan-out: One channel to many workers
+// Fan-in: Many channels to one channel
+
+func producer(nums ...int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for _, n := range nums {
+            out <- n
+        }
+        close(out)
+    }()
+    return out
+}
+
+func square(in <-chan int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for n := range in {
+            time.Sleep(50 * time.Millisecond) // Simulate work
+            out <- n * n
+        }
+        close(out)
+    }()
+    return out
+}
+
+// Fan-in: merge multiple channels into one
+func merge(channels ...<-chan int) <-chan int {
+    var wg sync.WaitGroup
+    out := make(chan int)
+
+    // Start a goroutine for each input channel
+    output := func(c <-chan int) {
+        defer wg.Done()
+        for n := range c {
+            out <- n
+        }
+    }
+
+    wg.Add(len(channels))
+    for _, c := range channels {
+        go output(c)
+    }
+
+    // Close out after all inputs are done
+    go func() {
+        wg.Wait()
+        close(out)
+    }()
+
+    return out
+}
+
+func main() {
+    start := time.Now()
+
+    // Create input
+    in := producer(1, 2, 3, 4, 5, 6, 7, 8)
+
+    // Fan-out to 3 workers
+    c1 := square(in)
+    c2 := square(in)
+    c3 := square(in)
+
+    // Fan-in results
+    results := merge(c1, c2, c3)
+
+    // Collect results
+    var sum int
+    count := 0
+    for n := range results {
+        fmt.Printf("Got: %d\n", n)
+        sum += n
+        count++
+    }
+
+    fmt.Printf("\nProcessed %d items, sum: %d\n", count, sum)
+    fmt.Printf("Time: %v (sequential would be ~400ms)\n", time.Since(start).Round(time.Millisecond))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.guide-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.breadcrumb {
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.guide-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.guide-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #00ADD8;
+    color: white;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.guide-header h1 {
+    margin: 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.guide-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.guide-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 70px;
+    z-index: 50;
+}
+
+.guide-nav-link {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.guide-nav-link:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.guide-nav-link.active {
+    background: #00ADD8;
+    color: white;
+}
+
+.guide-section {
+    margin-bottom: 3rem;
+    padding-top: 1rem;
+}
+
+.guide-section > h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #00ADD8;
+}
+
+.topic-block {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.topic-block h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.topic-block h4 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #00ADD8;
+}
+
+.topic-block p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.topic-block ul, .topic-block ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.topic-block li {
+    margin-bottom: 0.5rem;
+}
+
+.topic-block code {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.code-example {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.code-example pre {
+    background: #1e1e1e;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    padding-top: 2.5rem;
+    overflow-x: auto;
+    margin: 0;
+}
+
+.code-example pre code {
+    background: none;
+    padding: 0;
+    color: #d4d4d4;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.run-code-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: #00ADD8;
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.run-code-btn:hover {
+    background: #0095b8;
+}
+
+.run-code-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .guide-page {
+        padding: 1rem;
+    }
+
+    .guide-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .guide-nav {
+        flex-direction: column;
+        position: static;
+    }
+
+    .guide-nav-link {
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // Navigation highlighting
+    const navLinks = document.querySelectorAll('.guide-nav-link');
+    const sections = document.querySelectorAll('.guide-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Scroll spy
+    window.addEventListener('scroll', function() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (pageYOffset >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-section') === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Run code buttons
+    document.querySelectorAll('.run-code-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const codeBlock = this.parentElement.querySelector('code');
+            const code = codeBlock.textContent;
+            const language = this.dataset.language || 'go';
+
+            this.disabled = true;
+            this.textContent = 'Running...';
+
+            // Send to execution API
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code, language: language})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    // Poll for result
+                    const checkResult = () => {
+                        fetch('/api/execution/' + data.id)
+                        .then(r => r.json())
+                        .then(result => {
+                            if (result.state === 'completed' || result.state === 'error') {
+                                this.disabled = false;
+                                this.textContent = 'Run Code';
+
+                                // Show output
+                                let outputDiv = this.parentElement.querySelector('.code-output');
+                                if (!outputDiv) {
+                                    outputDiv = document.createElement('div');
+                                    outputDiv.className = 'code-output';
+                                    this.parentElement.appendChild(outputDiv);
+                                }
+
+                                if (result.error) {
+                                    outputDiv.innerHTML = '<pre class="error-output">' + escapeHtml(result.error) + '</pre>';
+                                } else {
+                                    outputDiv.innerHTML = '<pre class="success-output">' + escapeHtml(result.output || 'No output') + '</pre>';
+                                }
+                            } else {
+                                setTimeout(checkResult, 500);
+                            }
+                        });
+                    };
+                    checkResult();
+                }
+            })
+            .catch(err => {
+                this.disabled = false;
+                this.textContent = 'Run Code';
+                alert('Error: ' + err.message);
+            });
+        });
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Highlight code
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('.code-example pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+</script>
