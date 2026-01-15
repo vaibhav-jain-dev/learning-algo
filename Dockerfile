@@ -43,7 +43,7 @@ RUN wget -q https://go.dev/dl/go1.21.5.linux-amd64.tar.gz \
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
 ENV PATH="${GOPATH}/bin:${PATH}"
-ENV GOCACHE="/tmp/go-cache"
+ENV GOCACHE="/app/.go-cache"
 
 # Set working directory
 WORKDIR /app
@@ -55,11 +55,10 @@ COPY --from=builder /build/server ./server
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 
-# Create non-root user and state directory
+# Create non-root user, state directory, and Go cache
 RUN useradd -m -s /bin/bash dsalgo && \
-    chown -R dsalgo:dsalgo /app /tmp && \
-    mkdir -p /go /app/state && \
-    chown -R dsalgo:dsalgo /go /app/state
+    mkdir -p /go /app/state /app/.go-cache && \
+    chown -R dsalgo:dsalgo /app /tmp /go
 
 USER dsalgo
 

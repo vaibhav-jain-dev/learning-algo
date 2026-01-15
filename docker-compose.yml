@@ -30,7 +30,7 @@ services:
       - ./problems:/app/problems:ro
       - ./frontend:/app/frontend:ro
       # Go build cache for kernel warmup
-      - dsalgo-learn-go-cache:/tmp/go-cache
+      - dsalgo-learn-go-cache:/app/.go-cache
       # State persistence for execution tracking
       - dsalgo-learn-state:/app/state
     environment:
@@ -88,7 +88,7 @@ services:
       - ./backend:/app/backend:ro
       - ./frontend:/app/frontend:ro
       - ./problems:/app/problems:ro
-      - dsalgo-learn-go-cache:/tmp/go-cache
+      - dsalgo-learn-go-cache:/app/.go-cache
       - dsalgo-learn-state:/app/state
     environment:
       - PORT=8080

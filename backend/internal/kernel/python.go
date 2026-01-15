@@ -13,13 +13,15 @@ import (
 	"time"
 )
 
-// Python kernel script with security sandbox
+// Python kernel script with security sandbox and metrics
 const pythonKernelScript = `
 import sys
 import json
 import traceback
 import signal
 import builtins
+import tracemalloc
+import time as _time
 
 # Security: Disable dangerous functions
 BLOCKED_BUILTINS = ['eval', 'exec', 'compile', '__import__', 'open', 'input']
@@ -72,6 +74,13 @@ def format_result(value):
             return str(value)
     return str(value)
 
+def format_bytes(size):
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+    return f"{size:.2f} TB"
+
 while True:
     try:
         line = sys.stdin.readline()
@@ -83,6 +92,10 @@ while True:
         timeout = min(data.get("timeout", 10), 10)
 
         signal.alarm(timeout)
+
+        # Start memory tracking
+        tracemalloc.start()
+        start_time = _time.perf_counter()
 
         # Create restricted namespace
         namespace = {"__builtins__": safe_builtins}
@@ -104,25 +117,43 @@ while True:
         else:
             raise ValueError("Code must define a main() function that returns a value")
 
+        # Get metrics
+        end_time = _time.perf_counter()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
         signal.alarm(0)
+
+        exec_time_ms = (end_time - start_time) * 1000
 
         response = {
             "success": True,
             "result": format_result(result),
             "output": "\n".join(output_lines) if output_lines else "",
-            "type": type(result).__name__ if result is not None else "None"
+            "type": type(result).__name__ if result is not None else "None",
+            "metrics": {
+                "time_ms": round(exec_time_ms, 2),
+                "memory_current": current,
+                "memory_peak": peak,
+                "memory_current_fmt": format_bytes(current),
+                "memory_peak_fmt": format_bytes(peak)
+            }
         }
 
     except TimeoutError as e:
+        tracemalloc.stop() if tracemalloc.is_tracing() else None
         signal.alarm(0)
         response = {"success": False, "error": str(e), "error_type": "timeout"}
     except ImportError as e:
+        tracemalloc.stop() if tracemalloc.is_tracing() else None
         signal.alarm(0)
         response = {"success": False, "error": str(e), "error_type": "security"}
     except SyntaxError as e:
+        tracemalloc.stop() if tracemalloc.is_tracing() else None
         signal.alarm(0)
         response = {"success": False, "error": f"Syntax Error: {e.msg} at line {e.lineno}", "error_type": "syntax"}
     except Exception as e:
+        tracemalloc.stop() if tracemalloc.is_tracing() else None
         signal.alarm(0)
         tb = traceback.format_exc()
         tb_lines = [l for l in tb.split('\n') if '<string>' in l or not l.strip().startswith('File')]
@@ -256,6 +287,13 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 			Traceback string `json:"traceback"`
 			ErrorType string `json:"error_type"`
 			Type      string `json:"type"`
+			Metrics   struct {
+				TimeMs        float64 `json:"time_ms"`
+				MemoryCurrent int64   `json:"memory_current"`
+				MemoryPeak    int64   `json:"memory_peak"`
+				MemoryFmt     string  `json:"memory_current_fmt"`
+				MemoryPeakFmt string  `json:"memory_peak_fmt"`
+			} `json:"metrics"`
 		}
 
 		if err := json.Unmarshal([]byte(result.line), &response); err != nil {
@@ -264,6 +302,17 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 
 		duration := time.Since(start)
 		execResult := &ExecutionResult{Duration: duration}
+
+		// Include metrics if available
+		if response.Metrics.TimeMs > 0 || response.Metrics.MemoryPeak > 0 {
+			execResult.Metrics = &ExecutionMetrics{
+				TimeMs:        response.Metrics.TimeMs,
+				MemoryCurrent: response.Metrics.MemoryCurrent,
+				MemoryPeak:    response.Metrics.MemoryPeak,
+				MemoryFmt:     response.Metrics.MemoryFmt,
+				MemoryPeakFmt: response.Metrics.MemoryPeakFmt,
+			}
+		}
 
 		if response.Success {
 			var output strings.Builder

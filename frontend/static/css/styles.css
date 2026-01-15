@@ -544,8 +544,8 @@ body {
     font-family: var(--font-mono);
     font-size: 0.9rem;
     padding: 1rem;
-    background: #212121;
-    color: #eee;
+    background: #f5f5f5;
+    color: #333;
 }
 
 /* CodeMirror customizations */
@@ -554,25 +554,28 @@ body {
     font-family: var(--font-mono);
     font-size: 0.9rem;
     line-height: 1.6;
+    background: #f5f5f5;
 }
 
 #code-editor-wrapper .CodeMirror-gutters {
-    border-right: 1px solid #404040;
+    background: #eee;
+    border-right: 1px solid #ddd;
 }
 
 #code-editor-wrapper .CodeMirror-linenumber {
-    color: #6e6e6e;
+    color: #999;
     padding-right: 10px;
 }
 
 #code-editor-wrapper .CodeMirror-matchingbracket {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff !important;
-    border-bottom: 1px solid #61dafb;
+    background: #c8e6c9;
+    color: #000 !important;
+    border-bottom: 2px solid #4caf50;
 }
 
 #code-editor-wrapper .CodeMirror-nonmatchingbracket {
-    color: #ff6b6b !important;
+    background: #ffcdd2;
+    color: #c62828 !important;
 }
 
 /* CodeMirror read-only state */
@@ -640,6 +643,50 @@ body {
 .error-output {
     border-color: var(--error-color);
     background: #fff5f5;
+}
+
+/* Execution Metrics */
+.execution-metrics {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.metrics-header {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
 }
 
 /* Output Loading State */

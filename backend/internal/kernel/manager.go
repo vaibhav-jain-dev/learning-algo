@@ -92,9 +92,9 @@ func (em *ExecutionManager) runExecution(ctx context.Context, exec *Execution) {
 	if err != nil {
 		exec.Update(StateError, "", err.Error(), 1)
 	} else if result.Error != "" {
-		exec.Update(StateError, result.Output, result.Error, result.ExitCode)
+		exec.UpdateWithMetrics(StateError, result.Output, result.Error, result.ExitCode, result.Metrics)
 	} else {
-		exec.Update(StateComplete, result.Output, "", result.ExitCode)
+		exec.UpdateWithMetrics(StateComplete, result.Output, "", result.ExitCode, result.Metrics)
 	}
 
 	em.notifySubscribers(exec.ID, exec)

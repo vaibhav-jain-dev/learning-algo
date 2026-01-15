@@ -24,6 +24,25 @@
         {{else}}
         <pre class="success-output">(no output)</pre>
         {{end}}
+        {{if .Metrics}}
+        <div class="execution-metrics">
+            <div class="metrics-header">Performance Metrics</div>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="metric-label">Execution Time:</span>
+                    <span class="metric-value">{{.Metrics.TimeMs}}ms</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Memory Used:</span>
+                    <span class="metric-value">{{.Metrics.MemoryFmt}}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Peak Memory:</span>
+                    <span class="metric-value">{{.Metrics.MemoryPeakFmt}}</span>
+                </div>
+            </div>
+        </div>
+        {{end}}
     </div>
     {{end}}
 </div>

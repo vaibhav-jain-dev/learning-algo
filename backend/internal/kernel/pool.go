@@ -6,12 +6,22 @@ import (
 	"time"
 )
 
+// ExecutionMetrics holds performance metrics for code execution
+type ExecutionMetrics struct {
+	TimeMs        float64 `json:"time_ms"`
+	MemoryCurrent int64   `json:"memory_current"`
+	MemoryPeak    int64   `json:"memory_peak"`
+	MemoryFmt     string  `json:"memory_fmt"`
+	MemoryPeakFmt string  `json:"memory_peak_fmt"`
+}
+
 // ExecutionResult holds the result of code execution
 type ExecutionResult struct {
-	Output   string        `json:"output"`
-	Error    string        `json:"error,omitempty"`
-	ExitCode int           `json:"exit_code"`
-	Duration time.Duration `json:"duration_ms"`
+	Output   string            `json:"output"`
+	Error    string            `json:"error,omitempty"`
+	ExitCode int               `json:"exit_code"`
+	Duration time.Duration     `json:"duration_ms"`
+	Metrics  *ExecutionMetrics `json:"metrics,omitempty"`
 }
 
 // ExecutionState tracks the current state of an execution
@@ -27,15 +37,16 @@ const (
 
 // Execution represents an ongoing or completed code execution
 type Execution struct {
-	ID        string          `json:"id"`
-	Code      string          `json:"code"`
-	Language  string          `json:"language"`
-	State     ExecutionState  `json:"state"`
-	Output    string          `json:"output"`
-	Error     string          `json:"error,omitempty"`
-	ExitCode  int             `json:"exit_code"`
-	StartedAt time.Time       `json:"started_at"`
-	Duration  int64           `json:"duration_ms"`
+	ID        string            `json:"id"`
+	Code      string            `json:"code"`
+	Language  string            `json:"language"`
+	State     ExecutionState    `json:"state"`
+	Output    string            `json:"output"`
+	Error     string            `json:"error,omitempty"`
+	ExitCode  int               `json:"exit_code"`
+	StartedAt time.Time         `json:"started_at"`
+	Duration  int64             `json:"duration_ms"`
+	Metrics   *ExecutionMetrics `json:"metrics,omitempty"`
 	cancel    context.CancelFunc
 	mu        sync.RWMutex
 }
@@ -48,6 +59,20 @@ func (e *Execution) Update(state ExecutionState, output, errMsg string, exitCode
 	e.Output = output
 	e.Error = errMsg
 	e.ExitCode = exitCode
+	if state == StateComplete || state == StateError || state == StateStopped {
+		e.Duration = time.Since(e.StartedAt).Milliseconds()
+	}
+}
+
+// UpdateWithMetrics updates execution state with metrics
+func (e *Execution) UpdateWithMetrics(state ExecutionState, output, errMsg string, exitCode int, metrics *ExecutionMetrics) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.State = state
+	e.Output = output
+	e.Error = errMsg
+	e.ExitCode = exitCode
+	e.Metrics = metrics
 	if state == StateComplete || state == StateError || state == StateStopped {
 		e.Duration = time.Since(e.StartedAt).Milliseconds()
 	}
@@ -74,7 +99,7 @@ func (e *Execution) GetState() ExecutionState {
 func (e *Execution) ToJSON() map[string]interface{} {
 	e.mu.RLock()
 	defer e.mu.RUnlock()
-	return map[string]interface{}{
+	result := map[string]interface{}{
 		"id":         e.ID,
 		"state":      e.State,
 		"output":     e.Output,
@@ -83,6 +108,10 @@ func (e *Execution) ToJSON() map[string]interface{} {
 		"started_at": e.StartedAt,
 		"duration":   e.Duration,
 	}
+	if e.Metrics != nil {
+		result["metrics"] = e.Metrics
+	}
+	return result
 }
 
 // Kernel interface for language-specific kernels

@@ -156,14 +156,18 @@ func main() {
 				// Send updates until complete
 				for update := range ch {
 					state := update.GetState()
-					c.WriteJSON(fiber.Map{
+					msg := fiber.Map{
 						"type":     "update",
 						"id":       update.ID,
 						"state":    state,
 						"output":   update.Output,
 						"error":    update.Error,
 						"duration": update.Duration,
-					})
+					}
+					if update.Metrics != nil {
+						msg["metrics"] = update.Metrics
+					}
+					c.WriteJSON(msg)
 
 					if state != kernel.StateRunning {
 						break
@@ -205,14 +209,18 @@ func main() {
 
 							for update := range ch {
 								state := update.GetState()
-								c.WriteJSON(fiber.Map{
+								msg := fiber.Map{
 									"type":     "update",
 									"id":       update.ID,
 									"state":    state,
 									"output":   update.Output,
 									"error":    update.Error,
 									"duration": update.Duration,
-								})
+								}
+								if update.Metrics != nil {
+									msg["metrics"] = update.Metrics
+								}
+								c.WriteJSON(msg)
 
 								if state != kernel.StateRunning {
 									break
