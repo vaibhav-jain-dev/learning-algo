@@ -1,0 +1,48 @@
+<div class="output-result {{if .Error}}has-error{{end}}">
+    {{if .Error}}
+    <div class="output-error">
+        <div class="output-header">
+            <span class="status-icon">❌</span>
+            <span class="status-text">Error</span>
+            {{if .Duration}}
+            <span class="duration">{{.Duration}}ms</span>
+            {{end}}
+        </div>
+        <pre class="error-output">{{.Error}}</pre>
+    </div>
+    {{else}}
+    <div class="output-success">
+        <div class="output-header">
+            <span class="status-icon">✓</span>
+            <span class="status-text">Success</span>
+            {{if .Duration}}
+            <span class="duration">{{.Duration}}ms</span>
+            {{end}}
+        </div>
+        {{if .Output}}
+        <pre class="success-output">{{.Output}}</pre>
+        {{else}}
+        <pre class="success-output">(no output)</pre>
+        {{end}}
+        {{if .Metrics}}
+        <div class="execution-metrics">
+            <div class="metrics-header">Performance Metrics</div>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="metric-label">Execution Time:</span>
+                    <span class="metric-value">{{.Metrics.TimeMs}}ms</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Memory Used:</span>
+                    <span class="metric-value">{{.Metrics.MemoryFmt}}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Peak Memory:</span>
+                    <span class="metric-value">{{.Metrics.MemoryPeakFmt}}</span>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    {{end}}
+</div>

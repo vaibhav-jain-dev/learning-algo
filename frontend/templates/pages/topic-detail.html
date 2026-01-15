@@ -1,0 +1,430 @@
+<div class="topic-detail-page">
+    <nav class="breadcrumb">
+        <a href="/{{if eq .CategorySlug "system-design"}}system-design{{else if eq .CategorySlug "design-patterns"}}design-patterns{{else}}machine-coding{{end}}">← Back to {{.Category}}</a>
+    </nav>
+
+    <div class="topic-header">
+        <span class="topic-badge">{{.Category}}</span>
+        <h1>{{.Topic}}</h1>
+    </div>
+
+    {{if .HasContent}}
+    <div class="topic-content" id="topic-content">
+        {{safeHTML .Content}}
+    </div>
+    {{else}}
+    <div class="coming-soon-card">
+        <div class="coming-soon-icon">🚧</div>
+        <h2>Content Coming Soon</h2>
+        <p>We're working on detailed content for <strong>{{.Topic}}</strong>.</p>
+        <p>This will include:</p>
+        <ul>
+            <li>Comprehensive explanation</li>
+            <li>Code examples in Python and Go</li>
+            <li>Visual diagrams</li>
+            <li>Practice problems</li>
+            <li>Interview tips</li>
+        </ul>
+        <div class="actions">
+            <a href="/practice" class="btn btn-primary">Practice DSA Problems</a>
+            <a href="/{{if eq .CategorySlug "system-design"}}system-design{{else if eq .CategorySlug "design-patterns"}}design-patterns{{else}}machine-coding{{end}}" class="btn btn-secondary">Browse Other Topics</a>
+        </div>
+    </div>
+    {{end}}
+</div>
+
+<style>
+.topic-detail-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.breadcrumb {
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.topic-header {
+    margin-bottom: 2rem;
+}
+
+.topic-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.topic-header h1 {
+    margin: 0.5rem 0 0 0;
+    font-size: 2.5rem;
+}
+
+/* Topic content styles */
+.topic-content {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    line-height: 1.7;
+}
+
+.topic-content h1 {
+    display: none; /* Hide the first h1 since we show it in header */
+}
+
+.topic-content h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.topic-content h2:first-of-type {
+    margin-top: 0;
+}
+
+.topic-content h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.topic-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.topic-content p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.topic-content ul, .topic-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.topic-content li {
+    margin-bottom: 0.5rem;
+}
+
+.topic-content pre {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.topic-content code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+}
+
+.topic-content pre code {
+    background: none;
+    padding: 0;
+}
+
+.topic-content :not(pre) > code {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.topic-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+}
+
+.topic-content th, .topic-content td {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.topic-content th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.topic-content td {
+    color: var(--text-secondary);
+}
+
+.topic-content blockquote {
+    border-left: 4px solid var(--accent-color);
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.topic-content blockquote p {
+    margin: 0;
+}
+
+.topic-content a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.topic-content a:hover {
+    text-decoration: underline;
+}
+
+.topic-content hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+
+.topic-content strong {
+    color: var(--text-primary);
+}
+
+/* Coming Soon styles */
+.coming-soon-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    text-align: center;
+}
+
+.coming-soon-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card h2 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.coming-soon-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card ul {
+    text-align: left;
+    max-width: 300px;
+    margin: 1.5rem auto;
+    color: var(--text-secondary);
+}
+
+.coming-soon-card li {
+    margin-bottom: 0.5rem;
+}
+
+.coming-soon-card .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.coming-soon-card .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.coming-soon-card .btn-primary {
+    background: var(--accent-color);
+    color: white;
+}
+
+.coming-soon-card .btn-primary:hover {
+    background: #2563eb;
+}
+
+.coming-soon-card .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.coming-soon-card .btn-secondary:hover {
+    background: var(--bg-secondary);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .coming-soon-card {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+/* Code block wrapper for buttons */
+.code-block-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.code-block-wrapper pre {
+    margin: 0;
+}
+
+.code-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.code-block-wrapper:hover .code-copy-btn {
+    opacity: 1;
+}
+
+.code-copy-btn:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Collapsible section styles */
+.collapsible-heading {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.collapsible-heading:hover {
+    color: var(--accent-color);
+}
+
+.collapse-icon {
+    margin-right: 0.5rem;
+    font-size: 0.8em;
+    transition: transform 0.2s;
+}
+</style>
+
+{{if .HasContent}}
+<script>
+// Initialize topic content with collapsible sections and code blocks
+(function() {
+    var content = document.getElementById('topic-content');
+    if (!content) return;
+
+    // Sections to make collapsible (initially collapsed)
+    var collapseSections = [
+        'Implementation', 'Python', 'Go', 'Golang',
+        'Interview', 'Best Practices', 'Related',
+        'Solution', 'Common Mistakes', 'Tips',
+        'Data Structure', 'Memory', 'Complexity'
+    ];
+
+    // Make sections collapsible
+    var headings = content.querySelectorAll('h2, h3');
+    headings.forEach(function(heading) {
+        var text = heading.textContent.trim();
+        var shouldCollapse = collapseSections.some(function(s) {
+            return text.toLowerCase().indexOf(s.toLowerCase()) !== -1;
+        });
+
+        if (shouldCollapse && !heading.dataset.collapsible) {
+            heading.dataset.collapsible = 'true';
+            heading.classList.add('collapsible-heading');
+
+            // Add collapse icon
+            var icon = document.createElement('span');
+            icon.className = 'collapse-icon';
+            icon.textContent = '▶';
+            heading.insertBefore(icon, heading.firstChild);
+
+            // Find content elements until next heading of same or higher level
+            var contentEls = [];
+            var next = heading.nextElementSibling;
+            var headingLevel = parseInt(heading.tagName.charAt(1));
+            while (next) {
+                if (next.tagName === 'H1' || next.tagName === 'H2' ||
+                    (next.tagName === 'H3' && headingLevel <= 3)) {
+                    var nextLevel = parseInt(next.tagName.charAt(1));
+                    if (nextLevel <= headingLevel) break;
+                }
+                contentEls.push(next);
+                next = next.nextElementSibling;
+            }
+
+            // Initially hide content
+            contentEls.forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Toggle on click
+            heading.addEventListener('click', function() {
+                var isHidden = contentEls.length > 0 && contentEls[0].style.display === 'none';
+                contentEls.forEach(function(el) {
+                    el.style.display = isHidden ? '' : 'none';
+                });
+                icon.textContent = isHidden ? '▼' : '▶';
+            });
+        }
+    });
+
+    // Add copy buttons to code blocks
+    var codeBlocks = content.querySelectorAll('pre code');
+    codeBlocks.forEach(function(block) {
+        var pre = block.parentElement;
+        if (!pre || pre.parentElement.classList.contains('code-block-wrapper')) return;
+
+        // Create wrapper
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        // Copy button
+        var copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.innerHTML = 'Copy';
+        copyBtn.onclick = function(e) {
+            e.stopPropagation();
+            navigator.clipboard.writeText(block.textContent).then(function() {
+                copyBtn.innerHTML = 'Copied!';
+                setTimeout(function() { copyBtn.innerHTML = 'Copy'; }, 2000);
+            });
+        };
+        wrapper.appendChild(copyBtn);
+    });
+
+    // Highlight code
+    if (typeof hljs !== 'undefined') {
+        content.querySelectorAll('pre code').forEach(function(block) {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+</script>
+{{end}}

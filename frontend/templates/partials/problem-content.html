@@ -1,0 +1,130 @@
+<div class="problem-content">
+    <div class="problem-description" id="problem-desc-content">
+        {{safeHTML .Description}}
+    </div>
+
+    <div class="problem-actions">
+        <button class="btn btn-primary" onclick="openInEditor()">
+            Open in Editor
+        </button>
+    </div>
+</div>
+
+<script>
+// Store code globally for this problem
+window._currentProblemCode = {
+    python: {{safeJS .PythonCode}},
+    go: {{safeJS .GolangCode}}
+};
+
+// Open in Editor function
+function openInEditor() {
+    if (typeof window.loadProblemCode === 'function') {
+        window.loadProblemCode(window._currentProblemCode.python, window._currentProblemCode.go);
+    }
+}
+
+// Make sections collapsible
+(function() {
+    var sections = ['Hints', 'Approach', 'Explanation', 'Visual', 'Common Mistakes', 'Solution'];
+    var content = document.getElementById('problem-desc-content');
+    if (!content) return;
+
+    var headings = content.querySelectorAll('h2, h3');
+    headings.forEach(function(heading) {
+        var text = heading.textContent.trim();
+        var shouldCollapse = sections.some(function(s) {
+            return text.toLowerCase().indexOf(s.toLowerCase()) !== -1;
+        });
+
+        if (shouldCollapse && !heading.dataset.collapsible) {
+            heading.dataset.collapsible = 'true';
+            heading.style.cursor = 'pointer';
+            heading.style.userSelect = 'none';
+
+            // Add collapse icon
+            var icon = document.createElement('span');
+            icon.className = 'collapse-icon';
+            icon.textContent = '▶ ';
+            icon.style.marginRight = '0.5rem';
+            heading.insertBefore(icon, heading.firstChild);
+
+            // Find content elements until next heading
+            var contentEls = [];
+            var next = heading.nextElementSibling;
+            while (next && next.tagName !== 'H2' && next.tagName !== 'H3') {
+                contentEls.push(next);
+                next = next.nextElementSibling;
+            }
+
+            // Initially hide content
+            contentEls.forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Toggle on click
+            heading.addEventListener('click', function() {
+                var isHidden = contentEls.length > 0 && contentEls[0].style.display === 'none';
+                contentEls.forEach(function(el) {
+                    el.style.display = isHidden ? '' : 'none';
+                });
+                icon.textContent = isHidden ? '▼ ' : '▶ ';
+            });
+        }
+    });
+
+    // Add "Run" and "Copy" buttons to code blocks
+    var codeBlocks = content.querySelectorAll('pre code');
+    codeBlocks.forEach(function(block) {
+        var pre = block.parentElement;
+        if (!pre || pre.parentElement.classList.contains('code-block-wrapper')) return;
+
+        // Detect language from class
+        var lang = 'python';
+        var classes = block.className || '';
+        if (classes.indexOf('go') !== -1 || classes.indexOf('golang') !== -1) {
+            lang = 'go';
+        }
+
+        // Create wrapper
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        // Run button
+        var runBtn = document.createElement('button');
+        runBtn.className = 'code-run-btn';
+        runBtn.innerHTML = '▶ Run';
+        runBtn.onclick = function() {
+            var code = block.textContent;
+            if (typeof window.setLanguage === 'function') window.setLanguage(lang);
+            if (window.editor) window.editor.setValue(code);
+            if (typeof window.showTab === 'function') window.showTab('code');
+            setTimeout(function() {
+                if (typeof window.runCode === 'function') window.runCode();
+            }, 200);
+        };
+        wrapper.appendChild(runBtn);
+
+        // Copy button
+        var copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.innerHTML = 'Copy';
+        copyBtn.onclick = function() {
+            navigator.clipboard.writeText(block.textContent).then(function() {
+                copyBtn.innerHTML = 'Copied!';
+                setTimeout(function() { copyBtn.innerHTML = 'Copy'; }, 2000);
+            });
+        };
+        wrapper.appendChild(copyBtn);
+    });
+
+    // Highlight code
+    if (typeof hljs !== 'undefined') {
+        content.querySelectorAll('pre code').forEach(function(block) {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+</script>

@@ -1,18 +1,36 @@
 # DSAlgo Learn Platform - Dockerfile
-# Unique naming: dsalgo-learn-*
+# Fast Code Runner with Go/Fiber backend and HTMX frontend
+# Memory target: < 2GB total
 
-FROM python:3.11-slim AS dsalgo-learn-base
+# Build stage for Go backend
+FROM golang:1.21-alpine AS builder
 
-# Labels for identification
+WORKDIR /build
+
+# Copy go.mod first
+COPY backend/go.mod ./
+
+# Copy backend source
+COPY backend/cmd ./cmd
+COPY backend/internal ./internal
+
+# Download dependencies and generate go.sum
+RUN go mod tidy
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server
+
+# Runtime stage
+FROM python:3.11-slim
+
+# Labels
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
-LABEL app.description="DS/Algo Learning Platform with Python & Go support"
+LABEL app.description="Fast Code Runner with Go/Fiber and HTMX"
 
-# Install system dependencies and Go
+# Install Go runtime for code execution
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
-    git \
-    gcc \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,23 +43,23 @@ RUN wget -q https://go.dev/dl/go1.21.5.linux-amd64.tar.gz \
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
 ENV PATH="${GOPATH}/bin:${PATH}"
-ENV GOCACHE="/tmp/go-cache"
+ENV GOCACHE="/app/.go-cache"
 
 # Set working directory
 WORKDIR /app
 
-# Copy and install Python dependencies
-COPY backend/requirements.txt ./backend/
-RUN pip install --no-cache-dir -r backend/requirements.txt
+# Copy built binary from builder
+COPY --from=builder /build/server ./server
 
-# Copy application files
-COPY backend/ ./backend/
+# Copy frontend, problems, and topics
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
+COPY topics/ ./topics/
 
-# Create non-root user for security
+# Create non-root user, state directory, Go cache, and kernel work directory
 RUN useradd -m -s /bin/bash dsalgo && \
-    chown -R dsalgo:dsalgo /app /tmp
+    mkdir -p /go /app/state /app/.go-cache /app/go-kernels /home/dsalgo/.go-kernels && \
+    chown -R dsalgo:dsalgo /app /tmp /go /home/dsalgo
 
 USER dsalgo
 
@@ -52,5 +70,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 
-# Run the application
-CMD ["python3", "backend/app.py"]
+# Run the server
+CMD ["./server"]

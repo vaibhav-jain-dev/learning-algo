@@ -1,0 +1,25 @@
+{{define "tree-node"}}
+{{if eq .Type "folder"}}
+<div class="tree-folder">
+    <div class="folder-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">{{.Name}}</span>
+        <span class="folder-toggle">▼</span>
+    </div>
+    <div class="folder-children">
+        {{range .Children}}
+        {{template "tree-node" .}}
+        {{end}}
+    </div>
+</div>
+{{else}}
+<div class="tree-item" onclick="loadProblem('{{.Path}}')">
+    <span class="item-icon">📄</span>
+    <span class="item-name">{{.Name}}</span>
+</div>
+{{end}}
+{{end}}
+
+{{range .Tree}}
+{{template "tree-node" .}}
+{{end}}
