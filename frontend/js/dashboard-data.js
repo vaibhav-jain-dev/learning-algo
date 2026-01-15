@@ -2927,7 +2927,3607 @@ def find_words(board, words):
     }
 ];
 
+// ==================== DESIGN PATTERNS ====================
+const DESIGN_PATTERNS = [
+    // ==================== CREATIONAL PATTERNS ====================
+    {
+        id: 'singleton',
+        icon: '1️⃣',
+        category: 'Creational',
+        title: 'Singleton',
+        tldr: 'Only ONE instance of a class ever exists. Global access point.',
+
+        imagine: `There's only ONE president of a country at a time.
+Anyone can ask "who's the president?" and get the same answer.
+That's Singleton - one instance, global access.`,
+
+        whenToUse: [
+            'Database connection pool (one pool, many users)',
+            'Configuration manager (one config for entire app)',
+            'Logger (one logger instance)',
+            'Cache manager'
+        ],
+
+        caveats: [
+            'Hard to unit test (global state)',
+            'Hides dependencies (not explicit in constructor)',
+            'Thread safety issues if not careful',
+            'Can become a "god object" antipattern'
+        ],
+
+        pythonCode: `class Singleton:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.value = None
+        return cls._instance
+
+# Usage
+s1 = Singleton()
+s2 = Singleton()
+print(s1 is s2)  # True - same instance!
+
+# Thread-safe version
+import threading
+
+class ThreadSafeSingleton:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:  # Double-check
+                    cls._instance = super().__new__(cls)
+        return cls._instance`,
+
+        goCode: `package main
+
+import (
+    "sync"
+)
+
+type Singleton struct {
+    Value string
+}
+
+var (
+    instance *Singleton
+    once     sync.Once
+)
+
+// GetInstance returns the singleton instance
+func GetInstance() *Singleton {
+    once.Do(func() {
+        instance = &Singleton{}
+    })
+    return instance
+}
+
+func main() {
+    s1 := GetInstance()
+    s2 := GetInstance()
+    println(s1 == s2) // true - same instance
+}`,
+
+        pros: [
+            'Guaranteed single instance',
+            'Global access point',
+            'Lazy initialization possible',
+            'Saves memory for heavy objects'
+        ],
+        cons: [
+            'Global state - hard to test',
+            'Violates Single Responsibility Principle',
+            'Tight coupling throughout codebase',
+            'Concurrency issues without proper locking'
+        ],
+
+        realWorld: `**Database Connection Pool**: One pool shared by all requests.
+**Logger**: One logger instance across entire application.
+**Config Manager**: Read once, access everywhere.`,
+
+        antipatterns: `⚠️ **Don't use Singleton for:**
+- Objects that hold request-specific state
+- Objects that need different configurations in tests
+- Just because you want global access (use dependency injection instead)`
+    },
+
+    {
+        id: 'factory-method',
+        icon: '🏭',
+        category: 'Creational',
+        title: 'Factory Method',
+        tldr: 'Subclasses decide which class to instantiate. Defers creation to child classes.',
+
+        imagine: `A pizza restaurant has a "create pizza" method.
+NYC branch creates thin crust, Chicago branch creates deep dish.
+Same method name, different products based on who's calling.`,
+
+        whenToUse: [
+            'When you don\'t know exact types beforehand',
+            'When subclasses should specify object types',
+            'When you want to localize object creation logic',
+            'Framework code where users extend your classes'
+        ],
+
+        caveats: [
+            'Can lead to many subclasses',
+            'Client must subclass creator to create new products',
+            'Simple cases may be overengineered'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+
+# Product interface
+class Button(ABC):
+    @abstractmethod
+    def render(self): pass
+
+    @abstractmethod
+    def on_click(self): pass
+
+# Concrete products
+class WindowsButton(Button):
+    def render(self):
+        return "Windows style button"
+    def on_click(self):
+        return "Windows click handler"
+
+class MacButton(Button):
+    def render(self):
+        return "Mac style button"
+    def on_click(self):
+        return "Mac click handler"
+
+# Creator (Factory)
+class Dialog(ABC):
+    @abstractmethod
+    def create_button(self) -> Button:
+        """Factory method - subclasses override this"""
+        pass
+
+    def render(self):
+        button = self.create_button()  # Factory method call
+        return button.render()
+
+# Concrete creators
+class WindowsDialog(Dialog):
+    def create_button(self) -> Button:
+        return WindowsButton()
+
+class MacDialog(Dialog):
+    def create_button(self) -> Button:
+        return MacButton()
+
+# Client code
+def get_dialog(os_type: str) -> Dialog:
+    if os_type == "windows":
+        return WindowsDialog()
+    elif os_type == "mac":
+        return MacDialog()
+    raise ValueError(f"Unknown OS: {os_type}")
+
+# Usage
+dialog = get_dialog("mac")
+print(dialog.render())  # "Mac style button"`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Product interface
+type Button interface {
+    Render() string
+    OnClick() string
+}
+
+// Concrete products
+type WindowsButton struct{}
+func (w *WindowsButton) Render() string { return "Windows button" }
+func (w *WindowsButton) OnClick() string { return "Windows click" }
+
+type MacButton struct{}
+func (m *MacButton) Render() string { return "Mac button" }
+func (m *MacButton) OnClick() string { return "Mac click" }
+
+// Creator interface with factory method
+type Dialog interface {
+    CreateButton() Button
+    Render() string
+}
+
+// Base dialog with common logic
+type BaseDialog struct {
+    factory func() Button
+}
+
+func (b *BaseDialog) Render() string {
+    button := b.factory()
+    return button.Render()
+}
+
+// Concrete creators
+func NewWindowsDialog() Dialog {
+    return &BaseDialog{factory: func() Button { return &WindowsButton{} }}
+}
+
+func NewMacDialog() Dialog {
+    return &BaseDialog{factory: func() Button { return &MacButton{} }}
+}
+
+func main() {
+    dialog := NewMacDialog()
+    fmt.Println(dialog.Render()) // "Mac button"
+}`,
+
+        pros: [
+            'Loose coupling between creator and products',
+            'Single Responsibility - creation in one place',
+            'Open/Closed - add new products without changing existing code',
+            'Easier unit testing with mock products'
+        ],
+        cons: [
+            'Can result in many subclasses',
+            'Code complexity increases',
+            'Requires inheritance hierarchy'
+        ],
+
+        realWorld: `**UI Frameworks**: Different button/dialog for each OS.
+**Document Editors**: CreateDocument() returns Word, PDF, etc.
+**Logistics**: CreateTransport() returns Truck, Ship, Plane.`
+    },
+
+    {
+        id: 'abstract-factory',
+        icon: '🏗️',
+        category: 'Creational',
+        title: 'Abstract Factory',
+        tldr: 'Create families of related objects without specifying concrete classes.',
+
+        imagine: `IKEA has furniture "families" - Modern, Victorian, Art Deco.
+Each family has Chair + Sofa + Table that match each other.
+Abstract Factory creates the whole matching set.`,
+
+        whenToUse: [
+            'Creating families of related objects (UI themes)',
+            'System should be independent of how products are created',
+            'Products from same family must be used together',
+            'Cross-platform applications'
+        ],
+
+        caveats: [
+            'Adding new product types requires changing all factories',
+            'Can be overkill for simple cases',
+            'Lots of interfaces and classes'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+
+# Abstract products
+class Button(ABC):
+    @abstractmethod
+    def paint(self): pass
+
+class Checkbox(ABC):
+    @abstractmethod
+    def paint(self): pass
+
+# Concrete products - Windows family
+class WindowsButton(Button):
+    def paint(self): return "Windows Button"
+
+class WindowsCheckbox(Checkbox):
+    def paint(self): return "Windows Checkbox"
+
+# Concrete products - Mac family
+class MacButton(Button):
+    def paint(self): return "Mac Button"
+
+class MacCheckbox(Checkbox):
+    def paint(self): return "Mac Checkbox"
+
+# Abstract Factory
+class GUIFactory(ABC):
+    @abstractmethod
+    def create_button(self) -> Button: pass
+
+    @abstractmethod
+    def create_checkbox(self) -> Checkbox: pass
+
+# Concrete factories
+class WindowsFactory(GUIFactory):
+    def create_button(self) -> Button:
+        return WindowsButton()
+    def create_checkbox(self) -> Checkbox:
+        return WindowsCheckbox()
+
+class MacFactory(GUIFactory):
+    def create_button(self) -> Button:
+        return MacButton()
+    def create_checkbox(self) -> Checkbox:
+        return MacCheckbox()
+
+# Client code - works with ANY factory
+class Application:
+    def __init__(self, factory: GUIFactory):
+        self.button = factory.create_button()
+        self.checkbox = factory.create_checkbox()
+
+    def render(self):
+        return f"{self.button.paint()} + {self.checkbox.paint()}"
+
+# Usage
+factory = MacFactory()
+app = Application(factory)
+print(app.render())  # "Mac Button + Mac Checkbox"`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Abstract products
+type Button interface { Paint() string }
+type Checkbox interface { Paint() string }
+
+// Windows family
+type WinButton struct{}
+func (w *WinButton) Paint() string { return "Windows Button" }
+
+type WinCheckbox struct{}
+func (w *WinCheckbox) Paint() string { return "Windows Checkbox" }
+
+// Mac family
+type MacButton struct{}
+func (m *MacButton) Paint() string { return "Mac Button" }
+
+type MacCheckbox struct{}
+func (m *MacCheckbox) Paint() string { return "Mac Checkbox" }
+
+// Abstract Factory interface
+type GUIFactory interface {
+    CreateButton() Button
+    CreateCheckbox() Checkbox
+}
+
+// Concrete factories
+type WindowsFactory struct{}
+func (w *WindowsFactory) CreateButton() Button { return &WinButton{} }
+func (w *WindowsFactory) CreateCheckbox() Checkbox { return &WinCheckbox{} }
+
+type MacFactory struct{}
+func (m *MacFactory) CreateButton() Button { return &MacButton{} }
+func (m *MacFactory) CreateCheckbox() Checkbox { return &MacCheckbox{} }
+
+// Client
+type App struct {
+    button   Button
+    checkbox Checkbox
+}
+
+func NewApp(factory GUIFactory) *App {
+    return &App{
+        button:   factory.CreateButton(),
+        checkbox: factory.CreateCheckbox(),
+    }
+}
+
+func main() {
+    factory := &MacFactory{}
+    app := NewApp(factory)
+    fmt.Println(app.button.Paint()) // "Mac Button"
+}`,
+
+        pros: [
+            'Products from same factory are compatible',
+            'Isolates concrete classes from client',
+            'Easy to swap entire product families',
+            'Single Responsibility for each factory'
+        ],
+        cons: [
+            'Adding new product types is difficult',
+            'Many interfaces and classes needed',
+            'Can be complex for simple scenarios'
+        ],
+
+        realWorld: `**Cross-platform UI**: Windows/Mac/Linux widget families.
+**Database Access**: MySQL/PostgreSQL/SQLite connection families.
+**Document Generation**: PDF/HTML/Word document families.`
+    },
+
+    {
+        id: 'builder',
+        icon: '🔧',
+        category: 'Creational',
+        title: 'Builder',
+        tldr: 'Construct complex objects step by step. Same process, different representations.',
+
+        imagine: `Building a house: lay foundation, build walls, add roof, install doors.
+Same steps, but you can build wooden house, stone house, or glass house.
+Builder separates the HOW from the WHAT.`,
+
+        whenToUse: [
+            'Complex objects with many optional parameters',
+            'Object creation involves many steps',
+            'Need different representations of same object',
+            'Avoid "telescoping constructor" antipattern'
+        ],
+
+        caveats: [
+            'Adds complexity for simple objects',
+            'Client must know steps to build',
+            'Mutable builders can cause issues'
+        ],
+
+        pythonCode: `class Computer:
+    def __init__(self):
+        self.cpu = None
+        self.ram = None
+        self.storage = None
+        self.gpu = None
+
+    def __str__(self):
+        return f"CPU: {self.cpu}, RAM: {self.ram}, Storage: {self.storage}, GPU: {self.gpu}"
+
+class ComputerBuilder:
+    def __init__(self):
+        self.computer = Computer()
+
+    def set_cpu(self, cpu: str) -> 'ComputerBuilder':
+        self.computer.cpu = cpu
+        return self  # Enable chaining
+
+    def set_ram(self, ram: str) -> 'ComputerBuilder':
+        self.computer.ram = ram
+        return self
+
+    def set_storage(self, storage: str) -> 'ComputerBuilder':
+        self.computer.storage = storage
+        return self
+
+    def set_gpu(self, gpu: str) -> 'ComputerBuilder':
+        self.computer.gpu = gpu
+        return self
+
+    def build(self) -> Computer:
+        return self.computer
+
+# Usage - fluent interface
+gaming_pc = (ComputerBuilder()
+    .set_cpu("Intel i9")
+    .set_ram("32GB")
+    .set_storage("2TB SSD")
+    .set_gpu("RTX 4090")
+    .build())
+
+office_pc = (ComputerBuilder()
+    .set_cpu("Intel i5")
+    .set_ram("16GB")
+    .set_storage("512GB SSD")
+    .build())  # No GPU needed
+
+print(gaming_pc)
+print(office_pc)`,
+
+        goCode: `package main
+
+import "fmt"
+
+type Computer struct {
+    CPU     string
+    RAM     string
+    Storage string
+    GPU     string
+}
+
+type ComputerBuilder struct {
+    computer *Computer
+}
+
+func NewComputerBuilder() *ComputerBuilder {
+    return &ComputerBuilder{computer: &Computer{}}
+}
+
+func (b *ComputerBuilder) SetCPU(cpu string) *ComputerBuilder {
+    b.computer.CPU = cpu
+    return b
+}
+
+func (b *ComputerBuilder) SetRAM(ram string) *ComputerBuilder {
+    b.computer.RAM = ram
+    return b
+}
+
+func (b *ComputerBuilder) SetStorage(storage string) *ComputerBuilder {
+    b.computer.Storage = storage
+    return b
+}
+
+func (b *ComputerBuilder) SetGPU(gpu string) *ComputerBuilder {
+    b.computer.GPU = gpu
+    return b
+}
+
+func (b *ComputerBuilder) Build() *Computer {
+    return b.computer
+}
+
+func main() {
+    gamingPC := NewComputerBuilder().
+        SetCPU("Intel i9").
+        SetRAM("32GB").
+        SetStorage("2TB SSD").
+        SetGPU("RTX 4090").
+        Build()
+
+    fmt.Printf("%+v\\n", gamingPC)
+}`,
+
+        pros: [
+            'Construct objects step-by-step',
+            'Reuse same construction code',
+            'Single Responsibility - isolate complex construction',
+            'Fluent interface is readable'
+        ],
+        cons: [
+            'Code complexity increases',
+            'Requires creating separate builder class',
+            'Can be overkill for simple objects'
+        ],
+
+        realWorld: `**HTTP Requests**: Build headers, body, params step by step.
+**SQL Queries**: SELECT().FROM().WHERE().ORDER_BY()
+**UI Components**: Build complex forms with many fields.`
+    },
+
+    // ==================== STRUCTURAL PATTERNS ====================
+    {
+        id: 'adapter',
+        icon: '🔌',
+        category: 'Structural',
+        title: 'Adapter',
+        tldr: 'Convert interface of one class to interface client expects. Plug compatibility.',
+
+        imagine: `US plug doesn't fit European socket.
+Adapter converts one interface to another.
+Same electricity, different shapes.`,
+
+        whenToUse: [
+            'Integrating legacy code with new systems',
+            'Using third-party libraries with different interfaces',
+            'Creating reusable classes that work with incompatible interfaces',
+            'Wrapping external APIs'
+        ],
+
+        caveats: [
+            'Adds extra layer of indirection',
+            'Can hide complexity of adaptee',
+            'Too many adapters = design smell'
+        ],
+
+        pythonCode: `# Target interface (what client expects)
+class MediaPlayer:
+    def play(self, filename: str): pass
+
+# Adaptee (incompatible interface)
+class VLCPlayer:
+    def play_vlc(self, filename: str):
+        return f"Playing {filename} with VLC"
+
+class MPVPlayer:
+    def play_mpv(self, filename: str):
+        return f"Playing {filename} with MPV"
+
+# Adapter
+class MediaAdapter(MediaPlayer):
+    def __init__(self, player_type: str):
+        if player_type == "vlc":
+            self.player = VLCPlayer()
+            self.play_method = self.player.play_vlc
+        elif player_type == "mpv":
+            self.player = MPVPlayer()
+            self.play_method = self.player.play_mpv
+
+    def play(self, filename: str):
+        return self.play_method(filename)
+
+# Client code
+class AudioPlayer(MediaPlayer):
+    def play(self, filename: str):
+        ext = filename.split('.')[-1]
+        if ext == "mp3":
+            return f"Playing {filename} natively"
+        elif ext in ["vlc", "mpv"]:
+            adapter = MediaAdapter(ext)
+            return adapter.play(filename)
+        return f"Unknown format: {ext}"
+
+# Usage
+player = AudioPlayer()
+print(player.play("song.mp3"))  # Native
+print(player.play("movie.vlc"))  # Through adapter`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Target interface
+type MediaPlayer interface {
+    Play(filename string) string
+}
+
+// Adaptee (incompatible)
+type VLCPlayer struct{}
+func (v *VLCPlayer) PlayVLC(filename string) string {
+    return fmt.Sprintf("Playing %s with VLC", filename)
+}
+
+// Adapter
+type VLCAdapter struct {
+    vlc *VLCPlayer
+}
+
+func (a *VLCAdapter) Play(filename string) string {
+    return a.vlc.PlayVLC(filename)
+}
+
+func NewVLCAdapter() MediaPlayer {
+    return &VLCAdapter{vlc: &VLCPlayer{}}
+}
+
+// Client
+type AudioPlayer struct{}
+
+func (a *AudioPlayer) Play(filename string) string {
+    // Use adapter for VLC files
+    adapter := NewVLCAdapter()
+    return adapter.Play(filename)
+}
+
+func main() {
+    player := &AudioPlayer{}
+    fmt.Println(player.Play("movie.mp4"))
+}`,
+
+        pros: [
+            'Single Responsibility - separate interface conversion',
+            'Open/Closed - add adapters without changing existing code',
+            'Reuse existing classes',
+            'Decouple client from adaptee'
+        ],
+        cons: [
+            'Complexity increases with many adapters',
+            'Sometimes simpler to change adaptee directly',
+            'Performance overhead'
+        ],
+
+        realWorld: `**Database Drivers**: Same interface for MySQL, PostgreSQL, etc.
+**Payment Gateways**: Unified interface for Stripe, PayPal, etc.
+**API Wrappers**: Convert REST API to your internal interface.`
+    },
+
+    {
+        id: 'decorator',
+        icon: '🎀',
+        category: 'Structural',
+        title: 'Decorator',
+        tldr: 'Add behavior to objects dynamically without changing their class.',
+
+        imagine: `Plain coffee: $2. Add milk: +$0.5. Add sugar: +$0.2.
+Each addition "decorates" the coffee with new behavior.
+Same coffee object, enhanced dynamically.`,
+
+        whenToUse: [
+            'Add responsibilities dynamically',
+            'When subclassing would create explosion of classes',
+            'When you need to combine behaviors',
+            'Adding features without modifying existing code'
+        ],
+
+        caveats: [
+            'Many small objects can be confusing',
+            'Order of decorators matters',
+            'Removing specific decorator is hard'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+
+# Component interface
+class Coffee(ABC):
+    @abstractmethod
+    def cost(self) -> float: pass
+
+    @abstractmethod
+    def description(self) -> str: pass
+
+# Concrete component
+class SimpleCoffee(Coffee):
+    def cost(self) -> float:
+        return 2.0
+    def description(self) -> str:
+        return "Simple coffee"
+
+# Base decorator
+class CoffeeDecorator(Coffee):
+    def __init__(self, coffee: Coffee):
+        self._coffee = coffee
+
+    def cost(self) -> float:
+        return self._coffee.cost()
+
+    def description(self) -> str:
+        return self._coffee.description()
+
+# Concrete decorators
+class MilkDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 0.5
+
+    def description(self) -> str:
+        return self._coffee.description() + ", milk"
+
+class SugarDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 0.2
+
+    def description(self) -> str:
+        return self._coffee.description() + ", sugar"
+
+class WhipDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 0.7
+
+    def description(self) -> str:
+        return self._coffee.description() + ", whip"
+
+# Usage - stack decorators
+coffee = SimpleCoffee()
+coffee = MilkDecorator(coffee)
+coffee = SugarDecorator(coffee)
+coffee = WhipDecorator(coffee)
+
+print(f"{coffee.description()} = ${coffee.cost()}")
+# "Simple coffee, milk, sugar, whip = $3.4"`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Component interface
+type Coffee interface {
+    Cost() float64
+    Description() string
+}
+
+// Concrete component
+type SimpleCoffee struct{}
+func (s *SimpleCoffee) Cost() float64 { return 2.0 }
+func (s *SimpleCoffee) Description() string { return "Simple coffee" }
+
+// Decorators
+type MilkDecorator struct { coffee Coffee }
+func (m *MilkDecorator) Cost() float64 { return m.coffee.Cost() + 0.5 }
+func (m *MilkDecorator) Description() string {
+    return m.coffee.Description() + ", milk"
+}
+
+type SugarDecorator struct { coffee Coffee }
+func (s *SugarDecorator) Cost() float64 { return s.coffee.Cost() + 0.2 }
+func (s *SugarDecorator) Description() string {
+    return s.coffee.Description() + ", sugar"
+}
+
+func main() {
+    var coffee Coffee = &SimpleCoffee{}
+    coffee = &MilkDecorator{coffee: coffee}
+    coffee = &SugarDecorator{coffee: coffee}
+
+    fmt.Printf("%s = $%.2f\\n", coffee.Description(), coffee.Cost())
+    // "Simple coffee, milk, sugar = $2.70"
+}`,
+
+        pros: [
+            'More flexible than inheritance',
+            'Add/remove behaviors at runtime',
+            'Single Responsibility - each decorator does one thing',
+            'Combine behaviors in many ways'
+        ],
+        cons: [
+            'Many small objects',
+            'Order of wrapping matters',
+            'Hard to remove specific decorator later'
+        ],
+
+        realWorld: `**I/O Streams**: BufferedReader(FileReader(file))
+**Web Middleware**: Auth(Logging(Compression(Handler)))
+**UI Components**: ScrollableDecorator(BorderDecorator(TextArea))`
+    },
+
+    {
+        id: 'facade',
+        icon: '🏛️',
+        category: 'Structural',
+        title: 'Facade',
+        tldr: 'Simple interface to complex subsystem. Hide complexity behind one class.',
+
+        imagine: `Starting a car: turn key. Behind the scenes: battery, starter, fuel pump, ignition...
+You don't care about all that - just turn the key.
+Facade hides complexity.`,
+
+        whenToUse: [
+            'Simplify complex subsystem',
+            'Layer your subsystems',
+            'Reduce dependencies on external code',
+            'Provide entry point to library'
+        ],
+
+        caveats: [
+            'Can become "god object"',
+            'May hide useful functionality',
+            'Tight coupling to facade'
+        ],
+
+        pythonCode: `# Complex subsystem classes
+class CPU:
+    def freeze(self): return "CPU frozen"
+    def jump(self, address): return f"CPU jumping to {address}"
+    def execute(self): return "CPU executing"
+
+class Memory:
+    def load(self, address, data):
+        return f"Memory loaded {data} at {address}"
+
+class HardDrive:
+    def read(self, sector, size):
+        return f"HD read {size} bytes from sector {sector}"
+
+# Facade
+class ComputerFacade:
+    def __init__(self):
+        self.cpu = CPU()
+        self.memory = Memory()
+        self.hard_drive = HardDrive()
+
+    def start(self):
+        """Simple interface to complex boot process"""
+        steps = []
+        steps.append(self.cpu.freeze())
+        steps.append(self.hard_drive.read(0, 1024))
+        steps.append(self.memory.load(0, "boot data"))
+        steps.append(self.cpu.jump(0))
+        steps.append(self.cpu.execute())
+        return steps
+
+# Client code - simple!
+computer = ComputerFacade()
+for step in computer.start():
+    print(step)`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Complex subsystem
+type CPU struct{}
+func (c *CPU) Freeze() string { return "CPU frozen" }
+func (c *CPU) Execute() string { return "CPU executing" }
+
+type Memory struct{}
+func (m *Memory) Load(addr int, data string) string {
+    return fmt.Sprintf("Memory loaded at %d", addr)
+}
+
+type HardDrive struct{}
+func (h *HardDrive) Read(sector, size int) string {
+    return fmt.Sprintf("HD read %d bytes", size)
+}
+
+// Facade
+type ComputerFacade struct {
+    cpu    *CPU
+    memory *Memory
+    hd     *HardDrive
+}
+
+func NewComputer() *ComputerFacade {
+    return &ComputerFacade{
+        cpu:    &CPU{},
+        memory: &Memory{},
+        hd:     &HardDrive{},
+    }
+}
+
+func (c *ComputerFacade) Start() {
+    fmt.Println(c.cpu.Freeze())
+    fmt.Println(c.hd.Read(0, 1024))
+    fmt.Println(c.memory.Load(0, "boot"))
+    fmt.Println(c.cpu.Execute())
+}
+
+func main() {
+    computer := NewComputer()
+    computer.Start() // Simple!
+}`,
+
+        pros: [
+            'Isolates client from complex subsystem',
+            'Promotes weak coupling',
+            'Single entry point',
+            'Easier to use and understand'
+        ],
+        cons: [
+            'Can become coupled to all subsystem classes',
+            'May hide functionality users need',
+            'Can grow into "god object"'
+        ],
+
+        realWorld: `**Video Conversion**: Convert() hides codecs, formats, bitrates.
+**ORM Libraries**: save() hides SQL, connections, transactions.
+**Payment Processing**: charge() hides gateways, validation, fraud checks.`
+    },
+
+    // ==================== BEHAVIORAL PATTERNS ====================
+    {
+        id: 'strategy',
+        icon: '🎯',
+        category: 'Behavioral',
+        title: 'Strategy',
+        tldr: 'Define family of algorithms, encapsulate each, make them interchangeable.',
+
+        imagine: `Google Maps: driving, walking, cycling, public transit.
+Same destination, different strategies to get there.
+Swap algorithms without changing client code.`,
+
+        whenToUse: [
+            'Multiple algorithms for same task',
+            'Need to switch algorithms at runtime',
+            'Avoid conditional statements for algorithm selection',
+            'Algorithm variations with similar interface'
+        ],
+
+        caveats: [
+            'Client must know different strategies',
+            'Overkill for few algorithms',
+            'Increased number of objects'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from typing import List
+
+# Strategy interface
+class SortStrategy(ABC):
+    @abstractmethod
+    def sort(self, data: List[int]) -> List[int]: pass
+
+# Concrete strategies
+class BubbleSort(SortStrategy):
+    def sort(self, data: List[int]) -> List[int]:
+        arr = data.copy()
+        n = len(arr)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if arr[j] > arr[j+1]:
+                    arr[j], arr[j+1] = arr[j+1], arr[j]
+        return arr
+
+class QuickSort(SortStrategy):
+    def sort(self, data: List[int]) -> List[int]:
+        if len(data) <= 1:
+            return data
+        pivot = data[len(data) // 2]
+        left = [x for x in data if x < pivot]
+        middle = [x for x in data if x == pivot]
+        right = [x for x in data if x > pivot]
+        return self.sort(left) + middle + self.sort(right)
+
+class MergeSort(SortStrategy):
+    def sort(self, data: List[int]) -> List[int]:
+        if len(data) <= 1:
+            return data
+        mid = len(data) // 2
+        left = self.sort(data[:mid])
+        right = self.sort(data[mid:])
+        return self._merge(left, right)
+
+    def _merge(self, left, right):
+        result = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i]); i += 1
+            else:
+                result.append(right[j]); j += 1
+        result.extend(left[i:])
+        result.extend(right[j:])
+        return result
+
+# Context
+class Sorter:
+    def __init__(self, strategy: SortStrategy):
+        self._strategy = strategy
+
+    def set_strategy(self, strategy: SortStrategy):
+        self._strategy = strategy
+
+    def sort(self, data: List[int]) -> List[int]:
+        return self._strategy.sort(data)
+
+# Usage
+data = [64, 34, 25, 12, 22, 11, 90]
+
+sorter = Sorter(QuickSort())
+print(sorter.sort(data))
+
+sorter.set_strategy(MergeSort())  # Switch at runtime!
+print(sorter.sort(data))`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Strategy interface
+type SortStrategy interface {
+    Sort([]int) []int
+}
+
+// Concrete strategies
+type BubbleSort struct{}
+func (b *BubbleSort) Sort(data []int) []int {
+    arr := make([]int, len(data))
+    copy(arr, data)
+    n := len(arr)
+    for i := 0; i < n; i++ {
+        for j := 0; j < n-i-1; j++ {
+            if arr[j] > arr[j+1] {
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+            }
+        }
+    }
+    return arr
+}
+
+type QuickSort struct{}
+func (q *QuickSort) Sort(data []int) []int {
+    if len(data) <= 1 {
+        return data
+    }
+    pivot := data[len(data)/2]
+    var left, middle, right []int
+    for _, x := range data {
+        switch {
+        case x < pivot:
+            left = append(left, x)
+        case x == pivot:
+            middle = append(middle, x)
+        default:
+            right = append(right, x)
+        }
+    }
+    result := q.Sort(left)
+    result = append(result, middle...)
+    result = append(result, q.Sort(right)...)
+    return result
+}
+
+// Context
+type Sorter struct {
+    strategy SortStrategy
+}
+
+func (s *Sorter) SetStrategy(strategy SortStrategy) {
+    s.strategy = strategy
+}
+
+func (s *Sorter) Sort(data []int) []int {
+    return s.strategy.Sort(data)
+}
+
+func main() {
+    data := []int{64, 34, 25, 12, 22, 11, 90}
+
+    sorter := &Sorter{strategy: &QuickSort{}}
+    fmt.Println(sorter.Sort(data))
+
+    sorter.SetStrategy(&BubbleSort{})
+    fmt.Println(sorter.Sort(data))
+}`,
+
+        pros: [
+            'Swap algorithms at runtime',
+            'Isolate algorithm implementation details',
+            'Replace inheritance with composition',
+            'Open/Closed principle'
+        ],
+        cons: [
+            'Clients must be aware of strategies',
+            'Increases number of objects',
+            'Overkill for simple variations'
+        ],
+
+        realWorld: `**Payment Methods**: CreditCard, PayPal, Crypto strategies.
+**Compression**: ZIP, RAR, GZIP strategies.
+**Route Planning**: Fastest, Shortest, Scenic strategies.`
+    },
+
+    {
+        id: 'observer',
+        icon: '👁️',
+        category: 'Behavioral',
+        title: 'Observer',
+        tldr: 'When one object changes, all dependents are notified automatically.',
+
+        imagine: `YouTube subscription. When channel uploads, all subscribers get notified.
+Channel doesn't know who subscribers are - just broadcasts.
+Subscribers react to updates.`,
+
+        whenToUse: [
+            'Changes in one object affect others',
+            'Number of dependent objects unknown/dynamic',
+            'Loose coupling between objects',
+            'Event handling systems'
+        ],
+
+        caveats: [
+            'Subscribers notified in random order',
+            'Memory leaks if observers not removed',
+            'Can cause cascade of updates',
+            'Hard to debug notification chains'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from typing import List
+
+# Observer interface
+class Observer(ABC):
+    @abstractmethod
+    def update(self, message: str): pass
+
+# Subject (Observable)
+class Subject:
+    def __init__(self):
+        self._observers: List[Observer] = []
+        self._state = None
+
+    def attach(self, observer: Observer):
+        self._observers.append(observer)
+
+    def detach(self, observer: Observer):
+        self._observers.remove(observer)
+
+    def notify(self):
+        for observer in self._observers:
+            observer.update(self._state)
+
+    def set_state(self, state: str):
+        self._state = state
+        self.notify()
+
+# Concrete observers
+class EmailSubscriber(Observer):
+    def __init__(self, email: str):
+        self.email = email
+
+    def update(self, message: str):
+        print(f"Email to {self.email}: {message}")
+
+class SMSSubscriber(Observer):
+    def __init__(self, phone: str):
+        self.phone = phone
+
+    def update(self, message: str):
+        print(f"SMS to {self.phone}: {message}")
+
+class SlackSubscriber(Observer):
+    def __init__(self, channel: str):
+        self.channel = channel
+
+    def update(self, message: str):
+        print(f"Slack #{self.channel}: {message}")
+
+# Usage
+news_agency = Subject()
+
+# Add subscribers
+news_agency.attach(EmailSubscriber("user@example.com"))
+news_agency.attach(SMSSubscriber("+1234567890"))
+news_agency.attach(SlackSubscriber("news"))
+
+# Publish news - all subscribers notified
+news_agency.set_state("Breaking: Design Patterns are awesome!")`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Observer interface
+type Observer interface {
+    Update(message string)
+}
+
+// Subject
+type Subject struct {
+    observers []Observer
+    state     string
+}
+
+func (s *Subject) Attach(o Observer) {
+    s.observers = append(s.observers, o)
+}
+
+func (s *Subject) Notify() {
+    for _, o := range s.observers {
+        o.Update(s.state)
+    }
+}
+
+func (s *Subject) SetState(state string) {
+    s.state = state
+    s.Notify()
+}
+
+// Concrete observers
+type EmailSubscriber struct{ email string }
+func (e *EmailSubscriber) Update(msg string) {
+    fmt.Printf("Email to %s: %s\\n", e.email, msg)
+}
+
+type SMSSubscriber struct{ phone string }
+func (s *SMSSubscriber) Update(msg string) {
+    fmt.Printf("SMS to %s: %s\\n", s.phone, msg)
+}
+
+func main() {
+    news := &Subject{}
+
+    news.Attach(&EmailSubscriber{email: "user@example.com"})
+    news.Attach(&SMSSubscriber{phone: "+123456"})
+
+    news.SetState("Breaking News!")
+    // Both subscribers notified
+}`,
+
+        pros: [
+            'Loose coupling between subject and observers',
+            'Open/Closed - add observers without changing subject',
+            'Dynamic relationships at runtime',
+            'Broadcast communication'
+        ],
+        cons: [
+            'Unexpected updates (order not guaranteed)',
+            'Memory leaks if observers not unregistered',
+            'Can cause cascade of updates',
+            'Debugging can be difficult'
+        ],
+
+        realWorld: `**Event Systems**: DOM events, GUI frameworks.
+**MVC Architecture**: Model notifies Views.
+**Stock Tickers**: Price changes notify all watchers.
+**Social Media**: Post notifies all followers.`
+    },
+
+    {
+        id: 'command',
+        icon: '📜',
+        category: 'Behavioral',
+        title: 'Command',
+        tldr: 'Encapsulate request as object. Parameterize, queue, log, undo operations.',
+
+        imagine: `Restaurant: waiter writes order on paper, gives to kitchen.
+Order is a "command object" - can be queued, logged, undone.
+Kitchen doesn't need to know who ordered.`,
+
+        whenToUse: [
+            'Parameterize objects with operations',
+            'Queue, schedule, or log operations',
+            'Support undo/redo',
+            'Decouple sender from receiver'
+        ],
+
+        caveats: [
+            'Increases number of classes',
+            'Can be overkill for simple operations',
+            'Undo can be complex for some operations'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from typing import List
+
+# Command interface
+class Command(ABC):
+    @abstractmethod
+    def execute(self): pass
+
+    @abstractmethod
+    def undo(self): pass
+
+# Receiver
+class TextEditor:
+    def __init__(self):
+        self.text = ""
+
+    def write(self, text: str):
+        self.text += text
+
+    def delete(self, count: int):
+        self.text = self.text[:-count] if count <= len(self.text) else ""
+
+    def __str__(self):
+        return self.text
+
+# Concrete commands
+class WriteCommand(Command):
+    def __init__(self, editor: TextEditor, text: str):
+        self.editor = editor
+        self.text = text
+
+    def execute(self):
+        self.editor.write(self.text)
+
+    def undo(self):
+        self.editor.delete(len(self.text))
+
+class DeleteCommand(Command):
+    def __init__(self, editor: TextEditor, count: int):
+        self.editor = editor
+        self.count = count
+        self.deleted_text = ""
+
+    def execute(self):
+        self.deleted_text = self.editor.text[-self.count:]
+        self.editor.delete(self.count)
+
+    def undo(self):
+        self.editor.write(self.deleted_text)
+
+# Invoker with history
+class CommandManager:
+    def __init__(self):
+        self.history: List[Command] = []
+        self.redo_stack: List[Command] = []
+
+    def execute(self, command: Command):
+        command.execute()
+        self.history.append(command)
+        self.redo_stack.clear()
+
+    def undo(self):
+        if self.history:
+            command = self.history.pop()
+            command.undo()
+            self.redo_stack.append(command)
+
+    def redo(self):
+        if self.redo_stack:
+            command = self.redo_stack.pop()
+            command.execute()
+            self.history.append(command)
+
+# Usage
+editor = TextEditor()
+manager = CommandManager()
+
+manager.execute(WriteCommand(editor, "Hello "))
+manager.execute(WriteCommand(editor, "World!"))
+print(editor)  # "Hello World!"
+
+manager.undo()
+print(editor)  # "Hello "
+
+manager.redo()
+print(editor)  # "Hello World!"`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Command interface
+type Command interface {
+    Execute()
+    Undo()
+}
+
+// Receiver
+type Editor struct {
+    text string
+}
+
+func (e *Editor) Write(text string) { e.text += text }
+func (e *Editor) Delete(count int) {
+    if count <= len(e.text) {
+        e.text = e.text[:len(e.text)-count]
+    }
+}
+
+// Concrete command
+type WriteCommand struct {
+    editor *Editor
+    text   string
+}
+
+func (w *WriteCommand) Execute() { w.editor.Write(w.text) }
+func (w *WriteCommand) Undo()    { w.editor.Delete(len(w.text)) }
+
+// Invoker
+type CommandManager struct {
+    history []Command
+}
+
+func (m *CommandManager) Execute(cmd Command) {
+    cmd.Execute()
+    m.history = append(m.history, cmd)
+}
+
+func (m *CommandManager) Undo() {
+    if len(m.history) > 0 {
+        cmd := m.history[len(m.history)-1]
+        m.history = m.history[:len(m.history)-1]
+        cmd.Undo()
+    }
+}
+
+func main() {
+    editor := &Editor{}
+    manager := &CommandManager{}
+
+    manager.Execute(&WriteCommand{editor: editor, text: "Hello "})
+    manager.Execute(&WriteCommand{editor: editor, text: "World!"})
+    fmt.Println(editor.text) // "Hello World!"
+
+    manager.Undo()
+    fmt.Println(editor.text) // "Hello "
+}`,
+
+        pros: [
+            'Decouple invoker from receiver',
+            'Single Responsibility - each command is a class',
+            'Support undo/redo',
+            'Support queuing and logging'
+        ],
+        cons: [
+            'Many command classes',
+            'Complex undo logic',
+            'Memory overhead for command history'
+        ],
+
+        realWorld: `**Text Editors**: Undo/redo operations.
+**Transaction Systems**: Queue and execute transactions.
+**GUI Actions**: Button clicks as command objects.
+**Task Queues**: Background job processing.`
+    },
+
+    {
+        id: 'state',
+        icon: '🚦',
+        category: 'Behavioral',
+        title: 'State',
+        tldr: 'Object changes behavior when internal state changes. Looks like class changed.',
+
+        imagine: `Traffic light: Red, Yellow, Green states.
+Same light, different behavior based on state.
+Each state knows what to do and what comes next.`,
+
+        whenToUse: [
+            'Object behavior depends on state',
+            'Many conditionals based on state',
+            'State transitions are complex',
+            'State-specific behavior should be isolated'
+        ],
+
+        caveats: [
+            'Overkill for simple state machines',
+            'Can be hard to see all states',
+            'Tight coupling between states'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+
+# State interface
+class State(ABC):
+    @abstractmethod
+    def handle(self, context: 'Document'): pass
+
+    @abstractmethod
+    def __str__(self): pass
+
+# Concrete states
+class DraftState(State):
+    def handle(self, context: 'Document'):
+        print("Document is being edited...")
+        context.state = ModerationState()
+
+    def __str__(self):
+        return "Draft"
+
+class ModerationState(State):
+    def handle(self, context: 'Document'):
+        if context.is_admin:
+            print("Admin approved. Publishing...")
+            context.state = PublishedState()
+        else:
+            print("Sent for moderation review...")
+
+    def __str__(self):
+        return "Moderation"
+
+class PublishedState(State):
+    def handle(self, context: 'Document'):
+        print("Document is already published!")
+
+    def __str__(self):
+        return "Published"
+
+# Context
+class Document:
+    def __init__(self):
+        self.state: State = DraftState()
+        self.is_admin = False
+
+    def publish(self):
+        print(f"Current state: {self.state}")
+        self.state.handle(self)
+        print(f"New state: {self.state}")
+        print()
+
+# Usage
+doc = Document()
+doc.publish()  # Draft -> Moderation
+
+doc.publish()  # Moderation (no admin) -> stays Moderation
+
+doc.is_admin = True
+doc.publish()  # Moderation (admin) -> Published
+
+doc.publish()  # Published -> stays Published`,
+
+        goCode: `package main
+
+import "fmt"
+
+// State interface
+type State interface {
+    Handle(doc *Document)
+    String() string
+}
+
+// Context
+type Document struct {
+    state   State
+    IsAdmin bool
+}
+
+func (d *Document) SetState(s State) { d.state = s }
+func (d *Document) Publish() {
+    fmt.Printf("Current: %s\\n", d.state)
+    d.state.Handle(d)
+    fmt.Printf("New: %s\\n\\n", d.state)
+}
+
+// Concrete states
+type DraftState struct{}
+func (d *DraftState) Handle(doc *Document) {
+    fmt.Println("Editing...")
+    doc.SetState(&ModerationState{})
+}
+func (d *DraftState) String() string { return "Draft" }
+
+type ModerationState struct{}
+func (m *ModerationState) Handle(doc *Document) {
+    if doc.IsAdmin {
+        fmt.Println("Admin approved!")
+        doc.SetState(&PublishedState{})
+    } else {
+        fmt.Println("Waiting for review...")
+    }
+}
+func (m *ModerationState) String() string { return "Moderation" }
+
+type PublishedState struct{}
+func (p *PublishedState) Handle(doc *Document) {
+    fmt.Println("Already published!")
+}
+func (p *PublishedState) String() string { return "Published" }
+
+func main() {
+    doc := &Document{state: &DraftState{}}
+    doc.Publish()      // Draft -> Moderation
+    doc.Publish()      // Stays Moderation
+    doc.IsAdmin = true
+    doc.Publish()      // Moderation -> Published
+}`,
+
+        pros: [
+            'Organize state-specific code',
+            'Simplify complex conditionals',
+            'Open/Closed - add states without changing context',
+            'State transitions explicit'
+        ],
+        cons: [
+            'Can be overkill for simple state machines',
+            'Many state classes',
+            'States may be coupled'
+        ],
+
+        realWorld: `**Order Processing**: Pending → Processing → Shipped → Delivered.
+**Media Player**: Playing, Paused, Stopped states.
+**TCP Connection**: Listen, SynReceived, Established, Closed.
+**Workflow Engines**: Approval states.`
+    },
+
+    {
+        id: 'template-method',
+        icon: '📋',
+        category: 'Behavioral',
+        title: 'Template Method',
+        tldr: 'Define skeleton in base class. Subclasses override specific steps.',
+
+        imagine: `Building a house: foundation, walls, roof, interior.
+Same steps, but wooden house vs brick house have different implementations.
+Base class defines the order, subclasses define specifics.`,
+
+        whenToUse: [
+            'Multiple classes with similar algorithms',
+            'Control the algorithm extension points',
+            'Avoid code duplication',
+            'Framework development'
+        ],
+
+        caveats: [
+            'Inheritance required',
+            'Can violate Liskov Substitution',
+            'Rigid structure',
+            'Hard to understand for complex templates'
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+
+# Abstract class with template method
+class DataMiner(ABC):
+
+    def mine(self, path: str):
+        """Template method - defines the skeleton"""
+        file = self.open_file(path)
+        raw_data = self.extract_data(file)
+        data = self.parse_data(raw_data)
+        analysis = self.analyze_data(data)
+        self.send_report(analysis)
+        self.close_file(file)
+
+    @abstractmethod
+    def open_file(self, path: str): pass
+
+    @abstractmethod
+    def extract_data(self, file): pass
+
+    @abstractmethod
+    def parse_data(self, raw_data): pass
+
+    # Hook - optional override
+    def analyze_data(self, data):
+        return f"Analyzed: {data}"
+
+    def send_report(self, analysis):
+        print(f"Report: {analysis}")
+
+    @abstractmethod
+    def close_file(self, file): pass
+
+# Concrete implementations
+class PDFMiner(DataMiner):
+    def open_file(self, path: str):
+        print(f"Opening PDF: {path}")
+        return f"pdf_handle_{path}"
+
+    def extract_data(self, file):
+        return f"raw_pdf_data_from_{file}"
+
+    def parse_data(self, raw_data):
+        return f"parsed_pdf: {raw_data}"
+
+    def close_file(self, file):
+        print(f"Closing PDF: {file}")
+
+class CSVMiner(DataMiner):
+    def open_file(self, path: str):
+        print(f"Opening CSV: {path}")
+        return f"csv_handle_{path}"
+
+    def extract_data(self, file):
+        return f"raw_csv_data_from_{file}"
+
+    def parse_data(self, raw_data):
+        return f"parsed_csv: {raw_data}"
+
+    def close_file(self, file):
+        print(f"Closing CSV: {file}")
+
+# Usage
+pdf_miner = PDFMiner()
+pdf_miner.mine("report.pdf")
+
+print()
+
+csv_miner = CSVMiner()
+csv_miner.mine("data.csv")`,
+
+        goCode: `package main
+
+import "fmt"
+
+// Template interface
+type DataMiner interface {
+    OpenFile(path string) string
+    ExtractData(file string) string
+    ParseData(raw string) string
+    CloseFile(file string)
+}
+
+// Base template execution
+func Mine(miner DataMiner, path string) {
+    file := miner.OpenFile(path)
+    raw := miner.ExtractData(file)
+    data := miner.ParseData(raw)
+    fmt.Printf("Report: Analyzed %s\\n", data)
+    miner.CloseFile(file)
+}
+
+// PDF implementation
+type PDFMiner struct{}
+func (p *PDFMiner) OpenFile(path string) string {
+    fmt.Printf("Opening PDF: %s\\n", path)
+    return "pdf_handle"
+}
+func (p *PDFMiner) ExtractData(file string) string { return "pdf_raw" }
+func (p *PDFMiner) ParseData(raw string) string { return "pdf_parsed" }
+func (p *PDFMiner) CloseFile(file string) { fmt.Println("Closing PDF") }
+
+// CSV implementation
+type CSVMiner struct{}
+func (c *CSVMiner) OpenFile(path string) string {
+    fmt.Printf("Opening CSV: %s\\n", path)
+    return "csv_handle"
+}
+func (c *CSVMiner) ExtractData(file string) string { return "csv_raw" }
+func (c *CSVMiner) ParseData(raw string) string { return "csv_parsed" }
+func (c *CSVMiner) CloseFile(file string) { fmt.Println("Closing CSV") }
+
+func main() {
+    Mine(&PDFMiner{}, "report.pdf")
+    fmt.Println()
+    Mine(&CSVMiner{}, "data.csv")
+}`,
+
+        pros: [
+            'Code reuse in base class',
+            'Control extension points',
+            'Easy to create variants',
+            'Enforces algorithm structure'
+        ],
+        cons: [
+            'Requires inheritance',
+            'Can violate Liskov Substitution',
+            'Subclasses tightly coupled to base',
+            'Complex templates hard to maintain'
+        ],
+
+        realWorld: `**Data Processing Pipelines**: Extract → Transform → Load.
+**Testing Frameworks**: setUp() → test() → tearDown().
+**Build Tools**: configure → compile → link → package.
+**Game AI**: Think → Move → Attack loop.`
+    }
+];
+
+// ==================== MACHINE CODING PROBLEMS ====================
+const MACHINE_CODING = [
+    {
+        id: 'parking-lot',
+        icon: '🅿️',
+        title: 'Parking Lot System',
+        difficulty: 'Medium',
+        timeLimit: '45-60 mins',
+        patternsUsed: ['Singleton', 'Factory', 'Strategy', 'Observer'],
+
+        tldr: 'Design a multi-floor parking lot with different vehicle types and pricing strategies.',
+
+        requirements: `**Functional:**
+- Park vehicles (Car, Motorcycle, Truck)
+- Different spot sizes (Small, Medium, Large)
+- Find available spot
+- Calculate parking fee
+- Display availability
+
+**Non-functional:**
+- Support multiple floors
+- Different pricing strategies
+- Real-time availability updates`,
+
+        designDecisions: [
+            {
+                decision: 'How to manage the single parking lot instance?',
+                pattern: 'Singleton',
+                reason: 'Only one parking lot exists. Global access needed.'
+            },
+            {
+                decision: 'How to create different vehicle types?',
+                pattern: 'Factory',
+                reason: 'Decouple vehicle creation from parking logic.'
+            },
+            {
+                decision: 'How to handle different pricing strategies?',
+                pattern: 'Strategy',
+                reason: 'Hourly, daily, membership pricing - swap at runtime.'
+            },
+            {
+                decision: 'How to notify when spot becomes available?',
+                pattern: 'Observer',
+                reason: 'Display boards subscribe to availability changes.'
+            }
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from enum import Enum
+from datetime import datetime
+from typing import List, Optional, Dict
+import threading
+
+# ==================== ENUMS ====================
+class VehicleType(Enum):
+    MOTORCYCLE = 1
+    CAR = 2
+    TRUCK = 3
+
+class SpotSize(Enum):
+    SMALL = 1    # Motorcycle
+    MEDIUM = 2   # Car
+    LARGE = 3    # Truck
+
+# ==================== VEHICLE (Factory Pattern) ====================
+class Vehicle(ABC):
+    def __init__(self, license_plate: str):
+        self.license_plate = license_plate
+        self.entry_time: Optional[datetime] = None
+
+    @abstractmethod
+    def get_type(self) -> VehicleType: pass
+
+    @abstractmethod
+    def get_required_spot_size(self) -> SpotSize: pass
+
+class Motorcycle(Vehicle):
+    def get_type(self) -> VehicleType:
+        return VehicleType.MOTORCYCLE
+    def get_required_spot_size(self) -> SpotSize:
+        return SpotSize.SMALL
+
+class Car(Vehicle):
+    def get_type(self) -> VehicleType:
+        return VehicleType.CAR
+    def get_required_spot_size(self) -> SpotSize:
+        return SpotSize.MEDIUM
+
+class Truck(Vehicle):
+    def get_type(self) -> VehicleType:
+        return VehicleType.TRUCK
+    def get_required_spot_size(self) -> SpotSize:
+        return SpotSize.LARGE
+
+class VehicleFactory:
+    @staticmethod
+    def create(vehicle_type: str, license_plate: str) -> Vehicle:
+        if vehicle_type.lower() == "motorcycle":
+            return Motorcycle(license_plate)
+        elif vehicle_type.lower() == "car":
+            return Car(license_plate)
+        elif vehicle_type.lower() == "truck":
+            return Truck(license_plate)
+        raise ValueError(f"Unknown vehicle type: {vehicle_type}")
+
+# ==================== PRICING (Strategy Pattern) ====================
+class PricingStrategy(ABC):
+    @abstractmethod
+    def calculate(self, hours: float, vehicle_type: VehicleType) -> float: pass
+
+class HourlyPricing(PricingStrategy):
+    RATES = {
+        VehicleType.MOTORCYCLE: 10,
+        VehicleType.CAR: 20,
+        VehicleType.TRUCK: 30,
+    }
+
+    def calculate(self, hours: float, vehicle_type: VehicleType) -> float:
+        return hours * self.RATES[vehicle_type]
+
+class FlatRatePricing(PricingStrategy):
+    RATES = {
+        VehicleType.MOTORCYCLE: 50,
+        VehicleType.CAR: 100,
+        VehicleType.TRUCK: 150,
+    }
+
+    def calculate(self, hours: float, vehicle_type: VehicleType) -> float:
+        return self.RATES[vehicle_type]
+
+# ==================== OBSERVER (Observer Pattern) ====================
+class Observer(ABC):
+    @abstractmethod
+    def update(self, available_spots: Dict[SpotSize, int]): pass
+
+class DisplayBoard(Observer):
+    def __init__(self, floor: int):
+        self.floor = floor
+
+    def update(self, available_spots: Dict[SpotSize, int]):
+        print(f"Floor {self.floor} - Available: {dict(available_spots)}")
+
+# ==================== PARKING SPOT ====================
+class ParkingSpot:
+    def __init__(self, spot_id: str, size: SpotSize, floor: int):
+        self.spot_id = spot_id
+        self.size = size
+        self.floor = floor
+        self.vehicle: Optional[Vehicle] = None
+
+    def is_available(self) -> bool:
+        return self.vehicle is None
+
+    def can_fit(self, vehicle: Vehicle) -> bool:
+        return self.is_available() and self.size.value >= vehicle.get_required_spot_size().value
+
+    def park(self, vehicle: Vehicle) -> bool:
+        if self.can_fit(vehicle):
+            self.vehicle = vehicle
+            vehicle.entry_time = datetime.now()
+            return True
+        return False
+
+    def remove_vehicle(self) -> Optional[Vehicle]:
+        vehicle = self.vehicle
+        self.vehicle = None
+        return vehicle
+
+# ==================== PARKING LOT (Singleton Pattern) ====================
+class ParkingLot:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+
+        self._initialized = True
+        self.spots: List[ParkingSpot] = []
+        self.vehicles: Dict[str, ParkingSpot] = {}  # license -> spot
+        self.observers: List[Observer] = []
+        self.pricing_strategy: PricingStrategy = HourlyPricing()
+
+    def add_spots(self, floor: int, small: int, medium: int, large: int):
+        for i in range(small):
+            self.spots.append(ParkingSpot(f"F{floor}-S{i}", SpotSize.SMALL, floor))
+        for i in range(medium):
+            self.spots.append(ParkingSpot(f"F{floor}-M{i}", SpotSize.MEDIUM, floor))
+        for i in range(large):
+            self.spots.append(ParkingSpot(f"F{floor}-L{i}", SpotSize.LARGE, floor))
+
+    def set_pricing(self, strategy: PricingStrategy):
+        self.pricing_strategy = strategy
+
+    def attach_observer(self, observer: Observer):
+        self.observers.append(observer)
+
+    def notify_observers(self):
+        available = self.get_availability()
+        for observer in self.observers:
+            observer.update(available)
+
+    def get_availability(self) -> Dict[SpotSize, int]:
+        counts = {SpotSize.SMALL: 0, SpotSize.MEDIUM: 0, SpotSize.LARGE: 0}
+        for spot in self.spots:
+            if spot.is_available():
+                counts[spot.size] += 1
+        return counts
+
+    def park_vehicle(self, vehicle: Vehicle) -> Optional[str]:
+        for spot in self.spots:
+            if spot.can_fit(vehicle):
+                spot.park(vehicle)
+                self.vehicles[vehicle.license_plate] = spot
+                self.notify_observers()
+                return spot.spot_id
+        return None
+
+    def unpark_vehicle(self, license_plate: str) -> Optional[float]:
+        if license_plate not in self.vehicles:
+            return None
+
+        spot = self.vehicles[license_plate]
+        vehicle = spot.remove_vehicle()
+        del self.vehicles[license_plate]
+
+        # Calculate fee
+        hours = (datetime.now() - vehicle.entry_time).seconds / 3600
+        hours = max(1, hours)  # Minimum 1 hour
+        fee = self.pricing_strategy.calculate(hours, vehicle.get_type())
+
+        self.notify_observers()
+        return fee
+
+# ==================== USAGE ====================
+if __name__ == "__main__":
+    # Get singleton instance
+    lot = ParkingLot()
+
+    # Setup parking lot
+    lot.add_spots(floor=1, small=5, medium=10, large=3)
+    lot.add_spots(floor=2, small=5, medium=10, large=3)
+
+    # Add display board observer
+    lot.attach_observer(DisplayBoard(floor=1))
+
+    # Create vehicles using factory
+    car = VehicleFactory.create("car", "ABC-123")
+    bike = VehicleFactory.create("motorcycle", "XYZ-789")
+
+    # Park vehicles
+    spot1 = lot.park_vehicle(car)
+    print(f"Car parked at: {spot1}")
+
+    spot2 = lot.park_vehicle(bike)
+    print(f"Bike parked at: {spot2}")
+
+    # Change pricing strategy
+    lot.set_pricing(FlatRatePricing())
+
+    # Unpark and pay
+    fee = lot.unpark_vehicle("ABC-123")
+    print(f"Parking fee: ${fee}")`,
+
+        goCode: `package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+// ==================== ENUMS ====================
+type VehicleType int
+const (
+    Motorcycle VehicleType = iota
+    Car
+    Truck
+)
+
+type SpotSize int
+const (
+    Small SpotSize = iota
+    Medium
+    Large
+)
+
+// ==================== VEHICLE ====================
+type Vehicle interface {
+    GetType() VehicleType
+    GetRequiredSize() SpotSize
+    GetLicensePlate() string
+    SetEntryTime(t time.Time)
+    GetEntryTime() time.Time
+}
+
+type BaseVehicle struct {
+    LicensePlate string
+    EntryTime    time.Time
+}
+
+func (b *BaseVehicle) GetLicensePlate() string { return b.LicensePlate }
+func (b *BaseVehicle) SetEntryTime(t time.Time) { b.EntryTime = t }
+func (b *BaseVehicle) GetEntryTime() time.Time { return b.EntryTime }
+
+type CarVehicle struct{ BaseVehicle }
+func (c *CarVehicle) GetType() VehicleType { return Car }
+func (c *CarVehicle) GetRequiredSize() SpotSize { return Medium }
+
+type MotorcycleVehicle struct{ BaseVehicle }
+func (m *MotorcycleVehicle) GetType() VehicleType { return Motorcycle }
+func (m *MotorcycleVehicle) GetRequiredSize() SpotSize { return Small }
+
+// Factory
+func CreateVehicle(vType string, plate string) Vehicle {
+    switch vType {
+    case "car":
+        return &CarVehicle{BaseVehicle{LicensePlate: plate}}
+    case "motorcycle":
+        return &MotorcycleVehicle{BaseVehicle{LicensePlate: plate}}
+    }
+    return nil
+}
+
+// ==================== PRICING STRATEGY ====================
+type PricingStrategy interface {
+    Calculate(hours float64, vType VehicleType) float64
+}
+
+type HourlyPricing struct{}
+func (h *HourlyPricing) Calculate(hours float64, vType VehicleType) float64 {
+    rates := map[VehicleType]float64{Motorcycle: 10, Car: 20, Truck: 30}
+    return hours * rates[vType]
+}
+
+type FlatPricing struct{}
+func (f *FlatPricing) Calculate(hours float64, vType VehicleType) float64 {
+    rates := map[VehicleType]float64{Motorcycle: 50, Car: 100, Truck: 150}
+    return rates[vType]
+}
+
+// ==================== OBSERVER ====================
+type Observer interface {
+    Update(available map[SpotSize]int)
+}
+
+type DisplayBoard struct {
+    Floor int
+}
+func (d *DisplayBoard) Update(available map[SpotSize]int) {
+    fmt.Printf("Floor %d - Available: %v\\n", d.Floor, available)
+}
+
+// ==================== PARKING SPOT ====================
+type ParkingSpot struct {
+    ID      string
+    Size    SpotSize
+    Floor   int
+    Vehicle Vehicle
+}
+
+func (p *ParkingSpot) IsAvailable() bool { return p.Vehicle == nil }
+func (p *ParkingSpot) CanFit(v Vehicle) bool {
+    return p.IsAvailable() && p.Size >= v.GetRequiredSize()
+}
+func (p *ParkingSpot) Park(v Vehicle) bool {
+    if p.CanFit(v) {
+        v.SetEntryTime(time.Now())
+        p.Vehicle = v
+        return true
+    }
+    return false
+}
+
+// ==================== SINGLETON PARKING LOT ====================
+type ParkingLot struct {
+    spots    []*ParkingSpot
+    vehicles map[string]*ParkingSpot
+    observers []Observer
+    pricing  PricingStrategy
+}
+
+var (
+    lotInstance *ParkingLot
+    once        sync.Once
+)
+
+func GetParkingLot() *ParkingLot {
+    once.Do(func() {
+        lotInstance = &ParkingLot{
+            vehicles: make(map[string]*ParkingSpot),
+            pricing:  &HourlyPricing{},
+        }
+    })
+    return lotInstance
+}
+
+func (p *ParkingLot) AddSpots(floor, small, medium, large int) {
+    for i := 0; i < small; i++ {
+        p.spots = append(p.spots, &ParkingSpot{
+            ID: fmt.Sprintf("F%d-S%d", floor, i), Size: Small, Floor: floor,
+        })
+    }
+    for i := 0; i < medium; i++ {
+        p.spots = append(p.spots, &ParkingSpot{
+            ID: fmt.Sprintf("F%d-M%d", floor, i), Size: Medium, Floor: floor,
+        })
+    }
+}
+
+func (p *ParkingLot) AttachObserver(o Observer) {
+    p.observers = append(p.observers, o)
+}
+
+func (p *ParkingLot) NotifyObservers() {
+    available := p.GetAvailability()
+    for _, o := range p.observers {
+        o.Update(available)
+    }
+}
+
+func (p *ParkingLot) GetAvailability() map[SpotSize]int {
+    counts := map[SpotSize]int{Small: 0, Medium: 0, Large: 0}
+    for _, spot := range p.spots {
+        if spot.IsAvailable() {
+            counts[spot.Size]++
+        }
+    }
+    return counts
+}
+
+func (p *ParkingLot) ParkVehicle(v Vehicle) string {
+    for _, spot := range p.spots {
+        if spot.Park(v) {
+            p.vehicles[v.GetLicensePlate()] = spot
+            p.NotifyObservers()
+            return spot.ID
+        }
+    }
+    return ""
+}
+
+func (p *ParkingLot) SetPricing(strategy PricingStrategy) {
+    p.pricing = strategy
+}
+
+func main() {
+    lot := GetParkingLot()
+    lot.AddSpots(1, 5, 10, 3)
+    lot.AttachObserver(&DisplayBoard{Floor: 1})
+
+    car := CreateVehicle("car", "ABC-123")
+    spot := lot.ParkVehicle(car)
+    fmt.Printf("Car parked at: %s\\n", spot)
+
+    lot.SetPricing(&FlatPricing{})
+}`,
+
+        complexity: 'Space: O(n) spots, Time: O(n) for finding spot (can optimize with heaps)',
+
+        extensions: [
+            'Add reservation system (time slots)',
+            'Electric vehicle charging spots',
+            'VIP parking with priority',
+            'Valet parking service',
+            'Monthly subscription plans'
+        ]
+    },
+
+    {
+        id: 'rate-limiter',
+        icon: '🚦',
+        title: 'Rate Limiter',
+        difficulty: 'Medium',
+        timeLimit: '30-45 mins',
+        patternsUsed: ['Singleton', 'Strategy', 'Factory'],
+
+        tldr: 'Implement rate limiting with multiple algorithms (Token Bucket, Sliding Window).',
+
+        requirements: `**Functional:**
+- Limit requests per user/IP
+- Multiple rate limiting algorithms
+- Configurable limits per endpoint
+- Return rate limit headers
+
+**Non-functional:**
+- Thread-safe
+- O(1) time complexity
+- Support distributed systems`,
+
+        designDecisions: [
+            {
+                decision: 'How to implement different limiting algorithms?',
+                pattern: 'Strategy',
+                reason: 'Token Bucket, Sliding Window, Fixed Window - swap algorithms.'
+            },
+            {
+                decision: 'How to create limiters for different endpoints?',
+                pattern: 'Factory',
+                reason: 'Create appropriate limiter based on endpoint config.'
+            },
+            {
+                decision: 'How to manage limiter instance?',
+                pattern: 'Singleton',
+                reason: 'Single rate limiter service across application.'
+            }
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from collections import defaultdict
+from dataclasses import dataclass
+from time import time
+import threading
+from typing import Dict, Optional
+
+@dataclass
+class RateLimitResult:
+    allowed: bool
+    remaining: int
+    reset_time: float
+    retry_after: Optional[float] = None
+
+# ==================== STRATEGY PATTERN ====================
+class RateLimitStrategy(ABC):
+    @abstractmethod
+    def is_allowed(self, key: str) -> RateLimitResult: pass
+
+    @abstractmethod
+    def get_limit(self) -> int: pass
+
+class TokenBucket(RateLimitStrategy):
+    """
+    Tokens added at fixed rate. Request consumes token.
+    Allows burst up to bucket capacity.
+    """
+    def __init__(self, capacity: int, refill_rate: float):
+        self.capacity = capacity
+        self.refill_rate = refill_rate  # tokens per second
+        self.buckets: Dict[str, dict] = defaultdict(
+            lambda: {"tokens": capacity, "last_refill": time()}
+        )
+        self.lock = threading.Lock()
+
+    def is_allowed(self, key: str) -> RateLimitResult:
+        with self.lock:
+            bucket = self.buckets[key]
+            now = time()
+
+            # Refill tokens
+            elapsed = now - bucket["last_refill"]
+            refill = elapsed * self.refill_rate
+            bucket["tokens"] = min(self.capacity, bucket["tokens"] + refill)
+            bucket["last_refill"] = now
+
+            if bucket["tokens"] >= 1:
+                bucket["tokens"] -= 1
+                return RateLimitResult(
+                    allowed=True,
+                    remaining=int(bucket["tokens"]),
+                    reset_time=now + (self.capacity - bucket["tokens"]) / self.refill_rate
+                )
+            else:
+                retry_after = (1 - bucket["tokens"]) / self.refill_rate
+                return RateLimitResult(
+                    allowed=False,
+                    remaining=0,
+                    reset_time=now + retry_after,
+                    retry_after=retry_after
+                )
+
+    def get_limit(self) -> int:
+        return self.capacity
+
+class SlidingWindowLog(RateLimitStrategy):
+    """
+    Track timestamps of requests in a sliding window.
+    More accurate but uses more memory.
+    """
+    def __init__(self, limit: int, window_seconds: int):
+        self.limit = limit
+        self.window = window_seconds
+        self.requests: Dict[str, list] = defaultdict(list)
+        self.lock = threading.Lock()
+
+    def is_allowed(self, key: str) -> RateLimitResult:
+        with self.lock:
+            now = time()
+            window_start = now - self.window
+
+            # Remove old requests
+            self.requests[key] = [
+                t for t in self.requests[key] if t > window_start
+            ]
+
+            if len(self.requests[key]) < self.limit:
+                self.requests[key].append(now)
+                return RateLimitResult(
+                    allowed=True,
+                    remaining=self.limit - len(self.requests[key]),
+                    reset_time=now + self.window
+                )
+            else:
+                oldest = min(self.requests[key])
+                retry_after = oldest + self.window - now
+                return RateLimitResult(
+                    allowed=False,
+                    remaining=0,
+                    reset_time=oldest + self.window,
+                    retry_after=retry_after
+                )
+
+    def get_limit(self) -> int:
+        return self.limit
+
+class FixedWindowCounter(RateLimitStrategy):
+    """
+    Simple counter reset every window.
+    Can allow 2x burst at window boundaries.
+    """
+    def __init__(self, limit: int, window_seconds: int):
+        self.limit = limit
+        self.window = window_seconds
+        self.counters: Dict[str, dict] = {}
+        self.lock = threading.Lock()
+
+    def _get_window_key(self) -> int:
+        return int(time() // self.window)
+
+    def is_allowed(self, key: str) -> RateLimitResult:
+        with self.lock:
+            window_key = self._get_window_key()
+            now = time()
+
+            if key not in self.counters or self.counters[key]["window"] != window_key:
+                self.counters[key] = {"window": window_key, "count": 0}
+
+            if self.counters[key]["count"] < self.limit:
+                self.counters[key]["count"] += 1
+                return RateLimitResult(
+                    allowed=True,
+                    remaining=self.limit - self.counters[key]["count"],
+                    reset_time=(window_key + 1) * self.window
+                )
+            else:
+                reset_time = (window_key + 1) * self.window
+                return RateLimitResult(
+                    allowed=False,
+                    remaining=0,
+                    reset_time=reset_time,
+                    retry_after=reset_time - now
+                )
+
+    def get_limit(self) -> int:
+        return self.limit
+
+# ==================== FACTORY PATTERN ====================
+class RateLimiterFactory:
+    @staticmethod
+    def create(algorithm: str, **kwargs) -> RateLimitStrategy:
+        if algorithm == "token_bucket":
+            return TokenBucket(
+                capacity=kwargs.get("capacity", 100),
+                refill_rate=kwargs.get("refill_rate", 10)
+            )
+        elif algorithm == "sliding_window":
+            return SlidingWindowLog(
+                limit=kwargs.get("limit", 100),
+                window_seconds=kwargs.get("window", 60)
+            )
+        elif algorithm == "fixed_window":
+            return FixedWindowCounter(
+                limit=kwargs.get("limit", 100),
+                window_seconds=kwargs.get("window", 60)
+            )
+        raise ValueError(f"Unknown algorithm: {algorithm}")
+
+# ==================== RATE LIMITER SERVICE (Singleton) ====================
+class RateLimiterService:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+        self._initialized = True
+        self.limiters: Dict[str, RateLimitStrategy] = {}
+
+    def configure_endpoint(self, endpoint: str, algorithm: str, **kwargs):
+        self.limiters[endpoint] = RateLimiterFactory.create(algorithm, **kwargs)
+
+    def check(self, endpoint: str, client_id: str) -> RateLimitResult:
+        if endpoint not in self.limiters:
+            return RateLimitResult(allowed=True, remaining=-1, reset_time=0)
+
+        key = f"{endpoint}:{client_id}"
+        return self.limiters[endpoint].is_allowed(key)
+
+# ==================== USAGE ====================
+if __name__ == "__main__":
+    service = RateLimiterService()
+
+    # Configure different endpoints
+    service.configure_endpoint(
+        "/api/search", "token_bucket",
+        capacity=10, refill_rate=1
+    )
+
+    service.configure_endpoint(
+        "/api/login", "fixed_window",
+        limit=5, window=60
+    )
+
+    # Simulate requests
+    for i in range(15):
+        result = service.check("/api/search", "user123")
+        status = "✓" if result.allowed else "✗"
+        print(f"Request {i+1}: {status} (remaining: {result.remaining})")`,
+
+        goCode: `package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+// RateLimitResult holds the result of a rate limit check
+type RateLimitResult struct {
+    Allowed    bool
+    Remaining  int
+    ResetTime  float64
+    RetryAfter float64
+}
+
+// Strategy interface
+type RateLimitStrategy interface {
+    IsAllowed(key string) RateLimitResult
+    GetLimit() int
+}
+
+// ==================== TOKEN BUCKET ====================
+type TokenBucket struct {
+    capacity   int
+    refillRate float64
+    buckets    map[string]*bucket
+    mu         sync.Mutex
+}
+
+type bucket struct {
+    tokens     float64
+    lastRefill time.Time
+}
+
+func NewTokenBucket(capacity int, refillRate float64) *TokenBucket {
+    return &TokenBucket{
+        capacity:   capacity,
+        refillRate: refillRate,
+        buckets:    make(map[string]*bucket),
+    }
+}
+
+func (t *TokenBucket) IsAllowed(key string) RateLimitResult {
+    t.mu.Lock()
+    defer t.mu.Unlock()
+
+    now := time.Now()
+
+    if _, exists := t.buckets[key]; !exists {
+        t.buckets[key] = &bucket{
+            tokens:     float64(t.capacity),
+            lastRefill: now,
+        }
+    }
+
+    b := t.buckets[key]
+    elapsed := now.Sub(b.lastRefill).Seconds()
+    b.tokens = min(float64(t.capacity), b.tokens+elapsed*t.refillRate)
+    b.lastRefill = now
+
+    if b.tokens >= 1 {
+        b.tokens--
+        return RateLimitResult{
+            Allowed:   true,
+            Remaining: int(b.tokens),
+        }
+    }
+
+    return RateLimitResult{
+        Allowed:    false,
+        Remaining:  0,
+        RetryAfter: (1 - b.tokens) / t.refillRate,
+    }
+}
+
+func (t *TokenBucket) GetLimit() int { return t.capacity }
+
+// ==================== FACTORY ====================
+func CreateLimiter(algorithm string, limit int, window int) RateLimitStrategy {
+    switch algorithm {
+    case "token_bucket":
+        return NewTokenBucket(limit, float64(limit)/float64(window))
+    default:
+        return NewTokenBucket(100, 10)
+    }
+}
+
+// ==================== SINGLETON SERVICE ====================
+type RateLimiterService struct {
+    limiters map[string]RateLimitStrategy
+    mu       sync.RWMutex
+}
+
+var (
+    serviceInstance *RateLimiterService
+    serviceOnce     sync.Once
+)
+
+func GetRateLimiterService() *RateLimiterService {
+    serviceOnce.Do(func() {
+        serviceInstance = &RateLimiterService{
+            limiters: make(map[string]RateLimitStrategy),
+        }
+    })
+    return serviceInstance
+}
+
+func (r *RateLimiterService) Configure(endpoint, algorithm string, limit, window int) {
+    r.mu.Lock()
+    defer r.mu.Unlock()
+    r.limiters[endpoint] = CreateLimiter(algorithm, limit, window)
+}
+
+func (r *RateLimiterService) Check(endpoint, clientID string) RateLimitResult {
+    r.mu.RLock()
+    limiter, exists := r.limiters[endpoint]
+    r.mu.RUnlock()
+
+    if !exists {
+        return RateLimitResult{Allowed: true, Remaining: -1}
+    }
+
+    key := endpoint + ":" + clientID
+    return limiter.IsAllowed(key)
+}
+
+func min(a, b float64) float64 {
+    if a < b { return a }
+    return b
+}
+
+func main() {
+    service := GetRateLimiterService()
+    service.Configure("/api/search", "token_bucket", 10, 60)
+
+    for i := 0; i < 15; i++ {
+        result := service.Check("/api/search", "user123")
+        status := "✓"
+        if !result.Allowed {
+            status = "✗"
+        }
+        fmt.Printf("Request %d: %s (remaining: %d)\\n", i+1, status, result.Remaining)
+    }
+}`,
+
+        complexity: 'Token Bucket: O(1), Sliding Window: O(n) cleanup, Fixed Window: O(1)',
+
+        extensions: [
+            'Redis-based distributed rate limiting',
+            'Per-user and per-IP limits',
+            'Rate limit headers middleware',
+            'Graceful degradation',
+            'Rate limit bypass for admins'
+        ]
+    },
+
+    {
+        id: 'cache-system',
+        icon: '💾',
+        title: 'LRU Cache with TTL',
+        difficulty: 'Medium',
+        timeLimit: '45 mins',
+        patternsUsed: ['Singleton', 'Decorator', 'Strategy'],
+
+        tldr: 'Build an LRU cache with TTL support, eviction policies, and cache statistics.',
+
+        requirements: `**Functional:**
+- Get/Set with TTL
+- LRU eviction when full
+- Cache statistics (hits, misses)
+- Different eviction strategies
+
+**Non-functional:**
+- O(1) get/set operations
+- Thread-safe
+- Memory efficient`,
+
+        designDecisions: [
+            {
+                decision: 'How to add TTL to existing cache?',
+                pattern: 'Decorator',
+                reason: 'Wrap cache entries with TTL metadata without changing core logic.'
+            },
+            {
+                decision: 'How to support different eviction policies?',
+                pattern: 'Strategy',
+                reason: 'LRU, LFU, FIFO - swap eviction algorithms.'
+            },
+            {
+                decision: 'How to manage cache instance?',
+                pattern: 'Singleton',
+                reason: 'Single cache instance shared across application.'
+            }
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from collections import OrderedDict
+from dataclasses import dataclass, field
+from time import time
+from typing import Any, Dict, Optional
+import threading
+
+@dataclass
+class CacheEntry:
+    value: Any
+    created_at: float = field(default_factory=time)
+    ttl: Optional[float] = None
+    access_count: int = 0
+
+    def is_expired(self) -> bool:
+        if self.ttl is None:
+            return False
+        return time() > self.created_at + self.ttl
+
+@dataclass
+class CacheStats:
+    hits: int = 0
+    misses: int = 0
+    evictions: int = 0
+
+    @property
+    def hit_rate(self) -> float:
+        total = self.hits + self.misses
+        return self.hits / total if total > 0 else 0.0
+
+# ==================== EVICTION STRATEGY ====================
+class EvictionStrategy(ABC):
+    @abstractmethod
+    def evict(self, cache: Dict[str, CacheEntry]) -> Optional[str]: pass
+
+    @abstractmethod
+    def on_access(self, key: str, cache: Dict[str, CacheEntry]): pass
+
+class LRUEviction(EvictionStrategy):
+    def __init__(self):
+        self.order: OrderedDict = OrderedDict()
+
+    def evict(self, cache: Dict[str, CacheEntry]) -> Optional[str]:
+        if self.order:
+            key, _ = self.order.popitem(last=False)
+            return key
+        return None
+
+    def on_access(self, key: str, cache: Dict[str, CacheEntry]):
+        if key in self.order:
+            self.order.move_to_end(key)
+        else:
+            self.order[key] = True
+
+class LFUEviction(EvictionStrategy):
+    def evict(self, cache: Dict[str, CacheEntry]) -> Optional[str]:
+        if not cache:
+            return None
+        # Find least frequently used
+        return min(cache.keys(), key=lambda k: cache[k].access_count)
+
+    def on_access(self, key: str, cache: Dict[str, CacheEntry]):
+        if key in cache:
+            cache[key].access_count += 1
+
+class FIFOEviction(EvictionStrategy):
+    def __init__(self):
+        self.order = []
+
+    def evict(self, cache: Dict[str, CacheEntry]) -> Optional[str]:
+        while self.order:
+            key = self.order.pop(0)
+            if key in cache:
+                return key
+        return None
+
+    def on_access(self, key: str, cache: Dict[str, CacheEntry]):
+        if key not in self.order:
+            self.order.append(key)
+
+# ==================== CACHE ====================
+class Cache:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self, capacity: int = 100, eviction: str = "lru"):
+        if self._initialized:
+            return
+
+        self._initialized = True
+        self.capacity = capacity
+        self.cache: Dict[str, CacheEntry] = {}
+        self.stats = CacheStats()
+        self.lock = threading.RLock()
+
+        # Strategy pattern
+        if eviction == "lru":
+            self.eviction_strategy = LRUEviction()
+        elif eviction == "lfu":
+            self.eviction_strategy = LFUEviction()
+        else:
+            self.eviction_strategy = FIFOEviction()
+
+    def get(self, key: str) -> Optional[Any]:
+        with self.lock:
+            if key not in self.cache:
+                self.stats.misses += 1
+                return None
+
+            entry = self.cache[key]
+
+            # Check TTL
+            if entry.is_expired():
+                del self.cache[key]
+                self.stats.misses += 1
+                return None
+
+            self.stats.hits += 1
+            self.eviction_strategy.on_access(key, self.cache)
+            return entry.value
+
+    def set(self, key: str, value: Any, ttl: Optional[float] = None):
+        with self.lock:
+            # Evict if at capacity
+            while len(self.cache) >= self.capacity:
+                evict_key = self.eviction_strategy.evict(self.cache)
+                if evict_key and evict_key in self.cache:
+                    del self.cache[evict_key]
+                    self.stats.evictions += 1
+                else:
+                    break
+
+            self.cache[key] = CacheEntry(value=value, ttl=ttl)
+            self.eviction_strategy.on_access(key, self.cache)
+
+    def delete(self, key: str) -> bool:
+        with self.lock:
+            if key in self.cache:
+                del self.cache[key]
+                return True
+            return False
+
+    def clear(self):
+        with self.lock:
+            self.cache.clear()
+            self.stats = CacheStats()
+
+    def get_stats(self) -> CacheStats:
+        return self.stats
+
+# ==================== USAGE ====================
+if __name__ == "__main__":
+    cache = Cache(capacity=3, eviction="lru")
+
+    # Set some values
+    cache.set("a", "value_a")
+    cache.set("b", "value_b")
+    cache.set("c", "value_c")
+
+    # Access 'a' to make it recently used
+    print(cache.get("a"))  # value_a
+
+    # Add new value - should evict 'b' (least recently used)
+    cache.set("d", "value_d")
+
+    print(cache.get("b"))  # None (evicted)
+    print(cache.get("a"))  # value_a (still there)
+
+    # With TTL
+    cache.set("temp", "temporary", ttl=2)
+    print(cache.get("temp"))  # temporary
+
+    import time; time.sleep(3)
+    print(cache.get("temp"))  # None (expired)
+
+    # Stats
+    stats = cache.get_stats()
+    print(f"Hit rate: {stats.hit_rate:.2%}")
+    print(f"Evictions: {stats.evictions}")`,
+
+        goCode: `package main
+
+import (
+    "container/list"
+    "fmt"
+    "sync"
+    "time"
+)
+
+type CacheEntry struct {
+    Value     interface{}
+    CreatedAt time.Time
+    TTL       time.Duration
+}
+
+func (e *CacheEntry) IsExpired() bool {
+    if e.TTL == 0 {
+        return false
+    }
+    return time.Now().After(e.CreatedAt.Add(e.TTL))
+}
+
+type CacheStats struct {
+    Hits      int64
+    Misses    int64
+    Evictions int64
+}
+
+type LRUCache struct {
+    capacity int
+    cache    map[string]*list.Element
+    order    *list.List
+    stats    CacheStats
+    mu       sync.RWMutex
+}
+
+type entry struct {
+    key   string
+    value *CacheEntry
+}
+
+var (
+    cacheInstance *LRUCache
+    cacheOnce     sync.Once
+)
+
+func GetCache(capacity int) *LRUCache {
+    cacheOnce.Do(func() {
+        cacheInstance = &LRUCache{
+            capacity: capacity,
+            cache:    make(map[string]*list.Element),
+            order:    list.New(),
+        }
+    })
+    return cacheInstance
+}
+
+func (c *LRUCache) Get(key string) (interface{}, bool) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    elem, exists := c.cache[key]
+    if !exists {
+        c.stats.Misses++
+        return nil, false
+    }
+
+    ent := elem.Value.(*entry)
+    if ent.value.IsExpired() {
+        c.removeElement(elem)
+        c.stats.Misses++
+        return nil, false
+    }
+
+    c.order.MoveToFront(elem)
+    c.stats.Hits++
+    return ent.value.Value, true
+}
+
+func (c *LRUCache) Set(key string, value interface{}, ttl time.Duration) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+
+    if elem, exists := c.cache[key]; exists {
+        c.order.MoveToFront(elem)
+        ent := elem.Value.(*entry)
+        ent.value = &CacheEntry{Value: value, CreatedAt: time.Now(), TTL: ttl}
+        return
+    }
+
+    for len(c.cache) >= c.capacity {
+        c.evict()
+    }
+
+    ent := &entry{
+        key:   key,
+        value: &CacheEntry{Value: value, CreatedAt: time.Now(), TTL: ttl},
+    }
+    elem := c.order.PushFront(ent)
+    c.cache[key] = elem
+}
+
+func (c *LRUCache) evict() {
+    elem := c.order.Back()
+    if elem != nil {
+        c.removeElement(elem)
+        c.stats.Evictions++
+    }
+}
+
+func (c *LRUCache) removeElement(elem *list.Element) {
+    c.order.Remove(elem)
+    ent := elem.Value.(*entry)
+    delete(c.cache, ent.key)
+}
+
+func (c *LRUCache) Stats() CacheStats {
+    c.mu.RLock()
+    defer c.mu.RUnlock()
+    return c.stats
+}
+
+func main() {
+    cache := GetCache(3)
+
+    cache.Set("a", "value_a", 0)
+    cache.Set("b", "value_b", 0)
+    cache.Set("c", "value_c", 0)
+
+    if v, ok := cache.Get("a"); ok {
+        fmt.Println("a:", v)
+    }
+
+    cache.Set("d", "value_d", 0) // Evicts 'b'
+
+    if _, ok := cache.Get("b"); !ok {
+        fmt.Println("b: evicted")
+    }
+
+    stats := cache.Stats()
+    fmt.Printf("Hits: %d, Misses: %d, Evictions: %d\\n",
+        stats.Hits, stats.Misses, stats.Evictions)
+}`,
+
+        complexity: 'Get/Set: O(1) with hash map + doubly linked list',
+
+        extensions: [
+            'Write-through/write-behind to DB',
+            'Cache warming on startup',
+            'Distributed cache with consistent hashing',
+            'Memory-based size limits',
+            'Cache groups with different policies'
+        ]
+    },
+
+    {
+        id: 'task-scheduler',
+        icon: '⏰',
+        title: 'Task Scheduler',
+        difficulty: 'Hard',
+        timeLimit: '60 mins',
+        patternsUsed: ['Singleton', 'Command', 'Observer', 'Strategy', 'Factory'],
+
+        tldr: 'Build a task scheduler with cron-like scheduling, retry logic, and multiple executors.',
+
+        requirements: `**Functional:**
+- Schedule one-time and recurring tasks
+- Support cron expressions
+- Retry failed tasks with backoff
+- Task priorities
+- Cancel scheduled tasks
+
+**Non-functional:**
+- Concurrent task execution
+- Persistent task queue (survive restarts)
+- Distributed execution support`,
+
+        designDecisions: [
+            {
+                decision: 'How to represent tasks?',
+                pattern: 'Command',
+                reason: 'Encapsulate task logic as objects for queueing, retry, undo.'
+            },
+            {
+                decision: 'How to notify on task completion?',
+                pattern: 'Observer',
+                reason: 'Multiple listeners for task status changes.'
+            },
+            {
+                decision: 'How to handle different retry strategies?',
+                pattern: 'Strategy',
+                reason: 'Exponential, linear, fixed backoff strategies.'
+            },
+            {
+                decision: 'How to create different task types?',
+                pattern: 'Factory',
+                reason: 'Create HTTP, Email, Custom tasks uniformly.'
+            },
+            {
+                decision: 'How to manage scheduler instance?',
+                pattern: 'Singleton',
+                reason: 'Single scheduler coordinating all tasks.'
+            }
+        ],
+
+        pythonCode: `from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
+from uuid import uuid4
+import heapq
+import threading
+import time
+
+class TaskStatus(Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+# ==================== COMMAND PATTERN ====================
+class Task(ABC):
+    def __init__(self, task_id: str = None, priority: int = 0):
+        self.task_id = task_id or str(uuid4())
+        self.priority = priority
+        self.status = TaskStatus.PENDING
+        self.result: Any = None
+        self.error: Optional[str] = None
+        self.attempts = 0
+        self.max_attempts = 3
+        self.created_at = datetime.now()
+        self.scheduled_at: Optional[datetime] = None
+        self.completed_at: Optional[datetime] = None
+
+    @abstractmethod
+    def execute(self) -> Any:
+        pass
+
+    def __lt__(self, other):
+        # For heap comparison (higher priority = lower number)
+        if self.scheduled_at and other.scheduled_at:
+            if self.scheduled_at != other.scheduled_at:
+                return self.scheduled_at < other.scheduled_at
+        return self.priority < other.priority
+
+class HttpTask(Task):
+    def __init__(self, url: str, method: str = "GET", **kwargs):
+        super().__init__(**kwargs)
+        self.url = url
+        self.method = method
+
+    def execute(self) -> Any:
+        # Simulated HTTP call
+        print(f"HTTP {self.method} {self.url}")
+        return {"status": 200, "url": self.url}
+
+class EmailTask(Task):
+    def __init__(self, to: str, subject: str, body: str, **kwargs):
+        super().__init__(**kwargs)
+        self.to = to
+        self.subject = subject
+        self.body = body
+
+    def execute(self) -> Any:
+        print(f"Sending email to {self.to}: {self.subject}")
+        return {"sent": True, "to": self.to}
+
+class CallableTask(Task):
+    def __init__(self, func: Callable, args: tuple = (), kwargs: dict = None, **task_kwargs):
+        super().__init__(**task_kwargs)
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs or {}
+
+    def execute(self) -> Any:
+        return self.func(*self.args, **self.kwargs)
+
+# ==================== FACTORY PATTERN ====================
+class TaskFactory:
+    @staticmethod
+    def create(task_type: str, **kwargs) -> Task:
+        if task_type == "http":
+            return HttpTask(**kwargs)
+        elif task_type == "email":
+            return EmailTask(**kwargs)
+        elif task_type == "callable":
+            return CallableTask(**kwargs)
+        raise ValueError(f"Unknown task type: {task_type}")
+
+# ==================== RETRY STRATEGY ====================
+class RetryStrategy(ABC):
+    @abstractmethod
+    def get_delay(self, attempt: int) -> float:
+        pass
+
+class ExponentialBackoff(RetryStrategy):
+    def __init__(self, base_delay: float = 1.0, max_delay: float = 60.0):
+        self.base_delay = base_delay
+        self.max_delay = max_delay
+
+    def get_delay(self, attempt: int) -> float:
+        delay = self.base_delay * (2 ** attempt)
+        return min(delay, self.max_delay)
+
+class LinearBackoff(RetryStrategy):
+    def __init__(self, delay: float = 5.0):
+        self.delay = delay
+
+    def get_delay(self, attempt: int) -> float:
+        return self.delay * attempt
+
+class FixedBackoff(RetryStrategy):
+    def __init__(self, delay: float = 5.0):
+        self.delay = delay
+
+    def get_delay(self, attempt: int) -> float:
+        return self.delay
+
+# ==================== OBSERVER PATTERN ====================
+class TaskObserver(ABC):
+    @abstractmethod
+    def on_task_started(self, task: Task): pass
+
+    @abstractmethod
+    def on_task_completed(self, task: Task): pass
+
+    @abstractmethod
+    def on_task_failed(self, task: Task): pass
+
+class LoggingObserver(TaskObserver):
+    def on_task_started(self, task: Task):
+        print(f"[LOG] Task {task.task_id} started")
+
+    def on_task_completed(self, task: Task):
+        print(f"[LOG] Task {task.task_id} completed: {task.result}")
+
+    def on_task_failed(self, task: Task):
+        print(f"[LOG] Task {task.task_id} failed: {task.error}")
+
+class MetricsObserver(TaskObserver):
+    def __init__(self):
+        self.total = 0
+        self.completed = 0
+        self.failed = 0
+
+    def on_task_started(self, task: Task):
+        self.total += 1
+
+    def on_task_completed(self, task: Task):
+        self.completed += 1
+
+    def on_task_failed(self, task: Task):
+        self.failed += 1
+
+    def get_stats(self):
+        return {
+            "total": self.total,
+            "completed": self.completed,
+            "failed": self.failed,
+            "success_rate": self.completed / self.total if self.total > 0 else 0
+        }
+
+# ==================== SCHEDULER (Singleton) ====================
+class TaskScheduler:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+
+        self._initialized = True
+        self.task_queue: List[Task] = []  # Min heap
+        self.tasks: Dict[str, Task] = {}
+        self.observers: List[TaskObserver] = []
+        self.retry_strategy: RetryStrategy = ExponentialBackoff()
+        self.running = False
+        self.workers: List[threading.Thread] = []
+        self.queue_lock = threading.Lock()
+        self.num_workers = 4
+
+    def set_retry_strategy(self, strategy: RetryStrategy):
+        self.retry_strategy = strategy
+
+    def add_observer(self, observer: TaskObserver):
+        self.observers.append(observer)
+
+    def notify_started(self, task: Task):
+        for observer in self.observers:
+            observer.on_task_started(task)
+
+    def notify_completed(self, task: Task):
+        for observer in self.observers:
+            observer.on_task_completed(task)
+
+    def notify_failed(self, task: Task):
+        for observer in self.observers:
+            observer.on_task_failed(task)
+
+    def schedule(self, task: Task, delay: float = 0) -> str:
+        task.scheduled_at = datetime.now() + timedelta(seconds=delay)
+
+        with self.queue_lock:
+            heapq.heappush(self.task_queue, task)
+            self.tasks[task.task_id] = task
+
+        return task.task_id
+
+    def schedule_recurring(self, task_factory: Callable[[], Task],
+                          interval: float, times: int = -1) -> str:
+        """Schedule recurring task"""
+        recurring_id = str(uuid4())
+        count = [0]
+
+        def schedule_next():
+            if times > 0 and count[0] >= times:
+                return
+
+            task = task_factory()
+            task.task_id = f"{recurring_id}-{count[0]}"
+            count[0] += 1
+
+            # Schedule next occurrence
+            original_execute = task.execute
+            def wrapped_execute():
+                result = original_execute()
+                self.schedule(task_factory(), delay=interval)
+                schedule_next()
+                return result
+            task.execute = wrapped_execute
+
+            self.schedule(task, delay=interval if count[0] > 1 else 0)
+
+        schedule_next()
+        return recurring_id
+
+    def cancel(self, task_id: str) -> bool:
+        with self.queue_lock:
+            if task_id in self.tasks:
+                self.tasks[task_id].status = TaskStatus.CANCELLED
+                return True
+        return False
+
+    def _worker(self):
+        while self.running:
+            task = None
+
+            with self.queue_lock:
+                if self.task_queue:
+                    # Check if next task is ready
+                    next_task = self.task_queue[0]
+                    if next_task.scheduled_at <= datetime.now():
+                        task = heapq.heappop(self.task_queue)
+
+            if task is None:
+                time.sleep(0.1)
+                continue
+
+            if task.status == TaskStatus.CANCELLED:
+                continue
+
+            # Execute task
+            task.status = TaskStatus.RUNNING
+            task.attempts += 1
+            self.notify_started(task)
+
+            try:
+                task.result = task.execute()
+                task.status = TaskStatus.COMPLETED
+                task.completed_at = datetime.now()
+                self.notify_completed(task)
+
+            except Exception as e:
+                task.error = str(e)
+
+                if task.attempts < task.max_attempts:
+                    # Retry with backoff
+                    delay = self.retry_strategy.get_delay(task.attempts)
+                    task.status = TaskStatus.PENDING
+                    task.scheduled_at = datetime.now() + timedelta(seconds=delay)
+
+                    with self.queue_lock:
+                        heapq.heappush(self.task_queue, task)
+                else:
+                    task.status = TaskStatus.FAILED
+                    self.notify_failed(task)
+
+    def start(self):
+        self.running = True
+        for _ in range(self.num_workers):
+            worker = threading.Thread(target=self._worker, daemon=True)
+            worker.start()
+            self.workers.append(worker)
+
+    def stop(self):
+        self.running = False
+        for worker in self.workers:
+            worker.join(timeout=1)
+        self.workers.clear()
+
+    def get_task(self, task_id: str) -> Optional[Task]:
+        return self.tasks.get(task_id)
+
+# ==================== USAGE ====================
+if __name__ == "__main__":
+    scheduler = TaskScheduler()
+
+    # Add observers
+    logger = LoggingObserver()
+    metrics = MetricsObserver()
+    scheduler.add_observer(logger)
+    scheduler.add_observer(metrics)
+
+    # Set retry strategy
+    scheduler.set_retry_strategy(ExponentialBackoff(base_delay=1.0))
+
+    # Start scheduler
+    scheduler.start()
+
+    # Schedule tasks
+    http_task = TaskFactory.create("http", url="https://api.example.com/data")
+    scheduler.schedule(http_task, delay=1)
+
+    email_task = TaskFactory.create(
+        "email",
+        to="user@example.com",
+        subject="Hello",
+        body="World"
+    )
+    scheduler.schedule(email_task, delay=2)
+
+    # Custom callable
+    def my_job(x, y):
+        return x + y
+
+    custom_task = TaskFactory.create(
+        "callable",
+        func=my_job,
+        args=(10, 20)
+    )
+    scheduler.schedule(custom_task)
+
+    # Wait and check results
+    time.sleep(5)
+
+    print(f"\\nMetrics: {metrics.get_stats()}")
+
+    scheduler.stop()`,
+
+        goCode: `// Due to length, showing key components
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+type TaskStatus string
+const (
+    Pending   TaskStatus = "pending"
+    Running   TaskStatus = "running"
+    Completed TaskStatus = "completed"
+    Failed    TaskStatus = "failed"
+)
+
+type Task interface {
+    Execute() (interface{}, error)
+    GetID() string
+    GetStatus() TaskStatus
+    SetStatus(TaskStatus)
+}
+
+type BaseTask struct {
+    ID          string
+    Status      TaskStatus
+    ScheduledAt time.Time
+    Attempts    int
+    MaxAttempts int
+}
+
+func (t *BaseTask) GetID() string { return t.ID }
+func (t *BaseTask) GetStatus() TaskStatus { return t.Status }
+func (t *BaseTask) SetStatus(s TaskStatus) { t.Status = s }
+
+// Observer
+type TaskObserver interface {
+    OnStarted(task Task)
+    OnCompleted(task Task, result interface{})
+    OnFailed(task Task, err error)
+}
+
+// Retry Strategy
+type RetryStrategy interface {
+    GetDelay(attempt int) time.Duration
+}
+
+type ExponentialBackoff struct {
+    BaseDelay time.Duration
+}
+
+func (e *ExponentialBackoff) GetDelay(attempt int) time.Duration {
+    return e.BaseDelay * time.Duration(1<<attempt)
+}
+
+// Scheduler (Singleton)
+type Scheduler struct {
+    tasks     map[string]Task
+    observers []TaskObserver
+    retry     RetryStrategy
+    mu        sync.Mutex
+    running   bool
+}
+
+var (
+    schedulerInstance *Scheduler
+    schedulerOnce     sync.Once
+)
+
+func GetScheduler() *Scheduler {
+    schedulerOnce.Do(func() {
+        schedulerInstance = &Scheduler{
+            tasks:  make(map[string]Task),
+            retry:  &ExponentialBackoff{BaseDelay: time.Second},
+        }
+    })
+    return schedulerInstance
+}
+
+func (s *Scheduler) Schedule(task Task, delay time.Duration) {
+    s.mu.Lock()
+    s.tasks[task.GetID()] = task
+    s.mu.Unlock()
+
+    go func() {
+        time.Sleep(delay)
+        s.executeTask(task)
+    }()
+}
+
+func (s *Scheduler) executeTask(task Task) {
+    task.SetStatus(Running)
+    for _, o := range s.observers {
+        o.OnStarted(task)
+    }
+
+    result, err := task.Execute()
+
+    if err != nil {
+        task.SetStatus(Failed)
+        for _, o := range s.observers {
+            o.OnFailed(task, err)
+        }
+    } else {
+        task.SetStatus(Completed)
+        for _, o := range s.observers {
+            o.OnCompleted(task, result)
+        }
+    }
+}
+
+func main() {
+    scheduler := GetScheduler()
+    fmt.Println("Scheduler ready:", scheduler != nil)
+}`,
+
+        complexity: 'Schedule: O(log n), Execute: O(1), Worker threads: configurable',
+
+        extensions: [
+            'Persist tasks to database',
+            'Distributed task queue (Redis)',
+            'Task dependencies (DAG)',
+            'Task timeout handling',
+            'Dead letter queue for failed tasks',
+            'Web UI for monitoring'
+        ]
+    }
+];
+
 // Export for use in dashboard.js
 window.SYSTEM_DESIGN_TOPICS = SYSTEM_DESIGN_TOPICS;
 window.BASIC_PROBLEMS = BASIC_PROBLEMS;
 window.COMPLEX_PROBLEMS = COMPLEX_PROBLEMS;
+window.DESIGN_PATTERNS = DESIGN_PATTERNS;
+window.MACHINE_CODING = MACHINE_CODING;

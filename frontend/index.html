@@ -99,6 +99,53 @@
                         </div>
                     </div>
 
+                    <!-- Design Patterns Card -->
+                    <div class="landing-card" onclick="navigateTo('design-patterns')">
+                        <div class="card-icon patterns-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <h2>Design Patterns</h2>
+                        <p>Gang of Four patterns with Python & Go examples. Pros, cons, caveats, and when to use each pattern</p>
+                        <div class="card-features">
+                            <span>Python & Go</span>
+                            <span>Real Examples</span>
+                            <span>Trade-offs</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Machine Coding Card -->
+                    <div class="landing-card" onclick="navigateTo('machine-coding')">
+                        <div class="card-icon machine-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8"/><path d="M12 17v4"/>
+                                <path d="M7 8l3 3-3 3"/><path d="M13 14h4"/>
+                            </svg>
+                        </div>
+                        <h2>Machine Coding</h2>
+                        <p>Build real systems from scratch. LRU Cache, Rate Limiter, Parking Lot with multiple design patterns</p>
+                        <div class="card-features">
+                            <span>Python & Go</span>
+                            <span>Multi-Pattern</span>
+                            <span>Interview Ready</span>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+
                     <!-- DS/Algo Practice Card -->
                     <div class="landing-card" onclick="navigateTo('practice')">
                         <div class="card-icon practice-icon">
@@ -127,12 +174,16 @@
                         <span class="stat-label">System Design Topics</span>
                     </div>
                     <div class="stat">
+                        <span class="stat-number">23</span>
+                        <span class="stat-label">Design Patterns</span>
+                    </div>
+                    <div class="stat">
                         <span class="stat-number">80+</span>
                         <span class="stat-label">Coding Problems</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">50+</span>
-                        <span class="stat-label">Interview Questions</span>
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Machine Coding</span>
                     </div>
                 </div>
             </main>
@@ -250,6 +301,76 @@
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                             </svg>
                             <p>Select a problem from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== DESIGN PATTERNS PAGE ==================== -->
+        <div class="page dashboard-page" id="designPatternsPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Design Patterns</h1>
+                    <span class="dash-subtitle">Python & Go with trade-offs</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="dpSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search patterns..." id="dpSearch">
+                    </div>
+                    <nav class="topic-nav" id="dpTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="dpMain">
+                    <div class="topic-content" id="dpContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <p>Select a design pattern from the sidebar</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ==================== MACHINE CODING PAGE ==================== -->
+        <div class="page dashboard-page" id="machineCodingPage">
+            <header class="dash-header">
+                <button class="back-btn" onclick="navigateTo('home')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="dash-title">
+                    <h1>Machine Coding</h1>
+                    <span class="dash-subtitle">Build systems with multiple patterns</span>
+                </div>
+            </header>
+
+            <div class="dash-content">
+                <aside class="dash-sidebar" id="mcSidebar">
+                    <div class="sidebar-search">
+                        <input type="text" placeholder="Search problems..." id="mcSearch">
+                    </div>
+                    <nav class="topic-nav" id="mcTopicNav"></nav>
+                </aside>
+                <main class="dash-main" id="mcMain">
+                    <div class="topic-content" id="mcContent">
+                        <div class="select-prompt">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M7 8l3 3-3 3"/><path d="M13 14h4"/>
+                            </svg>
+                            <p>Select a machine coding problem from the sidebar</p>
                         </div>
                     </div>
                 </main>

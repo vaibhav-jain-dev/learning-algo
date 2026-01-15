@@ -30,6 +30,14 @@ function navigateTo(page) {
             document.getElementById('complexProblemsPage').classList.add('active');
             initComplexProblemsPage();
             break;
+        case 'design-patterns':
+            document.getElementById('designPatternsPage').classList.add('active');
+            initDesignPatternsPage();
+            break;
+        case 'machine-coding':
+            document.getElementById('machineCodingPage').classList.add('active');
+            initMachineCodingPage();
+            break;
         case 'practice':
             document.getElementById('practicePage').classList.add('active');
             initPracticePage();
@@ -601,6 +609,355 @@ function renderComplexProblem(problem) {
                 </ul>
             </div>
         ` : ''}
+    `;
+}
+
+// ==================== DESIGN PATTERNS PAGE ====================
+function initDesignPatternsPage() {
+    const nav = document.getElementById('dpTopicNav');
+    const search = document.getElementById('dpSearch');
+
+    // Group by category
+    const categories = {};
+    DESIGN_PATTERNS.forEach(pattern => {
+        if (!categories[pattern.category]) {
+            categories[pattern.category] = [];
+        }
+        categories[pattern.category].push(pattern);
+    });
+
+    // Render navigation
+    nav.innerHTML = '';
+    Object.entries(categories).forEach(([category, patterns]) => {
+        nav.innerHTML += `<div class="topic-category">${category}</div>`;
+        patterns.forEach(pattern => {
+            nav.innerHTML += `
+                <div class="topic-item" data-id="${pattern.id}" onclick="showDesignPattern('${pattern.id}')">
+                    <span class="topic-icon">${pattern.icon}</span>
+                    <span>${pattern.title}</span>
+                </div>
+            `;
+        });
+    });
+
+    // Search
+    search.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('#dpTopicNav .topic-item').forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+}
+
+function showDesignPattern(patternId) {
+    const pattern = DESIGN_PATTERNS.find(p => p.id === patternId);
+    if (!pattern) return;
+
+    document.querySelectorAll('#dpTopicNav .topic-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.id === patternId);
+    });
+
+    const content = document.getElementById('dpContent');
+    content.innerHTML = renderDesignPattern(pattern);
+    bindExpandHandlers(content);
+
+    document.getElementById('dpMain').scrollTop = 0;
+
+    if (window.innerWidth < 768) {
+        document.getElementById('dpSidebar').classList.remove('active');
+    }
+}
+
+function renderDesignPattern(pattern) {
+    return `
+        <div class="topic-header">
+            <h1>${pattern.icon} ${pattern.title}</h1>
+            <div class="topic-meta">
+                <span class="category-badge">${pattern.category}</span>
+            </div>
+        </div>
+
+        <!-- TL;DR -->
+        <div class="tldr-box">
+            <div class="tldr-label">⚡ TL;DR</div>
+            <p>${pattern.tldr}</p>
+        </div>
+
+        <!-- Imagine -->
+        <div class="imagine-box">
+            <div class="imagine-label">💭 Imagine This...</div>
+            <p>${pattern.imagine.replace(/\n/g, '<br>')}</p>
+        </div>
+
+        <!-- When to Use -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">✅</span>
+                <h2>When to Use</h2>
+            </div>
+            <div class="section-body">
+                <ul class="use-cases-list">
+                    ${pattern.whenToUse.map(use => `<li>${use}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Caveats -->
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">⚠️</span>
+                <h2>Caveats & Gotchas</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                <ul class="caveats-list">
+                    ${pattern.caveats.map(c => `<li>${c}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Python Code -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">🐍</span>
+                <h2>Python Implementation</h2>
+            </div>
+            <div class="section-body">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>${escapeHtml(pattern.pythonCode)}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Go Code -->
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">🐹</span>
+                <h2>Go Implementation</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>${escapeHtml(pattern.goCode)}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">⚖️</span>
+                <h2>Trade-offs</h2>
+            </div>
+            <div class="section-body">
+                <div class="tradeoffs-grid">
+                    <div class="pros-box">
+                        <h4>✅ Pros</h4>
+                        <ul>
+                            ${pattern.pros.map(pro => `<li>${pro}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="cons-box">
+                        <h4>❌ Cons</h4>
+                        <ul>
+                            ${pattern.cons.map(con => `<li>${con}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real World -->
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">🌍</span>
+                <h2>Real World Examples</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                ${formatContent(pattern.realWorld)}
+            </div>
+        </div>
+
+        ${pattern.antipatterns ? `
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">🚫</span>
+                <h2>Anti-patterns to Avoid</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                ${formatContent(pattern.antipatterns)}
+            </div>
+        </div>
+        ` : ''}
+    `;
+}
+
+// ==================== MACHINE CODING PAGE ====================
+function initMachineCodingPage() {
+    const nav = document.getElementById('mcTopicNav');
+    const search = document.getElementById('mcSearch');
+
+    // Render navigation
+    nav.innerHTML = '<div class="topic-category">Problems</div>';
+    MACHINE_CODING.forEach(problem => {
+        nav.innerHTML += `
+            <div class="topic-item" data-id="${problem.id}" onclick="showMachineCoding('${problem.id}')">
+                <span class="topic-icon">${problem.icon}</span>
+                <span>${problem.title}</span>
+                <span class="difficulty-tag ${problem.difficulty.toLowerCase()}">${problem.difficulty}</span>
+            </div>
+        `;
+    });
+
+    // Search
+    search.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('#mcTopicNav .topic-item').forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+}
+
+function showMachineCoding(problemId) {
+    const problem = MACHINE_CODING.find(p => p.id === problemId);
+    if (!problem) return;
+
+    document.querySelectorAll('#mcTopicNav .topic-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.id === problemId);
+    });
+
+    const content = document.getElementById('mcContent');
+    content.innerHTML = renderMachineCoding(problem);
+    bindExpandHandlers(content);
+
+    document.getElementById('mcMain').scrollTop = 0;
+
+    if (window.innerWidth < 768) {
+        document.getElementById('mcSidebar').classList.remove('active');
+    }
+}
+
+function renderMachineCoding(problem) {
+    return `
+        <div class="topic-header">
+            <h1>${problem.icon} ${problem.title}</h1>
+            <div class="topic-meta">
+                <span class="difficulty-badge ${problem.difficulty.toLowerCase()}">${problem.difficulty}</span>
+                <span class="category-badge">⏱️ ${problem.timeLimit}</span>
+            </div>
+        </div>
+
+        <!-- TL;DR -->
+        <div class="tldr-box">
+            <div class="tldr-label">⚡ TL;DR</div>
+            <p>${problem.tldr}</p>
+        </div>
+
+        <!-- Patterns Used -->
+        <div class="patterns-used">
+            <h3>🧩 Design Patterns Used</h3>
+            <div class="pattern-tags">
+                ${problem.patternsUsed.map(p => `<span class="pattern-tag">${p}</span>`).join('')}
+            </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <h2>Requirements</h2>
+            </div>
+            <div class="section-body">
+                ${formatContent(problem.requirements)}
+            </div>
+        </div>
+
+        <!-- Design Decisions -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">🎯</span>
+                <h2>Design Decisions</h2>
+            </div>
+            <div class="section-body">
+                <div class="design-decisions">
+                    ${problem.designDecisions.map(d => `
+                        <div class="decision-card">
+                            <div class="decision-question">❓ ${d.decision}</div>
+                            <div class="decision-answer">
+                                <span class="pattern-badge">${d.pattern}</span>
+                                <p>${d.reason}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+
+        <!-- Python Code -->
+        <div class="topic-section expanded">
+            <div class="section-header">
+                <span class="section-icon">🐍</span>
+                <h2>Python Solution</h2>
+            </div>
+            <div class="section-body">
+                <div class="code-block large-code">
+                    <div class="code-header">
+                        <span>Python</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>${escapeHtml(problem.pythonCode)}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Go Code -->
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">🐹</span>
+                <h2>Go Solution</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                <div class="code-block large-code">
+                    <div class="code-header">
+                        <span>Go</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code>${escapeHtml(problem.goCode)}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complexity -->
+        <div class="complexity-info">
+            <strong>Complexity:</strong> ${problem.complexity}
+        </div>
+
+        <!-- Extensions -->
+        <div class="topic-section collapsed">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span class="section-icon">🚀</span>
+                <h2>Extensions & Follow-ups</h2>
+                <span class="expand-icon">▶</span>
+            </div>
+            <div class="section-body">
+                <ul class="extensions-list">
+                    ${problem.extensions.map(ext => `<li>${ext}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
     `;
 }
 
@@ -1298,6 +1655,116 @@ const additionalStyles = `
         display: none !important;
     }
 }
+
+/* ==================== DESIGN PATTERNS STYLES ==================== */
+.use-cases-list,
+.caveats-list,
+.extensions-list {
+    padding-left: 24px;
+    margin: 0;
+}
+
+.use-cases-list li,
+.caveats-list li,
+.extensions-list li {
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.caveats-list li {
+    color: #f59e0b;
+}
+
+/* ==================== MACHINE CODING STYLES ==================== */
+.patterns-used {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.patterns-used h3 {
+    margin: 0 0 16px;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.pattern-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pattern-tag {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #a78bfa;
+}
+
+.design-decisions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.decision-card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.decision-question {
+    padding: 16px;
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.decision-answer {
+    padding: 16px;
+}
+
+.decision-answer .pattern-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--accent-gradient);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.decision-answer p {
+    margin: 8px 0 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.large-code pre {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.complexity-info {
+    padding: 16px 20px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.complexity-info strong {
+    color: var(--text-primary);
+}
 </style>
 `;
 
@@ -1309,6 +1776,8 @@ window.navigateTo = navigateTo;
 window.showSystemDesignTopic = showSystemDesignTopic;
 window.showBasicProblem = showBasicProblem;
 window.showComplexProblem = showComplexProblem;
+window.showDesignPattern = showDesignPattern;
+window.showMachineCoding = showMachineCoding;
 window.toggleBrainDiagram = toggleBrainDiagram;
 window.toggleSection = toggleSection;
 window.toggleWhatIf = toggleWhatIf;
