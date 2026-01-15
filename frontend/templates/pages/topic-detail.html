@@ -310,14 +310,88 @@
     background: var(--accent-color);
     color: white;
 }
+
+/* Collapsible section styles */
+.collapsible-heading {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.collapsible-heading:hover {
+    color: var(--accent-color);
+}
+
+.collapse-icon {
+    margin-right: 0.5rem;
+    font-size: 0.8em;
+    transition: transform 0.2s;
+}
 </style>
 
 {{if .HasContent}}
 <script>
-// Initialize code blocks in topic content
+// Initialize topic content with collapsible sections and code blocks
 (function() {
     var content = document.getElementById('topic-content');
     if (!content) return;
+
+    // Sections to make collapsible (initially collapsed)
+    var collapseSections = [
+        'Implementation', 'Python', 'Go', 'Golang',
+        'Interview', 'Best Practices', 'Related',
+        'Solution', 'Common Mistakes', 'Tips',
+        'Data Structure', 'Memory', 'Complexity'
+    ];
+
+    // Make sections collapsible
+    var headings = content.querySelectorAll('h2, h3');
+    headings.forEach(function(heading) {
+        var text = heading.textContent.trim();
+        var shouldCollapse = collapseSections.some(function(s) {
+            return text.toLowerCase().indexOf(s.toLowerCase()) !== -1;
+        });
+
+        if (shouldCollapse && !heading.dataset.collapsible) {
+            heading.dataset.collapsible = 'true';
+            heading.classList.add('collapsible-heading');
+
+            // Add collapse icon
+            var icon = document.createElement('span');
+            icon.className = 'collapse-icon';
+            icon.textContent = '▶';
+            heading.insertBefore(icon, heading.firstChild);
+
+            // Find content elements until next heading of same or higher level
+            var contentEls = [];
+            var next = heading.nextElementSibling;
+            var headingLevel = parseInt(heading.tagName.charAt(1));
+            while (next) {
+                if (next.tagName === 'H1' || next.tagName === 'H2' ||
+                    (next.tagName === 'H3' && headingLevel <= 3)) {
+                    var nextLevel = parseInt(next.tagName.charAt(1));
+                    if (nextLevel <= headingLevel) break;
+                }
+                contentEls.push(next);
+                next = next.nextElementSibling;
+            }
+
+            // Initially hide content
+            contentEls.forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Toggle on click
+            heading.addEventListener('click', function() {
+                var isHidden = contentEls.length > 0 && contentEls[0].style.display === 'none';
+                contentEls.forEach(function(el) {
+                    el.style.display = isHidden ? '' : 'none';
+                });
+                icon.textContent = isHidden ? '▼' : '▶';
+            });
+        }
+    });
 
     // Add copy buttons to code blocks
     var codeBlocks = content.querySelectorAll('pre code');
@@ -335,7 +409,8 @@
         var copyBtn = document.createElement('button');
         copyBtn.className = 'code-copy-btn';
         copyBtn.innerHTML = 'Copy';
-        copyBtn.onclick = function() {
+        copyBtn.onclick = function(e) {
+            e.stopPropagation();
             navigator.clipboard.writeText(block.textContent).then(function() {
                 copyBtn.innerHTML = 'Copied!';
                 setTimeout(function() { copyBtn.innerHTML = 'Copy'; }, 2000);
