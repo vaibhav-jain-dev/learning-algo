@@ -206,12 +206,13 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	}
 
 	// Use 'go run' instead of separate compile + execute
-	// Set GOTMPDIR to workDir to avoid noexec issues on /tmp
+	// Set GOTMPDIR and GOCACHE to workDir to avoid noexec issues
 	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
 	cmd.Dir = k.workDir
 	cmd.Env = append(os.Environ(),
 		"CGO_ENABLED=0",
 		"GOTMPDIR="+k.workDir,
+		"GOCACHE="+k.workDir,
 	)
 
 	var stdout, stderr bytes.Buffer
