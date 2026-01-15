@@ -171,7 +171,8 @@ func (k *GoKernel) compile(code string) error {
 		return fmt.Errorf("failed to write code: %w", err)
 	}
 
-	cmd := exec.Command("go", "build", "-o", "program", "main.go")
+	programPath := filepath.Join(k.workDir, "program")
+	cmd := exec.Command("go", "build", "-o", programPath, mainFile)
 	cmd.Dir = k.workDir
 	// Use system Go cache for faster compilation
 	cmd.Env = append(os.Environ(),
@@ -186,6 +187,11 @@ func (k *GoKernel) compile(code string) error {
 		// Clean up error message
 		errStr = strings.ReplaceAll(errStr, k.workDir, "")
 		return fmt.Errorf("compilation failed:\n%s", errStr)
+	}
+
+	// Ensure the binary is executable
+	if err := os.Chmod(programPath, 0755); err != nil {
+		return fmt.Errorf("failed to set execute permission: %w", err)
 	}
 
 	return nil
