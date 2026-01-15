@@ -110,10 +110,16 @@ func main() { fmt.Println("ready") }
 
 	cmd := exec.Command("go", "run", warmupFile)
 	cmd.Dir = workDir
-	cmd.Env = append(os.Environ(), "CGO_ENABLED=0")
+	// Set GOTMPDIR to workDir to avoid noexec issues on /tmp
+	cmd.Env = append(os.Environ(),
+		"CGO_ENABLED=0",
+		"GOTMPDIR="+workDir,
+	)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
 		os.RemoveAll(workDir)
-		return nil, fmt.Errorf("failed to warm up Go compiler: %w", err)
+		return nil, fmt.Errorf("failed to warm up Go compiler: %v - %s", err, stderr.String())
 	}
 	os.Remove(warmupFile)
 
@@ -214,10 +220,13 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	}
 
 	// Use 'go run' instead of separate compile + execute
-	// This avoids binary permission issues on tmpfs with noexec
+	// Set GOTMPDIR to workDir to avoid noexec issues on /tmp
 	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
 	cmd.Dir = k.workDir
-	cmd.Env = append(os.Environ(), "CGO_ENABLED=0")
+	cmd.Env = append(os.Environ(),
+		"CGO_ENABLED=0",
+		"GOTMPDIR="+k.workDir,
+	)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
