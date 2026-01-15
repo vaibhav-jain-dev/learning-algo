@@ -73,7 +73,7 @@ type GoKernel struct {
 
 // NewGoKernel creates a new Go kernel (implements KernelFactory)
 func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
-	// Use /app/tmp instead of /tmp to avoid noexec restrictions on Docker tmpfs
+	// Use /app/go-kernels instead of /tmp to avoid noexec restrictions on Docker tmpfs
 	baseDir := os.Getenv("GO_KERNEL_DIR")
 	if baseDir == "" {
 		baseDir = "/app/go-kernels"
@@ -97,31 +97,8 @@ func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
 		healthy:  true,
 	}
 
-	// Pre-warm Go compiler using 'go run'
-	warmupCode := `package main
-import "fmt"
-func main() { fmt.Println("ready") }
-`
-	warmupFile := filepath.Join(workDir, "warmup.go")
-	if err := os.WriteFile(warmupFile, []byte(warmupCode), 0644); err != nil {
-		os.RemoveAll(workDir)
-		return nil, fmt.Errorf("failed to write warmup code: %w", err)
-	}
-
-	cmd := exec.Command("go", "run", warmupFile)
-	cmd.Dir = workDir
-	// Set GOTMPDIR to workDir to avoid noexec issues on /tmp
-	cmd.Env = append(os.Environ(),
-		"CGO_ENABLED=0",
-		"GOTMPDIR="+workDir,
-	)
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		os.RemoveAll(workDir)
-		return nil, fmt.Errorf("failed to warm up Go compiler: %v - %s", err, stderr.String())
-	}
-	os.Remove(warmupFile)
+	// No warmup - compile on first actual use
+	// This avoids permission issues during initialization
 
 	return k, nil
 }
