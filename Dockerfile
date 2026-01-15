@@ -57,8 +57,8 @@ COPY problems/ ./problems/
 
 # Create non-root user, state directory, Go cache, and kernel work directory
 RUN useradd -m -s /bin/bash dsalgo && \
-    mkdir -p /go /app/state /app/.go-cache /app/go-kernels && \
-    chown -R dsalgo:dsalgo /app /tmp /go
+    mkdir -p /go /app/state /app/.go-cache /app/go-kernels /home/dsalgo/.go-kernels && \
+    chown -R dsalgo:dsalgo /app /tmp /go /home/dsalgo
 
 USER dsalgo
 
