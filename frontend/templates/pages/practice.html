@@ -588,57 +588,8 @@ func main() {
             swap: 'innerHTML'
         }).then(function() {
             showTab('description');
-            // Make sections collapsible after content loads
-            setTimeout(makeCollapsible, 100);
         });
     };
-
-    // Make sections collapsible (Hints, Approach, etc.)
-    function makeCollapsible() {
-        var sections = ['Hints', 'Approach', 'Explanation', 'Visual Walkthrough', 'Common Mistakes'];
-        var content = document.getElementById('problem-description');
-        if (!content) return;
-
-        var headings = content.querySelectorAll('h2, h3');
-        headings.forEach(function(heading) {
-            var text = heading.textContent.trim();
-            var shouldCollapse = sections.some(function(s) {
-                return text.toLowerCase().indexOf(s.toLowerCase()) !== -1;
-            });
-
-            if (shouldCollapse && !heading.classList.contains('collapsible')) {
-                heading.classList.add('collapsible', 'collapsed');
-                heading.innerHTML = '<span class="collapse-icon">▶</span> ' + text;
-                heading.style.cursor = 'pointer';
-
-                // Hide content until next heading
-                var next = heading.nextElementSibling;
-                var contentElements = [];
-                while (next && !['H2', 'H3'].includes(next.tagName)) {
-                    contentElements.push(next);
-                    next = next.nextElementSibling;
-                }
-
-                // Wrap in collapsible div
-                if (contentElements.length > 0) {
-                    var wrapper = document.createElement('div');
-                    wrapper.className = 'collapsible-content collapsed';
-                    contentElements.forEach(function(el) {
-                        wrapper.appendChild(el.cloneNode(true));
-                    });
-                    contentElements.forEach(function(el) { el.remove(); });
-                    heading.after(wrapper);
-
-                    heading.onclick = function() {
-                        var isCollapsed = heading.classList.contains('collapsed');
-                        heading.classList.toggle('collapsed');
-                        wrapper.classList.toggle('collapsed');
-                        heading.querySelector('.collapse-icon').textContent = isCollapsed ? '▼' : '▶';
-                    };
-                }
-            }
-        });
-    }
 
     // Load problem from URL on page load
     function loadProblemFromURL() {
