@@ -55,9 +55,9 @@ COPY --from=builder /build/server ./server
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 
-# Create non-root user, state directory, and Go cache
+# Create non-root user, state directory, Go cache, and kernel work directory
 RUN useradd -m -s /bin/bash dsalgo && \
-    mkdir -p /go /app/state /app/.go-cache && \
+    mkdir -p /go /app/state /app/.go-cache /app/go-kernels && \
     chown -R dsalgo:dsalgo /app /tmp /go
 
 USER dsalgo

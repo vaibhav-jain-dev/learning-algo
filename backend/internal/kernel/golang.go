@@ -73,9 +73,21 @@ type GoKernel struct {
 
 // NewGoKernel creates a new Go kernel (implements KernelFactory)
 func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
-	workDir, err := os.MkdirTemp("", fmt.Sprintf("go_kernel_%d_*", id))
+	// Use /app/tmp instead of /tmp to avoid noexec restrictions on Docker tmpfs
+	baseDir := os.Getenv("GO_KERNEL_DIR")
+	if baseDir == "" {
+		baseDir = "/app/go-kernels"
+	}
+	// Ensure base directory exists
+	os.MkdirAll(baseDir, 0755)
+
+	workDir, err := os.MkdirTemp(baseDir, fmt.Sprintf("kernel_%d_*", id))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create work directory: %w", err)
+		// Fallback to system temp if custom dir fails
+		workDir, err = os.MkdirTemp("", fmt.Sprintf("go_kernel_%d_*", id))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create work directory: %w", err)
+		}
 	}
 
 	k := &GoKernel{
