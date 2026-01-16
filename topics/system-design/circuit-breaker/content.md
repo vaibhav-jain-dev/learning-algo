@@ -8,38 +8,40 @@ The Circuit Breaker pattern prevents cascading failures in distributed systems b
 
 Think of your home's electrical circuit breaker:
 
-```mermaid
-graph TB
-    subgraph electrical["Electrical System"]
-        direction LR
-        Grid["⚡ Power Grid"]
-        CB["Circuit Breaker"]
-        Appliances["🏠 Appliances"]
+<div id="circuit-breaker-metaphor" class="diagram-container light"></div>
 
-        Grid -->|Current flows| CB
-        CB -->|Normal: Flows| Appliances
-
-        Monitor["MONITORS:<br/>Current too high?<br/>Short circuit?<br/>Overload?"]
-        CB -.->|Detects| Monitor
-        Monitor -->|TRIPS/OPENS| Trip["Circuit Opens:<br/>Cuts power<br/>Prevents fire<br/>Protects wiring"]
-        Trip -->|No current| Appliances
-    end
-
-    subgraph software["Software Circuit Breaker"]
-        direction LR
-        SvcA["Service A"]
-        SCB["Circuit Breaker"]
-        SvcB["Service B"]
-
-        SvcA -->|Request| SCB
-        SCB -->|Normal: Forwards| SvcB
-
-        Monitor2["MONITORS:<br/>Failure rate high?<br/>Timeouts frequent?<br/>Error threshold?"]
-        SCB -.->|Detects| Monitor2
-        Monitor2 -->|TRIPS/OPENS| Trip2["Circuit Opens:<br/>Fails fast<br/>Returns fallback<br/>Protects both sides"]
-        Trip2 -->|Fast rejection| SvcA
-    end
-```
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const diagram = new ArchitectureDiagram('circuit-breaker-metaphor', {
+        width: 900,
+        height: 400,
+        componentWidth: 100,
+        componentHeight: 70,
+        layers: [
+            {
+                name: '⚡ Electrical System',
+                color: '#fff9c4',
+                components: [
+                    { name: 'Power Grid', type: 'source' },
+                    { name: 'Circuit Breaker', type: 'default' },
+                    { name: 'Appliances', type: 'default' }
+                ]
+            },
+            {
+                name: '💾 Software System',
+                color: '#c8e6c9',
+                components: [
+                    { name: 'Service A', type: 'default' },
+                    { name: 'Circuit Breaker', type: 'default' },
+                    { name: 'Service B', type: 'default' }
+                ]
+            }
+        ]
+    });
+    diagramEngine.register('circuit-breaker-metaphor', diagram);
+    diagram.render();
+});
+</script>
 
 ### Mapping the Metaphor
 
@@ -73,36 +75,43 @@ After 20+ years of operating distributed systems, here's what you learn:
 
 ## The Three States: Deep Dive
 
-```mermaid
-stateDiagram-v2
-    [*] --> CLOSED
+<div id="circuit-breaker-states" class="diagram-container light"></div>
 
-    CLOSED --> OPEN: Failure threshold reached
-    CLOSED --> CLOSED: Success
-
-    OPEN --> HALF_OPEN: Timeout expired
-
-    HALF_OPEN --> CLOSED: Probe success
-    HALF_OPEN --> OPEN: Probe failure
-
-    note right of CLOSED
-        All requests pass through
-        Failures are counted
-        Normal operation
-    end note
-
-    note right of OPEN
-        All requests fail immediately
-        Returns fallback response
-        Fail fast approach
-    end note
-
-    note right of HALF_OPEN
-        Limited requests pass through
-        Testing if service recovered
-        Probing for recovery
-    end note
-```
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const diagram = new StateMachineDiagram('circuit-breaker-states', {
+        width: 750,
+        height: 400,
+        nodeRadius: 50,
+        states: [
+            {
+                id: 'CLOSED',
+                initial: true,
+                description: 'All requests pass\nFailures counted\nNormal operation'
+            },
+            {
+                id: 'OPEN',
+                highlighted: false,
+                description: 'All requests fail\nReturns fallback\nFail fast'
+            },
+            {
+                id: 'HALF-OPEN',
+                highlighted: false,
+                description: 'Limited requests\nTesting recovery\nProbing'
+            }
+        ],
+        transitions: [
+            { from: 'CLOSED', to: 'OPEN', label: 'Failure threshold' },
+            { from: 'CLOSED', to: 'CLOSED', label: 'Success' },
+            { from: 'OPEN', to: 'HALF-OPEN', label: 'Timeout expires' },
+            { from: 'HALF-OPEN', to: 'CLOSED', label: 'Probe success' },
+            { from: 'HALF-OPEN', to: 'OPEN', label: 'Probe failure' }
+        ]
+    });
+    diagramEngine.register('circuit-breaker-states', diagram);
+    diagram.render();
+});
+</script>
 
 ### State Transitions in Detail
 
