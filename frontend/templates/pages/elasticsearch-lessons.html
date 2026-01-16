@@ -1,0 +1,1459 @@
+<div class="sql-lessons-page">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Elasticsearch Curriculum</h2>
+        </div>
+        <div class="lesson-tree">
+            <!-- Fundamentals -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('fundamentals')">
+                    <span class="icon">&#128218;</span>
+                    <span>1. Elasticsearch Fundamentals</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="fundamentals" class="category-content expanded">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('basics')">1.1 Basics</div>
+                        <div id="basics" class="sub-content expanded">
+                            <a class="lesson-link active" onclick="loadLesson('what-is-elasticsearch')">What is Elasticsearch?</a>
+                            <a class="lesson-link" onclick="loadLesson('how-search-works')">How Search Works</a>
+                            <a class="lesson-link" onclick="loadLesson('inverted-index')">Inverted Index</a>
+                            <a class="lesson-link" onclick="loadLesson('documents-indices')">Documents & Indices</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('rest-api')">1.2 REST API</div>
+                        <div id="rest-api" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('api-basics')">API Basics</a>
+                            <a class="lesson-link" onclick="loadLesson('crud-operations')">CRUD Operations</a>
+                            <a class="lesson-link" onclick="loadLesson('bulk-api')">Bulk API</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indexing & Mappings -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('indexing')">
+                    <span class="icon">&#128203;</span>
+                    <span>2. Indexing & Mappings</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="indexing" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('mappings')">2.1 Mappings</div>
+                        <div id="mappings" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('mapping-basics')">Mapping Basics</a>
+                            <a class="lesson-link" onclick="loadLesson('field-types')">Field Types</a>
+                            <a class="lesson-link" onclick="loadLesson('dynamic-mapping')">Dynamic Mapping</a>
+                            <a class="lesson-link" onclick="loadLesson('multi-fields')">Multi-Fields</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('analysis')">2.2 Text Analysis</div>
+                        <div id="analysis" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('analyzers')">Analyzers</a>
+                            <a class="lesson-link" onclick="loadLesson('tokenizers')">Tokenizers</a>
+                            <a class="lesson-link" onclick="loadLesson('filters')">Token Filters</a>
+                            <a class="lesson-link" onclick="loadLesson('custom-analyzers')">Custom Analyzers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Query DSL -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('query-dsl')">
+                    <span class="icon">&#128269;</span>
+                    <span>3. Query DSL</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="query-dsl" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('full-text')">3.1 Full-Text Queries</div>
+                        <div id="full-text" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('match-query')">Match Query</a>
+                            <a class="lesson-link" onclick="loadLesson('match-phrase')">Match Phrase</a>
+                            <a class="lesson-link" onclick="loadLesson('multi-match')">Multi-Match</a>
+                            <a class="lesson-link" onclick="loadLesson('query-string')">Query String</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('term-level')">3.2 Term-Level Queries</div>
+                        <div id="term-level" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('term-query')">Term Query</a>
+                            <a class="lesson-link" onclick="loadLesson('terms-query')">Terms Query</a>
+                            <a class="lesson-link" onclick="loadLesson('range-query')">Range Query</a>
+                            <a class="lesson-link" onclick="loadLesson('exists-query')">Exists Query</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('compound')">3.3 Compound Queries</div>
+                        <div id="compound" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('bool-query')">Bool Query</a>
+                            <a class="lesson-link" onclick="loadLesson('boosting')">Boosting Query</a>
+                            <a class="lesson-link" onclick="loadLesson('constant-score')">Constant Score</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Search -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('advanced-search')">
+                    <span class="icon">&#127919;</span>
+                    <span>4. Advanced Search</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="advanced-search" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('wildcard-query')">Wildcard & Regexp</a>
+                    <a class="lesson-link" onclick="loadLesson('fuzzy-query')">Fuzzy Search</a>
+                    <a class="lesson-link" onclick="loadLesson('prefix-query')">Prefix Query</a>
+                    <a class="lesson-link" onclick="loadLesson('nested-query')">Nested Queries</a>
+                    <a class="lesson-link" onclick="loadLesson('highlighting')">Highlighting</a>
+                    <a class="lesson-link" onclick="loadLesson('suggesters')">Suggesters</a>
+                </div>
+            </div>
+
+            <!-- Aggregations -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('aggregations')">
+                    <span class="icon">&#128202;</span>
+                    <span>5. Aggregations</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="aggregations" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('bucket-aggs')">5.1 Bucket Aggregations</div>
+                        <div id="bucket-aggs" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('terms-agg')">Terms Aggregation</a>
+                            <a class="lesson-link" onclick="loadLesson('range-agg')">Range Aggregation</a>
+                            <a class="lesson-link" onclick="loadLesson('histogram-agg')">Histogram</a>
+                            <a class="lesson-link" onclick="loadLesson('date-histogram')">Date Histogram</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('metric-aggs')">5.2 Metric Aggregations</div>
+                        <div id="metric-aggs" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('avg-sum-agg')">Avg, Sum, Min, Max</a>
+                            <a class="lesson-link" onclick="loadLesson('stats-agg')">Stats & Extended Stats</a>
+                            <a class="lesson-link" onclick="loadLesson('cardinality-agg')">Cardinality</a>
+                            <a class="lesson-link" onclick="loadLesson('percentiles-agg')">Percentiles</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('pipeline-aggs')">5.3 Pipeline Aggregations</div>
+                        <div id="pipeline-aggs" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('avg-bucket')">Avg Bucket</a>
+                            <a class="lesson-link" onclick="loadLesson('derivative-agg')">Derivative</a>
+                            <a class="lesson-link" onclick="loadLesson('cumulative-sum')">Cumulative Sum</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scoring & Relevance -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('scoring')">
+                    <span class="icon">&#9733;</span>
+                    <span>6. Scoring & Relevance</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="scoring" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('relevance-scoring')">Relevance Scoring</a>
+                    <a class="lesson-link" onclick="loadLesson('tf-idf')">TF-IDF & BM25</a>
+                    <a class="lesson-link" onclick="loadLesson('explain-api')">Explain API</a>
+                    <a class="lesson-link" onclick="loadLesson('function-score')">Function Score</a>
+                    <a class="lesson-link" onclick="loadLesson('boosting-relevance')">Boosting Relevance</a>
+                </div>
+            </div>
+
+            <!-- Complex Queries -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('complex')">
+                    <span class="icon">&#129504;</span>
+                    <span>7. Complex Query Examples</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="complex" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('search-as-you-type')">Search-as-You-Type</a>
+                    <a class="lesson-link" onclick="loadLesson('faceted-search')">Faceted Search</a>
+                    <a class="lesson-link" onclick="loadLesson('autocomplete')">Autocomplete</a>
+                    <a class="lesson-link" onclick="loadLesson('geo-queries')">Geo Queries</a>
+                    <a class="lesson-link" onclick="loadLesson('multi-index')">Multi-Index Search</a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div id="lesson-content">
+            <!-- Default: What is Elasticsearch lesson -->
+            <div class="lesson">
+                <h1>What is Elasticsearch?</h1>
+                <p class="lesson-meta">
+                    <span class="category">Category: Fundamentals</span>
+                    <span class="difficulty">Difficulty: Beginner</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>Overview</h2>
+                    <p>Elasticsearch is a distributed, RESTful search and analytics engine built on Apache Lucene. It's designed for horizontal scalability, reliability, and real-time search.</p>
+
+                    <div class="key-points">
+                        <h3>Key Features:</h3>
+                        <ul>
+                            <li><strong>Full-Text Search:</strong> Powerful text analysis and search capabilities</li>
+                            <li><strong>Near Real-Time:</strong> Documents are searchable within ~1 second of indexing</li>
+                            <li><strong>Distributed:</strong> Scales horizontally across multiple nodes</li>
+                            <li><strong>Schema-Free:</strong> JSON documents with dynamic mapping</li>
+                            <li><strong>RESTful API:</strong> Simple HTTP/JSON interface</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Core Concepts</h2>
+
+                    <div class="concept-box">
+                        <h3>Index</h3>
+                        <p>An index is like a database in relational terms. It's a collection of documents with similar characteristics.</p>
+                        <pre><code class="language-json">// Our sample indices:
+tests     - Individual medical tests
+packages  - Test packages (bundles of tests)</code></pre>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Document</h3>
+                        <p>A document is a JSON object stored in an index. Each document has a unique ID.</p>
+                        <pre><code class="language-json">{
+  "id": 40,
+  "testName": "Complete Blood Count (CBC)",
+  "testAlias": ["Blood Test", "CBC"],
+  "consumerPrice": 350,
+  "frequency": 7969
+}</code></pre>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Mapping</h3>
+                        <p>A mapping defines how documents and their fields are stored and indexed - like a schema.</p>
+                        <pre><code class="language-json">{
+  "properties": {
+    "testName": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "consumerPrice": {
+      "type": "float"
+    }
+  }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Elasticsearch vs SQL</h2>
+                    <div class="comparison-table">
+                        <table>
+                            <thead>
+                                <tr><th>SQL</th><th>Elasticsearch</th><th>Description</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Database</td>
+                                    <td>Index</td>
+                                    <td>Collection of documents</td>
+                                </tr>
+                                <tr>
+                                    <td>Table</td>
+                                    <td>Type (deprecated)</td>
+                                    <td>Category of documents</td>
+                                </tr>
+                                <tr>
+                                    <td>Row</td>
+                                    <td>Document</td>
+                                    <td>Single data record</td>
+                                </tr>
+                                <tr>
+                                    <td>Column</td>
+                                    <td>Field</td>
+                                    <td>Data attribute</td>
+                                </tr>
+                                <tr>
+                                    <td>Schema</td>
+                                    <td>Mapping</td>
+                                    <td>Data structure definition</td>
+                                </tr>
+                                <tr>
+                                    <td>SELECT</td>
+                                    <td>GET / _search</td>
+                                    <td>Read data</td>
+                                </tr>
+                                <tr>
+                                    <td>INSERT</td>
+                                    <td>PUT / POST _doc</td>
+                                    <td>Create data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interactive Example</h2>
+                    <p>Try these queries in the Elasticsearch Dashboard:</p>
+
+                    <div class="example-query">
+                        <h4>Example 1: Check Cluster Health</h4>
+                        <pre><code class="language-http">GET /_cluster/health</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/_cluster/health', '')">Try it</button>
+                    </div>
+
+                    <div class="example-query">
+                        <h4>Example 2: List All Indices</h4>
+                        <pre><code class="language-http">GET /_cat/indices?format=json</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/_cat/indices?format=json', '')">Try it</button>
+                    </div>
+
+                    <div class="example-query">
+                        <h4>Example 3: Simple Search</h4>
+                        <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "size": 5
+}</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match_all&quot;:{}},&quot;size&quot;:5}')">Try it</button>
+                    </div>
+                </section>
+
+                <div class="query-result-container" id="query-result" style="display:none;">
+                    <h4>Result:</h4>
+                    <pre id="query-result-content"></pre>
+                </div>
+
+                <section class="lesson-section">
+                    <h2>Summary</h2>
+                    <div class="summary-box">
+                        <ul>
+                            <li>&#10003; Elasticsearch is a distributed search and analytics engine</li>
+                            <li>&#10003; Data is stored as JSON documents in indices</li>
+                            <li>&#10003; Mappings define how fields are indexed and searched</li>
+                            <li>&#10003; All operations use a RESTful HTTP API</li>
+                            <li>&#10003; Near real-time search (~1 second latency)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <span></span>
+                    <a class="btn btn-primary" onclick="loadLesson('how-search-works')">Next: How Search Works &#8594;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sql-lessons-page {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+    background: #1a1a2e;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #333;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.lesson-tree {
+    padding: 0.5rem;
+}
+
+.lesson-category {
+    margin-bottom: 0.25rem;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.category-header:hover {
+    background: #252540;
+}
+
+.category-header .icon {
+    font-size: 1.1rem;
+}
+
+.category-header .arrow {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+.category-content {
+    display: none;
+    padding-left: 1rem;
+}
+
+.category-content.expanded {
+    display: block;
+}
+
+.sub-category {
+    margin: 0.25rem 0;
+}
+
+.sub-header {
+    padding: 0.5rem 0.75rem;
+    color: #888;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.sub-header:hover {
+    color: #fff;
+}
+
+.sub-content {
+    display: none;
+    padding-left: 0.5rem;
+}
+
+.sub-content.expanded {
+    display: block;
+}
+
+.lesson-link {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.lesson-link:hover {
+    color: #fff;
+    background: #252540;
+}
+
+.lesson-link.active {
+    color: #4ecdc4;
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.content {
+    background: #0f0f1a;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.lesson {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.lesson h1 {
+    margin: 0 0 1rem 0;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.lesson-meta {
+    color: #888;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.lesson-section {
+    margin-bottom: 2.5rem;
+}
+
+.lesson-section h2 {
+    color: #4ecdc4;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
+}
+
+.lesson-section h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.75rem 0;
+}
+
+.lesson-section p {
+    color: #ccc;
+    line-height: 1.7;
+}
+
+.key-points, .info-box {
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+}
+
+.key-points h3, .info-box h4 {
+    margin: 0 0 0.75rem 0;
+    color: #4ecdc4;
+}
+
+.key-points ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.key-points li {
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.concept-box {
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-left: 3px solid #4ecdc4;
+}
+
+.concept-box h3 {
+    margin: 0 0 0.5rem 0;
+    color: #4ecdc4;
+}
+
+.concept-box p {
+    margin: 0 0 1rem 0;
+}
+
+pre {
+    background: #1a1a2e;
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 0;
+}
+
+code {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.9rem;
+    color: #e0e0e0;
+}
+
+.comparison-table {
+    overflow-x: auto;
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.comparison-table th {
+    background: #16213e;
+    color: #4ecdc4;
+}
+
+.comparison-table td {
+    color: #ccc;
+}
+
+.comparison-table td:first-child {
+    font-family: monospace;
+    color: #ff6b6b;
+}
+
+.comparison-table td:nth-child(2) {
+    font-family: monospace;
+    color: #4ecdc4;
+}
+
+.example-query {
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.example-query h4 {
+    margin: 0 0 0.75rem 0;
+    color: #fff;
+}
+
+.example-query pre {
+    margin-bottom: 0.75rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #4ecdc4;
+    color: #000;
+}
+
+.btn-primary:hover {
+    background: #45b7aa;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.summary-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #4ecdc4;
+}
+
+.summary-box ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.summary-box li {
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #333;
+}
+
+.query-result-container {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.query-result-container h4 {
+    margin: 0 0 0.5rem 0;
+    color: #4ecdc4;
+}
+
+.query-result-container pre {
+    margin: 0;
+    font-size: 0.8rem;
+}
+</style>
+
+<script>
+// Lesson content data
+const lessons = {
+    'what-is-elasticsearch': {
+        title: 'What is Elasticsearch?',
+        category: 'Fundamentals',
+        difficulty: 'Beginner'
+    },
+    'how-search-works': {
+        title: 'How Search Works',
+        category: 'Fundamentals',
+        difficulty: 'Beginner',
+        content: `
+            <h1>How Search Works in Elasticsearch</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>The Search Process</h2>
+                <p>When you search in Elasticsearch, several steps occur to find and rank relevant documents:</p>
+
+                <div class="concept-box">
+                    <h3>1. Query Parsing</h3>
+                    <p>Your JSON query is parsed and converted into a Lucene query structure.</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>2. Query Phase</h3>
+                    <p>The coordinating node broadcasts the query to all relevant shards. Each shard executes the query locally and returns the top N document IDs with their scores.</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>3. Fetch Phase</h3>
+                    <p>The coordinating node merges results, sorts by score, and fetches the actual documents from the shards that hold them.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Query vs Filter Context</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Query Context</th><th>Filter Context</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Answers: "How well does this match?"</td>
+                                <td>Answers: "Does this match? Yes/No"</td>
+                            </tr>
+                            <tr>
+                                <td>Calculates relevance score</td>
+                                <td>No scoring (faster)</td>
+                            </tr>
+                            <tr>
+                                <td>Not cached by default</td>
+                                <td>Results are cached</td>
+                            </tr>
+                            <tr>
+                                <td>Use for: full-text search</td>
+                                <td>Use for: exact matches, ranges</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="example-query">
+                    <h4>Query Context Example</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": "blood count"
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood count&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Filter Context Example</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "cityCode": "BLR" } },
+        { "range": { "consumerPrice": { "lte": 500 } } }
+      ]
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;filter&quot;:[{&quot;term&quot;:{&quot;cityCode&quot;:&quot;BLR&quot;}},{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;lte&quot;:500}}}]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Search involves Query Phase (find matches) and Fetch Phase (retrieve docs)</li>
+                        <li>&#10003; Query context calculates relevance scores</li>
+                        <li>&#10003; Filter context is binary (match/no match) and cached</li>
+                        <li>&#10003; Use filters for exact matches, ranges, and boolean conditions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('what-is-elasticsearch')">&#8592; Previous: What is Elasticsearch?</a>
+                <a class="btn btn-primary" onclick="loadLesson('inverted-index')">Next: Inverted Index &#8594;</a>
+            </div>
+        `
+    },
+    'inverted-index': {
+        title: 'Inverted Index',
+        category: 'Fundamentals',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Understanding the Inverted Index</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is an Inverted Index?</h2>
+                <p>An inverted index is a data structure that maps terms to the documents containing them. It's the foundation of how Elasticsearch enables fast full-text search.</p>
+
+                <div class="concept-box">
+                    <h3>Traditional Index vs Inverted Index</h3>
+                    <pre><code class="language-text">Traditional Index (like a book index):
+Document 1 -> ["blood", "test", "complete"]
+Document 2 -> ["liver", "test", "function"]
+
+Inverted Index (term -> documents):
+"blood"    -> [Doc 1]
+"test"     -> [Doc 1, Doc 2]
+"complete" -> [Doc 1]
+"liver"    -> [Doc 2]
+"function" -> [Doc 2]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>How Text is Analyzed</h2>
+                <p>Before indexing, text goes through an analysis process:</p>
+
+                <div class="key-points">
+                    <h3>Analysis Pipeline:</h3>
+                    <ul>
+                        <li><strong>Character Filters:</strong> Transform characters (e.g., remove HTML)</li>
+                        <li><strong>Tokenizer:</strong> Split text into tokens</li>
+                        <li><strong>Token Filters:</strong> Transform tokens (lowercase, stemming, synonyms)</li>
+                    </ul>
+                </div>
+
+                <div class="example-query">
+                    <h4>See How Text is Analyzed</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "analyzer": "standard",
+  "text": "Complete Blood Count (CBC)"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;standard&quot;,&quot;text&quot;:&quot;Complete Blood Count (CBC)&quot;}')">Try it</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Key Insight</h4>
+                    <p>The same analyzer must be used at both index time and search time for matching to work correctly. That's why "BLOOD" matches "blood" - both get lowercased.</p>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Inverted index maps terms to documents (opposite of traditional)</li>
+                        <li>&#10003; Text analysis breaks text into searchable tokens</li>
+                        <li>&#10003; Analysis happens at index time AND search time</li>
+                        <li>&#10003; This enables fast full-text search across millions of documents</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('how-search-works')">&#8592; Previous: How Search Works</a>
+                <a class="btn btn-primary" onclick="loadLesson('documents-indices')">Next: Documents & Indices &#8594;</a>
+            </div>
+        `
+    },
+    'match-query': {
+        title: 'Match Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Match Query</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Match Query?</h2>
+                <p>The <code>match</code> query is the standard query for full-text search. It analyzes the search text and constructs a query from the resulting terms.</p>
+
+                <div class="key-points">
+                    <h3>How Match Query Works:</h3>
+                    <ul>
+                        <li>Analyzes the input text using the field's analyzer</li>
+                        <li>Creates a boolean query with OR between terms (by default)</li>
+                        <li>Calculates relevance scores for matching documents</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Match Query</h2>
+
+                <div class="example-query">
+                    <h4>Simple Match</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": "blood count"
+    }
+  }
+}</code></pre>
+                    <p>Finds documents containing "blood" OR "count" (default behavior)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood count&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Match with AND operator</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": {
+        "query": "blood count",
+        "operator": "and"
+      }
+    }
+  }
+}</code></pre>
+                    <p>Finds documents containing BOTH "blood" AND "count"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:{&quot;query&quot;:&quot;blood count&quot;,&quot;operator&quot;:&quot;and&quot;}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Match with Minimum Should Match</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": {
+        "query": "complete blood count test",
+        "minimum_should_match": "75%"
+      }
+    }
+  }
+}</code></pre>
+                    <p>At least 75% of terms must match (3 out of 4 terms)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:{&quot;query&quot;:&quot;complete blood count test&quot;,&quot;minimum_should_match&quot;:&quot;75%&quot;}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Match Query Parameters</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Parameter</th><th>Description</th><th>Default</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>query</td>
+                                <td>The search text</td>
+                                <td>Required</td>
+                            </tr>
+                            <tr>
+                                <td>operator</td>
+                                <td>or | and</td>
+                                <td>or</td>
+                            </tr>
+                            <tr>
+                                <td>fuzziness</td>
+                                <td>Allow typos (0, 1, 2, AUTO)</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>minimum_should_match</td>
+                                <td>Min matching terms</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>analyzer</td>
+                                <td>Override default analyzer</td>
+                                <td>Field's analyzer</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Match query is the go-to for full-text search</li>
+                        <li>&#10003; Default operator is OR (any term matches)</li>
+                        <li>&#10003; Use operator: "and" when all terms must match</li>
+                        <li>&#10003; minimum_should_match gives fine-grained control</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('query-string')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('match-phrase')">Next: Match Phrase &#8594;</a>
+            </div>
+        `
+    },
+    'bool-query': {
+        title: 'Bool Query',
+        category: 'Query DSL',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Bool Query</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Understanding Bool Query</h2>
+                <p>The <code>bool</code> query combines multiple queries using boolean logic. It's the most important compound query in Elasticsearch.</p>
+
+                <div class="key-points">
+                    <h3>Bool Query Clauses:</h3>
+                    <ul>
+                        <li><strong>must:</strong> Query MUST match (AND). Contributes to score.</li>
+                        <li><strong>filter:</strong> Query MUST match (AND). No scoring, cached.</li>
+                        <li><strong>should:</strong> Query SHOULD match (OR). Contributes to score.</li>
+                        <li><strong>must_not:</strong> Query must NOT match (NOT). No scoring.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Bool Query Examples</h2>
+
+                <div class="example-query">
+                    <h4>Basic Bool Query</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "blood" } }
+      ],
+      "filter": [
+        { "term": { "cityCode": "BLR" } }
+      ],
+      "must_not": [
+        { "range": { "consumerPrice": { "gt": 1000 } } }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Tests with "blood" in name, in BLR, priced under 1000</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}}],&quot;filter&quot;:[{&quot;term&quot;:{&quot;cityCode&quot;:&quot;BLR&quot;}}],&quot;must_not&quot;:[{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;gt&quot;:1000}}}]}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Should with minimum_should_match</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "testName": "blood" } },
+        { "match": { "testName": "liver" } },
+        { "match": { "testName": "kidney" } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}</code></pre>
+                    <p>Tests related to blood, liver, OR kidney</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;should&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},{&quot;match&quot;:{&quot;testName&quot;:&quot;liver&quot;}},{&quot;match&quot;:{&quot;testName&quot;:&quot;kidney&quot;}}],&quot;minimum_should_match&quot;:1}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Nested Bool Queries</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "test" } }
+      ],
+      "should": [
+        {
+          "bool": {
+            "must": [
+              { "match": { "testName": "blood" } },
+              { "range": { "frequency": { "gte": 1000 } } }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "must": [
+              { "match": { "testName": "liver" } }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Complex query with nested boolean logic</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;test&quot;}}],&quot;should&quot;:[{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},{&quot;range&quot;:{&quot;frequency&quot;:{&quot;gte&quot;:1000}}}]}},{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;liver&quot;}}]}}]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>must vs filter</h2>
+                <div class="info-box">
+                    <h4>&#128161; When to use which?</h4>
+                    <p><strong>Use must</strong> when the clause should affect relevance scoring (e.g., full-text search).</p>
+                    <p><strong>Use filter</strong> for exact matches, ranges, and boolean conditions that don't need scoring. Filters are cached and faster!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Bool query combines multiple queries with boolean logic</li>
+                        <li>&#10003; must = AND with scoring, filter = AND without scoring (cached)</li>
+                        <li>&#10003; should = OR, must_not = NOT</li>
+                        <li>&#10003; Use filter for exact matches to improve performance</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('exists-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('boosting')">Next: Boosting Query &#8594;</a>
+            </div>
+        `
+    },
+    'wildcard-query': {
+        title: 'Wildcard & Regexp',
+        category: 'Advanced Search',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Wildcard & Regexp Queries</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Wildcard Query</h2>
+                <p>Wildcard queries allow you to use <code>*</code> (any characters) and <code>?</code> (single character) patterns.</p>
+
+                <div class="info-box">
+                    <h4>&#9888; Performance Warning</h4>
+                    <p>Wildcard queries can be slow, especially with leading wildcards (*blood). Avoid patterns like <code>*text</code> on large datasets.</p>
+                </div>
+
+                <div class="example-query">
+                    <h4>Wildcard with * (any characters)</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "wildcard": {
+      "testName.keyword": "*Blood*"
+    }
+  }
+}</code></pre>
+                    <p>Find tests with "Blood" anywhere in the name</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;wildcard&quot;:{&quot;testName.keyword&quot;:&quot;*Blood*&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Wildcard with ? (single character)</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "wildcard": {
+      "testName.keyword": "C?C*"
+    }
+  }
+}</code></pre>
+                    <p>Matches "CBC", "C1C", etc.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;wildcard&quot;:{&quot;testName.keyword&quot;:&quot;C?C*&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Regexp Query</h2>
+                <p>Regular expression queries provide more powerful pattern matching than wildcards.</p>
+
+                <div class="example-query">
+                    <h4>Regexp Example</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "regexp": {
+      "testName.keyword": ".*[Bb]lood.*[Cc]ount.*"
+    }
+  }
+}</code></pre>
+                    <p>Case-insensitive "blood" followed by "count"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;regexp&quot;:{&quot;testName.keyword&quot;:&quot;.*[Bb]lood.*[Cc]ount.*&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="key-points">
+                    <h3>Supported Regexp Operators:</h3>
+                    <ul>
+                        <li><code>.</code> - Any single character</li>
+                        <li><code>*</code> - Zero or more of preceding</li>
+                        <li><code>+</code> - One or more of preceding</li>
+                        <li><code>?</code> - Zero or one of preceding</li>
+                        <li><code>[]</code> - Character class</li>
+                        <li><code>|</code> - Alternation (OR)</li>
+                        <li><code>()</code> - Grouping</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Wildcard: * for any chars, ? for single char</li>
+                        <li>&#10003; Use on keyword fields, not analyzed text</li>
+                        <li>&#10003; Avoid leading wildcards (*text) for performance</li>
+                        <li>&#10003; Regexp offers more powerful patterns but is slower</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('constant-score')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('fuzzy-query')">Next: Fuzzy Search &#8594;</a>
+            </div>
+        `
+    },
+    'terms-agg': {
+        title: 'Terms Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Terms Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Terms Aggregation?</h2>
+                <p>Terms aggregation groups documents by unique values in a field - similar to SQL's <code>GROUP BY</code>.</p>
+
+                <div class="example-query">
+                    <h4>Basic Terms Aggregation</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "tests_by_city": {
+      "terms": {
+        "field": "cityCode",
+        "size": 10
+      }
+    }
+  }
+}</code></pre>
+                    <p>Count tests grouped by city</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;size&quot;:0,&quot;aggs&quot;:{&quot;tests_by_city&quot;:{&quot;terms&quot;:{&quot;field&quot;:&quot;cityCode&quot;,&quot;size&quot;:10}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Terms with Sub-Aggregation</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_city": {
+      "terms": {
+        "field": "cityCode"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "consumerPrice"
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                    <p>Average price per city</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;size&quot;:0,&quot;aggs&quot;:{&quot;by_city&quot;:{&quot;terms&quot;:{&quot;field&quot;:&quot;cityCode&quot;},&quot;aggs&quot;:{&quot;avg_price&quot;:{&quot;avg&quot;:{&quot;field&quot;:&quot;consumerPrice&quot;}}}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Terms with Ordering</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "popular_tests": {
+      "terms": {
+        "field": "genderDescription",
+        "order": { "_count": "desc" }
+      }
+    }
+  }
+}</code></pre>
+                    <p>Group by gender, ordered by count</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;size&quot;:0,&quot;aggs&quot;:{&quot;popular_tests&quot;:{&quot;terms&quot;:{&quot;field&quot;:&quot;genderDescription&quot;,&quot;order&quot;:{&quot;_count&quot;:&quot;desc&quot;}}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Terms agg groups by unique field values</li>
+                        <li>&#10003; Use size: 0 to skip hits and only get aggregations</li>
+                        <li>&#10003; Sub-aggregations allow nested calculations</li>
+                        <li>&#10003; Order by _count, _key, or sub-aggregation values</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('suggesters')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('range-agg')">Next: Range Aggregation &#8594;</a>
+            </div>
+        `
+    }
+};
+
+function loadLesson(lessonId) {
+    const lesson = lessons[lessonId];
+    if (!lesson) {
+        // For lessons without content yet, show placeholder
+        document.getElementById('lesson-content').innerHTML = `
+            <div class="lesson">
+                <h1>${lessonId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h1>
+                <p class="lesson-meta">
+                    <span class="category">Category: Coming Soon</span>
+                </p>
+                <section class="lesson-section">
+                    <h2>Content Coming Soon</h2>
+                    <p>This lesson is being developed. Check back soon!</p>
+                    <p>In the meantime, try the <a href="/elasticsearch">Elasticsearch Dashboard</a> to practice queries.</p>
+                </section>
+            </div>
+        `;
+    } else if (lesson.content) {
+        document.getElementById('lesson-content').innerHTML = lesson.content;
+    }
+
+    // Update active state
+    document.querySelectorAll('.lesson-link').forEach(link => link.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Hide any previous results
+    const resultContainer = document.getElementById('query-result');
+    if (resultContainer) resultContainer.style.display = 'none';
+}
+
+function toggleCategory(id) {
+    const content = document.getElementById(id);
+    content.classList.toggle('expanded');
+}
+
+function toggleSubCategory(id) {
+    const content = document.getElementById(id);
+    content.classList.toggle('expanded');
+}
+
+async function runESExample(button, method, path, body) {
+    const resultContainer = document.getElementById('query-result');
+    const resultContent = document.getElementById('query-result-content');
+
+    resultContainer.style.display = 'block';
+    resultContent.textContent = 'Loading...';
+    button.disabled = true;
+    button.textContent = 'Running...';
+
+    try {
+        const response = await fetch('/api/elasticsearch/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                method: method,
+                path: path,
+                body: body
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            const respData = JSON.parse(result.response);
+            resultContent.textContent = JSON.stringify(respData, null, 2);
+            resultContent.style.color = '#4ecdc4';
+        } else {
+            resultContent.textContent = 'Error: ' + result.error;
+            resultContent.style.color = '#ff6b6b';
+        }
+    } catch (e) {
+        resultContent.textContent = 'Request failed: ' + e.message;
+        resultContent.style.color = '#ff6b6b';
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Try it';
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Expand first category by default
+    toggleCategory('fundamentals');
+    toggleSubCategory('basics');
+});
+</script>

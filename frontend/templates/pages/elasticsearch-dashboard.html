@@ -1,0 +1,750 @@
+<div class="sql-dashboard-page">
+    <div class="dashboard-header">
+        <h1>Elasticsearch Learning Dashboard</h1>
+        <p>Learn full-text search with healthcare test data</p>
+        <div class="header-actions">
+            <button id="health-check" class="btn btn-sm btn-outline" onclick="checkHealth()">Check Connection</button>
+            <button id="reset-indices" class="btn btn-sm btn-danger" onclick="resetIndices()">Reset Indices</button>
+            <a href="/elasticsearch-lessons" class="btn btn-sm btn-primary">View Lessons</a>
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar with Index Info -->
+        <aside class="sidebar">
+            <div class="panel schema-panel">
+                <h3>Index Information</h3>
+                <div id="index-stats" class="schema-tree">
+                    <div class="loading">Loading indices...</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Quick Reference</h3>
+                <div class="reference-list">
+                    <details>
+                        <summary>Search Query</summary>
+                        <pre><code>{
+  "query": {
+    "match": {
+      "testName": "blood"
+    }
+  }
+}</code></pre>
+                    </details>
+                    <details>
+                        <summary>Boolean Query</summary>
+                        <pre><code>{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"testName": "blood"}}
+      ],
+      "filter": [
+        {"term": {"cityCode": "BLR"}}
+      ]
+    }
+  }
+}</code></pre>
+                    </details>
+                    <details>
+                        <summary>Aggregation</summary>
+                        <pre><code>{
+  "size": 0,
+  "aggs": {
+    "by_city": {
+      "terms": {"field": "cityCode"}
+    }
+  }
+}</code></pre>
+                    </details>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Query Area -->
+        <main class="main-content">
+            <div class="query-section">
+                <div class="query-controls">
+                    <div class="endpoint-row">
+                        <select id="http-method" class="method-select">
+                            <option value="GET">GET</option>
+                            <option value="POST" selected>POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <input type="text" id="endpoint-path" class="endpoint-input" value="/tests/_search" placeholder="/index/_search">
+                        <button id="run-query" class="btn btn-primary" onclick="executeQuery()">
+                            Run Query
+                        </button>
+                    </div>
+                </div>
+
+                <div class="query-editor-container">
+                    <div class="editor-header">
+                        <span>Query Body (JSON)</span>
+                        <div class="editor-actions">
+                            <button class="btn btn-sm btn-outline" onclick="formatJSON()">Format</button>
+                            <button class="btn btn-sm btn-outline" onclick="clearQuery()">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="query-body" class="query-input" placeholder='{
+  "query": {
+    "match_all": {}
+  },
+  "size": 10
+}'>{
+  "query": {
+    "match_all": {}
+  },
+  "size": 10
+}</textarea>
+                </div>
+
+                <div class="sample-queries">
+                    <span>Try:</span>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('matchAll')">Match All</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('matchQuery')">Match Query</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('boolQuery')">Bool Query</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('rangeQuery')">Range Query</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('wildcardQuery')">Wildcard</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('aggregation')">Aggregation</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('nestedQuery')">Nested Query</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h3>Results</h3>
+                    <div id="query-stats" class="query-stats"></div>
+                </div>
+                <div id="results-container" class="results-container">
+                    <div class="placeholder">
+                        <p>Run a query to see results</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.sql-dashboard-page {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-header {
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-bottom: 1px solid #333;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #fff;
+    font-size: 1.8rem;
+}
+
+.dashboard-header p {
+    color: #888;
+    margin: 0;
+}
+
+.header-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    background: #1a1a2e;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.panel {
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.panel h3 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.schema-tree {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.index-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: #1a1a2e;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.index-item:hover {
+    background: #252540;
+}
+
+.index-name {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+.index-stats {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.reference-list details {
+    margin-bottom: 0.5rem;
+}
+
+.reference-list summary {
+    cursor: pointer;
+    color: #4ecdc4;
+    padding: 0.3rem 0;
+}
+
+.reference-list pre {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: #1a1a2e;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    overflow-x: auto;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0f0f1a;
+}
+
+.query-section {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.query-controls {
+    margin-bottom: 0.5rem;
+}
+
+.endpoint-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.method-select {
+    padding: 0.5rem;
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    width: 100px;
+}
+
+.endpoint-input {
+    flex: 1;
+    padding: 0.5rem;
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-family: monospace;
+}
+
+.query-editor-container {
+    margin-bottom: 0.5rem;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #16213e;
+    border-radius: 4px 4px 0 0;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.query-input {
+    width: 100%;
+    min-height: 200px;
+    padding: 1rem;
+    background: #1a1a2e;
+    border: 1px solid #333;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    color: #fff;
+    font-family: monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.sample-queries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.sample-queries span {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.results-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.results-header h3 {
+    margin: 0;
+    color: #fff;
+}
+
+.query-stats {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.results-container {
+    flex: 1;
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow: auto;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.results-container pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.placeholder {
+    color: #666;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-message {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.success-message {
+    color: #4ecdc4;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #4ecdc4;
+    color: #000;
+}
+
+.btn-primary:hover {
+    background: #45b7aa;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #4ecdc4;
+    color: #4ecdc4;
+}
+
+.btn-outline:hover {
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.btn-danger {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #ff5252;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.loading {
+    color: #888;
+    font-style: italic;
+}
+
+/* Hit result styling */
+.hit-item {
+    background: #1a1a2e;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.hit-score {
+    color: #4ecdc4;
+    font-size: 0.8rem;
+}
+
+.hit-source {
+    margin-top: 0.5rem;
+}
+
+/* Aggregation styling */
+.agg-bucket {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.agg-key {
+    color: #4ecdc4;
+}
+
+.agg-count {
+    color: #888;
+}
+</style>
+
+<script>
+const sampleQueries = {
+    matchAll: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "match_all": {}
+  },
+  "size": 10
+}`
+    },
+    matchQuery: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "match": {
+      "testName": "blood count"
+    }
+  },
+  "size": 10
+}`
+    },
+    boolQuery: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "blood" } }
+      ],
+      "filter": [
+        { "term": { "genderDescription": "both" } },
+        { "range": { "consumerPrice": { "lte": 500 } } }
+      ]
+    }
+  },
+  "size": 10
+}`
+    },
+    rangeQuery: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "range": {
+      "consumerPrice": {
+        "gte": 100,
+        "lte": 500
+      }
+    }
+  },
+  "sort": [
+    { "consumerPrice": "asc" }
+  ],
+  "size": 10
+}`
+    },
+    wildcardQuery: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "wildcard": {
+      "testName.keyword": "*Blood*"
+    }
+  },
+  "size": 10
+}`
+    },
+    aggregation: {
+        path: '/tests/_search',
+        method: 'POST',
+        body: `{
+  "size": 0,
+  "aggs": {
+    "by_city": {
+      "terms": {
+        "field": "cityCode",
+        "size": 10
+      }
+    },
+    "avg_price": {
+      "avg": {
+        "field": "consumerPrice"
+      }
+    },
+    "price_ranges": {
+      "range": {
+        "field": "consumerPrice",
+        "ranges": [
+          { "to": 200 },
+          { "from": 200, "to": 500 },
+          { "from": 500 }
+        ]
+      }
+    }
+  }
+}`
+    },
+    nestedQuery: {
+        path: '/packages/_search',
+        method: 'POST',
+        body: `{
+  "query": {
+    "nested": {
+      "path": "tests",
+      "query": {
+        "bool": {
+          "must": [
+            { "match": { "tests.testName": "liver" } }
+          ]
+        }
+      }
+    }
+  },
+  "size": 5
+}`
+    }
+};
+
+function loadSample(name) {
+    const sample = sampleQueries[name];
+    if (sample) {
+        document.getElementById('http-method').value = sample.method;
+        document.getElementById('endpoint-path').value = sample.path;
+        document.getElementById('query-body').value = sample.body;
+    }
+}
+
+function formatJSON() {
+    const textarea = document.getElementById('query-body');
+    try {
+        const json = JSON.parse(textarea.value);
+        textarea.value = JSON.stringify(json, null, 2);
+    } catch (e) {
+        alert('Invalid JSON: ' + e.message);
+    }
+}
+
+function clearQuery() {
+    document.getElementById('query-body').value = '';
+}
+
+async function executeQuery() {
+    const method = document.getElementById('http-method').value;
+    const path = document.getElementById('endpoint-path').value;
+    const body = document.getElementById('query-body').value;
+    const resultsContainer = document.getElementById('results-container');
+    const statsContainer = document.getElementById('query-stats');
+
+    resultsContainer.innerHTML = '<div class="loading">Executing query...</div>';
+    statsContainer.innerHTML = '';
+
+    try {
+        const response = await fetch('/api/elasticsearch/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                method: method,
+                path: path,
+                body: body
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            let statsHtml = `Took: ${result.took || result.duration_ms}ms`;
+            if (result.total_hits !== undefined) {
+                statsHtml += ` | Hits: ${result.hits} of ${result.total_hits}`;
+            }
+            statsContainer.innerHTML = statsHtml;
+
+            // Parse and display response
+            const respData = JSON.parse(result.response);
+            resultsContainer.innerHTML = `<pre class="success-message">${JSON.stringify(respData, null, 2)}</pre>`;
+        } else {
+            statsContainer.innerHTML = `Error in ${result.duration_ms}ms`;
+            resultsContainer.innerHTML = `<div class="error-message">${result.error}</div>`;
+        }
+    } catch (e) {
+        resultsContainer.innerHTML = `<div class="error-message">Request failed: ${e.message}</div>`;
+    }
+}
+
+async function checkHealth() {
+    const btn = document.getElementById('health-check');
+    btn.textContent = 'Checking...';
+
+    try {
+        const response = await fetch('/api/elasticsearch/health');
+        const result = await response.json();
+
+        if (result.status === 'healthy') {
+            btn.textContent = 'Connected';
+            btn.style.borderColor = '#4ecdc4';
+            btn.style.color = '#4ecdc4';
+            setTimeout(() => {
+                btn.textContent = 'Check Connection';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            }, 2000);
+        } else {
+            btn.textContent = 'Disconnected';
+            btn.style.borderColor = '#ff6b6b';
+            btn.style.color = '#ff6b6b';
+        }
+    } catch (e) {
+        btn.textContent = 'Error';
+        btn.style.borderColor = '#ff6b6b';
+        btn.style.color = '#ff6b6b';
+    }
+}
+
+async function resetIndices() {
+    if (!confirm('This will delete and recreate all indices with fresh sample data. Continue?')) {
+        return;
+    }
+
+    const btn = document.getElementById('reset-indices');
+    btn.textContent = 'Resetting...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/elasticsearch/reset', { method: 'POST' });
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Indices reset successfully!');
+            loadIndexStats();
+        } else {
+            alert('Reset failed: ' + result.error);
+        }
+    } catch (e) {
+        alert('Reset failed: ' + e.message);
+    } finally {
+        btn.textContent = 'Reset Indices';
+        btn.disabled = false;
+    }
+}
+
+async function loadIndexStats() {
+    const container = document.getElementById('index-stats');
+
+    try {
+        const response = await fetch('/api/elasticsearch/stats');
+        const result = await response.json();
+
+        if (result.indices && result.indices.length > 0) {
+            container.innerHTML = result.indices.map(idx => `
+                <div class="index-item" onclick="selectIndex('${idx.index_name}')">
+                    <div class="index-name">${idx.index_name}</div>
+                    <div class="index-stats">
+                        ${idx.docs_count} docs | ${idx.store_size || 'N/A'}
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="placeholder">No indices found</div>';
+        }
+    } catch (e) {
+        container.innerHTML = `<div class="error-message">Failed to load indices: ${e.message}</div>`;
+    }
+}
+
+function selectIndex(indexName) {
+    const pathInput = document.getElementById('endpoint-path');
+    pathInput.value = `/${indexName}/_search`;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadIndexStats();
+    checkHealth();
+});
+</script>
