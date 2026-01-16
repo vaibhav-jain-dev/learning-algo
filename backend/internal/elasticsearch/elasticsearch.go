@@ -15,13 +15,14 @@ import (
 // Client wraps the Elasticsearch HTTP client
 type Client struct {
 	baseURL    string
+	kibanaURL  string
 	httpClient *http.Client
 }
 
 // Config holds Elasticsearch configuration
 type Config struct {
-	Host string
-	Port string
+	URL       string // Full URL (e.g., http://localhost:9200)
+	KibanaURL string // Kibana URL for reference
 }
 
 // QueryResult represents the result of an Elasticsearch query
@@ -73,9 +74,17 @@ type ClusterHealth struct {
 
 // ConfigFromEnv creates config from environment variables
 func ConfigFromEnv() Config {
+	// Support both ES_URL (preferred) and legacy ES_HOST/ES_PORT
+	url := os.Getenv("ES_URL")
+	if url == "" {
+		host := getEnv("ES_HOST", "localhost")
+		port := getEnv("ES_PORT", "9200")
+		url = fmt.Sprintf("http://%s:%s", host, port)
+	}
+
 	return Config{
-		Host: getEnv("ES_HOST", "localhost"),
-		Port: getEnv("ES_PORT", "9200"),
+		URL:       url,
+		KibanaURL: getEnv("KIBANA_URL", "http://localhost:5601"),
 	}
 }
 
@@ -88,10 +97,11 @@ func getEnv(key, defaultVal string) string {
 
 // New creates a new Elasticsearch client
 func New(cfg Config) (*Client, error) {
-	baseURL := fmt.Sprintf("http://%s:%s", cfg.Host, cfg.Port)
+	baseURL := strings.TrimSuffix(cfg.URL, "/")
 
 	client := &Client{
-		baseURL: baseURL,
+		baseURL:   baseURL,
+		kibanaURL: cfg.KibanaURL,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
@@ -103,6 +113,16 @@ func New(cfg Config) (*Client, error) {
 	}
 
 	return client, nil
+}
+
+// GetKibanaURL returns the configured Kibana URL
+func (c *Client) GetKibanaURL() string {
+	return c.kibanaURL
+}
+
+// GetBaseURL returns the Elasticsearch base URL
+func (c *Client) GetBaseURL() string {
+	return c.baseURL
 }
 
 // Ping checks if Elasticsearch is reachable

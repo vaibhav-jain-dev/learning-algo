@@ -158,9 +158,11 @@ func (h *ElasticsearchHandlers) HealthCheck(c *fiber.Ctx) error {
 	health, err := h.es.GetClusterHealth(ctx)
 	if err != nil {
 		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{
-			"status":  "unhealthy",
-			"error":   err.Error(),
-			"message": "Elasticsearch is not available",
+			"status":     "unhealthy",
+			"error":      err.Error(),
+			"message":    "Elasticsearch is not available",
+			"kibana_url": h.es.GetKibanaURL(),
+			"es_url":     h.es.GetBaseURL(),
 		})
 	}
 
@@ -169,6 +171,8 @@ func (h *ElasticsearchHandlers) HealthCheck(c *fiber.Ctx) error {
 		"cluster":       health,
 		"message":       "Elasticsearch is running",
 		"indices_ready": true,
+		"kibana_url":    h.es.GetKibanaURL(),
+		"es_url":        h.es.GetBaseURL(),
 	})
 }
 

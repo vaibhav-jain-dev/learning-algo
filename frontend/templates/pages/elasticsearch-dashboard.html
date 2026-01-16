@@ -4,6 +4,7 @@
         <p>Learn full-text search with healthcare test data</p>
         <div class="header-actions">
             <button id="health-check" class="btn btn-sm btn-outline" onclick="checkHealth()">Check Connection</button>
+            <a id="kibana-link" href="http://localhost:5601" target="_blank" class="btn btn-sm btn-outline kibana-btn">Open Kibana</a>
             <button id="reset-indices" class="btn btn-sm btn-danger" onclick="resetIndices()">Reset Indices</button>
             <a href="/elasticsearch-lessons" class="btn btn-sm btn-primary">View Lessons</a>
         </div>
@@ -418,6 +419,15 @@
     background: #ff5252;
 }
 
+.kibana-btn {
+    border-color: #e8488a;
+    color: #e8488a;
+}
+
+.kibana-btn:hover {
+    background: rgba(232, 72, 138, 0.1);
+}
+
 .btn-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.8rem;
@@ -659,11 +669,22 @@ async function executeQuery() {
 
 async function checkHealth() {
     const btn = document.getElementById('health-check');
+    const kibanaLink = document.getElementById('kibana-link');
     btn.textContent = 'Checking...';
 
     try {
         const response = await fetch('/api/elasticsearch/health');
         const result = await response.json();
+
+        // Update Kibana link if URL is provided
+        if (result.kibana_url) {
+            // Convert internal docker URL to localhost for browser access
+            let kibanaUrl = result.kibana_url;
+            if (kibanaUrl.includes('dsalgo-kibana')) {
+                kibanaUrl = kibanaUrl.replace('dsalgo-kibana', 'localhost');
+            }
+            kibanaLink.href = kibanaUrl;
+        }
 
         if (result.status === 'healthy') {
             btn.textContent = 'Connected';

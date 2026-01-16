@@ -18,6 +18,8 @@ volumes:
     name: dsalgo-learn-postgres-data
   dsalgo-learn-elasticsearch-data:
     name: dsalgo-learn-elasticsearch-data
+  dsalgo-learn-kibana-data:
+    name: dsalgo-learn-kibana-data
 
 services:
   # PostgreSQL Database for SQL Learning
@@ -94,6 +96,40 @@ services:
           cpus: '0.25'
           memory: 428M
 
+  # Kibana for Elasticsearch Visualization
+  dsalgo-kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: dsalgo-kibana
+    hostname: dsalgo-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://dsalgo-elasticsearch:9200
+      - SERVER_NAME=dsalgo-kibana
+      - SERVER_HOST=0.0.0.0
+      - XPACK_SECURITY_ENABLED=false
+      - TELEMETRY_ENABLED=false
+    ports:
+      - "5601:5601"
+    networks:
+      - dsalgo-learn-network
+    depends_on:
+      dsalgo-elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
   dsalgo-learn-app:
     build:
       context: .
@@ -133,8 +169,9 @@ services:
       - DB_PASSWORD=dsalgo_secret
       - DB_NAME=order_management
       # Elasticsearch connection
-      - ES_HOST=dsalgo-elasticsearch
-      - ES_PORT=9200
+      - ES_URL=http://dsalgo-elasticsearch:9200
+      # Kibana URL (for reference in app)
+      - KIBANA_URL=http://dsalgo-kibana:5601
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -198,8 +235,9 @@ services:
       - DB_PASSWORD=dsalgo_secret
       - DB_NAME=order_management
       # Elasticsearch connection
-      - ES_HOST=dsalgo-elasticsearch
-      - ES_PORT=9200
+      - ES_URL=http://dsalgo-elasticsearch:9200
+      # Kibana URL (for reference in app)
+      - KIBANA_URL=http://dsalgo-kibana:5601
     networks:
       - dsalgo-learn-network
     tmpfs:
