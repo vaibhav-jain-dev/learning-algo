@@ -2469,16 +2469,28 @@ async function runESExample(button, method, path, body) {
         const result = await response.json();
 
         if (result.success) {
-            try {
-                const respData = JSON.parse(result.response);
+            let respData = result.response;
+            // Handle response whether it's a string or already an object
+            if (typeof respData === 'string') {
+                try {
+                    respData = JSON.parse(respData);
+                } catch (parseErr) {
+                    // Not JSON, leave as string
+                }
+            }
+            // Format the output
+            if (typeof respData === 'object' && respData !== null) {
                 resultContent.textContent = JSON.stringify(respData, null, 2);
-            } catch (parseErr) {
-                // If response is not JSON, show as-is
-                resultContent.textContent = result.response;
+            } else {
+                resultContent.textContent = String(respData);
             }
             resultContent.style.color = '#4ecdc4';
         } else {
-            resultContent.textContent = 'Error: ' + result.error;
+            let errorMsg = result.error;
+            if (typeof errorMsg === 'object') {
+                errorMsg = JSON.stringify(errorMsg, null, 2);
+            }
+            resultContent.textContent = 'Error: ' + errorMsg;
             resultContent.style.color = '#ff6b6b';
         }
     } catch (e) {
