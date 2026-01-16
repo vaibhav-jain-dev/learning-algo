@@ -2010,7 +2010,7 @@ func main() {
                         fetch('/api/execution/' + data.id)
                         .then(r => r.json())
                         .then(result => {
-                            if (result.state === 'completed' || result.state === 'error') {
+                            if (result.state === 'complete' || result.state === 'error') {
                                 this.disabled = false;
                                 this.textContent = 'Run Code';
 
