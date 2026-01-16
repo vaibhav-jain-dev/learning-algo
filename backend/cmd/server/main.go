@@ -171,18 +171,20 @@ func main() {
 	// Static files
 	app.Static("/static", "./frontend/static")
 
-	// Page routes (HTMX)
+	// Page routes (HTMX) - Unified routes with tab navigation
 	app.Get("/", h.Home)
 	app.Get("/practice", h.Practice)
-	app.Get("/sql", h.SQLDashboard)
-	app.Get("/sql-lessons", h.SQLLessons)
-	app.Get("/elasticsearch", h.ElasticsearchDashboard)
-	app.Get("/elasticsearch-lessons", h.ElasticsearchLessons)
-	app.Get("/redis", h.RedisDashboard)
-	app.Get("/redis-lessons", h.RedisLessons)
+	
+	// Unified database learning routes (merged dashboard + lessons)
+	app.Get("/sql", h.SQL)                      // Combined SQL playground and lessons
+	app.Get("/elasticsearch", h.Elasticsearch)  // Combined ES playground and lessons
+	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
+	
+	// Other learning routes
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
+	app.Get("/microservices", h.Microservices)
 	app.Get("/golang", h.Golang)
 	app.Get("/python-asyncio", h.PythonAsyncio)
 	app.Get("/topic/:category/:topic", h.TopicDetail)

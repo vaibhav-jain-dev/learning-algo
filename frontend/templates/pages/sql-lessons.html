@@ -333,31 +333,38 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
 
                 <section class="lesson-section">
                     <h2>Interactive Example</h2>
-                    <p>Try these queries in the SQL Dashboard:</p>
+                    <p>Try these queries - click "Run Query" to see results inline:</p>
 
                     <div class="example-query">
                         <h4>Example 1: Select All Columns</h4>
-                        <pre><code class="language-sql">-- Get all columns from requests table
-SELECT * FROM requests LIMIT 5;</code></pre>
-                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="2">-- Get all columns from requests table
+SELECT * FROM requests LIMIT 5;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
                     </div>
 
                     <div class="example-query">
                         <h4>Example 2: Select Specific Columns</h4>
-                        <pre><code class="language-sql">-- Get specific columns with meaningful names
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="7">-- Get specific columns with meaningful names
 SELECT
     request_number AS "Request #",
     status AS "Current Status",
     final_amount AS "Total Amount",
     created_at AS "Date Created"
 FROM requests
-LIMIT 5;</code></pre>
-                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+LIMIT 5;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
                     </div>
 
                     <div class="example-query">
                         <h4>Example 3: Expressions in SELECT</h4>
-                        <pre><code class="language-sql">-- Calculate derived values
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">-- Calculate derived values
 SELECT
     request_number,
     total_amount,
@@ -367,8 +374,10 @@ SELECT
     ROUND(discount_amount / total_amount * 100, 2) AS discount_percent
 FROM requests
 WHERE discount_amount > 0
-LIMIT 5;</code></pre>
-                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+LIMIT 5;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
                     </div>
                 </section>
 

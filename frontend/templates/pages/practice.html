@@ -403,15 +403,24 @@ func main() {
 
             html += '<div class="execution-metrics">' +
                 '<div class="metrics-header">Performance Metrics</div>' +
-                '<div class="metrics-grid">' +
-                '<div class="metric">' +
-                '<span class="metric-label">Execution Time:</span>' +
-                '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
-                '</div>';
+                '<div class="metrics-grid">';
 
-            if (!isGoMetrics) {
-                // Python: show memory stats
+            if (isGoMetrics) {
+                // Go: show compile time and run time separately
                 html += '<div class="metric">' +
+                    '<span class="metric-label">Run Time:</span>' +
+                    '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">' + (metrics.memory_fmt || 'Compile: 0ms') + '</span>' +
+                    '</div>';
+            } else {
+                // Python: show execution time and memory stats
+                html += '<div class="metric">' +
+                    '<span class="metric-label">Execution Time:</span>' +
+                    '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
                     '<span class="metric-label">Memory Used:</span>' +
                     '<span class="metric-value">' + (metrics.memory_fmt || metrics.memory_current_fmt || '0 B') + '</span>' +
                     '</div>' +
