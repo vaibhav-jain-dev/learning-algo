@@ -17,34 +17,7 @@ Microservices architecture breaks down a complex application into smaller, auton
 3. **Own their data** - Each service manages its own database
 4. **Communicate via APIs** - Services interact through HTTP/REST, gRPC, or messaging
 
-```mermaid
-graph TB
-    subgraph services["Microservices Layer"]
-        US["👤 User Service"]
-        OS["📋 Order Service"]
-        PS["💳 Payment Service"]
-        IS["📦 Inventory Service"]
-    end
-
-    subgraph databases["Data Layer"]
-        UDB["Database<br/>User"]
-        ODB["Database<br/>Order"]
-        PDB["Database<br/>Payment"]
-        IDB["Database<br/>Inventory"]
-    end
-
-    US --> UDB
-    OS --> ODB
-    PS --> PDB
-    IS --> IDB
-
-    US -.->|API calls| OS
-    OS -.->|API calls| PS
-    OS -.->|API calls| IS
-
-    style services fill:#e3f2fd
-    style databases fill:#f3e5f5
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 ---
 
@@ -63,29 +36,7 @@ Each microservice should do one thing and do it well.
 ### 2. Decentralized Data Management
 Each service owns and manages its data.
 
-```mermaid
-graph TB
-    subgraph us["User Service<br/>Tech Stack: MySQL"]
-        usdb[("🗄️ MySQL<br/>Users Table")]
-    end
-
-    subgraph os["Order Service<br/>Tech Stack: MongoDB"]
-        osdb[("🗄️ MongoDB<br/>Orders Collection")]
-    end
-
-    subgraph ps["Payment Service<br/>Tech Stack: PostgreSQL"]
-        psdb[("🗄️ PostgreSQL<br/>Transactions Table")]
-    end
-
-    subgraph ss["Search Service<br/>Tech Stack: Elasticsearch"]
-        ssdb[("🗄️ Elasticsearch<br/>Search Index")]
-    end
-
-    style us fill:#bbdefb
-    style os fill:#c8e6c9
-    style ps fill:#ffe0b2
-    style ss fill:#f8bbd0
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 ### 3. Design for Failure
 Services must handle failures gracefully using:
@@ -123,44 +74,14 @@ Microservices require:
 
 ### Synchronous Communication
 
-```mermaid
-graph LR
-    subgraph sync["Synchronous: Request-Response"]
-        C1["👤 Client"]
-        S1["🔧 Service"]
-        C1 -->|HTTP/REST| S1
-        S1 -->|Response| C1
-    end
-
-    subgraph grpc["gRPC Protocol"]
-        A["Service A"]
-        B["Service B"]
-        A -->|Proto Binary| B
-        B -->|Proto Response| A
-    end
-
-    style sync fill:#fff9c4
-    style grpc fill:#fff9c4
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 **Pros:** Simple, immediate response
 **Cons:** Tight coupling, cascading failures
 
 ### Asynchronous Communication
 
-```mermaid
-graph LR
-    Producer["📤 Producer<br/>Service"]
-    Broker["🔀 Message Broker<br/>Kafka/RabbitMQ"]
-    Consumer["📥 Consumer<br/>Service"]
-
-    Producer -->|Publish Event| Broker
-    Broker -->|Subscribe| Consumer
-
-    style Producer fill:#c8e6c9
-    style Broker fill:#ffccbc
-    style Consumer fill:#c8e6c9
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 **Pros:** Loose coupling, resilience, scalability
 **Cons:** Eventual consistency, complexity
@@ -171,34 +92,7 @@ graph LR
 
 ### Domain-Driven Design (DDD) Approach
 
-```mermaid
-graph TB
-    subgraph Catalog["📚 CATALOG<br/>Bounded Context"]
-        CP["Product<br/>Category<br/>Inventory"]
-    end
-
-    subgraph Ordering["📋 ORDERING<br/>Bounded Context"]
-        OP["Order<br/>LineItem<br/>Payment"]
-    end
-
-    subgraph Customer["👥 CUSTOMER<br/>Bounded Context"]
-        CCP["User<br/>Profile<br/>Address"]
-    end
-
-    subgraph Shipping["🚚 SHIPPING<br/>Bounded Context"]
-        SP["Shipment<br/>Tracking<br/>Carrier"]
-    end
-
-    Catalog -.->|queries products| Ordering
-    Ordering -.->|creates shipment| Shipping
-    Ordering -.->|references customer| Customer
-    Shipping -.->|updates address| Customer
-
-    style Catalog fill:#e1f5fe
-    style Ordering fill:#f3e5f5
-    style Customer fill:#fffde7
-    style Shipping fill:#f1f8e9
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 ---
 

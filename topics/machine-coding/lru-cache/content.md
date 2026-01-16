@@ -47,40 +47,7 @@ Design and implement a Least Recently Used (LRU) cache with O(1) time complexity
 
 ### Part 3: The Data Structure Architecture
 
-```mermaid
-graph TB
-    subgraph hm["🗂️ HashMap Layer<br/>O(1) Lookups"]
-        h1["Key: 1"]
-        h2["Key: 2"]
-        h3["Key: 3"]
-        h4["Key: 4"]
-    end
-
-    subgraph dll["🔗 Doubly Linked List<br/>O(1) Ordering"]
-        dummy1["HEAD<br/>(dummy)"]
-        n1["Key: 1<br/>Value: 10"]
-        n2["Key: 2<br/>Value: 20"]
-        n3["Key: 3<br/>Value: 30"]
-        dummy2["TAIL<br/>(dummy)"]
-
-        dummy1 <-->|Bidirectional| n1
-        n1 <-->|Bidirectional| n2
-        n2 <-->|Bidirectional| n3
-        n3 <-->|Bidirectional| dummy2
-    end
-
-    h1 -->|O(1) pointer| n1
-    h2 -->|O(1) pointer| n2
-    h3 -->|O(1) pointer| n3
-
-    Order["➡️ Order: Left = Most Recent<br/>Right = Least Recent (evict)"]
-
-    style hm fill:#bbdefb
-    style dll fill:#c8e6c9
-    style Order fill:#fff9c4
-    style dummy1 fill:#ffccbc
-    style dummy2 fill:#ffccbc
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 ### Part 4: Why Dummy Head and Tail Nodes?
 

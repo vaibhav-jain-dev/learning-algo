@@ -1,0 +1,491 @@
+/* ============================================
+   CUSTOM DIAGRAM STYLING
+   Beautiful, animated diagrams for learning
+   ============================================ */
+
+/* Container Styles */
+.diagram-container {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.diagram-container.light {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+}
+
+.diagram-container.dark {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+}
+
+/* Diagram Wrapper */
+svg.state-machine-diagram,
+svg.flowchart-diagram,
+svg.graph-diagram,
+svg.architecture-diagram,
+svg.tree-diagram {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+}
+
+/* ============================================
+   STATE MACHINE DIAGRAM
+   ============================================ */
+
+.state-machine-diagram {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.state-node {
+    fill: #bbdefb;
+    stroke: #1976d2;
+    stroke-width: 2.5;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.state-node:hover {
+    fill: #64b5f6;
+    stroke: #0d47a1;
+    stroke-width: 3;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.state-node.initial {
+    fill: #c8e6c9;
+    stroke: #2e7d32;
+    stroke-width: 3;
+}
+
+.state-node.highlighted {
+    fill: #ffcccc;
+    stroke: #d32f2f;
+    stroke-width: 3;
+    animation: pulse-state 2s ease-in-out infinite;
+}
+
+.state-label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: #1a1a1a;
+    pointer-events: none;
+}
+
+.state-description {
+    font-size: 11px;
+    fill: #666;
+    font-style: italic;
+    pointer-events: none;
+}
+
+.transition-line {
+    stroke: #2563eb;
+    stroke-width: 2;
+    transition: stroke-width 0.3s ease;
+}
+
+.transition-line:hover {
+    stroke-width: 3;
+    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.4));
+}
+
+.transition-label {
+    font-size: 12px;
+    fill: #1976d2;
+    font-weight: 500;
+    background: white;
+    padding: 2px 6px;
+    pointer-events: none;
+}
+
+/* ============================================
+   FLOWCHART DIAGRAM
+   ============================================ */
+
+.flowchart-diagram {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.flow-node {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.flow-node.process {
+    fill: #bbdefb;
+    stroke: #1976d2;
+    stroke-width: 2;
+}
+
+.flow-node.process:hover {
+    fill: #64b5f6;
+    stroke: #0d47a1;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.flow-node.decision {
+    fill: #fff9c4;
+    stroke: #f57f17;
+    stroke-width: 2;
+}
+
+.flow-node.decision:hover {
+    fill: #ffee58;
+    stroke: #f57f17;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 8px rgba(245, 127, 23, 0.3));
+}
+
+.flow-node.terminal {
+    fill: #c8e6c9;
+    stroke: #2e7d32;
+    stroke-width: 2;
+}
+
+.flow-node.terminal:hover {
+    fill: #a5d6a7;
+    stroke: #1b5e20;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 8px rgba(46, 125, 50, 0.3));
+}
+
+.flow-node.highlighted {
+    fill: #ffcccc;
+    stroke: #d32f2f;
+    stroke-width: 3;
+    animation: pulse-node 1.5s ease-in-out infinite;
+}
+
+.flow-edge {
+    stroke: #2563eb;
+    stroke-width: 2;
+    transition: stroke-width 0.3s ease;
+}
+
+.flow-edge:hover {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+}
+
+.edge-label,
+.node-label {
+    font-size: 13px;
+    font-weight: 500;
+    fill: #1a1a1a;
+    pointer-events: none;
+    text-anchor: middle;
+}
+
+/* ============================================
+   GRAPH DIAGRAM
+   ============================================ */
+
+.graph-diagram {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.graph-edge {
+    stroke: #2563eb;
+    stroke-width: 2;
+    transition: all 0.3s ease;
+}
+
+.graph-edge:hover {
+    stroke-width: 2.5;
+    stroke: #1d4ed8;
+    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.4));
+}
+
+.graph-edge.cycle {
+    stroke: #d32f2f;
+    stroke-width: 2.5;
+    stroke-dasharray: 5, 5;
+}
+
+.graph-edge-label {
+    font-size: 11px;
+    fill: #1976d2;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.graph-node {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.graph-node.default {
+    fill: #bbdefb;
+    stroke: #1976d2;
+    stroke-width: 2;
+}
+
+.graph-node.default:hover {
+    fill: #64b5f6;
+    stroke: #0d47a1;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.graph-node.start {
+    fill: #c8e6c9;
+    stroke: #2e7d32;
+    stroke-width: 2.5;
+}
+
+.graph-node.end {
+    fill: #ffcccc;
+    stroke: #d32f2f;
+    stroke-width: 2.5;
+}
+
+.graph-node.in-cycle {
+    fill: #ffcccc;
+    stroke: #d32f2f;
+    stroke-width: 3;
+    animation: pulse-cycle 1.5s ease-in-out infinite;
+}
+
+.graph-node-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: #1a1a1a;
+    pointer-events: none;
+}
+
+/* ============================================
+   ARCHITECTURE DIAGRAM
+   ============================================ */
+
+.architecture-diagram {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.architecture-layer {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    stroke: #ccc;
+    stroke-width: 1;
+}
+
+.architecture-layer:hover {
+    opacity: 0.9;
+}
+
+.layer-label {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.component-box {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.component-box.default {
+    fill: #bbdefb;
+    stroke: #1976d2;
+    stroke-width: 2;
+}
+
+.component-box.default:hover {
+    fill: #64b5f6;
+    stroke: #0d47a1;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    transform-origin: center;
+}
+
+.component-box.service {
+    fill: #c8e6c9;
+    stroke: #2e7d32;
+    stroke-width: 2;
+}
+
+.component-box.database {
+    fill: #ffe0b2;
+    stroke: #e65100;
+    stroke-width: 2;
+}
+
+.component-box.message-broker {
+    fill: #f8bbd0;
+    stroke: #c2185b;
+    stroke-width: 2;
+}
+
+.component-label {
+    font-size: 12px;
+    font-weight: 600;
+    fill: #1a1a1a;
+    pointer-events: none;
+}
+
+/* ============================================
+   TREE DIAGRAM
+   ============================================ */
+
+.tree-diagram {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.tree-edge {
+    stroke: #999;
+    stroke-width: 2;
+    transition: stroke-width 0.3s ease;
+}
+
+.tree-edge:hover {
+    stroke: #666;
+    stroke-width: 2.5;
+}
+
+.tree-node {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+.tree-node.default {
+    fill: #bbdefb;
+    stroke: #1976d2;
+    stroke-width: 2;
+}
+
+.tree-node.default:hover {
+    fill: #64b5f6;
+    stroke: #0d47a1;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.tree-node.root {
+    fill: #c8e6c9;
+    stroke: #2e7d32;
+    stroke-width: 2.5;
+}
+
+.tree-node.leaf {
+    fill: #fff9c4;
+    stroke: #f57f17;
+    stroke-width: 2;
+}
+
+.tree-node-label {
+    font-size: 12px;
+    font-weight: 600;
+    fill: #1a1a1a;
+    pointer-events: none;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes pulse-state {
+    0%, 100% {
+        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 8px rgba(211, 47, 47, 0.8));
+    }
+}
+
+@keyframes pulse-node {
+    0%, 100% {
+        stroke-width: 3;
+        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.3));
+    }
+    50% {
+        stroke-width: 4;
+        filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.7));
+    }
+}
+
+@keyframes pulse-cycle {
+    0%, 100% {
+        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.9));
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.diagram-container {
+    animation: fade-in 0.5s ease-out;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .diagram-container {
+        margin: 1.5rem 0;
+        padding: 1rem;
+    }
+
+    .state-label,
+    .edge-label,
+    .node-label,
+    .graph-node-label,
+    .tree-node-label,
+    .component-label {
+        font-size: 11px;
+    }
+
+    .state-node,
+    .flow-node,
+    .graph-node,
+    .tree-node {
+        stroke-width: 1.5;
+    }
+
+    .transition-line,
+    .flow-edge,
+    .graph-edge,
+    .tree-edge {
+        stroke-width: 1.5;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    .diagram-container {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}

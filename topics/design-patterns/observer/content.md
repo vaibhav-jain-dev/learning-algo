@@ -62,36 +62,36 @@ After decades of building event-driven systems, here's the expert perspective:
 
 **Expert knows:** "Observer creates **temporal coupling** and **hidden dependencies**. The subject doesn't know WHO is listening or HOW LONG they'll take. This is both its power and its trap. In distributed systems, 'fire and forget' notifications can cascade into system-wide failures."
 
-```mermaid
-graph TD
-    Start["subject.notify()"]
+<div id="observer-complexity-diagram" class="diagram-container light"></div>
 
-    SimpleView["What you see:<br/>subject.notify() → observer.update()"]
-
-    ComplexView["What actually happens at scale:<br/>subject.notify()"]
-
-    Q1["🤔 Order?<br/>Which observer runs first?<br/>Does it matter?"]
-    Q2["🤔 Sync?<br/>Block subject or run async?<br/>Resource cost?"]
-    Q3["🤔 Error?<br/>One observer fails -<br/>What about others?"]
-    Q4["🤔 Leak?<br/>Did all observers<br/>unsubscribe?"]
-
-    Start --> SimpleView
-    Start --> ComplexView
-
-    ComplexView --> Q1
-    Q1 --> Q2
-    Q2 --> Q3
-    Q3 --> Q4
-    Q4 --> Result["System-wide consequences<br/>at scale"]
-
-    style SimpleView fill:#e1f5ff
-    style ComplexView fill:#fff3e0
-    style Q1 fill:#ffe0b2
-    style Q2 fill:#ffe0b2
-    style Q3 fill:#ffe0b2
-    style Q4 fill:#ffe0b2
-    style Result fill:#ffccbc
-```
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const diagram = new FlowchartDiagram('observer-complexity-diagram', {
+        width: 700,
+        height: 500,
+        nodeWidth: 140,
+        nodeHeight: 70,
+        spacing: 90,
+        nodes: [
+            { id: 'start', label: 'subject.notify()', type: 'terminal' },
+            { id: 'q1', label: '❓ Order?\nWhich runs first?', type: 'decision', highlighted: true },
+            { id: 'q2', label: '❓ Sync?\nBlock or async?', type: 'decision', highlighted: true },
+            { id: 'q3', label: '❓ Error?\nOne fails - others?', type: 'decision', highlighted: true },
+            { id: 'q4', label: '❓ Leak?\nUnsubscribe all?', type: 'decision', highlighted: true },
+            { id: 'result', label: '⚠️ System-wide consequences', type: 'terminal', highlighted: false }
+        ],
+        edges: [
+            { from: 'start', to: 'q1', label: '' },
+            { from: 'q1', to: 'q2', label: '' },
+            { from: 'q2', to: 'q3', label: '' },
+            { from: 'q3', to: 'q4', label: '' },
+            { from: 'q4', to: 'result', label: '' }
+        ]
+    });
+    diagramEngine.register('observer-complexity-diagram', diagram);
+    diagram.render();
+});
+</script>
 
 ---
 
