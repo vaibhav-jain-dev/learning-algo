@@ -175,6 +175,11 @@ func main() {
 	app.Get("/", h.Home)
 	app.Get("/practice", h.Practice)
 
+	// Unified database learning routes (dashboard + lessons in tabs)
+	app.Get("/sql", h.SQL)                      // Combined SQL playground and lessons
+	app.Get("/elasticsearch", h.Elasticsearch)  // Combined Elasticsearch playground and lessons
+	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
+
 	// Other learning routes
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
