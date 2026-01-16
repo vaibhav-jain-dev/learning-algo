@@ -216,7 +216,7 @@ func (db *DB) ExecuteQuery(ctx context.Context, query string) *QueryResult {
 			result.Success = false
 		}
 
-		result.RowsAffected = int64(len(result.Rows))
+		// For SELECT queries, RowsAffected is not applicable (leave as 0)
 
 	default:
 		// For INSERT, UPDATE, DELETE, etc.

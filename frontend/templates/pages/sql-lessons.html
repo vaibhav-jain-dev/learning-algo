@@ -5679,12 +5679,22 @@ ORDER BY total_revenue DESC;</textarea>
                 return;
             }
 
+            const isSelectQuery = ['SELECT', 'WITH', 'EXPLAIN'].includes(data.query_type);
+
             let html = '<div class="inline-results-header">' +
-                '<span class="success">&#10003; ' + data.rows_affected + ' rows</span>' +
+                '<span class="success">&#10003; ';
+
+            if (isSelectQuery) {
+                html += data.rows.length + ' rows returned';
+            } else {
+                html += data.rows_affected + ' rows affected';
+            }
+
+            html += '</span>' +
                 '<span class="timing">' + data.duration_ms + 'ms</span>' +
                 '</div>';
 
-            if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
+            if (isSelectQuery && data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
                 // Check if single row - display as transposed (vertical) layout
                 if (data.rows.length === 1) {
                     html += '<div class="inline-table-wrapper"><table class="inline-results-table transposed-table">';
@@ -5717,7 +5727,9 @@ ORDER BY total_revenue DESC;</textarea>
 
                     html += '</tbody></table></div>';
                 }
-            } else {
+            } else if (isSelectQuery && data.rows.length === 0) {
+                html += '<p>Query executed successfully. No rows returned.</p>';
+            } else if (!isSelectQuery) {
                 html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
             }
 

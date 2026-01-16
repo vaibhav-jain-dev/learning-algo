@@ -386,6 +386,37 @@
     color: var(--text-secondary, #666);
 }
 
+.results-single-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.row-pair {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: var(--bg-secondary, #f9f9f9);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+}
+
+.row-pair .key {
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.row-pair .value {
+    color: var(--text-secondary, #666);
+    word-break: break-word;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
 .results-meta .success {
     color: #28a745;
 }
@@ -901,33 +932,58 @@ LIMIT 10;`,
             return;
         }
 
+        const isSelectQuery = ['SELECT', 'WITH', 'EXPLAIN'].includes(data.query_type);
+
         let html = '<div class="results-header">' +
             '<h3>Query Results</h3>' +
             '<div class="results-meta">' +
-            '<span class="success">Success</span>' +
-            '<span>' + data.rows_affected + ' rows</span>' +
-            '<span>' + data.duration_ms + 'ms (server) / ' + clientTime + 'ms (total)</span>' +
+            '<span class="success">Success</span>';
+
+        if (isSelectQuery) {
+            html += '<span>' + data.rows.length + ' rows returned</span>';
+        } else {
+            html += '<span>' + data.rows_affected + ' rows affected</span>';
+        }
+
+        html += '<span>' + data.duration_ms + 'ms (server) / ' + clientTime + 'ms (total)</span>' +
             '</div></div>';
 
-        if (data.columns && data.columns.length > 0 && data.rows) {
-            html += '<div class="results-table-wrapper"><table class="results-table">';
-            html += '<thead><tr>';
-            data.columns.forEach(function(col) {
-                html += '<th>' + escapeHtml(col) + '</th>';
-            });
-            html += '</tr></thead><tbody>';
-
-            data.rows.forEach(function(row) {
-                html += '<tr>';
-                row.forEach(function(cell) {
-                    const val = cell === null ? '<em>NULL</em>' : escapeHtml(String(cell));
-                    html += '<td>' + val + '</td>';
+        if (isSelectQuery && data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
+            // For single row results, display horizontally
+            if (data.rows.length === 1) {
+                html += '<div class="results-single-row">';
+                const row = data.rows[0];
+                data.columns.forEach(function(col, index) {
+                    const val = row[index] === null ? '<em>NULL</em>' : escapeHtml(String(row[index]));
+                    html += '<div class="row-pair">' +
+                        '<span class="key">' + escapeHtml(col) + ':</span>' +
+                        '<span class="value">' + val + '</span>' +
+                        '</div>';
                 });
-                html += '</tr>';
-            });
+                html += '</div>';
+            } else {
+                // For multiple rows, display as table
+                html += '<div class="results-table-wrapper"><table class="results-table">';
+                html += '<thead><tr>';
+                data.columns.forEach(function(col) {
+                    html += '<th>' + escapeHtml(col) + '</th>';
+                });
+                html += '</tr></thead><tbody>';
 
-            html += '</tbody></table></div>';
-        } else {
+                data.rows.forEach(function(row) {
+                    html += '<tr>';
+                    row.forEach(function(cell) {
+                        const val = cell === null ? '<em>NULL</em>' : escapeHtml(String(cell));
+                        html += '<td>' + val + '</td>';
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table></div>';
+            }
+        } else if (isSelectQuery && (data.rows.length === 0)) {
+            html += '<p>Query executed successfully. No rows returned.</p>';
+        } else if (!isSelectQuery) {
             html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
         }
 
