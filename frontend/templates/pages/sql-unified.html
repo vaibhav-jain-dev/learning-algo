@@ -1,23 +1,27 @@
 {{ define "pages/sql-unified" }}
 <div class="unified-database-page">
-    <!-- Tab Navigation -->
-    <div class="page-tabs">
-        <button class="page-tab active" onclick="switchTab('playground', this)">
-            <i class="icon-code"></i> Playground
-        </button>
-        <button class="page-tab" onclick="switchTab('lessons', this)">
-            <i class="icon-book"></i> Lessons
-        </button>
-    </div>
-
-    <!-- Playground Section (Dashboard) -->
-    <div id="playground-section" class="tab-section active">
-        {{ template "pages/sql-dashboard" }}
-    </div>
-
-    <!-- Lessons Section -->
-    <div id="lessons-section" class="tab-section">
+    <!-- Main Lessons Content -->
+    <div class="lessons-main">
         {{ template "pages/sql-lessons" }}
+    </div>
+
+    <!-- Floating Playground Button -->
+    <button class="floating-playground-btn" onclick="openPlaygroundModal()" title="Open SQL Playground">
+        <span class="btn-icon">⌨️</span> Playground
+    </button>
+
+    <!-- Playground Modal -->
+    <div id="playground-modal" class="playground-modal hidden">
+        <div class="modal-overlay" onclick="closePlaygroundModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>SQL Playground</h2>
+                <button class="modal-close" onclick="closePlaygroundModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                {{ template "pages/sql-dashboard" }}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -26,76 +30,135 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
-.page-tabs {
-    display: flex;
-    border-bottom: 2px solid #e0e0e0;
-    background: #f9f9f9;
-}
-
-.page-tab {
+.lessons-main {
     flex: 1;
-    padding: 12px 20px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-playground-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     border: none;
-    background: transparent;
+    padding: 15px 25px;
+    border-radius: 50px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
-    color: #666;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     transition: all 0.3s ease;
+    z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
 
-.page-tab:hover {
-    background: #f0f0f0;
+.floating-playground-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.floating-playground-btn .btn-icon {
+    font-size: 18px;
+}
+
+.playground-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playground-modal.hidden {
+    display: none;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1400px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
     color: #333;
 }
 
-.page-tab.active {
-    color: #2196F3;
-    border-bottom: 3px solid #2196F3;
-    margin-bottom: -2px;
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
 }
 
-.tab-section {
-    display: none;
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
     flex: 1;
     overflow: auto;
-    padding: 10px;
-}
-
-.tab-section.active {
-    display: flex;
-    flex-direction: column;
-}
-
-.tab-section.active > div {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    padding: 0;
 }
 </style>
 
 <script>
-function switchTab(tabName, button) {
-    // Hide all sections
-    document.getElementById('playground-section').classList.remove('active');
-    document.getElementById('lessons-section').classList.remove('active');
-
-    // Remove active class from all tabs
-    document.querySelectorAll('.page-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Show selected section
-    document.getElementById(tabName + '-section').classList.add('active');
-
-    // Mark button as active
-    button.classList.add('active');
+function openPlaygroundModal() {
+    const modal = document.getElementById('playground-modal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 }
+
+function closePlaygroundModal() {
+    const modal = document.getElementById('playground-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePlaygroundModal();
+    }
+});
 </script>
 {{ end }}
