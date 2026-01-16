@@ -224,11 +224,11 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		}, nil
 	}
 
-	// Binary output path
-	binaryPath := filepath.Join(k.workDir, "program")
-
 	// Use shared GOCACHE for faster compilation
 	goCache := getSharedGoCache()
+
+	// Binary output path - put in goCache dir to ensure exec permissions
+	binaryPath := filepath.Join(goCache, fmt.Sprintf("prog_%d", k.id))
 
 	// Step 1: Compile with 'go build' (uses cached artifacts)
 	compileStart := time.Now()
@@ -258,6 +258,9 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	}
 	compileTime := time.Since(compileStart)
 
+	// Ensure binary is executable
+	os.Chmod(binaryPath, 0755)
+
 	// Step 2: Execute the compiled binary (very fast!)
 	execStart := time.Now()
 	runCmd := exec.CommandContext(ctx, binaryPath)
@@ -267,52 +270,88 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	runCmd.Stdout = &stdout
 	runCmd.Stderr = &stderr
 
-	done := make(chan error, 1)
-	go func() {
-		done <- runCmd.Run()
-	}()
+	runErr := runCmd.Run()
+	execTime := time.Since(execStart)
 
-	select {
-	case <-ctx.Done():
-		if runCmd.Process != nil {
-			runCmd.Process.Kill()
-		}
-		return &ExecutionResult{
-			Error:    "Execution cancelled or timed out",
-			ExitCode: -1,
-			Duration: time.Since(start),
-		}, nil
-	case err := <-done:
-		execTime := time.Since(execStart)
-		duration := time.Since(start)
-		result := &ExecutionResult{Duration: duration}
-
-		// Add metrics for Go execution - show actual run time (not compile time)
-		result.Metrics = &ExecutionMetrics{
-			TimeMs:        float64(execTime.Microseconds()) / 1000.0,
-			MemoryCurrent: 0,
-			MemoryPeak:    0,
-			MemoryFmt:     fmt.Sprintf("Compile: %.2fms", float64(compileTime.Microseconds())/1000.0),
-			MemoryPeakFmt: fmt.Sprintf("Run: %.2fms", float64(execTime.Microseconds())/1000.0),
-		}
-
-		if err != nil {
-			errStr := stderr.String()
-			if errStr == "" {
-				errStr = err.Error()
-			}
-			// Clean up error paths
-			errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
-			errStr = strings.ReplaceAll(errStr, k.workDir, "")
-			result.Error = errStr
-			result.ExitCode = 1
-		} else {
-			result.Output = strings.TrimSpace(stdout.String())
-			result.ExitCode = 0
-		}
-
-		return result, nil
+	// Check for permission denied - fallback to go run if needed
+	if runErr != nil && (strings.Contains(runErr.Error(), "permission denied") ||
+		strings.Contains(runErr.Error(), "operation not permitted")) {
+		// Fallback: use go run (slower but works on noexec filesystems)
+		return k.executeWithGoRun(ctx, mainFile, goCache, start)
 	}
+
+	duration := time.Since(start)
+	result := &ExecutionResult{Duration: duration}
+
+	// Add metrics for Go execution - show actual run time (not compile time)
+	result.Metrics = &ExecutionMetrics{
+		TimeMs:        float64(execTime.Microseconds()) / 1000.0,
+		MemoryCurrent: 0,
+		MemoryPeak:    0,
+		MemoryFmt:     fmt.Sprintf("Compile: %.2fms", float64(compileTime.Microseconds())/1000.0),
+		MemoryPeakFmt: fmt.Sprintf("Run: %.2fms", float64(execTime.Microseconds())/1000.0),
+	}
+
+	if runErr != nil {
+		errStr := stderr.String()
+		if errStr == "" {
+			errStr = runErr.Error()
+		}
+		// Clean up error paths
+		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
+		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		result.Error = errStr
+		result.ExitCode = 1
+	} else {
+		result.Output = strings.TrimSpace(stdout.String())
+		result.ExitCode = 0
+	}
+
+	return result, nil
+}
+
+// executeWithGoRun is a fallback for systems with noexec restrictions
+func (k *GoKernel) executeWithGoRun(ctx context.Context, mainFile, goCache string, start time.Time) (*ExecutionResult, error) {
+	execStart := time.Now()
+	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
+	cmd.Dir = k.workDir
+	cmd.Env = append(os.Environ(),
+		"CGO_ENABLED=0",
+		"GOCACHE="+goCache,
+	)
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	execTime := time.Since(execStart)
+	duration := time.Since(start)
+
+	result := &ExecutionResult{Duration: duration}
+	result.Metrics = &ExecutionMetrics{
+		TimeMs:        float64(execTime.Microseconds()) / 1000.0,
+		MemoryCurrent: 0,
+		MemoryPeak:    0,
+		MemoryFmt:     fmt.Sprintf("Total: %.2fms", float64(execTime.Microseconds())/1000.0),
+		MemoryPeakFmt: "go run (fallback)",
+	}
+
+	if err != nil {
+		errStr := stderr.String()
+		if errStr == "" {
+			errStr = err.Error()
+		}
+		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
+		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		result.Error = errStr
+		result.ExitCode = 1
+	} else {
+		result.Output = strings.TrimSpace(stdout.String())
+		result.ExitCode = 0
+	}
+
+	return result, nil
 }
 
 // Reset cleans up the kernel workspace
