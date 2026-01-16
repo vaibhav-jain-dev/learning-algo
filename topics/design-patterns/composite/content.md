@@ -15,32 +15,39 @@ The Composite pattern composes objects into tree structures to represent part-wh
 
 ### Structure
 
-```mermaid
-classDiagram
-    class Component {
-        <<interface>>
-        +operation()*
-        +add(component: Component)*
-        +remove(component: Component)*
-        +getChild(i: int) Component*
-    }
+<div id="composite-structure" class="diagram-container light"></div>
 
-    class Leaf {
-        +operation()
-    }
-
-    class Composite {
-        -children: Component[]
-        +operation()
-        +add(component: Component)
-        +remove(component: Component)
-        +getChild(i: int) Component
-    }
-
-    Component <|-- Leaf
-    Component <|-- Composite
-    Composite --> Component
-```
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const diagram = new TreeDiagram('composite-structure', {
+        width: 750,
+        height: 350,
+        nodeRadius: 40,
+        verticalSpacing: 100,
+        root: {
+            id: 'Component',
+            label: '≪interface≫\nComponent\n+operation()\n+add()\n+remove()',
+            type: 'root',
+            children: [
+                {
+                    id: 'Leaf',
+                    label: 'Leaf\n+operation()',
+                    type: 'leaf',
+                    children: []
+                },
+                {
+                    id: 'Composite',
+                    label: 'Composite\n-children[]\n+operation()\n+add()\n+remove()',
+                    type: 'default',
+                    children: []
+                }
+            ]
+        }
+    });
+    diagramEngine.register('composite-structure', diagram);
+    diagram.render();
+});
+</script>
 
 ## Implementation
 

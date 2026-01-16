@@ -15,31 +15,30 @@ The State pattern allows an object to alter its behavior when its internal state
 
 ### Structure
 
-```mermaid
-classDiagram
-    class Context {
-        -state: State
-        +setState(state: State)
-        +request()
-    }
+<div id="state-pattern-diagram" class="diagram-container light"></div>
 
-    class State {
-        <<interface>>
-        +handle(context: Context)*
-    }
-
-    class StateA {
-        +handle(context: Context)
-    }
-
-    class StateB {
-        +handle(context: Context)
-    }
-
-    Context --> State
-    State <|-- StateA
-    State <|-- StateB
-```
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const diagram = new StateMachineDiagram('state-pattern-diagram', {
+        width: 700,
+        height: 350,
+        nodeRadius: 45,
+        states: [
+            { id: 'Context', initial: true, description: 'holds state' },
+            { id: 'State', highlighted: false, description: 'interface' },
+            { id: 'StateA', highlighted: false, description: 'concrete' },
+            { id: 'StateB', highlighted: false, description: 'concrete' }
+        ],
+        transitions: [
+            { from: 'Context', to: 'State', label: 'uses' },
+            { from: 'State', to: 'StateA', label: 'implements' },
+            { from: 'State', to: 'StateB', label: 'implements' }
+        ]
+    });
+    diagramEngine.register('state-pattern-diagram', diagram);
+    diagram.render();
+});
+</script>
 
 ## Implementation
 

@@ -80,53 +80,7 @@ To move n disks from rod A to rod C using rod B as auxiliary:
 
 ### Decision Tree Visualization
 
-```mermaid
-graph TD
-    Root["hanoi(3, A→C, aux:B)"]
-
-    Sub1["hanoi(2, A→B, aux:C)"]
-    Move1["MOVE disk 3: A→C"]
-    Sub2["hanoi(2, B→C, aux:A)"]
-
-    Sub1_1["hanoi(1, A→C, aux:B)"]
-    Sub1_Move["MOVE disk 2: A→B"]
-    Sub1_2["hanoi(1, C→B, aux:A)"]
-
-    Sub1_1_Move["MOVE disk 1: A→C"]
-    Sub1_2_Move["MOVE disk 1: C→B"]
-
-    Sub2_1["hanoi(1, B→A, aux:C)"]
-    Sub2_Move["MOVE disk 2: B→C"]
-    Sub2_2["hanoi(1, A→C, aux:B)"]
-
-    Sub2_1_Move["MOVE disk 1: B→A"]
-    Sub2_2_Move["MOVE disk 1: A→C"]
-
-    Root -->|Step 1| Sub1
-    Root -->|Step 2| Move1
-    Root -->|Step 3| Sub2
-
-    Sub1 -->|Step 1.1| Sub1_1
-    Sub1 -->|Step 1.2| Sub1_Move
-    Sub1 -->|Step 1.3| Sub1_2
-
-    Sub1_1 --> Sub1_1_Move
-    Sub1_2 --> Sub1_2_Move
-
-    Sub2 -->|Step 3.1| Sub2_1
-    Sub2 -->|Step 3.2| Sub2_Move
-    Sub2 -->|Step 3.3| Sub2_2
-
-    Sub2_1 --> Sub2_1_Move
-    Sub2_2 --> Sub2_2_Move
-
-    style Root fill:#bbdefb,stroke:#1976d2,stroke-width:3px
-    style Move1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style Sub1_1_Move fill:#fff9c4,stroke:#f57f17
-    style Sub1_2_Move fill:#fff9c4,stroke:#f57f17
-    style Sub2_1_Move fill:#fff9c4,stroke:#f57f17
-    style Sub2_2_Move fill:#fff9c4,stroke:#f57f17
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 ### Visual State Progression for n=3
 
