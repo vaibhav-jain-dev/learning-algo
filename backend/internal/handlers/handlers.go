@@ -505,3 +505,31 @@ func (h *Handlers) SQLLessons(c *fiber.Ctx) error {
 		"Title": "SQL Lessons",
 	})
 }
+
+// ElasticsearchDashboard renders the Elasticsearch learning dashboard page
+func (h *Handlers) ElasticsearchDashboard(c *fiber.Ctx) error {
+	return c.Render("pages/elasticsearch-dashboard", fiber.Map{
+		"Title": "Elasticsearch Learning Dashboard",
+	})
+}
+
+// ElasticsearchLessons renders the Elasticsearch lessons page
+func (h *Handlers) ElasticsearchLessons(c *fiber.Ctx) error {
+	return c.Render("pages/elasticsearch-lessons", fiber.Map{
+		"Title": "Elasticsearch Lessons",
+	})
+}
+
+// RedisDashboard renders the Redis learning dashboard page
+func (h *Handlers) RedisDashboard(c *fiber.Ctx) error {
+	return c.Render("pages/redis-dashboard", fiber.Map{
+		"Title": "Redis Learning Dashboard",
+	})
+}
+
+// RedisLessons renders the Redis lessons page
+func (h *Handlers) RedisLessons(c *fiber.Ctx) error {
+	return c.Render("pages/redis-lessons", fiber.Map{
+		"Title": "Redis Lessons",
+	})
+}

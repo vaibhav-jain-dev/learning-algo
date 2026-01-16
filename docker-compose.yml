@@ -16,6 +16,12 @@ volumes:
     name: dsalgo-learn-state
   dsalgo-learn-postgres-data:
     name: dsalgo-learn-postgres-data
+  dsalgo-learn-elasticsearch-data:
+    name: dsalgo-learn-elasticsearch-data
+  dsalgo-learn-kibana-data:
+    name: dsalgo-learn-kibana-data
+  dsalgo-learn-redis-data:
+    name: dsalgo-learn-redis-data
 
 services:
   # PostgreSQL Database for SQL Learning
@@ -50,6 +56,110 @@ services:
           cpus: '0.25'
           memory: 128M
 
+  # Elasticsearch for Search Learning
+  dsalgo-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: dsalgo-elasticsearch
+    hostname: dsalgo-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms428m -Xmx428m"
+      - cluster.name=dsalgo-learn-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - dsalgo-learn-elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - dsalgo-learn-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 856M
+        reservations:
+          cpus: '0.25'
+          memory: 428M
+
+  # Kibana for Elasticsearch Visualization
+  dsalgo-kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: dsalgo-kibana
+    hostname: dsalgo-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://dsalgo-elasticsearch:9200
+      - SERVER_NAME=dsalgo-kibana
+      - SERVER_HOST=0.0.0.0
+      - XPACK_SECURITY_ENABLED=false
+      - TELEMETRY_ENABLED=false
+    ports:
+      - "5601:5601"
+    networks:
+      - dsalgo-learn-network
+    depends_on:
+      dsalgo-elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Redis for Caching and Data Structures Learning
+  dsalgo-redis:
+    image: redis:7-alpine
+    container_name: dsalgo-redis
+    hostname: dsalgo-redis
+    command: redis-server --appendonly yes --maxmemory 200mb --maxmemory-policy allkeys-lru
+    volumes:
+      - dsalgo-learn-redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - dsalgo-learn-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
   dsalgo-learn-app:
     build:
       context: .
@@ -59,6 +169,10 @@ services:
     hostname: dsalgo-learn-app
     depends_on:
       dsalgo-postgres:
+        condition: service_healthy
+      dsalgo-elasticsearch:
+        condition: service_healthy
+      dsalgo-redis:
         condition: service_healthy
     ports:
       - "8080:8080"
@@ -86,6 +200,12 @@ services:
       - DB_USER=dsalgo
       - DB_PASSWORD=dsalgo_secret
       - DB_NAME=order_management
+      # Elasticsearch connection
+      - ES_URL=http://dsalgo-elasticsearch:9200
+      # Kibana URL (for reference in app)
+      - KIBANA_URL=http://dsalgo-kibana:5601
+      # Redis connection
+      - REDIS_URL=redis://dsalgo-redis:6379
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -128,6 +248,10 @@ services:
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
+      dsalgo-elasticsearch:
+        condition: service_healthy
+      dsalgo-redis:
+        condition: service_healthy
     ports:
       - "8080:8080"
     volumes:
@@ -146,6 +270,12 @@ services:
       - DB_USER=dsalgo
       - DB_PASSWORD=dsalgo_secret
       - DB_NAME=order_management
+      # Elasticsearch connection
+      - ES_URL=http://dsalgo-elasticsearch:9200
+      # Kibana URL (for reference in app)
+      - KIBANA_URL=http://dsalgo-kibana:5601
+      # Redis connection
+      - REDIS_URL=redis://dsalgo-redis:6379
     networks:
       - dsalgo-learn-network
     tmpfs:

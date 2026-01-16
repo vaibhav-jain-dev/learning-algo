@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"html/template"
 	"log"
@@ -17,8 +18,10 @@ import (
 	"github.com/gofiber/websocket/v2"
 
 	"github.com/vaibhav-jain-dev/learning-algo/internal/db"
+	"github.com/vaibhav-jain-dev/learning-algo/internal/elasticsearch"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/handlers"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
+	"github.com/vaibhav-jain-dev/learning-algo/internal/redis"
 )
 
 func main() {
@@ -87,6 +90,84 @@ func main() {
 		defer database.Close()
 	}
 
+	// Initialize Elasticsearch connection (optional - graceful if not available)
+	var esHandlers *handlers.ElasticsearchHandlers
+	esConfig := elasticsearch.ConfigFromEnv()
+	esClient, err := elasticsearch.New(esConfig)
+	if err != nil {
+		log.Printf("Warning: Elasticsearch connection failed: %v (Elasticsearch features disabled)", err)
+	} else {
+		log.Println("Elasticsearch connected successfully")
+		esHandlers = handlers.NewElasticsearchHandlers(esClient)
+
+		// Initialize indices if they don't exist
+		go func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+			defer cancel()
+
+			testsExists, _ := esClient.IndexExists(ctx, "tests")
+			packagesExists, _ := esClient.IndexExists(ctx, "packages")
+
+			if !testsExists || !packagesExists {
+				log.Println("Initializing Elasticsearch indices...")
+				if err := handlers.InitializeElasticsearch(ctx, esClient); err != nil {
+					log.Printf("Warning: Failed to initialize Elasticsearch indices: %v", err)
+					return
+				}
+
+				// Load sample data
+				testsJSON, err := os.ReadFile("./samples_dataset/tests.json")
+				if err != nil {
+					log.Printf("Warning: Failed to read tests.json: %v", err)
+				}
+				packagesJSON, err := os.ReadFile("./samples_dataset/packages.json")
+				if err != nil {
+					log.Printf("Warning: Failed to read packages.json: %v", err)
+				}
+
+				if testsJSON != nil || packagesJSON != nil {
+					if err := handlers.LoadSampleData(ctx, esClient, testsJSON, packagesJSON); err != nil {
+						log.Printf("Warning: Failed to load sample data: %v", err)
+					} else {
+						log.Println("Elasticsearch sample data loaded successfully")
+					}
+				}
+			} else {
+				log.Println("Elasticsearch indices already exist")
+			}
+		}()
+	}
+
+	// Initialize Redis connection (optional - graceful if not available)
+	var redisHandlers *handlers.RedisHandlers
+	redisConfig := redis.ConfigFromEnv()
+	redisClient, err := redis.New(redisConfig)
+	if err != nil {
+		log.Printf("Warning: Redis connection failed: %v (Redis features disabled)", err)
+	} else {
+		log.Println("Redis connected successfully")
+		redisHandlers = handlers.NewRedisHandlers(redisClient)
+		defer redisClient.Close()
+
+		// Load sample data if database is empty
+		go func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+
+			keys, _ := redisClient.GetKeys(ctx, "*")
+			if len(keys) == 0 {
+				log.Println("Loading Redis sample data...")
+				if err := redisClient.LoadSampleData(ctx); err != nil {
+					log.Printf("Warning: Failed to load Redis sample data: %v", err)
+				} else {
+					log.Println("Redis sample data loaded successfully")
+				}
+			} else {
+				log.Printf("Redis already has %d keys", len(keys))
+			}
+		}()
+	}
+
 	// Static files
 	app.Static("/static", "./frontend/static")
 
@@ -95,6 +176,10 @@ func main() {
 	app.Get("/practice", h.Practice)
 	app.Get("/sql", h.SQLDashboard)
 	app.Get("/sql-lessons", h.SQLLessons)
+	app.Get("/elasticsearch", h.ElasticsearchDashboard)
+	app.Get("/elasticsearch-lessons", h.ElasticsearchLessons)
+	app.Get("/redis", h.RedisDashboard)
+	app.Get("/redis-lessons", h.RedisLessons)
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
@@ -128,6 +213,31 @@ func main() {
 		sqlAPI.Post("/reset", sqlHandlers.ResetDatabase)
 		sqlAPI.Get("/health", sqlHandlers.HealthCheck)
 		sqlAPI.Get("/er-diagram", sqlHandlers.GetERDiagram)
+	}
+
+	// Elasticsearch API routes (only if Elasticsearch is available)
+	if esHandlers != nil {
+		esAPI := app.Group("/api/elasticsearch")
+		esAPI.Post("/execute", esHandlers.ExecuteQuery)
+		esAPI.Post("/search", esHandlers.Search)
+		esAPI.Get("/stats", esHandlers.GetStats)
+		esAPI.Get("/mapping/:index", esHandlers.GetMapping)
+		esAPI.Get("/mappings", esHandlers.GetAllMappings)
+		esAPI.Get("/health", esHandlers.HealthCheck)
+		esAPI.Post("/reset", esHandlers.ResetIndices)
+		esAPI.Post("/analyze", esHandlers.Analyze)
+		esAPI.Post("/explain", esHandlers.Explain)
+	}
+
+	// Redis API routes (only if Redis is available)
+	if redisHandlers != nil {
+		redisAPI := app.Group("/api/redis")
+		redisAPI.Post("/execute", redisHandlers.ExecuteCommand)
+		redisAPI.Get("/keys", redisHandlers.GetKeys)
+		redisAPI.Get("/info", redisHandlers.GetServerInfo)
+		redisAPI.Get("/health", redisHandlers.HealthCheck)
+		redisAPI.Post("/reset", redisHandlers.ResetData)
+		redisAPI.Post("/load-sample", redisHandlers.LoadSampleData)
 	}
 
 	// WebSocket for real-time execution updates
