@@ -6054,7 +6054,7 @@ ORDER BY total_revenue DESC;</textarea>
 
             const editor = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-sql',
-                theme: 'monokai',
+                theme: 'default',
                 lineNumbers: true,
                 matchBrackets: true,
                 autoCloseBrackets: true,
@@ -6089,27 +6089,31 @@ ORDER BY total_revenue DESC;</textarea>
 })();
 </script>
 
-<!-- CodeMirror Monokai theme for dark mode -->
+<!-- CodeMirror light grey theme for SQL editors -->
 <style>
 .CodeMirror {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
     font-size: 0.9rem;
     border-radius: 6px;
-    border: 1px solid #444;
+    border: 1px solid #ccc;
+    background: #f8f9fa !important;
+    color: #333;
 }
-.cm-s-monokai.CodeMirror { background: #1e1e1e; color: #f8f8f2; }
-.cm-s-monokai .CodeMirror-gutters { background: #1e1e1e; border-right: 1px solid #333; }
-.cm-s-monokai .CodeMirror-linenumber { color: #666; }
-.cm-s-monokai .CodeMirror-cursor { border-left: 2px solid #f8f8f0; }
-.cm-s-monokai .CodeMirror-selected { background: #49483e; }
-.cm-s-monokai .cm-comment { color: #75715e; }
-.cm-s-monokai .cm-keyword { color: #f92672; font-weight: bold; }
-.cm-s-monokai .cm-string { color: #e6db74; }
-.cm-s-monokai .cm-number { color: #ae81ff; }
-.cm-s-monokai .cm-variable { color: #f8f8f2; }
-.cm-s-monokai .cm-variable-2 { color: #66d9ef; }
-.cm-s-monokai .cm-def { color: #a6e22e; }
-.cm-s-monokai .cm-operator { color: #f8f8f2; }
-.cm-s-monokai .cm-builtin { color: #66d9ef; }
-.cm-s-monokai .cm-atom { color: #ae81ff; }
+.CodeMirror-gutters { background: #eef0f2 !important; border-right: 1px solid #ddd; }
+.CodeMirror-linenumber { color: #888; }
+.CodeMirror-cursor { border-left: 2px solid #333; }
+.CodeMirror-selected { background: #d0e8ff !important; }
+.CodeMirror-focused .CodeMirror-selected { background: #b3d7ff !important; }
+.cm-comment { color: #6a737d; font-style: italic; }
+.cm-keyword { color: #0033b3; font-weight: bold; }
+.cm-string { color: #067d17; }
+.cm-string-2 { color: #067d17; }
+.cm-number { color: #1750eb; }
+.cm-variable { color: #333; }
+.cm-variable-2 { color: #9e4607; }
+.cm-def { color: #6f42c1; }
+.cm-operator { color: #333; }
+.cm-builtin { color: #0033b3; }
+.cm-atom { color: #1750eb; }
+.cm-property { color: #9e4607; }
 </style>
