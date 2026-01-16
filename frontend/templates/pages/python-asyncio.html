@@ -1458,12 +1458,16 @@ asyncio.run(main())</code></pre>
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    // Poll for result
+                    // Poll for result with max attempts (60 seconds timeout)
+                    let pollCount = 0;
+                    const maxPolls = 120;
                     const checkResult = () => {
+                        pollCount++;
                         fetch('/api/execution/' + data.id)
                         .then(r => r.json())
                         .then(result => {
-                            if (result.state === 'completed' || result.state === 'error') {
+                            console.log('Execution state:', result.state, 'poll:', pollCount);
+                            if (result.state === 'complete' || result.state === 'error' || result.state === 'stopped') {
                                 this.disabled = false;
                                 this.textContent = 'Run Code';
 
@@ -1480,6 +1484,16 @@ asyncio.run(main())</code></pre>
                                 } else {
                                     outputDiv.innerHTML = '<pre class="success-output">' + escapeHtml(result.output || 'No output') + '</pre>';
                                 }
+                            } else if (pollCount >= maxPolls) {
+                                this.disabled = false;
+                                this.textContent = 'Run Code';
+                                let outputDiv = this.parentElement.querySelector('.code-output');
+                                if (!outputDiv) {
+                                    outputDiv = document.createElement('div');
+                                    outputDiv.className = 'code-output';
+                                    this.parentElement.appendChild(outputDiv);
+                                }
+                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out (state: ' + result.state + ')</pre>';
                             } else {
                                 setTimeout(checkResult, 500);
                             }

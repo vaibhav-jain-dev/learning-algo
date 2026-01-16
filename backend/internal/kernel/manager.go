@@ -3,6 +3,7 @@ package kernel
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
@@ -72,6 +73,11 @@ func (em *ExecutionManager) Execute(code, language string) (*Execution, error) {
 
 func (em *ExecutionManager) runExecution(ctx context.Context, exec *Execution) {
 	defer func() {
+		// Recover from panics and ensure execution completes
+		if r := recover(); r != nil {
+			exec.Update(StateError, "", fmt.Sprintf("Internal error: %v", r), 1)
+			em.notifySubscribers(exec.ID, exec)
+		}
 		em.saveState()
 	}()
 
@@ -91,6 +97,8 @@ func (em *ExecutionManager) runExecution(ctx context.Context, exec *Execution) {
 
 	if err != nil {
 		exec.Update(StateError, "", err.Error(), 1)
+	} else if result == nil {
+		exec.Update(StateError, "", "No result returned from execution", 1)
 	} else if result.Error != "" {
 		exec.UpdateWithMetrics(StateError, result.Output, result.Error, result.ExitCode, result.Metrics)
 	} else {
