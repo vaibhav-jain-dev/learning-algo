@@ -92,9 +92,23 @@ func (h *Handlers) DesignPatterns(c *fiber.Ctx) error {
 func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
 	category := h.topicIndexer.GetCategory("machine-coding")
 	return c.Render("pages/topic-list", fiber.Map{
-		"Title":       "Machine Coding",
-		"Category":    category,
+		"Title":        "Machine Coding",
+		"Category":     category,
 		"CategorySlug": "machine-coding",
+	})
+}
+
+// Golang renders the Go API development guide page
+func (h *Handlers) Golang(c *fiber.Ctx) error {
+	return c.Render("pages/golang", fiber.Map{
+		"Title": "Go API Development Guide",
+	})
+}
+
+// PythonAsyncio renders the Python asyncio guide page
+func (h *Handlers) PythonAsyncio(c *fiber.Ctx) error {
+	return c.Render("pages/python-asyncio", fiber.Map{
+		"Title": "Python 3.10 Asyncio Guide",
 	})
 }
 

@@ -1,0 +1,1512 @@
+<div class="guide-page">
+    <nav class="breadcrumb">
+        <a href="/">Home</a>
+    </nav>
+
+    <div class="guide-header">
+        <span class="guide-badge python-badge">Python 3.10+ Asyncio</span>
+        <h1>Python Asyncio Guide</h1>
+        <p class="guide-description">Master asynchronous programming in Python - from GIL basics to advanced patterns</p>
+    </div>
+
+    <div class="guide-nav">
+        <a href="#basic" class="guide-nav-link active" data-section="basic">Basic</a>
+        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">Intermediate</a>
+        <a href="#advanced" class="guide-nav-link" data-section="advanced">Advanced</a>
+    </div>
+
+    <!-- BASIC SECTION -->
+    <section id="basic" class="guide-section">
+        <h2>Basic - Understanding Python's Concurrency Model</h2>
+
+        <div class="topic-block">
+            <h3>What is the GIL (Global Interpreter Lock)?</h3>
+            <p>The GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode simultaneously. This is why Python is often called "single-threaded" despite having a <code>threading</code> module.</p>
+
+            <h4>Why Does Python Have the GIL?</h4>
+            <ul>
+                <li><strong>Memory Management:</strong> Python uses reference counting for memory management. The GIL prevents race conditions when modifying reference counts.</li>
+                <li><strong>C Extensions:</strong> Many C extensions are not thread-safe. The GIL makes it easier to integrate C libraries.</li>
+                <li><strong>Simplicity:</strong> Single-threaded execution simplifies the interpreter implementation.</li>
+            </ul>
+
+            <div class="code-example">
+                <pre><code class="language-python">import threading
+import time
+
+# This demonstrates the GIL limitation
+# CPU-bound tasks don't benefit from threading
+
+counter = 0
+
+def cpu_bound_task(iterations):
+    global counter
+    for _ in range(iterations):
+        counter += 1
+
+# Single threaded
+start = time.time()
+counter = 0
+cpu_bound_task(1000000)
+cpu_bound_task(1000000)
+single_time = time.time() - start
+print(f"Single-threaded: {single_time:.3f}s, counter={counter}")
+
+# Multi-threaded (GIL prevents true parallelism)
+start = time.time()
+counter = 0
+t1 = threading.Thread(target=cpu_bound_task, args=(1000000,))
+t2 = threading.Thread(target=cpu_bound_task, args=(1000000,))
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+multi_time = time.time() - start
+print(f"Multi-threaded: {multi_time:.3f}s, counter={counter}")
+print(f"Note: Multi-threaded may be slower due to GIL contention!")
+print(f"Counter may be less than 2M due to race conditions")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>When Threading DOES Help</h4>
+            <p>Threading helps with I/O-bound tasks because the GIL is released during I/O operations.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import threading
+import time
+
+def io_bound_task(name, duration):
+    """Simulates I/O operation - GIL is released during sleep"""
+    print(f"Task {name}: Starting")
+    time.sleep(duration)  # GIL released here!
+    print(f"Task {name}: Done")
+
+# Sequential
+start = time.time()
+io_bound_task("A", 0.2)
+io_bound_task("B", 0.2)
+sequential_time = time.time() - start
+print(f"Sequential: {sequential_time:.3f}s\n")
+
+# Threaded - actually runs in parallel!
+start = time.time()
+threads = [
+    threading.Thread(target=io_bound_task, args=("C", 0.2)),
+    threading.Thread(target=io_bound_task, args=("D", 0.2)),
+]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+threaded_time = time.time() - start
+print(f"Threaded: {threaded_time:.3f}s")
+print(f"Speedup: {sequential_time/threaded_time:.1f}x")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>Future of Python: Free-Threading (PEP 703)</h4>
+            <p>Python 3.13+ introduces experimental free-threading mode (no GIL). This is a major step toward true parallelism.</p>
+            <ul>
+                <li><strong>Python 3.13:</strong> Experimental opt-in free-threading build</li>
+                <li><strong>Future:</strong> Expected to become the default over several releases</li>
+                <li><strong>For now:</strong> Use asyncio for I/O-bound, multiprocessing for CPU-bound</li>
+            </ul>
+        </div>
+
+        <div class="topic-block">
+            <h3>Why Asyncio? The Event Loop Model</h3>
+            <p>Asyncio uses cooperative multitasking - tasks voluntarily yield control. This avoids GIL issues and thread overhead while handling thousands of concurrent I/O operations.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+
+async def fetch_data(name, delay):
+    """Simulates async I/O operation"""
+    print(f"Task {name}: Starting fetch")
+    await asyncio.sleep(delay)  # Yields control to event loop
+    print(f"Task {name}: Data received")
+    return f"Data from {name}"
+
+async def main():
+    start = time.time()
+
+    # Run concurrently with gather
+    results = await asyncio.gather(
+        fetch_data("API-1", 0.2),
+        fetch_data("API-2", 0.2),
+        fetch_data("API-3", 0.2),
+    )
+
+    elapsed = time.time() - start
+    print(f"\nResults: {results}")
+    print(f"Total time: {elapsed:.3f}s (not 0.6s!)")
+
+# Run the async function
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Essential Asyncio Keywords and Functions</h3>
+
+            <h4>async def - Define Coroutine</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+# Regular function
+def regular_function():
+    return "I'm synchronous"
+
+# Coroutine function - must be awaited
+async def async_function():
+    return "I'm asynchronous"
+
+async def main():
+    # Regular function - call directly
+    result1 = regular_function()
+    print(f"Regular: {result1}")
+
+    # Async function - must await
+    result2 = await async_function()
+    print(f"Async: {result2}")
+
+    # Calling without await returns coroutine object (not the result!)
+    coro = async_function()
+    print(f"Without await: {coro}")
+    print(f"Type: {type(coro)}")
+
+    # Must await to get actual result
+    result3 = await coro
+    print(f"After await: {result3}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>await - Pause and Wait</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+
+async def step1():
+    print("Step 1: Starting")
+    await asyncio.sleep(0.1)  # Pause here, let other tasks run
+    print("Step 1: Done")
+    return "Result 1"
+
+async def step2():
+    print("Step 2: Starting")
+    await asyncio.sleep(0.1)
+    print("Step 2: Done")
+    return "Result 2"
+
+async def main():
+    start = time.time()
+
+    # Sequential await - runs one after another
+    print("=== Sequential ===")
+    r1 = await step1()
+    r2 = await step2()
+    print(f"Sequential time: {time.time() - start:.3f}s\n")
+
+    # Concurrent - use asyncio.gather
+    start = time.time()
+    print("=== Concurrent ===")
+    r1, r2 = await asyncio.gather(step1(), step2())
+    print(f"Concurrent time: {time.time() - start:.3f}s")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>asyncio.gather - Run Multiple Coroutines</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def fetch_user(user_id):
+    await asyncio.sleep(0.05)
+    return {"id": user_id, "name": f"User {user_id}"}
+
+async def fetch_with_error(user_id):
+    await asyncio.sleep(0.05)
+    if user_id == 3:
+        raise ValueError(f"User {user_id} not found")
+    return {"id": user_id, "name": f"User {user_id}"}
+
+async def main():
+    # Basic gather
+    print("=== Basic gather ===")
+    users = await asyncio.gather(
+        fetch_user(1),
+        fetch_user(2),
+        fetch_user(3),
+    )
+    print(f"Users: {users}\n")
+
+    # Gather with error handling
+    print("=== With return_exceptions ===")
+    results = await asyncio.gather(
+        fetch_with_error(1),
+        fetch_with_error(2),
+        fetch_with_error(3),  # This will raise
+        fetch_with_error(4),
+        return_exceptions=True  # Don't stop on error
+    )
+
+    for i, result in enumerate(results, 1):
+        if isinstance(result, Exception):
+            print(f"User {i}: ERROR - {result}")
+        else:
+            print(f"User {i}: {result}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>asyncio.create_task - Fire and Forget</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def background_task(name, duration):
+    print(f"Background {name}: Started")
+    await asyncio.sleep(duration)
+    print(f"Background {name}: Completed")
+    return f"Result from {name}"
+
+async def main():
+    print("Creating tasks...")
+
+    # Create tasks - they start running immediately
+    task1 = asyncio.create_task(background_task("A", 0.2))
+    task2 = asyncio.create_task(background_task("B", 0.1))
+
+    print("Tasks created, doing other work...")
+    await asyncio.sleep(0.05)
+    print("Other work done\n")
+
+    # Now wait for results
+    result1 = await task1
+    result2 = await task2
+
+    print(f"\nResults: {result1}, {result2}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Important: What to Take Care of</h3>
+
+            <h4>1. Never Block the Event Loop</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+
+# BAD: This blocks the entire event loop
+async def bad_blocking():
+    print("Bad: Starting blocking operation")
+    time.sleep(0.2)  # BLOCKS everything!
+    print("Bad: Done")
+
+# GOOD: Use async sleep
+async def good_async():
+    print("Good: Starting async operation")
+    await asyncio.sleep(0.2)  # Yields control
+    print("Good: Done")
+
+async def other_task():
+    for i in range(3):
+        print(f"  Other task: tick {i}")
+        await asyncio.sleep(0.05)
+
+async def demo_bad():
+    print("=== BAD: Blocking call ===")
+    await asyncio.gather(
+        bad_blocking(),
+        other_task(),  # This won't run until bad_blocking finishes!
+    )
+
+async def demo_good():
+    print("\n=== GOOD: Async call ===")
+    await asyncio.gather(
+        good_async(),
+        other_task(),  # Runs concurrently!
+    )
+
+asyncio.run(demo_bad())
+asyncio.run(demo_good())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>2. Run Blocking Code in Executor</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+
+def blocking_io_operation(name, duration):
+    """Simulates a blocking I/O operation (like a sync HTTP library)"""
+    print(f"  Blocking {name}: Starting")
+    time.sleep(duration)  # Blocking!
+    print(f"  Blocking {name}: Done")
+    return f"Result from {name}"
+
+async def run_in_executor_demo():
+    print("Running blocking code in executor...")
+    loop = asyncio.get_event_loop()
+
+    start = time.time()
+
+    # Run blocking functions in thread pool
+    results = await asyncio.gather(
+        loop.run_in_executor(None, blocking_io_operation, "A", 0.1),
+        loop.run_in_executor(None, blocking_io_operation, "B", 0.1),
+        loop.run_in_executor(None, blocking_io_operation, "C", 0.1),
+    )
+
+    print(f"\nResults: {results}")
+    print(f"Time: {time.time() - start:.3f}s (concurrent!)")
+
+asyncio.run(run_in_executor_demo())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>3. Handle Exceptions Properly</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def risky_operation(should_fail):
+    await asyncio.sleep(0.05)
+    if should_fail:
+        raise ValueError("Something went wrong!")
+    return "Success"
+
+async def main():
+    # Method 1: Try/except around await
+    print("=== Method 1: try/except ===")
+    try:
+        result = await risky_operation(True)
+    except ValueError as e:
+        print(f"Caught error: {e}")
+
+    # Method 2: gather with return_exceptions
+    print("\n=== Method 2: return_exceptions ===")
+    results = await asyncio.gather(
+        risky_operation(False),
+        risky_operation(True),
+        risky_operation(False),
+        return_exceptions=True
+    )
+    for i, r in enumerate(results):
+        if isinstance(r, Exception):
+            print(f"Task {i}: Error - {r}")
+        else:
+            print(f"Task {i}: {r}")
+
+    # Method 3: asyncio.wait with FIRST_EXCEPTION
+    print("\n=== Method 3: asyncio.wait ===")
+    tasks = [
+        asyncio.create_task(risky_operation(False)),
+        asyncio.create_task(risky_operation(True)),
+    ]
+    done, pending = await asyncio.wait(
+        tasks,
+        return_when=asyncio.FIRST_EXCEPTION
+    )
+
+    print(f"Done: {len(done)}, Pending: {len(pending)}")
+    for task in done:
+        if task.exception():
+            print(f"Task failed: {task.exception()}")
+        else:
+            print(f"Task succeeded: {task.result()}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERMEDIATE SECTION -->
+    <section id="intermediate" class="guide-section">
+        <h2>Intermediate - Practical Async Patterns</h2>
+
+        <div class="topic-block">
+            <h3>Async Context Managers</h3>
+            <p>Use <code>async with</code> for resources that need async setup/teardown.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+class AsyncDatabaseConnection:
+    def __init__(self, name):
+        self.name = name
+        self.connected = False
+
+    async def __aenter__(self):
+        print(f"DB {self.name}: Connecting...")
+        await asyncio.sleep(0.05)  # Simulate connection
+        self.connected = True
+        print(f"DB {self.name}: Connected")
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print(f"DB {self.name}: Disconnecting...")
+        await asyncio.sleep(0.02)  # Simulate cleanup
+        self.connected = False
+        print(f"DB {self.name}: Disconnected")
+        return False  # Don't suppress exceptions
+
+    async def query(self, sql):
+        if not self.connected:
+            raise RuntimeError("Not connected!")
+        await asyncio.sleep(0.03)
+        return f"Results for: {sql}"
+
+async def main():
+    # Using async context manager
+    async with AsyncDatabaseConnection("primary") as db:
+        result = await db.query("SELECT * FROM users")
+        print(f"Query result: {result}")
+
+        # Even if exception occurs, __aexit__ is called
+        # raise ValueError("Oops!")
+
+    print("\nConnection automatically closed!")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Async Iterators and Generators</h3>
+            <p>Use <code>async for</code> to iterate over async data streams.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+class AsyncCounter:
+    """Async iterator - implements __aiter__ and __anext__"""
+    def __init__(self, stop):
+        self.current = 0
+        self.stop = stop
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.current >= self.stop:
+            raise StopAsyncIteration
+        await asyncio.sleep(0.05)  # Simulate async data fetch
+        self.current += 1
+        return self.current
+
+async def async_generator(n):
+    """Async generator - simpler syntax"""
+    for i in range(n):
+        await asyncio.sleep(0.05)
+        yield i * 2
+
+async def main():
+    # Using async iterator
+    print("=== Async Iterator ===")
+    async for num in AsyncCounter(3):
+        print(f"Got: {num}")
+
+    # Using async generator
+    print("\n=== Async Generator ===")
+    async for num in async_generator(4):
+        print(f"Generated: {num}")
+
+    # Collecting all values
+    print("\n=== Collecting to list ===")
+    values = [x async for x in async_generator(5)]
+    print(f"All values: {values}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Timeouts and Cancellation</h3>
+
+            <h4>asyncio.timeout (Python 3.11+) / asyncio.wait_for</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def slow_operation(duration):
+    print(f"Starting operation (will take {duration}s)")
+    await asyncio.sleep(duration)
+    print("Operation completed")
+    return "Success"
+
+async def main():
+    # Method 1: wait_for (works in all Python 3 versions)
+    print("=== wait_for with timeout ===")
+    try:
+        result = await asyncio.wait_for(
+            slow_operation(0.5),
+            timeout=0.1  # Only wait 0.1 seconds
+        )
+        print(f"Result: {result}")
+    except asyncio.TimeoutError:
+        print("Operation timed out!")
+
+    # Method 2: asyncio.timeout context manager (Python 3.11+)
+    # Uncomment if using Python 3.11+:
+    # print("\n=== asyncio.timeout context ===")
+    # try:
+    #     async with asyncio.timeout(0.1):
+    #         await slow_operation(0.5)
+    # except asyncio.TimeoutError:
+    #     print("Timed out!")
+
+    # Successful case
+    print("\n=== Successful operation ===")
+    result = await asyncio.wait_for(slow_operation(0.05), timeout=0.2)
+    print(f"Result: {result}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <h4>Task Cancellation</h4>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def long_running_task(name):
+    try:
+        print(f"Task {name}: Starting")
+        for i in range(10):
+            await asyncio.sleep(0.05)
+            print(f"Task {name}: Step {i+1}")
+        print(f"Task {name}: Completed")
+        return f"Result from {name}"
+    except asyncio.CancelledError:
+        print(f"Task {name}: Cancelled! Cleaning up...")
+        # Perform cleanup here
+        raise  # Re-raise to properly cancel
+
+async def main():
+    # Create task
+    task = asyncio.create_task(long_running_task("Worker"))
+
+    # Let it run for a bit
+    await asyncio.sleep(0.15)
+
+    # Cancel it
+    print("\nMain: Cancelling task...")
+    task.cancel()
+
+    # Wait for cancellation
+    try:
+        await task
+    except asyncio.CancelledError:
+        print("Main: Task was cancelled")
+
+    print(f"Task cancelled: {task.cancelled()}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Queues for Producer-Consumer Pattern</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import random
+
+async def producer(queue, name, count):
+    """Produces items and puts them in the queue"""
+    for i in range(count):
+        item = f"{name}-item-{i}"
+        await asyncio.sleep(random.uniform(0.01, 0.05))
+        await queue.put(item)
+        print(f"Producer {name}: Added {item}")
+    print(f"Producer {name}: Done")
+
+async def consumer(queue, name):
+    """Consumes items from the queue"""
+    while True:
+        try:
+            item = await asyncio.wait_for(queue.get(), timeout=0.2)
+            print(f"  Consumer {name}: Processing {item}")
+            await asyncio.sleep(0.03)  # Process time
+            queue.task_done()
+        except asyncio.TimeoutError:
+            print(f"  Consumer {name}: No more items, exiting")
+            break
+
+async def main():
+    queue = asyncio.Queue(maxsize=5)  # Bounded queue
+
+    # Start consumers first
+    consumers = [
+        asyncio.create_task(consumer(queue, "C1")),
+        asyncio.create_task(consumer(queue, "C2")),
+    ]
+
+    # Start producers
+    producers = [
+        asyncio.create_task(producer(queue, "P1", 3)),
+        asyncio.create_task(producer(queue, "P2", 3)),
+    ]
+
+    # Wait for producers to finish
+    await asyncio.gather(*producers)
+    print("\nAll producers done")
+
+    # Wait for queue to be fully processed
+    await queue.join()
+    print("Queue empty")
+
+    # Consumers will exit on timeout
+    await asyncio.gather(*consumers)
+    print("\nAll done!")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Locks and Synchronization</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+class AsyncCounter:
+    def __init__(self):
+        self.value = 0
+        self.lock = asyncio.Lock()
+
+    async def increment_unsafe(self):
+        # Race condition possible!
+        temp = self.value
+        await asyncio.sleep(0.001)  # Simulate some work
+        self.value = temp + 1
+
+    async def increment_safe(self):
+        async with self.lock:
+            temp = self.value
+            await asyncio.sleep(0.001)
+            self.value = temp + 1
+
+async def main():
+    counter = AsyncCounter()
+
+    # Unsafe - race condition
+    print("=== Unsafe increment ===")
+    counter.value = 0
+    tasks = [asyncio.create_task(counter.increment_unsafe()) for _ in range(10)]
+    await asyncio.gather(*tasks)
+    print(f"Expected: 10, Got: {counter.value}")
+
+    # Safe - with lock
+    print("\n=== Safe increment ===")
+    counter.value = 0
+    tasks = [asyncio.create_task(counter.increment_safe()) for _ in range(10)]
+    await asyncio.gather(*tasks)
+    print(f"Expected: 10, Got: {counter.value}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Semaphores for Rate Limiting</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+
+async def fetch_url(semaphore, url):
+    async with semaphore:  # Only N concurrent requests
+        print(f"Fetching: {url}")
+        await asyncio.sleep(0.1)  # Simulate network request
+        print(f"Done: {url}")
+        return f"Data from {url}"
+
+async def main():
+    # Limit to 3 concurrent requests
+    semaphore = asyncio.Semaphore(3)
+
+    urls = [f"https://api.example.com/item/{i}" for i in range(10)]
+
+    start = time.time()
+
+    tasks = [fetch_url(semaphore, url) for url in urls]
+    results = await asyncio.gather(*tasks)
+
+    elapsed = time.time() - start
+    print(f"\nFetched {len(results)} URLs in {elapsed:.2f}s")
+    print(f"(With limit of 3 concurrent, 10 URLs at 0.1s each = ~0.4s)")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADVANCED SECTION -->
+    <section id="advanced" class="guide-section">
+        <h2>Advanced - Production-Ready Patterns</h2>
+
+        <div class="topic-block">
+            <h3>Task Groups (Python 3.11+)</h3>
+            <p>TaskGroups provide structured concurrency - all tasks complete or all are cancelled.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def worker(name, duration, should_fail=False):
+    print(f"Worker {name}: Starting")
+    await asyncio.sleep(duration)
+    if should_fail:
+        raise ValueError(f"Worker {name} failed!")
+    print(f"Worker {name}: Done")
+    return f"Result from {name}"
+
+async def main():
+    # TaskGroup ensures all tasks complete together
+    # If one fails, others are cancelled
+
+    print("=== All succeed ===")
+    try:
+        # Python 3.11+ TaskGroup
+        # async with asyncio.TaskGroup() as tg:
+        #     task1 = tg.create_task(worker("A", 0.1))
+        #     task2 = tg.create_task(worker("B", 0.1))
+
+        # For Python 3.10, use gather
+        results = await asyncio.gather(
+            worker("A", 0.1),
+            worker("B", 0.1),
+        )
+        print(f"Results: {results}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+    print("\n=== One fails (with return_exceptions) ===")
+    results = await asyncio.gather(
+        worker("C", 0.1),
+        worker("D", 0.1, should_fail=True),
+        worker("E", 0.1),
+        return_exceptions=True
+    )
+    for i, r in enumerate(results):
+        if isinstance(r, Exception):
+            print(f"Task {i}: FAILED - {r}")
+        else:
+            print(f"Task {i}: {r}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Connection Pool Pattern</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+from collections import deque
+
+class AsyncConnectionPool:
+    def __init__(self, max_size=5):
+        self.max_size = max_size
+        self.pool = deque()
+        self.size = 0
+        self.lock = asyncio.Lock()
+        self.available = asyncio.Condition(self.lock)
+
+    async def _create_connection(self):
+        """Create a new connection"""
+        await asyncio.sleep(0.05)  # Simulate connection setup
+        return {"id": self.size, "status": "connected"}
+
+    async def acquire(self):
+        """Get a connection from the pool"""
+        async with self.available:
+            while not self.pool and self.size >= self.max_size:
+                print("  Pool exhausted, waiting...")
+                await self.available.wait()
+
+            if self.pool:
+                conn = self.pool.popleft()
+                print(f"  Reusing connection {conn['id']}")
+                return conn
+
+            self.size += 1
+            conn = await self._create_connection()
+            print(f"  Created new connection {conn['id']}")
+            return conn
+
+    async def release(self, conn):
+        """Return a connection to the pool"""
+        async with self.available:
+            self.pool.append(conn)
+            self.available.notify()
+            print(f"  Released connection {conn['id']}")
+
+async def worker(pool, name):
+    print(f"Worker {name}: Requesting connection")
+    conn = await pool.acquire()
+    print(f"Worker {name}: Got connection {conn['id']}")
+
+    await asyncio.sleep(0.1)  # Do work
+
+    await pool.release(conn)
+    print(f"Worker {name}: Done")
+
+async def main():
+    pool = AsyncConnectionPool(max_size=2)
+
+    # Start 5 workers with only 2 connections
+    workers = [worker(pool, f"W{i}") for i in range(5)]
+    await asyncio.gather(*workers)
+
+    print(f"\nFinal pool size: {len(pool.pool)} available, {pool.size} total")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Retry Pattern with Exponential Backoff</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import random
+
+class RetryError(Exception):
+    pass
+
+async def unreliable_api_call(attempt):
+    """Simulates an unreliable API that fails sometimes"""
+    await asyncio.sleep(0.05)
+    if attempt < 3:  # Fail first 2 attempts
+        raise ConnectionError(f"API unavailable (attempt {attempt})")
+    return "API Response"
+
+async def retry_with_backoff(
+    coro_func,
+    max_retries=5,
+    base_delay=0.1,
+    max_delay=2.0,
+    exponential_base=2
+):
+    """Retry a coroutine with exponential backoff"""
+    last_exception = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            return await coro_func(attempt)
+        except Exception as e:
+            last_exception = e
+
+            if attempt == max_retries:
+                break
+
+            # Calculate delay with jitter
+            delay = min(
+                base_delay * (exponential_base ** (attempt - 1)),
+                max_delay
+            )
+            delay *= (0.5 + random.random())  # Add jitter
+
+            print(f"Attempt {attempt} failed: {e}")
+            print(f"Retrying in {delay:.2f}s...")
+            await asyncio.sleep(delay)
+
+    raise RetryError(f"Failed after {max_retries} retries") from last_exception
+
+async def main():
+    print("=== Retry with exponential backoff ===")
+    try:
+        result = await retry_with_backoff(unreliable_api_call)
+        print(f"Success: {result}")
+    except RetryError as e:
+        print(f"Failed: {e}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Circuit Breaker Pattern</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import time
+from enum import Enum
+
+class CircuitState(Enum):
+    CLOSED = "closed"
+    OPEN = "open"
+    HALF_OPEN = "half_open"
+
+class CircuitBreaker:
+    def __init__(self, failure_threshold=3, reset_timeout=0.5):
+        self.failure_threshold = failure_threshold
+        self.reset_timeout = reset_timeout
+        self.state = CircuitState.CLOSED
+        self.failures = 0
+        self.last_failure_time = None
+        self.lock = asyncio.Lock()
+
+    async def call(self, coro):
+        async with self.lock:
+            if self.state == CircuitState.OPEN:
+                if time.time() - self.last_failure_time > self.reset_timeout:
+                    print("Circuit: OPEN -> HALF_OPEN")
+                    self.state = CircuitState.HALF_OPEN
+                else:
+                    raise Exception("Circuit breaker is OPEN")
+
+        try:
+            result = await coro
+            async with self.lock:
+                if self.state == CircuitState.HALF_OPEN:
+                    print("Circuit: HALF_OPEN -> CLOSED")
+                    self.state = CircuitState.CLOSED
+                self.failures = 0
+            return result
+        except Exception as e:
+            async with self.lock:
+                self.failures += 1
+                self.last_failure_time = time.time()
+
+                if self.failures >= self.failure_threshold:
+                    print(f"Circuit: -> OPEN (failures: {self.failures})")
+                    self.state = CircuitState.OPEN
+            raise
+
+async def unreliable_service(call_num):
+    await asyncio.sleep(0.05)
+    if call_num <= 4:  # First 4 calls fail
+        raise ConnectionError("Service unavailable")
+    return f"Success (call {call_num})"
+
+async def main():
+    cb = CircuitBreaker(failure_threshold=3, reset_timeout=0.3)
+
+    for i in range(1, 8):
+        print(f"\nCall {i}:")
+        try:
+            result = await cb.call(unreliable_service(i))
+            print(f"  Result: {result}")
+        except Exception as e:
+            print(f"  Error: {e}")
+
+        await asyncio.sleep(0.1)
+
+    # Wait for reset
+    print("\nWaiting for circuit reset...")
+    await asyncio.sleep(0.4)
+
+    print("\nRetrying after reset:")
+    try:
+        result = await cb.call(unreliable_service(10))
+        print(f"  Result: {result}")
+    except Exception as e:
+        print(f"  Error: {e}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Graceful Shutdown with Signal Handling</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+import signal
+
+class GracefulServer:
+    def __init__(self):
+        self.running = True
+        self.active_tasks = set()
+
+    async def handle_request(self, request_id):
+        task = asyncio.current_task()
+        self.active_tasks.add(task)
+
+        try:
+            print(f"Request {request_id}: Processing")
+            await asyncio.sleep(0.2)  # Simulate work
+            print(f"Request {request_id}: Done")
+            return f"Response {request_id}"
+        except asyncio.CancelledError:
+            print(f"Request {request_id}: Cancelled, cleaning up")
+            raise
+        finally:
+            self.active_tasks.discard(task)
+
+    async def shutdown(self):
+        print("\nShutting down gracefully...")
+        self.running = False
+
+        if self.active_tasks:
+            print(f"Waiting for {len(self.active_tasks)} active tasks...")
+            await asyncio.gather(*self.active_tasks, return_exceptions=True)
+
+        print("Shutdown complete")
+
+    async def run(self):
+        # Start some "requests"
+        for i in range(5):
+            if not self.running:
+                break
+            asyncio.create_task(self.handle_request(i))
+            await asyncio.sleep(0.05)
+
+        # Simulate shutdown after some time
+        await asyncio.sleep(0.1)
+        print("\n--- Initiating shutdown ---")
+        await self.shutdown()
+
+async def main():
+    server = GracefulServer()
+    await server.run()
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Async Event for Coordination</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+async def waiter(event, name):
+    print(f"Waiter {name}: Waiting for event...")
+    await event.wait()
+    print(f"Waiter {name}: Event received!")
+    return f"Waiter {name} done"
+
+async def setter(event, delay):
+    print(f"Setter: Will set event in {delay}s")
+    await asyncio.sleep(delay)
+    print("Setter: Setting event now!")
+    event.set()
+
+async def main():
+    event = asyncio.Event()
+
+    # Start waiters and setter concurrently
+    results = await asyncio.gather(
+        waiter(event, "A"),
+        waiter(event, "B"),
+        waiter(event, "C"),
+        setter(event, 0.2),
+    )
+
+    print(f"\nResults: {results[:3]}")  # Only waiter results
+    print(f"Event is set: {event.is_set()}")
+
+    # Clear and reuse
+    print("\n--- Reset event ---")
+    event.clear()
+    print(f"Event is set after clear: {event.is_set()}")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <h3>Async Debounce Pattern</h3>
+            <p>Useful for rate-limiting rapid events (like search-as-you-type).</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import asyncio
+
+class AsyncDebouncer:
+    def __init__(self, delay):
+        self.delay = delay
+        self.pending_task = None
+
+    async def debounce(self, coro):
+        """Cancel previous pending call and schedule new one"""
+        if self.pending_task:
+            self.pending_task.cancel()
+            try:
+                await self.pending_task
+            except asyncio.CancelledError:
+                pass
+
+        self.pending_task = asyncio.create_task(self._delayed_call(coro))
+        return await self.pending_task
+
+    async def _delayed_call(self, coro):
+        await asyncio.sleep(self.delay)
+        return await coro
+
+async def search_api(query):
+    print(f"  API: Searching for '{query}'")
+    await asyncio.sleep(0.05)
+    return f"Results for: {query}"
+
+async def main():
+    debouncer = AsyncDebouncer(delay=0.1)
+
+    # Simulate rapid typing
+    queries = ["p", "py", "pyt", "pyth", "pytho", "python"]
+
+    print("Simulating rapid search queries...")
+    tasks = []
+    for query in queries:
+        print(f"User typed: {query}")
+        # Only the last query should actually execute
+        task = asyncio.create_task(debouncer.debounce(search_api(query)))
+        tasks.append(task)
+        await asyncio.sleep(0.03)  # User types fast
+
+    # Wait a bit for debounced call to complete
+    await asyncio.sleep(0.2)
+
+    print("\nOnly the final query was executed!")
+
+asyncio.run(main())</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.guide-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.breadcrumb {
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.guide-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.guide-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #3776AB;
+    color: white;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.python-badge {
+    background: #3776AB;
+}
+
+.guide-header h1 {
+    margin: 0.5rem 0;
+    font-size: 2.5rem;
+}
+
+.guide-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.guide-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 70px;
+    z-index: 50;
+}
+
+.guide-nav-link {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.guide-nav-link:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.guide-nav-link.active {
+    background: #3776AB;
+    color: white;
+}
+
+.guide-section {
+    margin-bottom: 3rem;
+    padding-top: 1rem;
+}
+
+.guide-section > h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #3776AB;
+}
+
+.topic-block {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.topic-block h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.topic-block h4 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #3776AB;
+}
+
+.topic-block p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.topic-block ul, .topic-block ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.topic-block li {
+    margin-bottom: 0.5rem;
+}
+
+.topic-block code {
+    background: var(--bg-secondary);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.code-example {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.code-example pre {
+    background: #1e1e1e;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    padding-top: 2.5rem;
+    overflow-x: auto;
+    margin: 0;
+}
+
+.code-example pre code {
+    background: none;
+    padding: 0;
+    color: #d4d4d4;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.run-code-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: #3776AB;
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.run-code-btn:hover {
+    background: #2c5d87;
+}
+
+.run-code-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.code-output {
+    margin-top: 0.5rem;
+}
+
+.code-output pre {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.success-output {
+    background: #1a1a2e;
+    border: 1px solid #2d5a2d;
+    color: #98c379;
+}
+
+.error-output {
+    background: #2e1a1a;
+    border: 1px solid #5a2d2d;
+    color: #e06c75;
+}
+
+@media (max-width: 768px) {
+    .guide-page {
+        padding: 1rem;
+    }
+
+    .guide-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .guide-nav {
+        flex-direction: column;
+        position: static;
+    }
+
+    .guide-nav-link {
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // Navigation highlighting
+    const navLinks = document.querySelectorAll('.guide-nav-link');
+    const sections = document.querySelectorAll('.guide-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Scroll spy
+    window.addEventListener('scroll', function() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (pageYOffset >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-section') === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Run code buttons
+    document.querySelectorAll('.run-code-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const codeBlock = this.parentElement.querySelector('code');
+            const code = codeBlock.textContent;
+            const language = this.dataset.language || 'python';
+
+            this.disabled = true;
+            this.textContent = 'Running...';
+
+            // Send to execution API
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code, language: language})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    // Poll for result
+                    const checkResult = () => {
+                        fetch('/api/execution/' + data.id)
+                        .then(r => r.json())
+                        .then(result => {
+                            if (result.state === 'completed' || result.state === 'error') {
+                                this.disabled = false;
+                                this.textContent = 'Run Code';
+
+                                // Show output
+                                let outputDiv = this.parentElement.querySelector('.code-output');
+                                if (!outputDiv) {
+                                    outputDiv = document.createElement('div');
+                                    outputDiv.className = 'code-output';
+                                    this.parentElement.appendChild(outputDiv);
+                                }
+
+                                if (result.error) {
+                                    outputDiv.innerHTML = '<pre class="error-output">' + escapeHtml(result.error) + '</pre>';
+                                } else {
+                                    outputDiv.innerHTML = '<pre class="success-output">' + escapeHtml(result.output || 'No output') + '</pre>';
+                                }
+                            } else {
+                                setTimeout(checkResult, 500);
+                            }
+                        });
+                    };
+                    checkResult();
+                }
+            })
+            .catch(err => {
+                this.disabled = false;
+                this.textContent = 'Run Code';
+                alert('Error: ' + err.message);
+            });
+        });
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Highlight code
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('.code-example pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+</script>
