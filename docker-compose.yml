@@ -14,8 +14,42 @@ volumes:
     name: dsalgo-learn-go-cache
   dsalgo-learn-state:
     name: dsalgo-learn-state
+  dsalgo-learn-postgres-data:
+    name: dsalgo-learn-postgres-data
 
 services:
+  # PostgreSQL Database for SQL Learning
+  dsalgo-postgres:
+    image: postgres:15-alpine
+    container_name: dsalgo-postgres
+    hostname: dsalgo-postgres
+    environment:
+      - POSTGRES_USER=dsalgo
+      - POSTGRES_PASSWORD=dsalgo_secret
+      - POSTGRES_DB=order_management
+    volumes:
+      - dsalgo-learn-postgres-data:/var/lib/postgresql/data
+      - ./backend/db/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - dsalgo-learn-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dsalgo -d order_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
   dsalgo-learn-app:
     build:
       context: .
@@ -23,6 +57,9 @@ services:
     image: dsalgo-learn-platform:latest
     container_name: dsalgo-learn-app
     hostname: dsalgo-learn-app
+    depends_on:
+      dsalgo-postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     volumes:
@@ -43,6 +80,12 @@ services:
       - KERNEL_MEMORY_LIMIT=256M
       # State persistence directory
       - STATE_DIR=/app/state
+      # PostgreSQL connection
+      - DB_HOST=dsalgo-postgres
+      - DB_PORT=5432
+      - DB_USER=dsalgo
+      - DB_PASSWORD=dsalgo_secret
+      - DB_NAME=order_management
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -82,6 +125,9 @@ services:
       dockerfile: Dockerfile.dev
     image: dsalgo-learn-platform:dev
     container_name: dsalgo-learn-dev
+    depends_on:
+      dsalgo-postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     volumes:
@@ -94,6 +140,12 @@ services:
       - PORT=8080
       - DEV_MODE=true
       - STATE_DIR=/app/state
+      # PostgreSQL connection
+      - DB_HOST=dsalgo-postgres
+      - DB_PORT=5432
+      - DB_USER=dsalgo
+      - DB_PASSWORD=dsalgo_secret
+      - DB_NAME=order_management
     networks:
       - dsalgo-learn-network
     tmpfs:

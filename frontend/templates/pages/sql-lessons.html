@@ -1,0 +1,854 @@
+<div class="sql-lessons-page">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>SQL Curriculum</h2>
+        </div>
+        <div class="lesson-tree">
+            <!-- Fundamentals -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('fundamentals')">
+                    <span class="icon">&#128218;</span>
+                    <span>1. SQL Fundamentals</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="fundamentals" class="category-content expanded">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('basics')">1.1 Basics</div>
+                        <div id="basics" class="sub-content expanded">
+                            <a class="lesson-link active" onclick="loadLesson('select-basics')">SELECT Basics</a>
+                            <a class="lesson-link" onclick="loadLesson('where-clause')">WHERE Clause</a>
+                            <a class="lesson-link" onclick="loadLesson('order-by')">ORDER BY</a>
+                            <a class="lesson-link" onclick="loadLesson('limit-offset')">LIMIT & OFFSET</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('filtering')">1.2 Filtering</div>
+                        <div id="filtering" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('comparison')">Comparison Operators</a>
+                            <a class="lesson-link" onclick="loadLesson('logical')">Logical Operators</a>
+                            <a class="lesson-link" onclick="loadLesson('like-pattern')">LIKE Pattern Matching</a>
+                            <a class="lesson-link" onclick="loadLesson('in-between')">IN & BETWEEN</a>
+                            <a class="lesson-link" onclick="loadLesson('null-handling')">NULL Handling</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('data-types')">1.3 Data Types</div>
+                        <div id="data-types" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('numeric-types')">Numeric Types</a>
+                            <a class="lesson-link" onclick="loadLesson('string-types')">String Types</a>
+                            <a class="lesson-link" onclick="loadLesson('date-types')">Date/Time Types</a>
+                            <a class="lesson-link" onclick="loadLesson('boolean-json')">Boolean & JSON</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Joins -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('joins')">
+                    <span class="icon">&#128279;</span>
+                    <span>2. Joins & Relationships</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="joins" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('join-types')">2.1 Join Types</div>
+                        <div id="join-types" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('inner-join')">INNER JOIN</a>
+                            <a class="lesson-link" onclick="loadLesson('left-join')">LEFT JOIN</a>
+                            <a class="lesson-link" onclick="loadLesson('right-join')">RIGHT JOIN</a>
+                            <a class="lesson-link" onclick="loadLesson('full-join')">FULL OUTER JOIN</a>
+                            <a class="lesson-link" onclick="loadLesson('cross-join')">CROSS JOIN</a>
+                            <a class="lesson-link" onclick="loadLesson('self-join')">Self Join</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('multi-join')">2.2 Multi-Table Joins</div>
+                        <div id="multi-join" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('chained-joins')">Chaining Joins</a>
+                            <a class="lesson-link" onclick="loadLesson('join-conditions')">Complex Conditions</a>
+                            <a class="lesson-link" onclick="loadLesson('join-performance')">Join Performance</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aggregations -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('aggregations')">
+                    <span class="icon">&#128202;</span>
+                    <span>3. Aggregations & Grouping</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="aggregations" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('agg-functions')">3.1 Aggregate Functions</div>
+                        <div id="agg-functions" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('count-sum')">COUNT & SUM</a>
+                            <a class="lesson-link" onclick="loadLesson('avg-min-max')">AVG, MIN, MAX</a>
+                            <a class="lesson-link" onclick="loadLesson('distinct-agg')">DISTINCT Aggregation</a>
+                            <a class="lesson-link" onclick="loadLesson('array-agg')">ARRAY_AGG & STRING_AGG</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('grouping')">3.2 GROUP BY</div>
+                        <div id="grouping" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('group-by-basics')">GROUP BY Basics</a>
+                            <a class="lesson-link" onclick="loadLesson('having-clause')">HAVING Clause</a>
+                            <a class="lesson-link" onclick="loadLesson('grouping-sets')">GROUPING SETS</a>
+                            <a class="lesson-link" onclick="loadLesson('rollup-cube')">ROLLUP & CUBE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subqueries -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('subqueries')">
+                    <span class="icon">&#128203;</span>
+                    <span>4. Subqueries</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="subqueries" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('subquery-types')">4.1 Subquery Types</div>
+                        <div id="subquery-types" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('scalar-subquery')">Scalar Subqueries</a>
+                            <a class="lesson-link" onclick="loadLesson('column-subquery')">Column Subqueries</a>
+                            <a class="lesson-link" onclick="loadLesson('table-subquery')">Table Subqueries</a>
+                            <a class="lesson-link" onclick="loadLesson('correlated-subquery')">Correlated Subqueries</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('subquery-ops')">4.2 Subquery Operators</div>
+                        <div id="subquery-ops" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('exists-not-exists')">EXISTS / NOT EXISTS</a>
+                            <a class="lesson-link" onclick="loadLesson('in-not-in')">IN / NOT IN</a>
+                            <a class="lesson-link" onclick="loadLesson('any-all')">ANY / ALL</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTEs -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('ctes')">
+                    <span class="icon">&#128221;</span>
+                    <span>5. Common Table Expressions</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="ctes" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('cte-basics')">CTE Basics (WITH clause)</a>
+                    <a class="lesson-link" onclick="loadLesson('multiple-ctes')">Multiple CTEs</a>
+                    <a class="lesson-link" onclick="loadLesson('recursive-cte')">Recursive CTEs</a>
+                    <a class="lesson-link" onclick="loadLesson('cte-vs-subquery')">CTE vs Subquery</a>
+                </div>
+            </div>
+
+            <!-- Window Functions -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('window')">
+                    <span class="icon">&#128200;</span>
+                    <span>6. Window Functions</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="window" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('window-basics')">6.1 Window Basics</div>
+                        <div id="window-basics" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('over-clause')">OVER Clause</a>
+                            <a class="lesson-link" onclick="loadLesson('partition-by')">PARTITION BY</a>
+                            <a class="lesson-link" onclick="loadLesson('order-by-window')">ORDER BY in Windows</a>
+                            <a class="lesson-link" onclick="loadLesson('frame-clause')">Frame Clause</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('ranking')">6.2 Ranking Functions</div>
+                        <div id="ranking" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('row-number')">ROW_NUMBER()</a>
+                            <a class="lesson-link" onclick="loadLesson('rank-dense-rank')">RANK & DENSE_RANK</a>
+                            <a class="lesson-link" onclick="loadLesson('ntile')">NTILE()</a>
+                            <a class="lesson-link" onclick="loadLesson('percent-rank')">PERCENT_RANK & CUME_DIST</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('value-functions')">6.3 Value Functions</div>
+                        <div id="value-functions" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('lag-lead')">LAG & LEAD</a>
+                            <a class="lesson-link" onclick="loadLesson('first-last')">FIRST_VALUE & LAST_VALUE</a>
+                            <a class="lesson-link" onclick="loadLesson('nth-value')">NTH_VALUE</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('window-agg')">6.4 Window Aggregates</div>
+                        <div id="window-agg" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('running-total')">Running Totals</a>
+                            <a class="lesson-link" onclick="loadLesson('moving-average')">Moving Averages</a>
+                            <a class="lesson-link" onclick="loadLesson('cumulative')">Cumulative Statistics</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DML -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('dml')">
+                    <span class="icon">&#9999;</span>
+                    <span>7. Data Manipulation (DML)</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="dml" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('insert-basics')">INSERT Basics</a>
+                    <a class="lesson-link" onclick="loadLesson('insert-select')">INSERT from SELECT</a>
+                    <a class="lesson-link" onclick="loadLesson('update-basics')">UPDATE Basics</a>
+                    <a class="lesson-link" onclick="loadLesson('update-join')">UPDATE with JOIN</a>
+                    <a class="lesson-link" onclick="loadLesson('delete-basics')">DELETE Basics</a>
+                    <a class="lesson-link" onclick="loadLesson('upsert')">UPSERT (ON CONFLICT)</a>
+                    <a class="lesson-link" onclick="loadLesson('returning')">RETURNING Clause</a>
+                </div>
+            </div>
+
+            <!-- Indexing -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('indexing')">
+                    <span class="icon">&#128269;</span>
+                    <span>8. Indexing & Performance</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="indexing" class="category-content">
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('index-basics')">8.1 Index Fundamentals</div>
+                        <div id="index-basics" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('what-is-index')">What is an Index?</a>
+                            <a class="lesson-link" onclick="loadLesson('btree-index')">B-Tree Index</a>
+                            <a class="lesson-link" onclick="loadLesson('hash-index')">Hash Index</a>
+                            <a class="lesson-link" onclick="loadLesson('gin-gist')">GIN & GiST Indexes</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('index-types')">8.2 Index Types</div>
+                        <div id="index-types" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('single-column')">Single Column Index</a>
+                            <a class="lesson-link" onclick="loadLesson('composite-index')">Composite Index</a>
+                            <a class="lesson-link" onclick="loadLesson('partial-index')">Partial Index</a>
+                            <a class="lesson-link" onclick="loadLesson('expression-index')">Expression Index</a>
+                            <a class="lesson-link" onclick="loadLesson('covering-index')">Covering Index</a>
+                        </div>
+                    </div>
+                    <div class="sub-category">
+                        <div class="sub-header" onclick="toggleSubCategory('query-planning')">8.3 Query Planning</div>
+                        <div id="query-planning" class="sub-content">
+                            <a class="lesson-link" onclick="loadLesson('explain-analyze')">EXPLAIN ANALYZE</a>
+                            <a class="lesson-link" onclick="loadLesson('scan-types')">Scan Types</a>
+                            <a class="lesson-link" onclick="loadLesson('index-selection')">Index Selection</a>
+                            <a class="lesson-link" onclick="loadLesson('optimization-tips')">Optimization Tips</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('advanced')">
+                    <span class="icon">&#127919;</span>
+                    <span>9. Advanced Topics</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="advanced" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('views')">Views</a>
+                    <a class="lesson-link" onclick="loadLesson('materialized-views')">Materialized Views</a>
+                    <a class="lesson-link" onclick="loadLesson('triggers')">Triggers</a>
+                    <a class="lesson-link" onclick="loadLesson('stored-procedures')">Stored Procedures</a>
+                    <a class="lesson-link" onclick="loadLesson('transactions')">Transactions</a>
+                    <a class="lesson-link" onclick="loadLesson('json-operations')">JSON Operations</a>
+                </div>
+            </div>
+
+            <!-- Complex Queries -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('complex')">
+                    <span class="icon">&#129504;</span>
+                    <span>10. Complex Query Problems</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="complex" class="category-content">
+                    <a class="lesson-link" onclick="loadLesson('problem-revenue')">Revenue Analysis</a>
+                    <a class="lesson-link" onclick="loadLesson('problem-retention')">Customer Retention</a>
+                    <a class="lesson-link" onclick="loadLesson('problem-ranking')">Top N Per Group</a>
+                    <a class="lesson-link" onclick="loadLesson('problem-gaps')">Gap Analysis</a>
+                    <a class="lesson-link" onclick="loadLesson('problem-hierarchy')">Hierarchical Data</a>
+                    <a class="lesson-link" onclick="loadLesson('problem-comparison')">Query Comparison</a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div id="lesson-content">
+            <!-- Default: SELECT Basics lesson -->
+            <div class="lesson">
+                <h1>SELECT Basics</h1>
+                <p class="lesson-meta">
+                    <span class="category">Category: Fundamentals</span>
+                    <span class="difficulty">Difficulty: Beginner</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>What is SELECT?</h2>
+                    <p>The <code>SELECT</code> statement is the most fundamental SQL command. It retrieves data from one or more tables in a database.</p>
+
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Purpose:</strong> Retrieve data from database tables</li>
+                            <li><strong>Read-only:</strong> SELECT doesn't modify data</li>
+                            <li><strong>Flexible:</strong> Can select specific columns or all columns</li>
+                            <li><strong>Composable:</strong> Can be combined with other clauses</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Basic Syntax</h2>
+                    <pre><code class="language-sql">-- Select all columns from a table
+SELECT * FROM table_name;
+
+-- Select specific columns
+SELECT column1, column2, column3 FROM table_name;
+
+-- Select with alias
+SELECT column1 AS alias_name FROM table_name;</code></pre>
+
+                    <div class="info-box">
+                        <h4>&#128161; Best Practice</h4>
+                        <p>Avoid using <code>SELECT *</code> in production code. Always specify the columns you need:</p>
+                        <ul>
+                            <li>Reduces network transfer</li>
+                            <li>Makes code more readable</li>
+                            <li>Prevents issues when table schema changes</li>
+                            <li>Allows better query optimization</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interactive Example</h2>
+                    <p>Try these queries in the SQL Dashboard:</p>
+
+                    <div class="example-query">
+                        <h4>Example 1: Select All Columns</h4>
+                        <pre><code class="language-sql">-- Get all columns from requests table
+SELECT * FROM requests LIMIT 5;</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+                    </div>
+
+                    <div class="example-query">
+                        <h4>Example 2: Select Specific Columns</h4>
+                        <pre><code class="language-sql">-- Get specific columns with meaningful names
+SELECT
+    request_number AS "Request #",
+    status AS "Current Status",
+    final_amount AS "Total Amount",
+    created_at AS "Date Created"
+FROM requests
+LIMIT 5;</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+                    </div>
+
+                    <div class="example-query">
+                        <h4>Example 3: Expressions in SELECT</h4>
+                        <pre><code class="language-sql">-- Calculate derived values
+SELECT
+    request_number,
+    total_amount,
+    discount_amount,
+    total_amount - discount_amount AS calculated_final,
+    final_amount AS stored_final,
+    ROUND(discount_amount / total_amount * 100, 2) AS discount_percent
+FROM requests
+WHERE discount_amount > 0
+LIMIT 5;</code></pre>
+                        <button class="btn btn-sm btn-primary" onclick="runExample(this)">Try it</button>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Column Aliases</h2>
+                    <p>Aliases give columns temporary names that make results more readable:</p>
+
+                    <div class="comparison-table">
+                        <table>
+                            <thead>
+                                <tr><th>Syntax</th><th>Example</th><th>Notes</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>column AS alias</code></td>
+                                    <td><code>name AS customer_name</code></td>
+                                    <td>Standard, recommended</td>
+                                </tr>
+                                <tr>
+                                    <td><code>column alias</code></td>
+                                    <td><code>name customer_name</code></td>
+                                    <td>Without AS (works but less clear)</td>
+                                </tr>
+                                <tr>
+                                    <td><code>column AS "Alias"</code></td>
+                                    <td><code>name AS "Customer Name"</code></td>
+                                    <td>Quotes for spaces/special chars</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Common Patterns</h2>
+
+                    <h3>1. Concatenation</h3>
+                    <pre><code class="language-sql">-- Combine columns (PostgreSQL uses ||)
+SELECT
+    first_name || ' ' || COALESCE(last_name, '') AS full_name
+FROM patients
+LIMIT 5;</code></pre>
+
+                    <h3>2. COALESCE for NULL handling</h3>
+                    <pre><code class="language-sql">-- Replace NULL with default value
+SELECT
+    first_name,
+    COALESCE(last_name, 'N/A') AS last_name,
+    COALESCE(phone, 'No phone') AS phone
+FROM patients
+LIMIT 5;</code></pre>
+
+                    <h3>3. CASE expressions</h3>
+                    <pre><code class="language-sql">-- Conditional logic in SELECT
+SELECT
+    request_number,
+    status,
+    CASE
+        WHEN status = 'completed' THEN 'Done'
+        WHEN status = 'cancelled' THEN 'Cancelled'
+        WHEN status IN ('processing', 'in_progress') THEN 'In Progress'
+        ELSE 'Pending'
+    END AS status_category
+FROM requests;</code></pre>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Exercises</h2>
+
+                    <div class="exercise">
+                        <h4>Exercise 1: Basic Selection</h4>
+                        <p>Write a query to select the <code>order_number</code>, <code>status</code>, and <code>subtotal</code> from the <code>orders</code> table.</p>
+                        <details>
+                            <summary>Show Solution</summary>
+                            <pre><code class="language-sql">SELECT order_number, status, subtotal
+FROM orders;</code></pre>
+                        </details>
+                    </div>
+
+                    <div class="exercise">
+                        <h4>Exercise 2: Using Aliases</h4>
+                        <p>Select patient names (first + last) with a column alias "Full Name" from the patients table.</p>
+                        <details>
+                            <summary>Show Solution</summary>
+                            <pre><code class="language-sql">SELECT
+    first_name || ' ' || COALESCE(last_name, '') AS "Full Name"
+FROM patients;</code></pre>
+                        </details>
+                    </div>
+
+                    <div class="exercise">
+                        <h4>Exercise 3: Calculated Columns</h4>
+                        <p>Select blood tests showing their name, price, and price with 18% tax as "Price with Tax".</p>
+                        <details>
+                            <summary>Show Solution</summary>
+                            <pre><code class="language-sql">SELECT
+    name,
+    price,
+    ROUND(price * 1.18, 2) AS "Price with Tax"
+FROM blood_tests;</code></pre>
+                        </details>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Summary</h2>
+                    <div class="summary-box">
+                        <ul>
+                            <li>&#10003; <code>SELECT</code> retrieves data from tables</li>
+                            <li>&#10003; Use specific column names instead of <code>*</code></li>
+                            <li>&#10003; Aliases make output more readable</li>
+                            <li>&#10003; Expressions can create calculated columns</li>
+                            <li>&#10003; <code>COALESCE</code> handles NULL values</li>
+                            <li>&#10003; <code>CASE</code> provides conditional logic</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <span></span>
+                    <a class="btn btn-primary" onclick="loadLesson('where-clause')">Next: WHERE Clause &#8594;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sql-lessons-page {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.sql-lessons-page .sidebar {
+    width: 320px;
+    background: var(--bg-secondary, #f5f5f5);
+    border-right: 1px solid var(--border-color, #e0e0e0);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sql-lessons-page .sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.sql-lessons-page .sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.lesson-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.lesson-category {
+    margin-bottom: 0.5rem;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.category-header:hover {
+    background: var(--bg-hover, #f0f0f0);
+}
+
+.category-header .icon {
+    margin-right: 0.5rem;
+}
+
+.category-header .arrow {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+.category-content {
+    display: none;
+    padding: 0.5rem 0 0.5rem 1rem;
+}
+
+.category-content.expanded {
+    display: block;
+}
+
+.sub-category {
+    margin-bottom: 0.25rem;
+}
+
+.sub-header {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-secondary, #666);
+}
+
+.sub-header:hover {
+    color: var(--primary-color, #007bff);
+}
+
+.sub-content {
+    display: none;
+    padding-left: 1rem;
+}
+
+.sub-content.expanded {
+    display: block;
+}
+
+.lesson-link {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-primary, #333);
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.lesson-link:hover {
+    background: var(--bg-hover, #e8e8e8);
+    color: var(--primary-color, #007bff);
+}
+
+.lesson-link.active {
+    background: var(--primary-color, #007bff);
+    color: white;
+}
+
+.sql-lessons-page .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    background: white;
+}
+
+.lesson {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.lesson h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+}
+
+.lesson-meta {
+    color: var(--text-secondary, #666);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.lesson-section {
+    margin-bottom: 2.5rem;
+}
+
+.lesson-section h2 {
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color, #007bff);
+}
+
+.lesson-section h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.75rem 0;
+}
+
+.lesson-section h4 {
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.lesson-section pre {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+}
+
+.lesson-section code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+}
+
+.lesson-section p code {
+    background: #f0f0f0;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+}
+
+.key-points {
+    background: #e8f4fd;
+    border-left: 4px solid #007bff;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.key-points h3 {
+    margin: 0 0 0.5rem 0 !important;
+    font-size: 1rem;
+}
+
+.key-points ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.key-points li {
+    margin-bottom: 0.5rem;
+}
+
+.info-box {
+    background: #fff8e6;
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.info-box h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+.info-box ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.example-query {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.example-query h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+.example-query pre {
+    margin: 0.5rem 0;
+}
+
+.example-query button {
+    margin-top: 0.5rem;
+}
+
+.comparison-table {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color, #ddd);
+    text-align: left;
+}
+
+.comparison-table th {
+    background: var(--bg-secondary, #f5f5f5);
+    font-weight: 600;
+}
+
+.exercise {
+    background: #f0f9f0;
+    border: 1px solid #28a745;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.exercise h4 {
+    margin: 0 0 0.5rem 0;
+    color: #28a745;
+}
+
+.exercise details {
+    margin-top: 1rem;
+}
+
+.exercise summary {
+    cursor: pointer;
+    color: var(--primary-color, #007bff);
+    font-weight: 500;
+}
+
+.summary-box {
+    background: #e8f4fd;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.summary-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.summary-box li {
+    padding: 0.5rem 0;
+}
+
+.lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+}
+</style>
+
+<script>
+(function() {
+    window.toggleCategory = function(id) {
+        const content = document.getElementById(id);
+        if (content) {
+            content.classList.toggle('expanded');
+        }
+    };
+
+    window.toggleSubCategory = function(id) {
+        const content = document.getElementById(id);
+        if (content) {
+            content.classList.toggle('expanded');
+        }
+    };
+
+    window.loadLesson = function(lessonId) {
+        // Update active state
+        document.querySelectorAll('.lesson-link').forEach(function(link) {
+            link.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // In a real implementation, this would fetch lesson content via AJAX
+        // For now, show a message
+        const content = document.getElementById('lesson-content');
+        content.innerHTML = '<div class="lesson"><h1>Loading ' + lessonId + '...</h1><p>This lesson content would be loaded dynamically.</p><p>Go to the <a href="/sql">SQL Dashboard</a> to practice!</p></div>';
+    };
+
+    window.runExample = function(button) {
+        const queryBlock = button.parentElement.querySelector('code');
+        const query = queryBlock.textContent;
+
+        // Open SQL dashboard with query
+        const encoded = encodeURIComponent(query);
+        window.location.href = '/sql?query=' + encoded;
+    };
+
+    // Highlight code blocks
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('pre code').forEach(function(block) {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+</script>

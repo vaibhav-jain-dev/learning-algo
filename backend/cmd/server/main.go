@@ -16,6 +16,7 @@ import (
 	"github.com/gofiber/template/html/v2"
 	"github.com/gofiber/websocket/v2"
 
+	"github.com/vaibhav-jain-dev/learning-algo/internal/db"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/handlers"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
 )
@@ -74,6 +75,18 @@ func main() {
 	// Create handlers
 	h := handlers.New(pythonPool, goPool, execManager)
 
+	// Initialize database connection (optional - graceful if not available)
+	var sqlHandlers *handlers.SQLHandlers
+	dbConfig := db.ConfigFromEnv()
+	database, err := db.New(dbConfig, "./backend/db/migrations")
+	if err != nil {
+		log.Printf("Warning: Database connection failed: %v (SQL features disabled)", err)
+	} else {
+		log.Println("Database connected successfully")
+		sqlHandlers = handlers.NewSQLHandlers(database)
+		defer database.Close()
+	}
+
 	// Static files
 	app.Static("/static", "./frontend/static")
 
@@ -103,6 +116,20 @@ func main() {
 	htmx.Get("/problem-content/*", h.ProblemContent)
 	htmx.Post("/execute", h.Execute)
 	htmx.Get("/output/:id", h.GetOutput)
+
+	// SQL Learning routes (only if database is available)
+	if sqlHandlers != nil {
+		app.Get("/sql", sqlHandlers.SQLDashboard)
+		app.Get("/sql-lessons", sqlHandlers.SQLLessons)
+
+		sqlAPI := app.Group("/api/sql")
+		sqlAPI.Post("/execute", sqlHandlers.ExecuteSQL)
+		sqlAPI.Get("/schema", sqlHandlers.GetSchema)
+		sqlAPI.Get("/stats", sqlHandlers.GetTableStats)
+		sqlAPI.Post("/reset", sqlHandlers.ResetDatabase)
+		sqlAPI.Get("/health", sqlHandlers.HealthCheck)
+		sqlAPI.Get("/er-diagram", sqlHandlers.GetERDiagram)
+	}
 
 	// WebSocket for real-time execution updates
 	app.Use("/ws", func(c *fiber.Ctx) error {

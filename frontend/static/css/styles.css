@@ -970,3 +970,247 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* ============================================
+   SQL Visualization Styles
+   ============================================ */
+
+.visualization {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #fafafa;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+}
+
+.visualization svg {
+    display: block;
+    margin: 0 auto;
+}
+
+/* B-Tree Animation */
+.visualization .node rect {
+    transition: fill 0.3s ease;
+}
+
+.visualization .node.highlighted rect {
+    fill: #FF6B6B !important;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.5));
+}
+
+.visualization .node.found rect {
+    fill: #28a745 !important;
+    filter: drop-shadow(0 0 8px rgba(40, 167, 69, 0.5));
+}
+
+/* Index Diagram Animations */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes slideRight {
+    0% { transform: translateX(-10px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes highlight {
+    0%, 100% { fill: #4A90D9; }
+    50% { fill: #FF6B6B; }
+}
+
+.visualization .animated {
+    animation: pulse 2s infinite;
+}
+
+.visualization .search-path {
+    stroke: #FF6B6B;
+    stroke-width: 3;
+    stroke-dasharray: 10, 5;
+    animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+    to { stroke-dashoffset: -15; }
+}
+
+/* ER Diagram Styles */
+.er-diagram-svg {
+    min-height: 400px;
+}
+
+.er-diagram-svg .table-box {
+    fill: #fff;
+    stroke: #333;
+    stroke-width: 2;
+}
+
+.er-diagram-svg .table-header {
+    fill: #333;
+}
+
+.er-diagram-svg .table-header-text {
+    fill: #fff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.er-diagram-svg .column-text {
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.er-diagram-svg .pk-column {
+    fill: #007bff;
+    font-weight: bold;
+}
+
+.er-diagram-svg .fk-column {
+    fill: #28a745;
+}
+
+.er-diagram-svg .relationship-line {
+    stroke: #666;
+    stroke-width: 1.5;
+    fill: none;
+}
+
+.er-diagram-svg .relationship-line.many {
+    stroke-dasharray: 5, 3;
+}
+
+/* Query Plan Visualization */
+.query-plan-viz {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.query-plan-viz .plan-node {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem 0;
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    border-radius: 0 4px 4px 0;
+}
+
+.query-plan-viz .plan-node.scan-seq {
+    border-left-color: #dc3545;
+}
+
+.query-plan-viz .plan-node.scan-index {
+    border-left-color: #28a745;
+}
+
+.query-plan-viz .plan-node.scan-bitmap {
+    border-left-color: #ffc107;
+}
+
+.query-plan-viz .plan-cost {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Interactive Controls */
+.viz-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.viz-controls button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.viz-controls button:hover {
+    background: var(--bg-secondary);
+}
+
+.viz-controls button.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* Comparison Tables in Visualizations */
+.viz-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.viz-comparison .comparison-item {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+}
+
+.viz-comparison .comparison-item.good {
+    background: #d4edda;
+    border: 1px solid #28a745;
+}
+
+.viz-comparison .comparison-item.bad {
+    background: #f8d7da;
+    border: 1px solid #dc3545;
+}
+
+.viz-comparison h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+/* Speed Comparison Animation */
+.speed-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.speed-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.speed-bar .label {
+    width: 150px;
+    font-weight: 500;
+}
+
+.speed-bar .bar-container {
+    flex: 1;
+    height: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.speed-bar .bar {
+    height: 100%;
+    border-radius: 15px;
+    transition: width 1s ease-out;
+}
+
+.speed-bar .bar.fast {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    width: 10%;
+}
+
+.speed-bar .bar.slow {
+    background: linear-gradient(90deg, #dc3545, #fd7e14);
+    width: 100%;
+}
+
+.speed-bar .time {
+    width: 80px;
+    text-align: right;
+    font-family: var(--font-mono);
+}

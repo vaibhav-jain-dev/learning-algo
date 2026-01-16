@@ -7,6 +7,7 @@ require (
 	github.com/gofiber/template/html/v2 v2.1.1
 	github.com/gofiber/websocket/v2 v2.2.1
 	github.com/google/uuid v1.5.0
+	github.com/lib/pq v1.10.9
 	github.com/yuin/goldmark v1.6.0
 )
 

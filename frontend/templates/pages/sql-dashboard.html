@@ -1,0 +1,1066 @@
+<div class="sql-dashboard">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Database Schema</h2>
+            <button class="btn btn-sm btn-secondary" onclick="refreshSchema()">Refresh</button>
+        </div>
+        <div id="schema-tree" class="schema-tree">
+            <div class="loading">Loading schema...</div>
+        </div>
+        <div class="sidebar-section">
+            <h3>Table Statistics</h3>
+            <div id="table-stats" class="table-stats">
+                <div class="loading">Loading stats...</div>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <h3>Quick Actions</h3>
+            <button class="btn btn-danger btn-block" onclick="resetDatabase()">
+                Reset to Initial State
+            </button>
+            <p class="help-text">Drops all data and re-runs migrations</p>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="tabs">
+            <button class="tab active" onclick="showSQLTab('editor')">SQL Editor</button>
+            <button class="tab" onclick="showSQLTab('results')">Results</button>
+            <button class="tab" onclick="showSQLTab('er-diagram')">ER Diagram</button>
+            <button class="tab" onclick="showSQLTab('history')">Query History</button>
+        </div>
+
+        <div id="editor-tab" class="tab-content active">
+            <div class="editor-header">
+                <div class="editor-info">
+                    <span class="db-badge">PostgreSQL</span>
+                    <span class="db-name">order_management</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="previewQuery()" title="Show execution plan">
+                        Preview
+                    </button>
+                    <button id="run-btn" class="btn btn-primary" onclick="executeQuery()">
+                        <span class="run-icon">&#9654;</span> Execute
+                    </button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div id="sql-editor-wrapper"></div>
+            </div>
+            <div class="editor-footer">
+                <div class="sample-queries">
+                    <span class="label">Quick Queries:</span>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('select_all')">SELECT *</button>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('join')">JOIN</button>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('aggregate')">Aggregate</button>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('subquery')">Subquery</button>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('window')">Window</button>
+                    <button class="btn btn-xs" onclick="loadSampleQuery('cte')">CTE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-tab" class="tab-content">
+            <div id="results-container">
+                <div class="placeholder">
+                    <h2>Execute a Query</h2>
+                    <p>Run a SQL query to see results here.</p>
+                    <p>Use <strong>Preview</strong> to see the execution plan without running the query.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="er-diagram-tab" class="tab-content">
+            <div id="er-diagram-container">
+                <div class="loading">Loading ER diagram...</div>
+            </div>
+        </div>
+
+        <div id="history-tab" class="tab-content">
+            <div id="history-container">
+                <div class="placeholder">
+                    <h2>Query History</h2>
+                    <p>Your executed queries will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sql-dashboard {
+    display: flex;
+    height: calc(100vh - 60px);
+    gap: 0;
+}
+
+.sql-dashboard .sidebar {
+    width: 300px;
+    background: var(--bg-secondary, #f5f5f5);
+    border-right: 1px solid var(--border-color, #e0e0e0);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sql-dashboard .sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sql-dashboard .sidebar-header h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.sql-dashboard .sidebar-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.sql-dashboard .sidebar-section h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+}
+
+.schema-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.table-stats {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px dotted var(--border-color, #ddd);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-count {
+    font-weight: bold;
+    color: var(--primary-color, #007bff);
+}
+
+.schema-table {
+    margin-bottom: 0.5rem;
+}
+
+.schema-table-name {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.schema-table-name:hover {
+    background: var(--bg-hover, #f0f0f0);
+}
+
+.schema-table-name .icon {
+    margin-right: 0.5rem;
+    color: var(--text-secondary, #666);
+}
+
+.schema-columns {
+    display: none;
+    padding: 0.5rem;
+    padding-left: 1.5rem;
+    background: white;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    font-size: 0.85rem;
+}
+
+.schema-columns.expanded {
+    display: block;
+}
+
+.schema-column {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px dotted var(--border-color, #eee);
+}
+
+.schema-column:last-child {
+    border-bottom: none;
+}
+
+.column-name {
+    font-family: monospace;
+}
+
+.column-name.primary {
+    color: var(--primary-color, #007bff);
+    font-weight: bold;
+}
+
+.column-type {
+    color: var(--text-secondary, #888);
+    font-size: 0.8rem;
+}
+
+.sql-dashboard .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sql-dashboard .tabs {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary, #f5f5f5);
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.sql-dashboard .tab {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+    border-bottom: 2px solid transparent;
+}
+
+.sql-dashboard .tab.active {
+    color: var(--primary-color, #007bff);
+    border-bottom-color: var(--primary-color, #007bff);
+}
+
+.sql-dashboard .tab-content {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sql-dashboard .tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary, #f5f5f5);
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.editor-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.db-badge {
+    background: #336791;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.db-name {
+    font-family: monospace;
+    color: var(--text-secondary, #666);
+}
+
+.editor-container {
+    flex: 1;
+    min-height: 250px;
+}
+
+#sql-editor-wrapper {
+    height: 100%;
+}
+
+#sql-editor-wrapper .CodeMirror {
+    height: 100%;
+    font-size: 14px;
+}
+
+.editor-footer {
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary, #f5f5f5);
+    border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.sample-queries {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sample-queries .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #666);
+}
+
+.btn-xs {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #888);
+    margin-top: 0.5rem;
+}
+
+#results-container {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.results-table-wrapper {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.results-table th,
+.results-table td {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color, #ddd);
+    text-align: left;
+}
+
+.results-table th {
+    background: var(--bg-secondary, #f5f5f5);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.results-table tr:hover {
+    background: var(--bg-hover, #f8f8f8);
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.results-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #666);
+}
+
+.results-meta .success {
+    color: #28a745;
+}
+
+.results-meta .error {
+    color: #dc3545;
+}
+
+.error-output {
+    background: #fff5f5;
+    border: 1px solid #ffcccc;
+    padding: 1rem;
+    border-radius: 4px;
+    color: #dc3545;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+.plan-output {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+#er-diagram-container {
+    flex: 1;
+    padding: 1rem;
+    overflow: auto;
+    background: #fafafa;
+}
+
+.er-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.er-table {
+    background: white;
+    border: 2px solid #333;
+    border-radius: 4px;
+    min-width: 200px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+
+.er-table-name {
+    background: #333;
+    color: white;
+    padding: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.er-columns {
+    padding: 0.5rem;
+}
+
+.er-column {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    font-size: 0.85rem;
+    border-bottom: 1px dotted #ddd;
+}
+
+.er-column:last-child {
+    border-bottom: none;
+}
+
+.er-column.primary {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.er-column .type {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.er-relationships {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 4px;
+}
+
+.er-relationships h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.er-relationship {
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+}
+
+#history-container {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.history-item {
+    background: white;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary, #f5f5f5);
+    cursor: pointer;
+}
+
+.history-item-header:hover {
+    background: var(--bg-hover, #e8e8e8);
+}
+
+.history-query {
+    padding: 0.5rem 1rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: #f8f9fa;
+    white-space: pre-wrap;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.history-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #888);
+}
+
+.history-duration {
+    font-size: 0.8rem;
+    color: var(--primary-color, #007bff);
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary, #666);
+    text-align: center;
+    padding: 2rem;
+}
+
+.placeholder h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary, #333);
+}
+
+.loading {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-secondary, #666);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+</style>
+
+<script>
+(function() {
+    let editor = null;
+    let queryHistory = [];
+
+    const sampleQueries = {
+        select_all: `-- Select all requests with their status
+SELECT * FROM requests
+LIMIT 10;`,
+        join: `-- Join requests with orders and patients
+SELECT
+    r.request_number,
+    r.status AS request_status,
+    o.order_number,
+    o.status AS order_status,
+    p.first_name || ' ' || COALESCE(p.last_name, '') AS patient_name,
+    p.gender,
+    p.date_of_birth
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+JOIN patients p ON o.patient_id = p.id
+ORDER BY r.created_at DESC
+LIMIT 20;`,
+        aggregate: `-- Aggregate statistics by request status
+SELECT
+    status,
+    COUNT(*) AS request_count,
+    SUM(final_amount) AS total_revenue,
+    AVG(final_amount) AS avg_order_value,
+    MIN(created_at) AS earliest,
+    MAX(created_at) AS latest
+FROM requests
+GROUP BY status
+ORDER BY request_count DESC;`,
+        subquery: `-- Find requests with more than 2 orders using subquery
+SELECT
+    r.request_number,
+    r.status,
+    r.final_amount,
+    (SELECT COUNT(*) FROM orders o WHERE o.request_id = r.id) AS order_count
+FROM requests r
+WHERE (SELECT COUNT(*) FROM orders o WHERE o.request_id = r.id) > 1
+ORDER BY order_count DESC;`,
+        window: `-- Use window functions to rank requests by amount
+SELECT
+    request_number,
+    status,
+    final_amount,
+    RANK() OVER (ORDER BY final_amount DESC) AS revenue_rank,
+    SUM(final_amount) OVER (PARTITION BY status) AS status_total,
+    final_amount * 100.0 / SUM(final_amount) OVER () AS percentage_of_total
+FROM requests
+WHERE status != 'cancelled'
+ORDER BY revenue_rank;`,
+        cte: `-- Common Table Expression (CTE) example
+WITH request_summary AS (
+    SELECT
+        r.id,
+        r.request_number,
+        r.status,
+        r.final_amount,
+        COUNT(DISTINCT o.id) AS order_count,
+        COUNT(DISTINCT cs.id) AS slot_count
+    FROM requests r
+    LEFT JOIN orders o ON o.request_id = r.id
+    LEFT JOIN collection_slots cs ON cs.request_id = r.id
+    GROUP BY r.id, r.request_number, r.status, r.final_amount
+),
+high_value_requests AS (
+    SELECT * FROM request_summary
+    WHERE final_amount > 2000
+)
+SELECT
+    request_number,
+    status,
+    final_amount,
+    order_count,
+    slot_count
+FROM high_value_requests
+ORDER BY final_amount DESC;`
+    };
+
+    function initEditor() {
+        const wrapper = document.getElementById('sql-editor-wrapper');
+        if (!wrapper || typeof CodeMirror === 'undefined') return;
+
+        editor = CodeMirror(wrapper, {
+            value: `-- Welcome to SQL Learning Dashboard!
+-- This database contains an Order Management System schema.
+-- Try some queries to explore the data.
+
+SELECT
+    r.request_number,
+    r.status,
+    ur.cached_name AS user_name,
+    r.final_amount,
+    r.created_at
+FROM requests r
+JOIN user_references ur ON r.user_ref_id = ur.id
+ORDER BY r.created_at DESC
+LIMIT 10;`,
+            mode: 'text/x-pgsql',
+            theme: 'eclipse',
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            extraKeys: {
+                'Ctrl-Enter': executeQuery,
+                'Cmd-Enter': executeQuery,
+                'Ctrl-Shift-Enter': previewQuery,
+                'Cmd-Shift-Enter': previewQuery
+            }
+        });
+
+        editor.setSize('100%', '100%');
+    }
+
+    function loadSchema() {
+        fetch('/api/sql/schema')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    renderSchema(data.schema);
+                }
+            })
+            .catch(function(err) {
+                document.getElementById('schema-tree').innerHTML =
+                    '<div class="error">Failed to load schema</div>';
+            });
+    }
+
+    function loadStats() {
+        fetch('/api/sql/stats')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    renderStats(data.stats);
+                }
+            })
+            .catch(function(err) {
+                document.getElementById('table-stats').innerHTML =
+                    '<div class="error">Failed to load stats</div>';
+            });
+    }
+
+    function renderSchema(schema) {
+        const container = document.getElementById('schema-tree');
+        let html = '';
+
+        schema.forEach(function(table) {
+            if (table.table_name === 'user_savepoints' || table.table_name === 'query_history') {
+                return;
+            }
+
+            const tableId = 'table-' + table.table_name;
+            html += '<div class="schema-table">' +
+                '<div class="schema-table-name" onclick="toggleTableColumns(\'' + tableId + '\')">' +
+                '<span class="icon">&#128451;</span>' +
+                table.table_name +
+                '</div>' +
+                '<div id="' + tableId + '" class="schema-columns">';
+
+            table.columns.forEach(function(col) {
+                const isPrimary = col.is_primary ? ' primary' : '';
+                const pkIcon = col.is_primary ? '&#128273; ' : '';
+                html += '<div class="schema-column">' +
+                    '<span class="column-name' + isPrimary + '">' + pkIcon + col.name + '</span>' +
+                    '<span class="column-type">' + col.data_type + '</span>' +
+                    '</div>';
+            });
+
+            html += '</div></div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    function renderStats(stats) {
+        const container = document.getElementById('table-stats');
+        let html = '';
+
+        stats.forEach(function(stat) {
+            html += '<div class="stat-item">' +
+                '<span class="stat-name">' + stat.table_name + '</span>' +
+                '<span class="stat-count">' + stat.row_count + '</span>' +
+                '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.toggleTableColumns = function(tableId) {
+        const columns = document.getElementById(tableId);
+        if (columns) {
+            columns.classList.toggle('expanded');
+        }
+    };
+
+    window.showSQLTab = function(tabName) {
+        document.querySelectorAll('.sql-dashboard .tab').forEach(function(t) {
+            t.classList.remove('active');
+        });
+        document.querySelectorAll('.sql-dashboard .tab-content').forEach(function(c) {
+            c.classList.remove('active');
+        });
+
+        document.getElementById(tabName + '-tab').classList.add('active');
+        document.querySelectorAll('.sql-dashboard .tab').forEach(function(t) {
+            if (t.getAttribute('onclick').indexOf(tabName) !== -1) {
+                t.classList.add('active');
+            }
+        });
+
+        if (tabName === 'editor' && editor) {
+            setTimeout(function() { editor.refresh(); }, 10);
+        }
+
+        if (tabName === 'er-diagram') {
+            loadERDiagram();
+        }
+    };
+
+    window.loadSampleQuery = function(type) {
+        if (editor && sampleQueries[type]) {
+            editor.setValue(sampleQueries[type]);
+        }
+    };
+
+    window.executeQuery = function() {
+        if (!editor) return;
+
+        const query = editor.getValue().trim();
+        if (!query) return;
+
+        showSQLTab('results');
+        document.getElementById('results-container').innerHTML =
+            '<div class="loading">Executing query...</div>';
+
+        const startTime = Date.now();
+
+        fetch('/api/sql/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query, preview: false })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            renderResults(data, query, Date.now() - startTime);
+            addToHistory(query, data);
+            loadStats();
+        })
+        .catch(function(err) {
+            document.getElementById('results-container').innerHTML =
+                '<div class="error-output">Error: ' + err.message + '</div>';
+        });
+    };
+
+    window.previewQuery = function() {
+        if (!editor) return;
+
+        const query = editor.getValue().trim();
+        if (!query) return;
+
+        showSQLTab('results');
+        document.getElementById('results-container').innerHTML =
+            '<div class="loading">Analyzing query...</div>';
+
+        fetch('/api/sql/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query, preview: true })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            renderPlan(data);
+        })
+        .catch(function(err) {
+            document.getElementById('results-container').innerHTML =
+                '<div class="error-output">Error: ' + err.message + '</div>';
+        });
+    };
+
+    function renderResults(data, query, clientTime) {
+        const container = document.getElementById('results-container');
+
+        if (!data.success || data.error) {
+            container.innerHTML = '<div class="results-header">' +
+                '<h3>Query Error</h3>' +
+                '<div class="results-meta"><span class="error">Failed</span></div>' +
+                '</div>' +
+                '<pre class="error-output">' + escapeHtml(data.error) + '</pre>';
+            return;
+        }
+
+        let html = '<div class="results-header">' +
+            '<h3>Query Results</h3>' +
+            '<div class="results-meta">' +
+            '<span class="success">Success</span>' +
+            '<span>' + data.rows_affected + ' rows</span>' +
+            '<span>' + data.duration_ms + 'ms (server) / ' + clientTime + 'ms (total)</span>' +
+            '</div></div>';
+
+        if (data.columns && data.columns.length > 0 && data.rows) {
+            html += '<div class="results-table-wrapper"><table class="results-table">';
+            html += '<thead><tr>';
+            data.columns.forEach(function(col) {
+                html += '<th>' + escapeHtml(col) + '</th>';
+            });
+            html += '</tr></thead><tbody>';
+
+            data.rows.forEach(function(row) {
+                html += '<tr>';
+                row.forEach(function(cell) {
+                    const val = cell === null ? '<em>NULL</em>' : escapeHtml(String(cell));
+                    html += '<td>' + val + '</td>';
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+        } else {
+            html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
+        }
+
+        container.innerHTML = html;
+    }
+
+    function renderPlan(data) {
+        const container = document.getElementById('results-container');
+
+        if (data.error) {
+            container.innerHTML = '<div class="results-header">' +
+                '<h3>Query Plan Error</h3>' +
+                '</div>' +
+                '<pre class="error-output">' + escapeHtml(data.error) + '</pre>';
+            return;
+        }
+
+        let html = '<div class="results-header">' +
+            '<h3>Query Execution Plan</h3>' +
+            '<p>This shows how PostgreSQL will execute your query without actually running it.</p>' +
+            '</div>' +
+            '<pre class="plan-output">' + JSON.stringify(data.plan, null, 2) + '</pre>';
+
+        container.innerHTML = html;
+    }
+
+    function addToHistory(query, data) {
+        queryHistory.unshift({
+            query: query,
+            time: new Date().toLocaleTimeString(),
+            duration: data.duration_ms || 0,
+            success: data.success
+        });
+
+        if (queryHistory.length > 50) {
+            queryHistory = queryHistory.slice(0, 50);
+        }
+
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-container');
+
+        if (queryHistory.length === 0) {
+            container.innerHTML = '<div class="placeholder">' +
+                '<h2>Query History</h2>' +
+                '<p>Your executed queries will appear here.</p>' +
+                '</div>';
+            return;
+        }
+
+        let html = '';
+        queryHistory.forEach(function(item, index) {
+            const statusIcon = item.success ? '&#10003;' : '&#10007;';
+            const statusClass = item.success ? 'success' : 'error';
+            html += '<div class="history-item" onclick="loadFromHistory(' + index + ')">' +
+                '<div class="history-item-header">' +
+                '<span class="' + statusClass + '">' + statusIcon + '</span>' +
+                '<span class="history-time">' + item.time + '</span>' +
+                '<span class="history-duration">' + item.duration + 'ms</span>' +
+                '</div>' +
+                '<div class="history-query">' + escapeHtml(item.query) + '</div>' +
+                '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.loadFromHistory = function(index) {
+        if (editor && queryHistory[index]) {
+            editor.setValue(queryHistory[index].query);
+            showSQLTab('editor');
+        }
+    };
+
+    window.refreshSchema = function() {
+        document.getElementById('schema-tree').innerHTML = '<div class="loading">Loading schema...</div>';
+        document.getElementById('table-stats').innerHTML = '<div class="loading">Loading stats...</div>';
+        loadSchema();
+        loadStats();
+    };
+
+    window.resetDatabase = function() {
+        if (!confirm('This will delete ALL data and restore the initial seed data. Are you sure?')) {
+            return;
+        }
+
+        const container = document.getElementById('results-container');
+        showSQLTab('results');
+        container.innerHTML = '<div class="loading">Resetting database...</div>';
+
+        fetch('/api/sql/reset', { method: 'POST' })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    container.innerHTML = '<div class="results-header">' +
+                        '<h3>Database Reset Complete</h3>' +
+                        '<div class="results-meta"><span class="success">Success</span></div>' +
+                        '</div>' +
+                        '<p>The database has been restored to its initial state with all seed data.</p>';
+                    refreshSchema();
+                } else {
+                    container.innerHTML = '<pre class="error-output">' + escapeHtml(data.error) + '</pre>';
+                }
+            })
+            .catch(function(err) {
+                container.innerHTML = '<pre class="error-output">Error: ' + err.message + '</pre>';
+            });
+    };
+
+    function loadERDiagram() {
+        const container = document.getElementById('er-diagram-container');
+
+        fetch('/api/sql/er-diagram')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    renderERDiagram(data);
+                }
+            })
+            .catch(function(err) {
+                container.innerHTML = '<div class="error">Failed to load ER diagram</div>';
+            });
+    }
+
+    function renderERDiagram(data) {
+        const container = document.getElementById('er-diagram-container');
+
+        let html = '<div class="er-diagram">';
+
+        data.tables.forEach(function(table) {
+            html += '<div class="er-table">' +
+                '<div class="er-table-name">' + table.name + '</div>' +
+                '<div class="er-columns">';
+
+            table.columns.forEach(function(col) {
+                const isPrimary = col.primary ? ' primary' : '';
+                const pkIcon = col.primary ? '&#128273; ' : '';
+                html += '<div class="er-column' + isPrimary + '">' +
+                    '<span>' + pkIcon + col.name + '</span>' +
+                    '<span class="type">' + col.type + '</span>' +
+                    '</div>';
+            });
+
+            html += '</div></div>';
+        });
+
+        html += '</div>';
+
+        if (data.relationships && data.relationships.length > 0) {
+            html += '<div class="er-relationships">' +
+                '<h3>Relationships (Foreign Keys)</h3>';
+
+            data.relationships.forEach(function(rel) {
+                html += '<div class="er-relationship">' +
+                    rel.from_table + '.' + rel.from_column +
+                    ' &#8594; ' +
+                    rel.to_table + '.' + rel.to_column +
+                    '</div>';
+            });
+
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Initialize
+    initEditor();
+    loadSchema();
+    loadStats();
+})();
+</script>
