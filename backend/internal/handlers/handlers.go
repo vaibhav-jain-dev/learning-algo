@@ -39,6 +39,7 @@ func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool, execManager *kern
 		goldmark.WithRendererOptions(
 			html.WithHardWraps(),
 			html.WithXHTML(),
+			html.WithUnsafe(),
 		),
 	)
 

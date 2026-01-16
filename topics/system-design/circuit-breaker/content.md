@@ -8,52 +8,37 @@ The Circuit Breaker pattern prevents cascading failures in distributed systems b
 
 Think of your home's electrical circuit breaker:
 
-```
-Your Home Electrical System:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   Power Grid ──► Circuit Breaker ──► Your Appliances            │
-│                       │                                         │
-│                  [MONITORS]                                     │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Current too high?   │                              │
-│            │ Short circuit?      │                              │
-│            │ Overload detected?  │                              │
-│            └─────────────────────┘                              │
-│                       │                                         │
-│                [TRIPS/OPENS]                                    │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Cuts power flow     │                              │
-│            │ Prevents fire       │                              │
-│            │ Protects wiring     │                              │
-│            └─────────────────────┘                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph electrical["Electrical System"]
+        direction LR
+        Grid["⚡ Power Grid"]
+        CB["Circuit Breaker"]
+        Appliances["🏠 Appliances"]
 
-Software Circuit Breaker:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   Service A ──► Circuit Breaker ──► Service B                   │
-│                       │                                         │
-│                  [MONITORS]                                     │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Failure rate high?  │                              │
-│            │ Timeouts frequent?  │                              │
-│            │ Error threshold?    │                              │
-│            └─────────────────────┘                              │
-│                       │                                         │
-│                [TRIPS/OPENS]                                    │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Fails fast          │                              │
-│            │ Returns fallback    │                              │
-│            │ Protects both sides │                              │
-│            └─────────────────────┘                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+        Grid -->|Current flows| CB
+        CB -->|Normal: Flows| Appliances
+
+        Monitor["MONITORS:<br/>Current too high?<br/>Short circuit?<br/>Overload?"]
+        CB -.->|Detects| Monitor
+        Monitor -->|TRIPS/OPENS| Trip["Circuit Opens:<br/>Cuts power<br/>Prevents fire<br/>Protects wiring"]
+        Trip -->|No current| Appliances
+    end
+
+    subgraph software["Software Circuit Breaker"]
+        direction LR
+        SvcA["Service A"]
+        SCB["Circuit Breaker"]
+        SvcB["Service B"]
+
+        SvcA -->|Request| SCB
+        SCB -->|Normal: Forwards| SvcB
+
+        Monitor2["MONITORS:<br/>Failure rate high?<br/>Timeouts frequent?<br/>Error threshold?"]
+        SCB -.->|Detects| Monitor2
+        Monitor2 -->|TRIPS/OPENS| Trip2["Circuit Opens:<br/>Fails fast<br/>Returns fallback<br/>Protects both sides"]
+        Trip2 -->|Fast rejection| SvcA
+    end
 ```
 
 ### Mapping the Metaphor
@@ -88,35 +73,35 @@ After 20+ years of operating distributed systems, here's what you learn:
 
 ## The Three States: Deep Dive
 
-```
-                    ┌──────────────────────────────────────────────┐
-                    │                 STATE DIAGRAM                │
-                    └──────────────────────────────────────────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED
 
-                             Success
-                    ┌──────────────────┐
-                    │                  │
-                    ▼                  │
-              ┌──────────┐        ┌────┴─────┐
-              │          │        │          │
-         ────►│  CLOSED  │───────►│   OPEN   │
-              │          │        │          │
-              └────┬─────┘        └────┬─────┘
-                   │                   │
-                   │                   │ Timeout expires
-                   │                   │
-                   │              ┌────▼─────┐
-                   │              │          │
-                   │              │HALF-OPEN │
-                   │              │          │
-                   │              └────┬─────┘
-                   │                   │
-                   │    Success        │ Failure
-                   └───────────────────┘
+    CLOSED --> OPEN: Failure threshold reached
+    CLOSED --> CLOSED: Success
 
-    CLOSED: All requests pass through, failures counted
-    OPEN: All requests fail immediately (fail fast)
-    HALF-OPEN: Limited requests pass through to test recovery
+    OPEN --> HALF_OPEN: Timeout expired
+
+    HALF_OPEN --> CLOSED: Probe success
+    HALF_OPEN --> OPEN: Probe failure
+
+    note right of CLOSED
+        All requests pass through
+        Failures are counted
+        Normal operation
+    end note
+
+    note right of OPEN
+        All requests fail immediately
+        Returns fallback response
+        Fail fast approach
+    end note
+
+    note right of HALF_OPEN
+        Limited requests pass through
+        Testing if service recovered
+        Probing for recovery
+    end note
 ```
 
 ### State Transitions in Detail

@@ -27,6 +27,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/brace-fold.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/indent-fold.min.js"></script>
+    <!-- Mermaid.js for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary, #f5f5f5);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .html-diagram {
+            display: block;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary, #f5f5f5);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color, #2563eb);
+        }
+    </style>
 </head>
 <body hx-boost="true">
     <header class="header">
@@ -50,16 +72,35 @@
     <!-- Algorithm Visualization Engine -->
     <script src="/static/js/visualizations.js"></script>
     <script>
-        // Re-highlight code blocks after HTMX swaps
+        // Initialize Mermaid with configuration
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                padding: 20
+            },
+            sequence: {
+                useMaxWidth: true,
+                padding: 20
+            }
+        });
+
+        // Re-highlight code blocks and render diagrams after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function(evt) {
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
+            // Re-render Mermaid diagrams
+            mermaid.contentLoaded();
             // Re-initialize visualizations if needed
             initializeVisualizations();
         });
-        // Initial highlight
+
+        // Initial highlight and setup
         hljs.highlightAll();
+        mermaid.contentLoaded();
 
         // Initialize visualizations on page load
         function initializeVisualizations() {

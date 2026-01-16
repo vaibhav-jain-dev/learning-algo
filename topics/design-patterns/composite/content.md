@@ -15,21 +15,31 @@ The Composite pattern composes objects into tree structures to represent part-wh
 
 ### Structure
 
-```
-┌─────────────────────────┐
-│       Component         │
-├─────────────────────────┤
-│ + operation()           │
-│ + add(component)        │
-│ + remove(component)     │
-│ + getChild(i)           │
-└───────────┬─────────────┘
-            △
-    ┌───────┴───────┐
-┌───┴────┐     ┌───┴────────┐
-│  Leaf  │     │ Composite   │
-└────────┘     │ - children  │
-               └─────────────┘
+```mermaid
+classDiagram
+    class Component {
+        <<interface>>
+        +operation()*
+        +add(component: Component)*
+        +remove(component: Component)*
+        +getChild(i: int) Component*
+    }
+
+    class Leaf {
+        +operation()
+    }
+
+    class Composite {
+        -children: Component[]
+        +operation()
+        +add(component: Component)
+        +remove(component: Component)
+        +getChild(i: int) Component
+    }
+
+    Component <|-- Leaf
+    Component <|-- Composite
+    Composite --> Component
 ```
 
 ## Implementation

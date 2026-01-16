@@ -60,16 +60,43 @@ You can also solve this iteratively with O(1) space by only keeping track of the
 
 Without memoization, the recursive call tree looks like this:
 
-```
-                    fib(5)
-                   /      \
-              fib(4)       fib(3)
-             /     \       /     \
-         fib(3)  fib(2)  fib(2)  fib(1)
-         /    \    /  \    /  \
-     fib(2) fib(1) f(1) f(0) f(1) f(0)
-      / \
-   f(1) f(0)
+```mermaid
+graph TD
+    fib5["fib(5)"]
+    fib4["fib(4)"]
+    fib3a["fib(3)"]
+    fib3b["fib(3)<br/>❌ DUPLICATE"]
+    fib2a["fib(2)"]
+    fib2b["fib(2)<br/>❌ DUPLICATE"]
+    fib2c["fib(2)<br/>❌ DUPLICATE"]
+    fib1a["fib(1)"]
+    fib1b["fib(1)"]
+    fib1c["fib(1)"]
+    fib0a["fib(0)"]
+    fib0b["fib(0)"]
+
+    fib5 --> fib4
+    fib5 --> fib3b
+
+    fib4 --> fib3a
+    fib4 --> fib2a
+
+    fib3a --> fib2b
+    fib3a --> fib1a
+
+    fib3b --> fib2c
+    fib3b --> fib1b
+
+    fib2a --> fib1c
+    fib2a --> fib0a
+
+    fib2b --> fib1c
+    fib2b --> fib0b
+
+    style fib3b fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style fib2b fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style fib2c fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style fib5 fill:#bbdefb,stroke:#1976d2,stroke-width:3px
 ```
 
 Notice how `fib(3)` is calculated twice, `fib(2)` is calculated three times, etc. This leads to O(2^n) time complexity.
