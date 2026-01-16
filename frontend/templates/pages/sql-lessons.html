@@ -804,10 +804,1437 @@ FROM blood_tests;</code></pre>
     padding-top: 1rem;
     border-top: 1px solid var(--border-color, #e0e0e0);
 }
+
+/* Inline SQL Editor Styles */
+.try-it-section {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.inline-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inline-sql-editor {
+    width: 100%;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 4px;
+    background: white;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.inline-sql-editor:focus {
+    outline: none;
+    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.btn-run-inline {
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.inline-results {
+    margin-top: 1rem;
+    min-height: 20px;
+}
+
+.inline-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #e8f5e9;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.85rem;
+}
+
+.inline-results-header .success {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.inline-results-header .timing {
+    color: var(--text-secondary, #666);
+}
+
+.inline-table-wrapper {
+    max-height: 300px;
+    overflow: auto;
+    border: 1px solid var(--border-color, #ddd);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+}
+
+.inline-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.inline-results-table th,
+.inline-results-table td {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color, #ddd);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.inline-results-table th {
+    background: var(--bg-secondary, #f5f5f5);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.inline-results-table tr:hover {
+    background: var(--bg-hover, #f8f8f8);
+}
+
+.inline-results-table .null-value {
+    color: #999;
+    font-style: italic;
+}
+
+.inline-error {
+    background: #fff5f5;
+    border: 1px solid #ffcccc;
+    padding: 0.75rem;
+    border-radius: 4px;
+    color: #dc3545;
+    font-family: monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+}
+
+.loading {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-secondary, #666);
+}
 </style>
 
 <script>
 (function() {
+    // Lesson content database
+    const lessonContent = {
+        'select-basics': null, // Already loaded as default
+
+        'where-clause': {
+            title: 'WHERE Clause',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'select-basics',
+            next: 'order-by',
+            sections: [
+                {
+                    title: 'What is WHERE?',
+                    content: `<p>The <code>WHERE</code> clause filters rows based on specified conditions. Only rows that satisfy the condition are included in the result.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Purpose:</strong> Filter rows based on conditions</li>
+                            <li><strong>Position:</strong> Comes after FROM clause</li>
+                            <li><strong>Evaluation:</strong> Conditions evaluate to TRUE, FALSE, or NULL</li>
+                            <li><strong>NULL handling:</strong> NULL comparisons require special operators</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Basic WHERE syntax
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+-- Multiple conditions with AND
+SELECT * FROM requests
+WHERE status = 'completed' AND final_amount > 1000;
+
+-- Multiple conditions with OR
+SELECT * FROM requests
+WHERE status = 'completed' OR status = 'processing';</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Filter requests by status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT request_number, status, final_amount
+FROM requests
+WHERE status = 'completed'
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Common Comparison Operators',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Operator</th><th>Description</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>=</code></td><td>Equal to</td><td><code>status = 'completed'</code></td></tr>
+                                <tr><td><code><></code> or <code>!=</code></td><td>Not equal to</td><td><code>status <> 'cancelled'</code></td></tr>
+                                <tr><td><code><</code></td><td>Less than</td><td><code>final_amount < 1000</code></td></tr>
+                                <tr><td><code>></code></td><td>Greater than</td><td><code>final_amount > 500</code></td></tr>
+                                <tr><td><code><=</code></td><td>Less than or equal</td><td><code>final_amount <= 1000</code></td></tr>
+                                <tr><td><code>>=</code></td><td>Greater than or equal</td><td><code>final_amount >= 500</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                },
+                {
+                    title: 'Exercises',
+                    content: `<div class="exercise">
+                        <h4>Exercise 1: Filter by Amount</h4>
+                        <p>Find all requests where final_amount is greater than 2000.</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="3">-- Write your query here
+SELECT * FROM requests WHERE </textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                        <details>
+                            <summary>Show Solution</summary>
+                            <pre><code class="language-sql">SELECT * FROM requests WHERE final_amount > 2000;</code></pre>
+                        </details>
+                    </div>`
+                }
+            ],
+            summary: ['WHERE filters rows based on conditions', 'Use AND/OR to combine conditions', 'Comparison operators: =, <>, <, >, <=, >=', 'NULL requires IS NULL or IS NOT NULL']
+        },
+
+        'order-by': {
+            title: 'ORDER BY',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'where-clause',
+            next: 'limit-offset',
+            sections: [
+                {
+                    title: 'What is ORDER BY?',
+                    content: `<p>The <code>ORDER BY</code> clause sorts the result set by one or more columns. By default, it sorts in ascending order.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>ASC:</strong> Ascending order (default, A-Z, 0-9)</li>
+                            <li><strong>DESC:</strong> Descending order (Z-A, 9-0)</li>
+                            <li><strong>Multiple columns:</strong> Sort by primary, then secondary, etc.</li>
+                            <li><strong>NULL handling:</strong> NULLs sort first or last depending on database</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Sort ascending (default)
+SELECT * FROM requests ORDER BY created_at;
+
+-- Sort descending
+SELECT * FROM requests ORDER BY final_amount DESC;
+
+-- Multiple columns
+SELECT * FROM requests ORDER BY status ASC, final_amount DESC;
+
+-- Sort by column position
+SELECT request_number, status, final_amount
+FROM requests ORDER BY 3 DESC;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Sort requests by amount (highest first):</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT request_number, status, final_amount
+FROM requests
+ORDER BY final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'NULL Handling',
+                    content: `<pre><code class="language-sql">-- PostgreSQL: NULLS FIRST / NULLS LAST
+SELECT * FROM patients
+ORDER BY last_name ASC NULLS LAST;
+
+-- NULLs at the beginning
+SELECT * FROM patients
+ORDER BY phone DESC NULLS FIRST;</code></pre>
+                    <div class="info-box">
+                        <h4>Database Differences</h4>
+                        <p>PostgreSQL sorts NULLs last for ASC and first for DESC by default. Use NULLS FIRST/LAST to override.</p>
+                    </div>`
+                }
+            ],
+            summary: ['ORDER BY sorts result sets', 'ASC (ascending) is default', 'DESC for descending order', 'Can sort by multiple columns', 'Use NULLS FIRST/LAST for NULL handling']
+        },
+
+        'limit-offset': {
+            title: 'LIMIT & OFFSET',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'order-by',
+            next: 'comparison',
+            sections: [
+                {
+                    title: 'What are LIMIT and OFFSET?',
+                    content: `<p><code>LIMIT</code> restricts the number of rows returned. <code>OFFSET</code> skips a specified number of rows before returning results.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>LIMIT:</strong> Maximum rows to return</li>
+                            <li><strong>OFFSET:</strong> Number of rows to skip</li>
+                            <li><strong>Pagination:</strong> Combine both for paging through results</li>
+                            <li><strong>Performance:</strong> Large offsets can be slow</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Limit to 10 rows
+SELECT * FROM requests LIMIT 10;
+
+-- Skip first 5 rows, return next 10
+SELECT * FROM requests LIMIT 10 OFFSET 5;
+
+-- Pagination example (page 3, 10 items per page)
+SELECT * FROM requests
+ORDER BY created_at DESC
+LIMIT 10 OFFSET 20;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Get the top 5 highest value requests:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT request_number, status, final_amount
+FROM requests
+ORDER BY final_amount DESC
+LIMIT 5;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Pagination Pattern',
+                    content: `<pre><code class="language-sql">-- Common pagination pattern
+-- Page 1: OFFSET 0
+-- Page 2: OFFSET 10
+-- Page N: OFFSET (N-1) * page_size
+
+-- Example: Get page 2 with 10 items per page
+SELECT request_number, status, final_amount
+FROM requests
+ORDER BY created_at DESC
+LIMIT 10 OFFSET 10;</code></pre>
+                    <div class="info-box">
+                        <h4>Performance Tip</h4>
+                        <p>For large offsets, consider keyset pagination (WHERE id > last_seen_id) instead of OFFSET for better performance.</p>
+                    </div>`
+                }
+            ],
+            summary: ['LIMIT restricts rows returned', 'OFFSET skips rows', 'Combine for pagination', 'Always use ORDER BY with LIMIT', 'Keyset pagination is faster for large offsets']
+        },
+
+        'inner-join': {
+            title: 'INNER JOIN',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'boolean-json',
+            next: 'left-join',
+            sections: [
+                {
+                    title: 'What is INNER JOIN?',
+                    content: `<p><code>INNER JOIN</code> returns only the rows that have matching values in both tables. Rows without a match are excluded.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Returns:</strong> Only matching rows from both tables</li>
+                            <li><strong>Excludes:</strong> Rows with no match in either table</li>
+                            <li><strong>Most common:</strong> Default join type in most queries</li>
+                            <li><strong>Symmetrical:</strong> Order of tables doesn't affect results</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Explicit INNER JOIN syntax
+SELECT r.request_number, o.order_number, p.first_name
+FROM requests r
+INNER JOIN orders o ON o.request_id = r.id
+INNER JOIN patients p ON o.patient_id = p.id;
+
+-- Implicit join (older syntax, not recommended)
+SELECT r.request_number, o.order_number
+FROM requests r, orders o
+WHERE o.request_id = r.id;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Join requests with their orders:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="6">SELECT
+    r.request_number,
+    r.status AS request_status,
+    o.order_number,
+    o.subtotal
+FROM requests r
+INNER JOIN orders o ON o.request_id = r.id
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Visual Explanation',
+                    content: `<div class="info-box">
+                        <h4>How INNER JOIN Works</h4>
+                        <p>Think of two overlapping circles (Venn diagram). INNER JOIN returns only the overlapping part - rows that exist in BOTH tables.</p>
+                        <pre>
+    Table A        Table B
+      ┌───┐        ┌───┐
+      │   │╲      ╱│   │
+      │   │ ╲    ╱ │   │
+      │   │  ╲  ╱  │   │
+      │   │   ╲╱   │   │
+      │   │   ╱╲   │   │  ← INNER JOIN returns this intersection
+      │   │  ╱  ╲  │   │
+      │   │ ╱    ╲ │   │
+      │   │╱      ╲│   │
+      └───┘        └───┘
+                        </pre>
+                    </div>`
+                }
+            ],
+            summary: ['INNER JOIN returns matching rows only', 'Non-matching rows are excluded', 'Use explicit JOIN syntax', 'Table order does not matter', 'Most common join type']
+        },
+
+        'left-join': {
+            title: 'LEFT JOIN',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'inner-join',
+            next: 'right-join',
+            sections: [
+                {
+                    title: 'What is LEFT JOIN?',
+                    content: `<p><code>LEFT JOIN</code> (or LEFT OUTER JOIN) returns all rows from the left table and matching rows from the right table. Unmatched rows have NULL for right table columns.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>All left rows:</strong> Every row from left table is included</li>
+                            <li><strong>Matching right rows:</strong> Right table data where matches exist</li>
+                            <li><strong>NULLs:</strong> Right columns are NULL when no match</li>
+                            <li><strong>Use case:</strong> Find records with or without related data</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- LEFT JOIN syntax
+SELECT r.request_number, cs.slot_date
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id;
+
+-- Find requests WITHOUT collection slots
+SELECT r.request_number, r.status
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+WHERE cs.id IS NULL;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find all requests and their collection slots (if any):</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="7">SELECT
+    r.request_number,
+    r.status,
+    cs.slot_date,
+    cs.slot_time
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+ORDER BY r.created_at DESC
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Finding Missing Records',
+                    content: `<div class="try-it-section">
+                        <p>Find requests that have NO collection slots:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="6">SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+WHERE cs.id IS NULL
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>
+                    <div class="info-box">
+                        <h4>Anti-Join Pattern</h4>
+                        <p>LEFT JOIN + WHERE right.id IS NULL is called an "anti-join" - it finds records that DON'T have matching records in another table.</p>
+                    </div>`
+                }
+            ],
+            summary: ['LEFT JOIN keeps all left table rows', 'Right columns are NULL when no match', 'Great for finding missing relationships', 'Anti-join: LEFT JOIN + WHERE IS NULL', 'Table order matters (left vs right)']
+        },
+
+        'count-sum': {
+            title: 'COUNT & SUM',
+            category: 'Aggregations',
+            difficulty: 'Intermediate',
+            prev: 'join-performance',
+            next: 'avg-min-max',
+            sections: [
+                {
+                    title: 'Aggregate Functions Overview',
+                    content: `<p>Aggregate functions perform calculations across multiple rows and return a single result. <code>COUNT</code> counts rows, <code>SUM</code> adds up values.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>COUNT(*):</strong> Counts all rows including NULLs</li>
+                            <li><strong>COUNT(column):</strong> Counts non-NULL values</li>
+                            <li><strong>COUNT(DISTINCT):</strong> Counts unique non-NULL values</li>
+                            <li><strong>SUM:</strong> Adds up numeric values, ignores NULLs</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'COUNT Examples',
+                    content: `<pre><code class="language-sql">-- Count all rows
+SELECT COUNT(*) AS total_requests FROM requests;
+
+-- Count non-NULL values in a column
+SELECT COUNT(phone) AS has_phone FROM patients;
+
+-- Count distinct values
+SELECT COUNT(DISTINCT status) AS unique_statuses FROM requests;
+
+-- Count with condition
+SELECT COUNT(*) FILTER (WHERE status = 'completed') AS completed
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try COUNT',
+                    content: `<div class="try-it-section">
+                        <p>Count requests by status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT
+    status,
+    COUNT(*) AS count
+FROM requests
+GROUP BY status
+ORDER BY count DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'SUM Examples',
+                    content: `<pre><code class="language-sql">-- Sum all amounts
+SELECT SUM(final_amount) AS total_revenue FROM requests;
+
+-- Sum with condition
+SELECT SUM(final_amount) AS completed_revenue
+FROM requests
+WHERE status = 'completed';
+
+-- Sum with GROUP BY
+SELECT status, SUM(final_amount) AS revenue
+FROM requests
+GROUP BY status;</code></pre>`
+                },
+                {
+                    title: 'Try SUM',
+                    content: `<div class="try-it-section">
+                        <p>Calculate total revenue by status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">SELECT
+    status,
+    COUNT(*) AS request_count,
+    SUM(final_amount) AS total_revenue,
+    ROUND(AVG(final_amount), 2) AS avg_revenue
+FROM requests
+GROUP BY status
+ORDER BY total_revenue DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['COUNT(*) counts all rows', 'COUNT(column) ignores NULLs', 'COUNT(DISTINCT) for unique values', 'SUM adds numeric values', 'Both work with GROUP BY']
+        },
+
+        'group-by-basics': {
+            title: 'GROUP BY Basics',
+            category: 'Aggregations',
+            difficulty: 'Intermediate',
+            prev: 'array-agg',
+            next: 'having-clause',
+            sections: [
+                {
+                    title: 'What is GROUP BY?',
+                    content: `<p><code>GROUP BY</code> groups rows that have the same values into summary rows. It's typically used with aggregate functions to calculate values for each group.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Groups data:</strong> Combines rows with matching values</li>
+                            <li><strong>With aggregates:</strong> Calculate per-group statistics</li>
+                            <li><strong>SELECT rule:</strong> Non-aggregated columns must be in GROUP BY</li>
+                            <li><strong>Execution order:</strong> FROM → WHERE → GROUP BY → HAVING → SELECT</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Group by single column
+SELECT status, COUNT(*) AS count
+FROM requests
+GROUP BY status;
+
+-- Group by multiple columns
+SELECT status, DATE(created_at) AS date, COUNT(*)
+FROM requests
+GROUP BY status, DATE(created_at);
+
+-- Using expressions in GROUP BY
+SELECT
+    EXTRACT(MONTH FROM created_at) AS month,
+    COUNT(*) AS requests
+FROM requests
+GROUP BY EXTRACT(MONTH FROM created_at);</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Group requests by status and see statistics:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="7">SELECT
+    status,
+    COUNT(*) AS total_requests,
+    SUM(final_amount) AS total_revenue,
+    ROUND(AVG(final_amount), 2) AS avg_amount,
+    MIN(final_amount) AS min_amount,
+    MAX(final_amount) AS max_amount
+FROM requests
+GROUP BY status
+ORDER BY total_revenue DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Common Mistake',
+                    content: `<div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Common Error</h4>
+                        <pre><code class="language-sql">-- ERROR: request_number is not in GROUP BY
+SELECT status, request_number, COUNT(*)
+FROM requests
+GROUP BY status;
+
+-- CORRECT: Include all non-aggregate columns
+SELECT status, COUNT(*)
+FROM requests
+GROUP BY status;</code></pre>
+                        <p>Every column in SELECT must either be in GROUP BY or be an aggregate function.</p>
+                    </div>`
+                }
+            ],
+            summary: ['GROUP BY groups rows with same values', 'Must use with aggregate functions', 'All SELECT columns must be aggregated or in GROUP BY', 'Can group by multiple columns', 'Can use expressions in GROUP BY']
+        },
+
+        'having-clause': {
+            title: 'HAVING Clause',
+            category: 'Aggregations',
+            difficulty: 'Intermediate',
+            prev: 'group-by-basics',
+            next: 'grouping-sets',
+            sections: [
+                {
+                    title: 'What is HAVING?',
+                    content: `<p><code>HAVING</code> filters groups after GROUP BY aggregation. While WHERE filters rows before grouping, HAVING filters the grouped results.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>WHERE vs HAVING:</strong> WHERE filters rows, HAVING filters groups</li>
+                            <li><strong>Timing:</strong> HAVING is evaluated after GROUP BY</li>
+                            <li><strong>Aggregate conditions:</strong> Can use aggregate functions in HAVING</li>
+                            <li><strong>Combine both:</strong> Use WHERE and HAVING together when needed</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Filter groups with HAVING
+SELECT status, COUNT(*) AS count
+FROM requests
+GROUP BY status
+HAVING COUNT(*) > 5;
+
+-- Combine WHERE and HAVING
+SELECT status, SUM(final_amount) AS revenue
+FROM requests
+WHERE created_at > '2024-01-01'  -- Filter rows first
+GROUP BY status
+HAVING SUM(final_amount) > 10000;  -- Filter groups after</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find statuses with more than 2 requests:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">SELECT
+    status,
+    COUNT(*) AS request_count,
+    SUM(final_amount) AS total_revenue
+FROM requests
+GROUP BY status
+HAVING COUNT(*) >= 2
+ORDER BY request_count DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'WHERE vs HAVING',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Aspect</th><th>WHERE</th><th>HAVING</th></tr></thead>
+                            <tbody>
+                                <tr><td>Filters</td><td>Individual rows</td><td>Groups</td></tr>
+                                <tr><td>Timing</td><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
+                                <tr><td>Aggregates</td><td>Cannot use</td><td>Can use</td></tr>
+                                <tr><td>Example</td><td><code>WHERE status = 'active'</code></td><td><code>HAVING COUNT(*) > 5</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                }
+            ],
+            summary: ['HAVING filters groups, WHERE filters rows', 'HAVING comes after GROUP BY', 'Can use aggregate functions in HAVING', 'Use both WHERE and HAVING when needed', 'WHERE is evaluated before GROUP BY']
+        },
+
+        'cte-basics': {
+            title: 'CTE Basics (WITH Clause)',
+            category: 'Common Table Expressions',
+            difficulty: 'Intermediate',
+            prev: 'any-all',
+            next: 'multiple-ctes',
+            sections: [
+                {
+                    title: 'What is a CTE?',
+                    content: `<p>A <code>Common Table Expression (CTE)</code> is a temporary named result set that you can reference within a SELECT, INSERT, UPDATE, or DELETE statement. It improves query readability and organization.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Temporary:</strong> Exists only for the duration of the query</li>
+                            <li><strong>Readable:</strong> Breaks complex queries into manageable parts</li>
+                            <li><strong>Reusable:</strong> Can reference the CTE multiple times</li>
+                            <li><strong>Syntax:</strong> Starts with WITH keyword</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Basic CTE syntax
+WITH cte_name AS (
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition
+)
+SELECT * FROM cte_name;
+
+-- CTE with aggregation
+WITH request_stats AS (
+    SELECT status, COUNT(*) AS cnt, SUM(final_amount) AS total
+    FROM requests
+    GROUP BY status
+)
+SELECT * FROM request_stats WHERE total > 5000;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Use a CTE to find high-value requests:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">WITH high_value_requests AS (
+    SELECT
+        request_number,
+        status,
+        final_amount,
+        created_at
+    FROM requests
+    WHERE final_amount > 2000
+)
+SELECT
+    status,
+    COUNT(*) AS count,
+    SUM(final_amount) AS total
+FROM high_value_requests
+GROUP BY status;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'CTE vs Subquery',
+                    content: `<div class="info-box">
+                        <h4>When to Use CTEs</h4>
+                        <ul>
+                            <li>Query is complex and needs to be broken into steps</li>
+                            <li>Same subquery is used multiple times</li>
+                            <li>You want to improve readability</li>
+                            <li>You need recursive queries</li>
+                        </ul>
+                    </div>
+                    <pre><code class="language-sql">-- Subquery version (harder to read)
+SELECT * FROM (
+    SELECT status, COUNT(*) AS cnt FROM requests GROUP BY status
+) sub WHERE cnt > 5;
+
+-- CTE version (clearer)
+WITH status_counts AS (
+    SELECT status, COUNT(*) AS cnt FROM requests GROUP BY status
+)
+SELECT * FROM status_counts WHERE cnt > 5;</code></pre>`
+                }
+            ],
+            summary: ['CTEs create temporary named result sets', 'Defined with WITH keyword', 'Improve query readability', 'Can be referenced multiple times', 'Great for breaking down complex queries']
+        },
+
+        'row-number': {
+            title: 'ROW_NUMBER()',
+            category: 'Window Functions',
+            difficulty: 'Advanced',
+            prev: 'frame-clause',
+            next: 'rank-dense-rank',
+            sections: [
+                {
+                    title: 'What is ROW_NUMBER?',
+                    content: `<p><code>ROW_NUMBER()</code> assigns a unique sequential integer to each row within a partition. It's one of the most useful window functions for ranking and pagination.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Unique numbers:</strong> No ties, always 1, 2, 3, 4...</li>
+                            <li><strong>Per partition:</strong> Resets for each partition group</li>
+                            <li><strong>ORDER BY:</strong> Determines the numbering sequence</li>
+                            <li><strong>Use cases:</strong> Pagination, deduplication, top N per group</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Simple row numbering
+SELECT
+    ROW_NUMBER() OVER (ORDER BY created_at) AS row_num,
+    request_number,
+    status
+FROM requests;
+
+-- Row number within each status group
+SELECT
+    ROW_NUMBER() OVER (PARTITION BY status ORDER BY final_amount DESC) AS rank,
+    request_number,
+    status,
+    final_amount
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Rank requests by amount within each status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="8">SELECT
+    ROW_NUMBER() OVER (
+        PARTITION BY status
+        ORDER BY final_amount DESC
+    ) AS rank_in_status,
+    request_number,
+    status,
+    final_amount
+FROM requests
+ORDER BY status, rank_in_status;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Top N Per Group Pattern',
+                    content: `<div class="try-it-section">
+                        <p>Get top 2 highest value requests per status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="11">WITH ranked AS (
+    SELECT
+        ROW_NUMBER() OVER (
+            PARTITION BY status
+            ORDER BY final_amount DESC
+        ) AS rn,
+        request_number,
+        status,
+        final_amount
+    FROM requests
+)
+SELECT * FROM ranked WHERE rn <= 2
+ORDER BY status, rn;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>
+                    <div class="info-box">
+                        <h4>Top N Per Group</h4>
+                        <p>This pattern is extremely useful for getting the top N items within each category - like top 3 products per category, most recent order per customer, etc.</p>
+                    </div>`
+                }
+            ],
+            summary: ['ROW_NUMBER() assigns unique sequential numbers', 'PARTITION BY creates groups', 'ORDER BY determines sequence', 'Numbers reset for each partition', 'Great for top N per group queries']
+        },
+
+        'lag-lead': {
+            title: 'LAG & LEAD',
+            category: 'Window Functions',
+            difficulty: 'Advanced',
+            prev: 'percent-rank',
+            next: 'first-last',
+            sections: [
+                {
+                    title: 'What are LAG and LEAD?',
+                    content: `<p><code>LAG</code> accesses data from a previous row, and <code>LEAD</code> accesses data from a subsequent row. They're perfect for comparing values across rows.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>LAG:</strong> Look back at previous rows</li>
+                            <li><strong>LEAD:</strong> Look ahead at next rows</li>
+                            <li><strong>Offset:</strong> Number of rows to look back/ahead (default 1)</li>
+                            <li><strong>Default:</strong> Value to return when no row exists</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- LAG: Get previous row's value
+SELECT
+    request_number,
+    final_amount,
+    LAG(final_amount) OVER (ORDER BY created_at) AS prev_amount
+FROM requests;
+
+-- LEAD: Get next row's value
+SELECT
+    request_number,
+    created_at,
+    LEAD(created_at) OVER (ORDER BY created_at) AS next_created
+FROM requests;
+
+-- With offset and default value
+LAG(column, 2, 0) OVER (...)  -- 2 rows back, default 0</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Compare each request's amount to the previous one:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">SELECT
+    request_number,
+    created_at,
+    final_amount,
+    LAG(final_amount, 1, 0) OVER (ORDER BY created_at) AS prev_amount,
+    final_amount - LAG(final_amount, 1, 0) OVER (ORDER BY created_at) AS diff
+FROM requests
+ORDER BY created_at
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Calculating Differences',
+                    content: `<div class="try-it-section">
+                        <p>Calculate time between requests:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="9">SELECT
+    request_number,
+    created_at,
+    LAG(created_at) OVER (ORDER BY created_at) AS prev_created,
+    created_at - LAG(created_at) OVER (ORDER BY created_at) AS time_gap
+FROM requests
+ORDER BY created_at
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['LAG looks at previous rows', 'LEAD looks at next rows', 'Great for row-to-row comparisons', 'Can specify offset (default 1)', 'Can specify default for missing values']
+        },
+
+        'running-total': {
+            title: 'Running Totals',
+            category: 'Window Functions',
+            difficulty: 'Advanced',
+            prev: 'nth-value',
+            next: 'moving-average',
+            sections: [
+                {
+                    title: 'What is a Running Total?',
+                    content: `<p>A running total (cumulative sum) is the summation of a sequence of numbers that is updated each time a new number is added. Window functions make this easy to calculate.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Cumulative:</strong> Each row includes all previous values</li>
+                            <li><strong>SUM() OVER:</strong> Aggregate function with window</li>
+                            <li><strong>Frame:</strong> Default includes all preceding rows</li>
+                            <li><strong>Use cases:</strong> Account balances, inventory, progress tracking</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Running total
+SELECT
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER (ORDER BY created_at) AS running_total
+FROM requests;
+
+-- Running total per partition
+SELECT
+    status,
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER (
+        PARTITION BY status
+        ORDER BY created_at
+    ) AS running_total_by_status
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Calculate running total of request amounts:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="9">SELECT
+    request_number,
+    created_at,
+    final_amount,
+    SUM(final_amount) OVER (
+        ORDER BY created_at
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM requests
+ORDER BY created_at
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Running Total with Percentage',
+                    content: `<div class="try-it-section">
+                        <p>Show running total as percentage of grand total:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="11">SELECT
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER (ORDER BY created_at) AS running_total,
+    SUM(final_amount) OVER () AS grand_total,
+    ROUND(
+        100.0 * SUM(final_amount) OVER (ORDER BY created_at) /
+        SUM(final_amount) OVER (), 2
+    ) AS running_pct
+FROM requests
+ORDER BY created_at
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Running total = cumulative sum', 'Use SUM() OVER() for running totals', 'ORDER BY determines the sequence', 'PARTITION BY creates separate running totals', 'Useful for progress tracking and balances']
+        },
+
+        'explain-analyze': {
+            title: 'EXPLAIN ANALYZE',
+            category: 'Indexing & Performance',
+            difficulty: 'Advanced',
+            prev: 'covering-index',
+            next: 'scan-types',
+            sections: [
+                {
+                    title: 'What is EXPLAIN ANALYZE?',
+                    content: `<p><code>EXPLAIN</code> shows the query execution plan without running the query. <code>EXPLAIN ANALYZE</code> actually runs the query and shows real execution statistics.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>EXPLAIN:</strong> Shows estimated plan only</li>
+                            <li><strong>EXPLAIN ANALYZE:</strong> Shows actual execution stats</li>
+                            <li><strong>Cost:</strong> Estimated work units (startup..total)</li>
+                            <li><strong>Rows:</strong> Estimated vs actual row counts</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Show execution plan only
+EXPLAIN SELECT * FROM requests WHERE status = 'completed';
+
+-- Show plan with actual execution stats
+EXPLAIN ANALYZE SELECT * FROM requests WHERE status = 'completed';
+
+-- More verbose output
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT * FROM requests WHERE status = 'completed';</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Analyze a simple query:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="3">EXPLAIN ANALYZE
+SELECT * FROM requests
+WHERE status = 'completed';</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Reading the Output',
+                    content: `<div class="info-box">
+                        <h4>Key Metrics to Look For</h4>
+                        <ul>
+                            <li><strong>Seq Scan:</strong> Full table scan (slow for large tables)</li>
+                            <li><strong>Index Scan:</strong> Using an index (usually faster)</li>
+                            <li><strong>actual time:</strong> Real execution time in milliseconds</li>
+                            <li><strong>rows:</strong> Actual rows processed</li>
+                            <li><strong>loops:</strong> Number of times the operation was executed</li>
+                        </ul>
+                    </div>
+                    <div class="try-it-section">
+                        <p>Compare with a JOIN query:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">EXPLAIN ANALYZE
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['EXPLAIN shows query plan without running', 'EXPLAIN ANALYZE shows real stats', 'Look for Seq Scan vs Index Scan', 'Compare estimated vs actual rows', 'Use to identify slow queries']
+        },
+
+        // Add more basic lessons to ensure navigation works
+        'comparison': {
+            title: 'Comparison Operators',
+            category: 'Filtering',
+            difficulty: 'Beginner',
+            prev: 'limit-offset',
+            next: 'logical',
+            sections: [
+                {
+                    title: 'Comparison Operators',
+                    content: `<p>SQL comparison operators compare two values and return a boolean result (TRUE, FALSE, or NULL).</p>
+                    <div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>=</code></td><td>Equal</td><td><code>price = 100</code></td></tr>
+                                <tr><td><code><></code></td><td>Not equal</td><td><code>status <> 'deleted'</code></td></tr>
+                                <tr><td><code><</code></td><td>Less than</td><td><code>amount < 500</code></td></tr>
+                                <tr><td><code>></code></td><td>Greater than</td><td><code>amount > 500</code></td></tr>
+                                <tr><td><code><=</code></td><td>Less than or equal</td><td><code>amount <= 500</code></td></tr>
+                                <tr><td><code>>=</code></td><td>Greater than or equal</td><td><code>amount >= 500</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with amount greater than 1500:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT request_number, status, final_amount
+FROM requests
+WHERE final_amount > 1500
+ORDER BY final_amount DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Use = for equality', 'Use <> or != for not equal', 'Comparison returns TRUE, FALSE, or NULL', 'NULLs require special handling']
+        },
+
+        'logical': {
+            title: 'Logical Operators',
+            category: 'Filtering',
+            difficulty: 'Beginner',
+            prev: 'comparison',
+            next: 'like-pattern',
+            sections: [
+                {
+                    title: 'AND, OR, NOT',
+                    content: `<p>Logical operators combine multiple conditions in WHERE clauses.</p>
+                    <pre><code class="language-sql">-- AND: Both conditions must be true
+SELECT * FROM requests
+WHERE status = 'completed' AND final_amount > 1000;
+
+-- OR: Either condition must be true
+SELECT * FROM requests
+WHERE status = 'completed' OR status = 'processing';
+
+-- NOT: Negates a condition
+SELECT * FROM requests
+WHERE NOT status = 'cancelled';</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Combine conditions:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">SELECT request_number, status, final_amount
+FROM requests
+WHERE (status = 'completed' OR status = 'processing')
+  AND final_amount > 1000
+ORDER BY final_amount DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['AND requires all conditions true', 'OR requires any condition true', 'NOT negates a condition', 'Use parentheses for clarity']
+        },
+
+        'like-pattern': {
+            title: 'LIKE Pattern Matching',
+            category: 'Filtering',
+            difficulty: 'Beginner',
+            prev: 'logical',
+            next: 'in-between',
+            sections: [
+                {
+                    title: 'LIKE Operator',
+                    content: `<p><code>LIKE</code> performs pattern matching with wildcards.</p>
+                    <div class="key-points">
+                        <h3>Wildcards:</h3>
+                        <ul>
+                            <li><code>%</code> - Matches any sequence of characters</li>
+                            <li><code>_</code> - Matches any single character</li>
+                        </ul>
+                    </div>
+                    <pre><code class="language-sql">-- Starts with 'REQ'
+SELECT * FROM requests WHERE request_number LIKE 'REQ%';
+
+-- Ends with '001'
+SELECT * FROM requests WHERE request_number LIKE '%001';
+
+-- Contains 'test'
+SELECT * FROM patients WHERE first_name LIKE '%test%';
+
+-- Case-insensitive (PostgreSQL)
+SELECT * FROM patients WHERE first_name ILIKE '%john%';</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find patients whose name starts with a letter:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">SELECT first_name, last_name, gender
+FROM patients
+WHERE first_name ILIKE 'a%'
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['% matches any sequence', '_ matches single character', 'LIKE is case-sensitive', 'ILIKE is case-insensitive (PostgreSQL)']
+        },
+
+        'in-between': {
+            title: 'IN & BETWEEN',
+            category: 'Filtering',
+            difficulty: 'Beginner',
+            prev: 'like-pattern',
+            next: 'null-handling',
+            sections: [
+                {
+                    title: 'IN Operator',
+                    content: `<p><code>IN</code> checks if a value matches any value in a list.</p>
+                    <pre><code class="language-sql">-- Match any value in list
+SELECT * FROM requests
+WHERE status IN ('completed', 'processing', 'pending');
+
+-- Equivalent to multiple ORs
+SELECT * FROM requests
+WHERE status = 'completed'
+   OR status = 'processing'
+   OR status = 'pending';</code></pre>`
+                },
+                {
+                    title: 'BETWEEN Operator',
+                    content: `<p><code>BETWEEN</code> checks if a value is within a range (inclusive).</p>
+                    <pre><code class="language-sql">-- Range check
+SELECT * FROM requests
+WHERE final_amount BETWEEN 1000 AND 2000;
+
+-- Equivalent to
+SELECT * FROM requests
+WHERE final_amount >= 1000 AND final_amount <= 2000;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with specific statuses and amount range:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">SELECT request_number, status, final_amount
+FROM requests
+WHERE status IN ('completed', 'processing')
+  AND final_amount BETWEEN 500 AND 3000
+ORDER BY final_amount;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['IN matches any value in a list', 'BETWEEN is inclusive on both ends', 'Both improve readability over multiple ORs', 'Can use NOT IN and NOT BETWEEN']
+        },
+
+        'null-handling': {
+            title: 'NULL Handling',
+            category: 'Filtering',
+            difficulty: 'Beginner',
+            prev: 'in-between',
+            next: 'numeric-types',
+            sections: [
+                {
+                    title: 'Understanding NULL',
+                    content: `<p><code>NULL</code> represents missing or unknown data. It requires special handling because NULL is not equal to anything, not even itself.</p>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Common Mistake</h4>
+                        <pre><code class="language-sql">-- WRONG: This will never match NULLs
+SELECT * FROM patients WHERE phone = NULL;
+
+-- CORRECT: Use IS NULL
+SELECT * FROM patients WHERE phone IS NULL;</code></pre>
+                    </div>`
+                },
+                {
+                    title: 'NULL Operators',
+                    content: `<pre><code class="language-sql">-- Check for NULL
+SELECT * FROM patients WHERE phone IS NULL;
+
+-- Check for NOT NULL
+SELECT * FROM patients WHERE phone IS NOT NULL;
+
+-- COALESCE: Return first non-NULL value
+SELECT COALESCE(phone, 'No phone') FROM patients;
+
+-- NULLIF: Return NULL if values are equal
+SELECT NULLIF(discount_amount, 0) FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find patients with and without phone numbers:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="6">SELECT
+    first_name,
+    COALESCE(phone, 'Not provided') AS phone,
+    CASE WHEN phone IS NULL THEN 'No' ELSE 'Yes' END AS has_phone
+FROM patients
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['NULL means unknown/missing', 'Use IS NULL not = NULL', 'COALESCE provides default values', 'NULL propagates in expressions', 'COUNT(column) excludes NULLs']
+        }
+    };
+
+    // Generate default lesson content HTML
+    function generateLessonHTML(lesson) {
+        let html = '<div class="lesson">';
+        html += '<h1>' + lesson.title + '</h1>';
+        html += '<p class="lesson-meta">';
+        html += '<span class="category">Category: ' + lesson.category + '</span>';
+        html += '<span class="difficulty">Difficulty: ' + lesson.difficulty + '</span>';
+        html += '</p>';
+
+        lesson.sections.forEach(function(section) {
+            html += '<section class="lesson-section">';
+            html += '<h2>' + section.title + '</h2>';
+            html += section.content;
+            html += '</section>';
+        });
+
+        if (lesson.summary) {
+            html += '<section class="lesson-section">';
+            html += '<h2>Summary</h2>';
+            html += '<div class="summary-box"><ul>';
+            lesson.summary.forEach(function(point) {
+                html += '<li>&#10003; ' + point + '</li>';
+            });
+            html += '</ul></div></section>';
+        }
+
+        html += '<div class="lesson-nav">';
+        if (lesson.prev) {
+            html += '<a class="btn btn-secondary" onclick="loadLesson(\'' + lesson.prev + '\')">&#8592; Previous</a>';
+        } else {
+            html += '<span></span>';
+        }
+        if (lesson.next) {
+            html += '<a class="btn btn-primary" onclick="loadLesson(\'' + lesson.next + '\')">Next &#8594;</a>';
+        } else {
+            html += '<span></span>';
+        }
+        html += '</div>';
+        html += '</div>';
+
+        return html;
+    }
+
     window.toggleCategory = function(id) {
         const content = document.getElementById(id);
         if (content) {
@@ -827,12 +2254,50 @@ FROM blood_tests;</code></pre>
         document.querySelectorAll('.lesson-link').forEach(function(link) {
             link.classList.remove('active');
         });
-        event.target.classList.add('active');
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
 
-        // In a real implementation, this would fetch lesson content via AJAX
-        // For now, show a message
+        // Check if lesson content exists
         const content = document.getElementById('lesson-content');
-        content.innerHTML = '<div class="lesson"><h1>Loading ' + lessonId + '...</h1><p>This lesson content would be loaded dynamically.</p><p>Go to the <a href="/sql">SQL Dashboard</a> to practice!</p></div>';
+
+        if (lessonId === 'select-basics') {
+            // Reload page to show default content
+            window.location.reload();
+            return;
+        }
+
+        if (lessonContent[lessonId]) {
+            content.innerHTML = generateLessonHTML(lessonContent[lessonId]);
+            // Scroll to top
+            content.scrollTop = 0;
+            // Highlight code blocks
+            if (typeof hljs !== 'undefined') {
+                content.querySelectorAll('pre code').forEach(function(block) {
+                    hljs.highlightElement(block);
+                });
+            }
+        } else {
+            // Show coming soon message with better formatting
+            content.innerHTML = '<div class="lesson">' +
+                '<h1>' + lessonId.replace(/-/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }) + '</h1>' +
+                '<div class="info-box">' +
+                '<h4>Lesson Coming Soon</h4>' +
+                '<p>This lesson is being developed. In the meantime, you can practice SQL in the editor below or visit the <a href="/sql">SQL Dashboard</a> for a full-featured query experience.</p>' +
+                '</div>' +
+                '<section class="lesson-section">' +
+                '<h2>Practice Area</h2>' +
+                '<div class="try-it-section">' +
+                '<p>Write and run your own queries:</p>' +
+                '<div class="inline-editor-wrapper">' +
+                '<textarea class="inline-sql-editor" rows="6">-- Try your own SQL query here\nSELECT * FROM requests LIMIT 5;</textarea>' +
+                '<button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>' +
+                '</div>' +
+                '<div class="inline-results"></div>' +
+                '</div>' +
+                '</section>' +
+                '</div>';
+        }
     };
 
     window.runExample = function(button) {
@@ -844,7 +2309,72 @@ FROM blood_tests;</code></pre>
         window.location.href = '/sql?query=' + encoded;
     };
 
-    // Highlight code blocks
+    // Run inline query within the lesson
+    window.runInlineQuery = function(button) {
+        const wrapper = button.closest('.inline-editor-wrapper') || button.parentElement;
+        const textarea = wrapper.querySelector('.inline-sql-editor');
+        const resultsDiv = wrapper.nextElementSibling || wrapper.parentElement.querySelector('.inline-results');
+
+        if (!textarea || !resultsDiv) return;
+
+        const query = textarea.value.trim();
+        if (!query) return;
+
+        resultsDiv.innerHTML = '<div class="loading">Executing query...</div>';
+
+        fetch('/api/sql/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query, preview: false })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (!data.success || data.error) {
+                resultsDiv.innerHTML = '<div class="inline-error">' + escapeHtml(data.error) + '</div>';
+                return;
+            }
+
+            let html = '<div class="inline-results-header">' +
+                '<span class="success">&#10003; ' + data.rows_affected + ' rows</span>' +
+                '<span class="timing">' + data.duration_ms + 'ms</span>' +
+                '</div>';
+
+            if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
+                html += '<div class="inline-table-wrapper"><table class="inline-results-table">';
+                html += '<thead><tr>';
+                data.columns.forEach(function(col) {
+                    html += '<th>' + escapeHtml(col) + '</th>';
+                });
+                html += '</tr></thead><tbody>';
+
+                data.rows.forEach(function(row) {
+                    html += '<tr>';
+                    row.forEach(function(cell) {
+                        const val = cell === null ? '<em class="null-value">NULL</em>' : escapeHtml(String(cell));
+                        html += '<td>' + val + '</td>';
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table></div>';
+            } else {
+                html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
+            }
+
+            resultsDiv.innerHTML = html;
+        })
+        .catch(function(err) {
+            resultsDiv.innerHTML = '<div class="inline-error">Error: ' + escapeHtml(err.message) + '</div>';
+        });
+    };
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Highlight code blocks on page load
     if (typeof hljs !== 'undefined') {
         document.querySelectorAll('pre code').forEach(function(block) {
             hljs.highlightElement(block);
