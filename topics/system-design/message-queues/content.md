@@ -8,22 +8,108 @@ Message queues are middleware that enable asynchronous communication between ser
 
 ### Why Message Queues?
 
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
 1. **Decoupling**: Services don't need to know about each other
 2. **Scalability**: Scale producers and consumers independently
 3. **Reliability**: Messages persist until processed
 4. **Load Leveling**: Handle traffic spikes without overwhelming services
 5. **Async Processing**: Don't block on slow operations
 
+</div>
+
 ### Core Components
 
-```
-Producer → Queue → Consumer
-    ↓        ↓         ↓
- Publishes  Stores   Processes
- messages   messages messages
-```
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       MESSAGE QUEUE ARCHITECTURE                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   WITHOUT MESSAGE QUEUE (Tightly Coupled):                                 │
+│   ────────────────────────────────────────                                 │
+│                                                                             │
+│   ┌──────────┐         ┌──────────┐         ┌──────────┐                  │
+│   │ Service A│────────►│ Service B│────────►│ Service C│                  │
+│   └──────────┘         └──────────┘         └──────────┘                  │
+│                              │                                              │
+│                         If B fails, A blocks!                              │
+│                         A must know about B!                               │
+│                                                                             │
+│   WITH MESSAGE QUEUE (Decoupled):                                          │
+│   ───────────────────────────────                                          │
+│                                                                             │
+│   ┌──────────┐    ┌─────────────────────┐    ┌──────────┐                 │
+│   │ Producer │───►│                     │───►│ Consumer │                 │
+│   │(Service A)│   │    MESSAGE QUEUE    │    │(Service B)│                 │
+│   └──────────┘    │  ┌───┬───┬───┬───┐ │    └──────────┘                 │
+│                   │  │ M │ M │ M │ M │ │                                  │
+│                   │  │ 1 │ 2 │ 3 │ 4 │ │    ┌──────────┐                 │
+│                   │  └───┴───┴───┴───┘ │───►│ Consumer │                 │
+│                   │     Queue          │    │(Service C)│                 │
+│                   └─────────────────────┘    └──────────┘                 │
+│                              │                                              │
+│                   ✓ Producers don't wait                                   │
+│                   ✓ Consumers can fail & recover                           │
+│                   ✓ Scale independently                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ## Message Queue Patterns
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     MESSAGE QUEUE PATTERNS                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   1. POINT-TO-POINT (Queue)                                                │
+│   ─────────────────────────                                                │
+│                                                                             │
+│   ┌──────────┐    ┌───────────────┐    ┌──────────┐                       │
+│   │ Producer │───►│ ┌───┬───┬───┐ │───►│Consumer 1│ ← Gets message        │
+│   └──────────┘    │ │ A │ B │ C │ │    └──────────┘                       │
+│                   │ └───┴───┴───┘ │    ┌──────────┐                       │
+│                   │    Queue      │    │Consumer 2│ ← Doesn't get same msg│
+│                   └───────────────┘    └──────────┘                       │
+│                                                                             │
+│   Each message consumed by EXACTLY ONE consumer                            │
+│   Use case: Task distribution, work queues                                 │
+│                                                                             │
+│   2. PUBLISH-SUBSCRIBE (Topic)                                             │
+│   ────────────────────────────                                             │
+│                                                                             │
+│   ┌──────────┐    ┌───────────────┐    ┌──────────────┐                   │
+│   │Publisher │───►│    TOPIC      │───►│ Subscriber 1 │ ← Gets message    │
+│   └──────────┘    │               │    └──────────────┘                   │
+│                   │  user.created │───►┌──────────────┐                   │
+│                   │               │    │ Subscriber 2 │ ← Gets SAME msg   │
+│                   └───────────────┘───►└──────────────┘                   │
+│                                        ┌──────────────┐                   │
+│                                        │ Subscriber 3 │ ← Gets SAME msg   │
+│                                        └──────────────┘                   │
+│                                                                             │
+│   Each message delivered to ALL subscribers                                │
+│   Use case: Event broadcasting, notifications                              │
+│                                                                             │
+│   3. FAN-OUT (Topic → Multiple Queues)                                     │
+│   ─────────────────────────────────────                                    │
+│                                                                             │
+│   ┌──────────┐    ┌───────┐    ┌─────────┐    ┌────────────┐              │
+│   │Publisher │───►│ Topic │───►│ Queue A │───►│ Consumer A │              │
+│   └──────────┘    │       │    └─────────┘    └────────────┘              │
+│                   │       │───►┌─────────┐    ┌────────────┐              │
+│                   │       │    │ Queue B │───►│ Consumer B │              │
+│                   └───────┘    └─────────┘    └────────────┘              │
+│                                                                             │
+│   Combine pub-sub with competing consumers                                 │
+│   Use case: Multiple services need events, each with scaling               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ### 1. Point-to-Point (Queue)
 
@@ -87,6 +173,59 @@ queue.send(request["reply_to"], {
 ```
 
 ## Delivery Guarantees
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      DELIVERY GUARANTEES                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   1. AT-MOST-ONCE (Fire and Forget)                                        │
+│   ─────────────────────────────────                                        │
+│                                                                             │
+│   Producer ──► Queue ──► Consumer                                          │
+│      │                       │                                              │
+│      │ Send message          │ Process (no ack required)                   │
+│      │ (don't wait)          │                                              │
+│      │                   ✗ Message lost if consumer crashes                │
+│      │                   ✓ No duplicates                                   │
+│      │                   ✓ Fastest                                         │
+│                                                                             │
+│   Use: Metrics, logs (where loss is acceptable)                            │
+│                                                                             │
+│   2. AT-LEAST-ONCE (ACK after processing)                                  │
+│   ───────────────────────────────────────                                  │
+│                                                                             │
+│   Producer ──► Queue ──► Consumer                                          │
+│                  │           │                                              │
+│                  │◄──────────┤ ACK after processing                        │
+│                  │           │                                              │
+│              If no ACK → Redeliver                                         │
+│                                                                             │
+│      ✓ Message will be delivered                                          │
+│      ⚠️ May have duplicates (consumer must be idempotent)                  │
+│                                                                             │
+│   Use: Order processing, payments (with idempotency)                       │
+│                                                                             │
+│   3. EXACTLY-ONCE (Hardest to achieve)                                     │
+│   ─────────────────────────────────────                                    │
+│                                                                             │
+│   At-Least-Once + Deduplication = Exactly-Once                             │
+│                                                                             │
+│   Producer ──► Queue ──► Consumer ──► Dedup Check                          │
+│                              │             │                                │
+│                              │    message_id in processed?                 │
+│                              │         │        │                          │
+│                              │        YES       NO                         │
+│                              │         │        │                          │
+│                              │       Skip    Process & Record              │
+│                                                                             │
+│      ✓ No loss, no duplicates                                             │
+│      ⚠️ Complex, requires state                                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ### 1. At-Most-Once
 - Message may be lost
@@ -535,6 +674,8 @@ func main() {
 
 ## Common Interview Questions
 
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
 1. **How do you handle message ordering?**
    - Use partitions with partition keys
    - Single consumer per partition
@@ -555,7 +696,11 @@ func main() {
    - Each partition assigned to one consumer
    - Add partitions to increase parallelism
 
+</div>
+
 ## Best Practices
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 1. **Make consumers idempotent** - Handle duplicate messages
 2. **Use dead letter queues** - Don't lose failed messages
@@ -563,6 +708,8 @@ func main() {
 4. **Monitor queue depth** - Alert on growing backlogs
 5. **Use batching** - Improve throughput for high-volume
 6. **Implement backpressure** - Prevent overwhelming consumers
+
+</div>
 
 ## Related Topics
 
