@@ -15,27 +15,30 @@ The State pattern allows an object to alter its behavior when its internal state
 
 ### Structure
 
-```
-┌─────────────────────────┐
-│       Context           │
-├─────────────────────────┤
-│ - state: State          │
-├─────────────────────────┤
-│ + setState(state)       │
-│ + request()             │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│        State            │
-├─────────────────────────┤
-│ + handle(context)       │
-└───────────┬─────────────┘
-            △
-    ┌───────┴───────┐
-┌───┴────┐     ┌───┴────┐
-│ StateA │     │ StateB │
-└────────┘     └────────┘
+```mermaid
+classDiagram
+    class Context {
+        -state: State
+        +setState(state: State)
+        +request()
+    }
+
+    class State {
+        <<interface>>
+        +handle(context: Context)*
+    }
+
+    class StateA {
+        +handle(context: Context)
+    }
+
+    class StateB {
+        +handle(context: Context)
+    }
+
+    Context --> State
+    State <|-- StateA
+    State <|-- StateB
 ```
 
 ## Implementation

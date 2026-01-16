@@ -62,32 +62,35 @@ After decades of building event-driven systems, here's the expert perspective:
 
 **Expert knows:** "Observer creates **temporal coupling** and **hidden dependencies**. The subject doesn't know WHO is listening or HOW LONG they'll take. This is both its power and its trap. In distributed systems, 'fire and forget' notifications can cascade into system-wide failures."
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  The Hidden Complexity of Observer Pattern                         │
-│                                                                    │
-│  What you see:                                                     │
-│    subject.notify() ──→ observer.update()                          │
-│                                                                    │
-│  What actually happens at scale:                                   │
-│    subject.notify()                                                │
-│         ↓                                                          │
-│    ┌────┴────┐                                                     │
-│    │ Order?  │ ← Which observer runs first? Does it matter?        │
-│    └────┬────┘                                                     │
-│         ↓                                                          │
-│    ┌────┴────┐                                                     │
-│    │ Sync?   │ ← Block subject or run async?                       │
-│    └────┬────┘                                                     │
-│         ↓                                                          │
-│    ┌────┴────┐                                                     │
-│    │ Error?  │ ← One observer fails - what about others?           │
-│    └────┬────┘                                                     │
-│         ↓                                                          │
-│    ┌────┴────┐                                                     │
-│    │ Leak?   │ ← Did all observers unsubscribe?                    │
-│    └─────────┘                                                     │
-└────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Start["subject.notify()"]
+
+    SimpleView["What you see:<br/>subject.notify() → observer.update()"]
+
+    ComplexView["What actually happens at scale:<br/>subject.notify()"]
+
+    Q1["🤔 Order?<br/>Which observer runs first?<br/>Does it matter?"]
+    Q2["🤔 Sync?<br/>Block subject or run async?<br/>Resource cost?"]
+    Q3["🤔 Error?<br/>One observer fails -<br/>What about others?"]
+    Q4["🤔 Leak?<br/>Did all observers<br/>unsubscribe?"]
+
+    Start --> SimpleView
+    Start --> ComplexView
+
+    ComplexView --> Q1
+    Q1 --> Q2
+    Q2 --> Q3
+    Q3 --> Q4
+    Q4 --> Result["System-wide consequences<br/>at scale"]
+
+    style SimpleView fill:#e1f5ff
+    style ComplexView fill:#fff3e0
+    style Q1 fill:#ffe0b2
+    style Q2 fill:#ffe0b2
+    style Q3 fill:#ffe0b2
+    style Q4 fill:#ffe0b2
+    style Result fill:#ffccbc
 ```
 
 ---
