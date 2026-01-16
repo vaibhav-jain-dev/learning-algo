@@ -8,32 +8,64 @@ A Content Delivery Network (CDN) is a geographically distributed network of prox
 
 ### How CDN Works
 
-```
-Without CDN:
-User (Tokyo) ──────────────────────────→ Origin (New York)
-                    ~200ms latency
-
-With CDN:
-User (Tokyo) ───→ Edge (Tokyo) ───→ Origin (New York)
-                    ~20ms           (only on cache miss)
-```
+<div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div>
+    <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 0.75rem;">Without CDN</div>
+    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">🇯🇵 User (Tokyo)</div>
+      <div style="flex: 1; min-width: 100px; height: 2px; background: linear-gradient(90deg, #ff6b6b, #ff6b6b); position: relative;">
+        <span style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #ff6b6b; font-size: 0.8rem;">~200ms latency</span>
+      </div>
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white;">🇺🇸 Origin (New York)</div>
+    </div>
+  </div>
+  <div>
+    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 0.75rem;">With CDN</div>
+    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">🇯🇵 User (Tokyo)</div>
+      <div style="color: #4ecdc4;">→<br><span style="font-size: 0.75rem;">~20ms</span></div>
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">⚡ Edge (Tokyo)</div>
+      <div style="color: #a0aec0;">→<br><span style="font-size: 0.7rem;">cache miss only</span></div>
+      <div style="background: #2d3748; border-radius: 8px; padding: 0.75rem 1.25rem; color: #a0aec0;">Origin (New York)</div>
+    </div>
+  </div>
+</div>
 
 ### CDN Architecture
 
-```
-                    ┌─────────────────┐
-                    │  Origin Server  │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-        ┌─────┴─────┐  ┌─────┴─────┐  ┌─────┴─────┐
-        │ Edge PoP  │  │ Edge PoP  │  │ Edge PoP  │
-        │  (USA)    │  │ (Europe)  │  │  (Asia)   │
-        └─────┬─────┘  └─────┬─────┘  └─────┬─────┘
-              │              │              │
-         Users USA      Users EU       Users Asia
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem;">Origin Server</div>
+    <div style="font-size: 0.8rem; opacity: 0.9;">Primary content source</div>
+  </div>
+  <div style="color: #667eea; font-size: 1.5rem;">↓ ↓ ↓</div>
+  <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
+        <div style="font-weight: 600;">Edge PoP</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">🇺🇸 USA</div>
+      </div>
+      <div style="color: #38ef7d;">↓</div>
+      <div style="color: #a0aec0; font-size: 0.85rem;">Users USA</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
+        <div style="font-weight: 600;">Edge PoP</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">🇪🇺 Europe</div>
+      </div>
+      <div style="color: #38ef7d;">↓</div>
+      <div style="color: #a0aec0; font-size: 0.85rem;">Users EU</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
+        <div style="font-weight: 600;">Edge PoP</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">🌏 Asia</div>
+      </div>
+      <div style="color: #38ef7d;">↓</div>
+      <div style="color: #a0aec0; font-size: 0.85rem;">Users Asia</div>
+    </div>
+  </div>
+</div>
 
 ### CDN Benefits
 
