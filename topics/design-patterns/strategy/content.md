@@ -71,26 +71,27 @@ The Strategy pattern defines a family of algorithms, encapsulates each one, and 
 - Combined (composite strategies)
 - Decorated with cross-cutting concerns"
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  Evolution of Understanding Strategy Pattern                         │
-│                                                                      │
-│  Level 1 (Junior):                                                   │
-│    "It's like switch/case but with objects"                          │
-│                                                                      │
-│  Level 2 (Mid):                                                      │
-│    "It lets me add new algorithms without changing existing code"    │
-│                                                                      │
-│  Level 3 (Senior):                                                   │
-│    "Strategies can be composed, decorated, and selected dynamically  │
-│     based on runtime conditions"                                     │
-│                                                                      │
-│  Level 4 (Staff/Principal):                                          │
-│    "Strategy enables A/B testing, feature flags, and gradual         │
-│     rollouts at the algorithm level. Combined with Factory and       │
-│     DI, it's the foundation of configurable business rules."         │
-└──────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif;">
+  <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.75rem;">Evolution of Understanding Strategy Pattern</div>
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+      <div style="background: #38ef7d; color: #1a1a2e; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 1</div>
+      <div style="color: #a0aec0;"><span style="color: #f093fb;">Junior:</span> "It's like switch/case but with objects"</div>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+      <div style="background: #4ecdc4; color: #1a1a2e; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 2</div>
+      <div style="color: #a0aec0;"><span style="color: #f093fb;">Mid:</span> "It lets me add new algorithms without changing existing code"</div>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+      <div style="background: #667eea; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 3</div>
+      <div style="color: #a0aec0;"><span style="color: #f093fb;">Senior:</span> "Strategies can be composed, decorated, and selected dynamically based on runtime conditions"</div>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+      <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 4</div>
+      <div style="color: #a0aec0;"><span style="color: #f093fb;">Staff/Principal:</span> "Strategy enables A/B testing, feature flags, and gradual rollouts at the algorithm level. Combined with Factory and DI, it's the foundation of configurable business rules."</div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -113,21 +114,36 @@ The Strategy pattern defines a family of algorithms, encapsulates each one, and 
 
 This is the most common confusion:
 
-```
-┌───────────────────────────────────────────────────────────────────┐
-│  STRATEGY                        │  STATE                        │
-├──────────────────────────────────┼───────────────────────────────┤
-│  Client chooses the strategy     │  Object changes state itself  │
-│  Strategies are interchangeable  │  States transition naturally  │
-│  "How to do X"                   │  "What can I do now"          │
-│  Algorithms are unrelated        │  States are related lifecycle │
-│                                                                   │
-│  Example:                        │  Example:                     │
-│  CompressionStrategy             │  OrderState                   │
-│  - GZip, LZ4, Snappy             │  - Pending→Paid→Shipped→Done  │
-│  (client picks best for use)     │  (order transitions itself)   │
-└───────────────────────────────────────────────────────────────────┘
-```
+<div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem; color: white;">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.75rem;">STRATEGY</div>
+    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+      <li>Client chooses the strategy</li>
+      <li>Strategies are interchangeable</li>
+      <li>"How to do X"</li>
+      <li>Algorithms are unrelated</li>
+    </ul>
+    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem;">
+      <div style="font-weight: 600;">Example: CompressionStrategy</div>
+      <div style="opacity: 0.9;">GZip, LZ4, Snappy</div>
+      <div style="font-style: italic; opacity: 0.8; margin-top: 0.25rem;">(client picks best for use)</div>
+    </div>
+  </div>
+  <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem; color: white;">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.75rem;">STATE</div>
+    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
+      <li>Object changes state itself</li>
+      <li>States transition naturally</li>
+      <li>"What can I do now"</li>
+      <li>States are related lifecycle</li>
+    </ul>
+    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem;">
+      <div style="font-weight: 600;">Example: OrderState</div>
+      <div style="opacity: 0.9;">Pending→Paid→Shipped→Done</div>
+      <div style="font-style: italic; opacity: 0.8; margin-top: 0.25rem;">(order transitions itself)</div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -158,28 +174,28 @@ This is the most common confusion:
 
 ### Structure
 
-```
-┌─────────────────────────┐
-│        Context          │
-├─────────────────────────┤
-│ - strategy: Strategy    │
-├─────────────────────────┤
-│ + setStrategy(strategy) │
-│ + execute()             │
-└───────────┬─────────────┘
-            │ uses
-            ▼
-┌─────────────────────────┐
-│       Strategy          │
-├─────────────────────────┤
-│ + algorithm()           │
-└─────────────────────────┘
-            △
-    ┌───────┴───────┐
-┌───┴────┐     ┌───┴────┐
-│StrategyA│    │StrategyB│
-└─────────┘    └─────────┘
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Context</div>
+    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">
+      - strategy: Strategy<br>+ setStrategy(strategy)<br>+ execute()
+    </div>
+  </div>
+  <div style="color: #667eea; font-size: 1.25rem;">↓ uses</div>
+  <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; text-align: center;">
+    <div style="font-weight: 600;">Strategy (interface)</div>
+    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">+ algorithm()</div>
+  </div>
+  <div style="color: #4ecdc4; font-size: 1.25rem;">▲ implements</div>
+  <div style="display: flex; gap: 2rem;">
+    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+      <div style="font-weight: 600;">ConcreteStrategyA</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);">
+      <div style="font-weight: 600;">ConcreteStrategyB</div>
+    </div>
+  </div>
+</div>
 
 ---
 

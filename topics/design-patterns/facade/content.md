@@ -15,25 +15,22 @@ The Facade pattern provides a simplified interface to a complex subsystem. It de
 
 ### Structure
 
-```
-┌─────────────────┐
-│     Client      │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│     Facade      │
-├─────────────────┤
-│ + operation()   │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │  Uses   │
-    ▼    ▼    ▼
-┌───────┐ ┌───────┐ ┌───────┐
-│SubsysA│ │SubsysB│ │SubsysC│
-└───────┘ └───────┘ └───────┘
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem;">Client</div>
+  </div>
+  <div style="color: #667eea; font-size: 1.25rem;">↓</div>
+  <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Facade</div>
+    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">+ simpleOperation()</div>
+  </div>
+  <div style="color: #38ef7d; font-size: 1.25rem;">↓ uses</div>
+  <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;">
+    <div style="background: #2d3748; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4; font-size: 0.9rem; text-align: center;">SubsystemA</div>
+    <div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb; font-size: 0.9rem; text-align: center;">SubsystemB</div>
+    <div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1.25rem; color: #ffd93d; font-size: 0.9rem; text-align: center;">SubsystemC</div>
+  </div>
+</div>
 
 ## Implementation
 

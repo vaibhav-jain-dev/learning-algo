@@ -15,21 +15,38 @@ The Template Method pattern defines the skeleton of an algorithm in a base class
 
 ### Structure
 
-```
-┌─────────────────────────────┐
-│      AbstractClass          │
-├─────────────────────────────┤
-│ + templateMethod()          │ ← Defines algorithm skeleton
-│ # primitiveOperation1()     │ ← Abstract steps
-│ # primitiveOperation2()     │
-│ # hook()                    │ ← Optional hook
-└─────────────────┬───────────┘
-                  △
-         ┌────────┴────────┐
-    ┌────┴────┐       ┌────┴────┐
-    │ClassA   │       │ClassB   │
-    └─────────┘       └─────────┘
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); position: relative;">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">AbstractClass</div>
+    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; text-align: left;">
+      <div style="display: flex; justify-content: space-between; gap: 2rem;">
+        <span>+ templateMethod()</span>
+        <span style="opacity: 0.7; font-style: italic;">← skeleton</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; gap: 2rem;">
+        <span># primitiveOperation1()</span>
+        <span style="opacity: 0.7; font-style: italic;">← abstract</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; gap: 2rem;">
+        <span># primitiveOperation2()</span>
+        <span style="opacity: 0.7; font-style: italic;">← abstract</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; gap: 2rem;">
+        <span># hook()</span>
+        <span style="opacity: 0.7; font-style: italic;">← optional</span>
+      </div>
+    </div>
+  </div>
+  <div style="color: #667eea; font-size: 1.25rem;">▲ extends</div>
+  <div style="display: flex; gap: 2rem;">
+    <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; font-weight: 600; text-align: center;">
+      ConcreteClassA<br><span style="font-size: 0.8rem; opacity: 0.8;">overrides steps</span>
+    </div>
+    <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 10px; padding: 1rem 1.5rem; color: #f093fb; font-weight: 600; text-align: center;">
+      ConcreteClassB<br><span style="font-size: 0.8rem; opacity: 0.8;">overrides steps</span>
+    </div>
+  </div>
+</div>
 
 ## Implementation
 

@@ -422,21 +422,22 @@ func main() {
 
 ## Structure
 
-```
-     ┌────────────────┐
-     │    Mediator    │
-     └────────┬───────┘
-              │
-     ┌────────▼───────┐
-     │ConcreteMediator│
-     └────────┬───────┘
-              │
-    ┌─────────┼─────────┐
-    │         │         │
-┌───▼──┐  ┌───▼──┐  ┌───▼──┐
-│Col A │  │Col B │  │Col C │
-└──────┘  └──────┘  └──────┘
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; text-align: center;">
+    <div style="font-weight: 600;">Mediator (interface)</div>
+  </div>
+  <div style="color: #4ecdc4; font-size: 1.25rem;">↑ implements</div>
+  <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem;">ConcreteMediator</div>
+    <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 0.25rem;">coordinates interactions</div>
+  </div>
+  <div style="color: #38ef7d; font-size: 1.25rem;">↓ ↓ ↓</div>
+  <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-size: 0.9rem; text-align: center; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);">Colleague A</div>
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-size: 0.9rem; text-align: center; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);">Colleague B</div>
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-size: 0.9rem; text-align: center; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);">Colleague C</div>
+  </div>
+</div>
 
 ## Best Practices
 
