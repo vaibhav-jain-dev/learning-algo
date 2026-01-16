@@ -85,7 +85,72 @@ ZINCRBY zset 10 member</code></pre>
                     <div class="command-row">
                         <input type="text" id="redis-command" class="command-input"
                                placeholder="Enter Redis command (e.g., GET greeting)"
+                               list="redis-commands"
                                onkeypress="if(event.key==='Enter')executeCommand()">
+                        <datalist id="redis-commands">
+                            <option value="PING"></option>
+                            <option value="ECHO"></option>
+                            <option value="GET"></option>
+                            <option value="SET"></option>
+                            <option value="DEL"></option>
+                            <option value="INCR"></option>
+                            <option value="DECR"></option>
+                            <option value="APPEND"></option>
+                            <option value="STRLEN"></option>
+                            <option value="MGET"></option>
+                            <option value="MSET"></option>
+                            <option value="LPUSH"></option>
+                            <option value="RPUSH"></option>
+                            <option value="LPOP"></option>
+                            <option value="RPOP"></option>
+                            <option value="LLEN"></option>
+                            <option value="LRANGE"></option>
+                            <option value="LINDEX"></option>
+                            <option value="LSET"></option>
+                            <option value="SADD"></option>
+                            <option value="SREM"></option>
+                            <option value="SMEMBERS"></option>
+                            <option value="SCARD"></option>
+                            <option value="SISMEMBER"></option>
+                            <option value="SINTER"></option>
+                            <option value="SUNION"></option>
+                            <option value="SDIFF"></option>
+                            <option value="ZADD"></option>
+                            <option value="ZREM"></option>
+                            <option value="ZRANGE"></option>
+                            <option value="ZREVRANGE"></option>
+                            <option value="ZCARD"></option>
+                            <option value="ZRANK"></option>
+                            <option value="ZCOUNT"></option>
+                            <option value="ZINCRBY"></option>
+                            <option value="HSET"></option>
+                            <option value="HGET"></option>
+                            <option value="HDEL"></option>
+                            <option value="HGETALL"></option>
+                            <option value="HKEYS"></option>
+                            <option value="HVALS"></option>
+                            <option value="HLEN"></option>
+                            <option value="HEXISTS"></option>
+                            <option value="HINCRBY"></option>
+                            <option value="KEYS"></option>
+                            <option value="SCAN"></option>
+                            <option value="EXISTS"></option>
+                            <option value="TYPE"></option>
+                            <option value="EXPIRE"></option>
+                            <option value="TTL"></option>
+                            <option value="PERSIST"></option>
+                            <option value="DBSIZE"></option>
+                            <option value="FLUSHDB"></option>
+                            <option value="FLUSHALL"></option>
+                            <option value="SELECT"></option>
+                            <option value="INFO"></option>
+                            <option value="SETEX"></option>
+                            <option value="SETNX"></option>
+                            <option value="GETSET"></option>
+                            <option value="RPOPLPUSH"></option>
+                            <option value="LINSERT"></option>
+                            <option value="LTRIM"></option>
+                        </datalist>
                         <button id="run-command" class="btn btn-primary" onclick="executeCommand()">
                             Run
                         </button>

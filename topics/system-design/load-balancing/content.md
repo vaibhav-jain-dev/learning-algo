@@ -56,39 +56,52 @@ Load balancing is a technique used to distribute incoming network traffic across
 
 ### High-Level Architecture
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6; overflow-x: auto;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         LOAD BALANCING ARCHITECTURE                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│     ┌────────┐   ┌────────┐   ┌────────┐                                    │
-│     │Client 1│   │Client 2│   │Client 3│   ...                              │
-│     └───┬────┘   └───┬────┘   └───┬────┘                                    │
-│         │            │            │                                          │
-│         └────────────┴────────────┘                                          │
-│                      │                                                       │
-│                      ▼                                                       │
-│         ┌────────────────────────┐                                          │
-│         │     LOAD BALANCER      │                                          │
-│         │  ┌──────────────────┐  │                                          │
-│         │  │ Health Checks    │  │                                          │
-│         │  │ Session Mgmt     │  │                                          │
-│         │  │ SSL Termination  │  │                                          │
-│         │  │ Routing Rules    │  │                                          │
-│         │  └──────────────────┘  │                                          │
-│         └───────────┬────────────┘                                          │
-│                     │                                                        │
-│      ┌──────────────┼──────────────┐                                        │
-│      │              │              │                                         │
-│      ▼              ▼              ▼                                         │
-│  ┌────────┐    ┌────────┐    ┌────────┐                                     │
-│  │Server 1│    │Server 2│    │Server 3│                                     │
-│  │  ✓ OK  │    │  ✓ OK  │    │  ✗ DOWN│                                     │
-│  └────────┘    └────────┘    └────────┘                                     │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div class="diagram-section">
+  <div class="lb-architecture">
+    <div class="lb-clients">
+      <div class="client-box">👤 Client 1</div>
+      <div class="client-box">👤 Client 2</div>
+      <div class="client-box">👤 Client 3</div>
+      <div class="client-box">...</div>
+    </div>
+
+    <div class="lb-arrow">↓</div>
+
+    <div class="lb-balancer">
+      <div class="balancer-title">⚖️ Load Balancer</div>
+      <div class="balancer-features">
+        <div class="feature">Health Checks</div>
+        <div class="feature">Session Mgmt</div>
+        <div class="feature">SSL Term.</div>
+        <div class="feature">Routing</div>
+      </div>
+    </div>
+
+    <div class="lb-arrow">↓</div>
+
+    <div class="lb-servers">
+      <div class="server-box healthy">
+        <div class="server-icon">🖥️</div>
+        <div class="server-name">Server 1</div>
+        <div class="server-status">✓ Healthy</div>
+      </div>
+      <div class="server-box healthy">
+        <div class="server-icon">🖥️</div>
+        <div class="server-name">Server 2</div>
+        <div class="server-status">✓ Healthy</div>
+      </div>
+      <div class="server-box healthy">
+        <div class="server-icon">🖥️</div>
+        <div class="server-name">Server 3</div>
+        <div class="server-status">✓ Healthy</div>
+      </div>
+      <div class="server-box unhealthy">
+        <div class="server-icon">🖥️</div>
+        <div class="server-name">Server 4</div>
+        <div class="server-status">✗ Down</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Algorithm Comparison

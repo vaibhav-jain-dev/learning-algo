@@ -8,40 +8,83 @@ The Circuit Breaker pattern prevents cascading failures in distributed systems b
 
 Think of your home's electrical circuit breaker:
 
-<div id="circuit-breaker-metaphor" class="diagram-container light"></div>
+<div class="diagram-section">
+  <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Your Home Electrical System</h3>
+  <div class="circuit-diagram">
+    <div class="diagram-row">
+      <div class="diagram-box power-grid">
+        <div class="box-icon">⚡</div>
+        <div class="box-label">Power Grid</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box circuit-breaker">
+        <div class="box-icon">🔌</div>
+        <div class="box-label">Circuit Breaker</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box appliances">
+        <div class="box-icon">🏠</div>
+        <div class="box-label">Appliances</div>
+      </div>
+    </div>
+    <div class="diagram-details">
+      <div class="detail-column">
+        <strong>Monitors:</strong>
+        <ul>
+          <li>Current too high?</li>
+          <li>Short circuit?</li>
+          <li>Overload detected?</li>
+        </ul>
+      </div>
+      <div class="detail-column">
+        <strong>When Triggered:</strong>
+        <ul>
+          <li>Cuts power flow</li>
+          <li>Prevents fire</li>
+          <li>Protects wiring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const diagram = new ArchitectureDiagram('circuit-breaker-metaphor', {
-        width: 900,
-        height: 400,
-        componentWidth: 100,
-        componentHeight: 70,
-        layers: [
-            {
-                name: '⚡ Electrical System',
-                color: '#fff9c4',
-                components: [
-                    { name: 'Power Grid', type: 'source' },
-                    { name: 'Circuit Breaker', type: 'default' },
-                    { name: 'Appliances', type: 'default' }
-                ]
-            },
-            {
-                name: '💾 Software System',
-                color: '#c8e6c9',
-                components: [
-                    { name: 'Service A', type: 'default' },
-                    { name: 'Circuit Breaker', type: 'default' },
-                    { name: 'Service B', type: 'default' }
-                ]
-            }
-        ]
-    });
-    diagramEngine.register('circuit-breaker-metaphor', diagram);
-    diagram.render();
-});
-</script>
+  <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Software Circuit Breaker Equivalent</h3>
+  <div class="circuit-diagram">
+    <div class="diagram-row">
+      <div class="diagram-box service-a">
+        <div class="box-icon">🔵</div>
+        <div class="box-label">Service A</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box circuit-breaker">
+        <div class="box-icon">🔌</div>
+        <div class="box-label">Circuit Breaker</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box service-b">
+        <div class="box-icon">🔵</div>
+        <div class="box-label">Service B</div>
+      </div>
+    </div>
+    <div class="diagram-details">
+      <div class="detail-column">
+        <strong>Monitors:</strong>
+        <ul>
+          <li>Failure rate high?</li>
+          <li>Timeouts frequent?</li>
+          <li>Error threshold?</li>
+        </ul>
+      </div>
+      <div class="detail-column">
+        <strong>When Triggered:</strong>
+        <ul>
+          <li>Fails fast</li>
+          <li>Returns fallback</li>
+          <li>Protects both sides</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -75,43 +118,45 @@ After 20+ years of operating distributed systems, here's what you learn:
 
 ## The Three States: Deep Dive
 
-<div id="circuit-breaker-states" class="diagram-container light"></div>
+<div class="diagram-section">
+  <div class="state-diagram">
+    <div class="state-container">
+      <div class="state-box state-closed">
+        <div class="state-title">CLOSED</div>
+        <div class="state-desc">Normal operation<br>Counting failures</div>
+      </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const diagram = new StateMachineDiagram('circuit-breaker-states', {
-        width: 750,
-        height: 400,
-        nodeRadius: 50,
-        states: [
-            {
-                id: 'CLOSED',
-                initial: true,
-                description: 'All requests pass\nFailures counted\nNormal operation'
-            },
-            {
-                id: 'OPEN',
-                highlighted: false,
-                description: 'All requests fail\nReturns fallback\nFail fast'
-            },
-            {
-                id: 'HALF-OPEN',
-                highlighted: false,
-                description: 'Limited requests\nTesting recovery\nProbing'
-            }
-        ],
-        transitions: [
-            { from: 'CLOSED', to: 'OPEN', label: 'Failure threshold' },
-            { from: 'CLOSED', to: 'CLOSED', label: 'Success' },
-            { from: 'OPEN', to: 'HALF-OPEN', label: 'Timeout expires' },
-            { from: 'HALF-OPEN', to: 'CLOSED', label: 'Probe success' },
-            { from: 'HALF-OPEN', to: 'OPEN', label: 'Probe failure' }
-        ]
-    });
-    diagramEngine.register('circuit-breaker-states', diagram);
-    diagram.render();
-});
-</script>
+      <div class="state-transition transition-failure">
+        <div class="transition-label">Failure threshold reached</div>
+      </div>
+
+      <div class="state-box state-open">
+        <div class="state-title">OPEN</div>
+        <div class="state-desc">Failing fast<br>Requests blocked</div>
+      </div>
+
+      <div class="state-transition transition-timeout">
+        <div class="transition-label">Timeout expires</div>
+      </div>
+
+      <div class="state-box state-half-open">
+        <div class="state-title">HALF-OPEN</div>
+        <div class="state-desc">Testing recovery<br>Limited requests</div>
+      </div>
+    </div>
+
+    <div class="state-transitions">
+      <div class="transition-row">
+        <div class="transition-arrow success-arrow">↶ Success</div>
+        <span class="transition-from">HALF-OPEN → CLOSED</span>
+      </div>
+      <div class="transition-row">
+        <div class="transition-arrow failure-arrow">↷ Failure</div>
+        <span class="transition-from">HALF-OPEN → OPEN</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### State Transitions in Detail
 

@@ -831,20 +831,22 @@ FROM blood_tests;</code></pre>
 
 .inline-sql-editor {
     width: 100%;
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
     font-size: 0.9rem;
     padding: 0.75rem;
-    border: 1px solid var(--border-color, #ddd);
+    border: 1px solid #555;
     border-radius: 4px;
-    background: white;
+    background: #2d2d30;
+    color: #d4d4d4;
     resize: vertical;
     min-height: 80px;
+    line-height: 1.6;
 }
 
 .inline-sql-editor:focus {
     outline: none;
-    border-color: var(--primary-color, #007bff);
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+    border-color: #569cd6;
+    box-shadow: 0 0 0 2px rgba(86, 156, 214, 0.2);
 }
 
 .btn-run-inline {
@@ -5679,12 +5681,22 @@ ORDER BY total_revenue DESC;</textarea>
                 return;
             }
 
+            const isSelectQuery = ['SELECT', 'WITH', 'EXPLAIN'].includes(data.query_type);
+
             let html = '<div class="inline-results-header">' +
-                '<span class="success">&#10003; ' + data.rows_affected + ' rows</span>' +
+                '<span class="success">&#10003; ';
+
+            if (isSelectQuery) {
+                html += data.rows.length + ' rows returned';
+            } else {
+                html += data.rows_affected + ' rows affected';
+            }
+
+            html += '</span>' +
                 '<span class="timing">' + data.duration_ms + 'ms</span>' +
                 '</div>';
 
-            if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
+            if (isSelectQuery && data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
                 // Check if single row - display as transposed (vertical) layout
                 if (data.rows.length === 1) {
                     html += '<div class="inline-table-wrapper"><table class="inline-results-table transposed-table">';
@@ -5717,7 +5729,9 @@ ORDER BY total_revenue DESC;</textarea>
 
                     html += '</tbody></table></div>';
                 }
-            } else {
+            } else if (isSelectQuery && data.rows.length === 0) {
+                html += '<p>Query executed successfully. No rows returned.</p>';
+            } else if (!isSelectQuery) {
                 html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
             }
 
