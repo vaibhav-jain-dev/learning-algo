@@ -1691,8 +1691,362 @@ Both match!</code></pre>
             </section>
 
             <div class="lesson-nav">
-                <a class="btn btn-outline" onclick="loadLesson('query-string')">&#8592; Previous</a>
+                <a class="btn btn-outline" onclick="loadLesson('analyzers')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('match-phrase')">Next: Match Phrase &#8594;</a>
+            </div>
+        `
+    },
+    'match-phrase': {
+        title: 'Match Phrase Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Match Phrase Query</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Match Phrase?</h2>
+                <p>The <code>match_phrase</code> query matches documents containing an exact phrase - all terms in the exact order specified.</p>
+
+                <div class="concept-box">
+                    <h3>match vs match_phrase</h3>
+                    <pre><code class="language-text">Document: "Complete Blood Count Test"
+
+match query "blood count":
+  ✅ Matches (contains both words, any order)
+
+match_phrase query "blood count":
+  ✅ Matches (exact phrase in order)
+
+match_phrase query "count blood":
+  ❌ No match (wrong order)
+
+match_phrase query "complete count":
+  ❌ No match (words not adjacent)</code></pre>
+                </div>
+
+                <div class="key-points">
+                    <h3>Key Characteristics:</h3>
+                    <ul>
+                        <li>All terms must appear in the exact order</li>
+                        <li>Terms must be adjacent (or within slop distance)</li>
+                        <li>Uses same analyzer as the field</li>
+                        <li>Perfect for searching quotes, titles, exact phrases</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Usage</h2>
+
+                <div class="example-query">
+                    <h4>Simple Match Phrase</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match_phrase": {
+      "testName": "blood count"
+    }
+  }
+}</code></pre>
+                    <p>Finds documents with "blood count" as an exact phrase</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match_phrase&quot;:{&quot;testName&quot;:&quot;blood count&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Using Slop for Flexibility</h2>
+                <p><strong>Slop</strong> allows terms to be a certain distance apart while still matching.</p>
+
+                <div class="concept-box">
+                    <h3>Understanding Slop</h3>
+                    <pre><code class="language-text">Document: "Complete Blood Count Test"
+Query: "complete count" with slop: 2
+
+Position analysis:
+  "complete" at position 0
+  "blood" at position 1
+  "count" at position 2
+
+Slop needed: |2 - 0| - 1 = 1 move
+With slop: 2, this MATCHES!</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Match Phrase with Slop</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match_phrase": {
+      "testName": {
+        "query": "complete test",
+        "slop": 2
+      }
+    }
+  }
+}</code></pre>
+                    <p>Allows up to 2 words between "complete" and "test"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match_phrase&quot;:{&quot;testName&quot;:{&quot;query&quot;:&quot;complete test&quot;,&quot;slop&quot;:2}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; match_phrase requires exact phrase order</li>
+                        <li>&#10003; Use slop to allow flexible word positioning</li>
+                        <li>&#10003; Perfect for searching exact titles, quotes</li>
+                        <li>&#10003; More precise than match, less flexible</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('match-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('term-query')">Next: Term Query &#8594;</a>
+            </div>
+        `
+    },
+    'term-query': {
+        title: 'Term Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Term Query</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Term Query?</h2>
+                <p>The <code>term</code> query finds documents containing an <strong>exact term</strong> in a field. Unlike match query, it does NOT analyze the search term.</p>
+
+                <div class="concept-box">
+                    <h3>match vs term - Critical Difference!</h3>
+                    <pre><code class="language-text">Field value indexed: "Complete Blood Count"
+(analyzed to tokens: ["complete", "blood", "count"])
+
+match query "Complete":
+  → Analyzed to "complete"
+  → ✅ MATCHES (finds "complete" token)
+
+term query "Complete":
+  → NOT analyzed, searches for exact "Complete"
+  → ❌ NO MATCH (no "Complete" token, only "complete")
+
+term query "complete":
+  → Searches for exact "complete"
+  → ✅ MATCHES</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#9888; Important Warning</h4>
+                    <p>Use <code>term</code> query ONLY on <code>keyword</code> fields, NOT on analyzed <code>text</code> fields. For text fields, use <code>match</code> query instead!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Usage</h2>
+
+                <div class="example-query">
+                    <h4>Term Query on Keyword Field</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "term": {
+      "cityCode": "BLR"
+    }
+  }
+}</code></pre>
+                    <p>Exact match on keyword field</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;term&quot;:{&quot;cityCode&quot;:&quot;BLR&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Using .keyword for Text Fields</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "term": {
+      "testName.keyword": "Complete Blood Count (CBC)"
+    }
+  }
+}</code></pre>
+                    <p>Use .keyword subfield for exact match on text fields</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;term&quot;:{&quot;testName.keyword&quot;:&quot;Complete Blood Count (CBC)&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Terms Query (Multiple Values)</h2>
+                <p>Use <code>terms</code> to match any of multiple exact values (like SQL IN clause).</p>
+
+                <div class="example-query">
+                    <h4>Terms Query</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "terms": {
+      "cityCode": ["BLR", "MUM", "DEL"]
+    }
+  }
+}</code></pre>
+                    <p>Matches documents where cityCode is BLR OR MUM OR DEL</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;terms&quot;:{&quot;cityCode&quot;:[&quot;BLR&quot;,&quot;MUM&quot;,&quot;DEL&quot;]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; term query = exact match, NO analysis</li>
+                        <li>&#10003; Use ONLY on keyword fields</li>
+                        <li>&#10003; For text fields, use field.keyword or match query</li>
+                        <li>&#10003; terms query for multiple values (OR logic)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('match-phrase')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('range-query')">Next: Range Query &#8594;</a>
+            </div>
+        `
+    },
+    'range-query': {
+        title: 'Range Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Range Query</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Range Query?</h2>
+                <p>The <code>range</code> query finds documents with field values within a specified range. Works on numeric, date, and string fields.</p>
+
+                <div class="key-points">
+                    <h3>Range Operators:</h3>
+                    <ul>
+                        <li><strong>gt:</strong> Greater than (>)</li>
+                        <li><strong>gte:</strong> Greater than or equal (>=)</li>
+                        <li><strong>lt:</strong> Less than (<)</li>
+                        <li><strong>lte:</strong> Less than or equal (<=)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Numeric Range</h2>
+
+                <div class="example-query">
+                    <h4>Price Range</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "range": {
+      "price": {
+        "gte": 100,
+        "lte": 500
+      }
+    }
+  }
+}</code></pre>
+                    <p>Find tests priced between 100 and 500</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;range&quot;:{&quot;price&quot;:{&quot;gte&quot;:100,&quot;lte&quot;:500}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Frequency Above Threshold</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "range": {
+      "frequency": {
+        "gt": 1000
+      }
+    }
+  }
+}</code></pre>
+                    <p>Find popular tests (frequency > 1000)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;range&quot;:{&quot;frequency&quot;:{&quot;gt&quot;:1000}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Date Range</h2>
+
+                <div class="concept-box">
+                    <h3>Date Math Expressions</h3>
+                    <pre><code class="language-text">now          → Current time
+now-1d       → Yesterday
+now-1w       → 1 week ago
+now-1M       → 1 month ago
+now/d        → Start of today
+2024-01-01   → Specific date
+
+Examples:
+  "gte": "now-7d"    → Last 7 days
+  "lte": "now/d"     → Until end of today
+  "gte": "2024-01-01", "lte": "2024-12-31"  → Year 2024</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Date Range Query</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "range": {
+      "createdAt": {
+        "gte": "now-30d",
+        "lte": "now"
+      }
+    }
+  }
+}</code></pre>
+                    <p>Find tests created in the last 30 days</p>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Range query for numeric, date, and string comparisons</li>
+                        <li>&#10003; gt/gte for lower bound, lt/lte for upper bound</li>
+                        <li>&#10003; Date math: now-1d, now/d, etc.</li>
+                        <li>&#10003; Commonly used in filters for performance</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('term-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('bool-query')">Next: Bool Query &#8594;</a>
             </div>
         `
     },

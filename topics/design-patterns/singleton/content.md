@@ -16,15 +16,35 @@ Ask yourself these questions:
 
 ### The Decision Tree
 
-```
-Do you need exactly ONE instance?
-├── No → Don't use Singleton
-└── Yes → Is global access truly necessary?
-    ├── No → Consider Dependency Injection instead
-    └── Yes → Is the object stateless or has simple state?
-        ├── Yes → Singleton might be appropriate
-        └── No → Be very careful - Singleton with complex state is risky
-```
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SHOULD YOU USE SINGLETON?                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Do you need exactly ONE instance?                                        │
+│   │                                                                        │
+│   ├── NO ──► Don't use Singleton                                          │
+│   │                                                                        │
+│   └── YES                                                                  │
+│       │                                                                    │
+│       └── Is global access truly necessary?                                │
+│           │                                                                │
+│           ├── NO ──► Consider Dependency Injection instead                 │
+│           │                                                                │
+│           └── YES                                                          │
+│               │                                                            │
+│               └── Is the object stateless or has simple state?             │
+│                   │                                                        │
+│                   ├── YES ──► ✓ Singleton might be appropriate            │
+│                   │                                                        │
+│                   └── NO ──► ⚠️ Be VERY careful!                          │
+│                               Singleton with complex mutable state         │
+│                               is a recipe for bugs                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ## Key Concepts
 
@@ -48,30 +68,44 @@ Do you need exactly ONE instance?
 
 ### Structure
 
-```
-┌─────────────────────────────────────────┐
-│              Singleton                   │
-├─────────────────────────────────────────┤
-│ - instance: Singleton (private static)   │
-│ - data: any (instance state)             │
-├─────────────────────────────────────────┤
-│ - Singleton() (private constructor)      │
-│ + getInstance(): Singleton (static)      │
-│ + businessMethod()                       │
-└─────────────────────────────────────────┘
-
-    Thread 1                Thread 2
-        │                       │
-        ▼                       ▼
-    getInstance()           getInstance()
-        │                       │
-        └───────┬───────────────┘
-                │
-                ▼
-        ┌───────────────┐
-        │   Instance    │ ← Single shared instance
-        └───────────────┘
-```
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       SINGLETON STRUCTURE                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────────────────────────────────┐                              │
+│   │              Singleton                   │                              │
+│   ├─────────────────────────────────────────┤                              │
+│   │ - instance: Singleton (private static)   │  ← Single instance stored   │
+│   │ - data: any (instance state)             │                              │
+│   ├─────────────────────────────────────────┤                              │
+│   │ - Singleton() (private constructor)      │  ← Can't create from outside│
+│   │ + getInstance(): Singleton (static)      │  ← Only way to get instance │
+│   │ + businessMethod()                       │                              │
+│   └─────────────────────────────────────────┘                              │
+│                                                                             │
+│                                                                             │
+│   HOW IT WORKS:                                                            │
+│                                                                             │
+│       Thread 1                Thread 2                 Thread 3            │
+│           │                       │                       │                │
+│           ▼                       ▼                       ▼                │
+│      getInstance()           getInstance()           getInstance()         │
+│           │                       │                       │                │
+│           └───────────────────────┼───────────────────────┘                │
+│                                   │                                        │
+│                                   ▼                                        │
+│                       ┌───────────────────┐                                │
+│                       │  Single Instance  │ ← ALL threads get SAME object │
+│                       │   ┌───────────┐   │                                │
+│                       │   │   data    │   │                                │
+│                       │   └───────────┘   │                                │
+│                       └───────────────────┘                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ## Pros and Cons Analysis
 
@@ -98,16 +132,30 @@ Do you need exactly ONE instance?
 
 ### Trade-off Matrix
 
-```
-                    Singleton    Dependency Injection    Global Variable
-                    ---------    --------------------    ---------------
-Controlled Access:     ★★★★★           ★★★★★                 ★☆☆☆☆
-Testability:           ★★☆☆☆           ★★★★★                 ★☆☆☆☆
-Flexibility:           ★★☆☆☆           ★★★★★                 ★☆☆☆☆
-Simplicity:            ★★★★☆           ★★☆☆☆                 ★★★★★
-Memory Control:        ★★★★★           ★★★★☆                 ★★★★★
-Thread Safety:         ★★★★☆           ★★★★★                 ★☆☆☆☆
-```
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        TRADE-OFF COMPARISON                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│                       Singleton    Dependency       Global                  │
+│                                    Injection        Variable                │
+│   ────────────────────────────────────────────────────────────────────     │
+│   Controlled Access:  ★★★★★        ★★★★★            ★☆☆☆☆                  │
+│   Testability:        ★★☆☆☆        ★★★★★            ★☆☆☆☆                  │
+│   Flexibility:        ★★☆☆☆        ★★★★★            ★☆☆☆☆                  │
+│   Simplicity:         ★★★★☆        ★★☆☆☆            ★★★★★                  │
+│   Memory Control:     ★★★★★        ★★★★☆            ★★★★★                  │
+│   Thread Safety:      ★★★★☆        ★★★★★            ★☆☆☆☆                  │
+│                                                                             │
+│   Recommendation:                                                          │
+│   • Prefer Dependency Injection for application code                       │
+│   • Use Singleton for infrastructure (connection pools, config)            │
+│   • Avoid global variables                                                 │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ## Implementation
 

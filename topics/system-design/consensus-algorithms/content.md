@@ -8,32 +8,126 @@ Consensus algorithms enable distributed systems to agree on a single value or st
 
 ### The Consensus Problem
 
-```
-Multiple nodes must agree on a single value:
-
-Node A proposes: X
-Node B proposes: Y
-Node C proposes: X
-                 ↓
-All nodes agree: X (or Y, but same value)
-```
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      THE CONSENSUS PROBLEM                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Multiple nodes must agree on a single value:                             │
+│                                                                             │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
+│   │  Node A  │    │  Node B  │    │  Node C  │                            │
+│   │proposes X│    │proposes Y│    │proposes X│                            │
+│   └────┬─────┘    └────┬─────┘    └────┬─────┘                            │
+│        │               │               │                                    │
+│        └───────────────┼───────────────┘                                    │
+│                        │                                                    │
+│                        ▼                                                    │
+│                 ┌─────────────┐                                            │
+│                 │  CONSENSUS  │                                            │
+│                 │  PROTOCOL   │                                            │
+│                 └─────────────┘                                            │
+│                        │                                                    │
+│        ┌───────────────┼───────────────┐                                    │
+│        ▼               ▼               ▼                                    │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
+│   │  Node A  │    │  Node B  │    │  Node C  │                            │
+│   │decides: X│    │decides: X│    │decides: X│                            │
+│   └──────────┘    └──────────┘    └──────────┘                            │
+│                                                                             │
+│   All nodes agree on X (could have been Y, but MUST be same value)        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ### Properties of Consensus
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 1. **Agreement**: All correct nodes decide on the same value
 2. **Validity**: The decided value was proposed by some node
 3. **Termination**: All correct nodes eventually decide
 4. **Integrity**: Each node decides at most once
 
+</div>
+
 ### FLP Impossibility
 
-In an asynchronous system with even one faulty node, no deterministic consensus algorithm can guarantee all three properties. Practical algorithms use timeouts to work around this.
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
+
+⚠️ **The FLP Impossibility Theorem (1985)**: In an asynchronous system with even one faulty node, no deterministic consensus algorithm can guarantee all three properties (agreement, validity, termination) simultaneously.
+
+Practical algorithms use **timeouts** to work around this, accepting that termination may not be guaranteed if too many failures occur.
+
+</div>
 
 ## Common Consensus Algorithms
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CONSENSUS ALGORITHM COMPARISON                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Algorithm │ Fault Model  │ Nodes for f faults │ Rounds │ Used In          │
+│  ──────────┼──────────────┼────────────────────┼────────┼──────────────────│
+│  Paxos     │ Crash        │ 2f + 1             │ 2      │ Chubby, Spanner  │
+│  Raft      │ Crash        │ 2f + 1             │ 2      │ etcd, CockroachDB│
+│  PBFT      │ Byzantine    │ 3f + 1             │ 3      │ Hyperledger      │
+│  Zab       │ Crash        │ 2f + 1             │ 2      │ Zookeeper        │
+│                                                                             │
+│  Crash fault: Node stops responding                                        │
+│  Byzantine: Node may behave maliciously (lie, send conflicting messages)   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ### 1. Paxos
 
 The classic consensus algorithm, known for being difficult to understand but foundational.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          PAXOS PROTOCOL                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Roles: Proposer (proposes values), Acceptor (votes), Learner (learns)    │
+│                                                                             │
+│   PHASE 1: PREPARE                                                         │
+│   ─────────────────                                                        │
+│                                                                             │
+│   Proposer                 Acceptors                                       │
+│      │                     A    B    C                                     │
+│      │──PREPARE(n=5)──────►│    │    │                                     │
+│      │──PREPARE(n=5)────────────►│    │                                     │
+│      │──PREPARE(n=5)──────────────────►│                                     │
+│      │                     │    │    │                                     │
+│      │◄──PROMISE(n=5)──────│    │    │  "I won't accept proposals < 5"    │
+│      │◄──PROMISE(n=5)───────────│    │                                     │
+│      │◄──PROMISE(n=5)────────────────│                                     │
+│                                                                             │
+│   PHASE 2: ACCEPT                                                          │
+│   ───────────────                                                          │
+│                                                                             │
+│   Proposer                 Acceptors                                       │
+│      │                     A    B    C                                     │
+│      │──ACCEPT(n=5,v=X)───►│    │    │                                     │
+│      │──ACCEPT(n=5,v=X)─────────►│    │                                     │
+│      │──ACCEPT(n=5,v=X)───────────────►│                                     │
+│      │                     │    │    │                                     │
+│      │◄──ACCEPTED(n=5,v=X)─│    │    │                                     │
+│      │◄──ACCEPTED(n=5,v=X)──────│    │                                     │
+│      │◄──ACCEPTED(n=5,v=X)───────────│                                     │
+│                                                                             │
+│   Majority accepted → Value X is chosen!                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 from enum import Enum
@@ -128,6 +222,97 @@ class PaxosNode:
 ### 2. Raft
 
 Designed for understandability, widely used in practice.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           RAFT PROTOCOL                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Three states: FOLLOWER → CANDIDATE → LEADER                              │
+│                                                                             │
+│   ┌────────────────────────────────────────────────────────────────────┐   │
+│   │                      LEADER ELECTION                               │   │
+│   └────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│   Step 1: Timeout (no heartbeat from leader)                               │
+│                                                                             │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
+│   │ Follower │    │ Follower │    │ Follower │                            │
+│   │  Node A  │    │  Node B  │    │  Node C  │                            │
+│   └────┬─────┘    └──────────┘    └──────────┘                            │
+│        │                                                                    │
+│        │ timeout!                                                           │
+│        ▼                                                                    │
+│   ┌──────────┐                                                             │
+│   │Candidate │ term++, vote for self                                       │
+│   │  Node A  │                                                             │
+│   └────┬─────┘                                                             │
+│        │                                                                    │
+│   Step 2: Request votes                                                    │
+│        │                                                                    │
+│        ├──RequestVote──────────►┌──────────┐                              │
+│        │                        │ Follower │ vote: YES                     │
+│        │                        │  Node B  │                               │
+│        │                        └──────────┘                               │
+│        │                                                                    │
+│        ├──RequestVote──────────►┌──────────┐                              │
+│        │                        │ Follower │ vote: YES                     │
+│        │                        │  Node C  │                               │
+│        │                        └──────────┘                               │
+│        │                                                                    │
+│   Step 3: Wins election (got majority)                                     │
+│        ▼                                                                    │
+│   ┌──────────┐                                                             │
+│   │  LEADER  │ sends heartbeats to all followers                           │
+│   │  Node A  │                                                             │
+│   └──────────┘                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        RAFT LOG REPLICATION                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Client sends command "SET X=5" to Leader                                 │
+│                                                                             │
+│   Leader's Log:                                                            │
+│   ┌─────┬─────┬─────┬─────┬─────┐                                         │
+│   │  1  │  2  │  3  │  4  │  5  │  ← Log entries                          │
+│   │T1:A │T1:B │T2:C │T3:D │T3:X │                                         │
+│   └─────┴─────┴─────┴─────┴─────┘                                         │
+│                           ▲                                                 │
+│                      commitIndex                                            │
+│                                                                             │
+│   1. Leader appends entry to log                                           │
+│   2. Leader sends AppendEntries to followers                               │
+│   3. Followers append to their logs and ACK                                │
+│   4. When majority ACK → Leader commits                                    │
+│   5. Leader notifies followers of commit                                   │
+│                                                                             │
+│   Leader          Follower 1       Follower 2                              │
+│   ┌─────┐         ┌─────┐         ┌─────┐                                 │
+│   │T3:X │────────►│T3:X │         │     │                                 │
+│   └─────┘  append └─────┘         └─────┘                                 │
+│      │                │                                                     │
+│      │      ACK ◄─────┘                                                     │
+│      │                                                                      │
+│      │◄───────────────────────────ACK                                      │
+│      │                             │                                        │
+│   COMMIT!                          │                                        │
+│   (majority                        │                                        │
+│    replicated)    ┌─────┐         ┌─────┐                                 │
+│      │            │T3:X │         │T3:X │                                 │
+│      └───────────►└─────┘         └─────┘                                 │
+│         commit                                                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 from enum import Enum
