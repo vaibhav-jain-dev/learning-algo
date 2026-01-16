@@ -922,6 +922,32 @@ FROM blood_tests;</code></pre>
     padding: 1rem;
     color: var(--text-secondary, #666);
 }
+
+/* Transposed table for single-row results */
+.transposed-table {
+    max-width: 500px;
+}
+
+.transposed-table .column-name {
+    background: var(--bg-secondary, #f5f5f5);
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    width: 40%;
+    text-transform: capitalize;
+}
+
+.transposed-table td:last-child {
+    word-break: break-word;
+}
+
+/* Ensure results are visible */
+.inline-results {
+    margin-top: 0.75rem;
+}
+
+.inline-results:empty {
+    display: none;
+}
 </style>
 
 <script>
@@ -5604,16 +5630,33 @@ ORDER BY total_revenue DESC;</textarea>
 
     // Run inline query within the lesson
     window.runInlineQuery = function(button) {
+        // Find the editor wrapper and results container
         const wrapper = button.closest('.inline-editor-wrapper') || button.parentElement;
         const textarea = wrapper.querySelector('.inline-sql-editor');
-        const resultsDiv = wrapper.nextElementSibling || wrapper.parentElement.querySelector('.inline-results');
 
-        if (!textarea || !resultsDiv) return;
+        // More robust results div lookup - check multiple locations
+        let resultsDiv = wrapper.parentElement.querySelector('.inline-results');
+        if (!resultsDiv) {
+            resultsDiv = wrapper.nextElementSibling;
+        }
+        if (!resultsDiv || !resultsDiv.classList.contains('inline-results')) {
+            // Create results div if it doesn't exist
+            resultsDiv = document.createElement('div');
+            resultsDiv.className = 'inline-results';
+            wrapper.parentElement.appendChild(resultsDiv);
+        }
+
+        if (!textarea) {
+            console.error('Could not find textarea');
+            return;
+        }
 
         const query = textarea.value.trim();
         if (!query) return;
 
+        // Show loading state
         resultsDiv.innerHTML = '<div class="loading">Executing query...</div>';
+        resultsDiv.style.display = 'block';
 
         fetch('/api/sql/execute', {
             method: 'POST',
@@ -5623,7 +5666,7 @@ ORDER BY total_revenue DESC;</textarea>
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (!data.success || data.error) {
-                resultsDiv.innerHTML = '<div class="inline-error">' + escapeHtml(data.error) + '</div>';
+                resultsDiv.innerHTML = '<div class="inline-error">' + escapeHtml(data.error || 'Query execution failed') + '</div>';
                 return;
             }
 
@@ -5633,23 +5676,38 @@ ORDER BY total_revenue DESC;</textarea>
                 '</div>';
 
             if (data.columns && data.columns.length > 0 && data.rows && data.rows.length > 0) {
-                html += '<div class="inline-table-wrapper"><table class="inline-results-table">';
-                html += '<thead><tr>';
-                data.columns.forEach(function(col) {
-                    html += '<th>' + escapeHtml(col) + '</th>';
-                });
-                html += '</tr></thead><tbody>';
+                // Check if single row - display as transposed (vertical) layout
+                if (data.rows.length === 1) {
+                    html += '<div class="inline-table-wrapper"><table class="inline-results-table transposed-table">';
+                    html += '<thead><tr><th>Column</th><th>Value</th></tr></thead><tbody>';
 
-                data.rows.forEach(function(row) {
-                    html += '<tr>';
-                    row.forEach(function(cell) {
+                    data.columns.forEach(function(col, index) {
+                        const cell = data.rows[0][index];
                         const val = cell === null ? '<em class="null-value">NULL</em>' : escapeHtml(String(cell));
-                        html += '<td>' + val + '</td>';
+                        html += '<tr><td class="column-name">' + escapeHtml(col) + '</td><td>' + val + '</td></tr>';
                     });
-                    html += '</tr>';
-                });
 
-                html += '</tbody></table></div>';
+                    html += '</tbody></table></div>';
+                } else {
+                    // Multiple rows - display as normal table
+                    html += '<div class="inline-table-wrapper"><table class="inline-results-table">';
+                    html += '<thead><tr>';
+                    data.columns.forEach(function(col) {
+                        html += '<th>' + escapeHtml(col) + '</th>';
+                    });
+                    html += '</tr></thead><tbody>';
+
+                    data.rows.forEach(function(row) {
+                        html += '<tr>';
+                        row.forEach(function(cell) {
+                            const val = cell === null ? '<em class="null-value">NULL</em>' : escapeHtml(String(cell));
+                            html += '<td>' + val + '</td>';
+                        });
+                        html += '</tr>';
+                    });
+
+                    html += '</tbody></table></div>';
+                }
             } else {
                 html += '<p>Query executed successfully. ' + data.rows_affected + ' rows affected.</p>';
             }
@@ -5657,7 +5715,7 @@ ORDER BY total_revenue DESC;</textarea>
             resultsDiv.innerHTML = html;
         })
         .catch(function(err) {
-            resultsDiv.innerHTML = '<div class="inline-error">Error: ' + escapeHtml(err.message) + '</div>';
+            resultsDiv.innerHTML = '<div class="inline-error">Error: ' + escapeHtml(err.message || 'Connection error') + '</div>';
         });
     };
 
