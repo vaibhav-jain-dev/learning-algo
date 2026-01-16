@@ -36,46 +36,7 @@ Design a rate limiter that controls the rate of requests a client can make to an
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
-```mermaid
-graph TB
-    subgraph TB["1️⃣ TOKEN BUCKET"]
-        direction TB
-        TB1["🪣 Bucket: 4 capacity"]
-        TB2["➕ +1 token/sec"]
-        TB3["📊 Request uses 1 token"]
-        TB1 --> TB2 --> TB3
-    end
-
-    subgraph SW["2️⃣ SLIDING WINDOW"]
-        direction LR
-        SW1["⏱️ 60 sec window"]
-        SW2["📍 Window slides →"]
-        SW3["📊 Count all requests"]
-        SW1 --> SW2 --> SW3
-    end
-
-    subgraph FW["3️⃣ FIXED WINDOW"]
-        direction LR
-        FW1["🪟 Window 1<br/>Requests: 7"]
-        FW2["🪟 Window 2<br/>Requests: 3"]
-        FW1 -.->|resets| FW2
-    end
-
-    subgraph LB["4️⃣ LEAKY BUCKET"]
-        direction TB
-        LB1["📥 Requests enter"]
-        LB2["🪣 Bucket fills"]
-        LB3["💧 Process at fixed rate"]
-        LB4["❌ Overflow rejected"]
-        LB1 --> LB2 --> LB3
-        LB2 -.->|exceeds| LB4
-    end
-
-    style TB fill:#e3f2fd
-    style SW fill:#f3e5f5
-    style FW fill:#fff3e0
-    style LB fill:#f1f8e9
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 </div>
 

@@ -35,41 +35,7 @@ Design an elevator system for a building with multiple floors and elevators. Han
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
-```mermaid
-stateDiagram-v2
-    [*] --> IDLE
-
-    IDLE --> MOVING_UP: Request above
-    IDLE --> MOVING_DOWN: Request below
-
-    MOVING_UP --> MOVING_UP: Continue up to next stop
-    MOVING_UP --> DOORS_OPEN: Arrived at stop
-
-    MOVING_DOWN --> MOVING_DOWN: Continue down to next stop
-    MOVING_DOWN --> DOORS_OPEN: Arrived at stop
-
-    DOORS_OPEN --> MOVING_UP: More stops above
-    DOORS_OPEN --> MOVING_DOWN: More stops below
-    DOORS_OPEN --> IDLE: No more stops
-
-    IDLE --> [*]
-
-    note right of IDLE
-        Waiting for requests
-        No active movement
-    end note
-
-    note right of MOVING_UP
-        Elevator moving upward
-        Serving all stops going up
-    end note
-
-    note right of DOORS_OPEN
-        Doors open at floor
-        Allow passengers to enter/exit
-        Timeout triggers next state
-    end note
-```
+<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
 
 **State Transitions:**
 - `IDLE` → `MOVING_UP/DOWN`: When request received
