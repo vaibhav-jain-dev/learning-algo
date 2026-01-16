@@ -2189,6 +2189,3299 @@ LIMIT 15;</textarea>
                 }
             ],
             summary: ['NULL means unknown/missing', 'Use IS NULL not = NULL', 'COALESCE provides default values', 'NULL propagates in expressions', 'COUNT(column) excludes NULLs']
+        },
+
+        // ==================== JOIN LESSONS ====================
+
+        'right-join': {
+            title: 'RIGHT JOIN',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'left-join',
+            next: 'full-join',
+            sections: [
+                {
+                    title: 'What is RIGHT JOIN?',
+                    content: `<p><code>RIGHT JOIN</code> (or RIGHT OUTER JOIN) returns all rows from the right table and matching rows from the left table. Unmatched rows have NULL for left table columns.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>All right rows:</strong> Every row from right table is included</li>
+                            <li><strong>Matching left rows:</strong> Left table data where matches exist</li>
+                            <li><strong>NULLs:</strong> Left columns are NULL when no match</li>
+                            <li><strong>Rare in practice:</strong> Usually rewritten as LEFT JOIN</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <p>Before using RIGHT JOIN, understand: <a onclick="loadLesson('inner-join')">INNER JOIN</a>, <a onclick="loadLesson('left-join')">LEFT JOIN</a>, and table relationship concepts.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- RIGHT JOIN syntax
+SELECT orders.order_number, patients.first_name
+FROM orders
+RIGHT JOIN patients ON orders.patient_id = patients.id;
+
+-- Equivalent LEFT JOIN (preferred)
+SELECT orders.order_number, patients.first_name
+FROM patients
+LEFT JOIN orders ON orders.patient_id = patients.id;</code></pre>
+                    <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                        <h4>Best Practice</h4>
+                        <p>Most developers prefer LEFT JOIN over RIGHT JOIN for readability. You can always swap table order and use LEFT JOIN instead.</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find all patients and their orders (if any):</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="7">-- Using RIGHT JOIN
+SELECT
+    o.order_number,
+    p.first_name,
+    p.last_name
+FROM orders o
+RIGHT JOIN patients p ON o.patient_id = p.id
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Alternative: Convert to LEFT JOIN',
+                    content: `<pre><code class="language-sql">-- RIGHT JOIN version
+SELECT o.order_number, p.first_name
+FROM orders o
+RIGHT JOIN patients p ON o.patient_id = p.id;
+
+-- Equivalent LEFT JOIN version (more readable)
+SELECT o.order_number, p.first_name
+FROM patients p
+LEFT JOIN orders o ON o.patient_id = p.id;</code></pre>
+                    <div class="info-box">
+                        <h4>Performance Note</h4>
+                        <p>RIGHT JOIN and LEFT JOIN have the same performance. The query planner treats them identically after swapping tables.</p>
+                    </div>`
+                }
+            ],
+            summary: ['RIGHT JOIN keeps all right table rows', 'Left columns are NULL when no match', 'Can always be rewritten as LEFT JOIN', 'LEFT JOIN is generally preferred', 'Performance is identical to LEFT JOIN']
+        },
+
+        'full-join': {
+            title: 'FULL OUTER JOIN',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'right-join',
+            next: 'cross-join',
+            sections: [
+                {
+                    title: 'What is FULL OUTER JOIN?',
+                    content: `<p><code>FULL OUTER JOIN</code> returns all rows from both tables. Where there is no match, NULL values fill in the missing side.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>All rows:</strong> Every row from both tables is included</li>
+                            <li><strong>NULLs both ways:</strong> Unmatched rows get NULLs on opposite side</li>
+                            <li><strong>Use case:</strong> Finding orphan records in either table</li>
+                            <li><strong>Less common:</strong> Used for reconciliation and data quality checks</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <p>Understand <a onclick="loadLesson('inner-join')">INNER JOIN</a>, <a onclick="loadLesson('left-join')">LEFT JOIN</a>, and NULL handling before using FULL OUTER JOIN.</p>
+                    </div>`
+                },
+                {
+                    title: 'Visual Explanation',
+                    content: `<div class="info-box">
+                        <h4>How FULL OUTER JOIN Works</h4>
+                        <pre>
+    Table A        Table B
+      ┌───┐        ┌───┐
+      │ A │╲      ╱│ B │
+      │ L │ ╲    ╱ │ O │
+      │ L │  ╲  ╱  │ T │
+      │   │   ╲╱   │ H │
+      │ R │   ╱╲   │   │  ← FULL OUTER JOIN returns EVERYTHING
+      │ O │  ╱  ╲  │   │    (A + intersection + B)
+      │ W │ ╱    ╲ │   │
+      │ S │╱      ╲│   │
+      └───┘        └───┘
+                        </pre>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- FULL OUTER JOIN syntax
+SELECT
+    r.request_number,
+    cs.slot_date
+FROM requests r
+FULL OUTER JOIN collection_slots cs ON cs.request_id = r.id;
+
+-- Find orphan records (exist in one table but not the other)
+SELECT
+    r.request_number,
+    cs.slot_date
+FROM requests r
+FULL OUTER JOIN collection_slots cs ON cs.request_id = r.id
+WHERE r.id IS NULL OR cs.id IS NULL;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find all requests and collection slots (matched or unmatched):</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">SELECT
+    r.request_number,
+    r.status,
+    cs.slot_date,
+    cs.slot_time,
+    CASE
+        WHEN r.id IS NULL THEN 'Orphan slot'
+        WHEN cs.id IS NULL THEN 'No slot assigned'
+        ELSE 'Matched'
+    END AS match_status
+FROM requests r
+FULL OUTER JOIN collection_slots cs ON cs.request_id = r.id
+LIMIT 20;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Alternative: UNION of LEFT JOINs',
+                    content: `<pre><code class="language-sql">-- If FULL OUTER JOIN is not supported (MySQL < 8)
+-- Use UNION of LEFT JOIN and RIGHT JOIN
+SELECT r.request_number, cs.slot_date
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+
+UNION
+
+SELECT r.request_number, cs.slot_date
+FROM requests r
+RIGHT JOIN collection_slots cs ON cs.request_id = r.id
+WHERE r.id IS NULL;</code></pre>
+                    <div class="info-box">
+                        <h4>Database Support</h4>
+                        <p>FULL OUTER JOIN is supported in PostgreSQL, SQL Server, and Oracle. MySQL added support in version 8.0. For older MySQL, use the UNION alternative.</p>
+                    </div>`
+                }
+            ],
+            summary: ['FULL OUTER JOIN returns all rows from both tables', 'NULLs fill unmatched columns on either side', 'Great for finding orphan records', 'Use WHERE IS NULL to find unmatched rows', 'Can be emulated with UNION of LEFT/RIGHT JOINs']
+        },
+
+        'cross-join': {
+            title: 'CROSS JOIN',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'full-join',
+            next: 'self-join',
+            sections: [
+                {
+                    title: 'What is CROSS JOIN?',
+                    content: `<p><code>CROSS JOIN</code> produces the Cartesian product of two tables - every row from the first table combined with every row from the second table.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Cartesian product:</strong> All possible combinations</li>
+                            <li><strong>No join condition:</strong> Unlike other joins</li>
+                            <li><strong>Result size:</strong> Rows in A × Rows in B</li>
+                            <li><strong>Use with caution:</strong> Can produce massive result sets</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Warning: Performance Impact</h4>
+                        <p>A CROSS JOIN between two tables with 1000 rows each produces 1,000,000 rows! Always limit results or use small tables.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Explicit CROSS JOIN syntax
+SELECT p.first_name, s.status
+FROM patients p
+CROSS JOIN (SELECT DISTINCT status FROM requests) s;
+
+-- Implicit syntax (comma in FROM)
+SELECT p.first_name, s.status
+FROM patients p, (SELECT DISTINCT status FROM requests) s;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Generate all combinations of patients and statuses:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="8">-- Get statuses as a small set first
+WITH statuses AS (
+    SELECT DISTINCT status FROM requests
+)
+SELECT
+    p.first_name,
+    s.status
+FROM (SELECT * FROM patients LIMIT 3) p
+CROSS JOIN statuses s;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Practical Use Cases',
+                    content: `<pre><code class="language-sql">-- Use case 1: Generate a calendar with all dates
+WITH dates AS (
+    SELECT generate_series(
+        '2024-01-01'::date,
+        '2024-01-07'::date,
+        '1 day'::interval
+    )::date AS date
+),
+hours AS (
+    SELECT generate_series(9, 17) AS hour
+)
+SELECT date, hour FROM dates CROSS JOIN hours;
+
+-- Use case 2: Create all product-store combinations
+-- for inventory tracking
+SELECT p.product_name, s.store_name
+FROM products p CROSS JOIN stores s;
+
+-- Use case 3: Matrix comparison
+SELECT
+    a.request_number AS req_a,
+    b.request_number AS req_b,
+    a.final_amount - b.final_amount AS diff
+FROM (SELECT * FROM requests LIMIT 3) a
+CROSS JOIN (SELECT * FROM requests LIMIT 3) b
+WHERE a.id < b.id;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use CROSS JOIN</h4>
+                        <ul>
+                            <li>Generating test data combinations</li>
+                            <li>Creating calendar/scheduling grids</li>
+                            <li>Pairing all items for comparison</li>
+                            <li>Filling sparse matrices</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['CROSS JOIN produces Cartesian product', 'No join condition required', 'Result = rows in A × rows in B', 'Use for generating combinations', 'Be careful with large tables - limit results']
+        },
+
+        'self-join': {
+            title: 'Self Join',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'cross-join',
+            next: 'chained-joins',
+            sections: [
+                {
+                    title: 'What is a Self Join?',
+                    content: `<p>A <strong>self join</strong> joins a table to itself. This is useful for comparing rows within the same table or for hierarchical data.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Same table twice:</strong> Table joins with itself</li>
+                            <li><strong>Aliases required:</strong> Must use different aliases</li>
+                            <li><strong>Use cases:</strong> Hierarchies, comparisons, sequences</li>
+                            <li><strong>Any join type:</strong> Can use INNER, LEFT, etc.</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <p>Understand table aliases and basic JOIN syntax before attempting self joins.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Self join to find employees and their managers
+SELECT
+    e.name AS employee,
+    m.name AS manager
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id;
+
+-- Self join to compare rows
+SELECT
+    a.request_number AS request_a,
+    b.request_number AS request_b,
+    a.final_amount,
+    b.final_amount
+FROM requests a
+JOIN requests b ON a.status = b.status AND a.id < b.id;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with the same status and compare amounts:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">-- Compare requests with same status
+SELECT
+    a.request_number AS req_1,
+    b.request_number AS req_2,
+    a.status,
+    a.final_amount AS amount_1,
+    b.final_amount AS amount_2,
+    ABS(a.final_amount - b.final_amount) AS difference
+FROM requests a
+JOIN requests b ON a.status = b.status AND a.id < b.id
+ORDER BY difference DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Use Case: Hierarchical Data',
+                    content: `<pre><code class="language-sql">-- Example: Employee hierarchy
+-- Assume table: employees(id, name, manager_id)
+
+-- Find direct reports
+SELECT
+    m.name AS manager,
+    e.name AS direct_report
+FROM employees e
+JOIN employees m ON e.manager_id = m.id;
+
+-- Find all levels (using recursive CTE is better)
+SELECT
+    e1.name AS employee,
+    e2.name AS manager,
+    e3.name AS grand_manager
+FROM employees e1
+LEFT JOIN employees e2 ON e1.manager_id = e2.id
+LEFT JOIN employees e3 ON e2.manager_id = e3.id;</code></pre>
+                    <div class="info-box">
+                        <h4>Alternative: Recursive CTE</h4>
+                        <p>For deep hierarchies with unknown depth, use <a onclick="loadLesson('recursive-cte')">Recursive CTEs</a> instead of chained self joins.</p>
+                    </div>`
+                },
+                {
+                    title: 'Use Case: Finding Sequential Records',
+                    content: `<div class="try-it-section">
+                        <p>Find consecutive requests and calculate time gaps:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">-- Find consecutive requests by created_at
+WITH numbered AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (ORDER BY created_at) AS rn
+    FROM requests
+)
+SELECT
+    a.request_number AS current_req,
+    b.request_number AS next_req,
+    a.created_at AS current_time,
+    b.created_at AS next_time
+FROM numbered a
+JOIN numbered b ON b.rn = a.rn + 1
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Self join joins a table to itself', 'Must use different aliases for each instance', 'Useful for hierarchies and comparisons', 'Use a.id < b.id to avoid duplicate pairs', 'Consider LAG/LEAD for sequential comparisons']
+        },
+
+        'chained-joins': {
+            title: 'Chaining Joins',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'self-join',
+            next: 'join-conditions',
+            sections: [
+                {
+                    title: 'What are Chained Joins?',
+                    content: `<p>Chained joins connect multiple tables in a single query. Each JOIN adds another table to the result set.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Sequential:</strong> Each JOIN processes left-to-right</li>
+                            <li><strong>Mix types:</strong> Can combine INNER, LEFT, etc.</li>
+                            <li><strong>Performance:</strong> Join order can affect speed</li>
+                            <li><strong>Readability:</strong> Format for clarity</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <p>Master individual join types (<a onclick="loadLesson('inner-join')">INNER</a>, <a onclick="loadLesson('left-join')">LEFT</a>) before chaining multiple joins.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Chaining multiple joins
+SELECT
+    r.request_number,
+    o.order_number,
+    p.first_name || ' ' || p.last_name AS patient_name,
+    cs.slot_date
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+JOIN patients p ON o.patient_id = p.id
+LEFT JOIN collection_slots cs ON cs.request_id = r.id;</code></pre>
+                    <div class="info-box">
+                        <h4>Formatting Best Practice</h4>
+                        <p>Put each JOIN on its own line and indent consistently. This makes complex queries readable.</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Join requests, orders, patients, and collection slots:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    r.request_number,
+    r.status AS request_status,
+    o.order_number,
+    p.first_name,
+    p.last_name,
+    cs.slot_date,
+    cs.slot_time
+FROM requests r
+INNER JOIN orders o ON o.request_id = r.id
+INNER JOIN patients p ON o.patient_id = p.id
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+ORDER BY r.created_at DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Join Order and Performance',
+                    content: `<pre><code class="language-sql">-- The query planner usually optimizes join order, but you can help
+
+-- Good: Start from most filtered table
+SELECT r.*, o.order_number, p.first_name
+FROM requests r                            -- Filtered by WHERE
+JOIN orders o ON o.request_id = r.id       -- Smaller result
+JOIN patients p ON o.patient_id = p.id     -- Final join
+WHERE r.status = 'completed'
+  AND r.created_at > '2024-01-01';
+
+-- Hint: Use EXPLAIN ANALYZE to see actual join order
+EXPLAIN ANALYZE
+SELECT r.*, o.order_number, p.first_name
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+JOIN patients p ON o.patient_id = p.id
+WHERE r.status = 'completed';</code></pre>
+                    <div class="info-box">
+                        <h4>Performance Tips</h4>
+                        <ul>
+                            <li>Ensure join columns are indexed</li>
+                            <li>Filter early with WHERE clauses</li>
+                            <li>Use EXPLAIN ANALYZE to verify the plan</li>
+                            <li>Consider join hints only as last resort</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Mixing Join Types',
+                    content: `<div class="try-it-section">
+                        <p>Mix INNER and LEFT JOINs based on requirements:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">-- INNER JOIN where data must exist
+-- LEFT JOIN where data is optional
+SELECT
+    r.request_number,
+    r.status,
+    o.order_number,
+    p.first_name AS patient,
+    cs.slot_date,       -- Optional
+    cs.slot_time        -- Optional
+FROM requests r
+INNER JOIN orders o ON o.request_id = r.id        -- Must have order
+INNER JOIN patients p ON o.patient_id = p.id      -- Must have patient
+LEFT JOIN collection_slots cs ON cs.request_id = r.id  -- Optional
+WHERE r.status IN ('completed', 'processing')
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Chain multiple JOINs for complex queries', 'Each JOIN adds another table', 'Mix INNER and LEFT based on requirements', 'Format queries for readability', 'Use EXPLAIN ANALYZE to check performance']
+        },
+
+        'join-conditions': {
+            title: 'Complex Join Conditions',
+            category: 'Joins & Relationships',
+            difficulty: 'Intermediate',
+            prev: 'chained-joins',
+            next: 'join-performance',
+            sections: [
+                {
+                    title: 'Beyond Simple Equality',
+                    content: `<p>Join conditions can be more complex than simple equality. You can use multiple conditions, ranges, and even functions in your ON clauses.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Multiple conditions:</strong> Use AND/OR in ON clause</li>
+                            <li><strong>Non-equality:</strong> Use <, >, <=, >=, <></li>
+                            <li><strong>Range joins:</strong> BETWEEN in join conditions</li>
+                            <li><strong>Function-based:</strong> Join on computed values</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <ul>
+                            <li>Understand basic JOINs: <a onclick="loadLesson('inner-join')">INNER</a>, <a onclick="loadLesson('left-join')">LEFT</a></li>
+                            <li>Know <a onclick="loadLesson('explain-analyze')">EXPLAIN ANALYZE</a> for checking performance</li>
+                            <li>Consider <a onclick="loadLesson('composite-index')">composite indexes</a> for multi-column joins</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Multiple Join Conditions',
+                    content: `<pre><code class="language-sql">-- Join on multiple columns
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+              AND o.status = r.status;  -- Additional condition
+
+-- Using AND in ON vs WHERE
+-- These are different for OUTER joins!
+SELECT r.request_number, cs.slot_date
+FROM requests r
+LEFT JOIN collection_slots cs
+       ON cs.request_id = r.id
+      AND cs.slot_date > '2024-01-01';  -- Filter BEFORE join
+
+-- vs
+SELECT r.request_number, cs.slot_date
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+WHERE cs.slot_date > '2024-01-01';  -- Filter AFTER join (removes NULLs)</code></pre>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Important: ON vs WHERE with OUTER JOINs</h4>
+                        <p>For LEFT/RIGHT/FULL joins, conditions in ON filter before joining (keeps NULLs), while WHERE filters after (removes NULLs).</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It: ON vs WHERE',
+                    content: `<div class="try-it-section">
+                        <p>Compare ON condition vs WHERE condition:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">-- Condition in ON (before join) - keeps unmatched requests
+SELECT
+    r.request_number,
+    r.status,
+    cs.slot_date,
+    CASE WHEN cs.id IS NULL THEN 'No slot' ELSE 'Has slot' END AS slot_status
+FROM requests r
+LEFT JOIN collection_slots cs
+       ON cs.request_id = r.id
+      AND cs.slot_date IS NOT NULL  -- Condition in ON
+ORDER BY r.created_at DESC
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Non-Equality Joins',
+                    content: `<pre><code class="language-sql">-- Range join: Find orders created after request
+SELECT r.request_number, o.order_number, r.created_at, o.created_at
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+             AND o.created_at >= r.created_at;
+
+-- Inequality join: Compare amounts
+SELECT
+    r1.request_number AS smaller,
+    r2.request_number AS larger,
+    r1.final_amount,
+    r2.final_amount
+FROM requests r1
+JOIN requests r2 ON r1.final_amount < r2.final_amount
+                AND r1.status = r2.status
+LIMIT 10;
+
+-- BETWEEN in join
+SELECT e.event_date, p.name, p.valid_from, p.valid_to
+FROM events e
+JOIN price_periods p ON e.event_date BETWEEN p.valid_from AND p.valid_to;</code></pre>
+                    <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                        <h4>Performance Warning</h4>
+                        <p>Non-equality joins can be slow! They may not use indexes efficiently. Use <a onclick="loadLesson('explain-analyze')">EXPLAIN ANALYZE</a> to check.</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It: Range Joins',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with collection slots on the same day or later:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">SELECT
+    r.request_number,
+    r.created_at::date AS request_date,
+    cs.slot_date,
+    cs.slot_date - r.created_at::date AS days_until_collection
+FROM requests r
+JOIN collection_slots cs
+  ON cs.request_id = r.id
+ AND cs.slot_date >= r.created_at::date
+ORDER BY days_until_collection
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Function-Based Join Conditions',
+                    content: `<pre><code class="language-sql">-- Join on computed values
+SELECT r.request_number, p.first_name
+FROM requests r
+JOIN patients p ON LOWER(p.email) = LOWER(r.contact_email);
+
+-- Date truncation join
+SELECT
+    r.request_number,
+    r.created_at,
+    daily_stats.total_requests
+FROM requests r
+JOIN (
+    SELECT DATE_TRUNC('day', created_at) AS day, COUNT(*) AS total_requests
+    FROM requests
+    GROUP BY 1
+) daily_stats ON DATE_TRUNC('day', r.created_at) = daily_stats.day;
+
+-- Pattern matching join (use with caution - slow!)
+SELECT o.order_number, p.first_name
+FROM orders o
+JOIN patients p ON p.phone LIKE '%' || o.contact_phone || '%';</code></pre>
+                    <div class="info-box">
+                        <h4>Indexing for Function-Based Joins</h4>
+                        <p>Consider expression indexes for frequently used function-based joins:</p>
+                        <pre><code class="language-sql">CREATE INDEX idx_patients_lower_email
+ON patients (LOWER(email));</code></pre>
+                    </div>`
+                },
+                {
+                    title: 'Exercises',
+                    content: `<div class="exercise">
+                        <h4>Exercise 1: Multi-Condition Join</h4>
+                        <p>Find orders where the order status matches the request status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">-- Write your query here
+SELECT r.request_number, o.order_number, r.status
+FROM requests r
+JOIN orders o ON </textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                        <details>
+                            <summary>Show Solution</summary>
+                            <pre><code class="language-sql">SELECT r.request_number, o.order_number, r.status
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+             AND o.status = r.status
+LIMIT 10;</code></pre>
+                        </details>
+                    </div>`
+                }
+            ],
+            summary: ['Join conditions can use AND/OR, not just equality', 'ON vs WHERE behaves differently for OUTER joins', 'Range joins use <, >, BETWEEN in conditions', 'Function-based joins may need expression indexes', 'Always check performance with EXPLAIN ANALYZE']
+        },
+
+        'join-performance': {
+            title: 'Join Performance',
+            category: 'Joins & Relationships',
+            difficulty: 'Advanced',
+            prev: 'join-conditions',
+            next: 'count-sum',
+            sections: [
+                {
+                    title: 'Understanding Join Algorithms',
+                    content: `<p>Database engines use different algorithms to execute joins. Understanding them helps you write efficient queries.</p>
+                    <div class="key-points">
+                        <h3>Common Join Algorithms:</h3>
+                        <ul>
+                            <li><strong>Nested Loop:</strong> For each row in A, scan B. O(n*m). Good for small tables or indexed lookups.</li>
+                            <li><strong>Hash Join:</strong> Build hash table from smaller table, probe with larger. Good for unsorted data.</li>
+                            <li><strong>Merge Join:</strong> Sort both tables, merge. Efficient for pre-sorted or indexed data.</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <ul>
+                            <li><a onclick="loadLesson('explain-analyze')">EXPLAIN ANALYZE</a> for reading query plans</li>
+                            <li><a onclick="loadLesson('what-is-index')">Index fundamentals</a></li>
+                            <li><a onclick="loadLesson('scan-types')">Scan types</a> (Seq Scan vs Index Scan)</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Checking Join Performance',
+                    content: `<pre><code class="language-sql">-- Use EXPLAIN ANALYZE to see join algorithms
+EXPLAIN ANALYZE
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+WHERE r.status = 'completed';
+
+-- Look for these in the output:
+-- - Nested Loop
+-- - Hash Join
+-- - Merge Join
+-- - Index Scan vs Seq Scan</code></pre>
+                    <div class="try-it-section">
+                        <p>Analyze a join query:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="6">EXPLAIN ANALYZE
+SELECT r.request_number, o.order_number, p.first_name
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+JOIN patients p ON o.patient_id = p.id
+LIMIT 100;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Indexing for Joins',
+                    content: `<pre><code class="language-sql">-- Foreign keys should be indexed
+-- These indexes dramatically improve join performance
+
+-- Index on join columns
+CREATE INDEX idx_orders_request_id ON orders(request_id);
+CREATE INDEX idx_orders_patient_id ON orders(patient_id);
+CREATE INDEX idx_collection_slots_request_id ON collection_slots(request_id);
+
+-- Check if index is being used
+EXPLAIN ANALYZE
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id  -- Should use idx_orders_request_id
+WHERE r.id = 1;</code></pre>
+                    <div class="info-box">
+                        <h4>Index Rule of Thumb</h4>
+                        <p>Always create indexes on:</p>
+                        <ul>
+                            <li>Foreign key columns</li>
+                            <li>Columns frequently used in JOIN conditions</li>
+                            <li>Columns frequently used in WHERE clauses</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Common Performance Issues',
+                    content: `<pre><code class="language-sql">-- PROBLEM 1: Missing index on join column
+-- Causes full table scan
+EXPLAIN ANALYZE SELECT * FROM orders o
+JOIN requests r ON r.id = o.request_id;  -- Index on request_id?
+
+-- PROBLEM 2: Function on indexed column
+-- Index can't be used!
+SELECT * FROM patients p
+JOIN orders o ON LOWER(p.email) = o.contact_email;  -- No index!
+-- SOLUTION: Create expression index or normalize data
+
+-- PROBLEM 3: Implicit type conversion
+SELECT * FROM orders o
+JOIN requests r ON r.id = o.request_id::text;  -- Type mismatch!
+-- SOLUTION: Ensure matching types
+
+-- PROBLEM 4: Joining on non-selective columns
+SELECT * FROM requests r1
+JOIN requests r2 ON r1.status = r2.status;  -- Low cardinality
+-- Many rows match = slow</code></pre>`
+                },
+                {
+                    title: 'Optimization Techniques',
+                    content: `<pre><code class="language-sql">-- TECHNIQUE 1: Filter early
+-- Good: Filter before join
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+WHERE r.status = 'completed'  -- Reduces rows before joining
+  AND r.created_at > '2024-01-01';
+
+-- TECHNIQUE 2: Select only needed columns
+-- Good: Explicit columns
+SELECT r.request_number, o.order_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id;
+
+-- Bad: SELECT * (fetches unnecessary data)
+SELECT *
+FROM requests r
+JOIN orders o ON o.request_id = r.id;
+
+-- TECHNIQUE 3: Use EXISTS instead of JOIN for existence checks
+-- Good for "does related row exist?"
+SELECT r.request_number
+FROM requests r
+WHERE EXISTS (
+    SELECT 1 FROM orders o WHERE o.request_id = r.id
+);
+
+-- TECHNIQUE 4: Limit early in subqueries
+SELECT r.request_number, o.order_number
+FROM (SELECT * FROM requests ORDER BY created_at DESC LIMIT 100) r
+JOIN orders o ON o.request_id = r.id;</code></pre>`
+                },
+                {
+                    title: 'Try It: Compare Approaches',
+                    content: `<div class="try-it-section">
+                        <p>Compare JOIN vs EXISTS performance:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">-- Method 1: JOIN (may return duplicates)
+EXPLAIN ANALYZE
+SELECT DISTINCT r.request_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id;
+
+-- Method 2: EXISTS (often faster for existence checks)
+-- EXPLAIN ANALYZE
+-- SELECT r.request_number
+-- FROM requests r
+-- WHERE EXISTS (SELECT 1 FROM orders o WHERE o.request_id = r.id);</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Database uses Nested Loop, Hash Join, or Merge Join', 'Index foreign keys and join columns', 'Avoid functions on indexed columns in joins', 'Filter early to reduce join input', 'Use EXISTS for existence checks instead of JOIN + DISTINCT']
+        },
+
+        // ==================== SUBQUERY LESSONS ====================
+
+        'scalar-subquery': {
+            title: 'Scalar Subqueries',
+            category: 'Subqueries',
+            difficulty: 'Intermediate',
+            prev: 'null-handling',
+            next: 'column-subquery',
+            sections: [
+                {
+                    title: 'What is a Scalar Subquery?',
+                    content: `<p>A <strong>scalar subquery</strong> returns exactly one value (one row, one column). It can be used anywhere a single value is expected.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Returns:</strong> Exactly one row and one column</li>
+                            <li><strong>Use in:</strong> SELECT, WHERE, HAVING clauses</li>
+                            <li><strong>Error:</strong> Fails if returns more than one row</li>
+                            <li><strong>NULL:</strong> Returns NULL if no rows match</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Scalar subquery in SELECT
+SELECT
+    request_number,
+    final_amount,
+    (SELECT AVG(final_amount) FROM requests) AS avg_amount
+FROM requests;
+
+-- Scalar subquery in WHERE
+SELECT request_number, final_amount
+FROM requests
+WHERE final_amount > (SELECT AVG(final_amount) FROM requests);
+
+-- Scalar subquery assigning to variable
+SELECT
+    request_number,
+    final_amount,
+    final_amount - (SELECT AVG(final_amount) FROM requests) AS diff_from_avg
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Compare each request to the average:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">SELECT
+    request_number,
+    status,
+    final_amount,
+    ROUND((SELECT AVG(final_amount) FROM requests), 2) AS overall_avg,
+    ROUND(final_amount - (SELECT AVG(final_amount) FROM requests), 2) AS diff_from_avg,
+    CASE
+        WHEN final_amount > (SELECT AVG(final_amount) FROM requests) THEN 'Above Average'
+        ELSE 'Below Average'
+    END AS comparison
+FROM requests
+ORDER BY final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Alternative: Window Functions',
+                    content: `<pre><code class="language-sql">-- Scalar subquery (runs once)
+SELECT
+    request_number,
+    final_amount,
+    (SELECT AVG(final_amount) FROM requests) AS avg_amount
+FROM requests;
+
+-- Equivalent with window function (often more efficient)
+SELECT
+    request_number,
+    final_amount,
+    AVG(final_amount) OVER () AS avg_amount
+FROM requests;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use Each</h4>
+                        <ul>
+                            <li><strong>Scalar subquery:</strong> Simple one-time calculations</li>
+                            <li><strong>Window function:</strong> When you need the calculation for every row</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['Scalar subquery returns one value', 'Can use in SELECT, WHERE, HAVING', 'Fails if multiple rows returned', 'Consider window functions as alternative', 'Returns NULL if no rows match']
+        },
+
+        'correlated-subquery': {
+            title: 'Correlated Subqueries',
+            category: 'Subqueries',
+            difficulty: 'Advanced',
+            prev: 'table-subquery',
+            next: 'exists-not-exists',
+            sections: [
+                {
+                    title: 'What is a Correlated Subquery?',
+                    content: `<p>A <strong>correlated subquery</strong> references columns from the outer query. It executes once for each row in the outer query.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>References outer query:</strong> Uses outer table's columns</li>
+                            <li><strong>Executes per row:</strong> Runs once for each outer row</li>
+                            <li><strong>Performance:</strong> Can be slow for large datasets</li>
+                            <li><strong>Use cases:</strong> Row-level comparisons, existence checks</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                        <h4>Performance Consideration</h4>
+                        <p>Correlated subqueries run once per outer row. For large tables, consider JOINs or window functions instead.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Correlated subquery: Find requests above their status average
+SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+WHERE r.final_amount > (
+    SELECT AVG(r2.final_amount)
+    FROM requests r2
+    WHERE r2.status = r.status  -- References outer query!
+);
+
+-- Compare to non-correlated (runs once)
+SELECT r.request_number, r.final_amount
+FROM requests r
+WHERE r.final_amount > (
+    SELECT AVG(final_amount) FROM requests  -- No reference to outer
+);</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with amount above their status average:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    r.request_number,
+    r.status,
+    r.final_amount,
+    (SELECT ROUND(AVG(r2.final_amount), 2)
+     FROM requests r2
+     WHERE r2.status = r.status) AS status_avg
+FROM requests r
+WHERE r.final_amount > (
+    SELECT AVG(r2.final_amount)
+    FROM requests r2
+    WHERE r2.status = r.status
+)
+ORDER BY r.status, r.final_amount DESC
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Alternative: Window Functions',
+                    content: `<pre><code class="language-sql">-- Correlated subquery (slower)
+SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+WHERE r.final_amount > (
+    SELECT AVG(r2.final_amount)
+    FROM requests r2
+    WHERE r2.status = r.status
+);
+
+-- Window function alternative (faster)
+SELECT request_number, status, final_amount
+FROM (
+    SELECT
+        request_number,
+        status,
+        final_amount,
+        AVG(final_amount) OVER (PARTITION BY status) AS status_avg
+    FROM requests
+) sub
+WHERE final_amount > status_avg;</code></pre>
+                    <div class="try-it-section">
+                        <p>Try the window function approach:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">-- More efficient with window function
+SELECT request_number, status, final_amount, ROUND(status_avg, 2) AS status_avg
+FROM (
+    SELECT
+        request_number,
+        status,
+        final_amount,
+        AVG(final_amount) OVER (PARTITION BY status) AS status_avg
+    FROM requests
+) sub
+WHERE final_amount > status_avg
+ORDER BY status, final_amount DESC
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['Correlated subquery references outer query columns', 'Executes once per outer row (can be slow)', 'Great for row-level comparisons', 'Consider window functions for better performance', 'Often used with EXISTS for existence checks']
+        },
+
+        'exists-not-exists': {
+            title: 'EXISTS / NOT EXISTS',
+            category: 'Subqueries',
+            difficulty: 'Intermediate',
+            prev: 'correlated-subquery',
+            next: 'in-not-in',
+            sections: [
+                {
+                    title: 'What is EXISTS?',
+                    content: `<p><code>EXISTS</code> returns TRUE if the subquery returns any rows. It's optimized to stop at the first match.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Boolean result:</strong> Returns TRUE or FALSE</li>
+                            <li><strong>Short-circuits:</strong> Stops at first match (efficient)</li>
+                            <li><strong>NULL-safe:</strong> Works correctly with NULLs</li>
+                            <li><strong>Correlated:</strong> Usually used with correlated subquery</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Find requests that have at least one order
+SELECT r.request_number, r.status
+FROM requests r
+WHERE EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.request_id = r.id
+);
+
+-- Find requests that have NO orders
+SELECT r.request_number, r.status
+FROM requests r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.request_id = r.id
+);</code></pre>
+                    <div class="info-box">
+                        <h4>SELECT 1 vs SELECT *</h4>
+                        <p>The subquery's SELECT list doesn't matter for EXISTS. <code>SELECT 1</code> is convention, but <code>SELECT *</code> works identically.</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with orders vs without orders:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">-- Requests WITH orders
+SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+WHERE EXISTS (
+    SELECT 1 FROM orders o WHERE o.request_id = r.id
+)
+ORDER BY r.created_at DESC
+LIMIT 10;
+
+-- Try changing EXISTS to NOT EXISTS to find requests without orders</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'EXISTS vs IN vs JOIN',
+                    content: `<pre><code class="language-sql">-- Method 1: EXISTS (often fastest)
+SELECT r.request_number
+FROM requests r
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.request_id = r.id);
+
+-- Method 2: IN (can be slow with large subquery results)
+SELECT r.request_number
+FROM requests r
+WHERE r.id IN (SELECT request_id FROM orders);
+
+-- Method 3: JOIN (returns duplicates if multiple matches)
+SELECT DISTINCT r.request_number
+FROM requests r
+JOIN orders o ON o.request_id = r.id;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use Each</h4>
+                        <table>
+                            <tr><td><strong>EXISTS</strong></td><td>Best for checking existence, handles NULLs well</td></tr>
+                            <tr><td><strong>IN</strong></td><td>Simple syntax, good for small value lists</td></tr>
+                            <tr><td><strong>JOIN</strong></td><td>When you need data from both tables</td></tr>
+                        </table>
+                    </div>`
+                },
+                {
+                    title: 'NOT EXISTS for Anti-Joins',
+                    content: `<div class="try-it-section">
+                        <p>Find requests without collection slots (anti-join):</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">-- NOT EXISTS anti-join
+SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM collection_slots cs
+    WHERE cs.request_id = r.id
+)
+ORDER BY r.created_at DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>
+                    <div class="info-box">
+                        <h4>Alternative: LEFT JOIN + IS NULL</h4>
+                        <pre><code class="language-sql">-- Equivalent anti-join with LEFT JOIN
+SELECT r.request_number, r.status
+FROM requests r
+LEFT JOIN collection_slots cs ON cs.request_id = r.id
+WHERE cs.id IS NULL;</code></pre>
+                    </div>`
+                }
+            ],
+            summary: ['EXISTS returns TRUE if subquery has any rows', 'NOT EXISTS finds rows without matches (anti-join)', 'EXISTS short-circuits at first match (efficient)', 'Handles NULLs better than IN', 'SELECT list in EXISTS subquery is ignored']
+        },
+
+        'in-not-in': {
+            title: 'IN / NOT IN',
+            category: 'Subqueries',
+            difficulty: 'Intermediate',
+            prev: 'exists-not-exists',
+            next: 'any-all',
+            sections: [
+                {
+                    title: 'What is IN with Subqueries?',
+                    content: `<p><code>IN</code> checks if a value matches any value returned by a subquery. <code>NOT IN</code> checks for non-membership.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>IN:</strong> TRUE if value matches any in the list</li>
+                            <li><strong>NOT IN:</strong> TRUE if value matches none</li>
+                            <li><strong>NULL trap:</strong> NOT IN returns NULL if list contains NULL</li>
+                            <li><strong>Performance:</strong> Can be slow with large subquery results</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Warning: NULL Behavior</h4>
+                        <p><code>NOT IN</code> with NULLs can return unexpected results! If the subquery returns any NULL, <code>NOT IN</code> returns NULL (unknown), not TRUE.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- IN with subquery
+SELECT r.request_number, r.status
+FROM requests r
+WHERE r.id IN (
+    SELECT DISTINCT request_id
+    FROM orders
+);
+
+-- NOT IN with subquery
+SELECT r.request_number, r.status
+FROM requests r
+WHERE r.id NOT IN (
+    SELECT DISTINCT request_id
+    FROM orders
+    WHERE request_id IS NOT NULL  -- Filter NULLs!
+);</code></pre>`
+                },
+                {
+                    title: 'The NULL Trap',
+                    content: `<pre><code class="language-sql">-- PROBLEM: NOT IN with NULLs
+SELECT 1 WHERE 'a' NOT IN ('b', 'c', NULL);
+-- Returns: (empty) - because NULL makes result unknown!
+
+-- SOLUTION 1: Filter NULLs in subquery
+SELECT r.request_number
+FROM requests r
+WHERE r.id NOT IN (
+    SELECT request_id FROM orders WHERE request_id IS NOT NULL
+);
+
+-- SOLUTION 2: Use NOT EXISTS instead (recommended)
+SELECT r.request_number
+FROM requests r
+WHERE NOT EXISTS (
+    SELECT 1 FROM orders o WHERE o.request_id = r.id
+);</code></pre>
+                    <div class="try-it-section">
+                        <p>Demonstrate the NULL issue:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="8">-- This works correctly (no NULLs)
+SELECT 'found' AS result
+WHERE 'apple' NOT IN ('banana', 'cherry');
+
+-- Uncomment below to see NULL behavior
+-- SELECT 'found' AS result
+-- WHERE 'apple' NOT IN ('banana', 'cherry', NULL);</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find requests with/without orders using IN:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">-- Requests that have orders (using IN)
+SELECT r.request_number, r.status, r.final_amount
+FROM requests r
+WHERE r.id IN (
+    SELECT DISTINCT request_id
+    FROM orders
+)
+ORDER BY r.final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'IN vs EXISTS Performance',
+                    content: `<pre><code class="language-sql">-- IN: Builds complete list, then checks membership
+SELECT r.request_number
+FROM requests r
+WHERE r.id IN (SELECT request_id FROM orders);
+
+-- EXISTS: Stops at first match (can be faster)
+SELECT r.request_number
+FROM requests r
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.request_id = r.id);</code></pre>
+                    <div class="info-box">
+                        <h4>Performance Guidelines</h4>
+                        <ul>
+                            <li><strong>Small subquery result:</strong> IN is fine</li>
+                            <li><strong>Large subquery result:</strong> EXISTS may be faster</li>
+                            <li><strong>NOT IN:</strong> Prefer NOT EXISTS (avoids NULL issues)</li>
+                            <li><strong>Always check:</strong> Use EXPLAIN ANALYZE</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['IN checks if value is in subquery result', 'NOT IN has dangerous NULL behavior', 'Filter NULLs or use NOT EXISTS instead', 'EXISTS often performs better than IN', 'Always test with EXPLAIN ANALYZE']
+        },
+
+        // ==================== CTE LESSONS ====================
+
+        'cte-basics': {
+            title: 'CTE Basics (WITH Clause)',
+            category: 'Common Table Expressions',
+            difficulty: 'Intermediate',
+            prev: 'any-all',
+            next: 'multiple-ctes',
+            sections: [
+                {
+                    title: 'What is a CTE?',
+                    content: `<p>A <strong>Common Table Expression (CTE)</strong> is a named temporary result set defined with the <code>WITH</code> clause. It makes complex queries more readable.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Named:</strong> Give meaningful names to subqueries</li>
+                            <li><strong>Readable:</strong> Break complex queries into steps</li>
+                            <li><strong>Reusable:</strong> Reference multiple times in main query</li>
+                            <li><strong>Scope:</strong> Only exists for the query it's defined in</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Basic CTE syntax
+WITH cte_name AS (
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition
+)
+SELECT * FROM cte_name;
+
+-- Example: High-value requests
+WITH high_value_requests AS (
+    SELECT request_number, status, final_amount
+    FROM requests
+    WHERE final_amount > 1000
+)
+SELECT * FROM high_value_requests
+ORDER BY final_amount DESC;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Use a CTE to find above-average requests:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">WITH avg_amount AS (
+    SELECT AVG(final_amount) AS avg_value
+    FROM requests
+),
+above_average AS (
+    SELECT
+        r.request_number,
+        r.status,
+        r.final_amount,
+        a.avg_value
+    FROM requests r
+    CROSS JOIN avg_amount a
+    WHERE r.final_amount > a.avg_value
+)
+SELECT * FROM above_average
+ORDER BY final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'CTE vs Subquery',
+                    content: `<pre><code class="language-sql">-- Without CTE (harder to read)
+SELECT r.request_number, r.final_amount
+FROM requests r
+WHERE r.final_amount > (
+    SELECT AVG(final_amount) FROM requests
+)
+AND r.status = (
+    SELECT status FROM requests
+    GROUP BY status
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);
+
+-- With CTEs (clearer intent)
+WITH avg_amount AS (
+    SELECT AVG(final_amount) AS value FROM requests
+),
+most_common_status AS (
+    SELECT status
+    FROM requests
+    GROUP BY status
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+)
+SELECT r.request_number, r.final_amount
+FROM requests r
+CROSS JOIN avg_amount a
+CROSS JOIN most_common_status s
+WHERE r.final_amount > a.value
+  AND r.status = s.status;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use CTEs</h4>
+                        <ul>
+                            <li>Complex queries with multiple subqueries</li>
+                            <li>When you need to reference the same subquery multiple times</li>
+                            <li>To improve query readability</li>
+                            <li>Recursive queries (hierarchical data)</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['CTE = named temporary result set with WITH clause', 'Improves readability of complex queries', 'Can be referenced multiple times', 'Scope is limited to the query', 'Great for breaking down complex logic']
+        },
+
+        'multiple-ctes': {
+            title: 'Multiple CTEs',
+            category: 'Common Table Expressions',
+            difficulty: 'Intermediate',
+            prev: 'cte-basics',
+            next: 'recursive-cte',
+            sections: [
+                {
+                    title: 'Chaining Multiple CTEs',
+                    content: `<p>You can define multiple CTEs in a single WITH clause, separated by commas. Later CTEs can reference earlier ones.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Comma-separated:</strong> Multiple CTEs in one WITH</li>
+                            <li><strong>Order matters:</strong> Later CTEs can use earlier ones</li>
+                            <li><strong>Pipeline:</strong> Build complex logic step by step</li>
+                            <li><strong>Readability:</strong> Each step has a meaningful name</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">WITH
+    -- First CTE
+    first_cte AS (
+        SELECT ...
+    ),
+    -- Second CTE (can reference first_cte)
+    second_cte AS (
+        SELECT ...
+        FROM first_cte
+        WHERE ...
+    ),
+    -- Third CTE (can reference first and second)
+    third_cte AS (
+        SELECT ...
+        FROM second_cte
+        JOIN first_cte ON ...
+    )
+-- Main query uses any/all CTEs
+SELECT * FROM third_cte;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Build a multi-step analysis with chained CTEs:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="20">WITH
+    -- Step 1: Calculate overall stats
+    overall_stats AS (
+        SELECT
+            COUNT(*) AS total_requests,
+            AVG(final_amount) AS avg_amount,
+            SUM(final_amount) AS total_revenue
+        FROM requests
+    ),
+    -- Step 2: Calculate per-status stats
+    status_stats AS (
+        SELECT
+            status,
+            COUNT(*) AS count,
+            AVG(final_amount) AS avg_amount,
+            SUM(final_amount) AS revenue
+        FROM requests
+        GROUP BY status
+    ),
+    -- Step 3: Combine with overall for comparison
+    status_comparison AS (
+        SELECT
+            ss.*,
+            os.total_requests,
+            ROUND(100.0 * ss.count / os.total_requests, 2) AS pct_of_total,
+            ROUND(100.0 * ss.revenue / os.total_revenue, 2) AS pct_of_revenue
+        FROM status_stats ss
+        CROSS JOIN overall_stats os
+    )
+SELECT * FROM status_comparison
+ORDER BY revenue DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Practical Example: Funnel Analysis',
+                    content: `<pre><code class="language-sql">WITH
+    -- Stage 1: All requests
+    all_requests AS (
+        SELECT COUNT(*) AS count FROM requests
+    ),
+    -- Stage 2: Requests with orders
+    with_orders AS (
+        SELECT COUNT(DISTINCT r.id) AS count
+        FROM requests r
+        JOIN orders o ON o.request_id = r.id
+    ),
+    -- Stage 3: Completed requests
+    completed AS (
+        SELECT COUNT(*) AS count
+        FROM requests
+        WHERE status = 'completed'
+    )
+SELECT
+    'All Requests' AS stage,
+    all_requests.count,
+    100.0 AS pct
+FROM all_requests
+UNION ALL
+SELECT
+    'With Orders',
+    with_orders.count,
+    ROUND(100.0 * with_orders.count / all_requests.count, 2)
+FROM with_orders, all_requests
+UNION ALL
+SELECT
+    'Completed',
+    completed.count,
+    ROUND(100.0 * completed.count / all_requests.count, 2)
+FROM completed, all_requests;</code></pre>`
+                }
+            ],
+            summary: ['Multiple CTEs separated by commas', 'Later CTEs can reference earlier ones', 'Build complex logic step by step', 'Each CTE has a meaningful name', 'Great for data pipelines and analysis']
+        },
+
+        'recursive-cte': {
+            title: 'Recursive CTEs',
+            category: 'Common Table Expressions',
+            difficulty: 'Advanced',
+            prev: 'multiple-ctes',
+            next: 'cte-vs-subquery',
+            sections: [
+                {
+                    title: 'What is a Recursive CTE?',
+                    content: `<p>A <strong>recursive CTE</strong> references itself to process hierarchical or tree-structured data. It has two parts: anchor member (starting point) and recursive member (iteration).</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>RECURSIVE keyword:</strong> Required for self-referencing CTEs</li>
+                            <li><strong>Anchor member:</strong> Starting rows (base case)</li>
+                            <li><strong>Recursive member:</strong> Joined to CTE itself (iteration)</li>
+                            <li><strong>UNION ALL:</strong> Combines anchor and recursive results</li>
+                            <li><strong>Use cases:</strong> Hierarchies, trees, graphs, sequences</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
+                        <h4>Warning: Infinite Loops</h4>
+                        <p>Recursive CTEs can run forever if not properly terminated. Always ensure the recursive member eventually returns no rows.</p>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">WITH RECURSIVE cte_name AS (
+    -- Anchor member (base case)
+    SELECT initial_columns
+    FROM table
+    WHERE starting_condition
+
+    UNION ALL
+
+    -- Recursive member (references cte_name)
+    SELECT next_columns
+    FROM table
+    JOIN cte_name ON recursive_condition
+)
+SELECT * FROM cte_name;</code></pre>`
+                },
+                {
+                    title: 'Example: Generate Number Sequence',
+                    content: `<div class="try-it-section">
+                        <p>Generate numbers 1 to 10:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">WITH RECURSIVE numbers AS (
+    -- Anchor: start with 1
+    SELECT 1 AS n
+
+    UNION ALL
+
+    -- Recursive: add 1 until we reach 10
+    SELECT n + 1
+    FROM numbers
+    WHERE n < 10  -- Stop condition!
+)
+SELECT n FROM numbers;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Example: Date Range',
+                    content: `<div class="try-it-section">
+                        <p>Generate a date range:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">WITH RECURSIVE date_range AS (
+    -- Anchor: start date
+    SELECT DATE '2024-01-01' AS date
+
+    UNION ALL
+
+    -- Recursive: add one day
+    SELECT date + INTERVAL '1 day'
+    FROM date_range
+    WHERE date < DATE '2024-01-07'
+)
+SELECT
+    date,
+    TO_CHAR(date, 'Day') AS day_name
+FROM date_range;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Example: Employee Hierarchy',
+                    content: `<pre><code class="language-sql">-- Assume: employees(id, name, manager_id)
+WITH RECURSIVE org_chart AS (
+    -- Anchor: Top-level managers (no manager)
+    SELECT
+        id,
+        name,
+        manager_id,
+        1 AS level,
+        name AS path
+    FROM employees
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    -- Recursive: Find direct reports
+    SELECT
+        e.id,
+        e.name,
+        e.manager_id,
+        oc.level + 1,
+        oc.path || ' > ' || e.name
+    FROM employees e
+    JOIN org_chart oc ON e.manager_id = oc.id
+)
+SELECT * FROM org_chart
+ORDER BY path;</code></pre>
+                    <div class="info-box">
+                        <h4>Common Hierarchy Patterns</h4>
+                        <ul>
+                            <li>Organization charts (employee → manager)</li>
+                            <li>Category trees (subcategory → parent)</li>
+                            <li>Comment threads (reply → parent comment)</li>
+                            <li>Bill of materials (component → assembly)</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['Use WITH RECURSIVE for self-referencing CTEs', 'Anchor member provides starting rows', 'Recursive member iterates until no new rows', 'Always include a termination condition', 'Perfect for hierarchical/tree data']
+        },
+
+        // ==================== INDEXING LESSONS ====================
+
+        'what-is-index': {
+            title: 'What is an Index?',
+            category: 'Indexing & Performance',
+            difficulty: 'Intermediate',
+            prev: 'json-operations',
+            next: 'btree-index',
+            sections: [
+                {
+                    title: 'Understanding Database Indexes',
+                    content: `<p>An <strong>index</strong> is a data structure that improves the speed of data retrieval operations. Think of it like a book's index - instead of reading every page, you can jump directly to the relevant page.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Speeds up reads:</strong> Find data without scanning entire table</li>
+                            <li><strong>Slows down writes:</strong> Index must be updated on INSERT/UPDATE</li>
+                            <li><strong>Uses storage:</strong> Indexes take disk space</li>
+                            <li><strong>Trade-off:</strong> Read speed vs write speed vs storage</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Without Index vs With Index',
+                    content: `<div class="info-box">
+                        <h4>Without Index: Sequential Scan</h4>
+                        <pre>
+Table: 1,000,000 rows
+Query: WHERE email = 'john@example.com'
+
+Database must check EVERY row: O(n)
+Time: ~1000ms for large tables
+                        </pre>
+                    </div>
+                    <div class="info-box" style="background: #d4edda; border-color: #28a745;">
+                        <h4>With Index: Index Scan</h4>
+                        <pre>
+Table: 1,000,000 rows + email index
+Query: WHERE email = 'john@example.com'
+
+Database uses index to find row: O(log n)
+Time: ~1ms even for large tables
+                        </pre>
+                    </div>`
+                },
+                {
+                    title: 'Try It: See the Difference',
+                    content: `<div class="try-it-section">
+                        <p>Compare query plans with EXPLAIN:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="6">-- Check if query uses an index
+EXPLAIN ANALYZE
+SELECT * FROM requests
+WHERE id = 1;
+-- Look for "Index Scan" vs "Seq Scan"</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'When to Create Indexes',
+                    content: `<pre><code class="language-sql">-- CREATE INDEX: Primary keys are indexed automatically
+-- Foreign keys should ALWAYS be indexed
+
+-- Good candidates for indexing:
+-- 1. Foreign key columns
+CREATE INDEX idx_orders_request_id ON orders(request_id);
+
+-- 2. Columns in WHERE clauses
+CREATE INDEX idx_requests_status ON requests(status);
+
+-- 3. Columns in JOIN conditions
+CREATE INDEX idx_orders_patient_id ON orders(patient_id);
+
+-- 4. Columns in ORDER BY (for sorted queries)
+CREATE INDEX idx_requests_created_at ON requests(created_at DESC);</code></pre>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>When NOT to Create Indexes</h4>
+                        <ul>
+                            <li>Small tables (< 1000 rows) - full scan is fast</li>
+                            <li>Columns with low cardinality (few unique values)</li>
+                            <li>Tables with heavy write loads</li>
+                            <li>Columns rarely used in queries</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Index Types Overview',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Type</th><th>Best For</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>B-Tree</strong></td><td>Most queries, ranges, sorting</td><td>=, <, >, BETWEEN, ORDER BY</td></tr>
+                                <tr><td><strong>Hash</strong></td><td>Equality only</td><td>= comparisons</td></tr>
+                                <tr><td><strong>GIN</strong></td><td>Arrays, full-text, JSONB</td><td>@>, &&, to_tsvector</td></tr>
+                                <tr><td><strong>GiST</strong></td><td>Geometric, range types</td><td>Spatial queries, range overlap</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                }
+            ],
+            summary: ['Indexes speed up data retrieval (reads)', 'Trade-off: faster reads, slower writes', 'Always index foreign keys', 'Index columns used in WHERE, JOIN, ORDER BY', 'Use EXPLAIN ANALYZE to verify index usage']
+        },
+
+        'btree-index': {
+            title: 'B-Tree Index',
+            category: 'Indexing & Performance',
+            difficulty: 'Intermediate',
+            prev: 'what-is-index',
+            next: 'hash-index',
+            sections: [
+                {
+                    title: 'What is a B-Tree Index?',
+                    content: `<p><strong>B-Tree</strong> (Balanced Tree) is the default and most common index type. It keeps data sorted and allows efficient searches, range queries, and ordering.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Default type:</strong> Used when you don't specify a type</li>
+                            <li><strong>Sorted:</strong> Maintains order of indexed values</li>
+                            <li><strong>Versatile:</strong> Supports =, <, >, <=, >=, BETWEEN</li>
+                            <li><strong>O(log n):</strong> Efficient for large tables</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'B-Tree Structure',
+                    content: `<div class="info-box">
+                        <h4>How B-Tree Works</h4>
+                        <pre>
+              [50]                    ← Root node
+             /    \\
+       [25]        [75]              ← Branch nodes
+       /  \\        /  \\
+   [10,20] [30,40] [60,70] [80,90]   ← Leaf nodes (point to data)
+
+Finding value 70:
+1. Start at root [50] → 70 > 50 → go right
+2. At [75] → 70 < 75 → go left
+3. At [60,70] → found!
+Total: 3 comparisons (not 90 as in full scan)
+                        </pre>
+                    </div>`
+                },
+                {
+                    title: 'Creating B-Tree Indexes',
+                    content: `<pre><code class="language-sql">-- Default: B-Tree (no need to specify)
+CREATE INDEX idx_requests_status ON requests(status);
+
+-- Explicit B-Tree
+CREATE INDEX idx_requests_amount ON requests USING BTREE(final_amount);
+
+-- Descending order (for ORDER BY DESC)
+CREATE INDEX idx_requests_created_desc ON requests(created_at DESC);
+
+-- Multiple columns (composite index)
+CREATE INDEX idx_requests_status_amount ON requests(status, final_amount);</code></pre>`
+                },
+                {
+                    title: 'B-Tree Supported Operations',
+                    content: `<pre><code class="language-sql">-- All these queries can use a B-Tree index on final_amount:
+
+-- Equality
+SELECT * FROM requests WHERE final_amount = 1000;
+
+-- Less than / Greater than
+SELECT * FROM requests WHERE final_amount < 1000;
+SELECT * FROM requests WHERE final_amount > 1000;
+
+-- Range (BETWEEN)
+SELECT * FROM requests WHERE final_amount BETWEEN 500 AND 1500;
+
+-- Sorting (ORDER BY)
+SELECT * FROM requests ORDER BY final_amount;
+
+-- Pattern matching (prefix only!)
+SELECT * FROM requests WHERE request_number LIKE 'REQ%';
+-- Note: 'REQ%' uses index, but '%REQ' does NOT</code></pre>
+                    <div class="try-it-section">
+                        <p>Test B-Tree index usage:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="5">EXPLAIN ANALYZE
+SELECT * FROM requests
+WHERE final_amount BETWEEN 1000 AND 2000
+ORDER BY final_amount;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['B-Tree is the default index type', 'Supports =, <, >, <=, >=, BETWEEN, ORDER BY', 'Maintains sorted order', 'O(log n) lookups', 'Best general-purpose index']
+        },
+
+        'composite-index': {
+            title: 'Composite Index',
+            category: 'Indexing & Performance',
+            difficulty: 'Intermediate',
+            prev: 'single-column',
+            next: 'partial-index',
+            sections: [
+                {
+                    title: 'What is a Composite Index?',
+                    content: `<p>A <strong>composite index</strong> (multi-column index) indexes multiple columns together. Column order matters for query optimization.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Multiple columns:</strong> Index on 2+ columns</li>
+                            <li><strong>Order matters:</strong> Leftmost columns used first</li>
+                            <li><strong>Prefix rule:</strong> Can use left prefix of index</li>
+                            <li><strong>Selective first:</strong> Put most selective column first</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'The Leftmost Prefix Rule',
+                    content: `<pre><code class="language-sql">-- Create composite index
+CREATE INDEX idx_requests_status_date_amount
+ON requests(status, created_at, final_amount);
+
+-- This index can be used for:
+-- ✓ WHERE status = 'completed'
+-- ✓ WHERE status = 'completed' AND created_at > '2024-01-01'
+-- ✓ WHERE status = 'completed' AND created_at > '2024-01-01' AND final_amount > 1000
+
+-- This index CANNOT be efficiently used for:
+-- ✗ WHERE created_at > '2024-01-01' (skips status)
+-- ✗ WHERE final_amount > 1000 (skips status and created_at)
+-- ✗ WHERE status = 'completed' AND final_amount > 1000 (skips created_at)</code></pre>
+                    <div class="info-box">
+                        <h4>Think of it Like a Phone Book</h4>
+                        <p>A phone book is indexed by (LastName, FirstName). You can efficiently find all "Smith" or "Smith, John" but NOT all people named "John".</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Test composite index usage:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="8">-- Test which queries use the index
+EXPLAIN ANALYZE
+SELECT * FROM requests
+WHERE status = 'completed'
+  AND created_at > '2024-01-01'
+ORDER BY created_at
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Choosing Column Order',
+                    content: `<pre><code class="language-sql">-- Bad: Low selectivity first
+CREATE INDEX idx_bad ON requests(status, id);
+-- status has few distinct values (low selectivity)
+-- Many rows match status = 'completed'
+
+-- Good: High selectivity first (for equality)
+CREATE INDEX idx_good ON requests(id, status);
+-- id is unique (high selectivity)
+-- Few rows match id = 123
+
+-- For range queries: equality columns first, then range
+CREATE INDEX idx_range ON requests(status, created_at);
+-- WHERE status = 'x' AND created_at > '2024-01-01'
+-- Equality (status) before range (created_at)</code></pre>
+                    <div class="info-box">
+                        <h4>Column Order Guidelines</h4>
+                        <ol>
+                            <li>Columns used with = before columns with ranges (<, >, BETWEEN)</li>
+                            <li>More selective columns before less selective (for equality)</li>
+                            <li>Columns in ORDER BY should match index order</li>
+                        </ol>
+                    </div>`
+                }
+            ],
+            summary: ['Composite index covers multiple columns', 'Leftmost prefix rule determines usability', 'Column order is critical', 'Equality columns before range columns', 'Consider your most common query patterns']
+        },
+
+        'scan-types': {
+            title: 'Scan Types',
+            category: 'Indexing & Performance',
+            difficulty: 'Advanced',
+            prev: 'explain-analyze',
+            next: 'index-selection',
+            sections: [
+                {
+                    title: 'Understanding Scan Types',
+                    content: `<p>When executing a query, PostgreSQL chooses how to access table data. Understanding scan types helps you optimize queries.</p>
+                    <div class="key-points">
+                        <h3>Common Scan Types:</h3>
+                        <ul>
+                            <li><strong>Seq Scan:</strong> Full table scan, reads every row</li>
+                            <li><strong>Index Scan:</strong> Uses index, then fetches rows from table</li>
+                            <li><strong>Index Only Scan:</strong> Uses index only, no table access</li>
+                            <li><strong>Bitmap Scan:</strong> Combines multiple index results</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Sequential Scan (Seq Scan)',
+                    content: `<pre><code class="language-sql">-- Seq Scan: Reads entire table
+-- Used when:
+-- - No suitable index exists
+-- - Query returns large portion of table
+-- - Table is very small
+
+EXPLAIN ANALYZE
+SELECT * FROM requests;  -- Always Seq Scan (selecting all)
+
+EXPLAIN ANALYZE
+SELECT * FROM requests WHERE status = 'completed';
+-- May use Seq Scan if 'completed' is very common</code></pre>
+                    <div class="info-box">
+                        <h4>Seq Scan is Not Always Bad</h4>
+                        <p>For queries returning >10-20% of the table, Seq Scan is often faster than Index Scan because of sequential disk reads.</p>
+                    </div>`
+                },
+                {
+                    title: 'Try It: Compare Scan Types',
+                    content: `<div class="try-it-section">
+                        <p>Compare different scan types:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="8">-- This will likely use Index Scan (specific row)
+EXPLAIN ANALYZE
+SELECT * FROM requests WHERE id = 1;
+
+-- Uncomment to compare with broader query
+-- EXPLAIN ANALYZE
+-- SELECT * FROM requests WHERE status = 'completed';</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Index Scan vs Index Only Scan',
+                    content: `<pre><code class="language-sql">-- Index Scan: Uses index, then visits table for other columns
+EXPLAIN ANALYZE
+SELECT * FROM requests WHERE id = 1;
+
+-- Index Only Scan: All needed columns are in the index
+-- Much faster - no table visit needed!
+EXPLAIN ANALYZE
+SELECT id FROM requests WHERE id = 1;
+
+-- Covering index for Index Only Scan
+CREATE INDEX idx_covering ON requests(status) INCLUDE (request_number, final_amount);
+
+EXPLAIN ANALYZE
+SELECT status, request_number, final_amount
+FROM requests
+WHERE status = 'completed';</code></pre>
+                    <div class="info-box" style="background: #d4edda; border-color: #28a745;">
+                        <h4>Index Only Scan</h4>
+                        <p>Fastest scan type! Create covering indexes that include all columns needed by frequent queries.</p>
+                    </div>`
+                },
+                {
+                    title: 'Scan Type Summary',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Scan Type</th><th>Speed</th><th>When Used</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Index Only Scan</strong></td><td>Fastest</td><td>All columns in index (covering index)</td></tr>
+                                <tr><td><strong>Index Scan</strong></td><td>Fast</td><td>Small result set, index exists</td></tr>
+                                <tr><td><strong>Bitmap Index Scan</strong></td><td>Medium</td><td>Multiple conditions, medium result set</td></tr>
+                                <tr><td><strong>Seq Scan</strong></td><td>Slowest*</td><td>No index, large result set</td></tr>
+                            </tbody>
+                        </table>
+                        <p><small>*For small tables or large result sets, Seq Scan can be faster</small></p>
+                    </div>`
+                }
+            ],
+            summary: ['Seq Scan reads entire table', 'Index Scan uses index + table visit', 'Index Only Scan is fastest (no table visit)', 'Bitmap Scan combines multiple indexes', 'Use EXPLAIN ANALYZE to see actual scan type']
+        },
+
+        'optimization-tips': {
+            title: 'Optimization Tips',
+            category: 'Indexing & Performance',
+            difficulty: 'Advanced',
+            prev: 'index-selection',
+            next: 'views',
+            sections: [
+                {
+                    title: 'Query Optimization Checklist',
+                    content: `<div class="key-points">
+                        <h3>Before You Write the Query:</h3>
+                        <ul>
+                            <li>Select only columns you need (not SELECT *)</li>
+                            <li>Know your data volumes and patterns</li>
+                            <li>Understand available indexes</li>
+                        </ul>
+                        <h3>While Writing:</h3>
+                        <ul>
+                            <li>Filter as early as possible (WHERE before JOIN)</li>
+                            <li>Avoid functions on indexed columns</li>
+                            <li>Use appropriate join types</li>
+                        </ul>
+                        <h3>After Writing:</h3>
+                        <ul>
+                            <li>Run EXPLAIN ANALYZE</li>
+                            <li>Check for Seq Scans on large tables</li>
+                            <li>Verify estimated vs actual rows</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Avoid Functions on Indexed Columns',
+                    content: `<pre><code class="language-sql">-- BAD: Function prevents index usage
+SELECT * FROM requests
+WHERE LOWER(request_number) = 'req001';
+
+-- GOOD: Index can be used
+SELECT * FROM requests
+WHERE request_number = 'REQ001';
+
+-- Alternative: Create expression index
+CREATE INDEX idx_lower_request ON requests(LOWER(request_number));
+
+-- BAD: Date function prevents index
+SELECT * FROM requests
+WHERE DATE(created_at) = '2024-01-15';
+
+-- GOOD: Range preserves index usage
+SELECT * FROM requests
+WHERE created_at >= '2024-01-15'
+  AND created_at < '2024-01-16';</code></pre>`
+                },
+                {
+                    title: 'Filter Early',
+                    content: `<pre><code class="language-sql">-- BAD: Filtering after join
+SELECT r.*, o.*
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+WHERE r.status = 'completed';  -- Filter after joining all rows
+
+-- GOOD: Filter in subquery/CTE
+WITH completed_requests AS (
+    SELECT * FROM requests
+    WHERE status = 'completed'  -- Filter first, fewer rows to join
+)
+SELECT cr.*, o.*
+FROM completed_requests cr
+JOIN orders o ON o.request_id = cr.id;
+
+-- GOOD: Let optimizer handle it (same plan usually)
+SELECT r.*, o.*
+FROM requests r
+JOIN orders o ON o.request_id = r.id
+WHERE r.status = 'completed';
+-- Most modern optimizers will filter before joining</code></pre>`
+                },
+                {
+                    title: 'Try It: Optimization in Action',
+                    content: `<div class="try-it-section">
+                        <p>Compare query approaches:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">-- Check the execution plan
+EXPLAIN ANALYZE
+SELECT
+    r.request_number,
+    r.status,
+    r.final_amount,
+    COUNT(o.id) AS order_count
+FROM requests r
+LEFT JOIN orders o ON o.request_id = r.id
+WHERE r.status = 'completed'
+  AND r.final_amount > 1000
+GROUP BY r.id
+ORDER BY r.final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Common Anti-Patterns',
+                    content: `<pre><code class="language-sql">-- ANTI-PATTERN 1: SELECT * (fetches unnecessary data)
+SELECT * FROM requests;  -- BAD
+SELECT id, status, final_amount FROM requests;  -- GOOD
+
+-- ANTI-PATTERN 2: OR on different columns
+SELECT * FROM requests
+WHERE status = 'completed' OR final_amount > 1000;  -- Hard to optimize
+-- Consider: UNION of two indexed queries
+
+-- ANTI-PATTERN 3: NOT IN with NULLs
+SELECT * FROM requests
+WHERE id NOT IN (SELECT request_id FROM orders);  -- NULL trap!
+-- Use: NOT EXISTS instead
+
+-- ANTI-PATTERN 4: DISTINCT without need
+SELECT DISTINCT status FROM requests;  -- OK
+SELECT DISTINCT r.* FROM requests r
+JOIN orders o ON ...;  -- Often indicates wrong join
+
+-- ANTI-PATTERN 5: COUNT(*) for existence check
+IF (SELECT COUNT(*) FROM orders WHERE ...) > 0  -- Counts all
+IF EXISTS (SELECT 1 FROM orders WHERE ...)  -- Stops at first</code></pre>`
+                },
+                {
+                    title: 'Monitoring Query Performance',
+                    content: `<pre><code class="language-sql">-- Find slow queries in PostgreSQL
+SELECT
+    query,
+    calls,
+    mean_exec_time,
+    total_exec_time
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 10;
+
+-- Check table statistics
+SELECT
+    relname,
+    seq_scan,
+    idx_scan,
+    n_live_tup
+FROM pg_stat_user_tables
+ORDER BY seq_scan DESC;
+
+-- Find missing indexes (high seq_scan, no idx_scan)
+SELECT
+    schemaname || '.' || relname AS table,
+    seq_scan,
+    idx_scan,
+    CASE WHEN idx_scan = 0 THEN 'NEEDS INDEX?' ELSE 'OK' END AS status
+FROM pg_stat_user_tables
+WHERE seq_scan > 1000 AND idx_scan = 0;</code></pre>`
+                }
+            ],
+            summary: ['Select only needed columns', 'Avoid functions on indexed columns', 'Filter early in the query', 'Use EXPLAIN ANALYZE to verify plans', 'Monitor slow queries with pg_stat_statements']
+        },
+
+        // ==================== WINDOW FUNCTION LESSONS ====================
+
+        'over-clause': {
+            title: 'OVER Clause',
+            category: 'Window Functions',
+            difficulty: 'Intermediate',
+            prev: 'having-clause',
+            next: 'partition-by',
+            sections: [
+                {
+                    title: 'What is the OVER Clause?',
+                    content: `<p>The <code>OVER</code> clause defines a window (set of rows) for window functions to operate on. Unlike GROUP BY, it doesn't collapse rows - each row keeps its identity.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Window:</strong> A set of rows related to the current row</li>
+                            <li><strong>No collapse:</strong> Unlike GROUP BY, keeps all rows</li>
+                            <li><strong>Access:</strong> Calculate based on other rows while keeping current row</li>
+                            <li><strong>Components:</strong> PARTITION BY, ORDER BY, frame clause</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <h4>Prerequisites</h4>
+                        <p>Understand <a onclick="loadLesson('group-by-basics')">GROUP BY</a> and aggregate functions (<a onclick="loadLesson('count-sum')">COUNT, SUM</a>) before learning window functions.</p>
+                    </div>`
+                },
+                {
+                    title: 'GROUP BY vs OVER',
+                    content: `<pre><code class="language-sql">-- GROUP BY: Collapses rows into groups
+SELECT status, COUNT(*), SUM(final_amount)
+FROM requests
+GROUP BY status;
+-- Returns: One row per status
+
+-- OVER: Calculates across rows WITHOUT collapsing
+SELECT
+    request_number,
+    status,
+    final_amount,
+    COUNT(*) OVER () AS total_count,
+    SUM(final_amount) OVER () AS total_amount
+FROM requests;
+-- Returns: All rows, each with the totals</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Compare each request to overall totals:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    request_number,
+    status,
+    final_amount,
+    -- Window functions with OVER
+    COUNT(*) OVER () AS total_requests,
+    SUM(final_amount) OVER () AS total_revenue,
+    ROUND(AVG(final_amount) OVER (), 2) AS avg_amount,
+    -- Percentage of total
+    ROUND(100.0 * final_amount / SUM(final_amount) OVER (), 2) AS pct_of_total
+FROM requests
+ORDER BY final_amount DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Basic OVER Syntax',
+                    content: `<pre><code class="language-sql">-- Empty OVER(): Entire result set is the window
+SELECT
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER () AS grand_total
+FROM requests;
+
+-- OVER with PARTITION BY: Window per group
+SELECT
+    request_number,
+    status,
+    final_amount,
+    SUM(final_amount) OVER (PARTITION BY status) AS status_total
+FROM requests;
+
+-- OVER with ORDER BY: Running calculations
+SELECT
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER (ORDER BY created_at) AS running_total
+FROM requests;</code></pre>`
+                }
+            ],
+            summary: ['OVER defines a window of rows for calculation', 'Unlike GROUP BY, does not collapse rows', 'Empty OVER() = entire result set', 'PARTITION BY = window per group', 'ORDER BY = running calculations within window']
+        },
+
+        'partition-by': {
+            title: 'PARTITION BY',
+            category: 'Window Functions',
+            difficulty: 'Intermediate',
+            prev: 'over-clause',
+            next: 'order-by-window',
+            sections: [
+                {
+                    title: 'What is PARTITION BY?',
+                    content: `<p><code>PARTITION BY</code> divides the result set into partitions (groups). Window functions are applied separately to each partition.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Groups rows:</strong> Like GROUP BY but keeps all rows</li>
+                            <li><strong>Separate windows:</strong> Each partition is an independent window</li>
+                            <li><strong>Resets:</strong> Calculations restart for each partition</li>
+                            <li><strong>Multiple columns:</strong> Can partition by multiple columns</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'PARTITION BY Examples',
+                    content: `<pre><code class="language-sql">-- Calculate totals per status
+SELECT
+    request_number,
+    status,
+    final_amount,
+    SUM(final_amount) OVER (PARTITION BY status) AS status_total,
+    COUNT(*) OVER (PARTITION BY status) AS status_count
+FROM requests;
+
+-- Compare to status average
+SELECT
+    request_number,
+    status,
+    final_amount,
+    AVG(final_amount) OVER (PARTITION BY status) AS status_avg,
+    final_amount - AVG(final_amount) OVER (PARTITION BY status) AS diff_from_avg
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Calculate stats within each status group:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">SELECT
+    request_number,
+    status,
+    final_amount,
+    -- Per-status calculations
+    COUNT(*) OVER (PARTITION BY status) AS count_in_status,
+    SUM(final_amount) OVER (PARTITION BY status) AS status_total,
+    ROUND(AVG(final_amount) OVER (PARTITION BY status), 2) AS status_avg,
+    MIN(final_amount) OVER (PARTITION BY status) AS status_min,
+    MAX(final_amount) OVER (PARTITION BY status) AS status_max,
+    -- Percentage within status
+    ROUND(100.0 * final_amount / SUM(final_amount) OVER (PARTITION BY status), 2) AS pct_of_status
+FROM requests
+ORDER BY status, final_amount DESC
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Multiple Partition Columns',
+                    content: `<pre><code class="language-sql">-- Partition by multiple columns
+SELECT
+    DATE_TRUNC('month', created_at) AS month,
+    status,
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER (
+        PARTITION BY DATE_TRUNC('month', created_at), status
+    ) AS monthly_status_total
+FROM requests
+ORDER BY month, status;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use PARTITION BY</h4>
+                        <ul>
+                            <li>Calculate metrics within groups (per category, per date, etc.)</li>
+                            <li>Rank items within groups</li>
+                            <li>Compare rows to their group's aggregate</li>
+                            <li>Running totals that reset per group</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['PARTITION BY divides rows into groups', 'Window functions calculated per partition', 'Like GROUP BY but keeps all rows', 'Calculations reset for each partition', 'Can partition by multiple columns']
+        },
+
+        'order-by-window': {
+            title: 'ORDER BY in Windows',
+            category: 'Window Functions',
+            difficulty: 'Intermediate',
+            prev: 'partition-by',
+            next: 'frame-clause',
+            sections: [
+                {
+                    title: 'ORDER BY in OVER Clause',
+                    content: `<p><code>ORDER BY</code> inside <code>OVER</code> determines the order of rows within the window, enabling running/cumulative calculations.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>Row order:</strong> Determines processing order within window</li>
+                            <li><strong>Running calculations:</strong> Enables cumulative sums, counts, etc.</li>
+                            <li><strong>Ranking:</strong> Required for ROW_NUMBER, RANK, etc.</li>
+                            <li><strong>Default frame:</strong> Changes default from all rows to "up to current"</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Running Calculations',
+                    content: `<pre><code class="language-sql">-- Without ORDER BY: Same value for all rows
+SELECT
+    request_number,
+    final_amount,
+    SUM(final_amount) OVER () AS total  -- Same for all rows
+FROM requests;
+
+-- With ORDER BY: Running total
+SELECT
+    request_number,
+    created_at,
+    final_amount,
+    SUM(final_amount) OVER (ORDER BY created_at) AS running_total
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Calculate running totals:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    request_number,
+    created_at,
+    final_amount,
+    -- Running calculations
+    SUM(final_amount) OVER (ORDER BY created_at) AS running_total,
+    COUNT(*) OVER (ORDER BY created_at) AS running_count,
+    ROUND(AVG(final_amount) OVER (ORDER BY created_at), 2) AS running_avg
+FROM requests
+ORDER BY created_at
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Combined: PARTITION BY + ORDER BY',
+                    content: `<div class="try-it-section">
+                        <p>Running totals per status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    request_number,
+    status,
+    created_at,
+    final_amount,
+    -- Running total resets for each status
+    SUM(final_amount) OVER (
+        PARTITION BY status
+        ORDER BY created_at
+    ) AS running_status_total,
+    ROW_NUMBER() OVER (
+        PARTITION BY status
+        ORDER BY created_at
+    ) AS row_in_status
+FROM requests
+ORDER BY status, created_at
+LIMIT 20;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                }
+            ],
+            summary: ['ORDER BY in OVER determines row processing order', 'Enables running/cumulative calculations', 'Required for ranking functions', 'Combined with PARTITION BY for grouped running totals', 'Changes default frame to rows up to current']
+        },
+
+        'frame-clause': {
+            title: 'Frame Clause',
+            category: 'Window Functions',
+            difficulty: 'Advanced',
+            prev: 'order-by-window',
+            next: 'row-number',
+            sections: [
+                {
+                    title: 'What is a Frame Clause?',
+                    content: `<p>The <strong>frame clause</strong> defines exactly which rows relative to the current row are included in the window calculation.</p>
+                    <div class="key-points">
+                        <h3>Frame Syntax:</h3>
+                        <ul>
+                            <li><code>ROWS BETWEEN start AND end</code> - Count by row position</li>
+                            <li><code>RANGE BETWEEN start AND end</code> - Count by value range</li>
+                        </ul>
+                        <h3>Frame Boundaries:</h3>
+                        <ul>
+                            <li><code>UNBOUNDED PRECEDING</code> - First row of partition</li>
+                            <li><code>n PRECEDING</code> - n rows before current</li>
+                            <li><code>CURRENT ROW</code> - Current row</li>
+                            <li><code>n FOLLOWING</code> - n rows after current</li>
+                            <li><code>UNBOUNDED FOLLOWING</code> - Last row of partition</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Common Frame Patterns',
+                    content: `<pre><code class="language-sql">-- Running total (default with ORDER BY)
+ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+
+-- Moving average (3 rows)
+ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+
+-- All rows in partition
+ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+
+-- Previous row only
+ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING
+
+-- Current and all following
+ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING</code></pre>`
+                },
+                {
+                    title: 'Try It: Moving Average',
+                    content: `<div class="try-it-section">
+                        <p>Calculate 3-row moving average:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">SELECT
+    request_number,
+    created_at,
+    final_amount,
+    -- 3-row moving average (prev, current, next)
+    ROUND(AVG(final_amount) OVER (
+        ORDER BY created_at
+        ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+    ), 2) AS moving_avg_3,
+    -- 5-row moving average
+    ROUND(AVG(final_amount) OVER (
+        ORDER BY created_at
+        ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING
+    ), 2) AS moving_avg_5
+FROM requests
+ORDER BY created_at
+LIMIT 15;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'ROWS vs RANGE',
+                    content: `<pre><code class="language-sql">-- ROWS: Counts physical rows
+-- If you have: 100, 100, 100, 200
+-- ROWS 1 PRECEDING counts exactly 1 row
+
+-- RANGE: Groups by value
+-- If you have: 100, 100, 100, 200
+-- RANGE 0 PRECEDING includes all rows with same value
+
+-- Example difference:
+SELECT
+    created_at::date AS date,
+    final_amount,
+    -- ROWS: exactly 2 preceding rows
+    SUM(final_amount) OVER (
+        ORDER BY created_at::date
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS sum_rows,
+    -- RANGE: all rows with date in range
+    SUM(final_amount) OVER (
+        ORDER BY created_at::date
+        RANGE BETWEEN INTERVAL '2 days' PRECEDING AND CURRENT ROW
+    ) AS sum_range
+FROM requests;</code></pre>
+                    <div class="info-box">
+                        <h4>When to Use Each</h4>
+                        <ul>
+                            <li><strong>ROWS:</strong> Fixed number of rows (3-day moving average by row count)</li>
+                            <li><strong>RANGE:</strong> Value-based window (all orders within $100 of current)</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['Frame clause defines which rows are in the window', 'ROWS counts physical rows', 'RANGE groups by value', 'Use PRECEDING/FOLLOWING for relative positions', 'UNBOUNDED means start/end of partition']
+        },
+
+        'rank-dense-rank': {
+            title: 'RANK & DENSE_RANK',
+            category: 'Window Functions',
+            difficulty: 'Advanced',
+            prev: 'row-number',
+            next: 'ntile',
+            sections: [
+                {
+                    title: 'RANK vs DENSE_RANK vs ROW_NUMBER',
+                    content: `<p>These ranking functions assign numbers to rows but handle ties differently.</p>
+                    <div class="key-points">
+                        <h3>Key Differences:</h3>
+                        <ul>
+                            <li><strong>ROW_NUMBER:</strong> Unique numbers, no gaps (1,2,3,4,5)</li>
+                            <li><strong>RANK:</strong> Same rank for ties, then gaps (1,1,3,4,4,6)</li>
+                            <li><strong>DENSE_RANK:</strong> Same rank for ties, no gaps (1,1,2,3,3,4)</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Visual Comparison',
+                    content: `<div class="info-box">
+                        <h4>Ranking 5 Students by Score</h4>
+                        <pre>
+Score   ROW_NUMBER   RANK   DENSE_RANK
+-----   ----------   ----   ----------
+100     1            1      1
+100     2            1      1    ← Tie: same score
+95      3            3      2    ← RANK skips, DENSE_RANK doesn't
+90      4            4      3
+90      5            4      3    ← Another tie
+                        </pre>
+                    </div>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Compare all three ranking functions:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">SELECT
+    request_number,
+    status,
+    final_amount,
+    ROW_NUMBER() OVER (ORDER BY final_amount DESC) AS row_num,
+    RANK() OVER (ORDER BY final_amount DESC) AS rank,
+    DENSE_RANK() OVER (ORDER BY final_amount DESC) AS dense_rank
+FROM requests
+ORDER BY final_amount DESC
+LIMIT 15;
+
+-- Notice how ties are handled differently!</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Ranking Within Groups',
+                    content: `<div class="try-it-section">
+                        <p>Rank requests within each status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    request_number,
+    status,
+    final_amount,
+    DENSE_RANK() OVER (
+        PARTITION BY status
+        ORDER BY final_amount DESC
+    ) AS rank_in_status
+FROM requests
+ORDER BY status, rank_in_status
+LIMIT 20;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'When to Use Each',
+                    content: `<div class="info-box">
+                        <h4>Choosing the Right Function</h4>
+                        <table>
+                            <thead><tr><th>Function</th><th>Use When</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td>ROW_NUMBER</td><td>Need unique IDs, pagination</td><td>Top 10 products (exactly 10)</td></tr>
+                                <tr><td>RANK</td><td>Competition ranking</td><td>Race results (1st, 1st, 3rd...)</td></tr>
+                                <tr><td>DENSE_RANK</td><td>Need sequential ranks despite ties</td><td>Salary bands, percentiles</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                }
+            ],
+            summary: ['ROW_NUMBER: unique sequential numbers', 'RANK: ties get same rank, gaps after', 'DENSE_RANK: ties get same rank, no gaps', 'All require ORDER BY in OVER', 'Use PARTITION BY for ranking within groups']
+        },
+
+        // ==================== DATA TYPE LESSONS ====================
+
+        'numeric-types': {
+            title: 'Numeric Types',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'null-handling',
+            next: 'string-types',
+            sections: [
+                {
+                    title: 'PostgreSQL Numeric Types',
+                    content: `<p>PostgreSQL offers several numeric types for different use cases. Choosing the right type affects storage, precision, and performance.</p>
+                    <div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Type</th><th>Storage</th><th>Range</th><th>Use For</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>smallint</code></td><td>2 bytes</td><td>-32,768 to 32,767</td><td>Small counts</td></tr>
+                                <tr><td><code>integer</code></td><td>4 bytes</td><td>-2B to 2B</td><td>Most integers</td></tr>
+                                <tr><td><code>bigint</code></td><td>8 bytes</td><td>-9×10^18 to 9×10^18</td><td>Large counts</td></tr>
+                                <tr><td><code>decimal/numeric</code></td><td>variable</td><td>Up to 131072 digits</td><td>Money, exact</td></tr>
+                                <tr><td><code>real</code></td><td>4 bytes</td><td>6 decimal digits</td><td>Scientific</td></tr>
+                                <tr><td><code>double precision</code></td><td>8 bytes</td><td>15 decimal digits</td><td>Scientific</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+                },
+                {
+                    title: 'Integer Types',
+                    content: `<pre><code class="language-sql">-- Integer types for whole numbers
+CREATE TABLE example (
+    small_val smallint,      -- -32768 to 32767
+    int_val integer,         -- ~-2 billion to ~2 billion
+    big_val bigint           -- Very large numbers
+);
+
+-- Serial types (auto-incrementing)
+CREATE TABLE users (
+    id serial PRIMARY KEY,      -- 1 to 2147483647
+    big_id bigserial            -- For billions of rows
+);
+
+-- Integer operations
+SELECT
+    10 / 3 AS int_division,        -- Result: 3 (integer division)
+    10.0 / 3 AS float_division,    -- Result: 3.333...
+    10 % 3 AS modulo;              -- Result: 1</code></pre>`
+                },
+                {
+                    title: 'Try It: Numeric Operations',
+                    content: `<div class="try-it-section">
+                        <p>Explore numeric operations:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="10">SELECT
+    -- Integer division vs decimal
+    10 / 3 AS int_div,
+    10.0 / 3 AS decimal_div,
+    -- Rounding
+    ROUND(10.0 / 3, 2) AS rounded,
+    CEIL(10.0 / 3) AS ceiling,
+    FLOOR(10.0 / 3) AS floor,
+    -- Absolute value
+    ABS(-42) AS absolute,
+    -- Power and square root
+    POWER(2, 10) AS two_to_ten,
+    SQRT(144) AS square_root;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Decimal/Numeric for Money',
+                    content: `<pre><code class="language-sql">-- NEVER use float for money! Precision issues.
+-- Use numeric(precision, scale) instead
+
+CREATE TABLE transactions (
+    amount numeric(10, 2)  -- 10 digits total, 2 after decimal
+);
+
+-- Why not float?
+SELECT 0.1 + 0.2;                    -- Might show 0.30000000000000004
+SELECT 0.1::numeric + 0.2::numeric;  -- Exactly 0.3
+
+-- Money calculations
+SELECT
+    final_amount,
+    final_amount * 0.08 AS tax,
+    ROUND(final_amount * 0.08, 2) AS tax_rounded,
+    final_amount + ROUND(final_amount * 0.08, 2) AS total
+FROM requests
+LIMIT 5;</code></pre>
+                    <div class="info-box" style="background: #fff5f5; border-color: #dc3545;">
+                        <h4>Warning: Float Precision</h4>
+                        <p>Never use <code>real</code> or <code>double precision</code> for money. Use <code>numeric</code> for exact decimal calculations.</p>
+                    </div>`
+                }
+            ],
+            summary: ['Use integer types for whole numbers', 'Use numeric/decimal for money (never float)', 'smallint/integer/bigint for different ranges', 'serial/bigserial for auto-incrementing IDs', 'Be aware of integer division vs decimal division']
+        },
+
+        'string-types': {
+            title: 'String Types',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'numeric-types',
+            next: 'date-types',
+            sections: [
+                {
+                    title: 'PostgreSQL String Types',
+                    content: `<p>PostgreSQL provides several string types and powerful text manipulation functions.</p>
+                    <div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Type</th><th>Description</th><th>Max Length</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>char(n)</code></td><td>Fixed length, padded with spaces</td><td>n characters</td></tr>
+                                <tr><td><code>varchar(n)</code></td><td>Variable length with limit</td><td>n characters</td></tr>
+                                <tr><td><code>text</code></td><td>Variable unlimited length</td><td>~1 GB</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="info-box">
+                        <h4>Best Practice</h4>
+                        <p>In PostgreSQL, <code>text</code> is generally preferred. There's no performance difference between <code>varchar(n)</code> and <code>text</code>.</p>
+                    </div>`
+                },
+                {
+                    title: 'String Functions',
+                    content: `<pre><code class="language-sql">-- Concatenation
+SELECT 'Hello' || ' ' || 'World';           -- Hello World
+SELECT CONCAT('Hello', ' ', 'World');       -- Hello World
+SELECT CONCAT_WS(', ', 'a', 'b', 'c');      -- a, b, c
+
+-- Case conversion
+SELECT UPPER('hello'), LOWER('HELLO'), INITCAP('hello world');
+
+-- Trimming
+SELECT TRIM('  hello  ');                   -- 'hello'
+SELECT LTRIM('  hello'), RTRIM('hello  ');
+
+-- Length and position
+SELECT LENGTH('hello');                     -- 5
+SELECT POSITION('l' IN 'hello');           -- 3
+SELECT STRPOS('hello', 'l');               -- 3
+
+-- Substring
+SELECT SUBSTRING('hello' FROM 2 FOR 3);    -- 'ell'
+SELECT LEFT('hello', 2), RIGHT('hello', 2); -- 'he', 'lo'</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Practice string manipulations:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    first_name,
+    last_name,
+    -- Concatenate names
+    first_name || ' ' || last_name AS full_name,
+    -- Uppercase and length
+    UPPER(last_name) AS upper_last,
+    LENGTH(first_name) AS name_length,
+    -- Extract first letter
+    LEFT(first_name, 1) || '.' AS initial,
+    -- Reverse name
+    REVERSE(first_name) AS reversed
+FROM patients
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Pattern Matching',
+                    content: `<pre><code class="language-sql">-- LIKE patterns
+SELECT * FROM patients WHERE first_name LIKE 'J%';      -- Starts with J
+SELECT * FROM patients WHERE first_name LIKE '%son';    -- Ends with son
+SELECT * FROM patients WHERE first_name LIKE '_ohn';    -- 4-char, ends ohn
+
+-- ILIKE: Case-insensitive (PostgreSQL)
+SELECT * FROM patients WHERE first_name ILIKE 'john';
+
+-- SIMILAR TO: SQL regex
+SELECT * FROM patients WHERE first_name SIMILAR TO '(John|Jane)%';
+
+-- ~ : POSIX regex
+SELECT * FROM patients WHERE first_name ~ '^J[aeiou]';  -- J + vowel
+SELECT * FROM patients WHERE first_name ~* '^j';        -- Case-insensitive</code></pre>`
+                },
+                {
+                    title: 'Replace and Split',
+                    content: `<pre><code class="language-sql">-- Replace
+SELECT REPLACE('hello world', 'world', 'SQL');  -- 'hello SQL'
+SELECT TRANSLATE('hello', 'el', 'ip');          -- 'hippo'
+
+-- Split and array
+SELECT STRING_TO_ARRAY('a,b,c', ',');           -- {a,b,c}
+SELECT UNNEST(STRING_TO_ARRAY('a,b,c', ','));   -- 3 rows
+
+-- Regular expression replace
+SELECT REGEXP_REPLACE('abc123def', '[0-9]+', 'X');  -- 'abcXdef'</code></pre>`
+                }
+            ],
+            summary: ['Use text for most string columns', 'CONCAT or || for string concatenation', 'LIKE for simple patterns, ~ for regex', 'ILIKE for case-insensitive matching', 'STRING_TO_ARRAY to split strings']
+        },
+
+        'date-types': {
+            title: 'Date/Time Types',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'string-types',
+            next: 'boolean-json',
+            sections: [
+                {
+                    title: 'PostgreSQL Date/Time Types',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Type</th><th>Storage</th><th>Description</th><th>Example</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>date</code></td><td>4 bytes</td><td>Date only</td><td>2024-01-15</td></tr>
+                                <tr><td><code>time</code></td><td>8 bytes</td><td>Time only</td><td>14:30:00</td></tr>
+                                <tr><td><code>timestamp</code></td><td>8 bytes</td><td>Date and time</td><td>2024-01-15 14:30:00</td></tr>
+                                <tr><td><code>timestamptz</code></td><td>8 bytes</td><td>With timezone</td><td>2024-01-15 14:30:00+00</td></tr>
+                                <tr><td><code>interval</code></td><td>16 bytes</td><td>Time span</td><td>2 days 3 hours</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="info-box">
+                        <h4>Best Practice</h4>
+                        <p>Use <code>timestamptz</code> (timestamp with time zone) for most cases. It stores UTC and converts to local timezone on display.</p>
+                    </div>`
+                },
+                {
+                    title: 'Date/Time Functions',
+                    content: `<pre><code class="language-sql">-- Current date/time
+SELECT
+    CURRENT_DATE,           -- Today's date
+    CURRENT_TIME,           -- Current time
+    CURRENT_TIMESTAMP,      -- Current timestamp
+    NOW();                  -- Same as CURRENT_TIMESTAMP
+
+-- Extract components
+SELECT
+    EXTRACT(YEAR FROM NOW()) AS year,
+    EXTRACT(MONTH FROM NOW()) AS month,
+    EXTRACT(DAY FROM NOW()) AS day,
+    EXTRACT(DOW FROM NOW()) AS day_of_week,  -- 0=Sunday
+    EXTRACT(HOUR FROM NOW()) AS hour;
+
+-- Date truncation
+SELECT
+    DATE_TRUNC('month', NOW()) AS start_of_month,
+    DATE_TRUNC('year', NOW()) AS start_of_year;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Analyze request dates:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">SELECT
+    request_number,
+    created_at,
+    -- Extract components
+    EXTRACT(YEAR FROM created_at) AS year,
+    EXTRACT(MONTH FROM created_at) AS month,
+    TO_CHAR(created_at, 'Day') AS day_name,
+    TO_CHAR(created_at, 'Mon DD, YYYY') AS formatted,
+    -- Age/difference
+    AGE(NOW(), created_at) AS age,
+    NOW() - created_at AS time_since,
+    -- Truncate to month
+    DATE_TRUNC('month', created_at) AS month_start
+FROM requests
+ORDER BY created_at DESC
+LIMIT 10;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Date Arithmetic',
+                    content: `<pre><code class="language-sql">-- Add/subtract intervals
+SELECT
+    NOW() + INTERVAL '1 day' AS tomorrow,
+    NOW() - INTERVAL '1 week' AS last_week,
+    NOW() + INTERVAL '3 months' AS three_months_later;
+
+-- Difference between dates
+SELECT
+    created_at,
+    NOW() - created_at AS time_since,
+    EXTRACT(DAY FROM NOW() - created_at) AS days_ago
+FROM requests;
+
+-- Date ranges
+SELECT * FROM requests
+WHERE created_at >= NOW() - INTERVAL '30 days';
+
+-- Business day calculations (approximate)
+SELECT
+    created_at,
+    created_at + INTERVAL '5 days' AS plus_5_days
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Formatting Dates',
+                    content: `<pre><code class="language-sql">-- TO_CHAR for formatting
+SELECT
+    TO_CHAR(NOW(), 'YYYY-MM-DD') AS iso_date,
+    TO_CHAR(NOW(), 'DD/MM/YYYY') AS european,
+    TO_CHAR(NOW(), 'Month DD, YYYY') AS long_date,
+    TO_CHAR(NOW(), 'Day') AS day_name,
+    TO_CHAR(NOW(), 'HH24:MI:SS') AS time_24h,
+    TO_CHAR(NOW(), 'HH:MI AM') AS time_12h;
+
+-- TO_DATE/TO_TIMESTAMP for parsing
+SELECT
+    TO_DATE('2024-01-15', 'YYYY-MM-DD'),
+    TO_TIMESTAMP('2024-01-15 14:30', 'YYYY-MM-DD HH24:MI');</code></pre>`
+                }
+            ],
+            summary: ['Use timestamptz for most timestamps', 'EXTRACT to get date/time components', 'DATE_TRUNC to round to period start', 'INTERVAL for date arithmetic', 'TO_CHAR/TO_DATE for formatting/parsing']
+        },
+
+        'boolean-json': {
+            title: 'Boolean & JSON',
+            category: 'Fundamentals',
+            difficulty: 'Beginner',
+            prev: 'date-types',
+            next: 'inner-join',
+            sections: [
+                {
+                    title: 'Boolean Type',
+                    content: `<p>PostgreSQL has a native <code>boolean</code> type with three possible values: TRUE, FALSE, and NULL.</p>
+                    <pre><code class="language-sql">-- Boolean values
+SELECT
+    TRUE,
+    FALSE,
+    NULL::boolean;
+
+-- Boolean expressions
+SELECT
+    1 = 1 AS is_true,           -- TRUE
+    1 = 2 AS is_false,          -- FALSE
+    NULL = NULL AS is_null;     -- NULL (not TRUE!)
+
+-- Boolean in WHERE
+SELECT * FROM requests WHERE is_active = TRUE;
+SELECT * FROM requests WHERE is_active;       -- Same as above
+SELECT * FROM requests WHERE NOT is_active;   -- FALSE values
+
+-- Coalesce NULL booleans
+SELECT COALESCE(is_active, FALSE) FROM requests;</code></pre>`
+                },
+                {
+                    title: 'JSON and JSONB Types',
+                    content: `<p>PostgreSQL supports JSON data with two types: <code>json</code> (text storage) and <code>jsonb</code> (binary, faster, indexable).</p>
+                    <div class="info-box">
+                        <h4>json vs jsonb</h4>
+                        <ul>
+                            <li><strong>json:</strong> Stores exact text, preserves formatting and key order</li>
+                            <li><strong>jsonb:</strong> Binary format, faster queries, supports indexing - use this!</li>
+                        </ul>
+                    </div>
+                    <pre><code class="language-sql">-- Creating JSON
+SELECT '{"name": "John", "age": 30}'::jsonb;
+SELECT jsonb_build_object('name', 'John', 'age', 30);
+
+-- JSON operators
+SELECT
+    '{"name": "John", "age": 30}'::jsonb -> 'name',     -- "John" (jsonb)
+    '{"name": "John", "age": 30}'::jsonb ->> 'name',    -- John (text)
+    '{"a": {"b": 1}}'::jsonb -> 'a' -> 'b';             -- 1</code></pre>`
+                },
+                {
+                    title: 'Try It: JSON Queries',
+                    content: `<div class="try-it-section">
+                        <p>Work with JSON data:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="14">-- Build and query JSON
+SELECT
+    jsonb_build_object(
+        'request', request_number,
+        'status', status,
+        'amount', final_amount
+    ) AS request_json,
+    -- Extract from the built JSON
+    jsonb_build_object(
+        'request', request_number,
+        'status', status
+    ) ->> 'status' AS extracted_status
+FROM requests
+LIMIT 5;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Common JSON Operations',
+                    content: `<pre><code class="language-sql">-- Check if key exists
+SELECT '{"a": 1}'::jsonb ? 'a';                    -- TRUE
+SELECT '{"a": 1, "b": 2}'::jsonb ?& array['a','b']; -- Has all keys
+
+-- Contains
+SELECT '{"a": 1, "b": 2}'::jsonb @> '{"a": 1}';   -- TRUE
+
+-- Array access
+SELECT '[1, 2, 3]'::jsonb -> 0;                   -- 1
+
+-- Modify JSON
+SELECT '{"a": 1}'::jsonb || '{"b": 2}'::jsonb;    -- {"a": 1, "b": 2}
+SELECT '{"a": 1, "b": 2}'::jsonb - 'a';           -- {"b": 2}
+
+-- Aggregate to JSON
+SELECT jsonb_agg(request_number) FROM requests LIMIT 5;
+SELECT jsonb_object_agg(request_number, status) FROM requests LIMIT 5;</code></pre>`
+                }
+            ],
+            summary: ['Boolean: TRUE, FALSE, or NULL', 'Use COALESCE for NULL booleans', 'Prefer jsonb over json for queries', '-> returns jsonb, ->> returns text', 'JSONB supports indexing with GIN']
+        },
+
+        // ==================== AGGREGATION LESSONS ====================
+
+        'avg-min-max': {
+            title: 'AVG, MIN, MAX',
+            category: 'Aggregations',
+            difficulty: 'Intermediate',
+            prev: 'count-sum',
+            next: 'distinct-agg',
+            sections: [
+                {
+                    title: 'AVG, MIN, MAX Functions',
+                    content: `<p>These aggregate functions calculate average, minimum, and maximum values across rows.</p>
+                    <div class="key-points">
+                        <h3>Key Points:</h3>
+                        <ul>
+                            <li><strong>AVG:</strong> Average (mean) of numeric values</li>
+                            <li><strong>MIN:</strong> Smallest value (works with numbers, strings, dates)</li>
+                            <li><strong>MAX:</strong> Largest value</li>
+                            <li><strong>NULL handling:</strong> All three ignore NULL values</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Usage',
+                    content: `<pre><code class="language-sql">-- Simple aggregates
+SELECT
+    AVG(final_amount) AS average,
+    MIN(final_amount) AS minimum,
+    MAX(final_amount) AS maximum
+FROM requests;
+
+-- With GROUP BY
+SELECT
+    status,
+    ROUND(AVG(final_amount), 2) AS avg_amount,
+    MIN(final_amount) AS min_amount,
+    MAX(final_amount) AS max_amount
+FROM requests
+GROUP BY status;
+
+-- With dates
+SELECT
+    MIN(created_at) AS earliest,
+    MAX(created_at) AS latest,
+    MAX(created_at) - MIN(created_at) AS date_range
+FROM requests;</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Calculate statistics by status:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    status,
+    COUNT(*) AS count,
+    ROUND(AVG(final_amount), 2) AS avg_amount,
+    MIN(final_amount) AS min_amount,
+    MAX(final_amount) AS max_amount,
+    MAX(final_amount) - MIN(final_amount) AS range,
+    ROUND(MAX(final_amount) / NULLIF(MIN(final_amount), 0), 2) AS max_min_ratio
+FROM requests
+GROUP BY status
+ORDER BY avg_amount DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Advanced: Conditional Aggregates',
+                    content: `<pre><code class="language-sql">-- FILTER clause (PostgreSQL)
+SELECT
+    AVG(final_amount) AS overall_avg,
+    AVG(final_amount) FILTER (WHERE status = 'completed') AS completed_avg,
+    AVG(final_amount) FILTER (WHERE status = 'pending') AS pending_avg
+FROM requests;
+
+-- Same with CASE (more portable)
+SELECT
+    AVG(final_amount) AS overall_avg,
+    AVG(CASE WHEN status = 'completed' THEN final_amount END) AS completed_avg,
+    AVG(CASE WHEN status = 'pending' THEN final_amount END) AS pending_avg
+FROM requests;</code></pre>`
+                }
+            ],
+            summary: ['AVG calculates the mean', 'MIN/MAX work on numbers, strings, and dates', 'All three ignore NULL values', 'Use ROUND() with AVG for clean output', 'Use FILTER or CASE for conditional aggregates']
+        },
+
+        'having-clause': {
+            title: 'HAVING Clause',
+            category: 'Aggregations',
+            difficulty: 'Intermediate',
+            prev: 'group-by-basics',
+            next: 'grouping-sets',
+            sections: [
+                {
+                    title: 'What is HAVING?',
+                    content: `<p><code>HAVING</code> filters groups after aggregation, while <code>WHERE</code> filters rows before aggregation.</p>
+                    <div class="key-points">
+                        <h3>WHERE vs HAVING:</h3>
+                        <ul>
+                            <li><strong>WHERE:</strong> Filters individual rows BEFORE grouping</li>
+                            <li><strong>HAVING:</strong> Filters groups AFTER aggregation</li>
+                            <li><strong>Rule:</strong> Use HAVING only with aggregate functions</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'Basic Syntax',
+                    content: `<pre><code class="language-sql">-- Find statuses with more than 10 requests
+SELECT status, COUNT(*) AS count
+FROM requests
+GROUP BY status
+HAVING COUNT(*) > 10;
+
+-- Find statuses with average amount > 1000
+SELECT status, ROUND(AVG(final_amount), 2) AS avg_amount
+FROM requests
+GROUP BY status
+HAVING AVG(final_amount) > 1000;
+
+-- Combining WHERE and HAVING
+SELECT status, COUNT(*), AVG(final_amount)
+FROM requests
+WHERE created_at > '2024-01-01'    -- Filter rows first
+GROUP BY status
+HAVING COUNT(*) > 5;               -- Then filter groups</code></pre>`
+                },
+                {
+                    title: 'Try It Yourself',
+                    content: `<div class="try-it-section">
+                        <p>Find statuses with significant volume:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="12">SELECT
+    status,
+    COUNT(*) AS request_count,
+    SUM(final_amount) AS total_revenue,
+    ROUND(AVG(final_amount), 2) AS avg_amount
+FROM requests
+GROUP BY status
+HAVING
+    COUNT(*) >= 5                    -- At least 5 requests
+    AND SUM(final_amount) > 5000     -- At least 5000 in revenue
+ORDER BY total_revenue DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>`
+                },
+                {
+                    title: 'Query Execution Order',
+                    content: `<div class="info-box">
+                        <h4>SQL Execution Order</h4>
+                        <pre>
+1. FROM       - Get the tables
+2. WHERE      - Filter rows
+3. GROUP BY   - Create groups
+4. HAVING     - Filter groups
+5. SELECT     - Choose columns
+6. ORDER BY   - Sort results
+7. LIMIT      - Limit rows
+                        </pre>
+                        <p>This is why you can't use column aliases in WHERE or HAVING - SELECT happens later!</p>
+                    </div>`
+                }
+            ],
+            summary: ['HAVING filters groups after aggregation', 'WHERE filters rows before grouping', 'HAVING must use aggregate functions', 'Can combine WHERE and HAVING', 'HAVING comes after GROUP BY in query']
         }
     };
 
