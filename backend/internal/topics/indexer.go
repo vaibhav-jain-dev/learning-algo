@@ -59,6 +59,11 @@ var categoryMeta = map[string]struct {
 		Description: "Practice implementing real-world systems from scratch",
 		Order:       3,
 	},
+	"microservices": {
+		Title:       "Microservices",
+		Description: "Master microservices architecture patterns and best practices",
+		Order:       4,
+	},
 }
 
 // NewTopicIndexer creates a new topic indexer

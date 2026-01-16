@@ -98,6 +98,7 @@ func main() {
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
+	app.Get("/microservices", h.Microservices)
 	app.Get("/golang", h.Golang)
 	app.Get("/python-asyncio", h.PythonAsyncio)
 	app.Get("/topic/:category/:topic", h.TopicDetail)

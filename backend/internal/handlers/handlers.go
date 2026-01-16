@@ -492,6 +492,16 @@ func formatName(name string) string {
 	return strings.Join(words, " ")
 }
 
+// Microservices renders the microservices architecture page
+func (h *Handlers) Microservices(c *fiber.Ctx) error {
+	category := h.topicIndexer.GetCategory("microservices")
+	return c.Render("pages/topic-list", fiber.Map{
+		"Title":        "Microservices",
+		"Category":     category,
+		"CategorySlug": "microservices",
+	})
+}
+
 // SQLDashboard renders the SQL learning dashboard page
 func (h *Handlers) SQLDashboard(c *fiber.Ctx) error {
 	return c.Render("pages/sql-dashboard", fiber.Map{
