@@ -107,17 +107,26 @@
                         <h4 class="text-lg font-semibold text-red-400 mb-2">Why is Redis So Fast?</h4>
                         <div class="text-gray-300 text-sm space-y-2">
                             <p><strong>1. In-Memory Storage:</strong> RAM is ~100,000x faster than disk. A typical HDD reads at 100 MB/s, while RAM operates at 20,000+ MB/s.</p>
-                            <pre class="bg-gray-950 rounded p-3 my-2 text-xs overflow-x-auto"><code>Latency Comparison:
-┌─────────────────┬──────────────────┬─────────────────┐
-│ Operation       │ Time             │ Redis Advantage │
-├─────────────────┼──────────────────┼─────────────────┤
-│ L1 cache        │ 0.5 ns           │ -               │
-│ L2 cache        │ 7 ns             │ -               │
-│ RAM access      │ 100 ns           │ Redis lives here│
-│ SSD read        │ 150,000 ns       │ 1,500x faster   │
-│ HDD seek        │ 10,000,000 ns    │ 100,000x faster │
-│ Network (DC)    │ 500,000 ns       │ -               │
-└─────────────────┴──────────────────┴─────────────────┘</code></pre>
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-2">Latency Comparison:</div>
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="text-gray-400 border-b border-gray-700">
+                                            <th class="text-left py-2">Operation</th>
+                                            <th class="text-left py-2">Time</th>
+                                            <th class="text-left py-2">Redis Advantage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800"><td class="py-1.5">L1 cache</td><td class="text-cyan-400">0.5 ns</td><td>-</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5">L2 cache</td><td class="text-cyan-400">7 ns</td><td>-</td></tr>
+                                        <tr class="border-b border-gray-800 bg-red-900/20"><td class="py-1.5 text-red-400 font-semibold">RAM access</td><td class="text-green-400">100 ns</td><td class="text-red-400">Redis lives here</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-red-300">SSD read</td><td class="text-yellow-400">150,000 ns</td><td class="text-green-400">1,500x faster</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-red-300">HDD seek</td><td class="text-red-400">10,000,000 ns</td><td class="text-green-400">100,000x faster</td></tr>
+                                        <tr><td class="py-1.5">Network (DC)</td><td class="text-yellow-400">500,000 ns</td><td>-</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <p><strong>2. Single-Threaded Event Loop:</strong> No context switching, no locks, no race conditions. Redis processes commands sequentially using an efficient event loop (epoll/kqueue).</p>
                             <p><strong>3. Optimized Data Structures:</strong> Redis uses specialized data structures (like Skip Lists for Sorted Sets) that are optimized for the operations they support.</p>
                             <p><strong>4. Simple Protocol:</strong> RESP (Redis Serialization Protocol) is a simple text protocol with minimal parsing overhead.</p>
@@ -250,7 +259,7 @@ FLUSHDB
 # Clear all databases
 FLUSHALL</code></pre>
                     </div>
-                    <button onclick="tryCommand('PING')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('PING', this)" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try PING
                     </button>
                 </div>
@@ -293,7 +302,7 @@ MSET key1 "value1" key2 "value2" key3 "value3"
 # Get multiple keys
 MGET key1 key2 key3</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET greeting hello-redis')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET greeting hello-redis', this)" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try SET
                     </button>
 
@@ -318,10 +327,10 @@ DECR counter
 # Decrement by specific amount
 DECRBY counter 3</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET demo:counter 0')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET demo:counter 0', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Initialize Counter
                     </button>
-                    <button onclick="tryCommand('INCR demo:counter')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('INCR demo:counter', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try INCR
                     </button>
 
@@ -381,10 +390,10 @@ RPOP tasks
 LPOP tasks 2
 # Response: ["task2", "task1"]</code></pre>
                     </div>
-                    <button onclick="tryCommand('RPUSH demo:queue item1 item2 item3')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('RPUSH demo:queue item1 item2 item3', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Queue
                     </button>
-                    <button onclick="tryCommand('LPOP demo:queue')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('LPOP demo:queue', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Pop from Queue
                     </button>
 
@@ -408,7 +417,7 @@ LSET tasks 0 "updated_task"
 LINSERT tasks BEFORE "task2" "new_task"
 LINSERT tasks AFTER "task2" "another_task"</code></pre>
                     </div>
-                    <button onclick="tryCommand('LRANGE demo:queue 0 -1')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('LRANGE demo:queue 0 -1', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Queue
                     </button>
 
@@ -472,10 +481,10 @@ SREM tags "docker"
 # Pop random member
 SPOP tags</code></pre>
                     </div>
-                    <button onclick="tryCommand('SADD demo:skills python javascript go rust')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SADD demo:skills python javascript go rust', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Set
                     </button>
-                    <button onclick="tryCommand('SMEMBERS demo:skills')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SMEMBERS demo:skills', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Set
                     </button>
 
@@ -557,10 +566,10 @@ HKEYS user:1000
 # Get all values
 HVALS user:1000</code></pre>
                     </div>
-                    <button onclick="tryCommand('HSET demo:user name Alice email alice@example.com role admin')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('HSET demo:user name Alice email alice@example.com role admin', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Hash
                     </button>
-                    <button onclick="tryCommand('HGETALL demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('HGETALL demo:user', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Hash
                     </button>
 
@@ -713,10 +722,10 @@ ZREVRANK leaderboard "player1"
 # Count members
 ZCARD leaderboard</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 alice 1200 bob 1800 charlie 900 david')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 alice 1200 bob 1800 charlie 900 david', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Leaderboard
                     </button>
-                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Rankings
                     </button>
 
@@ -804,10 +813,10 @@ TYPE mykey
 RENAME oldkey newkey
 RENAMENX oldkey newkey  # Only if newkey doesn't exist</code></pre>
                     </div>
-                    <button onclick="tryCommand('KEYS demo:*')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('KEYS demo:*', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         List Demo Keys
                     </button>
-                    <button onclick="tryCommand('TYPE demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('TYPE demo:user', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Check Type
                     </button>
 
@@ -889,10 +898,10 @@ EXPIRE mykey 7200 GT
 # Set only if new TTL < current TTL
 EXPIRE mykey 1800 LT</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET demo:temp temporary EX 60')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET demo:temp temporary EX 60', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Set with TTL
                     </button>
-                    <button onclick="tryCommand('TTL demo:temp')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('TTL demo:temp', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Check TTL
                     </button>
 
@@ -1162,10 +1171,10 @@ ZREVRANK leaderboard "player:123"
 # Get players around a score
 ZREVRANGEBYSCORE leaderboard 1600 1400 WITHSCORES LIMIT 0 10</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 alice')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 alice', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Add Points
                     </button>
-                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Leaderboard
                     </button>
 
@@ -2070,9 +2079,52 @@ def get_with_swr(key, refresh_fn):
 </div>
 
 <script>
-function tryCommand(command) {
-    // Store command in sessionStorage and redirect to dashboard
-    sessionStorage.setItem('redis_command', command);
-    window.location.href = '/redis';
+async function tryCommand(command, button) {
+    // Find or create result container near the button
+    let section = button ? (button.closest('section') || button.parentElement) : null;
+    let resultContainer = section ? section.querySelector('.redis-result-container') : null;
+
+    if (!resultContainer && button) {
+        resultContainer = document.createElement('div');
+        resultContainer.className = 'redis-result-container bg-gray-900 rounded-lg p-4 mt-4 border border-gray-700';
+        resultContainer.innerHTML = '<div class="text-gray-400 text-sm mb-2">Result:</div><pre class="redis-result-content text-sm overflow-x-auto"></pre>';
+        button.parentElement.appendChild(resultContainer);
+    }
+
+    const resultContent = resultContainer ? resultContainer.querySelector('.redis-result-content') : null;
+
+    if (resultContent) {
+        resultContent.textContent = 'Executing...';
+        resultContent.style.color = '#a0aec0';
+    }
+
+    try {
+        const response = await fetch('/api/redis/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: command })
+        });
+
+        const result = await response.json();
+
+        if (resultContent) {
+            if (result.success) {
+                let output = result.result;
+                if (typeof output === 'object') {
+                    output = JSON.stringify(output, null, 2);
+                }
+                resultContent.textContent = '> ' + command + '\n' + output;
+                resultContent.style.color = '#4ecdc4';
+            } else {
+                resultContent.textContent = '> ' + command + '\nError: ' + result.error;
+                resultContent.style.color = '#ff6b6b';
+            }
+        }
+    } catch (error) {
+        if (resultContent) {
+            resultContent.textContent = '> ' + command + '\nError: ' + error.message;
+            resultContent.style.color = '#ff6b6b';
+        }
+    }
 }
 </script>
