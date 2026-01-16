@@ -103,6 +103,95 @@ func main() {
         }
     }
 
+    // Python and Go Autocomplete Hints
+    const pythonKeywords = [
+        'def', 'class', 'if', 'elif', 'else', 'for', 'while', 'break', 'continue',
+        'return', 'import', 'from', 'as', 'try', 'except', 'finally', 'raise',
+        'with', 'pass', 'lambda', 'yield', 'assert', 'del', 'global', 'nonlocal',
+        'True', 'False', 'None', 'and', 'or', 'not', 'in', 'is'
+    ];
+
+    const pythonBuiltins = [
+        'print', 'len', 'range', 'enumerate', 'zip', 'map', 'filter', 'sorted',
+        'sum', 'max', 'min', 'abs', 'round', 'int', 'float', 'str', 'list', 'dict',
+        'set', 'tuple', 'append', 'extend', 'insert', 'remove', 'pop', 'clear',
+        'keys', 'values', 'items', 'get', 'update', 'join', 'split', 'strip',
+        'startswith', 'endswith', 'find', 'replace', 'upper', 'lower', 'capitalize',
+        'sort', 'reverse', 'copy', 'count', 'index', 'isinstance', 'type'
+    ];
+
+    const goKeywords = [
+        'package', 'import', 'func', 'const', 'var', 'type', 'struct', 'interface',
+        'if', 'else', 'for', 'switch', 'case', 'default', 'break', 'continue',
+        'return', 'defer', 'go', 'chan', 'select', 'map', 'range', 'fallthrough',
+        'true', 'false', 'iota', 'nil', 'init', 'main'
+    ];
+
+    const goBuiltins = [
+        'fmt.Print', 'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'make', 'new', 'len',
+        'cap', 'copy', 'append', 'delete', 'complex', 'real', 'imag', 'close',
+        'panic', 'recover', 'math.Max', 'math.Min', 'math.Sqrt', 'sort.Ints',
+        'sort.Strings', 'strings.Split', 'strings.Join', 'strconv.Atoi', 'strconv.Itoa'
+    ];
+
+    // Register Python hint helper
+    CodeMirror.registerHelper('hint', 'python-custom', function(editor) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const start = token.start;
+        const end = cur.ch;
+        const word = token.string;
+        const lowerWord = word.toLowerCase();
+
+        let hints = [];
+        hints = hints.concat(
+            pythonKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+        hints = hints.concat(
+            pythonBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Remove duplicates
+        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+        if (hints.length === 0) return null;
+
+        return {
+            from: CodeMirror.Pos(cur.line, start),
+            to: CodeMirror.Pos(cur.line, end),
+            list: hints.slice(0, 15)
+        };
+    });
+
+    // Register Go hint helper
+    CodeMirror.registerHelper('hint', 'go-custom', function(editor) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const start = token.start;
+        const end = cur.ch;
+        const word = token.string;
+        const lowerWord = word.toLowerCase();
+
+        let hints = [];
+        hints = hints.concat(
+            goKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+        hints = hints.concat(
+            goBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Remove duplicates
+        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+        if (hints.length === 0) return null;
+
+        return {
+            from: CodeMirror.Pos(cur.line, start),
+            to: CodeMirror.Pos(cur.line, end),
+            list: hints.slice(0, 15)
+        };
+    });
+
     // Initialize CodeMirror
     function initEditor() {
         if (editorInitialized) return;
@@ -144,13 +233,26 @@ func main() {
                     'Ctrl-Enter': function() { runCode(); },
                     'Cmd-Enter': function() { runCode(); },
                     'Ctrl-S': function() { formatCode(); return false; },
-                    'Cmd-S': function() { formatCode(); return false; }
+                    'Cmd-S': function() { formatCode(); return false; },
+                    'Ctrl-Space': 'autocomplete'
                 }
             });
 
             editor.setSize('100%', '100%');
             editor.on('change', function() {
                 currentCode[currentLanguage] = editor.getValue();
+            });
+
+            // Enable autocomplete hints with debouncing
+            let hintTimeout = null;
+            editor.on('inputRead', function(instance, changeObj) {
+                if (changeObj.origin !== 'complete' && /^[\w.]/.test(changeObj.text[0])) {
+                    clearTimeout(hintTimeout);
+                    hintTimeout = setTimeout(function() {
+                        const hintType = currentLanguage === 'python' ? 'python-custom' : 'go-custom';
+                        instance.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                    }, 200);
+                }
             });
 
             // Expose editor globally for code block run buttons
