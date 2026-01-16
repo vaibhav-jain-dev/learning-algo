@@ -54,19 +54,18 @@ After decades of building systems, here's what separates novice from expert unde
 
 **Expert knows:** "Factory Method is about **deferring instantiation decisions** to subclasses while maintaining a consistent algorithm in the superclass. The real power is in the **Template Method collaboration** - the superclass controls WHEN creation happens, subclasses control WHAT gets created."
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Expert Mental Model: Factory Method is HALF of the story      │
-│                                                                 │
-│  Creator.someOperation() {        ← Template Method (fixed)     │
-│      product = this.factoryMethod()   ← Factory Method (varies) │
-│      product.doSomething()        ← Uses the product            │
-│  }                                                              │
-│                                                                 │
-│  The COMBINATION of fixed algorithm + varying creation         │
-│  is where the real power lies.                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0;">Expert Mental Model: Factory Method is HALF of the story</h4>
+
+<div style="background: #252540; padding: 16px; border-radius: 8px; font-family: monospace;">
+<code style="color: #dcdcaa;">Creator.someOperation()</code> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;product = <code style="color: #4ecdc4;">this.factoryMethod()</code> <span style="color: #6a9955;">← Factory Method (varies)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;product.doSomething() <span style="color: #6a9955;">← Uses the product</span><br>
+}
+</div>
+
+<p style="color: #ddd; margin-top: 16px; margin-bottom: 0;">The <strong style="color: #4ecdc4;">COMBINATION</strong> of fixed algorithm + varying creation is where the real power lies.</p>
+</div>
 
 ---
 
@@ -139,21 +138,51 @@ After decades of building systems, here's what separates novice from expert unde
 
 ### Structure
 
-```
-┌────────────────────┐       ┌────────────────────┐
-│     Creator        │       │      Product       │
-├────────────────────┤       ├────────────────────┤
-│ + factoryMethod()  │──────→│ + operation()      │
-│ + someOperation()  │       └────────────────────┘
-└────────────────────┘                 △
-         △                             │
-         │                    ┌────────┴────────┐
-┌────────┴────────┐    ┌──────┴────┐    ┌───────┴─────┐
-│ConcreteCreatorA │    │ProductA   │    │ProductB     │
-├─────────────────┤    └───────────┘    └─────────────┘
-│+ factoryMethod()│
-└─────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Factory Method Pattern Structure</h4>
+
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px;">
+<!-- Creator side -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 180px;">
+<div style="background: #569cd6; color: white; padding: 8px; font-weight: bold; text-align: center;">Creator</div>
+<div style="padding: 12px;">
+<code style="color: #dcdcaa;">+ factoryMethod()</code><br>
+<code style="color: #dcdcaa;">+ someOperation()</code>
+</div>
+</div>
+<div style="color: #569cd6;">△</div>
+<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 180px;">
+<div style="background: #666; color: white; padding: 8px; font-weight: bold; text-align: center;">ConcreteCreatorA</div>
+<div style="padding: 12px;">
+<code style="color: #dcdcaa;">+ factoryMethod()</code>
+</div>
+</div>
+</div>
+
+<!-- Arrow -->
+<div style="display: flex; align-items: center; color: #888; font-size: 24px;">→</div>
+
+<!-- Product side -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: #252540; border: 2px solid #4ecdc4; border-radius: 8px; width: 160px;">
+<div style="background: #4ecdc4; color: #1a1a2e; padding: 8px; font-weight: bold; text-align: center;">Product</div>
+<div style="padding: 12px;">
+<code style="color: #dcdcaa;">+ operation()</code>
+</div>
+</div>
+<div style="color: #4ecdc4;">△</div>
+<div style="display: flex; gap: 12px;">
+<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 100px; text-align: center; padding: 12px;">
+<span style="color: #ddd;">ProductA</span>
+</div>
+<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 100px; text-align: center; padding: 12px;">
+<span style="color: #ddd;">ProductB</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 ---
 
