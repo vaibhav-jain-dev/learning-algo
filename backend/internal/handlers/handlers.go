@@ -519,3 +519,17 @@ func (h *Handlers) ElasticsearchLessons(c *fiber.Ctx) error {
 		"Title": "Elasticsearch Lessons",
 	})
 }
+
+// RedisDashboard renders the Redis learning dashboard page
+func (h *Handlers) RedisDashboard(c *fiber.Ctx) error {
+	return c.Render("pages/redis-dashboard", fiber.Map{
+		"Title": "Redis Learning Dashboard",
+	})
+}
+
+// RedisLessons renders the Redis lessons page
+func (h *Handlers) RedisLessons(c *fiber.Ctx) error {
+	return c.Render("pages/redis-lessons", fiber.Map{
+		"Title": "Redis Lessons",
+	})
+}

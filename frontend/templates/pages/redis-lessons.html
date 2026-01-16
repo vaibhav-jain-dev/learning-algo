@@ -1,0 +1,1069 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <a href="/redis" class="text-gray-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-white">Redis Lessons</h1>
+        </div>
+        <p class="text-gray-400">Master Redis in-memory data structures and commands</p>
+    </div>
+
+    <!-- Lessons Navigation -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <nav class="bg-gray-800 rounded-lg p-4 sticky top-4">
+                <h3 class="text-lg font-semibold text-white mb-4">Curriculum</h3>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#fundamentals" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            1. Redis Fundamentals
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#strings" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            2. Strings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#lists" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            3. Lists
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#sets" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            4. Sets
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#hashes" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            5. Hashes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#sorted-sets" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            6. Sorted Sets
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#keys" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            7. Key Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#expiration" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            8. Expiration & TTL
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#transactions" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            9. Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#pubsub" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            10. Pub/Sub
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#patterns" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            11. Common Patterns
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-3 space-y-12">
+            <!-- Lesson 1: Fundamentals -->
+            <section id="fundamentals" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">1. Redis Fundamentals</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">What is Redis?</h3>
+                    <p class="text-gray-300 mb-4">
+                        Redis (Remote Dictionary Server) is an open-source, in-memory data structure store used as a database,
+                        cache, message broker, and streaming engine. It provides sub-millisecond response times and supports
+                        millions of requests per second.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Key Features</h3>
+                    <ul class="list-disc list-inside text-gray-300 mb-4 space-y-2">
+                        <li><strong>In-Memory Storage:</strong> All data is stored in RAM for ultra-fast access</li>
+                        <li><strong>Persistence Options:</strong> RDB snapshots and AOF (Append Only File) for durability</li>
+                        <li><strong>Rich Data Types:</strong> Strings, Lists, Sets, Hashes, Sorted Sets, Streams, and more</li>
+                        <li><strong>Atomic Operations:</strong> All operations are atomic, ensuring data consistency</li>
+                        <li><strong>Pub/Sub Messaging:</strong> Built-in publish/subscribe messaging paradigm</li>
+                        <li><strong>Lua Scripting:</strong> Server-side scripting for complex operations</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Data Types Overview</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Type</th>
+                                    <th class="text-left py-2">Description</th>
+                                    <th class="text-left py-2">Use Cases</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">String</td>
+                                    <td>Binary-safe strings up to 512MB</td>
+                                    <td>Caching, counters, sessions</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">List</td>
+                                    <td>Linked list of strings</td>
+                                    <td>Queues, timelines, logs</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">Set</td>
+                                    <td>Unordered collection of unique strings</td>
+                                    <td>Tags, unique visitors, relationships</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">Hash</td>
+                                    <td>Map of field-value pairs</td>
+                                    <td>Objects, user profiles</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">Sorted Set</td>
+                                    <td>Set with scores for ordering</td>
+                                    <td>Leaderboards, rate limiting</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-red-400">Stream</td>
+                                    <td>Append-only log data structure</td>
+                                    <td>Event sourcing, messaging</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Commands</h3>
+                    <div class="bg-gray-900 rounded-lg p-4">
+                        <pre class="text-green-400 text-sm"><code># Check connection
+PING
+# Response: PONG
+
+# Get server information
+INFO
+
+# Select database (0-15)
+SELECT 0
+
+# Clear current database
+FLUSHDB
+
+# Clear all databases
+FLUSHALL</code></pre>
+                    </div>
+                    <button onclick="tryCommand('PING')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Try PING
+                    </button>
+                </div>
+            </section>
+
+            <!-- Lesson 2: Strings -->
+            <section id="strings" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">2. Strings</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Strings are the most basic Redis data type. They're binary-safe, meaning they can contain any data:
+                        text, serialized objects, or binary data up to 512MB.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic String Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Set a key
+SET name "John Doe"
+
+# Get a key
+GET name
+# Response: "John Doe"
+
+# Set with expiration (seconds)
+SET session:123 "user_data" EX 3600
+
+# Set with expiration (milliseconds)
+SET session:123 "user_data" PX 3600000
+
+# Set only if key doesn't exist (NX)
+SET lock:resource "locked" NX
+
+# Set only if key exists (XX)
+SET counter 100 XX
+
+# Set multiple keys
+MSET key1 "value1" key2 "value2" key3 "value3"
+
+# Get multiple keys
+MGET key1 key2 key3</code></pre>
+                    </div>
+                    <button onclick="tryCommand('SET greeting \"Hello Redis\"')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Try SET
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Numeric Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Increment by 1
+SET counter 10
+INCR counter
+# Response: 11
+
+# Increment by specific amount
+INCRBY counter 5
+# Response: 16
+
+# Increment float
+INCRBYFLOAT price 0.50
+# Response: "10.50"
+
+# Decrement by 1
+DECR counter
+
+# Decrement by specific amount
+DECRBY counter 3</code></pre>
+                    </div>
+                    <button onclick="tryCommand('SET demo:counter 0')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Initialize Counter
+                    </button>
+                    <button onclick="tryCommand('INCR demo:counter')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Try INCR
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">String Manipulation</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Append to string
+SET message "Hello"
+APPEND message " World"
+GET message
+# Response: "Hello World"
+
+# Get string length
+STRLEN message
+# Response: 11
+
+# Get substring
+GETRANGE message 0 4
+# Response: "Hello"
+
+# Set substring
+SETRANGE message 6 "Redis"
+GET message
+# Response: "Hello Redis"</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 3: Lists -->
+            <section id="lists" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">3. Lists</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis Lists are linked lists of strings. They're perfect for implementing queues, stacks,
+                        and maintaining ordered collections. Operations at the head and tail are O(1).
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Push and Pop Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Push to the left (head)
+LPUSH tasks "task1" "task2" "task3"
+# List: [task3, task2, task1]
+
+# Push to the right (tail)
+RPUSH tasks "task4" "task5"
+# List: [task3, task2, task1, task4, task5]
+
+# Pop from the left
+LPOP tasks
+# Response: "task3"
+
+# Pop from the right
+RPOP tasks
+# Response: "task5"
+
+# Pop multiple elements
+LPOP tasks 2
+# Response: ["task2", "task1"]</code></pre>
+                    </div>
+                    <button onclick="tryCommand('RPUSH demo:queue \"item1\" \"item2\" \"item3\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Create Queue
+                    </button>
+                    <button onclick="tryCommand('LPOP demo:queue')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Pop from Queue
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Range and Index Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Get range of elements (0-indexed)
+LRANGE tasks 0 -1  # All elements
+LRANGE tasks 0 2   # First 3 elements
+
+# Get element by index
+LINDEX tasks 0
+# Response: first element
+
+# Get list length
+LLEN tasks
+
+# Set element at index
+LSET tasks 0 "updated_task"
+
+# Insert before/after element
+LINSERT tasks BEFORE "task2" "new_task"
+LINSERT tasks AFTER "task2" "another_task"</code></pre>
+                    </div>
+                    <button onclick="tryCommand('LRANGE demo:queue 0 -1')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        View Queue
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Blocking Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Blocking pop (wait for element)
+BLPOP queue 30  # Wait up to 30 seconds
+BRPOP queue 30
+
+# Move element between lists (blocking)
+BLMOVE source dest LEFT RIGHT 10
+
+# Useful for worker queues:
+# Producer: RPUSH jobs "job_data"
+# Consumer: BLPOP jobs 0  # Wait forever</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Message Queue</h4>
+                        <pre class="text-gray-300 text-sm"><code># Producer adds messages
+RPUSH message_queue '{"type":"email","to":"user@example.com"}'
+
+# Consumer processes messages (blocking)
+BLPOP message_queue 0</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 4: Sets -->
+            <section id="sets" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">4. Sets</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis Sets are unordered collections of unique strings. They support fast O(1) membership testing
+                        and powerful set operations like union, intersection, and difference.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Set Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Add members
+SADD tags "python" "redis" "docker" "golang"
+
+# Check membership
+SISMEMBER tags "python"
+# Response: 1 (true)
+
+SISMEMBER tags "java"
+# Response: 0 (false)
+
+# Get all members
+SMEMBERS tags
+
+# Get random member(s)
+SRANDMEMBER tags      # One random
+SRANDMEMBER tags 3    # Three random
+
+# Remove members
+SREM tags "docker"
+
+# Pop random member
+SPOP tags</code></pre>
+                    </div>
+                    <button onclick="tryCommand('SADD demo:skills \"python\" \"javascript\" \"go\" \"rust\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Create Set
+                    </button>
+                    <button onclick="tryCommand('SMEMBERS demo:skills')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        View Set
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Set Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Setup example sets
+SADD user:1:skills "python" "redis" "sql"
+SADD user:2:skills "python" "javascript" "react"
+
+# Union (all unique elements from both)
+SUNION user:1:skills user:2:skills
+# [python, redis, sql, javascript, react]
+
+# Intersection (common elements)
+SINTER user:1:skills user:2:skills
+# [python]
+
+# Difference (in first but not second)
+SDIFF user:1:skills user:2:skills
+# [redis, sql]
+
+# Store results in new set
+SUNIONSTORE all:skills user:1:skills user:2:skills
+SINTERSTORE common:skills user:1:skills user:2:skills
+
+# Get set cardinality (size)
+SCARD tags</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Tracking Unique Visitors</h4>
+                        <pre class="text-gray-300 text-sm"><code># Add visitor to today's set
+SADD visitors:2024-01-15 "user:123"
+SADD visitors:2024-01-15 "user:456"
+
+# Count unique visitors today
+SCARD visitors:2024-01-15
+
+# Find visitors who came both days
+SINTER visitors:2024-01-14 visitors:2024-01-15</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 5: Hashes -->
+            <section id="hashes" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">5. Hashes</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis Hashes are maps of field-value pairs, perfect for representing objects.
+                        They're memory-efficient and allow you to modify individual fields without fetching the entire object.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Hash Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Set single field
+HSET user:1000 name "John Doe"
+
+# Set multiple fields
+HSET user:1000 email "john@example.com" age 30 city "NYC"
+
+# Alternative: HMSET (deprecated but works)
+HMSET user:1000 name "John" email "john@example.com"
+
+# Get single field
+HGET user:1000 name
+# Response: "John Doe"
+
+# Get multiple fields
+HMGET user:1000 name email city
+
+# Get all fields and values
+HGETALL user:1000
+
+# Get all field names
+HKEYS user:1000
+
+# Get all values
+HVALS user:1000</code></pre>
+                    </div>
+                    <button onclick="tryCommand('HSET demo:user name \"Alice\" email \"alice@example.com\" role \"admin\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Create Hash
+                    </button>
+                    <button onclick="tryCommand('HGETALL demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        View Hash
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Advanced Hash Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Check if field exists
+HEXISTS user:1000 email
+# Response: 1
+
+# Delete fields
+HDEL user:1000 age city
+
+# Get number of fields
+HLEN user:1000
+
+# Increment numeric field
+HINCRBY user:1000 login_count 1
+HINCRBYFLOAT user:1000 balance 10.50
+
+# Set only if field doesn't exist
+HSETNX user:1000 created_at "2024-01-15"
+
+# Get field string length
+HSTRLEN user:1000 name</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Session Storage</h4>
+                        <pre class="text-gray-300 text-sm"><code># Store session data
+HSET session:abc123 user_id 1000 username "john" role "admin" last_access "2024-01-15T10:30:00Z"
+
+# Update last access
+HSET session:abc123 last_access "2024-01-15T10:45:00Z"
+
+# Set expiration on entire hash
+EXPIRE session:abc123 3600  # 1 hour</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 6: Sorted Sets -->
+            <section id="sorted-sets" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">6. Sorted Sets</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Sorted Sets combine features of Sets and ordered lists. Each member has an associated score
+                        that determines its position. Perfect for leaderboards, priority queues, and range queries.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Sorted Set Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Add members with scores
+ZADD leaderboard 100 "player1" 85 "player2" 92 "player3"
+
+# Add with options
+ZADD leaderboard NX 80 "player4"  # Only if not exists
+ZADD leaderboard XX 95 "player1"  # Only if exists
+ZADD leaderboard GT 90 "player2"  # Only if new score > current
+
+# Get score
+ZSCORE leaderboard "player1"
+# Response: "100"
+
+# Get rank (0-indexed, lowest score = 0)
+ZRANK leaderboard "player2"
+
+# Get reverse rank (highest score = 0)
+ZREVRANK leaderboard "player1"
+
+# Count members
+ZCARD leaderboard</code></pre>
+                    </div>
+                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 \"alice\" 1200 \"bob\" 1800 \"charlie\" 900 \"david\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Create Leaderboard
+                    </button>
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        View Rankings
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Range Queries</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Get by rank range (low to high)
+ZRANGE leaderboard 0 2
+ZRANGE leaderboard 0 2 WITHSCORES
+
+# Get by rank range (high to low)
+ZREVRANGE leaderboard 0 2 WITHSCORES
+
+# Get by score range
+ZRANGEBYSCORE leaderboard 80 100
+ZRANGEBYSCORE leaderboard 80 100 WITHSCORES
+
+# Get by score range (descending)
+ZREVRANGEBYSCORE leaderboard 100 80
+
+# Count in score range
+ZCOUNT leaderboard 80 100
+
+# Remove by rank range
+ZREMRANGEBYRANK leaderboard 0 1
+
+# Remove by score range
+ZREMRANGEBYSCORE leaderboard 0 50</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Score Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Increment score
+ZINCRBY leaderboard 10 "player1"
+# Response: new score
+
+# Union of sorted sets (combine leaderboards)
+ZUNIONSTORE combined 2 leaderboard1 leaderboard2 WEIGHTS 1 1 AGGREGATE SUM
+
+# Intersection with scores
+ZINTERSTORE common 2 set1 set2 AGGREGATE MIN</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Rate Limiting</h4>
+                        <pre class="text-gray-300 text-sm"><code># Sliding window rate limiter
+# Score = timestamp, Member = request ID
+
+# Add request
+ZADD requests:user:123 1705312800 "req:1"
+
+# Remove old requests (older than 1 minute)
+ZREMRANGEBYSCORE requests:user:123 0 1705312740
+
+# Count recent requests
+ZCARD requests:user:123
+
+# Block if > 100 requests per minute</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 7: Key Management -->
+            <section id="keys" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">7. Key Management</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Key Operations</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Check if key exists
+EXISTS mykey
+EXISTS key1 key2 key3  # Returns count of existing keys
+
+# Delete keys
+DEL mykey
+DEL key1 key2 key3  # Delete multiple
+
+# Unlink (async delete for large keys)
+UNLINK large_key
+
+# Get key type
+TYPE mykey
+# Response: string, list, set, zset, hash, stream
+
+# Rename key
+RENAME oldkey newkey
+RENAMENX oldkey newkey  # Only if newkey doesn't exist</code></pre>
+                    </div>
+                    <button onclick="tryCommand('KEYS demo:*')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        List Demo Keys
+                    </button>
+                    <button onclick="tryCommand('TYPE demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Check Type
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Finding Keys</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Find keys by pattern (use carefully in production!)
+KEYS user:*          # All keys starting with "user:"
+KEYS *session*       # Keys containing "session"
+KEYS user:???        # user: followed by exactly 3 chars
+
+# SCAN - safe iteration for production
+SCAN 0 MATCH user:* COUNT 100
+# Returns cursor and keys, continue with returned cursor
+
+# Scan specific data structures
+SSCAN myset 0 MATCH pattern* COUNT 100
+HSCAN myhash 0 MATCH field* COUNT 100
+ZSCAN myzset 0 MATCH member* COUNT 100</code></pre>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-yellow-400 font-semibold mb-2">Warning: KEYS in Production</h4>
+                        <p class="text-gray-300 text-sm">
+                            Never use <code class="text-red-400">KEYS</code> in production environments! It blocks the server
+                            while scanning all keys. Use <code class="text-green-400">SCAN</code> instead for safe iteration.
+                        </p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Key Naming Conventions</h3>
+                    <div class="bg-gray-900 rounded-lg p-4">
+                        <pre class="text-green-400 text-sm"><code># Use colons as separators
+user:1000:profile
+user:1000:settings
+session:abc123
+cache:products:featured
+
+# Common patterns:
+object-type:id              # user:1000
+object-type:id:field        # user:1000:followers
+environment:object:id       # prod:user:1000</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 8: Expiration -->
+            <section id="expiration" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">8. Expiration & TTL</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis allows you to set expiration times on keys. Expired keys are automatically deleted.
+                        This is essential for caching, sessions, and temporary data.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Setting Expiration</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Set expiration in seconds
+EXPIRE mykey 3600          # Expire in 1 hour
+EXPIREAT mykey 1705400000  # Expire at Unix timestamp
+
+# Set expiration in milliseconds
+PEXPIRE mykey 60000        # Expire in 60 seconds
+PEXPIREAT mykey 1705400000000
+
+# Set with creation
+SET session:123 "data" EX 3600     # Seconds
+SET session:123 "data" PX 3600000  # Milliseconds
+SET session:123 "data" EXAT 1705400000  # Unix timestamp
+
+# Set expiration only if key has no TTL
+EXPIRE mykey 3600 NX
+
+# Set expiration only if key has TTL
+EXPIRE mykey 3600 XX
+
+# Set only if new TTL > current TTL
+EXPIRE mykey 7200 GT
+
+# Set only if new TTL < current TTL
+EXPIRE mykey 1800 LT</code></pre>
+                    </div>
+                    <button onclick="tryCommand('SET demo:temp \"temporary\" EX 60')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Set with TTL
+                    </button>
+                    <button onclick="tryCommand('TTL demo:temp')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Check TTL
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Checking TTL</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Get TTL in seconds
+TTL mykey
+# Returns:
+#  -2 if key doesn't exist
+#  -1 if key has no expiration
+#  N  seconds remaining
+
+# Get TTL in milliseconds
+PTTL mykey
+
+# Remove expiration (make persistent)
+PERSIST mykey
+
+# Get expiration as Unix timestamp
+EXPIRETIME mykey
+PEXPIRETIME mykey  # Milliseconds</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Cache with Refresh</h4>
+                        <pre class="text-gray-300 text-sm"><code># Check cache, refresh on access
+result = GET cache:data
+if result:
+    # Extend TTL on access (sliding expiration)
+    EXPIRE cache:data 3600
+    return result
+else:
+    # Fetch from database, cache it
+    SET cache:data "fresh_data" EX 3600</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 9: Transactions -->
+            <section id="transactions" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">9. Transactions</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis transactions allow you to execute multiple commands atomically. All commands in a
+                        transaction are serialized and executed sequentially without interruption.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">MULTI/EXEC</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Start transaction
+MULTI
+
+# Queue commands
+SET user:1:balance 100
+DECRBY user:1:balance 50
+INCRBY user:2:balance 50
+
+# Execute all commands atomically
+EXEC
+
+# Discard transaction
+MULTI
+SET key1 "value1"
+DISCARD  # Cancel transaction</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Optimistic Locking with WATCH</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Watch keys for changes
+WATCH user:1:balance
+
+# Get current value
+balance = GET user:1:balance
+
+# Start transaction
+MULTI
+
+# Queue commands
+SET user:1:balance (balance - 50)
+
+# Execute - fails if watched key changed
+EXEC
+# Returns nil if key was modified by another client
+
+# Cancel watching
+UNWATCH</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Transfer Money</h4>
+                        <pre class="text-gray-300 text-sm"><code>WATCH account:A account:B
+balanceA = GET account:A
+balanceB = GET account:B
+
+if balanceA >= amount:
+    MULTI
+    DECRBY account:A amount
+    INCRBY account:B amount
+    EXEC  # Atomic transfer
+else:
+    UNWATCH
+    # Insufficient funds</code></pre>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-yellow-400 font-semibold mb-2">Note: No Rollback</h4>
+                        <p class="text-gray-300 text-sm">
+                            Unlike SQL databases, Redis transactions don't support rollback. If a command fails
+                            during EXEC, other commands still execute. Use Lua scripts for true atomicity with
+                            conditional logic.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 10: Pub/Sub -->
+            <section id="pubsub" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">10. Pub/Sub Messaging</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis Pub/Sub implements the publish/subscribe messaging paradigm. Publishers send messages
+                        to channels without knowing who will receive them, and subscribers receive messages from
+                        channels they're interested in.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Pub/Sub</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Subscriber (Client 1)
+SUBSCRIBE news sports weather
+# Blocks and waits for messages
+
+# Publisher (Client 2)
+PUBLISH news "Breaking: Redis 8.0 released!"
+# Returns: number of subscribers who received message
+
+# Unsubscribe
+UNSUBSCRIBE news
+UNSUBSCRIBE  # Unsubscribe from all</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Pattern Subscriptions</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Subscribe to pattern
+PSUBSCRIBE news:*
+# Matches: news:tech, news:sports, news:local
+
+PSUBSCRIBE user:*:notifications
+# Matches: user:123:notifications, user:456:notifications
+
+# Publish to specific channel
+PUBLISH news:tech "New iPhone announced"
+# Pattern subscribers to news:* receive this
+
+# Unsubscribe from pattern
+PUNSUBSCRIBE news:*</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Introspection</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># List active channels
+PUBSUB CHANNELS
+PUBSUB CHANNELS news:*  # Matching pattern
+
+# Count subscribers per channel
+PUBSUB NUMSUB news sports weather
+
+# Count pattern subscriptions
+PUBSUB NUMPAT</code></pre>
+                    </div>
+
+                    <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-blue-400 font-semibold mb-2">Use Case: Real-time Notifications</h4>
+                        <pre class="text-gray-300 text-sm"><code># User subscribes to their notification channel
+SUBSCRIBE notifications:user:123
+
+# Server publishes when events occur
+PUBLISH notifications:user:123 '{"type":"message","from":"john"}'
+PUBLISH notifications:user:123 '{"type":"like","post_id":456}'</code></pre>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mt-4">
+                        <h4 class="text-yellow-400 font-semibold mb-2">Pub/Sub Limitations</h4>
+                        <ul class="text-gray-300 text-sm list-disc list-inside">
+                            <li>Messages are fire-and-forget (no persistence)</li>
+                            <li>If subscriber disconnects, messages are lost</li>
+                            <li>No message history or replay</li>
+                            <li>Consider Redis Streams for durable messaging</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 11: Common Patterns -->
+            <section id="patterns" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">11. Common Patterns</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Caching Pattern</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Cache-Aside (Lazy Loading)
+value = GET cache:user:123
+if value is nil:
+    value = fetch_from_database(123)
+    SET cache:user:123 value EX 3600
+return value
+
+# Write-Through
+SET cache:user:123 new_data EX 3600
+update_database(123, new_data)</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Distributed Lock</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Acquire lock (atomic)
+SET lock:resource unique_id NX EX 30
+# NX = only if not exists
+# EX 30 = auto-expire in 30 seconds
+
+# Check if we got the lock
+if result == "OK":
+    # We have the lock, do work
+    ...
+    # Release lock (only if we own it)
+    if GET lock:resource == unique_id:
+        DEL lock:resource
+
+# Better: Use Lua script for atomic check-and-delete
+EVAL "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end" 1 lock:resource unique_id</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Rate Limiting</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Fixed Window
+key = "ratelimit:user:123:minute:" + current_minute
+count = INCR key
+if count == 1:
+    EXPIRE key 60
+if count > 100:
+    return "Rate limited"
+
+# Sliding Window (using sorted sets)
+now = current_timestamp
+key = "ratelimit:user:123"
+ZREMRANGEBYSCORE key 0 (now - 60)  # Remove old
+ZADD key now request_id
+count = ZCARD key
+if count > 100:
+    return "Rate limited"</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Leaderboard</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Add/Update score
+ZADD leaderboard 1500 "player:123"
+
+# Increment score
+ZINCRBY leaderboard 100 "player:123"
+
+# Get top 10
+ZREVRANGE leaderboard 0 9 WITHSCORES
+
+# Get player rank
+ZREVRANK leaderboard "player:123"
+
+# Get players around a score
+ZREVRANGEBYSCORE leaderboard 1600 1400 WITHSCORES LIMIT 0 10</code></pre>
+                    </div>
+                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 \"alice\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        Add Points
+                    </button>
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                        View Leaderboard
+                    </button>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Session Storage</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Create session
+session_id = generate_uuid()
+HSET session:$session_id user_id 123 created_at now role "user"
+EXPIRE session:$session_id 86400  # 24 hours
+
+# Validate session
+session = HGETALL session:$session_id
+if session exists:
+    EXPIRE session:$session_id 86400  # Refresh TTL
+    return session
+
+# Destroy session
+DEL session:$session_id</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Job Queue</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Producer: Add jobs
+RPUSH jobs '{"type":"email","to":"user@example.com"}'
+RPUSH jobs '{"type":"process","file":"data.csv"}'
+
+# Consumer: Process jobs (blocking)
+while true:
+    job = BLPOP jobs 0  # Wait forever
+    process(job)
+
+# Reliable Queue (with processing list)
+job = BRPOPLPUSH jobs processing 30
+process(job)
+LREM processing 0 job  # Remove when done</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Section -->
+            <section class="bg-gradient-to-r from-red-900/30 to-red-800/30 border border-red-500 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">Practice in the Dashboard</h2>
+                <p class="text-gray-300 mb-4">
+                    Ready to practice? Head over to the Redis Dashboard to run commands interactively
+                    with our pre-loaded sample data.
+                </p>
+                <a href="/redis" class="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors">
+                    Open Redis Dashboard
+                </a>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+function tryCommand(command) {
+    // Store command in sessionStorage and redirect to dashboard
+    sessionStorage.setItem('redis_command', command);
+    window.location.href = '/redis';
+}
+</script>
+{{end}}

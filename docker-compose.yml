@@ -20,6 +20,8 @@ volumes:
     name: dsalgo-learn-elasticsearch-data
   dsalgo-learn-kibana-data:
     name: dsalgo-learn-kibana-data
+  dsalgo-learn-redis-data:
+    name: dsalgo-learn-redis-data
 
 services:
   # PostgreSQL Database for SQL Learning
@@ -130,6 +132,34 @@ services:
           cpus: '0.25'
           memory: 256M
 
+  # Redis for Caching and Data Structures Learning
+  dsalgo-redis:
+    image: redis:7-alpine
+    container_name: dsalgo-redis
+    hostname: dsalgo-redis
+    command: redis-server --appendonly yes --maxmemory 200mb --maxmemory-policy allkeys-lru
+    volumes:
+      - dsalgo-learn-redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - dsalgo-learn-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
   dsalgo-learn-app:
     build:
       context: .
@@ -141,6 +171,8 @@ services:
       dsalgo-postgres:
         condition: service_healthy
       dsalgo-elasticsearch:
+        condition: service_healthy
+      dsalgo-redis:
         condition: service_healthy
     ports:
       - "8080:8080"
@@ -172,6 +204,8 @@ services:
       - ES_URL=http://dsalgo-elasticsearch:9200
       # Kibana URL (for reference in app)
       - KIBANA_URL=http://dsalgo-kibana:5601
+      # Redis connection
+      - REDIS_URL=redis://dsalgo-redis:6379
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -216,6 +250,8 @@ services:
         condition: service_healthy
       dsalgo-elasticsearch:
         condition: service_healthy
+      dsalgo-redis:
+        condition: service_healthy
     ports:
       - "8080:8080"
     volumes:
@@ -238,6 +274,8 @@ services:
       - ES_URL=http://dsalgo-elasticsearch:9200
       # Kibana URL (for reference in app)
       - KIBANA_URL=http://dsalgo-kibana:5601
+      # Redis connection
+      - REDIS_URL=redis://dsalgo-redis:6379
     networks:
       - dsalgo-learn-network
     tmpfs:

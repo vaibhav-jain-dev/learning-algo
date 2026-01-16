@@ -1,0 +1,725 @@
+<div class="sql-dashboard-page">
+    <div class="dashboard-header">
+        <h1>Redis Learning Dashboard</h1>
+        <p>Master Redis commands and data structures</p>
+        <div class="header-actions">
+            <button id="health-check" class="btn btn-sm btn-outline" onclick="checkHealth()">Check Connection</button>
+            <button id="load-sample" class="btn btn-sm btn-outline" onclick="loadSampleData()">Load Sample Data</button>
+            <button id="reset-data" class="btn btn-sm btn-danger" onclick="resetData()">Reset Database</button>
+            <a href="/redis-lessons" class="btn btn-sm btn-primary">View Lessons</a>
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar with Key Info -->
+        <aside class="sidebar">
+            <div class="panel schema-panel">
+                <h3>Server Info</h3>
+                <div id="server-info" class="server-info">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Keys (<span id="key-count">0</span>)</h3>
+                <div class="key-filter">
+                    <input type="text" id="key-pattern" placeholder="Pattern (e.g., user:*)" value="*">
+                    <button class="btn btn-xs btn-outline" onclick="loadKeys()">Filter</button>
+                </div>
+                <div id="key-list" class="key-list">
+                    <div class="loading">Loading keys...</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Quick Reference</h3>
+                <div class="reference-list">
+                    <details>
+                        <summary>String Commands</summary>
+                        <pre><code>SET key value
+GET key
+INCR counter
+APPEND key " more"
+SETEX key 60 value</code></pre>
+                    </details>
+                    <details>
+                        <summary>List Commands</summary>
+                        <pre><code>LPUSH list item
+RPUSH list item
+LPOP list
+RPOP list
+LRANGE list 0 -1</code></pre>
+                    </details>
+                    <details>
+                        <summary>Set Commands</summary>
+                        <pre><code>SADD set member
+SMEMBERS set
+SISMEMBER set member
+SINTER set1 set2
+SUNION set1 set2</code></pre>
+                    </details>
+                    <details>
+                        <summary>Hash Commands</summary>
+                        <pre><code>HSET hash field value
+HGET hash field
+HGETALL hash
+HMSET hash f1 v1 f2 v2
+HINCRBY hash field 1</code></pre>
+                    </details>
+                    <details>
+                        <summary>Sorted Set Commands</summary>
+                        <pre><code>ZADD zset 100 member
+ZRANGE zset 0 -1
+ZRANGEBYSCORE zset 0 100
+ZRANK zset member
+ZINCRBY zset 10 member</code></pre>
+                    </details>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Command Area -->
+        <main class="main-content">
+            <div class="query-section">
+                <div class="query-controls">
+                    <div class="command-row">
+                        <input type="text" id="redis-command" class="command-input"
+                               placeholder="Enter Redis command (e.g., GET greeting)"
+                               onkeypress="if(event.key==='Enter')executeCommand()">
+                        <button id="run-command" class="btn btn-primary" onclick="executeCommand()">
+                            Run
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sample-commands">
+                    <span>Try:</span>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('ping')">PING</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('getString')">GET String</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('getList')">LRANGE List</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('getSet')">SMEMBERS Set</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('getHash')">HGETALL Hash</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('getSortedSet')">ZRANGE Sorted Set</button>
+                    <button class="btn btn-xs btn-outline" onclick="loadSample('info')">INFO</button>
+                </div>
+
+                <div class="command-history">
+                    <h4>Command History</h4>
+                    <div id="history-list" class="history-list"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h3>Result</h3>
+                    <div id="command-stats" class="query-stats"></div>
+                </div>
+                <div id="results-container" class="results-container">
+                    <div class="placeholder">
+                        <p>Run a command to see results</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.sql-dashboard-page {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-header {
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-bottom: 1px solid #333;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #fff;
+    font-size: 1.8rem;
+}
+
+.dashboard-header p {
+    color: #888;
+    margin: 0;
+}
+
+.header-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    background: #1a1a2e;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.panel {
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.panel h3 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.server-info {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.info-label {
+    color: #888;
+}
+
+.info-value {
+    color: #4ecdc4;
+}
+
+.key-filter {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.key-filter input {
+    flex: 1;
+    padding: 0.35rem;
+    background: #1a1a2e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+
+.key-list {
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+
+.key-item {
+    padding: 0.35rem;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.key-item:hover {
+    background: #1a1a2e;
+}
+
+.key-name {
+    color: #4ecdc4;
+}
+
+.key-type {
+    color: #888;
+    font-size: 0.7rem;
+}
+
+.reference-list details {
+    margin-bottom: 0.5rem;
+}
+
+.reference-list summary {
+    cursor: pointer;
+    color: #ff6b6b;
+    padding: 0.3rem 0;
+}
+
+.reference-list pre {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: #1a1a2e;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    overflow-x: auto;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0f0f1a;
+}
+
+.query-section {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.command-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.command-input {
+    flex: 1;
+    padding: 0.75rem;
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+.command-input:focus {
+    outline: none;
+    border-color: #ff6b6b;
+}
+
+.sample-commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.sample-commands span {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.command-history {
+    margin-top: 1rem;
+}
+
+.command-history h4 {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.history-list {
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 0.25rem 0.5rem;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.history-item:hover {
+    background: #16213e;
+    color: #fff;
+}
+
+.results-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.results-header h3 {
+    margin: 0;
+    color: #fff;
+}
+
+.query-stats {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.results-container {
+    flex: 1;
+    background: #16213e;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow: auto;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.results-container pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.placeholder {
+    color: #666;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-message {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.success-result {
+    color: #4ecdc4;
+}
+
+.nil-result {
+    color: #888;
+    font-style: italic;
+}
+
+.array-result {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin: 0;
+}
+
+.array-result li {
+    padding: 0.25rem 0;
+    color: #fff;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #ff5252;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.btn-danger {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.loading {
+    color: #888;
+    font-style: italic;
+}
+</style>
+
+<script>
+const sampleCommands = {
+    ping: 'PING',
+    getString: 'GET greeting',
+    getList: 'LRANGE tasks 0 -1',
+    getSet: 'SMEMBERS tags:redis',
+    getHash: 'HGETALL product:1',
+    getSortedSet: 'ZRANGE leaderboard 0 -1 WITHSCORES',
+    info: 'INFO server'
+};
+
+const commandHistory = [];
+
+function loadSample(name) {
+    const cmd = sampleCommands[name];
+    if (cmd) {
+        document.getElementById('redis-command').value = cmd;
+    }
+}
+
+async function executeCommand() {
+    const commandInput = document.getElementById('redis-command');
+    const command = commandInput.value.trim();
+
+    if (!command) return;
+
+    const resultsContainer = document.getElementById('results-container');
+    const statsContainer = document.getElementById('command-stats');
+
+    resultsContainer.innerHTML = '<div class="loading">Executing...</div>';
+    statsContainer.innerHTML = '';
+
+    try {
+        const response = await fetch('/api/redis/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ command })
+        });
+
+        const result = await response.json();
+
+        statsContainer.innerHTML = `Type: ${result.type} | Time: ${result.duration_ms}ms`;
+
+        if (result.success) {
+            resultsContainer.innerHTML = formatResult(result.result, result.type);
+            addToHistory(command);
+        } else {
+            resultsContainer.innerHTML = `<div class="error-message">${result.error}</div>`;
+        }
+    } catch (e) {
+        resultsContainer.innerHTML = `<div class="error-message">Request failed: ${e.message}</div>`;
+    }
+}
+
+function formatResult(result, type) {
+    if (result === null) {
+        return '<div class="nil-result">(nil)</div>';
+    }
+
+    if (type === 'array' && Array.isArray(result)) {
+        if (result.length === 0) {
+            return '<div class="nil-result">(empty array)</div>';
+        }
+        const items = result.map((item, i) => `<li>${escapeHtml(String(item))}</li>`).join('');
+        return `<ol class="array-result">${items}</ol>`;
+    }
+
+    if (type === 'integer') {
+        return `<pre class="success-result">(integer) ${result}</pre>`;
+    }
+
+    return `<pre class="success-result">${escapeHtml(String(result))}</pre>`;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function addToHistory(command) {
+    if (commandHistory[0] !== command) {
+        commandHistory.unshift(command);
+        if (commandHistory.length > 20) {
+            commandHistory.pop();
+        }
+        renderHistory();
+    }
+}
+
+function renderHistory() {
+    const container = document.getElementById('history-list');
+    container.innerHTML = commandHistory.map(cmd =>
+        `<div class="history-item" onclick="loadFromHistory('${escapeHtml(cmd)}')">${escapeHtml(cmd)}</div>`
+    ).join('');
+}
+
+function loadFromHistory(cmd) {
+    document.getElementById('redis-command').value = cmd;
+}
+
+async function checkHealth() {
+    const btn = document.getElementById('health-check');
+    btn.textContent = 'Checking...';
+
+    try {
+        const response = await fetch('/api/redis/health');
+        const result = await response.json();
+
+        if (result.status === 'healthy') {
+            btn.textContent = 'Connected';
+            btn.style.borderColor = '#4ecdc4';
+            btn.style.color = '#4ecdc4';
+
+            if (result.info) {
+                updateServerInfo(result.info);
+            }
+
+            setTimeout(() => {
+                btn.textContent = 'Check Connection';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            }, 2000);
+        } else {
+            btn.textContent = 'Disconnected';
+            btn.style.borderColor = '#ff6b6b';
+            btn.style.color = '#ff6b6b';
+        }
+    } catch (e) {
+        btn.textContent = 'Error';
+        btn.style.borderColor = '#ff6b6b';
+        btn.style.color = '#ff6b6b';
+    }
+}
+
+function updateServerInfo(info) {
+    const container = document.getElementById('server-info');
+    container.innerHTML = `
+        <div class="info-item">
+            <span class="info-label">Version</span>
+            <span class="info-value">${info.version || 'N/A'}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Mode</span>
+            <span class="info-value">${info.mode || 'standalone'}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Memory</span>
+            <span class="info-value">${info.used_memory || 'N/A'}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Clients</span>
+            <span class="info-value">${info.connected_clients || 0}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Keys</span>
+            <span class="info-value">${info.total_keys || 0}</span>
+        </div>
+    `;
+}
+
+async function loadKeys() {
+    const pattern = document.getElementById('key-pattern').value || '*';
+    const container = document.getElementById('key-list');
+    const countEl = document.getElementById('key-count');
+
+    container.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+        const response = await fetch(`/api/redis/keys?pattern=${encodeURIComponent(pattern)}`);
+        const result = await response.json();
+
+        countEl.textContent = result.count || 0;
+
+        if (result.keys && result.keys.length > 0) {
+            container.innerHTML = result.keys.map(key =>
+                `<div class="key-item" onclick="inspectKey('${escapeHtml(key)}')">
+                    <span class="key-name">${escapeHtml(key)}</span>
+                </div>`
+            ).join('');
+        } else {
+            container.innerHTML = '<div class="nil-result">No keys found</div>';
+        }
+    } catch (e) {
+        container.innerHTML = `<div class="error-message">${e.message}</div>`;
+    }
+}
+
+function inspectKey(key) {
+    document.getElementById('redis-command').value = `TYPE ${key}`;
+    executeCommand();
+}
+
+async function loadSampleData() {
+    const btn = document.getElementById('load-sample');
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/redis/load-sample', { method: 'POST' });
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Sample data loaded!');
+            loadKeys();
+            checkHealth();
+        } else {
+            alert('Failed: ' + result.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    } finally {
+        btn.textContent = 'Load Sample Data';
+        btn.disabled = false;
+    }
+}
+
+async function resetData() {
+    if (!confirm('This will delete ALL data and reload sample data. Continue?')) {
+        return;
+    }
+
+    const btn = document.getElementById('reset-data');
+    btn.textContent = 'Resetting...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch('/api/redis/reset', { method: 'POST' });
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Database reset!');
+            loadKeys();
+            checkHealth();
+        } else {
+            alert('Failed: ' + result.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    } finally {
+        btn.textContent = 'Reset Database';
+        btn.disabled = false;
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkHealth();
+    loadKeys();
+});
+</script>

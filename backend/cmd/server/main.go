@@ -21,6 +21,7 @@ import (
 	"github.com/vaibhav-jain-dev/learning-algo/internal/elasticsearch"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/handlers"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
+	"github.com/vaibhav-jain-dev/learning-algo/internal/redis"
 )
 
 func main() {
@@ -137,6 +138,36 @@ func main() {
 		}()
 	}
 
+	// Initialize Redis connection (optional - graceful if not available)
+	var redisHandlers *handlers.RedisHandlers
+	redisConfig := redis.ConfigFromEnv()
+	redisClient, err := redis.New(redisConfig)
+	if err != nil {
+		log.Printf("Warning: Redis connection failed: %v (Redis features disabled)", err)
+	} else {
+		log.Println("Redis connected successfully")
+		redisHandlers = handlers.NewRedisHandlers(redisClient)
+		defer redisClient.Close()
+
+		// Load sample data if database is empty
+		go func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+
+			keys, _ := redisClient.GetKeys(ctx, "*")
+			if len(keys) == 0 {
+				log.Println("Loading Redis sample data...")
+				if err := redisClient.LoadSampleData(ctx); err != nil {
+					log.Printf("Warning: Failed to load Redis sample data: %v", err)
+				} else {
+					log.Println("Redis sample data loaded successfully")
+				}
+			} else {
+				log.Printf("Redis already has %d keys", len(keys))
+			}
+		}()
+	}
+
 	// Static files
 	app.Static("/static", "./frontend/static")
 
@@ -147,6 +178,8 @@ func main() {
 	app.Get("/sql-lessons", h.SQLLessons)
 	app.Get("/elasticsearch", h.ElasticsearchDashboard)
 	app.Get("/elasticsearch-lessons", h.ElasticsearchLessons)
+	app.Get("/redis", h.RedisDashboard)
+	app.Get("/redis-lessons", h.RedisLessons)
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
@@ -194,6 +227,17 @@ func main() {
 		esAPI.Post("/reset", esHandlers.ResetIndices)
 		esAPI.Post("/analyze", esHandlers.Analyze)
 		esAPI.Post("/explain", esHandlers.Explain)
+	}
+
+	// Redis API routes (only if Redis is available)
+	if redisHandlers != nil {
+		redisAPI := app.Group("/api/redis")
+		redisAPI.Post("/execute", redisHandlers.ExecuteCommand)
+		redisAPI.Get("/keys", redisHandlers.GetKeys)
+		redisAPI.Get("/info", redisHandlers.GetServerInfo)
+		redisAPI.Get("/health", redisHandlers.HealthCheck)
+		redisAPI.Post("/reset", redisHandlers.ResetData)
+		redisAPI.Post("/load-sample", redisHandlers.LoadSampleData)
 	}
 
 	// WebSocket for real-time execution updates
