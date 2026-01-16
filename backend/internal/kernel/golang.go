@@ -13,7 +13,13 @@ import (
 	"time"
 )
 
-// Blocked Go packages for security
+// Precompiled regex patterns for import validation
+var (
+	importRegex        = regexp.MustCompile(`import\s+(?:\(\s*([^)]+)\s*\)|"([^"]+)")`)
+	quotedPackageRegex = regexp.MustCompile(`"([^"]+)"`)
+)
+
+// Blocked Go packages for security (as a map for O(1) lookup with prefix check)
 var blockedGoPackages = []string{
 	"os/exec",
 	"net", "net/http", "net/url", "net/smtp", "net/rpc",
@@ -60,6 +66,13 @@ var allowedGoPackages = map[string]bool{
 	"slices":         true,
 	"maps":           true,
 	"cmp":            true,
+}
+
+// Dangerous function calls that are blocked
+var dangerousCalls = []string{
+	"os.Exit", "os.Remove", "os.Rename", "os.Mkdir", "os.Create",
+	"os.Open", "os.WriteFile", "os.ReadFile",
+	"exec.Command", "exec.Run",
 }
 
 // Shared GOCACHE directory for faster compilation across all kernels
@@ -131,40 +144,41 @@ func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
 	return k, nil
 }
 
-// validateCode checks code for blocked packages
+// validateCode checks code for blocked packages and dangerous calls
 func (k *GoKernel) validateCode(code string) error {
-	// Extract imports
-	importRegex := regexp.MustCompile(`import\s+(?:\(\s*([^)]+)\s*\)|"([^"]+)")`)
+	// Extract imports using precompiled regex
 	matches := importRegex.FindAllStringSubmatch(code, -1)
 
 	var imports []string
 	for _, match := range matches {
 		if match[1] != "" {
-			// Multi-line import
+			// Multi-line import block - split and extract packages
 			lines := strings.Split(match[1], "\n")
 			for _, line := range lines {
 				line = strings.TrimSpace(line)
 				if line != "" {
-					// Extract package from quotes
-					pkgMatch := regexp.MustCompile(`"([^"]+)"`).FindStringSubmatch(line)
+					// Extract package from quotes using precompiled regex
+					pkgMatch := quotedPackageRegex.FindStringSubmatch(line)
 					if len(pkgMatch) > 1 {
 						imports = append(imports, pkgMatch[1])
 					}
 				}
 			}
 		} else if match[2] != "" {
+			// Single-line import
 			imports = append(imports, match[2])
 		}
 	}
 
-	// Check for blocked packages
+	// Check for blocked and disallowed packages
 	for _, pkg := range imports {
+		// Check blocked packages first (most important for security)
 		for _, blocked := range blockedGoPackages {
 			if strings.HasPrefix(pkg, blocked) || pkg == blocked {
 				return fmt.Errorf("package '%s' is not allowed for security reasons", pkg)
 			}
 		}
-		// Check if package is in allowed list (or is a standard allowed one)
+		// Check if package is in allowed list
 		basePackage := strings.Split(pkg, "/")[0]
 		if !allowedGoPackages[pkg] && !allowedGoPackages[basePackage] {
 			return fmt.Errorf("package '%s' is not in the allowed list", pkg)
@@ -172,11 +186,6 @@ func (k *GoKernel) validateCode(code string) error {
 	}
 
 	// Check for dangerous function calls
-	dangerousCalls := []string{
-		"os.Exit", "os.Remove", "os.Rename", "os.Mkdir", "os.Create",
-		"os.Open", "os.WriteFile", "os.ReadFile",
-		"exec.Command", "exec.Run",
-	}
 	for _, call := range dangerousCalls {
 		if strings.Contains(code, call) {
 			return fmt.Errorf("function '%s' is not allowed for security reasons", call)
@@ -194,7 +203,7 @@ func (k *GoKernel) writeCode(code string) (string, error) {
 	return mainFile, nil
 }
 
-// Execute runs Go code by compiling to binary then executing (fast!)
+// Execute runs Go code by compiling to binary then executing (optimized compile-once approach)
 func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, error) {
 	k.mu.Lock()
 	defer k.mu.Unlock()
@@ -320,11 +329,34 @@ func (k *GoKernel) executeWithGoRun(ctx context.Context, mainFile, goCache strin
 		"GOCACHE="+goCache,
 	)
 
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	var compileErr bytes.Buffer
+	compileCmd.Stderr = &compileErr
 
-	err := cmd.Run()
+	// Compile the code
+	if err := compileCmd.Run(); err != nil {
+		errStr := compileErr.String()
+		if errStr == "" {
+			errStr = err.Error()
+		}
+		// Clean up error paths
+		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
+		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		return &ExecutionResult{
+			Error:    errStr,
+			ExitCode: 1,
+			Duration: time.Since(start),
+		}, nil
+	}
+
+	// Run the compiled binary
+	execCmd := exec.CommandContext(ctx, binaryPath)
+	execCmd.Dir = k.workDir
+
+	var stdout, stderr bytes.Buffer
+	execCmd.Stdout = &stdout
+	execCmd.Stderr = &stderr
+
+	err := execCmd.Run()
 	execTime := time.Since(execStart)
 	duration := time.Since(start)
 

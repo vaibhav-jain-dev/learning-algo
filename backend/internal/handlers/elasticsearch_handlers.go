@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
-	"bytes"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/elasticsearch"
 )
@@ -259,7 +260,6 @@ func (h *ElasticsearchHandlers) Explain(c *fiber.Ctx) error {
 
 	return c.JSON(result)
 }
-
 
 // InitializeElasticsearch creates the learning indices with sample data
 func InitializeElasticsearch(ctx context.Context, es *elasticsearch.Client) error {
