@@ -694,7 +694,262 @@ const lessons = {
     'what-is-elasticsearch': {
         title: 'What is Elasticsearch?',
         category: 'Fundamentals',
-        difficulty: 'Beginner'
+        difficulty: 'Beginner',
+        content: `
+            <h1>What is Elasticsearch? A Deep Dive</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Understanding Search: The Problem</h2>
+                <p>Before understanding Elasticsearch, let's understand why traditional databases struggle with search.</p>
+
+                <div class="concept-box">
+                    <h3>The SQL LIKE Problem</h3>
+                    <p>When you search in SQL using LIKE:</p>
+                    <pre><code class="language-sql">SELECT * FROM products WHERE name LIKE '%blood count%';</code></pre>
+                    <p><strong>What happens internally:</strong></p>
+                    <ul style="color: #ccc; padding-left: 1.5rem;">
+                        <li>Database performs a <strong>full table scan</strong> - checking EVERY row</li>
+                        <li>No index can help with leading wildcards (%blood)</li>
+                        <li>Case sensitive by default ("Blood" ≠ "blood")</li>
+                        <li>Can't match "bloods" when searching "blood" (no stemming)</li>
+                        <li>Performance: O(n) - degrades linearly with data size</li>
+                    </ul>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Real Numbers: The Scale Problem</h3>
+                    <pre><code class="language-text">Data Size          SQL LIKE Search    Elasticsearch Search
+─────────────────────────────────────────────────────────
+100 rows           10ms               5ms
+10,000 rows        100ms              5ms
+1,000,000 rows     10+ seconds        5ms
+100,000,000 rows   Minutes/Timeout    10ms</code></pre>
+                    <p>Elasticsearch maintains <strong>constant-time lookups</strong> regardless of data size!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>What is Elasticsearch?</h2>
+                <p>Elasticsearch is a <strong>distributed, full-text search engine</strong> built on Apache Lucene. It stores data in a fundamentally different way than SQL databases.</p>
+
+                <div class="key-points">
+                    <h3>Core Architecture</h3>
+                    <ul>
+                        <li><strong>Documents:</strong> JSON objects (like rows in SQL)</li>
+                        <li><strong>Indices:</strong> Collections of documents (like tables)</li>
+                        <li><strong>Shards:</strong> Horizontal partitions for scaling</li>
+                        <li><strong>Replicas:</strong> Copies for fault tolerance</li>
+                        <li><strong>Inverted Index:</strong> The magic behind fast search</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Key Insight</h4>
+                    <p>The secret to Elasticsearch's speed is the <strong>Inverted Index</strong> - it pre-processes text at write time so search is just a lookup, not a scan.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>How Text Analysis Works (Tokenization)</h2>
+                <p>When you index a document, Elasticsearch doesn't store the raw text. It <strong>analyzes</strong> the text into searchable tokens.</p>
+
+                <div class="concept-box">
+                    <h3>The Analysis Pipeline</h3>
+                    <pre><code class="language-text">Input Text: "Complete Blood Count (CBC) - $50.00"
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│ 1. CHARACTER FILTERS                                │
+│    Remove HTML, convert symbols                     │
+│    Result: "Complete Blood Count CBC 50 00"         │
+└─────────────────────────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│ 2. TOKENIZER                                        │
+│    Split into words (standard: whitespace + punct)  │
+│    Result: ["Complete", "Blood", "Count", "CBC",    │
+│             "50", "00"]                             │
+└─────────────────────────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────┐
+│ 3. TOKEN FILTERS                                    │
+│    Lowercase, stemming, synonyms, stop words        │
+│    Result: ["complete", "blood", "count", "cbc",    │
+│             "50", "00"]                             │
+└─────────────────────────────────────────────────────┘</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Try: Analyze Text</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "analyzer": "standard",
+  "text": "Complete Blood Count (CBC) - $50.00"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;standard&quot;,&quot;text&quot;:&quot;Complete Blood Count (CBC) - $50.00&quot;}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>The Inverted Index: The Magic</h2>
+                <p>After analysis, Elasticsearch builds an <strong>inverted index</strong> - a map from terms to documents.</p>
+
+                <div class="concept-box">
+                    <h3>Traditional Index (like SQL)</h3>
+                    <pre><code class="language-text">Doc 1 → ["complete", "blood", "count", "cbc"]
+Doc 2 → ["liver", "function", "test", "lft"]
+Doc 3 → ["blood", "glucose", "fasting"]
+
+To find "blood": scan ALL docs → O(n) operations</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Inverted Index (Elasticsearch)</h3>
+                    <pre><code class="language-text">Term          | Documents
+──────────────────────────
+"blood"       | Doc 1, Doc 3
+"complete"    | Doc 1
+"count"       | Doc 1
+"cbc"         | Doc 1
+"liver"       | Doc 2
+"function"    | Doc 2
+"test"        | Doc 2
+"lft"         | Doc 2
+"glucose"     | Doc 3
+"fasting"     | Doc 3
+
+To find "blood": lookup "blood" → [Doc 1, Doc 3] → O(1) operation!</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Why This is Fast</h4>
+                    <p>Finding documents is now a <strong>dictionary lookup</strong>, not a scan. Like finding a word in a book's index vs reading every page!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Elasticsearch vs SQL vs MongoDB Search</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>SQL LIKE</th><th>MongoDB Text</th><th>Elasticsearch</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Search Speed</td>
+                                <td>O(n) full scan</td>
+                                <td>O(log n) with index</td>
+                                <td>O(1) inverted index</td>
+                            </tr>
+                            <tr>
+                                <td>Case Insensitive</td>
+                                <td>LOWER() function</td>
+                                <td>$caseSensitive:false</td>
+                                <td>Built-in (analyzer)</td>
+                            </tr>
+                            <tr>
+                                <td>Fuzzy/Typo Tolerance</td>
+                                <td>Not possible</td>
+                                <td>Not built-in</td>
+                                <td>fuzziness: "AUTO"</td>
+                            </tr>
+                            <tr>
+                                <td>Synonyms</td>
+                                <td>Manual mapping</td>
+                                <td>Not built-in</td>
+                                <td>Synonym filter</td>
+                            </tr>
+                            <tr>
+                                <td>Relevance Scoring</td>
+                                <td>None</td>
+                                <td>Basic textScore</td>
+                                <td>TF-IDF / BM25</td>
+                            </tr>
+                            <tr>
+                                <td>Stemming</td>
+                                <td>Not possible</td>
+                                <td>Basic</td>
+                                <td>Multiple algorithms</td>
+                            </tr>
+                            <tr>
+                                <td>Highlighting</td>
+                                <td>Not built-in</td>
+                                <td>Basic</td>
+                                <td>Advanced highlighting</td>
+                            </tr>
+                            <tr>
+                                <td>Autocomplete</td>
+                                <td>LIKE 'prefix%'</td>
+                                <td>Regex (slow)</td>
+                                <td>Edge n-grams, Completion</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Example: Why "running" matches "run"</h3>
+                    <p>In SQL: <code>WHERE text LIKE '%run%'</code> won't match "running"</p>
+                    <p>In Elasticsearch with stemming analyzer:</p>
+                    <ul style="color: #ccc; padding-left: 1.5rem;">
+                        <li>"running" → stems to → "run"</li>
+                        <li>"runs" → stems to → "run"</li>
+                        <li>"ran" → stems to → "run"</li>
+                    </ul>
+                    <p>All variations automatically match!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>When to Use Elasticsearch</h2>
+                <div class="key-points">
+                    <h3>Perfect For:</h3>
+                    <ul>
+                        <li><strong>Full-text search</strong> - product search, document search</li>
+                        <li><strong>Log analytics</strong> - searching through millions of log entries</li>
+                        <li><strong>Autocomplete</strong> - as-you-type search suggestions</li>
+                        <li><strong>Faceted search</strong> - filtering with counts (like e-commerce)</li>
+                        <li><strong>Geospatial search</strong> - finding nearby locations</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h3>Not Ideal For:</h3>
+                    <ul>
+                        <li><strong>Primary database</strong> - use SQL/MongoDB for transactions</li>
+                        <li><strong>Complex joins</strong> - denormalize data instead</li>
+                        <li><strong>Real-time analytics</strong> - slight delay in indexing</li>
+                        <li><strong>Small datasets</strong> - overkill for &lt; 10,000 records</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Elasticsearch = distributed search engine built on Lucene</li>
+                        <li>&#10003; Text analysis breaks text into searchable tokens</li>
+                        <li>&#10003; Inverted index enables O(1) lookups vs O(n) scans</li>
+                        <li>&#10003; Built-in fuzzy search, synonyms, stemming, highlighting</li>
+                        <li>&#10003; Use ES for search-heavy features, SQL for transactions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <div class="lesson-nav">
+                <span></span>
+                <a class="btn btn-primary" onclick="loadLesson('how-search-works')">Next: How Search Works &#8594;</a>
+            </div>
+        `
     },
     'how-search-works': {
         title: 'How Search Works',
@@ -887,6 +1142,419 @@ Inverted Index (term -> documents):
             <div class="lesson-nav">
                 <a class="btn btn-outline" onclick="loadLesson('how-search-works')">&#8592; Previous: How Search Works</a>
                 <a class="btn btn-primary" onclick="loadLesson('documents-indices')">Next: Documents & Indices &#8594;</a>
+            </div>
+        `
+    },
+    'documents-indices': {
+        title: 'Documents & Indices',
+        category: 'Fundamentals',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Documents & Indices: Elasticsearch Data Model</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Elasticsearch Data Hierarchy</h2>
+                <div class="concept-box">
+                    <h3>The Structure</h3>
+                    <pre><code class="language-text">Cluster
+    └── Nodes (servers)
+        └── Indices (like databases)
+            └── Shards (horizontal partitions)
+                └── Documents (JSON records)
+                    └── Fields (key-value pairs)</code></pre>
+                </div>
+
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>SQL Concept</th><th>Elasticsearch Concept</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Database</td>
+                                <td>Index</td>
+                                <td>Logical namespace for documents</td>
+                            </tr>
+                            <tr>
+                                <td>Table</td>
+                                <td>Index (or Type*)</td>
+                                <td>*Types deprecated in ES 7+</td>
+                            </tr>
+                            <tr>
+                                <td>Row</td>
+                                <td>Document</td>
+                                <td>A single JSON object</td>
+                            </tr>
+                            <tr>
+                                <td>Column</td>
+                                <td>Field</td>
+                                <td>A key-value pair in document</td>
+                            </tr>
+                            <tr>
+                                <td>Schema</td>
+                                <td>Mapping</td>
+                                <td>Field definitions & types</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Documents</h2>
+                <p>A document is a JSON object that contains your data. Each document has:</p>
+
+                <div class="key-points">
+                    <h3>Document Metadata</h3>
+                    <ul>
+                        <li><strong>_index:</strong> Which index the document belongs to</li>
+                        <li><strong>_id:</strong> Unique identifier (auto-generated or specified)</li>
+                        <li><strong>_source:</strong> The original JSON body you indexed</li>
+                        <li><strong>_version:</strong> Version number for optimistic concurrency</li>
+                    </ul>
+                </div>
+
+                <div class="example-query">
+                    <h4>Index a Document</h4>
+                    <pre><code class="language-json">PUT /tests/_doc/custom-id-123
+{
+  "testName": "Complete Blood Count",
+  "testCode": "CBC",
+  "price": 350,
+  "category": "Hematology"
+}</code></pre>
+                    <p>Creates/updates document with ID "custom-id-123"</p>
+                </div>
+
+                <div class="example-query">
+                    <h4>Get a Document by ID</h4>
+                    <pre><code class="language-json">GET /tests/_doc/custom-id-123</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/tests/_search', '{&quot;query&quot;:{&quot;match_all&quot;:{}},&quot;size&quot;:1}')">Try: Get Sample Doc</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Indices & Mappings</h2>
+                <p>An index is a collection of documents. The <strong>mapping</strong> defines how documents and fields are stored and indexed.</p>
+
+                <div class="concept-box">
+                    <h3>Field Types</h3>
+                    <pre><code class="language-text">Text Types (analyzed, full-text search):
+  • text      - Full-text search, tokenized
+  • keyword   - Exact match, aggregations, sorting
+
+Numeric Types:
+  • integer, long, short, byte
+  • float, double, half_float
+  • scaled_float
+
+Date Types:
+  • date      - ISO 8601 or custom formats
+
+Boolean:
+  • boolean   - true/false
+
+Object Types:
+  • object    - JSON object (flattened)
+  • nested    - Arrays of objects (maintains independence)</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; text vs keyword</h4>
+                    <p><strong>text</strong>: For full-text search. "Hello World" → ["hello", "world"]</p>
+                    <p><strong>keyword</strong>: For exact matches. "Hello World" stays as "Hello World"</p>
+                    <p>By default, strings get BOTH: field.keyword for exact match</p>
+                </div>
+
+                <div class="example-query">
+                    <h4>View Index Mapping</h4>
+                    <pre><code class="language-json">GET /tests/_mapping</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/tests/_mapping', '')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Shards & Replicas</h2>
+                <p>Elasticsearch distributes data across <strong>shards</strong> for horizontal scaling.</p>
+
+                <div class="concept-box">
+                    <h3>How Sharding Works</h3>
+                    <pre><code class="language-text">Index: "products" (1 million documents)
+├── Primary Shard 0 → 333K docs (Node 1)
+├── Primary Shard 1 → 333K docs (Node 2)
+├── Primary Shard 2 → 334K docs (Node 3)
+└── Replica Shards → Copies on different nodes
+
+Benefits:
+• Parallel processing across shards
+• Data survives node failure (replicas)
+• Scale horizontally by adding nodes</code></pre>
+                </div>
+
+                <div class="key-points">
+                    <h3>Shard Guidelines</h3>
+                    <ul>
+                        <li>Default: 1 primary shard, 1 replica (ES 7+)</li>
+                        <li>Cannot change primary shards after index creation</li>
+                        <li>Aim for shards between 10GB - 50GB</li>
+                        <li>Too many small shards = overhead</li>
+                        <li>Too few large shards = slow queries</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Documents are JSON objects with _id, _index, _source</li>
+                        <li>&#10003; Indices are collections of documents with mappings</li>
+                        <li>&#10003; Mappings define field types (text, keyword, numeric, etc.)</li>
+                        <li>&#10003; Shards enable horizontal scaling</li>
+                        <li>&#10003; Replicas provide fault tolerance</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('inverted-index')">&#8592; Previous: Inverted Index</a>
+                <a class="btn btn-primary" onclick="loadLesson('analyzers')">Next: Analyzers &#8594;</a>
+            </div>
+        `
+    },
+    'analyzers': {
+        title: 'Analyzers',
+        category: 'Fundamentals',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Analyzers: How Text Becomes Searchable</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>The Analyzer Pipeline</h2>
+                <p>Analyzers transform text into tokens. Understanding analyzers is <strong>critical</strong> for effective search.</p>
+
+                <div class="concept-box">
+                    <h3>Anatomy of an Analyzer</h3>
+                    <pre><code class="language-text">Input: "The Quick-Brown Fox's 2nd Jump!"
+                    ↓
+┌────────────────────────────────────┐
+│ CHARACTER FILTERS (0 or more)      │
+│ • HTML strip, pattern replace      │
+│ Result: "The Quick-Brown Fox's 2nd Jump!"
+└────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────┐
+│ TOKENIZER (exactly 1)              │
+│ • Split text into tokens           │
+│ Result: ["The", "Quick", "Brown",  │
+│          "Fox's", "2nd", "Jump"]   │
+└────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────┐
+│ TOKEN FILTERS (0 or more)          │
+│ • lowercase, stemmer, synonyms     │
+│ Result: ["the", "quick", "brown",  │
+│          "fox", "2nd", "jump"]     │
+└────────────────────────────────────┘</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Built-in Analyzers</h2>
+
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Analyzer</th><th>Input</th><th>Output Tokens</th><th>Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>standard</td>
+                                <td>"Quick Brown-Fox"</td>
+                                <td>["quick", "brown", "fox"]</td>
+                                <td>General purpose (default)</td>
+                            </tr>
+                            <tr>
+                                <td>simple</td>
+                                <td>"Quick Brown-Fox"</td>
+                                <td>["quick", "brown", "fox"]</td>
+                                <td>Non-letter chars removed</td>
+                            </tr>
+                            <tr>
+                                <td>whitespace</td>
+                                <td>"Quick Brown-Fox"</td>
+                                <td>["Quick", "Brown-Fox"]</td>
+                                <td>Preserve case, split on spaces only</td>
+                            </tr>
+                            <tr>
+                                <td>keyword</td>
+                                <td>"Quick Brown-Fox"</td>
+                                <td>["Quick Brown-Fox"]</td>
+                                <td>No tokenization (exact match)</td>
+                            </tr>
+                            <tr>
+                                <td>english</td>
+                                <td>"running foxes"</td>
+                                <td>["run", "fox"]</td>
+                                <td>Stemming + stop words</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="example-query">
+                    <h4>Compare Analyzers</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "analyzer": "standard",
+  "text": "The Quick Brown-Fox JUMPED over 2 lazy dogs!"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;standard&quot;,&quot;text&quot;:&quot;The Quick Brown-Fox JUMPED over 2 lazy dogs!&quot;}')">Standard</button>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;whitespace&quot;,&quot;text&quot;:&quot;The Quick Brown-Fox JUMPED over 2 lazy dogs!&quot;}')">Whitespace</button>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;english&quot;,&quot;text&quot;:&quot;The Quick Brown-Fox JUMPED over 2 lazy dogs!&quot;}')">English</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Why Analyzers Matter</h2>
+
+                <div class="concept-box">
+                    <h3>Case Sensitivity Problem</h3>
+                    <pre><code class="language-text">Document: { "name": "Blood Count Test" }
+Query:    { "match": { "name": "blood" } }
+
+Without proper analyzer: NO MATCH ❌ (case mismatch)
+With standard analyzer:  MATCH ✅ (both lowercased)
+
+Indexed as: ["blood", "count", "test"]
+Query analyzed as: ["blood"]
+Match found!</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Stemming Problem</h3>
+                    <pre><code class="language-text">Document: { "description": "Patient was running" }
+Query:    { "match": { "description": "run" } }
+
+Without stemming: NO MATCH ❌ ("run" ≠ "running")
+With english analyzer: MATCH ✅
+
+"running" → stemmed to → "run"
+"run" → stemmed to → "run"
+Both match!</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; The Golden Rule</h4>
+                    <p>The <strong>same analyzer must be used at index time and search time</strong>. Otherwise, tokens won't match!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Custom Analyzers</h2>
+                <p>You can build custom analyzers for specific use cases.</p>
+
+                <div class="example-query">
+                    <h4>Custom Analyzer for Medical Terms</h4>
+                    <pre><code class="language-json">PUT /medical_index
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "medical_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "medical_synonyms",
+            "english_stemmer"
+          ]
+        }
+      },
+      "filter": {
+        "medical_synonyms": {
+          "type": "synonym",
+          "synonyms": [
+            "cbc, complete blood count",
+            "bp, blood pressure",
+            "ekg, ecg, electrocardiogram"
+          ]
+        },
+        "english_stemmer": {
+          "type": "stemmer",
+          "language": "english"
+        }
+      }
+    }
+  }
+}</code></pre>
+                    <p>Now searching "CBC" also matches "Complete Blood Count"!</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Common Token Filters</h2>
+
+                <div class="key-points">
+                    <h3>Frequently Used Filters</h3>
+                    <ul>
+                        <li><strong>lowercase:</strong> "Hello" → "hello"</li>
+                        <li><strong>stop:</strong> Remove common words ("the", "is", "at")</li>
+                        <li><strong>stemmer:</strong> "running" → "run"</li>
+                        <li><strong>synonym:</strong> "quick" → "quick, fast"</li>
+                        <li><strong>edge_ngram:</strong> "quick" → ["q", "qu", "qui", "quic", "quick"]</li>
+                        <li><strong>asciifolding:</strong> "café" → "cafe"</li>
+                    </ul>
+                </div>
+
+                <div class="example-query">
+                    <h4>Test Edge N-grams (for Autocomplete)</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "tokenizer": "standard",
+  "filter": ["lowercase", {"type": "edge_ngram", "min_gram": 1, "max_gram": 10}],
+  "text": "blood"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;tokenizer&quot;:&quot;standard&quot;,&quot;filter&quot;:[&quot;lowercase&quot;,{&quot;type&quot;:&quot;edge_ngram&quot;,&quot;min_gram&quot;:1,&quot;max_gram&quot;:10}],&quot;text&quot;:&quot;blood&quot;}')">Try it</button>
+                    <p>Produces: ["b", "bl", "blo", "bloo", "blood"] - enables prefix matching!</p>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Analyzers = Character Filters + Tokenizer + Token Filters</li>
+                        <li>&#10003; Standard analyzer: lowercase + word tokenization (default)</li>
+                        <li>&#10003; Use stemming for matching word variations</li>
+                        <li>&#10003; Use synonyms for domain-specific terminology</li>
+                        <li>&#10003; Edge n-grams enable autocomplete functionality</li>
+                        <li>&#10003; Same analyzer must be used at index and search time</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('documents-indices')">&#8592; Previous: Documents & Indices</a>
+                <a class="btn btn-primary" onclick="loadLesson('match-query')">Next: Match Query &#8594;</a>
             </div>
         `
     },

@@ -105,6 +105,81 @@
                         millions of requests per second.
                     </p>
 
+                    <!-- Deep Dive: Why is Redis So Fast? -->
+                    <div class="bg-gray-900 border-l-4 border-red-500 rounded-r-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-2">Why is Redis So Fast?</h4>
+                        <div class="text-gray-300 text-sm space-y-2">
+                            <p><strong>1. In-Memory Storage:</strong> RAM is ~100,000x faster than disk. A typical HDD reads at 100 MB/s, while RAM operates at 20,000+ MB/s.</p>
+                            <pre class="bg-gray-950 rounded p-3 my-2 text-xs overflow-x-auto"><code>Latency Comparison:
+┌─────────────────┬──────────────────┬─────────────────┐
+│ Operation       │ Time             │ Redis Advantage │
+├─────────────────┼──────────────────┼─────────────────┤
+│ L1 cache        │ 0.5 ns           │ -               │
+│ L2 cache        │ 7 ns             │ -               │
+│ RAM access      │ 100 ns           │ Redis lives here│
+│ SSD read        │ 150,000 ns       │ 1,500x faster   │
+│ HDD seek        │ 10,000,000 ns    │ 100,000x faster │
+│ Network (DC)    │ 500,000 ns       │ -               │
+└─────────────────┴──────────────────┴─────────────────┘</code></pre>
+                            <p><strong>2. Single-Threaded Event Loop:</strong> No context switching, no locks, no race conditions. Redis processes commands sequentially using an efficient event loop (epoll/kqueue).</p>
+                            <p><strong>3. Optimized Data Structures:</strong> Redis uses specialized data structures (like Skip Lists for Sorted Sets) that are optimized for the operations they support.</p>
+                            <p><strong>4. Simple Protocol:</strong> RESP (Redis Serialization Protocol) is a simple text protocol with minimal parsing overhead.</p>
+                        </div>
+                    </div>
+
+                    <!-- Redis vs SQL vs Memcached -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-3">Redis vs SQL vs Memcached</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Feature</th>
+                                    <th class="text-left py-2">SQL Database</th>
+                                    <th class="text-left py-2">Memcached</th>
+                                    <th class="text-left py-2">Redis</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Speed</td>
+                                    <td>~1-10ms</td>
+                                    <td>&lt;1ms</td>
+                                    <td class="text-red-400">&lt;1ms</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Data Types</td>
+                                    <td>Tables/Rows</td>
+                                    <td>Strings only</td>
+                                    <td class="text-red-400">Multiple (Lists, Sets, Hashes...)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Persistence</td>
+                                    <td>Yes (ACID)</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">Optional (RDB/AOF)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Pub/Sub</td>
+                                    <td>Limited</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">Yes</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Transactions</td>
+                                    <td>Full ACID</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">MULTI/EXEC (no rollback)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Use Case</td>
+                                    <td>Primary storage</td>
+                                    <td>Simple caching</td>
+                                    <td class="text-red-400">Caching, queues, real-time</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <h3 class="text-xl font-semibold text-red-400 mb-3">Key Features</h3>
                     <ul class="list-disc list-inside text-gray-300 mb-4 space-y-2">
                         <li><strong>In-Memory Storage:</strong> All data is stored in RAM for ultra-fast access</li>
@@ -538,6 +613,85 @@ EXPIRE session:abc123 3600  # 1 hour</code></pre>
                         Sorted Sets combine features of Sets and ordered lists. Each member has an associated score
                         that determines its position. Perfect for leaderboards, priority queues, and range queries.
                     </p>
+
+                    <!-- Deep Dive: How Sorted Sets Work Internally -->
+                    <div class="bg-gray-900 border-l-4 border-red-500 rounded-r-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-2">How Sorted Sets Work Internally (Skip Lists)</h4>
+                        <div class="text-gray-300 text-sm space-y-2">
+                            <p>Redis uses a <strong>Skip List</strong> + <strong>Hash Table</strong> for Sorted Sets:</p>
+                            <pre class="bg-gray-950 rounded p-3 my-2 text-xs overflow-x-auto"><code>Skip List Structure (simplified):
+Level 3: [HEAD] ────────────────────────────────> [90:charlie] ────────> [NULL]
+Level 2: [HEAD] ────────> [50:bob] ────────────> [90:charlie] ────────> [NULL]
+Level 1: [HEAD] ─> [30:alice] ─> [50:bob] ─> [70:david] ─> [90:charlie] ─> [NULL]
+
++ Hash Table: member → score
+  {"alice": 30, "bob": 50, "david": 70, "charlie": 90}
+
+Operations:
+┌────────────────┬─────────────┬──────────────────────────────────────┐
+│ Operation      │ Time        │ Why                                  │
+├────────────────┼─────────────┼──────────────────────────────────────┤
+│ ZADD           │ O(log n)    │ Skip list insertion                  │
+│ ZSCORE         │ O(1)        │ Hash table lookup                    │
+│ ZRANK          │ O(log n)    │ Skip list traversal                  │
+│ ZRANGE         │ O(log n + m)│ Skip to start, then traverse m items │
+│ ZRANGEBYSCORE  │ O(log n + m)│ Binary search + traverse             │
+└────────────────┴─────────────┴──────────────────────────────────────┘</code></pre>
+                            <p><strong>Why Skip Lists instead of Balanced Trees?</strong></p>
+                            <ul class="list-disc list-inside text-gray-400 pl-2">
+                                <li>Simpler to implement correctly</li>
+                                <li>Easier to modify concurrently</li>
+                                <li>Better cache locality for range queries</li>
+                                <li>Same O(log n) complexity as trees</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- When to use which data structure -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-3">Choosing the Right Data Structure</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Need</th>
+                                    <th class="text-left py-2">Use</th>
+                                    <th class="text-left py-2">Example</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Simple key-value</td>
+                                    <td class="text-red-400">String</td>
+                                    <td>Session data, counters</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Object with fields</td>
+                                    <td class="text-red-400">Hash</td>
+                                    <td>User profile, product details</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">FIFO queue</td>
+                                    <td class="text-red-400">List (LPUSH/RPOP)</td>
+                                    <td>Task queue, message queue</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Unique items, no order</td>
+                                    <td class="text-red-400">Set</td>
+                                    <td>Tags, unique visitors</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Ranked/scored items</td>
+                                    <td class="text-red-400">Sorted Set</td>
+                                    <td>Leaderboard, scheduling</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Event log/stream</td>
+                                    <td class="text-red-400">Stream</td>
+                                    <td>Activity feed, audit log</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Sorted Set Operations</h3>
                     <div class="bg-gray-900 rounded-lg p-4 mb-4">

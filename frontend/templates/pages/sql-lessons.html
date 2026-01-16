@@ -967,6 +967,174 @@ FROM blood_tests;</code></pre>
     const lessonContent = {
         'select-basics': null, // Already loaded as default
 
+        'sql-deep-dive': {
+            title: 'How SQL Queries Actually Work',
+            category: 'Understanding SQL',
+            difficulty: 'Intermediate',
+            prev: null,
+            next: 'select-basics',
+            sections: [
+                {
+                    title: 'The Journey of a SQL Query',
+                    content: `<p>When you write a SQL query, it goes through multiple stages before returning results. Understanding this process helps you write better, faster queries.</p>
+                    <pre><code class="language-text">Your Query: SELECT * FROM users WHERE age > 25 ORDER BY name;
+                           ↓
+┌──────────────────────────────────────────────────────────────┐
+│ 1. PARSER                                                    │
+│    • Checks syntax (SELECT, FROM, WHERE are valid keywords)  │
+│    • Validates table/column names exist                      │
+│    • Builds an Abstract Syntax Tree (AST)                    │
+└──────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────┐
+│ 2. QUERY OPTIMIZER                                           │
+│    • Considers multiple execution plans                      │
+│    • Estimates cost of each plan (I/O, CPU)                  │
+│    • Chooses the "cheapest" plan                             │
+│    • Decides: use index? scan whole table? join order?       │
+└──────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────┐
+│ 3. EXECUTOR                                                  │
+│    • Runs the chosen plan step by step                       │
+│    • Reads data from disk (or cache)                         │
+│    • Applies filters (WHERE)                                 │
+│    • Sorts results (ORDER BY)                                │
+│    • Returns rows to client                                  │
+└──────────────────────────────────────────────────────────────┘</code></pre>`
+                },
+                {
+                    title: 'SQL Execution Order (Not What You Write!)',
+                    content: `<p>SQL executes in a specific order that's DIFFERENT from how you write queries:</p>
+                    <div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Write Order</th><th>Execution Order</th><th>What Happens</th></tr></thead>
+                            <tbody>
+                                <tr><td>1. SELECT</td><td>6. SELECT</td><td>Pick which columns to return</td></tr>
+                                <tr><td>2. FROM</td><td style="background:#e8f4fd;"><strong>1. FROM</strong></td><td>Load tables into memory</td></tr>
+                                <tr><td>3. WHERE</td><td style="background:#e8f4fd;"><strong>2. WHERE</strong></td><td>Filter rows</td></tr>
+                                <tr><td>4. GROUP BY</td><td style="background:#e8f4fd;"><strong>3. GROUP BY</strong></td><td>Group rows together</td></tr>
+                                <tr><td>5. HAVING</td><td style="background:#e8f4fd;"><strong>4. HAVING</strong></td><td>Filter groups</td></tr>
+                                <tr><td>6. ORDER BY</td><td>5. SELECT</td><td>Calculate expressions</td></tr>
+                                <tr><td>7. LIMIT</td><td>6. ORDER BY</td><td>Sort results</td></tr>
+                                <tr><td></td><td>7. LIMIT</td><td>Restrict output count</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="info-box">
+                        <h4>Why This Matters</h4>
+                        <ul>
+                            <li>You can't use a SELECT alias in WHERE (SELECT runs after WHERE)</li>
+                            <li>You CAN use a SELECT alias in ORDER BY (ORDER BY runs after SELECT)</li>
+                            <li>HAVING filters after GROUP BY, so it can use aggregate functions</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'How Indexes Work (The Secret to Fast Queries)',
+                    content: `<p>An <strong>index</strong> is like a book's index - it helps find data without scanning every row.</p>
+                    <pre><code class="language-text">WITHOUT INDEX (Full Table Scan):
+┌─────────────────────────────────────────┐
+│ Table: users (1,000,000 rows)           │
+│                                         │
+│ Query: WHERE email = 'john@example.com' │
+│                                         │
+│ → Must check ALL 1,000,000 rows         │
+│ → Time: O(n) = 1,000,000 comparisons    │
+│ → Slow! (seconds to minutes)            │
+└─────────────────────────────────────────┘
+
+WITH INDEX (B-Tree Index on email):
+┌─────────────────────────────────────────┐
+│ Index: B-Tree                           │
+│                                         │
+│         [john@...]                      │
+│          /    \\                         │
+│    [alice]  [mary]                      │
+│     /  \\      /  \\                      │
+│   ...  ...  ...  ...                    │
+│                                         │
+│ → Jump directly to matching rows        │
+│ → Time: O(log n) = ~20 comparisons      │
+│ → Fast! (milliseconds)                  │
+└─────────────────────────────────────────┘</code></pre>
+                    <div class="key-points">
+                        <h3>When to Create Indexes:</h3>
+                        <ul>
+                            <li><strong>Columns in WHERE clauses</strong> (filtered frequently)</li>
+                            <li><strong>Columns in JOIN conditions</strong> (foreign keys)</li>
+                            <li><strong>Columns in ORDER BY</strong> (sorted frequently)</li>
+                            <li><strong>Primary keys</strong> (auto-indexed in most databases)</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background:#fff3cd; border-color:#ffc107;">
+                        <h4>Index Trade-offs</h4>
+                        <ul>
+                            <li>Faster reads, but slower writes (index must be updated)</li>
+                            <li>Uses extra disk space</li>
+                            <li>Too many indexes = slow INSERT/UPDATE/DELETE</li>
+                        </ul>
+                    </div>`
+                },
+                {
+                    title: 'EXPLAIN: See the Query Plan',
+                    content: `<p>Use <code>EXPLAIN</code> to see HOW the database will execute your query:</p>
+                    <div class="try-it-section">
+                        <p>See the execution plan:</p>
+                        <div class="inline-editor-wrapper">
+                            <textarea class="inline-sql-editor" rows="4">EXPLAIN SELECT *
+FROM requests
+WHERE status = 'completed'
+ORDER BY final_amount DESC;</textarea>
+                            <button class="btn btn-primary btn-run-inline" onclick="runInlineQuery(this)">Run Query</button>
+                        </div>
+                        <div class="inline-results"></div>
+                    </div>
+                    <pre><code class="language-text">Common Operations in EXPLAIN:
+┌───────────────────┬────────────────────────────────────────┐
+│ Operation         │ Meaning                                │
+├───────────────────┼────────────────────────────────────────┤
+│ Seq Scan          │ Full table scan (BAD for large tables) │
+│ Index Scan        │ Using an index (GOOD)                  │
+│ Index Only Scan   │ Data from index only (BEST)            │
+│ Bitmap Index Scan │ Using multiple indexes                 │
+│ Nested Loop       │ Join using loops (slow for large)      │
+│ Hash Join         │ Join using hash table (good for large) │
+│ Merge Join        │ Join sorted data (good for large)      │
+│ Sort              │ Sorting results (ORDER BY)             │
+│ Aggregate         │ Computing aggregates (COUNT, SUM, etc) │
+└───────────────────┴────────────────────────────────────────┘</code></pre>`
+                },
+                {
+                    title: 'SQL vs NoSQL: When to Use What',
+                    content: `<div class="comparison-table">
+                        <table>
+                            <thead><tr><th>Feature</th><th>SQL (PostgreSQL)</th><th>NoSQL (MongoDB)</th></tr></thead>
+                            <tbody>
+                                <tr><td>Data Model</td><td>Tables with relationships</td><td>Documents (JSON)</td></tr>
+                                <tr><td>Schema</td><td>Fixed schema (strict)</td><td>Flexible schema</td></tr>
+                                <tr><td>Joins</td><td>Excellent (built-in)</td><td>Limited ($lookup)</td></tr>
+                                <tr><td>Transactions</td><td>Full ACID support</td><td>Limited (document-level)</td></tr>
+                                <tr><td>Scaling</td><td>Vertical (bigger server)</td><td>Horizontal (more servers)</td></tr>
+                                <tr><td>Complex Queries</td><td>Powerful (SQL)</td><td>Limited</td></tr>
+                                <tr><td>Best For</td><td>Complex relationships, reports</td><td>Rapid development, nested data</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="key-points">
+                        <h3>Choose SQL When:</h3>
+                        <ul>
+                            <li>Data has clear relationships (users → orders → products)</li>
+                            <li>You need complex queries with JOINs</li>
+                            <li>Data integrity is critical (financial, medical)</li>
+                            <li>You need ACID transactions</li>
+                        </ul>
+                    </div>`
+                }
+            ],
+            summary: ['SQL queries go through Parser → Optimizer → Executor', 'Execution order differs from write order (FROM runs first)', 'Indexes enable O(log n) lookups instead of O(n) scans', 'Use EXPLAIN to understand query performance', 'SQL is best for relational data with complex queries']
+        },
+
         'where-clause': {
             title: 'WHERE Clause',
             category: 'Fundamentals',

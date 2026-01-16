@@ -1214,3 +1214,656 @@ body {
     text-align: right;
     font-family: var(--font-mono);
 }
+
+/* ============================================
+   Unified Dashboard Styles (ES, Redis, SQL)
+   ============================================ */
+
+/* Shared Dashboard Variables */
+.unified-dashboard {
+    --dash-bg-primary: #0f0f1a;
+    --dash-bg-secondary: #1a1a2e;
+    --dash-bg-tertiary: #16213e;
+    --dash-border: #333;
+    --dash-text-primary: #fff;
+    --dash-text-secondary: #888;
+    --dash-text-muted: #666;
+}
+
+/* Theme accent colors */
+.unified-dashboard.theme-elasticsearch {
+    --dash-accent: #4ecdc4;
+    --dash-accent-hover: #45b7aa;
+}
+
+.unified-dashboard.theme-redis {
+    --dash-accent: #ff6b6b;
+    --dash-accent-hover: #ff5252;
+}
+
+.unified-dashboard.theme-sql {
+    --dash-accent: #569cd6;
+    --dash-accent-hover: #4a8bc2;
+}
+
+/* Dashboard Layout */
+.unified-dashboard {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    background: var(--dash-bg-primary);
+}
+
+.unified-dashboard .dashboard-header {
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, var(--dash-bg-secondary) 0%, var(--dash-bg-tertiary) 100%);
+    border-bottom: 1px solid var(--dash-border);
+}
+
+.unified-dashboard .dashboard-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: var(--dash-text-primary);
+    font-size: 1.8rem;
+}
+
+.unified-dashboard .dashboard-header p {
+    color: var(--dash-text-secondary);
+    margin: 0;
+}
+
+.unified-dashboard .header-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.unified-dashboard .dashboard-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Dashboard Sidebar */
+.unified-dashboard .sidebar {
+    background: var(--dash-bg-secondary);
+    border-right: 1px solid var(--dash-border);
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.unified-dashboard .panel {
+    background: var(--dash-bg-tertiary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.unified-dashboard .panel h3 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--dash-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Dashboard Main Content */
+.unified-dashboard .main-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--dash-bg-primary);
+}
+
+.unified-dashboard .query-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--dash-border);
+}
+
+/* Dashboard Buttons */
+.unified-dashboard .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.unified-dashboard .btn-primary {
+    background: var(--dash-accent);
+    color: #000;
+}
+
+.unified-dashboard .btn-primary:hover {
+    background: var(--dash-accent-hover);
+}
+
+.unified-dashboard .btn-outline {
+    background: transparent;
+    border: 1px solid var(--dash-accent);
+    color: var(--dash-accent);
+}
+
+.unified-dashboard .btn-outline:hover {
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.unified-dashboard .btn-danger {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+.unified-dashboard .btn-danger:hover {
+    background: #ff5252;
+}
+
+.unified-dashboard .btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.unified-dashboard .btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Dashboard Results Section */
+.unified-dashboard .results-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.unified-dashboard .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.unified-dashboard .results-header h3 {
+    margin: 0;
+    color: var(--dash-text-primary);
+}
+
+.unified-dashboard .query-stats {
+    color: var(--dash-text-secondary);
+    font-size: 0.85rem;
+}
+
+.unified-dashboard .results-container {
+    flex: 1;
+    background: var(--dash-bg-tertiary);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.unified-dashboard .placeholder {
+    color: var(--dash-text-muted);
+    text-align: center;
+    padding: 2rem;
+}
+
+.unified-dashboard .error-message {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.unified-dashboard .success-message {
+    color: var(--dash-accent);
+}
+
+/* Dashboard Reference Lists */
+.unified-dashboard .reference-list details {
+    margin-bottom: 0.5rem;
+}
+
+.unified-dashboard .reference-list summary {
+    cursor: pointer;
+    color: var(--dash-accent);
+    padding: 0.3rem 0;
+}
+
+.unified-dashboard .reference-list pre {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: var(--dash-bg-secondary);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    overflow-x: auto;
+}
+
+/* Dashboard Loading State */
+.unified-dashboard .loading {
+    color: var(--dash-text-secondary);
+    font-style: italic;
+}
+
+/* ============================================
+   Code Editor with Output Styling
+   ============================================ */
+
+/* Code Editor Area - Light Grey Background */
+.code-editor-block {
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.code-editor-block .editor-area {
+    background: #e8e8e8;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.code-editor-block .editor-area pre {
+    margin: 0;
+    background: transparent;
+}
+
+.code-editor-block .editor-area code {
+    background: transparent;
+    color: #1a1a2e;
+}
+
+/* White Line Separator */
+.code-editor-block .output-separator {
+    height: 3px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Output Area - Slightly Darker (10% more) */
+.code-editor-block .output-area {
+    background: #d0d0d0;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    min-height: 60px;
+}
+
+.code-editor-block .output-area .output-label {
+    color: #666;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.code-editor-block .output-area pre {
+    margin: 0;
+    background: transparent;
+    color: #1a1a2e;
+}
+
+/* Language-specific code blocks */
+.code-block-python,
+.code-block-go,
+.code-block-sql,
+.code-block-elasticsearch,
+.code-block-redis {
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.code-block-python .code-area,
+.code-block-go .code-area,
+.code-block-sql .code-area,
+.code-block-elasticsearch .code-area,
+.code-block-redis .code-area {
+    background: #e8e8e8;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    position: relative;
+}
+
+.code-block-python .code-area::before,
+.code-block-go .code-area::before,
+.code-block-sql .code-area::before,
+.code-block-elasticsearch .code-area::before,
+.code-block-redis .code-area::before {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.code-block-python .code-area::before {
+    content: 'Python';
+    background: #306998;
+    color: #ffd43b;
+}
+
+.code-block-go .code-area::before {
+    content: 'Go';
+    background: #00add8;
+    color: #fff;
+}
+
+.code-block-sql .code-area::before {
+    content: 'SQL';
+    background: #336791;
+    color: #fff;
+}
+
+.code-block-elasticsearch .code-area::before {
+    content: 'ES';
+    background: #fec514;
+    color: #000;
+}
+
+.code-block-redis .code-area::before {
+    content: 'Redis';
+    background: #dc382d;
+    color: #fff;
+}
+
+/* Output separator line */
+.code-block-python .separator,
+.code-block-go .separator,
+.code-block-sql .separator,
+.code-block-elasticsearch .separator,
+.code-block-redis .separator {
+    height: 3px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Output area */
+.code-block-python .output-area,
+.code-block-go .output-area,
+.code-block-sql .output-area,
+.code-block-elasticsearch .output-area,
+.code-block-redis .output-area {
+    background: #d0d0d0;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    min-height: 50px;
+}
+
+.output-label {
+    color: #555;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+/* ============================================
+   Lessons Page Unified Styles
+   ============================================ */
+
+.unified-lessons {
+    --lesson-bg-primary: #0f0f1a;
+    --lesson-bg-secondary: #1a1a2e;
+    --lesson-bg-tertiary: #16213e;
+    --lesson-border: #333;
+    --lesson-text-primary: #fff;
+    --lesson-text-secondary: #888;
+}
+
+.unified-lessons.theme-elasticsearch {
+    --lesson-accent: #4ecdc4;
+}
+
+.unified-lessons.theme-redis {
+    --lesson-accent: #ff6b6b;
+}
+
+.unified-lessons.theme-sql {
+    --lesson-accent: #569cd6;
+}
+
+.unified-lessons {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 60px);
+}
+
+.unified-lessons .sidebar {
+    background: var(--lesson-bg-secondary);
+    border-right: 1px solid var(--lesson-border);
+    overflow-y: auto;
+}
+
+.unified-lessons .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--lesson-border);
+}
+
+.unified-lessons .sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--lesson-text-primary);
+}
+
+.unified-lessons .content {
+    background: var(--lesson-bg-primary);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.unified-lessons .lesson {
+    max-width: 900px;
+    margin: 0 auto;
+    color: var(--lesson-text-primary);
+}
+
+.unified-lessons .lesson h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2rem;
+}
+
+.unified-lessons .lesson h2 {
+    color: var(--lesson-accent);
+    font-size: 1.4rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--lesson-border);
+}
+
+.unified-lessons .lesson p {
+    color: var(--lesson-text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+/* Lesson code blocks with output */
+.unified-lessons .code-example {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.unified-lessons .code-example .code-header {
+    background: var(--lesson-bg-tertiary);
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--lesson-border);
+}
+
+.unified-lessons .code-example .code-header .lang-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.unified-lessons .code-example .code-content {
+    background: #e8e8e8;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #1a1a2e;
+}
+
+.unified-lessons .code-example .code-content pre {
+    margin: 0;
+    background: transparent;
+}
+
+.unified-lessons .code-example .output-divider {
+    height: 3px;
+    background: #ffffff;
+}
+
+.unified-lessons .code-example .output-content {
+    background: #d0d0d0;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #1a1a2e;
+}
+
+.unified-lessons .code-example .output-content .output-label {
+    color: #555;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+/* Key points box */
+.unified-lessons .key-points {
+    background: var(--lesson-bg-tertiary);
+    border-left: 4px solid var(--lesson-accent);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.unified-lessons .key-points h3 {
+    color: var(--lesson-accent);
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+}
+
+.unified-lessons .key-points ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.unified-lessons .key-points li {
+    color: var(--lesson-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+/* Info boxes */
+.unified-lessons .info-box {
+    background: rgba(78, 205, 196, 0.1);
+    border: 1px solid var(--lesson-accent);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+}
+
+.unified-lessons .info-box h4 {
+    color: var(--lesson-accent);
+    margin: 0 0 0.5rem 0;
+}
+
+/* Comparison tables */
+.unified-lessons .comparison-table {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.unified-lessons .comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--lesson-bg-tertiary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.unified-lessons .comparison-table th,
+.unified-lessons .comparison-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--lesson-border);
+}
+
+.unified-lessons .comparison-table th {
+    background: var(--lesson-bg-secondary);
+    color: var(--lesson-accent);
+    font-weight: 600;
+}
+
+.unified-lessons .comparison-table td {
+    color: var(--lesson-text-secondary);
+}
+
+.unified-lessons .comparison-table code {
+    background: var(--lesson-bg-secondary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Summary box */
+.unified-lessons .summary-box {
+    background: var(--lesson-bg-tertiary);
+    border: 1px solid var(--lesson-accent);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.unified-lessons .summary-box ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.unified-lessons .summary-box li {
+    color: var(--lesson-text-secondary);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--lesson-border);
+}
+
+.unified-lessons .summary-box li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .unified-dashboard .dashboard-layout,
+    .unified-lessons {
+        grid-template-columns: 1fr;
+    }
+
+    .unified-dashboard .sidebar,
+    .unified-lessons .sidebar {
+        max-height: 300px;
+    }
+}
