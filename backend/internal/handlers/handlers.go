@@ -491,3 +491,17 @@ func formatName(name string) string {
 	}
 	return strings.Join(words, " ")
 }
+
+// SQLDashboard renders the SQL learning dashboard page
+func (h *Handlers) SQLDashboard(c *fiber.Ctx) error {
+	return c.Render("pages/sql-dashboard", fiber.Map{
+		"Title": "SQL Learning Dashboard",
+	})
+}
+
+// SQLLessons renders the SQL lessons page
+func (h *Handlers) SQLLessons(c *fiber.Ctx) error {
+	return c.Render("pages/sql-lessons", fiber.Map{
+		"Title": "SQL Lessons",
+	})
+}

@@ -93,6 +93,8 @@ func main() {
 	// Page routes (HTMX)
 	app.Get("/", h.Home)
 	app.Get("/practice", h.Practice)
+	app.Get("/sql", h.SQLDashboard)
+	app.Get("/sql-lessons", h.SQLLessons)
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
@@ -117,11 +119,8 @@ func main() {
 	htmx.Post("/execute", h.Execute)
 	htmx.Get("/output/:id", h.GetOutput)
 
-	// SQL Learning routes (only if database is available)
+	// SQL API routes (only if database is available)
 	if sqlHandlers != nil {
-		app.Get("/sql", sqlHandlers.SQLDashboard)
-		app.Get("/sql-lessons", sqlHandlers.SQLLessons)
-
 		sqlAPI := app.Group("/api/sql")
 		sqlAPI.Post("/execute", sqlHandlers.ExecuteSQL)
 		sqlAPI.Get("/schema", sqlHandlers.GetSchema)
