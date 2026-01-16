@@ -37,6 +37,9 @@
                     <span class="db-name">order_management</span>
                 </div>
                 <div class="actions">
+                    <button class="btn btn-secondary" onclick="formatSQL()" title="Format and beautify SQL (Ctrl-Shift-F)">
+                        Format
+                    </button>
                     <button class="btn btn-secondary" onclick="previewQuery()" title="Show execution plan">
                         Preview
                     </button>
@@ -301,6 +304,73 @@
 #sql-editor-wrapper .CodeMirror {
     height: 100%;
     font-size: 14px;
+    background: #2d2d30;
+    color: #d4d4d4;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    line-height: 1.6;
+}
+
+#sql-editor-wrapper .CodeMirror-gutters {
+    background: #1e1e1e;
+    border-right: 1px solid #3e3e42;
+}
+
+#sql-editor-wrapper .CodeMirror-linenumber {
+    color: #858585;
+}
+
+#sql-editor-wrapper .CodeMirror-cursor {
+    border-left: 1px solid #aeafad;
+}
+
+#sql-editor-wrapper .CodeMirror-selected {
+    background: #264f78;
+}
+
+/* Syntax highlighting for SQL */
+#sql-editor-wrapper .cm-keyword {
+    color: #569cd6;
+}
+
+#sql-editor-wrapper .cm-atom {
+    color: #4ec9b0;
+}
+
+#sql-editor-wrapper .cm-number {
+    color: #b5cea8;
+}
+
+#sql-editor-wrapper .cm-def {
+    color: #dcdcaa;
+}
+
+#sql-editor-wrapper .cm-variable {
+    color: #9cdcfe;
+}
+
+#sql-editor-wrapper .cm-string {
+    color: #ce9178;
+}
+
+#sql-editor-wrapper .cm-comment {
+    color: #6a9955;
+    font-style: italic;
+}
+
+#sql-editor-wrapper .cm-operator {
+    color: #d4d4d4;
+}
+
+#sql-editor-wrapper .CodeMirror-matchingbracket {
+    background: #264f78;
+    border: 1px solid #569cd6;
+    border-radius: 2px;
+}
+
+#sql-editor-wrapper .CodeMirror-nonmatchingbracket {
+    background: #b12a3a;
+    color: #fff;
+    border-radius: 2px;
 }
 
 .editor-footer {
@@ -620,6 +690,29 @@
     font-size: 0.85rem;
     text-align: center;
 }
+
+/* Autocomplete Hints Styling */
+.CodeMirror-hints {
+    background: #3c3c3c !important;
+    border: 1px solid #555 !important;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-height: 300px;
+    z-index: 100;
+}
+
+.CodeMirror-hint {
+    color: #d4d4d4;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.CodeMirror-hint:hover,
+.CodeMirror-hint.CodeMirror-hint-active {
+    background: #569cd6 !important;
+    color: #fff !important;
+}
 </style>
 
 <script>
@@ -704,6 +797,98 @@ FROM high_value_requests
 ORDER BY final_amount DESC;`
     };
 
+    // SQL Autocomplete Configuration
+    const sqlKeywords = [
+        'SELECT', 'FROM', 'WHERE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON',
+        'GROUP', 'BY', 'ORDER', 'HAVING', 'LIMIT', 'OFFSET', 'DISTINCT', 'ALL',
+        'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE',
+        'ALTER', 'DROP', 'ADD', 'COLUMN', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES',
+        'INDEX', 'VIEW', 'TRIGGER', 'FUNCTION', 'PROCEDURE', 'BEGIN', 'END',
+        'IF', 'ELSE', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
+        'AND', 'OR', 'NOT', 'IN', 'EXISTS', 'BETWEEN', 'LIKE', 'IS', 'NULL',
+        'UNION', 'INTERSECT', 'EXCEPT', 'WITH', 'AS', 'RECURSIVE',
+        'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'CAST', 'COALESCE', 'NULLIF',
+        'RANK', 'ROW_NUMBER', 'PARTITION', 'OVER', 'WINDOW',
+        'CONSTRAINT', 'CHECK', 'UNIQUE', 'DEFAULT', 'CASCADE', 'RESTRICT',
+        'CROSS', 'NATURAL', 'USING'
+    ];
+
+    const sqlFunctions = [
+        'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'ROUND', 'FLOOR', 'CEIL',
+        'UPPER', 'LOWER', 'LENGTH', 'SUBSTRING', 'CONCAT', 'TRIM',
+        'NOW', 'CURRENT_DATE', 'CURRENT_TIME', 'EXTRACT', 'DATE_TRUNC',
+        'CAST', 'COALESCE', 'NULLIF', 'CASE', 'GREATEST', 'LEAST',
+        'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'LAG', 'LEAD', 'FIRST_VALUE', 'LAST_VALUE'
+    ];
+
+    let schemaHints = { tables: [], columns: {} };
+
+    // Load schema hints in background
+    fetch('/api/sql/schema')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.schema) {
+                schemaHints.tables = data.schema.map(function(t) { return t.table_name; });
+                data.schema.forEach(function(table) {
+                    schemaHints.columns[table.table_name] = table.columns.map(function(c) { return c.name; });
+                });
+            }
+        })
+        .catch(function(err) { console.log('Schema hints not available'); });
+
+    // CodeMirror SQL hint provider
+    CodeMirror.registerHelper('hint', 'sql-custom', function(editor) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const start = token.start;
+        const end = cur.ch;
+        const word = token.string;
+
+        let hints = [];
+        const lowerWord = word.toLowerCase();
+
+        // Add matching keywords
+        hints = hints.concat(
+            sqlKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Add matching functions
+        hints = hints.concat(
+            sqlFunctions.filter(function(f) { return f.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Add table names
+        hints = hints.concat(
+            schemaHints.tables.filter(function(t) { return t.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Check if we're completing a table column reference
+        const line = editor.getLine(cur.line);
+        const beforeCursor = line.substring(0, cur.ch);
+        if (beforeCursor.match(/\b(\w+)\.\w*$/)) {
+            const tableMatch = beforeCursor.match(/\b(\w+)\.\w*$/);
+            if (tableMatch) {
+                const tableName = tableMatch[1];
+                if (schemaHints.columns[tableName]) {
+                    hints = schemaHints.columns[tableName].filter(function(c) {
+                        return c.toLowerCase().indexOf(lowerWord) === 0;
+                    });
+                }
+            }
+        }
+
+        // Remove duplicates
+        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+        if (hints.length === 0) return null;
+
+        return {
+            from: CodeMirror.Pos(cur.line, start),
+            to: CodeMirror.Pos(cur.line, end),
+            list: hints.slice(0, 20)  // Limit to 20 suggestions
+        };
+    });
+
     function initEditor() {
         const wrapper = document.getElementById('sql-editor-wrapper');
         if (!wrapper || typeof CodeMirror === 'undefined') return;
@@ -734,11 +919,23 @@ LIMIT 10;`,
                 'Ctrl-Enter': executeQuery,
                 'Cmd-Enter': executeQuery,
                 'Ctrl-Shift-Enter': previewQuery,
-                'Cmd-Shift-Enter': previewQuery
+                'Cmd-Shift-Enter': previewQuery,
+                'Ctrl-Space': 'autocomplete'
             }
         });
 
         editor.setSize('100%', '100%');
+
+        // Enable autocomplete hints with debouncing to avoid blocking UI
+        let hintTimeout = null;
+        editor.on('inputRead', function(instance, changeObj) {
+            if (changeObj.origin !== 'complete' && /^[\w.]/.test(changeObj.text[0])) {
+                clearTimeout(hintTimeout);
+                hintTimeout = setTimeout(function() {
+                    instance.showHint({ hint: CodeMirror.hint['sql-custom'], completeSingle: false });
+                }, 200);  // Debounce to prevent frequent hint recalculation
+            }
+        });
     }
 
     function loadSchema() {
@@ -865,6 +1062,36 @@ LIMIT 10;`,
             editor.setValue(sampleQueries[type]);
         }
     };
+
+    window.formatSQL = function() {
+        if (!editor || typeof sqlFormatter === 'undefined') return;
+
+        const query = editor.getValue().trim();
+        if (!query) return;
+
+        try {
+            const formatted = sqlFormatter.format(query, {
+                language: 'postgresql',
+                indent: '    ',
+                lineWidth: 80,
+                keywordCase: 'upper'
+            });
+            editor.setValue(formatted);
+        } catch (err) {
+            console.error('SQL formatting error:', err);
+            alert('Failed to format SQL: ' + err.message);
+        }
+    };
+
+    // Keyboard shortcut for formatting
+    window.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
+            e.preventDefault();
+            if (editor && editor.hasFocus && editor.hasFocus()) {
+                formatSQL();
+            }
+        }
+    });
 
     window.executeQuery = function() {
         if (!editor) return;
