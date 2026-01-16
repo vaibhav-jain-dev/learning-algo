@@ -31,8 +31,16 @@ To take course 1, you need to finish course 0.
 So it's possible: take 0 first, then 1.
 
 Graph visualization:
-    0 → 1
+
+```mermaid
+graph LR
+    0["📚 Course 0"]
+    1["📚 Course 1"]
+    0 -->|prerequisite| 1
+    style 0 fill:#c8e6c9
+    style 1 fill:#bbdefb
 ```
+
 
 ### Example 2
 ```
@@ -45,7 +53,15 @@ To take course 0, you need course 1.
 This is a cycle - impossible!
 
 Graph visualization:
-    0 ⇆ 1  (cycle!)
+
+```mermaid
+graph LR
+    0["📚 Course 0"]
+    1["📚 Course 1"]
+    0 -->|prerequisite| 1
+    1 -->|prerequisite| 0
+    style 0 fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style 1 fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
 ```
 
 ### Example 3
@@ -54,13 +70,24 @@ Input: numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
 Output: true
 
 Graph visualization:
-        0
-       / \
-      ↓   ↓
-      1   2
-       \ /
-        ↓
-        3
+
+```mermaid
+graph TD
+    0["📚 Course 0"]
+    1["📚 Course 1"]
+    2["📚 Course 2"]
+    3["📚 Course 3"]
+
+    0 -->|prerequisite| 1
+    0 -->|prerequisite| 2
+    1 -->|prerequisite| 3
+    2 -->|prerequisite| 3
+
+    style 0 fill:#c8e6c9
+    style 1 fill:#bbdefb
+    style 2 fill:#bbdefb
+    style 3 fill:#fff9c4
+```
 
 Valid orderings: [0,1,2,3] or [0,2,1,3]
 ```
@@ -71,9 +98,29 @@ Input: numCourses = 5, prerequisites = [[0,1],[1,2],[2,3],[3,4],[4,2]]
 Output: false
 
 Graph visualization:
-    0 ← 1 ← 2 ← 3 ← 4
-            ↑_______|
-            (cycle: 2→3→4→2)
+
+```mermaid
+graph LR
+    0["📚 Course 0"]
+    1["📚 Course 1"]
+    2["📚 Course 2"]
+    3["📚 Course 3"]
+    4["📚 Course 4"]
+
+    1 -->|prerequisite| 0
+    2 -->|prerequisite| 1
+    3 -->|prerequisite| 2
+    4 -->|prerequisite| 3
+    2 -->|prerequisite| 4
+
+    style 0 fill:#c8e6c9
+    style 1 fill:#bbdefb
+    style 2 fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style 3 fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+    style 4 fill:#ffcccc,stroke:#d32f2f,stroke-width:2px
+```
+
+Cycle detected: 2→3→4→2
 ```
 
 ## Constraints
