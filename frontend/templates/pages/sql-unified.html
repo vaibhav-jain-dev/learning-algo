@@ -1,0 +1,164 @@
+{{ define "pages/sql-unified" }}
+<div class="unified-database-page">
+    <!-- Main Lessons Content -->
+    <div class="lessons-main">
+        {{ template "pages/sql-lessons" }}
+    </div>
+
+    <!-- Floating Playground Button -->
+    <button class="floating-playground-btn" onclick="openPlaygroundModal()" title="Open SQL Playground">
+        <span class="btn-icon">⌨️</span> Playground
+    </button>
+
+    <!-- Playground Modal -->
+    <div id="playground-modal" class="playground-modal hidden">
+        <div class="modal-overlay" onclick="closePlaygroundModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>SQL Playground</h2>
+                <button class="modal-close" onclick="closePlaygroundModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                {{ template "pages/sql-dashboard" }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.unified-database-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.lessons-main {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-playground-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.floating-playground-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.floating-playground-btn .btn-icon {
+    font-size: 18px;
+}
+
+.playground-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playground-modal.hidden {
+    display: none;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1400px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+}
+</style>
+
+<script>
+function openPlaygroundModal() {
+    const modal = document.getElementById('playground-modal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePlaygroundModal() {
+    const modal = document.getElementById('playground-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePlaygroundModal();
+    }
+});
+</script>
+{{ end }}

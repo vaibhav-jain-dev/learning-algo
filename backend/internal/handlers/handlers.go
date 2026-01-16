@@ -72,8 +72,8 @@ func (h *Handlers) Practice(c *fiber.Ctx) error {
 func (h *Handlers) SystemDesign(c *fiber.Ctx) error {
 	category := h.topicIndexer.GetCategory("system-design")
 	return c.Render("pages/topic-list", fiber.Map{
-		"Title":       "System Design",
-		"Category":    category,
+		"Title":        "System Design",
+		"Category":     category,
 		"CategorySlug": "system-design",
 	})
 }
@@ -82,8 +82,8 @@ func (h *Handlers) SystemDesign(c *fiber.Ctx) error {
 func (h *Handlers) DesignPatterns(c *fiber.Ctx) error {
 	category := h.topicIndexer.GetCategory("design-patterns")
 	return c.Render("pages/topic-list", fiber.Map{
-		"Title":       "Design Patterns",
-		"Category":    category,
+		"Title":        "Design Patterns",
+		"Category":     category,
 		"CategorySlug": "design-patterns",
 	})
 }
@@ -136,13 +136,13 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	}
 
 	return c.Render("pages/topic-detail", fiber.Map{
-		"Title":         title + " - " + categoryTitle,
-		"Topic":         title,
-		"Category":      categoryTitle,
-		"CategorySlug":  category,
-		"TopicSlug":     topic,
-		"Content":       contentHTML,
-		"HasContent":    hasContent,
+		"Title":        title + " - " + categoryTitle,
+		"Topic":        title,
+		"Category":     categoryTitle,
+		"CategorySlug": category,
+		"TopicSlug":    topic,
+		"Content":      contentHTML,
+		"HasContent":   hasContent,
 	})
 }
 
@@ -541,5 +541,32 @@ func (h *Handlers) RedisDashboard(c *fiber.Ctx) error {
 func (h *Handlers) RedisLessons(c *fiber.Ctx) error {
 	return c.Render("pages/redis-lessons", fiber.Map{
 		"Title": "Redis Lessons",
+	})
+}
+
+// SQL renders the unified SQL page with dashboard and lessons tabs
+func (h *Handlers) SQL(c *fiber.Ctx) error {
+	return c.Render("pages/sql-unified", fiber.Map{
+		"Title":        "SQL - Playground & Lessons",
+		"HasDashboard": true,
+		"HasLessons":   true,
+	})
+}
+
+// Elasticsearch renders the unified Elasticsearch page with dashboard and lessons tabs
+func (h *Handlers) Elasticsearch(c *fiber.Ctx) error {
+	return c.Render("pages/elasticsearch-unified", fiber.Map{
+		"Title":        "Elasticsearch - Playground & Lessons",
+		"HasDashboard": true,
+		"HasLessons":   true,
+	})
+}
+
+// Redis renders the unified Redis page with dashboard and lessons tabs
+func (h *Handlers) Redis(c *fiber.Ctx) error {
+	return c.Render("pages/redis-unified", fiber.Map{
+		"Title":        "Redis - Playground & Lessons",
+		"HasDashboard": true,
+		"HasLessons":   true,
 	})
 }
