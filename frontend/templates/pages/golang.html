@@ -577,9 +577,509 @@ func main() {
 
         <div class="topic-block">
             <h3>Goroutines - Concurrent Execution</h3>
-            <p>Goroutines are lightweight threads managed by Go runtime. They're the foundation of Go's concurrency model and essential for high-performance APIs.</p>
 
-            <h4>Basic Goroutines</h4>
+            <h4>What are Goroutines?</h4>
+            <p>Goroutines are lightweight, user-space threads managed by the Go runtime scheduler. They are Go's fundamental concurrency primitive - a function that executes concurrently with other goroutines in the same address space.</p>
+            <ul>
+                <li><strong>Lightweight:</strong> A goroutine starts with only ~2KB of stack space (compared to OS threads which typically need 1-8MB)</li>
+                <li><strong>Multiplexed:</strong> Many goroutines are multiplexed onto a smaller number of OS threads (M:N scheduling)</li>
+                <li><strong>Managed by runtime:</strong> The Go scheduler handles all the complexity of thread management, context switching, and load balancing</li>
+            </ul>
+
+            <h4>What Problem Does It Solve?</h4>
+            <p>Traditional concurrency approaches have significant limitations:</p>
+            <ul>
+                <li><strong>OS Threads are expensive:</strong> Creating thousands of threads consumes significant memory (each thread needs its own stack, typically 1MB+) and causes high context-switching overhead</li>
+                <li><strong>Thread pools have complexity:</strong> You need to manually manage pool size, task queuing, and handle thread lifecycle</li>
+                <li><strong>Callbacks lead to "callback hell":</strong> Asynchronous code becomes difficult to read, debug, and maintain</li>
+                <li><strong>Async/await has colored functions:</strong> You need to mark functions as async, which "infects" the entire call chain</li>
+            </ul>
+            <p><strong>Goroutines solve this</strong> by letting you write sequential-looking code that runs concurrently, with minimal memory overhead and excellent performance.</p>
+
+            <h4>How Do Goroutines Work Internally?</h4>
+            <p>Go uses an M:N scheduling model with three key components:</p>
+            <ul>
+                <li><strong>G (Goroutine):</strong> The actual goroutine with its stack and instruction pointer</li>
+                <li><strong>M (Machine):</strong> An OS thread that executes goroutines</li>
+                <li><strong>P (Processor):</strong> A logical processor that holds a run queue of goroutines (default: GOMAXPROCS = number of CPU cores)</li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    // See how many OS threads can run goroutines in parallel
+    fmt.Printf("GOMAXPROCS: %d\n", runtime.GOMAXPROCS(0))
+    fmt.Printf("NumCPU: %d\n", runtime.NumCPU())
+
+    // Initially just the main goroutine
+    fmt.Printf("NumGoroutine (start): %d\n", runtime.NumGoroutine())
+
+    // Create 100 goroutines
+    done := make(chan bool)
+    for i := 0; i < 100; i++ {
+        go func() {
+            <-done // Wait for signal
+        }()
+    }
+
+    fmt.Printf("NumGoroutine (after spawn): %d\n", runtime.NumGoroutine())
+
+    // Release all goroutines
+    close(done)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Why Not Use These Alternatives?</h4>
+
+            <p><strong>1. OS Threads (pthreads, Java Threads)</strong></p>
+            <ul>
+                <li>Memory: Each thread needs 1-8MB stack vs goroutine's 2KB</li>
+                <li>Creation cost: Creating a thread takes ~10,000x longer than spawning a goroutine</li>
+                <li>Context switch: OS thread switches are expensive kernel operations</li>
+                <li>Scalability: Practical limit of thousands of threads vs millions of goroutines</li>
+            </ul>
+
+            <p><strong>2. Event Loops (Node.js, Python asyncio)</strong></p>
+            <ul>
+                <li>Single-threaded: Can't utilize multiple CPU cores without worker processes</li>
+                <li>Colored functions: async/await "infects" the entire call chain</li>
+                <li>Callback complexity: Error handling and control flow become difficult</li>
+                <li>Blocking operations: One blocking call can freeze the entire event loop</li>
+            </ul>
+
+            <p><strong>3. Thread Pools (Java ExecutorService)</strong></p>
+            <ul>
+                <li>Fixed size: Need to tune pool size for your workload</li>
+                <li>Queue management: Tasks can pile up causing memory issues</li>
+                <li>No dynamic scaling: Can't easily adjust based on current load</li>
+            </ul>
+
+            <h4>Different Ways to Create Goroutines</h4>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func namedFunction() {
+    fmt.Println("1. Named function as goroutine")
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    // Method 1: Named function
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        namedFunction()
+    }()
+
+    // Method 2: Anonymous function (closure)
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        fmt.Println("2. Anonymous function (closure)")
+    }()
+
+    // Method 3: Anonymous function with parameters
+    message := "3. Passing parameters to goroutine"
+    wg.Add(1)
+    go func(msg string) {
+        defer wg.Done()
+        fmt.Println(msg)
+    }(message)
+
+    // Method 4: Method on a struct
+    worker := &Worker{id: 1}
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        worker.Process()
+    }()
+
+    // Method 5: Function variable
+    fn := func() {
+        fmt.Println("5. Function variable as goroutine")
+    }
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        fn()
+    }()
+
+    // Method 6: Immediately invoked
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        fmt.Println("6. Immediately invoked goroutine")
+    }()
+
+    wg.Wait()
+    time.Sleep(10 * time.Millisecond)
+}
+
+type Worker struct {
+    id int
+}
+
+func (w *Worker) Process() {
+    fmt.Printf("4. Method goroutine - Worker %d processing\n", w.id)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Advantages of Goroutines</h4>
+
+            <p><strong>1. Extremely Lightweight</strong></p>
+            <ul>
+                <li>Start with just 2KB stack (grows/shrinks as needed up to 1GB)</li>
+                <li>Can run millions of goroutines on a single machine</li>
+                <li><em>Caveat:</em> Each goroutine still has overhead - don't create one per tiny operation</li>
+            </ul>
+
+            <p><strong>2. Fast Creation and Destruction</strong></p>
+            <ul>
+                <li>Spawning a goroutine takes ~300 nanoseconds</li>
+                <li>No system calls needed (unlike OS thread creation)</li>
+                <li><em>Caveat:</em> Still not free - batch small operations rather than one goroutine per item</li>
+            </ul>
+
+            <p><strong>3. Efficient Context Switching</strong></p>
+            <ul>
+                <li>Cooperative scheduling at known safe points (function calls, channel operations)</li>
+                <li>No kernel involvement for most switches</li>
+                <li><em>Caveat:</em> Long-running computations without function calls can block other goroutines on the same P</li>
+            </ul>
+
+            <p><strong>4. Simple Mental Model</strong></p>
+            <ul>
+                <li>Write sequential code that runs concurrently</li>
+                <li>No callbacks, promises, or async/await</li>
+                <li><em>Caveat:</em> Simplicity can hide race conditions - always think about shared state</li>
+            </ul>
+
+            <p><strong>5. Built-in Communication</strong></p>
+            <ul>
+                <li>Channels provide safe communication between goroutines</li>
+                <li>Select statement for multiplexing multiple channels</li>
+                <li><em>Caveat:</em> Channels have overhead - for simple counters, use atomic operations or mutexes</li>
+            </ul>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func main() {
+    // Demonstrate lightweight nature: spawn 10,000 goroutines
+    start := time.Now()
+    var wg sync.WaitGroup
+
+    numGoroutines := 10000
+    wg.Add(numGoroutines)
+
+    for i := 0; i < numGoroutines; i++ {
+        go func(id int) {
+            defer wg.Done()
+            // Simulate some work
+            time.Sleep(1 * time.Millisecond)
+        }(i)
+    }
+
+    wg.Wait()
+    elapsed := time.Since(start)
+
+    fmt.Printf("Spawned and completed %d goroutines in %v\n", numGoroutines, elapsed)
+    fmt.Printf("Average time per goroutine: %v\n", elapsed/time.Duration(numGoroutines))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Limitations and How to Manage Them</h4>
+
+            <p><strong>Limitation 1: Goroutine Leaks</strong></p>
+            <p>Goroutines that block forever consume memory and never get garbage collected.</p>
+            <ul>
+                <li><em>Cause:</em> Waiting on a channel that never receives data, or never closes</li>
+                <li><em>Solution:</em> Always use context for cancellation, use buffered channels, ensure channels are closed</li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+// BAD: This goroutine leaks if no one reads from ch
+func leakyGoroutine() chan int {
+    ch := make(chan int)
+    go func() {
+        result := 42
+        ch <- result // Blocks forever if no receiver!
+        fmt.Println("This never prints if leaked")
+    }()
+    return ch
+}
+
+// GOOD: Use context for cancellation
+func safeGoroutine(ctx context.Context) chan int {
+    ch := make(chan int, 1) // Buffered - won't block
+    go func() {
+        select {
+        case ch <- 42:
+            fmt.Println("Sent successfully")
+        case <-ctx.Done():
+            fmt.Println("Context cancelled, cleaning up")
+            return
+        }
+    }()
+    return ch
+}
+
+func main() {
+    // Using context with timeout to prevent leaks
+    ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+    defer cancel()
+
+    ch := safeGoroutine(ctx)
+
+    select {
+    case result := <-ch:
+        fmt.Println("Got result:", result)
+    case <-ctx.Done():
+        fmt.Println("Timed out")
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <p><strong>Limitation 2: Race Conditions</strong></p>
+            <p>Multiple goroutines accessing shared memory without synchronization leads to data races.</p>
+            <ul>
+                <li><em>Cause:</em> Concurrent read/write to shared variables</li>
+                <li><em>Solution:</em> Use channels to share data, or sync.Mutex/sync.RWMutex, or sync/atomic for simple counters</li>
+                <li><em>Detection:</em> Run with <code>go run -race</code> or <code>go test -race</code></li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "sync/atomic"
+)
+
+func main() {
+    // BAD: Race condition
+    var badCounter int
+    var wg sync.WaitGroup
+
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            badCounter++ // RACE! Multiple goroutines read-modify-write
+        }()
+    }
+    wg.Wait()
+    fmt.Println("Bad counter (race):", badCounter, "(should be 1000, but unpredictable)")
+
+    // GOOD: Using atomic operations
+    var atomicCounter int64
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            atomic.AddInt64(&atomicCounter, 1)
+        }()
+    }
+    wg.Wait()
+    fmt.Println("Atomic counter:", atomicCounter)
+
+    // GOOD: Using mutex
+    var mutexCounter int
+    var mu sync.Mutex
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            mu.Lock()
+            mutexCounter++
+            mu.Unlock()
+        }()
+    }
+    wg.Wait()
+    fmt.Println("Mutex counter:", mutexCounter)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <p><strong>Limitation 3: No Direct Return Values</strong></p>
+            <p>Goroutines cannot return values directly - you must use channels or shared memory.</p>
+            <ul>
+                <li><em>Solution:</em> Use channels to communicate results back</li>
+                <li><em>Pattern:</em> Create a result channel, pass it to the goroutine, read from it after</li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+type Result struct {
+    Value int
+    Err   error
+}
+
+func compute(n int, results chan<- Result) {
+    // Simulate computation
+    time.Sleep(50 * time.Millisecond)
+    results <- Result{Value: n * n, Err: nil}
+}
+
+func main() {
+    results := make(chan Result, 3)
+
+    // Launch multiple computations
+    for _, n := range []int{2, 3, 4} {
+        go compute(n, results)
+    }
+
+    // Collect results
+    for i := 0; i < 3; i++ {
+        result := <-results
+        if result.Err != nil {
+            fmt.Println("Error:", result.Err)
+        } else {
+            fmt.Println("Result:", result.Value)
+        }
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <p><strong>Limitation 4: Panic in One Goroutine Kills the Process</strong></p>
+            <p>An unrecovered panic in any goroutine will crash the entire program.</p>
+            <ul>
+                <li><em>Solution:</em> Use <code>recover()</code> in a deferred function at the top of each goroutine</li>
+                <li><em>Best Practice:</em> Create a wrapper function for goroutines that handles panics</li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+// SafeGo wraps a function to recover from panics
+func SafeGo(fn func()) {
+    go func() {
+        defer func() {
+            if r := recover(); r != nil {
+                fmt.Printf("Recovered from panic: %v\n", r)
+            }
+        }()
+        fn()
+    }()
+}
+
+func riskyOperation(id int) {
+    if id == 2 {
+        panic(fmt.Sprintf("something went wrong in goroutine %d", id))
+    }
+    fmt.Printf("Goroutine %d completed successfully\n", id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    for i := 1; i <= 3; i++ {
+        wg.Add(1)
+        id := i
+        SafeGo(func() {
+            defer wg.Done()
+            riskyOperation(id)
+        })
+    }
+
+    wg.Wait()
+    fmt.Println("Main function completed - program didn't crash!")
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <p><strong>Limitation 5: Loop Variable Capture Bug</strong></p>
+            <p>Goroutines capturing loop variables get the final value, not the expected iteration value.</p>
+            <ul>
+                <li><em>Cause:</em> Closure captures variable by reference, loop modifies it before goroutine runs</li>
+                <li><em>Solution:</em> Pass the value as a parameter to the goroutine function</li>
+                <li><em>Note:</em> Go 1.22+ fixes this for <code>for</code> loops, but explicit passing is still clearer</li>
+            </ul>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func main() {
+    var wg sync.WaitGroup
+
+    fmt.Println("BAD - Loop variable capture:")
+    for i := 1; i <= 3; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            // i is captured by reference - will likely print 4,4,4
+            fmt.Printf("  Got: %d\n", i)
+        }()
+    }
+    wg.Wait()
+    time.Sleep(10 * time.Millisecond)
+
+    fmt.Println("\nGOOD - Pass as parameter:")
+    for i := 1; i <= 3; i++ {
+        wg.Add(1)
+        go func(n int) {
+            defer wg.Done()
+            // n is a copy - prints 1,2,3 (order may vary)
+            fmt.Printf("  Got: %d\n", n)
+        }(i)
+    }
+    wg.Wait()
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <p><strong>Limitation 6: No Priority or Preemption Control</strong></p>
+            <p>You cannot assign priorities to goroutines or force preemption.</p>
+            <ul>
+                <li><em>Cause:</em> Go runtime manages scheduling; developers have limited control</li>
+                <li><em>Solution:</em> For priority queues, implement your own work-stealing queue pattern or use separate worker pools for different priority levels</li>
+            </ul>
+
+            <h4>Basic Goroutine Patterns</h4>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1895,18 +2395,19 @@ func main() {
 }
 
 .code-example pre {
-    background: #1e1e1e;
+    background: #e8e8e8;
     border-radius: var(--radius-md);
     padding: 1rem;
     padding-top: 2.5rem;
     overflow-x: auto;
     margin: 0;
+    border: 1px solid #d0d0d0;
 }
 
 .code-example pre code {
     background: none;
     padding: 0;
-    color: #d4d4d4;
+    color: #333333;
     font-size: 0.85rem;
     line-height: 1.6;
 }
