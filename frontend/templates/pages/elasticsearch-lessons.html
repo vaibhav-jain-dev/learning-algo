@@ -2432,11 +2432,24 @@ function toggleSubCategory(id) {
 }
 
 async function runESExample(button, method, path, body) {
-    const resultContainer = document.getElementById('query-result');
-    const resultContent = document.getElementById('query-result-content');
+    // Find the result container relative to the button (in the same section)
+    const section = button.closest('.lesson-section') || button.closest('.content-section') || button.parentElement.parentElement;
+    let resultContainer = section.querySelector('.query-result-container');
+    let resultContent;
+
+    // If no result container found in section, create one after the button
+    if (!resultContainer) {
+        resultContainer = document.createElement('div');
+        resultContainer.className = 'query-result-container';
+        resultContainer.innerHTML = '<h4>Result</h4><pre class="query-result-content"></pre>';
+        button.parentElement.after(resultContainer);
+    }
+
+    resultContent = resultContainer.querySelector('pre');
 
     resultContainer.style.display = 'block';
     resultContent.textContent = 'Loading...';
+    resultContent.style.color = '#aaa';
     button.disabled = true;
     button.textContent = 'Running...';
 
@@ -2456,8 +2469,13 @@ async function runESExample(button, method, path, body) {
         const result = await response.json();
 
         if (result.success) {
-            const respData = JSON.parse(result.response);
-            resultContent.textContent = JSON.stringify(respData, null, 2);
+            try {
+                const respData = JSON.parse(result.response);
+                resultContent.textContent = JSON.stringify(respData, null, 2);
+            } catch (parseErr) {
+                // If response is not JSON, show as-is
+                resultContent.textContent = result.response;
+            }
             resultContent.style.color = '#4ecdc4';
         } else {
             resultContent.textContent = 'Error: ' + result.error;

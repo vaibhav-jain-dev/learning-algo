@@ -293,7 +293,7 @@ MSET key1 "value1" key2 "value2" key3 "value3"
 # Get multiple keys
 MGET key1 key2 key3</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET greeting \"Hello Redis\"')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET greeting hello-redis')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try SET
                     </button>
 
@@ -381,7 +381,7 @@ RPOP tasks
 LPOP tasks 2
 # Response: ["task2", "task1"]</code></pre>
                     </div>
-                    <button onclick="tryCommand('RPUSH demo:queue \"item1\" \"item2\" \"item3\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('RPUSH demo:queue item1 item2 item3')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Queue
                     </button>
                     <button onclick="tryCommand('LPOP demo:queue')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
@@ -472,7 +472,7 @@ SREM tags "docker"
 # Pop random member
 SPOP tags</code></pre>
                     </div>
-                    <button onclick="tryCommand('SADD demo:skills \"python\" \"javascript\" \"go\" \"rust\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SADD demo:skills python javascript go rust')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Set
                     </button>
                     <button onclick="tryCommand('SMEMBERS demo:skills')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
@@ -557,7 +557,7 @@ HKEYS user:1000
 # Get all values
 HVALS user:1000</code></pre>
                     </div>
-                    <button onclick="tryCommand('HSET demo:user name \"Alice\" email \"alice@example.com\" role \"admin\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('HSET demo:user name Alice email alice@example.com role admin')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Hash
                     </button>
                     <button onclick="tryCommand('HGETALL demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
@@ -713,7 +713,7 @@ ZREVRANK leaderboard "player1"
 # Count members
 ZCARD leaderboard</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 \"alice\" 1200 \"bob\" 1800 \"charlie\" 900 \"david\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 alice 1200 bob 1800 charlie 900 david')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Leaderboard
                     </button>
                     <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
@@ -889,7 +889,7 @@ EXPIRE mykey 7200 GT
 # Set only if new TTL < current TTL
 EXPIRE mykey 1800 LT</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET demo:temp \"temporary\" EX 60')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET demo:temp temporary EX 60')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Set with TTL
                     </button>
                     <button onclick="tryCommand('TTL demo:temp')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
@@ -1162,7 +1162,7 @@ ZREVRANK leaderboard "player:123"
 # Get players around a score
 ZREVRANGEBYSCORE leaderboard 1600 1400 WITHSCORES LIMIT 0 10</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 \"alice\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 alice')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Add Points
                     </button>
                     <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">

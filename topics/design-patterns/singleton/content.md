@@ -16,34 +16,32 @@ Ask yourself these questions:
 
 ### The Decision Tree
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SHOULD YOU USE SINGLETON?                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Do you need exactly ONE instance?                                        │
-│   │                                                                        │
-│   ├── NO ──► Don't use Singleton                                          │
-│   │                                                                        │
-│   └── YES                                                                  │
-│       │                                                                    │
-│       └── Is global access truly necessary?                                │
-│           │                                                                │
-│           ├── NO ──► Consider Dependency Injection instead                 │
-│           │                                                                │
-│           └── YES                                                          │
-│               │                                                            │
-│               └── Is the object stateless or has simple state?             │
-│                   │                                                        │
-│                   ├── YES ──► ✓ Singleton might be appropriate            │
-│                   │                                                        │
-│                   └── NO ──► ⚠️ Be VERY careful!                          │
-│                               Singleton with complex mutable state         │
-│                               is a recipe for bugs                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div class="decision-tree" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Should You Use Singleton?</h4>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
+<strong style="color: #569cd6;">Question 1:</strong> <span style="color: #ddd;">Do you need exactly ONE instance?</span>
+<div style="margin-top: 8px; padding-left: 20px;">
+<span style="color: #ff6b6b;">NO →</span> <span style="color: #888;">Don't use Singleton. Consider regular classes or factory patterns.</span>
+</div>
+</div>
+
+<div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
+<strong style="color: #569cd6;">Question 2:</strong> <span style="color: #ddd;">Is global access truly necessary?</span>
+<div style="margin-top: 8px; padding-left: 20px;">
+<span style="color: #ff6b6b;">NO →</span> <span style="color: #888;">Consider Dependency Injection instead. It's more testable.</span>
+</div>
+</div>
+
+<div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
+<strong style="color: #569cd6;">Question 3:</strong> <span style="color: #ddd;">Is the object stateless or has simple state?</span>
+<div style="margin-top: 8px; padding-left: 20px;">
+<span style="color: #4ecdc4;">YES →</span> <span style="color: #4ecdc4; font-weight: bold;">Singleton might be appropriate</span><br>
+<span style="color: #ffc107;">NO →</span> <span style="color: #ffc107;">Be VERY careful! Singleton with complex mutable state is a recipe for bugs.</span>
+</div>
+</div>
+</div>
 </div>
 
 ## Key Concepts
@@ -68,43 +66,49 @@ Ask yourself these questions:
 
 ### Structure
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       SINGLETON STRUCTURE                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌─────────────────────────────────────────┐                              │
-│   │              Singleton                   │                              │
-│   ├─────────────────────────────────────────┤                              │
-│   │ - instance: Singleton (private static)   │  ← Single instance stored   │
-│   │ - data: any (instance state)             │                              │
-│   ├─────────────────────────────────────────┤                              │
-│   │ - Singleton() (private constructor)      │  ← Can't create from outside│
-│   │ + getInstance(): Singleton (static)      │  ← Only way to get instance │
-│   │ + businessMethod()                       │                              │
-│   └─────────────────────────────────────────┘                              │
-│                                                                             │
-│                                                                             │
-│   HOW IT WORKS:                                                            │
-│                                                                             │
-│       Thread 1                Thread 2                 Thread 3            │
-│           │                       │                       │                │
-│           ▼                       ▼                       ▼                │
-│      getInstance()           getInstance()           getInstance()         │
-│           │                       │                       │                │
-│           └───────────────────────┼───────────────────────┘                │
-│                                   │                                        │
-│                                   ▼                                        │
-│                       ┌───────────────────┐                                │
-│                       │  Single Instance  │ ← ALL threads get SAME object │
-│                       │   ┌───────────┐   │                                │
-│                       │   │   data    │   │                                │
-│                       │   └───────────┘   │                                │
-│                       └───────────────────┘                                │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Singleton Class Structure</h4>
+
+<div style="display: flex; justify-content: center; margin-bottom: 24px;">
+<div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 320px;">
+<div style="background: #569cd6; color: white; padding: 8px 16px; font-weight: bold; text-align: center;">Singleton</div>
+<div style="padding: 12px; border-bottom: 1px solid #30363d;">
+<div style="color: #888; font-size: 12px; margin-bottom: 4px;">ATTRIBUTES</div>
+<code style="color: #ce9178;">- instance: Singleton</code> <span style="color: #6a9955; font-size: 12px;">(private static)</span><br>
+<code style="color: #ce9178;">- data: any</code> <span style="color: #6a9955; font-size: 12px;">(instance state)</span>
+</div>
+<div style="padding: 12px;">
+<div style="color: #888; font-size: 12px; margin-bottom: 4px;">METHODS</div>
+<code style="color: #dcdcaa;">- Singleton()</code> <span style="color: #6a9955; font-size: 12px;">(private constructor)</span><br>
+<code style="color: #dcdcaa;">+ getInstance(): Singleton</code> <span style="color: #6a9955; font-size: 12px;">(static)</span><br>
+<code style="color: #dcdcaa;">+ businessMethod()</code>
+</div>
+</div>
+</div>
+
+<h4 style="color: #4ecdc4; margin-top: 24px; text-align: center;">How It Works</h4>
+
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 16px;">
+<div style="text-align: center;">
+<div style="background: #252540; padding: 12px 20px; border-radius: 8px; color: #ddd; margin-bottom: 8px;">Thread 1<br><code style="color: #569cd6;">getInstance()</code></div>
+<div style="color: #569cd6; font-size: 24px;">↓</div>
+</div>
+<div style="text-align: center;">
+<div style="background: #252540; padding: 12px 20px; border-radius: 8px; color: #ddd; margin-bottom: 8px;">Thread 2<br><code style="color: #569cd6;">getInstance()</code></div>
+<div style="color: #569cd6; font-size: 24px;">↓</div>
+</div>
+<div style="text-align: center;">
+<div style="background: #252540; padding: 12px 20px; border-radius: 8px; color: #ddd; margin-bottom: 8px;">Thread 3<br><code style="color: #569cd6;">getInstance()</code></div>
+<div style="color: #569cd6; font-size: 24px;">↓</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center; margin-top: 16px;">
+<div style="background: #4ecdc4; color: #1a1a2e; padding: 16px 32px; border-radius: 8px; text-align: center; font-weight: bold;">
+Single Instance<br>
+<span style="font-weight: normal; font-size: 14px;">All threads get the SAME object</span>
+</div>
+</div>
 </div>
 
 ## Pros and Cons Analysis
@@ -132,29 +136,66 @@ Ask yourself these questions:
 
 ### Trade-off Matrix
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        TRADE-OFF COMPARISON                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│                       Singleton    Dependency       Global                  │
-│                                    Injection        Variable                │
-│   ────────────────────────────────────────────────────────────────────     │
-│   Controlled Access:  ★★★★★        ★★★★★            ★☆☆☆☆                  │
-│   Testability:        ★★☆☆☆        ★★★★★            ★☆☆☆☆                  │
-│   Flexibility:        ★★☆☆☆        ★★★★★            ★☆☆☆☆                  │
-│   Simplicity:         ★★★★☆        ★★☆☆☆            ★★★★★                  │
-│   Memory Control:     ★★★★★        ★★★★☆            ★★★★★                  │
-│   Thread Safety:      ★★★★☆        ★★★★★            ★☆☆☆☆                  │
-│                                                                             │
-│   Recommendation:                                                          │
-│   • Prefer Dependency Injection for application code                       │
-│   • Use Singleton for infrastructure (connection pools, config)            │
-│   • Avoid global variables                                                 │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; overflow-x: auto;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Trade-off Comparison</h4>
+
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+<thead>
+<tr style="border-bottom: 2px solid #30363d;">
+<th style="padding: 12px; text-align: left; color: #888;">Aspect</th>
+<th style="padding: 12px; text-align: center; color: #569cd6;">Singleton</th>
+<th style="padding: 12px; text-align: center; color: #4ecdc4;">Dependency Injection</th>
+<th style="padding: 12px; text-align: center; color: #ff6b6b;">Global Variable</th>
+</tr>
+</thead>
+<tbody style="color: #ddd;">
+<tr style="border-bottom: 1px solid #30363d;">
+<td style="padding: 12px;">Controlled Access</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #888;">★☆☆☆☆</td>
+</tr>
+<tr style="border-bottom: 1px solid #30363d;">
+<td style="padding: 12px;">Testability</td>
+<td style="padding: 12px; text-align: center; color: #888;">★★☆☆☆</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #888;">★☆☆☆☆</td>
+</tr>
+<tr style="border-bottom: 1px solid #30363d;">
+<td style="padding: 12px;">Flexibility</td>
+<td style="padding: 12px; text-align: center; color: #888;">★★☆☆☆</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #888;">★☆☆☆☆</td>
+</tr>
+<tr style="border-bottom: 1px solid #30363d;">
+<td style="padding: 12px;">Simplicity</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★☆</td>
+<td style="padding: 12px; text-align: center; color: #888;">★★☆☆☆</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+</tr>
+<tr style="border-bottom: 1px solid #30363d;">
+<td style="padding: 12px;">Memory Control</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★☆</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+</tr>
+<tr>
+<td style="padding: 12px;">Thread Safety</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★☆</td>
+<td style="padding: 12px; text-align: center; color: #ffc107;">★★★★★</td>
+<td style="padding: 12px; text-align: center; color: #888;">★☆☆☆☆</td>
+</tr>
+</tbody>
+</table>
+
+<div style="background: #252540; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #4ecdc4;">Recommendations:</strong>
+<ul style="color: #ddd; margin: 8px 0 0 0; padding-left: 20px;">
+<li>Prefer <strong>Dependency Injection</strong> for application code</li>
+<li>Use <strong>Singleton</strong> for infrastructure (connection pools, config)</li>
+<li>Avoid global variables</li>
+</ul>
+</div>
 </div>
 
 ## Implementation
