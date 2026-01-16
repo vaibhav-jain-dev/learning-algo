@@ -764,27 +764,34 @@ const lessons = {
 
                 <div class="concept-box">
                     <h3>The Analysis Pipeline</h3>
-                    <pre><code class="language-text">Input Text: "Complete Blood Count (CBC) - $50.00"
-                         ↓
-┌─────────────────────────────────────────────────────┐
-│ 1. CHARACTER FILTERS                                │
-│    Remove HTML, convert symbols                     │
-│    Result: "Complete Blood Count CBC 50 00"         │
-└─────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────┐
-│ 2. TOKENIZER                                        │
-│    Split into words (standard: whitespace + punct)  │
-│    Result: ["Complete", "Blood", "Count", "CBC",    │
-│             "50", "00"]                             │
-└─────────────────────────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────┐
-│ 3. TOKEN FILTERS                                    │
-│    Lowercase, stemming, synonyms, stop words        │
-│    Result: ["complete", "blood", "count", "cbc",    │
-│             "50", "00"]                             │
-└─────────────────────────────────────────────────────┘</code></pre>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1rem; background: #0d1117; border-radius: 8px; margin-top: 1rem;">
+                        <!-- Input -->
+                        <div style="background: #2d3748; border: 2px solid #a0aec0; border-radius: 8px; padding: 0.75rem 1.25rem; color: #e2e8f0; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #a0aec0; margin-bottom: 0.25rem;">Input Text:</div>
+                            <div style="font-family: monospace; font-size: 0.85rem;">"Complete Blood Count (CBC) - $50.00"</div>
+                        </div>
+                        <div style="color: #667eea; font-size: 1.25rem;">↓</div>
+                        <!-- Step 1 -->
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 400px;">
+                            <div style="font-weight: 700;">1. CHARACTER FILTERS</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Remove HTML, convert symbols</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">"Complete Blood Count CBC 50 00"</div>
+                        </div>
+                        <div style="color: #f093fb; font-size: 1.25rem;">↓</div>
+                        <!-- Step 2 -->
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 400px;">
+                            <div style="font-weight: 700;">2. TOKENIZER</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Split into words (whitespace + punctuation)</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">["Complete", "Blood", "Count", "CBC", "50", "00"]</div>
+                        </div>
+                        <div style="color: #38ef7d; font-size: 1.25rem;">↓</div>
+                        <!-- Step 3 -->
+                        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 400px;">
+                            <div style="font-weight: 700;">3. TOKEN FILTERS</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Lowercase, stemming, synonyms, stop words</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">["complete", "blood", "count", "cbc", "50", "00"]</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="example-query">
@@ -1274,12 +1281,31 @@ Inverted Index (term -> documents):
                 <h2>Elasticsearch Data Hierarchy</h2>
                 <div class="concept-box">
                     <h3>The Structure</h3>
-                    <pre><code class="language-text">Cluster
-    └── Nodes (servers)
-        └── Indices (like databases)
-            └── Shards (horizontal partitions)
-                └── Documents (JSON records)
-                    └── Fields (key-value pairs)</code></pre>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; background: #0d1117; border-radius: 8px; margin-top: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 6px; padding: 0.5rem 1rem; color: white; font-weight: 600;">Cluster</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1.5rem;">
+                            <span style="color: #667eea;">└──</span>
+                            <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 6px; padding: 0.4rem 0.75rem; color: #4ecdc4; font-size: 0.9rem;">Nodes (servers)</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 3rem;">
+                            <span style="color: #4ecdc4;">└──</span>
+                            <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 6px; padding: 0.4rem 0.75rem; color: #f093fb; font-size: 0.9rem;">Indices (like databases)</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 4.5rem;">
+                            <span style="color: #f093fb;">└──</span>
+                            <div style="background: #1e3a5f; border: 2px solid #38ef7d; border-radius: 6px; padding: 0.4rem 0.75rem; color: #38ef7d; font-size: 0.9rem;">Shards (partitions)</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 6rem;">
+                            <span style="color: #38ef7d;">└──</span>
+                            <div style="background: #1e3a5f; border: 2px solid #ffd93d; border-radius: 6px; padding: 0.4rem 0.75rem; color: #ffd93d; font-size: 0.9rem;">Documents (JSON)</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 7.5rem;">
+                            <span style="color: #ffd93d;">└──</span>
+                            <div style="background: #2d3748; border: 1px solid #a0aec0; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.9rem;">Fields (key-value)</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="comparison-table">
@@ -1397,16 +1423,37 @@ Object Types:
 
                 <div class="concept-box">
                     <h3>How Sharding Works</h3>
-                    <pre><code class="language-text">Index: "products" (1 million documents)
-├── Primary Shard 0 → 333K docs (Node 1)
-├── Primary Shard 1 → 333K docs (Node 2)
-├── Primary Shard 2 → 334K docs (Node 3)
-└── Replica Shards → Copies on different nodes
-
-Benefits:
-• Parallel processing across shards
-• Data survives node failure (replicas)
-• Scale horizontally by adding nodes</code></pre>
+                    <div style="background: #0d1117; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 6px; padding: 0.5rem 1rem; color: white; font-weight: 600; margin-bottom: 1rem; text-align: center;">
+                            Index: "products" (1 million documents)
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+                            <div style="background: #1a472a; border: 2px solid #38ef7d; border-radius: 8px; padding: 0.75rem; text-align: center;">
+                                <div style="color: #38ef7d; font-weight: 600; font-size: 0.85rem;">Primary Shard 0</div>
+                                <div style="color: #a0aec0; font-size: 0.75rem;">333K docs</div>
+                                <div style="color: #4ecdc4; font-size: 0.7rem; margin-top: 0.25rem;">Node 1</div>
+                            </div>
+                            <div style="background: #1a472a; border: 2px solid #38ef7d; border-radius: 8px; padding: 0.75rem; text-align: center;">
+                                <div style="color: #38ef7d; font-weight: 600; font-size: 0.85rem;">Primary Shard 1</div>
+                                <div style="color: #a0aec0; font-size: 0.75rem;">333K docs</div>
+                                <div style="color: #f093fb; font-size: 0.7rem; margin-top: 0.25rem;">Node 2</div>
+                            </div>
+                            <div style="background: #1a472a; border: 2px solid #38ef7d; border-radius: 8px; padding: 0.75rem; text-align: center;">
+                                <div style="color: #38ef7d; font-weight: 600; font-size: 0.85rem;">Primary Shard 2</div>
+                                <div style="color: #a0aec0; font-size: 0.75rem;">334K docs</div>
+                                <div style="color: #ffd93d; font-size: 0.7rem; margin-top: 0.25rem;">Node 3</div>
+                            </div>
+                        </div>
+                        <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 8px; padding: 0.75rem; text-align: center; margin-bottom: 1rem;">
+                            <div style="color: #4ecdc4; font-weight: 600;">Replica Shards</div>
+                            <div style="color: #a0aec0; font-size: 0.75rem;">Copies on different nodes for fault tolerance</div>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem;">
+                            <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">✓ Parallel processing</span>
+                            <span style="background: #164e63; padding: 0.25rem 0.5rem; border-radius: 4px; color: #22d3ee;">✓ Fault tolerance</span>
+                            <span style="background: #581c87; padding: 0.25rem 0.5rem; border-radius: 4px; color: #e879f9;">✓ Horizontal scaling</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="key-points">
@@ -1462,27 +1509,33 @@ Benefits:
 
                 <div class="concept-box">
                     <h3>Anatomy of an Analyzer</h3>
-                    <pre><code class="language-text">Input: "The Quick-Brown Fox's 2nd Jump!"
-                    ↓
-┌────────────────────────────────────┐
-│ CHARACTER FILTERS (0 or more)      │
-│ • HTML strip, pattern replace      │
-│ Result: "The Quick-Brown Fox's 2nd Jump!"
-└────────────────────────────────────┘
-                    ↓
-┌────────────────────────────────────┐
-│ TOKENIZER (exactly 1)              │
-│ • Split text into tokens           │
-│ Result: ["The", "Quick", "Brown",  │
-│          "Fox's", "2nd", "Jump"]   │
-└────────────────────────────────────┘
-                    ↓
-┌────────────────────────────────────┐
-│ TOKEN FILTERS (0 or more)          │
-│ • lowercase, stemmer, synonyms     │
-│ Result: ["the", "quick", "brown",  │
-│          "fox", "2nd", "jump"]     │
-└────────────────────────────────────┘</code></pre>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1rem; background: #0d1117; border-radius: 8px; margin-top: 1rem;">
+                        <!-- Input -->
+                        <div style="background: #2d3748; border: 2px solid #a0aec0; border-radius: 8px; padding: 0.75rem 1.25rem; color: #e2e8f0; text-align: center; font-family: monospace; font-size: 0.85rem;">
+                            "The Quick-Brown Fox's 2nd Jump!"
+                        </div>
+                        <div style="color: #667eea; font-size: 1.25rem;">↓</div>
+                        <!-- Character Filters -->
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 350px;">
+                            <div style="font-weight: 700; font-size: 0.9rem;">CHARACTER FILTERS <span style="opacity: 0.7; font-weight: 400;">(0+)</span></div>
+                            <div style="font-size: 0.75rem; opacity: 0.9;">HTML strip, pattern replace</div>
+                            <div style="font-family: monospace; font-size: 0.7rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">"The Quick-Brown Fox's 2nd Jump!"</div>
+                        </div>
+                        <div style="color: #f093fb; font-size: 1.25rem;">↓</div>
+                        <!-- Tokenizer -->
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 350px;">
+                            <div style="font-weight: 700; font-size: 0.9rem;">TOKENIZER <span style="opacity: 0.7; font-weight: 400;">(exactly 1)</span></div>
+                            <div style="font-size: 0.75rem; opacity: 0.9;">Split text into tokens</div>
+                            <div style="font-family: monospace; font-size: 0.7rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">["The", "Quick", "Brown", "Fox's", "2nd", "Jump"]</div>
+                        </div>
+                        <div style="color: #38ef7d; font-size: 1.25rem;">↓</div>
+                        <!-- Token Filters -->
+                        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; width: 100%; max-width: 350px;">
+                            <div style="font-weight: 700; font-size: 0.9rem;">TOKEN FILTERS <span style="opacity: 0.7; font-weight: 400;">(0+)</span></div>
+                            <div style="font-size: 0.75rem; opacity: 0.9;">lowercase, stemmer, synonyms</div>
+                            <div style="font-family: monospace; font-size: 0.7rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; margin-top: 0.5rem;">["the", "quick", "brown", "fox", "2nd", "jump"]</div>
+                        </div>
+                    </div>
                 </div>
             </section>
 

@@ -1596,35 +1596,40 @@ etcdctl put --lease=xxx /service/instance-1 "alive"</code></pre>
 
                     <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
                         <h4 class="text-purple-400 font-semibold mb-2">Real-World Architecture: Microservices with Redis</h4>
-                        <pre class="text-gray-300 text-sm"><code>┌─────────────────────────────────────────────────────────────┐
-│                      API Gateway                             │
-│  • Rate Limiting (Redis Sorted Set)                         │
-│  • Session Validation (Redis Hash)                          │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-    ┌─────────────────────┼─────────────────────┐
-    │                     │                     │
-    ▼                     ▼                     ▼
-┌─────────┐         ┌─────────┐          ┌─────────┐
-│ User    │         │ Order   │          │ Payment │
-│ Service │         │ Service │          │ Service │
-└────┬────┘         └────┬────┘          └────┬────┘
-     │                   │                    │
-     └───────────────────┴────────────────────┘
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-              ▼                     ▼
-         ┌─────────┐          ┌─────────┐
-         │  Redis  │          │   DB    │
-         │ Cluster │          │(Primary)│
-         ├─────────┤          └─────────┘
-         │• Cache  │
-         │• Sessions│
-         │• Locks  │
-         │• Pub/Sub│
-         │• Queues │
-         └─────────┘</code></pre>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem;">
+                            <!-- API Gateway -->
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 1rem 2rem; color: white; text-align: center; width: 100%; max-width: 500px;">
+                                <div style="font-weight: 700; font-size: 1rem;">API Gateway</div>
+                                <div style="font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem;">Rate Limiting (Sorted Set) • Session Validation (Hash)</div>
+                            </div>
+                            <div style="color: #667eea; font-size: 1.25rem;">↓</div>
+                            <!-- Services Row -->
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                                <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4; text-align: center;">
+                                    <div style="font-weight: 600;">User Service</div>
+                                </div>
+                                <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb; text-align: center;">
+                                    <div style="font-weight: 600;">Order Service</div>
+                                </div>
+                                <div style="background: #1e3a5f; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1.25rem; color: #ffd93d; text-align: center;">
+                                    <div style="font-weight: 600;">Payment Service</div>
+                                </div>
+                            </div>
+                            <div style="color: #a0aec0; font-size: 1.25rem;">↓</div>
+                            <!-- Data Layer -->
+                            <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                                <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
+                                    <div style="font-weight: 700;">Redis Cluster</div>
+                                    <div style="font-size: 0.7rem; margin-top: 0.5rem; text-align: left; opacity: 0.9;">
+                                        • Cache<br>• Sessions<br>• Locks<br>• Pub/Sub<br>• Queues
+                                    </div>
+                                </div>
+                                <div style="background: #2d3748; border: 2px solid #a0aec0; border-radius: 10px; padding: 1rem 1.5rem; color: #a0aec0; text-align: center;">
+                                    <div style="font-weight: 700;">DB (Primary)</div>
+                                    <div style="font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.8;">Source of Truth</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2094,30 +2099,48 @@ def get_with_swr(key, refresh_fn):
 
                     <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
                         <h4 class="text-purple-400 font-semibold mb-2">Real-World Example: E-Commerce Product Page</h4>
-                        <pre class="text-gray-300 text-sm"><code>Product Page Caching Strategy:
-├── Product Details (Cache-Aside + Event Invalidation)
-│   ├── Name, description, images → TTL: 1 hour
-│   ├── Invalidate on: admin update
-│   └── Key: product:{id}
-│
-├── Price & Availability (Write-Through)
-│   ├── Current price, stock count → TTL: 5 minutes
-│   ├── Update cache on every inventory change
-│   └── Key: product:{id}:pricing
-│
-├── Reviews (Stale-While-Revalidate)
-│   ├── Average rating, review count → Soft TTL: 5 min, Hard: 1 hour
-│   ├── Background refresh, serve stale immediately
-│   └── Key: product:{id}:reviews
-│
-├── Recommendations (Refresh-Ahead)
-│   ├── "Customers also bought" → TTL: 6 hours
-│   ├── Pre-refresh at 80% TTL
-│   └── Key: product:{id}:recommendations:v{version}
-│
-└── Real-time Stock (No Cache / Write-Behind)
-    ├── "Only 3 left!" → Check DB or use Redis counter
-    └── Key: stock:{product_id} (Redis counter, write-behind to DB)</code></pre>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; padding: 0.5rem;">
+                            <!-- Product Details -->
+                            <div style="background: #1a472a; border-left: 4px solid #38ef7d; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #38ef7d;">Product Details</div>
+                                    <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #34d399;">Cache-Aside</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Name, images → TTL: 1hr • Key: product:{id}</div>
+                            </div>
+                            <!-- Price & Availability -->
+                            <div style="background: #1e3a5f; border-left: 4px solid #4ecdc4; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #4ecdc4;">Price & Availability</div>
+                                    <span style="background: #164e63; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #22d3ee;">Write-Through</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Price, stock → TTL: 5min • Key: product:{id}:pricing</div>
+                            </div>
+                            <!-- Reviews -->
+                            <div style="background: #3b1f4a; border-left: 4px solid #f093fb; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #f093fb;">Reviews</div>
+                                    <span style="background: #581c87; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #e879f9;">Stale-While-Revalidate</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Rating, count → Soft: 5min, Hard: 1hr • Key: product:{id}:reviews</div>
+                            </div>
+                            <!-- Recommendations -->
+                            <div style="background: #422006; border-left: 4px solid #ffd93d; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #ffd93d;">Recommendations</div>
+                                    <span style="background: #713f12; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #fde047;">Refresh-Ahead</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">"Also bought" → TTL: 6hr, pre-refresh at 80% • Key: product:{id}:recs</div>
+                            </div>
+                            <!-- Real-time Stock -->
+                            <div style="background: #4a1a1a; border-left: 4px solid #ff6b6b; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #ff6b6b;">Real-time Stock</div>
+                                    <span style="background: #7f1d1d; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #fca5a5;">No Cache / Counter</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">"Only 3 left!" → Redis counter • Key: stock:{product_id}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
