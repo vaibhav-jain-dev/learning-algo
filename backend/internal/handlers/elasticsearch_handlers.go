@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -259,9 +260,6 @@ func (h *ElasticsearchHandlers) Explain(c *fiber.Ctx) error {
 
 	return c.JSON(result)
 }
-
-// Import bytes for JSON formatting
-import "bytes"
 
 // InitializeElasticsearch creates the learning indices with sample data
 func InitializeElasticsearch(ctx context.Context, es *elasticsearch.Client) error {
