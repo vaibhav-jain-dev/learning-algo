@@ -11,15 +11,313 @@ Design a URL shortening service like TinyURL or bit.ly that converts long URLs t
 - Handle high read traffic (more reads than writes)
 - Optional: Custom short codes, analytics, expiration
 
-## Design
+---
 
-### Key Decisions
+## Solution Breakdown
 
-1. **Code Generation**: Base62 encoding (a-z, A-Z, 0-9) = 62^7 = 3.5 trillion combinations
-2. **Storage**: Key-value store (code -> URL)
-3. **ID Generation**: Auto-increment, UUID, or hash-based
+### Part 1: Understanding the Scale
 
-## Solution
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
+**Traffic Estimation (for design decisions):**
+- 100M new URLs/month → ~40 URLs/second (write)
+- Read:Write ratio ~100:1 → 4000 reads/second
+- 5 years storage → 6 billion URLs
+- Each URL ~500 bytes → 3 TB storage
+
+**Key Insight**: This is a **read-heavy** system. Optimize for reads!
+
+</div>
+
+### Part 2: The Core Problem - Generating Short Codes
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+
+**How short can we go?**
+
+```
+Base62 alphabet: a-z, A-Z, 0-9 = 62 characters
+
+Length | Combinations    | Enough for
+-------|-----------------|------------------
+   5   | 62^5 = 916M     | Small scale
+   6   | 62^6 = 56B      | Medium scale
+   7   | 62^7 = 3.5T     | Large scale (TinyURL)
+   8   | 62^8 = 218T     | Massive scale
+```
+
+**7 characters** gives us 3.5 trillion unique URLs - enough for most use cases!
+
+</div>
+
+### Part 3: ID Generation Strategies
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+
+**Strategy 1: Auto-Increment Counter**
+```
+Counter: 1000001 → Base62: "4c92" → short.url/4c92
+Counter: 1000002 → Base62: "4c93" → short.url/4c93
+```
+- **Pros**: Simple, sequential, no collisions
+- **Cons**: Predictable (security concern), single point of failure
+
+**Strategy 2: Hash-based**
+```
+MD5("https://example.com/long/path") = "5d41402abc4b2a76"
+Take first 7 chars → "5d41402"
+```
+- **Pros**: Deterministic, distributed-friendly
+- **Cons**: Collisions possible, need collision handling
+
+**Strategy 3: Pre-generated Key Pool**
+```
+Generate millions of unique keys offline
+Store in database, mark as "used" when assigned
+```
+- **Pros**: Fast, no runtime computation
+- **Cons**: Complexity, key exhaustion management
+
+**Strategy 4: Snowflake ID**
+```
+| Timestamp (41 bits) | Machine ID (10 bits) | Sequence (12 bits) |
+```
+- **Pros**: Distributed, time-sorted, unique
+- **Cons**: Complex setup, 64-bit number
+
+</div>
+
+### Part 4: System Architecture
+
+```
+                                     WRITE PATH
+┌──────────┐    ┌──────────────┐    ┌───────────────┐    ┌─────────────┐
+│  Client  │───►│ Load Balancer │───►│   App Server  │───►│  Database   │
+└──────────┘    └──────────────┘    │               │    │ (Cassandra) │
+                                    │ 1. Validate   │    └─────────────┘
+                                    │ 2. Generate ID│           │
+                                    │ 3. Store      │           │
+                                    └───────────────┘           │
+                                                                │
+                                     READ PATH                  │
+┌──────────┐    ┌──────────────┐    ┌───────────────┐    ┌─────▼───────┐
+│  Client  │◄───│ Load Balancer │◄───│   App Server  │◄───│    Cache    │
+└──────────┘    └──────────────┘    │               │    │   (Redis)   │
+      │                             │ 1. Check cache│    └─────────────┘
+      │         ┌──────────────┐    │ 2. DB if miss │
+      └────────►│     CDN      │    │ 3. 301/302    │
+                └──────────────┘    └───────────────┘
+```
+
+### Part 5: 301 vs 302 Redirect - Why It Matters
+
+<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+| Status Code | Name | Browser Behavior | Use Case |
+|-------------|------|------------------|----------|
+| **301** | Moved Permanently | Caches redirect | SEO, permanent URLs |
+| **302** | Found (Temporary) | Always hits server | Analytics tracking |
+
+**For URL shorteners:**
+- Use **302** if you need analytics (track every click)
+- Use **301** if you want lower server load (browser caches)
+
+**Pro tip**: bit.ly uses 301 for performance, tracks via JavaScript pixel
+
+</div>
+
+---
+
+## Alternative Approaches
+
+### Alternative 1: Zookeeper for Distributed Counter
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Zookeeper                               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
+│  │ Range: 1-1M │  │ Range: 1M-2M│  │ Range: 2M-3M│          │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘          │
+│         │                │                │                  │
+└─────────┼────────────────┼────────────────┼──────────────────┘
+          │                │                │
+          ▼                ▼                ▼
+    ┌──────────┐     ┌──────────┐     ┌──────────┐
+    │ Server 1 │     │ Server 2 │     │ Server 3 │
+    │ Uses 1-1M│     │ Uses 1M-2M│    │ Uses 2M-3M│
+    └──────────┘     └──────────┘     └──────────┘
+```
+
+**How it works:**
+1. Each server requests a range from Zookeeper (e.g., 1 million IDs)
+2. Server uses IDs locally without coordination
+3. When range exhausted, request new range
+
+**Pros**: No per-request coordination
+**Cons**: Zookeeper complexity, range waste on server restart
+
+</div>
+
+### Alternative 2: Hash with Collision Resolution
+
+```python
+def generate_short_code(url: str) -> str:
+    # Try original hash
+    code = hash_to_base62(url)[:7]
+
+    # Handle collision
+    attempt = 0
+    while code_exists(code):
+        attempt += 1
+        code = hash_to_base62(f"{url}{attempt}")[:7]
+
+    return code
+```
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
+
+**Collision probability with 7 chars:**
+- At 1M URLs: ~0.03% collision rate
+- At 100M URLs: ~3% collision rate
+- At 1B URLs: ~30% collision rate
+
+**Birthday paradox** - collisions happen sooner than you think!
+
+</div>
+
+### Alternative 3: KGS (Key Generation Service)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 Key Generation Service                       │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Pre-generated Keys Table                            │    │
+│  │  ┌──────────┬────────┐                              │    │
+│  │  │   Key    │  Used  │                              │    │
+│  │  ├──────────┼────────┤                              │    │
+│  │  │  a7Bc3Df │   No   │ ← Available                  │    │
+│  │  │  x9Yz2Qw │   No   │                              │    │
+│  │  │  k3Mn8Pv │   Yes  │ ← Already used               │    │
+│  │  └──────────┴────────┘                              │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+
+Flow:
+1. KGS generates keys offline (batch job)
+2. App server requests key from KGS
+3. KGS marks key as used, returns it
+4. App server maps URL to key
+```
+
+---
+
+## Pros and Cons Analysis
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
+
+### Counter-based Pros
+
+- **No collisions** - guaranteed unique
+- **Predictable** - easy capacity planning
+- **Simple** - easy to implement
+- **Fast** - O(1) generation
+- **Sortable** - by creation time
+
+</div>
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
+
+### Counter-based Cons
+
+- **Predictable URLs** - security concern
+- **Single point of failure** - counter service
+- **Coordination needed** - for distribution
+- **Sequential** - reveals creation order
+- **Range exhaustion** - need monitoring
+
+</div>
+
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
+
+### Hash-based Pros
+
+- **Distributed** - no coordination
+- **Idempotent** - same URL = same code
+- **Random-looking** - better security
+- **Stateless** - no counter to maintain
+
+</div>
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
+
+### Hash-based Cons
+
+- **Collisions** - need handling
+- **Longer codes** - to reduce collisions
+- **DB lookup** - to check existence
+- **No ordering** - can't sort by time
+
+</div>
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| `shorten(url)` | O(1) avg, O(k) with collisions | O(1) |
+| `expand(code)` | O(1) with cache | O(1) |
+| **Storage per URL** | - | ~500 bytes |
+
+**Database choice:**
+- **Cassandra**: Great for write-heavy, distributed
+- **Redis**: For caching hot URLs
+- **PostgreSQL**: If you need transactions
+
+---
+
+## Common Extensions
+
+1. **Custom aliases**: `short.url/my-brand` instead of random
+2. **Analytics**: Click count, geographic distribution, referrers
+3. **Expiration**: Auto-delete after N days
+4. **Rate limiting**: Prevent abuse
+5. **API keys**: Track usage per customer
+
+---
+
+## Interview Tips
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+1. **Start with estimation** - Show you think at scale
+2. **Discuss read vs write** - 100:1 ratio is key insight
+3. **Compare ID strategies** - Show depth of knowledge
+4. **Mention caching** - Redis for hot URLs
+5. **Database choice** - Why NoSQL makes sense
+6. **301 vs 302** - Shows attention to detail
+
+**Common Follow-ups:**
+- How to prevent malicious URLs?
+- How to handle analytics at scale?
+- How to ensure high availability?
+- How to implement custom aliases?
+
+</div>
+
+---
+
+## Implementation
 
 ### Python
 
@@ -389,37 +687,3 @@ func main() {
 	fmt.Printf("Clicks: %d\n", stats.ClickCount)
 }
 ```
-
-## Scalability Considerations
-
-### Distributed System
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Client    │────▶│ Load Balancer│────▶│  App Server │
-└─────────────┘     └─────────────┘     └──────┬──────┘
-                                               │
-                    ┌──────────────────────────┼──────────────────────────┐
-                    │                          │                          │
-              ┌─────▼─────┐            ┌───────▼───────┐         ┌───────▼───────┐
-              │   Cache   │            │   Database    │         │  Counter Svc  │
-              │  (Redis)  │            │  (Cassandra)  │         │  (Zookeeper)  │
-              └───────────┘            └───────────────┘         └───────────────┘
-```
-
-### ID Generation Strategies
-
-| Strategy | Pros | Cons |
-|----------|------|------|
-| Auto-increment | Simple, sequential | Single point of failure |
-| UUID | No coordination | Long, not URL-friendly |
-| Hash | Deterministic | Collisions possible |
-| Snowflake ID | Distributed, sorted | Complex setup |
-
-## Interview Tips
-
-- Discuss read vs write ratio (100:1 typical)
-- Consider caching strategy (read-heavy workload)
-- Handle collision resolution
-- Discuss analytics requirements
-- Mention 301 vs 302 redirects
