@@ -625,24 +625,83 @@ EXPIRE session:abc123 3600  # 1 hour</code></pre>
                         <h4 class="text-lg font-semibold text-red-400 mb-2">How Sorted Sets Work Internally (Skip Lists)</h4>
                         <div class="text-gray-300 text-sm space-y-2">
                             <p>Redis uses a <strong>Skip List</strong> + <strong>Hash Table</strong> for Sorted Sets:</p>
-                            <pre class="bg-gray-950 rounded p-3 my-2 text-xs overflow-x-auto"><code>Skip List Structure (simplified):
-Level 3: [HEAD] ────────────────────────────────> [90:charlie] ────────> [NULL]
-Level 2: [HEAD] ────────> [50:bob] ────────────> [90:charlie] ────────> [NULL]
-Level 1: [HEAD] ─> [30:alice] ─> [50:bob] ─> [70:david] ─> [90:charlie] ─> [NULL]
 
-+ Hash Table: member → score
-  {"alice": 30, "bob": 50, "david": 70, "charlie": 90}
+                            <!-- Skip List Visual Diagram -->
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-3">Skip List Structure:</div>
+                                <div class="space-y-2 font-mono text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 3:</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">─────────────────────────────────▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">──▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 2:</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">────────▶</span>
+                                            <span class="bg-yellow-900/50 px-2 py-1 rounded text-yellow-300">50:bob</span>
+                                            <span class="text-gray-600">────────────▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">──▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 1:</span>
+                                        <div class="flex items-center gap-1 flex-wrap">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-green-900/50 px-2 py-1 rounded text-green-300">30:alice</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-yellow-900/50 px-2 py-1 rounded text-yellow-300">50:bob</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-blue-900/50 px-2 py-1 rounded text-blue-300">70:david</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-Operations:
-┌────────────────┬─────────────┬──────────────────────────────────────┐
-│ Operation      │ Time        │ Why                                  │
-├────────────────┼─────────────┼──────────────────────────────────────┤
-│ ZADD           │ O(log n)    │ Skip list insertion                  │
-│ ZSCORE         │ O(1)        │ Hash table lookup                    │
-│ ZRANK          │ O(log n)    │ Skip list traversal                  │
-│ ZRANGE         │ O(log n + m)│ Skip to start, then traverse m items │
-│ ZRANGEBYSCORE  │ O(log n + m)│ Binary search + traverse             │
-└────────────────┴─────────────┴──────────────────────────────────────┘</code></pre>
+                                <div class="mt-4 pt-3 border-t border-gray-800">
+                                    <div class="text-cyan-400 font-semibold mb-2">+ Hash Table: member → score</div>
+                                    <div class="bg-gray-800 rounded p-2 text-xs">
+                                        <span class="text-gray-400">{</span>
+                                        <span class="text-green-400">"alice"</span><span class="text-gray-400">: 30, </span>
+                                        <span class="text-yellow-400">"bob"</span><span class="text-gray-400">: 50, </span>
+                                        <span class="text-blue-400">"david"</span><span class="text-gray-400">: 70, </span>
+                                        <span class="text-red-400">"charlie"</span><span class="text-gray-400">: 90}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Operations Table -->
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-2">Operations Complexity:</div>
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="text-gray-400 border-b border-gray-700">
+                                            <th class="text-left py-2">Operation</th>
+                                            <th class="text-left py-2">Time</th>
+                                            <th class="text-left py-2">Why</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZADD</td><td class="text-yellow-400">O(log n)</td><td>Skip list insertion</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZSCORE</td><td class="text-green-400">O(1)</td><td>Hash table lookup</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZRANK</td><td class="text-yellow-400">O(log n)</td><td>Skip list traversal</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZRANGE</td><td class="text-yellow-400">O(log n + m)</td><td>Skip to start, traverse m items</td></tr>
+                                        <tr><td class="py-1.5 text-cyan-400">ZRANGEBYSCORE</td><td class="text-yellow-400">O(log n + m)</td><td>Binary search + traverse</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <p><strong>Why Skip Lists instead of Balanced Trees?</strong></p>
                             <ul class="list-disc list-inside text-gray-400 pl-2">
                                 <li>Simpler to implement correctly</li>
