@@ -77,6 +77,16 @@
                             11. Common Patterns
                         </a>
                     </li>
+                    <li>
+                        <a href="#distributed" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            12. Distributed Systems
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#caching-strategies" class="block text-gray-300 hover:text-red-400 transition-colors py-1">
+                            13. Caching Strategies
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -1040,6 +1050,855 @@ while true:
 job = BRPOPLPUSH jobs processing 30
 process(job)
 LREM processing 0 job  # Remove when done</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 12: Distributed Systems -->
+            <section id="distributed" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">12. Redis in Distributed Systems</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Redis plays a crucial role in distributed systems, providing coordination primitives,
+                        distributed locks, and shared state management across microservices.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Redis Distributed Locks vs SQL Transactional Locks</h3>
+
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Aspect</th>
+                                    <th class="text-left py-2">Redis Lock</th>
+                                    <th class="text-left py-2">SQL Transaction Lock</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-semibold">Scope</td>
+                                    <td>Cross-service, distributed</td>
+                                    <td>Single database, single transaction</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-semibold">Performance</td>
+                                    <td>Sub-millisecond (in-memory)</td>
+                                    <td>Slower (disk I/O, ACID overhead)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-semibold">Auto-release</td>
+                                    <td>TTL-based expiration</td>
+                                    <td>Connection close / timeout</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-semibold">Deadlock</td>
+                                    <td>Prevented via TTL</td>
+                                    <td>Possible, requires detection</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-semibold">Durability</td>
+                                    <td>Best-effort (can be lost)</td>
+                                    <td>ACID guaranteed</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-semibold">Use Case</td>
+                                    <td>Coordination, rate limiting</td>
+                                    <td>Data integrity, transactions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h4 class="text-lg font-semibold text-red-300 mb-2">When to Use Redis Lock</h4>
+                    <ul class="list-disc list-inside text-gray-300 mb-4 space-y-1">
+                        <li>Coordinating tasks across multiple services/instances</li>
+                        <li>Preventing duplicate job processing in worker queues</li>
+                        <li>Rate limiting at the API gateway level</li>
+                        <li>Leader election in distributed systems</li>
+                        <li>Preventing cache stampede (thundering herd)</li>
+                    </ul>
+
+                    <h4 class="text-lg font-semibold text-red-300 mb-2">When to Use SQL Transaction Lock</h4>
+                    <ul class="list-disc list-inside text-gray-300 mb-4 space-y-1">
+                        <li>Financial transactions requiring ACID guarantees</li>
+                        <li>Row-level locking for concurrent updates</li>
+                        <li>Inventory management with strict consistency</li>
+                        <li>When lock and data must be atomic</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-6">Redlock Algorithm (Distributed Lock)</h3>
+                    <p class="text-gray-300 mb-3">
+                        For truly distributed locking across multiple Redis instances, use the Redlock algorithm:
+                    </p>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># Redlock: Distributed lock across N Redis nodes
+# Requires majority (N/2 + 1) to acquire lock
+
+# 1. Get current time in milliseconds
+start_time = current_time_ms()
+
+# 2. Try to acquire lock on all N instances
+for each redis_instance:
+    SET resource_name unique_value NX PX 30000
+
+# 3. Calculate elapsed time
+elapsed = current_time_ms() - start_time
+
+# 4. Lock acquired if:
+#    - Majority of instances (N/2 + 1) granted lock
+#    - Total elapsed time < lock validity time
+if locks_acquired >= (N/2 + 1) AND elapsed < lock_ttl:
+    # Lock is valid for: lock_ttl - elapsed
+    valid_time = lock_ttl - elapsed
+
+# 5. If lock failed, release all acquired locks
+else:
+    for each redis_instance:
+        DEL resource_name  # or use Lua script</code></pre>
+                    </div>
+
+                    <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mb-6">
+                        <h4 class="text-yellow-400 font-semibold mb-2">Redlock Considerations</h4>
+                        <ul class="text-gray-300 text-sm list-disc list-inside space-y-1">
+                            <li>Requires N independent Redis instances (not replicas)</li>
+                            <li>Clock drift can affect lock validity</li>
+                            <li>Network partitions may cause split-brain scenarios</li>
+                            <li>Consider using libraries: Redisson (Java), redis-py (Python)</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Redis in Microservices Architecture</h3>
+
+                    <div class="space-y-4 mb-6">
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">1. Service Discovery & Configuration</h4>
+                            <pre class="text-green-400 text-sm"><code># Store service endpoints
+HSET services:user-service host "10.0.1.5" port 8080 health "healthy"
+HSET services:order-service host "10.0.1.6" port 8081 health "healthy"
+
+# Service registry with TTL (heartbeat)
+SET service:user-service:instance:1 '{"host":"10.0.1.5","port":8080}' EX 30
+# Service must renew before TTL expires
+
+# Get all instances of a service
+KEYS service:user-service:instance:*</code></pre>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">2. Distributed Session Management</h4>
+                            <pre class="text-green-400 text-sm"><code># Shared session across all service instances
+HSET session:abc123 user_id 1000 role "admin" permissions "read,write"
+EXPIRE session:abc123 3600
+
+# Any service instance can validate/update session
+session = HGETALL session:abc123
+
+# Centralized logout (invalidates across all services)
+DEL session:abc123</code></pre>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">3. Inter-Service Communication (Event Bus)</h4>
+                            <pre class="text-green-400 text-sm"><code># Pub/Sub for real-time events
+PUBLISH order:created '{"order_id":123,"user_id":456,"total":99.99}'
+
+# Multiple services subscribe
+# Inventory Service: SUBSCRIBE order:created
+# Email Service: SUBSCRIBE order:created
+# Analytics Service: PSUBSCRIBE order:*
+
+# For durable messaging, use Redis Streams
+XADD orders * order_id 123 user_id 456 total 99.99
+XREADGROUP GROUP inventory-consumers consumer-1 STREAMS orders ></code></pre>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">4. Distributed Rate Limiting</h4>
+                            <pre class="text-green-400 text-sm"><code># API Gateway rate limiting (shared across instances)
+# Sliding window algorithm
+local key = "ratelimit:" .. user_id
+local now = redis.call('TIME')[1]
+local window = 60  -- 1 minute
+
+-- Remove old entries
+redis.call('ZREMRANGEBYSCORE', key, 0, now - window)
+
+-- Count current requests
+local count = redis.call('ZCARD', key)
+
+if count < 100 then  -- 100 requests/minute
+    redis.call('ZADD', key, now, now .. ':' .. math.random())
+    redis.call('EXPIRE', key, window)
+    return {1, 100 - count - 1}  -- allowed, remaining
+else
+    return {0, 0}  -- denied
+end</code></pre>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">5. Circuit Breaker State</h4>
+                            <pre class="text-green-400 text-sm"><code># Track service health for circuit breaker
+HSET circuit:payment-service state "closed" failures 0 last_failure 0
+
+# On failure
+HINCRBY circuit:payment-service failures 1
+HSET circuit:payment-service last_failure $(date +%s)
+
+# Check if should open circuit (>5 failures in 60s)
+failures = HGET circuit:payment-service failures
+if failures > 5:
+    HSET circuit:payment-service state "open"
+    EXPIRE circuit:payment-service 30  # Auto-reset after 30s</code></pre>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h4 class="text-red-300 font-semibold mb-2">6. Leader Election</h4>
+                            <pre class="text-green-400 text-sm"><code># Only one instance should run scheduled tasks
+instance_id = generate_unique_id()
+
+# Try to become leader
+result = SET leader:scheduler $instance_id NX EX 30
+
+if result == "OK":
+    # I am the leader, run scheduled tasks
+    while True:
+        run_scheduled_tasks()
+        # Renew leadership
+        SET leader:scheduler $instance_id XX EX 30
+        sleep(10)
+else:
+    # Another instance is leader, standby
+    leader = GET leader:scheduler</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Alternatives to Redis for Distributed Coordination</h3>
+
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Tool</th>
+                                    <th class="text-left py-2">Best For</th>
+                                    <th class="text-left py-2">Trade-offs</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-red-400">Redis</td>
+                                    <td>Speed, caching, simple locks</td>
+                                    <td>No strong consistency guarantees</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-blue-400">ZooKeeper</td>
+                                    <td>Strong consistency, leader election</td>
+                                    <td>Higher latency, complex operations</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2 font-mono text-green-400">etcd</td>
+                                    <td>Kubernetes, config management</td>
+                                    <td>CP system, not for high throughput</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-mono text-purple-400">Consul</td>
+                                    <td>Service mesh, health checking</td>
+                                    <td>More complex setup</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h4 class="text-lg font-semibold text-red-300 mb-2">ZooKeeper Deep Dive</h4>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># ZooKeeper: Hierarchical key-value store with strong consistency
+
+# Create ephemeral node (auto-deleted when session ends)
+create -e /locks/resource-1 "instance-1"
+
+# Create sequential node (for ordering)
+create -e -s /election/candidate- "instance-1"
+# Creates: /election/candidate-0000000001
+
+# Watch for changes (get notified)
+get -w /config/database  # Watch triggers on change
+
+# Leader Election with ZooKeeper:
+# 1. Each instance creates sequential ephemeral node
+# 2. Instance with lowest sequence number is leader
+# 3. Others watch the node just before them
+# 4. When leader dies, next in line becomes leader</code></pre>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-blue-900/30 border border-blue-500 rounded-lg p-4">
+                            <h4 class="text-blue-400 font-semibold mb-2">When to Choose ZooKeeper</h4>
+                            <ul class="text-gray-300 text-sm list-disc list-inside space-y-1">
+                                <li>Need strong consistency (CP in CAP)</li>
+                                <li>Complex coordination patterns</li>
+                                <li>Already using Kafka/Hadoop ecosystem</li>
+                                <li>Need watch/notification features</li>
+                                <li>Hierarchical data organization</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-500 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">When to Choose Redis</h4>
+                            <ul class="text-gray-300 text-sm list-disc list-inside space-y-1">
+                                <li>Need speed (sub-millisecond)</li>
+                                <li>Already using Redis for caching</li>
+                                <li>Simple lock requirements</li>
+                                <li>High throughput operations</li>
+                                <li>Rich data structure needs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4 class="text-lg font-semibold text-red-300 mb-2">etcd for Kubernetes-Native Apps</h4>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <pre class="text-green-400 text-sm"><code># etcd: Distributed key-value store (Kubernetes backing store)
+
+# Put a key
+etcdctl put /config/db-host "postgres.default.svc"
+
+# Get with prefix (like Redis KEYS)
+etcdctl get --prefix /config/
+
+# Watch for changes
+etcdctl watch /config/ --prefix
+
+# Distributed lock
+etcdctl lock /locks/my-resource
+# Lock held until process exits or explicit unlock
+
+# Lease-based TTL
+etcdctl lease grant 30  # 30 second lease
+etcdctl put --lease=xxx /service/instance-1 "alive"</code></pre>
+                    </div>
+
+                    <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-semibold mb-2">Real-World Architecture: Microservices with Redis</h4>
+                        <pre class="text-gray-300 text-sm"><code>┌─────────────────────────────────────────────────────────────┐
+│                      API Gateway                             │
+│  • Rate Limiting (Redis Sorted Set)                         │
+│  • Session Validation (Redis Hash)                          │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+    ┌─────────────────────┼─────────────────────┐
+    │                     │                     │
+    ▼                     ▼                     ▼
+┌─────────┐         ┌─────────┐          ┌─────────┐
+│ User    │         │ Order   │          │ Payment │
+│ Service │         │ Service │          │ Service │
+└────┬────┘         └────┬────┘          └────┬────┘
+     │                   │                    │
+     └───────────────────┴────────────────────┘
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+              ▼                     ▼
+         ┌─────────┐          ┌─────────┐
+         │  Redis  │          │   DB    │
+         │ Cluster │          │(Primary)│
+         ├─────────┤          └─────────┘
+         │• Cache  │
+         │• Sessions│
+         │• Locks  │
+         │• Pub/Sub│
+         │• Queues │
+         └─────────┘</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lesson 13: Caching Strategies -->
+            <section id="caching-strategies" class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">13. Caching Strategies & Invalidation</h2>
+
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-gray-300 mb-4">
+                        Effective caching is crucial for application performance. Understanding different caching
+                        strategies and when to use them can dramatically improve your system's scalability.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">Caching Strategies</h3>
+
+                    <!-- Strategy 1: Cache-Aside -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">1. Cache-Aside (Lazy Loading)</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Application manages cache. Data loaded on-demand when cache miss occurs.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Read Pattern
+def get_user(user_id):
+    # 1. Check cache first
+    cached = redis.get(f"user:{user_id}")
+    if cached:
+        return json.loads(cached)
+
+    # 2. Cache miss - fetch from database
+    user = database.query("SELECT * FROM users WHERE id = ?", user_id)
+
+    # 3. Store in cache for future requests
+    redis.setex(f"user:{user_id}", 3600, json.dumps(user))
+
+    return user
+
+# Write Pattern (application must invalidate)
+def update_user(user_id, data):
+    database.update("UPDATE users SET ... WHERE id = ?", data, user_id)
+    redis.delete(f"user:{user_id}")  # Invalidate cache</code></pre>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-green-400">
+                                <strong>Pros:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Only caches requested data</li>
+                                    <li>Cache failures don't break app</li>
+                                    <li>Simple to implement</li>
+                                </ul>
+                            </div>
+                            <div class="text-yellow-400">
+                                <strong>Cons:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>First request always slow (miss)</li>
+                                    <li>Cache stampede risk</li>
+                                    <li>Stale data possible</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-blue-400 text-sm mt-2">
+                            <strong>Real-World:</strong> User profiles, product details, blog posts
+                        </p>
+                    </div>
+
+                    <!-- Strategy 2: Read-Through -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">2. Read-Through Cache</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Cache sits between application and database. Cache automatically loads data on miss.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Cache library handles loading (e.g., Spring Cache, Django cache)
+@cache(key="user:{user_id}", ttl=3600)
+def get_user(user_id):
+    # This only runs on cache miss
+    return database.query("SELECT * FROM users WHERE id = ?", user_id)
+
+# Behind the scenes (cache library logic):
+def cache_get(key, loader_fn):
+    value = redis.get(key)
+    if value is None:
+        value = loader_fn()  # Call database
+        redis.setex(key, ttl, serialize(value))
+    return deserialize(value)</code></pre>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-green-400">
+                                <strong>Pros:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Cleaner application code</li>
+                                    <li>Consistent cache logic</li>
+                                    <li>Framework support</li>
+                                </ul>
+                            </div>
+                            <div class="text-yellow-400">
+                                <strong>Cons:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>First request still slow</li>
+                                    <li>Less control over caching</li>
+                                    <li>Framework dependency</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-blue-400 text-sm mt-2">
+                            <strong>Real-World:</strong> ORM caching, CDN origin fetch, API response caching
+                        </p>
+                    </div>
+
+                    <!-- Strategy 3: Write-Through -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">3. Write-Through Cache</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Write to cache and database synchronously. Cache always has latest data.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Write updates both cache and database atomically
+def update_user(user_id, data):
+    # 1. Write to database
+    database.update("UPDATE users SET ... WHERE id = ?", data, user_id)
+
+    # 2. Write to cache (same transaction/request)
+    user = database.query("SELECT * FROM users WHERE id = ?", user_id)
+    redis.setex(f"user:{user_id}", 3600, json.dumps(user))
+
+    return user
+
+# Reads are always fast (cache is pre-populated)
+def get_user(user_id):
+    cached = redis.get(f"user:{user_id}")
+    if cached:
+        return json.loads(cached)
+    # Fallback to DB only if cache expired/evicted
+    return load_from_db_and_cache(user_id)</code></pre>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-green-400">
+                                <strong>Pros:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Cache always consistent</li>
+                                    <li>Reads always fast</li>
+                                    <li>No stale data</li>
+                                </ul>
+                            </div>
+                            <div class="text-yellow-400">
+                                <strong>Cons:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Writes are slower (2x write)</li>
+                                    <li>May cache unused data</li>
+                                    <li>Cache failure affects writes</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-blue-400 text-sm mt-2">
+                            <strong>Real-World:</strong> User sessions, shopping carts, real-time inventory
+                        </p>
+                    </div>
+
+                    <!-- Strategy 4: Write-Behind -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">4. Write-Behind (Write-Back) Cache</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Write to cache immediately, asynchronously persist to database later.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Write to cache, queue for DB write
+def update_user(user_id, data):
+    # 1. Update cache immediately (fast response)
+    redis.hset(f"user:{user_id}", mapping=data)
+
+    # 2. Queue database write (async)
+    redis.rpush("db_write_queue", json.dumps({
+        "table": "users",
+        "id": user_id,
+        "data": data,
+        "timestamp": time.time()
+    }))
+
+    return {"status": "accepted"}
+
+# Background worker processes queue
+def db_writer_worker():
+    while True:
+        item = redis.blpop("db_write_queue", timeout=30)
+        if item:
+            write_to_database(json.loads(item[1]))</code></pre>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-green-400">
+                                <strong>Pros:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Fastest write performance</li>
+                                    <li>Reduced DB load (batching)</li>
+                                    <li>Handles write spikes</li>
+                                </ul>
+                            </div>
+                            <div class="text-yellow-400">
+                                <strong>Cons:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Data loss risk if cache fails</li>
+                                    <li>Complex implementation</li>
+                                    <li>Eventual consistency only</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-blue-400 text-sm mt-2">
+                            <strong>Real-World:</strong> Page view counters, analytics events, logging
+                        </p>
+                    </div>
+
+                    <!-- Strategy 5: Refresh-Ahead -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">5. Refresh-Ahead Cache</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Proactively refresh cache before expiration to avoid cache misses.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Check if refresh needed (e.g., 80% of TTL elapsed)
+def get_user_with_refresh(user_id):
+    key = f"user:{user_id}"
+
+    # Get value and TTL
+    cached = redis.get(key)
+    ttl = redis.ttl(key)
+    original_ttl = 3600  # 1 hour
+
+    if cached:
+        # Refresh if less than 20% TTL remaining
+        if ttl < original_ttl * 0.2:  # < 720 seconds
+            # Async refresh (don't block current request)
+            background_refresh(user_id)
+        return json.loads(cached)
+
+    # Cache miss - load synchronously
+    return load_from_db_and_cache(user_id)
+
+# Background refresh (runs async)
+async def background_refresh(user_id):
+    user = database.query("SELECT * FROM users WHERE id = ?", user_id)
+    redis.setex(f"user:{user_id}", 3600, json.dumps(user))</code></pre>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-green-400">
+                                <strong>Pros:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>Eliminates cache miss latency</li>
+                                    <li>Consistent response times</li>
+                                    <li>Works with hot data</li>
+                                </ul>
+                            </div>
+                            <div class="text-yellow-400">
+                                <strong>Cons:</strong>
+                                <ul class="list-disc list-inside">
+                                    <li>May refresh unused data</li>
+                                    <li>More complex logic</li>
+                                    <li>Needs background workers</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-blue-400 text-sm mt-2">
+                            <strong>Real-World:</strong> Homepage content, product recommendations, hot API responses
+                        </p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-8">Cache Invalidation Strategies</h3>
+                    <p class="text-gray-300 mb-4">
+                        "There are only two hard things in Computer Science: cache invalidation and naming things." — Phil Karlton
+                    </p>
+
+                    <!-- Invalidation 1: TTL -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">1. Time-To-Live (TTL) Based</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Set expiration time on cached data. Simple but may serve stale data.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Simple TTL
+SET user:123 '{"name":"John"}' EX 3600  # Expires in 1 hour
+
+# Different TTLs for different data freshness needs
+SET config:app EX 86400            # 24 hours (rarely changes)
+SET user:profile:123 EX 3600       # 1 hour (changes occasionally)
+SET stock:AAPL EX 60               # 1 minute (changes frequently)
+SET realtime:score EX 5            # 5 seconds (near real-time)
+
+# Jitter to prevent thundering herd
+import random
+base_ttl = 3600
+jitter = random.randint(-300, 300)  # ±5 minutes
+redis.setex(key, base_ttl + jitter, value)</code></pre>
+                        <p class="text-blue-400 text-sm">
+                            <strong>Real-World:</strong> Session tokens (expire after inactivity), API rate limits (reset hourly)
+                        </p>
+                    </div>
+
+                    <!-- Invalidation 2: Event-Based -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">2. Event-Based Invalidation</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Invalidate cache when data changes. Ensures fresh data but requires event infrastructure.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># On data update, publish invalidation event
+def update_product(product_id, data):
+    database.update_product(product_id, data)
+
+    # Publish invalidation event
+    redis.publish("cache:invalidate", json.dumps({
+        "type": "product",
+        "id": product_id,
+        "action": "update"
+    }))
+
+# Cache invalidation listener (runs in each app instance)
+def cache_invalidation_listener():
+    pubsub = redis.pubsub()
+    pubsub.subscribe("cache:invalidate")
+
+    for message in pubsub.listen():
+        if message["type"] == "message":
+            event = json.loads(message["data"])
+            if event["type"] == "product":
+                redis.delete(f"product:{event['id']}")
+                redis.delete(f"product:{event['id']}:details")
+                redis.delete("products:featured")  # Related cache</code></pre>
+                        <p class="text-blue-400 text-sm">
+                            <strong>Real-World:</strong> E-commerce product updates, CMS content changes, user profile updates
+                        </p>
+                    </div>
+
+                    <!-- Invalidation 3: Version/Tag Based -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">3. Version/Tag-Based Invalidation</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Include version in cache key. Changing version effectively invalidates all related caches.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Store version number
+SET product:catalog:version 42
+
+# Cache keys include version
+version = GET product:catalog:version
+cache_key = f"product:{product_id}:v{version}"
+
+# Read with version
+def get_product(product_id):
+    version = redis.get("product:catalog:version")
+    return redis.get(f"product:{product_id}:v{version}")
+
+# Invalidate ALL products by bumping version
+def invalidate_all_products():
+    redis.incr("product:catalog:version")
+    # Old versioned keys will expire naturally via TTL
+    # No need to explicitly delete each one!
+
+# Tag-based: associate caches with tags
+SADD cache:tag:user:123 "orders:user:123" "profile:user:123" "cart:user:123"
+
+# Invalidate all caches for a user
+def invalidate_user_caches(user_id):
+    keys = redis.smembers(f"cache:tag:user:{user_id}")
+    if keys:
+        redis.delete(*keys)
+    redis.delete(f"cache:tag:user:{user_id}")</code></pre>
+                        <p class="text-blue-400 text-sm">
+                            <strong>Real-World:</strong> Bulk catalog updates, feature flag changes, A/B test variations
+                        </p>
+                    </div>
+
+                    <!-- Invalidation 4: Write-Through -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">4. Write-Through Invalidation</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Update cache and database together. Cache is always fresh.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Update both in same transaction
+def update_user_email(user_id, new_email):
+    with database.transaction():
+        # Update database
+        database.execute(
+            "UPDATE users SET email = ? WHERE id = ?",
+            new_email, user_id
+        )
+
+        # Update cache
+        user_data = redis.hgetall(f"user:{user_id}")
+        if user_data:
+            redis.hset(f"user:{user_id}", "email", new_email)
+
+        # Or: Invalidate and let next read repopulate
+        # redis.delete(f"user:{user_id}")</code></pre>
+                        <p class="text-blue-400 text-sm">
+                            <strong>Real-World:</strong> User profile updates, order status changes, inventory updates
+                        </p>
+                    </div>
+
+                    <!-- Invalidation 5: Cache-Aside with Background Refresh -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <h4 class="text-red-300 font-semibold mb-2">5. Stale-While-Revalidate</h4>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Serve stale data immediately while refreshing in background. Best user experience.
+                        </p>
+                        <pre class="text-green-400 text-sm mb-3"><code># Store data with soft and hard TTL
+def cache_with_swr(key, value, soft_ttl=300, hard_ttl=3600):
+    data = {
+        "value": value,
+        "soft_expires": time.time() + soft_ttl,  # When to start refresh
+        "created": time.time()
+    }
+    redis.setex(key, hard_ttl, json.dumps(data))
+
+def get_with_swr(key, refresh_fn):
+    cached = redis.get(key)
+    if cached:
+        data = json.loads(cached)
+
+        # Check if soft TTL expired
+        if time.time() > data["soft_expires"]:
+            # Return stale data immediately
+            # Refresh in background
+            async_refresh(key, refresh_fn)
+
+        return data["value"]
+
+    # Hard miss - must fetch synchronously
+    value = refresh_fn()
+    cache_with_swr(key, value)
+    return value</code></pre>
+                        <p class="text-blue-400 text-sm">
+                            <strong>Real-World:</strong> News feeds, dashboard metrics, search results
+                        </p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-red-400 mb-3 mt-8">Cache Invalidation Patterns Summary</h3>
+                    <div class="bg-gray-900 rounded-lg p-4 mb-4">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Pattern</th>
+                                    <th class="text-left py-2">Consistency</th>
+                                    <th class="text-left py-2">Complexity</th>
+                                    <th class="text-left py-2">Best For</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">TTL-Based</td>
+                                    <td class="text-yellow-400">Eventual</td>
+                                    <td class="text-green-400">Low</td>
+                                    <td>Config, static content</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Event-Based</td>
+                                    <td class="text-green-400">Strong</td>
+                                    <td class="text-yellow-400">Medium</td>
+                                    <td>User data, inventory</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Version-Based</td>
+                                    <td class="text-green-400">Strong</td>
+                                    <td class="text-yellow-400">Medium</td>
+                                    <td>Bulk updates, catalogs</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Write-Through</td>
+                                    <td class="text-green-400">Strong</td>
+                                    <td class="text-green-400">Low</td>
+                                    <td>Critical data</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Stale-While-Revalidate</td>
+                                    <td class="text-yellow-400">Eventual</td>
+                                    <td class="text-red-400">High</td>
+                                    <td>UX-critical, high traffic</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
+                        <h4 class="text-purple-400 font-semibold mb-2">Real-World Example: E-Commerce Product Page</h4>
+                        <pre class="text-gray-300 text-sm"><code>Product Page Caching Strategy:
+├── Product Details (Cache-Aside + Event Invalidation)
+│   ├── Name, description, images → TTL: 1 hour
+│   ├── Invalidate on: admin update
+│   └── Key: product:{id}
+│
+├── Price & Availability (Write-Through)
+│   ├── Current price, stock count → TTL: 5 minutes
+│   ├── Update cache on every inventory change
+│   └── Key: product:{id}:pricing
+│
+├── Reviews (Stale-While-Revalidate)
+│   ├── Average rating, review count → Soft TTL: 5 min, Hard: 1 hour
+│   ├── Background refresh, serve stale immediately
+│   └── Key: product:{id}:reviews
+│
+├── Recommendations (Refresh-Ahead)
+│   ├── "Customers also bought" → TTL: 6 hours
+│   ├── Pre-refresh at 80% TTL
+│   └── Key: product:{id}:recommendations:v{version}
+│
+└── Real-time Stock (No Cache / Write-Behind)
+    ├── "Only 3 left!" → Check DB or use Redis counter
+    └── Key: stock:{product_id} (Redis counter, write-behind to DB)</code></pre>
                     </div>
                 </div>
             </section>
