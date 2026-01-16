@@ -8,53 +8,83 @@ The Circuit Breaker pattern prevents cascading failures in distributed systems b
 
 Think of your home's electrical circuit breaker:
 
-```
-Your Home Electrical System:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   Power Grid ──► Circuit Breaker ──► Your Appliances            │
-│                       │                                         │
-│                  [MONITORS]                                     │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Current too high?   │                              │
-│            │ Short circuit?      │                              │
-│            │ Overload detected?  │                              │
-│            └─────────────────────┘                              │
-│                       │                                         │
-│                [TRIPS/OPENS]                                    │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Cuts power flow     │                              │
-│            │ Prevents fire       │                              │
-│            │ Protects wiring     │                              │
-│            └─────────────────────┘                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+<div class="diagram-section">
+  <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Your Home Electrical System</h3>
+  <div class="circuit-diagram">
+    <div class="diagram-row">
+      <div class="diagram-box power-grid">
+        <div class="box-icon">⚡</div>
+        <div class="box-label">Power Grid</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box circuit-breaker">
+        <div class="box-icon">🔌</div>
+        <div class="box-label">Circuit Breaker</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box appliances">
+        <div class="box-icon">🏠</div>
+        <div class="box-label">Appliances</div>
+      </div>
+    </div>
+    <div class="diagram-details">
+      <div class="detail-column">
+        <strong>Monitors:</strong>
+        <ul>
+          <li>Current too high?</li>
+          <li>Short circuit?</li>
+          <li>Overload detected?</li>
+        </ul>
+      </div>
+      <div class="detail-column">
+        <strong>When Triggered:</strong>
+        <ul>
+          <li>Cuts power flow</li>
+          <li>Prevents fire</li>
+          <li>Protects wiring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-Software Circuit Breaker:
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   Service A ──► Circuit Breaker ──► Service B                   │
-│                       │                                         │
-│                  [MONITORS]                                     │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Failure rate high?  │                              │
-│            │ Timeouts frequent?  │                              │
-│            │ Error threshold?    │                              │
-│            └─────────────────────┘                              │
-│                       │                                         │
-│                [TRIPS/OPENS]                                    │
-│                       │                                         │
-│            ┌─────────────────────┐                              │
-│            │ Fails fast          │                              │
-│            │ Returns fallback    │                              │
-│            │ Protects both sides │                              │
-│            └─────────────────────┘                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+  <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Software Circuit Breaker Equivalent</h3>
+  <div class="circuit-diagram">
+    <div class="diagram-row">
+      <div class="diagram-box service-a">
+        <div class="box-icon">🔵</div>
+        <div class="box-label">Service A</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box circuit-breaker">
+        <div class="box-icon">🔌</div>
+        <div class="box-label">Circuit Breaker</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-box service-b">
+        <div class="box-icon">🔵</div>
+        <div class="box-label">Service B</div>
+      </div>
+    </div>
+    <div class="diagram-details">
+      <div class="detail-column">
+        <strong>Monitors:</strong>
+        <ul>
+          <li>Failure rate high?</li>
+          <li>Timeouts frequent?</li>
+          <li>Error threshold?</li>
+        </ul>
+      </div>
+      <div class="detail-column">
+        <strong>When Triggered:</strong>
+        <ul>
+          <li>Fails fast</li>
+          <li>Returns fallback</li>
+          <li>Protects both sides</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -88,36 +118,45 @@ After 20+ years of operating distributed systems, here's what you learn:
 
 ## The Three States: Deep Dive
 
-```
-                    ┌──────────────────────────────────────────────┐
-                    │                 STATE DIAGRAM                │
-                    └──────────────────────────────────────────────┘
+<div class="diagram-section">
+  <div class="state-diagram">
+    <div class="state-container">
+      <div class="state-box state-closed">
+        <div class="state-title">CLOSED</div>
+        <div class="state-desc">Normal operation<br>Counting failures</div>
+      </div>
 
-                             Success
-                    ┌──────────────────┐
-                    │                  │
-                    ▼                  │
-              ┌──────────┐        ┌────┴─────┐
-              │          │        │          │
-         ────►│  CLOSED  │───────►│   OPEN   │
-              │          │        │          │
-              └────┬─────┘        └────┬─────┘
-                   │                   │
-                   │                   │ Timeout expires
-                   │                   │
-                   │              ┌────▼─────┐
-                   │              │          │
-                   │              │HALF-OPEN │
-                   │              │          │
-                   │              └────┬─────┘
-                   │                   │
-                   │    Success        │ Failure
-                   └───────────────────┘
+      <div class="state-transition transition-failure">
+        <div class="transition-label">Failure threshold reached</div>
+      </div>
 
-    CLOSED: All requests pass through, failures counted
-    OPEN: All requests fail immediately (fail fast)
-    HALF-OPEN: Limited requests pass through to test recovery
-```
+      <div class="state-box state-open">
+        <div class="state-title">OPEN</div>
+        <div class="state-desc">Failing fast<br>Requests blocked</div>
+      </div>
+
+      <div class="state-transition transition-timeout">
+        <div class="transition-label">Timeout expires</div>
+      </div>
+
+      <div class="state-box state-half-open">
+        <div class="state-title">HALF-OPEN</div>
+        <div class="state-desc">Testing recovery<br>Limited requests</div>
+      </div>
+    </div>
+
+    <div class="state-transitions">
+      <div class="transition-row">
+        <div class="transition-arrow success-arrow">↶ Success</div>
+        <span class="transition-from">HALF-OPEN → CLOSED</span>
+      </div>
+      <div class="transition-row">
+        <div class="transition-arrow failure-arrow">↷ Failure</div>
+        <span class="transition-from">HALF-OPEN → OPEN</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### State Transitions in Detail
 
