@@ -74,7 +74,26 @@
                             <option value="PUT">PUT</option>
                             <option value="DELETE">DELETE</option>
                         </select>
-                        <input type="text" id="endpoint-path" class="endpoint-input" value="/tests/_search" placeholder="/index/_search">
+                        <input type="text" id="endpoint-path" class="endpoint-input" value="/tests/_search"
+                               placeholder="/index/_search" list="elasticsearch-endpoints">
+                        <datalist id="elasticsearch-endpoints">
+                            <option value="/_search"></option>
+                            <option value="/_doc"></option>
+                            <option value="/_bulk"></option>
+                            <option value="/_cat"></option>
+                            <option value="/_cat/indices"></option>
+                            <option value="/_cat/nodes"></option>
+                            <option value="/_cluster/health"></option>
+                            <option value="/_info"></option>
+                            <option value="/_stats"></option>
+                            <option value="/tests/_search"></option>
+                            <option value="/tests/_doc"></option>
+                            <option value="/tests/_mappings"></option>
+                            <option value="/tests/_settings"></option>
+                            <option value="/_index/templates"></option>
+                            <option value="/_aliases"></option>
+                            <option value="/_reindex"></option>
+                        </datalist>
                         <button id="run-query" class="btn btn-primary" onclick="executeQuery()">
                             Run Query
                         </button>
