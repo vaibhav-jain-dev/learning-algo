@@ -524,18 +524,20 @@ func (db *DB) ResetDatabase(ctx context.Context) error {
 // Helper functions
 
 func detectQueryType(query string) string {
+	// Remove SQL comments before detecting query type
+	query = stripSQLComments(query)
 	query = strings.TrimSpace(strings.ToUpper(query))
 
 	patterns := map[string]*regexp.Regexp{
-		"SELECT":  regexp.MustCompile(`^SELECT\b`),
-		"INSERT":  regexp.MustCompile(`^INSERT\b`),
-		"UPDATE":  regexp.MustCompile(`^UPDATE\b`),
-		"DELETE":  regexp.MustCompile(`^DELETE\b`),
-		"CREATE":  regexp.MustCompile(`^CREATE\b`),
-		"ALTER":   regexp.MustCompile(`^ALTER\b`),
-		"DROP":    regexp.MustCompile(`^DROP\b`),
-		"WITH":    regexp.MustCompile(`^WITH\b`),
-		"EXPLAIN": regexp.MustCompile(`^EXPLAIN\b`),
+		"SELECT":   regexp.MustCompile(`^SELECT\b`),
+		"INSERT":   regexp.MustCompile(`^INSERT\b`),
+		"UPDATE":   regexp.MustCompile(`^UPDATE\b`),
+		"DELETE":   regexp.MustCompile(`^DELETE\b`),
+		"CREATE":   regexp.MustCompile(`^CREATE\b`),
+		"ALTER":    regexp.MustCompile(`^ALTER\b`),
+		"DROP":     regexp.MustCompile(`^DROP\b`),
+		"WITH":     regexp.MustCompile(`^WITH\b`),
+		"EXPLAIN":  regexp.MustCompile(`^EXPLAIN\b`),
 		"TRUNCATE": regexp.MustCompile(`^TRUNCATE\b`),
 	}
 
@@ -546,6 +548,30 @@ func detectQueryType(query string) string {
 	}
 
 	return "UNKNOWN"
+}
+
+// stripSQLComments removes SQL single-line (--) and multi-line (/* */) comments
+func stripSQLComments(query string) string {
+	// Remove multi-line comments /* */
+	multiLineComment := regexp.MustCompile(`/\*[\s\S]*?\*/`)
+	query = multiLineComment.ReplaceAllString(query, "")
+
+	// Remove single-line comments --
+	lines := strings.Split(query, "\n")
+	var cleanedLines []string
+	for _, line := range lines {
+		// Find -- that's not inside a string
+		idx := strings.Index(line, "--")
+		if idx >= 0 {
+			// Simple approach: just take everything before --
+			line = line[:idx]
+		}
+		if strings.TrimSpace(line) != "" {
+			cleanedLines = append(cleanedLines, line)
+		}
+	}
+
+	return strings.Join(cleanedLines, " ")
 }
 
 func convertValue(v interface{}) interface{} {

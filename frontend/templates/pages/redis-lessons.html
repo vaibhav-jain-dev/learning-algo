@@ -1,7 +1,4 @@
-{{define "title"}}{{.Title}}{{end}}
-
-{{define "content"}}
-<div class="container mx-auto px-4 py-8 max-w-7xl">
+<div class="container mx-auto px-4 py-8 max-w-7xl" style="background: #1a1a2e; min-height: 100vh;">
     <!-- Header -->
     <div class="mb-8">
         <div class="flex items-center gap-4 mb-4">
@@ -105,6 +102,90 @@
                         millions of requests per second.
                     </p>
 
+                    <!-- Deep Dive: Why is Redis So Fast? -->
+                    <div class="bg-gray-900 border-l-4 border-red-500 rounded-r-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-2">Why is Redis So Fast?</h4>
+                        <div class="text-gray-300 text-sm space-y-2">
+                            <p><strong>1. In-Memory Storage:</strong> RAM is ~100,000x faster than disk. A typical HDD reads at 100 MB/s, while RAM operates at 20,000+ MB/s.</p>
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-2">Latency Comparison:</div>
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="text-gray-400 border-b border-gray-700">
+                                            <th class="text-left py-2">Operation</th>
+                                            <th class="text-left py-2">Time</th>
+                                            <th class="text-left py-2">Redis Advantage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800"><td class="py-1.5">L1 cache</td><td class="text-cyan-400">0.5 ns</td><td>-</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5">L2 cache</td><td class="text-cyan-400">7 ns</td><td>-</td></tr>
+                                        <tr class="border-b border-gray-800 bg-red-900/20"><td class="py-1.5 text-red-400 font-semibold">RAM access</td><td class="text-green-400">100 ns</td><td class="text-red-400">Redis lives here</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-red-300">SSD read</td><td class="text-yellow-400">150,000 ns</td><td class="text-green-400">1,500x faster</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-red-300">HDD seek</td><td class="text-red-400">10,000,000 ns</td><td class="text-green-400">100,000x faster</td></tr>
+                                        <tr><td class="py-1.5">Network (DC)</td><td class="text-yellow-400">500,000 ns</td><td>-</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p><strong>2. Single-Threaded Event Loop:</strong> No context switching, no locks, no race conditions. Redis processes commands sequentially using an efficient event loop (epoll/kqueue).</p>
+                            <p><strong>3. Optimized Data Structures:</strong> Redis uses specialized data structures (like Skip Lists for Sorted Sets) that are optimized for the operations they support.</p>
+                            <p><strong>4. Simple Protocol:</strong> RESP (Redis Serialization Protocol) is a simple text protocol with minimal parsing overhead.</p>
+                        </div>
+                    </div>
+
+                    <!-- Redis vs SQL vs Memcached -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-3">Redis vs SQL vs Memcached</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Feature</th>
+                                    <th class="text-left py-2">SQL Database</th>
+                                    <th class="text-left py-2">Memcached</th>
+                                    <th class="text-left py-2">Redis</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Speed</td>
+                                    <td>~1-10ms</td>
+                                    <td>&lt;1ms</td>
+                                    <td class="text-red-400">&lt;1ms</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Data Types</td>
+                                    <td>Tables/Rows</td>
+                                    <td>Strings only</td>
+                                    <td class="text-red-400">Multiple (Lists, Sets, Hashes...)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Persistence</td>
+                                    <td>Yes (ACID)</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">Optional (RDB/AOF)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Pub/Sub</td>
+                                    <td>Limited</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">Yes</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Transactions</td>
+                                    <td>Full ACID</td>
+                                    <td>No</td>
+                                    <td class="text-red-400">MULTI/EXEC (no rollback)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Use Case</td>
+                                    <td>Primary storage</td>
+                                    <td>Simple caching</td>
+                                    <td class="text-red-400">Caching, queues, real-time</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <h3 class="text-xl font-semibold text-red-400 mb-3">Key Features</h3>
                     <ul class="list-disc list-inside text-gray-300 mb-4 space-y-2">
                         <li><strong>In-Memory Storage:</strong> All data is stored in RAM for ultra-fast access</li>
@@ -178,7 +259,7 @@ FLUSHDB
 # Clear all databases
 FLUSHALL</code></pre>
                     </div>
-                    <button onclick="tryCommand('PING')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('PING', this)" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try PING
                     </button>
                 </div>
@@ -221,7 +302,7 @@ MSET key1 "value1" key2 "value2" key3 "value3"
 # Get multiple keys
 MGET key1 key2 key3</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET greeting \"Hello Redis\"')" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET greeting hello-redis', this)" class="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try SET
                     </button>
 
@@ -246,10 +327,10 @@ DECR counter
 # Decrement by specific amount
 DECRBY counter 3</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET demo:counter 0')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET demo:counter 0', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Initialize Counter
                     </button>
-                    <button onclick="tryCommand('INCR demo:counter')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('INCR demo:counter', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Try INCR
                     </button>
 
@@ -309,10 +390,10 @@ RPOP tasks
 LPOP tasks 2
 # Response: ["task2", "task1"]</code></pre>
                     </div>
-                    <button onclick="tryCommand('RPUSH demo:queue \"item1\" \"item2\" \"item3\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('RPUSH demo:queue item1 item2 item3', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Queue
                     </button>
-                    <button onclick="tryCommand('LPOP demo:queue')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('LPOP demo:queue', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Pop from Queue
                     </button>
 
@@ -336,7 +417,7 @@ LSET tasks 0 "updated_task"
 LINSERT tasks BEFORE "task2" "new_task"
 LINSERT tasks AFTER "task2" "another_task"</code></pre>
                     </div>
-                    <button onclick="tryCommand('LRANGE demo:queue 0 -1')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('LRANGE demo:queue 0 -1', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Queue
                     </button>
 
@@ -400,10 +481,10 @@ SREM tags "docker"
 # Pop random member
 SPOP tags</code></pre>
                     </div>
-                    <button onclick="tryCommand('SADD demo:skills \"python\" \"javascript\" \"go\" \"rust\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SADD demo:skills python javascript go rust', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Set
                     </button>
-                    <button onclick="tryCommand('SMEMBERS demo:skills')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SMEMBERS demo:skills', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Set
                     </button>
 
@@ -485,10 +566,10 @@ HKEYS user:1000
 # Get all values
 HVALS user:1000</code></pre>
                     </div>
-                    <button onclick="tryCommand('HSET demo:user name \"Alice\" email \"alice@example.com\" role \"admin\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('HSET demo:user name Alice email alice@example.com role admin', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Hash
                     </button>
-                    <button onclick="tryCommand('HGETALL demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('HGETALL demo:user', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Hash
                     </button>
 
@@ -539,6 +620,144 @@ EXPIRE session:abc123 3600  # 1 hour</code></pre>
                         that determines its position. Perfect for leaderboards, priority queues, and range queries.
                     </p>
 
+                    <!-- Deep Dive: How Sorted Sets Work Internally -->
+                    <div class="bg-gray-900 border-l-4 border-red-500 rounded-r-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-2">How Sorted Sets Work Internally (Skip Lists)</h4>
+                        <div class="text-gray-300 text-sm space-y-2">
+                            <p>Redis uses a <strong>Skip List</strong> + <strong>Hash Table</strong> for Sorted Sets:</p>
+
+                            <!-- Skip List Visual Diagram -->
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-3">Skip List Structure:</div>
+                                <div class="space-y-2 font-mono text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 3:</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">─────────────────────────────────▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">──▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 2:</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">────────▶</span>
+                                            <span class="bg-yellow-900/50 px-2 py-1 rounded text-yellow-300">50:bob</span>
+                                            <span class="text-gray-600">────────────▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">──▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-500 w-16">Level 1:</span>
+                                        <div class="flex items-center gap-1 flex-wrap">
+                                            <span class="bg-gray-700 px-2 py-1 rounded text-cyan-400">HEAD</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-green-900/50 px-2 py-1 rounded text-green-300">30:alice</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-yellow-900/50 px-2 py-1 rounded text-yellow-300">50:bob</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-blue-900/50 px-2 py-1 rounded text-blue-300">70:david</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="bg-red-900/50 px-2 py-1 rounded text-red-300">90:charlie</span>
+                                            <span class="text-gray-600">▶</span>
+                                            <span class="text-gray-500">NULL</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-gray-800">
+                                    <div class="text-cyan-400 font-semibold mb-2">+ Hash Table: member → score</div>
+                                    <div class="bg-gray-800 rounded p-2 text-xs">
+                                        <span class="text-gray-400">{</span>
+                                        <span class="text-green-400">"alice"</span><span class="text-gray-400">: 30, </span>
+                                        <span class="text-yellow-400">"bob"</span><span class="text-gray-400">: 50, </span>
+                                        <span class="text-blue-400">"david"</span><span class="text-gray-400">: 70, </span>
+                                        <span class="text-red-400">"charlie"</span><span class="text-gray-400">: 90}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Operations Table -->
+                            <div class="bg-gray-950 rounded-lg p-4 my-3">
+                                <div class="text-red-400 font-semibold mb-2">Operations Complexity:</div>
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="text-gray-400 border-b border-gray-700">
+                                            <th class="text-left py-2">Operation</th>
+                                            <th class="text-left py-2">Time</th>
+                                            <th class="text-left py-2">Why</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-300">
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZADD</td><td class="text-yellow-400">O(log n)</td><td>Skip list insertion</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZSCORE</td><td class="text-green-400">O(1)</td><td>Hash table lookup</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZRANK</td><td class="text-yellow-400">O(log n)</td><td>Skip list traversal</td></tr>
+                                        <tr class="border-b border-gray-800"><td class="py-1.5 text-cyan-400">ZRANGE</td><td class="text-yellow-400">O(log n + m)</td><td>Skip to start, traverse m items</td></tr>
+                                        <tr><td class="py-1.5 text-cyan-400">ZRANGEBYSCORE</td><td class="text-yellow-400">O(log n + m)</td><td>Binary search + traverse</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p><strong>Why Skip Lists instead of Balanced Trees?</strong></p>
+                            <ul class="list-disc list-inside text-gray-400 pl-2">
+                                <li>Simpler to implement correctly</li>
+                                <li>Easier to modify concurrently</li>
+                                <li>Better cache locality for range queries</li>
+                                <li>Same O(log n) complexity as trees</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- When to use which data structure -->
+                    <div class="bg-gray-900 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-red-400 mb-3">Choosing the Right Data Structure</h4>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-700">
+                                    <th class="text-left py-2">Need</th>
+                                    <th class="text-left py-2">Use</th>
+                                    <th class="text-left py-2">Example</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Simple key-value</td>
+                                    <td class="text-red-400">String</td>
+                                    <td>Session data, counters</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Object with fields</td>
+                                    <td class="text-red-400">Hash</td>
+                                    <td>User profile, product details</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">FIFO queue</td>
+                                    <td class="text-red-400">List (LPUSH/RPOP)</td>
+                                    <td>Task queue, message queue</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Unique items, no order</td>
+                                    <td class="text-red-400">Set</td>
+                                    <td>Tags, unique visitors</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="py-2">Ranked/scored items</td>
+                                    <td class="text-red-400">Sorted Set</td>
+                                    <td>Leaderboard, scheduling</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Event log/stream</td>
+                                    <td class="text-red-400">Stream</td>
+                                    <td>Activity feed, audit log</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                     <h3 class="text-xl font-semibold text-red-400 mb-3">Basic Sorted Set Operations</h3>
                     <div class="bg-gray-900 rounded-lg p-4 mb-4">
                         <pre class="text-green-400 text-sm"><code># Add members with scores
@@ -562,10 +781,10 @@ ZREVRANK leaderboard "player1"
 # Count members
 ZCARD leaderboard</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 \"alice\" 1200 \"bob\" 1800 \"charlie\" 900 \"david\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZADD demo:leaderboard 1500 alice 1200 bob 1800 charlie 900 david', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Create Leaderboard
                     </button>
-                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Rankings
                     </button>
 
@@ -653,10 +872,10 @@ TYPE mykey
 RENAME oldkey newkey
 RENAMENX oldkey newkey  # Only if newkey doesn't exist</code></pre>
                     </div>
-                    <button onclick="tryCommand('KEYS demo:*')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('KEYS demo:*', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         List Demo Keys
                     </button>
-                    <button onclick="tryCommand('TYPE demo:user')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('TYPE demo:user', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Check Type
                     </button>
 
@@ -738,10 +957,10 @@ EXPIRE mykey 7200 GT
 # Set only if new TTL < current TTL
 EXPIRE mykey 1800 LT</code></pre>
                     </div>
-                    <button onclick="tryCommand('SET demo:temp \"temporary\" EX 60')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('SET demo:temp temporary EX 60', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Set with TTL
                     </button>
-                    <button onclick="tryCommand('TTL demo:temp')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('TTL demo:temp', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Check TTL
                     </button>
 
@@ -1011,10 +1230,10 @@ ZREVRANK leaderboard "player:123"
 # Get players around a score
 ZREVRANGEBYSCORE leaderboard 1600 1400 WITHSCORES LIMIT 0 10</code></pre>
                     </div>
-                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 \"alice\"')" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZINCRBY demo:leaderboard 100 alice', this)" class="mr-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         Add Points
                     </button>
-                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
+                    <button onclick="tryCommand('ZREVRANGE demo:leaderboard 0 -1 WITHSCORES', this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm">
                         View Leaderboard
                     </button>
 
@@ -1377,35 +1596,40 @@ etcdctl put --lease=xxx /service/instance-1 "alive"</code></pre>
 
                     <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
                         <h4 class="text-purple-400 font-semibold mb-2">Real-World Architecture: Microservices with Redis</h4>
-                        <pre class="text-gray-300 text-sm"><code>┌─────────────────────────────────────────────────────────────┐
-│                      API Gateway                             │
-│  • Rate Limiting (Redis Sorted Set)                         │
-│  • Session Validation (Redis Hash)                          │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-    ┌─────────────────────┼─────────────────────┐
-    │                     │                     │
-    ▼                     ▼                     ▼
-┌─────────┐         ┌─────────┐          ┌─────────┐
-│ User    │         │ Order   │          │ Payment │
-│ Service │         │ Service │          │ Service │
-└────┬────┘         └────┬────┘          └────┬────┘
-     │                   │                    │
-     └───────────────────┴────────────────────┘
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-              ▼                     ▼
-         ┌─────────┐          ┌─────────┐
-         │  Redis  │          │   DB    │
-         │ Cluster │          │(Primary)│
-         ├─────────┤          └─────────┘
-         │• Cache  │
-         │• Sessions│
-         │• Locks  │
-         │• Pub/Sub│
-         │• Queues │
-         └─────────┘</code></pre>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem;">
+                            <!-- API Gateway -->
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 1rem 2rem; color: white; text-align: center; width: 100%; max-width: 500px;">
+                                <div style="font-weight: 700; font-size: 1rem;">API Gateway</div>
+                                <div style="font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem;">Rate Limiting (Sorted Set) • Session Validation (Hash)</div>
+                            </div>
+                            <div style="color: #667eea; font-size: 1.25rem;">↓</div>
+                            <!-- Services Row -->
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                                <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4; text-align: center;">
+                                    <div style="font-weight: 600;">User Service</div>
+                                </div>
+                                <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb; text-align: center;">
+                                    <div style="font-weight: 600;">Order Service</div>
+                                </div>
+                                <div style="background: #1e3a5f; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1.25rem; color: #ffd93d; text-align: center;">
+                                    <div style="font-weight: 600;">Payment Service</div>
+                                </div>
+                            </div>
+                            <div style="color: #a0aec0; font-size: 1.25rem;">↓</div>
+                            <!-- Data Layer -->
+                            <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                                <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
+                                    <div style="font-weight: 700;">Redis Cluster</div>
+                                    <div style="font-size: 0.7rem; margin-top: 0.5rem; text-align: left; opacity: 0.9;">
+                                        • Cache<br>• Sessions<br>• Locks<br>• Pub/Sub<br>• Queues
+                                    </div>
+                                </div>
+                                <div style="background: #2d3748; border: 2px solid #a0aec0; border-radius: 10px; padding: 1rem 1.5rem; color: #a0aec0; text-align: center;">
+                                    <div style="font-weight: 700;">DB (Primary)</div>
+                                    <div style="font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.8;">Source of Truth</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1875,30 +2099,48 @@ def get_with_swr(key, refresh_fn):
 
                     <div class="bg-purple-900/30 border border-purple-500 rounded-lg p-4">
                         <h4 class="text-purple-400 font-semibold mb-2">Real-World Example: E-Commerce Product Page</h4>
-                        <pre class="text-gray-300 text-sm"><code>Product Page Caching Strategy:
-├── Product Details (Cache-Aside + Event Invalidation)
-│   ├── Name, description, images → TTL: 1 hour
-│   ├── Invalidate on: admin update
-│   └── Key: product:{id}
-│
-├── Price & Availability (Write-Through)
-│   ├── Current price, stock count → TTL: 5 minutes
-│   ├── Update cache on every inventory change
-│   └── Key: product:{id}:pricing
-│
-├── Reviews (Stale-While-Revalidate)
-│   ├── Average rating, review count → Soft TTL: 5 min, Hard: 1 hour
-│   ├── Background refresh, serve stale immediately
-│   └── Key: product:{id}:reviews
-│
-├── Recommendations (Refresh-Ahead)
-│   ├── "Customers also bought" → TTL: 6 hours
-│   ├── Pre-refresh at 80% TTL
-│   └── Key: product:{id}:recommendations:v{version}
-│
-└── Real-time Stock (No Cache / Write-Behind)
-    ├── "Only 3 left!" → Check DB or use Redis counter
-    └── Key: stock:{product_id} (Redis counter, write-behind to DB)</code></pre>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; padding: 0.5rem;">
+                            <!-- Product Details -->
+                            <div style="background: #1a472a; border-left: 4px solid #38ef7d; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #38ef7d;">Product Details</div>
+                                    <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #34d399;">Cache-Aside</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Name, images → TTL: 1hr • Key: product:{id}</div>
+                            </div>
+                            <!-- Price & Availability -->
+                            <div style="background: #1e3a5f; border-left: 4px solid #4ecdc4; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #4ecdc4;">Price & Availability</div>
+                                    <span style="background: #164e63; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #22d3ee;">Write-Through</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Price, stock → TTL: 5min • Key: product:{id}:pricing</div>
+                            </div>
+                            <!-- Reviews -->
+                            <div style="background: #3b1f4a; border-left: 4px solid #f093fb; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #f093fb;">Reviews</div>
+                                    <span style="background: #581c87; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #e879f9;">Stale-While-Revalidate</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">Rating, count → Soft: 5min, Hard: 1hr • Key: product:{id}:reviews</div>
+                            </div>
+                            <!-- Recommendations -->
+                            <div style="background: #422006; border-left: 4px solid #ffd93d; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #ffd93d;">Recommendations</div>
+                                    <span style="background: #713f12; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #fde047;">Refresh-Ahead</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">"Also bought" → TTL: 6hr, pre-refresh at 80% • Key: product:{id}:recs</div>
+                            </div>
+                            <!-- Real-time Stock -->
+                            <div style="background: #4a1a1a; border-left: 4px solid #ff6b6b; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="font-weight: 600; color: #ff6b6b;">Real-time Stock</div>
+                                    <span style="background: #7f1d1d; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; color: #fca5a5;">No Cache / Counter</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">"Only 3 left!" → Redis counter • Key: stock:{product_id}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1919,10 +2161,52 @@ def get_with_swr(key, refresh_fn):
 </div>
 
 <script>
-function tryCommand(command) {
-    // Store command in sessionStorage and redirect to dashboard
-    sessionStorage.setItem('redis_command', command);
-    window.location.href = '/redis';
+async function tryCommand(command, button) {
+    // Find or create result container near the button
+    let section = button ? (button.closest('section') || button.parentElement) : null;
+    let resultContainer = section ? section.querySelector('.redis-result-container') : null;
+
+    if (!resultContainer && button) {
+        resultContainer = document.createElement('div');
+        resultContainer.className = 'redis-result-container bg-gray-900 rounded-lg p-4 mt-4 border border-gray-700';
+        resultContainer.innerHTML = '<div class="text-gray-400 text-sm mb-2">Result:</div><pre class="redis-result-content text-sm overflow-x-auto"></pre>';
+        button.parentElement.appendChild(resultContainer);
+    }
+
+    const resultContent = resultContainer ? resultContainer.querySelector('.redis-result-content') : null;
+
+    if (resultContent) {
+        resultContent.textContent = 'Executing...';
+        resultContent.style.color = '#a0aec0';
+    }
+
+    try {
+        const response = await fetch('/api/redis/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: command })
+        });
+
+        const result = await response.json();
+
+        if (resultContent) {
+            if (result.success) {
+                let output = result.result;
+                if (typeof output === 'object') {
+                    output = JSON.stringify(output, null, 2);
+                }
+                resultContent.textContent = '> ' + command + '\n' + output;
+                resultContent.style.color = '#4ecdc4';
+            } else {
+                resultContent.textContent = '> ' + command + '\nError: ' + result.error;
+                resultContent.style.color = '#ff6b6b';
+            }
+        }
+    } catch (error) {
+        if (resultContent) {
+            resultContent.textContent = '> ' + command + '\nError: ' + error.message;
+            resultContent.style.color = '#ff6b6b';
+        }
+    }
 }
 </script>
-{{end}}

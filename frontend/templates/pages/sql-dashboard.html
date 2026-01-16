@@ -1,4 +1,4 @@
-<div class="sql-dashboard">
+<div class="sql-dashboard unified-dashboard theme-sql">
     <aside class="sidebar">
         <div class="sidebar-header">
             <h2>Database Schema</h2>
@@ -92,16 +92,18 @@
 </div>
 
 <style>
+/* SQL Dashboard - Dark theme for consistency */
 .sql-dashboard {
     display: flex;
     height: calc(100vh - 60px);
     gap: 0;
+    background: #0f0f1a;
 }
 
 .sql-dashboard .sidebar {
     width: 300px;
-    background: var(--bg-secondary, #f5f5f5);
-    border-right: 1px solid var(--border-color, #e0e0e0);
+    background: #1a1a2e;
+    border-right: 1px solid #333;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -109,37 +111,41 @@
 
 .sql-dashboard .sidebar-header {
     padding: 1rem;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
 .sql-dashboard .sidebar-header h2 {
     margin: 0;
     font-size: 1rem;
+    color: #fff;
 }
 
 .sql-dashboard .sidebar-section {
     padding: 1rem;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid #333;
 }
 
 .sql-dashboard .sidebar-section h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.9rem;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .schema-tree {
     flex: 1;
     overflow-y: auto;
     padding: 0.5rem;
+    color: #aaa;
 }
 
 .table-stats {
     max-height: 200px;
     overflow-y: auto;
+    color: #aaa;
 }
 
 .stat-item {
@@ -147,7 +153,8 @@
     justify-content: space-between;
     padding: 0.25rem 0;
     font-size: 0.85rem;
-    border-bottom: 1px dotted var(--border-color, #ddd);
+    border-bottom: 1px dotted #333;
+    color: #aaa;
 }
 
 .stat-item:last-child {
@@ -156,7 +163,7 @@
 
 .stat-count {
     font-weight: bold;
-    color: var(--primary-color, #007bff);
+    color: #569cd6;
 }
 
 .schema-table {
@@ -167,28 +174,29 @@
     display: flex;
     align-items: center;
     padding: 0.5rem;
-    background: white;
-    border: 1px solid var(--border-color, #e0e0e0);
+    background: #16213e;
+    border: 1px solid #333;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
+    color: #fff;
 }
 
 .schema-table-name:hover {
-    background: var(--bg-hover, #f0f0f0);
+    background: #252540;
 }
 
 .schema-table-name .icon {
     margin-right: 0.5rem;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .schema-columns {
     display: none;
     padding: 0.5rem;
     padding-left: 1.5rem;
-    background: white;
-    border: 1px solid var(--border-color, #e0e0e0);
+    background: #1a1a2e;
+    border: 1px solid #333;
     border-top: none;
     border-radius: 0 0 4px 4px;
     font-size: 0.85rem;
@@ -202,7 +210,8 @@
     display: flex;
     justify-content: space-between;
     padding: 0.25rem 0;
-    border-bottom: 1px dotted var(--border-color, #eee);
+    border-bottom: 1px dotted #333;
+    color: #aaa;
 }
 
 .schema-column:last-child {
@@ -211,15 +220,16 @@
 
 .column-name {
     font-family: monospace;
+    color: #ddd;
 }
 
 .column-name.primary {
-    color: var(--primary-color, #007bff);
+    color: #569cd6;
     font-weight: bold;
 }
 
 .column-type {
-    color: var(--text-secondary, #888);
+    color: #888;
     font-size: 0.8rem;
 }
 
@@ -228,13 +238,14 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: #0f0f1a;
 }
 
 .sql-dashboard .tabs {
     display: flex;
     padding: 0.5rem 1rem;
-    background: var(--bg-secondary, #f5f5f5);
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    background: #1a1a2e;
+    border-bottom: 1px solid #333;
 }
 
 .sql-dashboard .tab {
@@ -243,13 +254,13 @@
     background: none;
     cursor: pointer;
     font-size: 0.9rem;
-    color: var(--text-secondary, #666);
+    color: #888;
     border-bottom: 2px solid transparent;
 }
 
 .sql-dashboard .tab.active {
-    color: var(--primary-color, #007bff);
-    border-bottom-color: var(--primary-color, #007bff);
+    color: #569cd6;
+    border-bottom-color: #569cd6;
 }
 
 .sql-dashboard .tab-content {
@@ -268,8 +279,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
-    background: var(--bg-secondary, #f5f5f5);
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    background: #16213e;
+    border-bottom: 1px solid #333;
 }
 
 .editor-info {
@@ -289,7 +300,7 @@
 
 .db-name {
     font-family: monospace;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .editor-container {
@@ -375,8 +386,8 @@
 
 .editor-footer {
     padding: 0.5rem 1rem;
-    background: var(--bg-secondary, #f5f5f5);
-    border-top: 1px solid var(--border-color, #e0e0e0);
+    background: #16213e;
+    border-top: 1px solid #333;
 }
 
 .sample-queries {
@@ -388,7 +399,7 @@
 
 .sample-queries .label {
     font-size: 0.85rem;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .btn-xs {
@@ -402,7 +413,7 @@
 
 .help-text {
     font-size: 0.75rem;
-    color: var(--text-secondary, #888);
+    color: #888;
     margin-top: 0.5rem;
 }
 
@@ -410,6 +421,8 @@
     flex: 1;
     overflow: auto;
     padding: 1rem;
+    background: #0f0f1a;
+    color: #ddd;
 }
 
 .results-table-wrapper {
@@ -425,19 +438,21 @@
 .results-table th,
 .results-table td {
     padding: 0.5rem;
-    border: 1px solid var(--border-color, #ddd);
+    border: 1px solid #333;
     text-align: left;
+    color: #ddd;
 }
 
 .results-table th {
-    background: var(--bg-secondary, #f5f5f5);
+    background: #16213e;
     font-weight: 600;
     position: sticky;
     top: 0;
+    color: #569cd6;
 }
 
 .results-table tr:hover {
-    background: var(--bg-hover, #f8f8f8);
+    background: #1a1a2e;
 }
 
 .results-header {
@@ -446,14 +461,18 @@
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid #333;
+}
+
+.results-header h3 {
+    color: #fff;
 }
 
 .results-meta {
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .results-single-row {
@@ -467,14 +486,14 @@
     display: flex;
     flex-direction: column;
     padding: 0.75rem;
-    background: var(--bg-secondary, #f9f9f9);
-    border: 1px solid var(--border-color, #e0e0e0);
+    background: #16213e;
+    border: 1px solid #333;
     border-radius: 4px;
 }
 
 .row-pair .key {
     font-weight: 600;
-    color: var(--text-primary, #333);
+    color: #569cd6;
     font-size: 0.85rem;
     margin-bottom: 0.25rem;
     text-transform: uppercase;
@@ -482,43 +501,44 @@
 }
 
 .row-pair .value {
-    color: var(--text-secondary, #666);
+    color: #ddd;
     word-break: break-word;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 .results-meta .success {
-    color: #28a745;
+    color: #4ecdc4;
 }
 
 .results-meta .error {
-    color: #dc3545;
+    color: #ff6b6b;
 }
 
 .error-output {
-    background: #fff5f5;
-    border: 1px solid #ffcccc;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid #ff6b6b;
     padding: 1rem;
     border-radius: 4px;
-    color: #dc3545;
+    color: #ff6b6b;
     font-family: monospace;
     white-space: pre-wrap;
 }
 
 .plan-output {
-    background: #f8f9fa;
+    background: #16213e;
     padding: 1rem;
     border-radius: 4px;
     font-family: monospace;
     white-space: pre-wrap;
     overflow-x: auto;
+    color: #ddd;
 }
 
 #er-diagram-container {
     flex: 1;
     padding: 1rem;
     overflow: auto;
-    background: #fafafa;
+    background: #0f0f1a;
 }
 
 .er-diagram {
@@ -529,16 +549,16 @@
 }
 
 .er-table {
-    background: white;
-    border: 2px solid #333;
+    background: #16213e;
+    border: 2px solid #569cd6;
     border-radius: 4px;
     min-width: 200px;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .er-table-name {
-    background: #333;
-    color: white;
+    background: #569cd6;
+    color: #fff;
     padding: 0.5rem;
     font-weight: bold;
     text-align: center;
@@ -553,7 +573,8 @@
     justify-content: space-between;
     padding: 0.25rem 0;
     font-size: 0.85rem;
-    border-bottom: 1px dotted #ddd;
+    border-bottom: 1px dotted #333;
+    color: #ddd;
 }
 
 .er-column:last-child {
@@ -561,7 +582,7 @@
 }
 
 .er-column.primary {
-    color: #007bff;
+    color: #569cd6;
     font-weight: bold;
 }
 
@@ -573,30 +594,33 @@
 .er-relationships {
     margin-top: 2rem;
     padding: 1rem;
-    background: white;
+    background: #16213e;
     border-radius: 4px;
 }
 
 .er-relationships h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
+    color: #fff;
 }
 
 .er-relationship {
     font-family: monospace;
     font-size: 0.85rem;
     padding: 0.25rem 0;
+    color: #ddd;
 }
 
 #history-container {
     flex: 1;
     overflow: auto;
     padding: 1rem;
+    background: #0f0f1a;
 }
 
 .history-item {
-    background: white;
-    border: 1px solid var(--border-color, #e0e0e0);
+    background: #16213e;
+    border: 1px solid #333;
     border-radius: 4px;
     margin-bottom: 0.5rem;
     overflow: hidden;
@@ -606,32 +630,34 @@
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 1rem;
-    background: var(--bg-secondary, #f5f5f5);
+    background: #1a1a2e;
     cursor: pointer;
+    color: #ddd;
 }
 
 .history-item-header:hover {
-    background: var(--bg-hover, #e8e8e8);
+    background: #252540;
 }
 
 .history-query {
     padding: 0.5rem 1rem;
     font-family: monospace;
     font-size: 0.85rem;
-    background: #f8f9fa;
+    background: #16213e;
     white-space: pre-wrap;
     max-height: 100px;
     overflow-y: auto;
+    color: #ddd;
 }
 
 .history-time {
     font-size: 0.8rem;
-    color: var(--text-secondary, #888);
+    color: #888;
 }
 
 .history-duration {
     font-size: 0.8rem;
-    color: var(--primary-color, #007bff);
+    color: #569cd6;
 }
 
 .placeholder {
@@ -640,20 +666,24 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: var(--text-secondary, #666);
+    color: #888;
     text-align: center;
     padding: 2rem;
 }
 
 .placeholder h2 {
     margin: 0 0 0.5rem 0;
-    color: var(--text-primary, #333);
+    color: #fff;
+}
+
+.placeholder p {
+    color: #888;
 }
 
 .loading {
     text-align: center;
     padding: 1rem;
-    color: var(--text-secondary, #666);
+    color: #888;
 }
 
 .btn-sm {
@@ -661,13 +691,43 @@
     font-size: 0.8rem;
 }
 
+.btn-secondary {
+    background: #16213e;
+    color: #ddd;
+    border: 1px solid #333;
+}
+
+.btn-secondary:hover {
+    background: #252540;
+}
+
+.btn-primary {
+    background: #569cd6;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #4a8bc2;
+}
+
+.btn-danger {
+    background: #ff6b6b;
+    color: #fff;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #ff5252;
+}
+
 .db-not-connected {
     padding: 1rem;
-    background: #fff3cd;
+    background: rgba(255, 193, 7, 0.1);
     border: 1px solid #ffc107;
     border-radius: 4px;
     text-align: center;
-    color: #856404;
+    color: #ffc107;
 }
 
 .db-not-connected p {
@@ -676,8 +736,8 @@
 
 .db-not-connected code {
     display: block;
-    background: #333;
-    color: #0f0;
+    background: #1a1a2e;
+    color: #4ecdc4;
     padding: 0.5rem;
     border-radius: 4px;
     margin-top: 0.5rem;
@@ -686,7 +746,7 @@
 
 .db-error {
     padding: 0.5rem;
-    color: #dc3545;
+    color: #ff6b6b;
     font-size: 0.85rem;
     text-align: center;
 }

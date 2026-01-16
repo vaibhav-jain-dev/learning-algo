@@ -172,29 +172,46 @@ def notify(self, event_type: str, changed_data: dict):
 
 ### Structure
 
-```
-┌─────────────────────────┐
-│        Subject          │
-├─────────────────────────┤
-│ - observers: List       │
-├─────────────────────────┤
-│ + attach(observer)      │
-│ + detach(observer)      │
-│ + notify()              │
-└───────────┬─────────────┘
-            │ notifies
-            ▼
-┌─────────────────────────┐
-│       Observer          │
-├─────────────────────────┤
-│ + update(data)          │
-└─────────────────────────┘
-            △
-    ┌───────┴───────┐
-┌───┴───┐      ┌───┴───┐
-│ObserverA│    │ObserverB│
-└────────┘     └────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Observer Pattern Structure</h4>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<!-- Subject Box -->
+<div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 280px;">
+<div style="background: #569cd6; color: white; padding: 8px 16px; font-weight: bold; text-align: center;">Subject</div>
+<div style="padding: 12px; border-bottom: 1px solid #30363d;">
+<code style="color: #ce9178;">- observers: List&lt;Observer&gt;</code>
+</div>
+<div style="padding: 12px;">
+<code style="color: #dcdcaa;">+ attach(observer)</code><br>
+<code style="color: #dcdcaa;">+ detach(observer)</code><br>
+<code style="color: #dcdcaa;">+ notify()</code>
+</div>
+</div>
+
+<div style="color: #569cd6; font-size: 24px;">↓ <span style="font-size: 14px; color: #888;">notifies</span></div>
+
+<!-- Observer Interface Box -->
+<div style="background: #252540; border: 2px solid #4ecdc4; border-radius: 8px; width: 280px;">
+<div style="background: #4ecdc4; color: #1a1a2e; padding: 8px 16px; font-weight: bold; text-align: center;">«interface» Observer</div>
+<div style="padding: 12px;">
+<code style="color: #dcdcaa;">+ update(data)</code>
+</div>
+</div>
+
+<div style="color: #4ecdc4; font-size: 24px;">△</div>
+
+<!-- Concrete Observers -->
+<div style="display: flex; gap: 20px; justify-content: center;">
+<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 130px; text-align: center; padding: 12px;">
+<span style="color: #ddd;">ObserverA</span>
+</div>
+<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 130px; text-align: center; padding: 12px;">
+<span style="color: #ddd;">ObserverB</span>
+</div>
+</div>
+</div>
+</div>
 
 ---
 
@@ -952,20 +969,35 @@ def handle_user_update(event):
 
 ### The Challenges
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  Local Observer              vs    Distributed Observer            │
-│                                                                    │
-│  subject.notify()                  message_queue.publish()         │
-│       │                                    │                       │
-│       ▼                                    ▼                       │
-│  In-memory, instant             Network latency (ms to seconds)    │
-│  Guaranteed delivery            At-least-once / At-most-once       │
-│  Ordered execution              Out-of-order possible              │
-│  Observer failure = exception   Observer failure = retry/DLQ       │
-│  Memory leak risk               Message queue fills up             │
-└────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Local vs Distributed Observer</h4>
+
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px; border-left: 4px solid #569cd6;">
+<h5 style="color: #569cd6; margin-top: 0;">Local Observer</h5>
+<code style="color: #dcdcaa;">subject.notify()</code>
+<ul style="color: #ddd; margin-top: 12px; padding-left: 20px;">
+<li>In-memory, instant</li>
+<li>Guaranteed delivery</li>
+<li>Ordered execution</li>
+<li>Failure = exception</li>
+<li>Risk: Memory leaks</li>
+</ul>
+</div>
+
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px; border-left: 4px solid #4ecdc4;">
+<h5 style="color: #4ecdc4; margin-top: 0;">Distributed Observer</h5>
+<code style="color: #dcdcaa;">message_queue.publish()</code>
+<ul style="color: #ddd; margin-top: 12px; padding-left: 20px;">
+<li>Network latency (ms to s)</li>
+<li>At-least-once / At-most-once</li>
+<li>Out-of-order possible</li>
+<li>Failure = retry/DLQ</li>
+<li>Risk: Queue fills up</li>
+</ul>
+</div>
+</div>
+</div>
 
 ### Solutions
 

@@ -15,24 +15,33 @@ The Abstract Factory pattern provides an interface for creating families of rela
 
 ### Structure
 
-```
-┌─────────────────────────┐
-│    AbstractFactory      │
-├─────────────────────────┤
-│ + createProductA()      │
-│ + createProductB()      │
-└─────────────────────────┘
-           △
-    ┌──────┴──────┐
-    │             │
-┌───┴───┐    ┌───┴───┐
-│Factory1│    │Factory2│
-└───────┘    └───────┘
-    │             │
-    ▼             ▼
-ProductA1     ProductA2
-ProductB1     ProductB2
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">AbstractFactory</div>
+    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">
+      + createProductA()<br>+ createProductB()
+    </div>
+  </div>
+  <div style="color: #667eea; font-size: 1.5rem;">▲</div>
+  <div style="display: flex; gap: 3rem;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; font-weight: 600;">ConcreteFactory1</div>
+      <div style="color: #4ecdc4;">↓</div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="background: #2d3748; border-radius: 6px; padding: 0.5rem 1rem; color: #a0aec0; font-size: 0.85rem; text-align: center;">ProductA1</div>
+        <div style="background: #2d3748; border-radius: 6px; padding: 0.5rem 1rem; color: #a0aec0; font-size: 0.85rem; text-align: center;">ProductB1</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+      <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 10px; padding: 1rem 1.5rem; color: #f093fb; font-weight: 600;">ConcreteFactory2</div>
+      <div style="color: #f093fb;">↓</div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="background: #2d3748; border-radius: 6px; padding: 0.5rem 1rem; color: #a0aec0; font-size: 0.85rem; text-align: center;">ProductA2</div>
+        <div style="background: #2d3748; border-radius: 6px; padding: 0.5rem 1rem; color: #a0aec0; font-size: 0.85rem; text-align: center;">ProductB2</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ## Implementation
 

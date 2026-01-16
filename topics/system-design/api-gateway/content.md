@@ -8,27 +8,39 @@ An API Gateway is a server that acts as a single entry point for all client requ
 
 ### Why API Gateway?
 
-```
-Without Gateway:
-┌────────┐     ┌─────────────┐
-│        │────→│User Service │
-│        │     └─────────────┘
-│ Client │     ┌─────────────┐
-│        │────→│Order Service│
-│        │     └─────────────┘
-│        │     ┌─────────────┐
-│        │────→│Product Svc  │
-└────────┘     └─────────────┘
-
-With Gateway:
-┌────────┐     ┌──────────┐     ┌─────────────┐
-│        │     │          │────→│User Service │
-│ Client │────→│   API    │     └─────────────┘
-│        │     │ Gateway  │────→│Order Service│
-│        │     │          │     └─────────────┘
-└────────┘     └──────────┘────→│Product Svc  │
-                                └─────────────┘
-```
+<div style="display: flex; flex-direction: column; gap: 2rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
+  <div>
+    <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 1rem;">Without Gateway (Complex Client)</div>
+    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <div style="font-weight: 700;">Client</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.5rem 1rem; color: #4ecdc4; font-size: 0.9rem;">User Service</div></div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 8px; padding: 0.5rem 1rem; color: #f093fb; font-size: 0.9rem;">Order Service</div></div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.5rem 1rem; color: #ffd93d; font-size: 0.9rem;">Product Service</div></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 1rem;">With Gateway (Simplified)</div>
+    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+        <div style="font-weight: 700;">Client</div>
+      </div>
+      <span style="color: #667eea; font-size: 1.5rem;">→</span>
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+        <div style="font-weight: 700;">API Gateway</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">Single entry point</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">User Service</div></div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">Order Service</div></div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">Product Service</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Core Functions
 
@@ -82,15 +94,27 @@ def proxy(path):
 
 Different gateways for different clients.
 
-```
-┌───────────┐     ┌─────────────┐
-│ Mobile App│────→│ Mobile BFF  │───┐
-└───────────┘     └─────────────┘   │     ┌──────────┐
-                                    ├────→│ Services │
-┌───────────┐     ┌─────────────┐   │     └──────────┘
-│  Web App  │────→│   Web BFF   │───┘
-└───────────┘     └─────────────┘
-```
+<div style="display: flex; align-items: center; gap: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">📱 Mobile App</div>
+      <span style="color: #4ecdc4;">→</span>
+      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">Mobile BFF</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb;">🌐 Web App</div>
+      <span style="color: #f093fb;">→</span>
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">Web BFF</div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+    <span style="color: #ffd93d; font-size: 1.5rem;">⟶</span>
+  </div>
+  <div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 10px; padding: 1.25rem; color: #ffd93d; text-align: center;">
+    <div style="font-weight: 700;">Backend Services</div>
+    <div style="font-size: 0.8rem; opacity: 0.8;">Shared microservices</div>
+  </div>
+</div>
 
 ```python
 # Mobile BFF - Optimized for mobile

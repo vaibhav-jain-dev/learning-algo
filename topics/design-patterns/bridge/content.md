@@ -413,13 +413,31 @@ func main() {
 
 ## Structure
 
-```
-Abstraction ─────────────────> Implementation
-     │                              │
-     ▼                              ▼
-RefinedAbstraction          ConcreteImplementationA
-                            ConcreteImplementationB
-```
+<div style="display: flex; justify-content: center; gap: 4rem; margin: 2rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+      <div style="font-weight: 700; font-size: 1.1rem;">Abstraction</div>
+      <div style="font-size: 0.8rem; opacity: 0.8;">+ implementation</div>
+    </div>
+    <div style="color: #667eea; font-size: 1.25rem;">↓ extends</div>
+    <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; font-weight: 600;">RefinedAbstraction</div>
+  </div>
+  <div style="display: flex; align-items: flex-start; padding-top: 1.5rem;">
+    <div style="color: #f093fb; font-size: 1.5rem; transform: rotate(0deg);">───────→</div>
+    <div style="position: absolute; margin-left: 2rem; margin-top: -1rem; font-size: 0.75rem; color: #a0aec0;">has-a</div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+      <div style="font-weight: 700; font-size: 1.1rem;">Implementation</div>
+      <div style="font-size: 0.8rem; opacity: 0.8;">interface</div>
+    </div>
+    <div style="color: #38ef7d; font-size: 1.25rem;">↓ implements</div>
+    <div style="display: flex; gap: 1rem;">
+      <div style="background: #2d3748; border: 2px solid #38ef7d; border-radius: 8px; padding: 0.75rem 1rem; color: #38ef7d; font-size: 0.9rem;">ConcreteImplA</div>
+      <div style="background: #2d3748; border: 2px solid #38ef7d; border-radius: 8px; padding: 0.75rem 1rem; color: #38ef7d; font-size: 0.9rem;">ConcreteImplB</div>
+    </div>
+  </div>
+</div>
 
 ## Best Practices
 

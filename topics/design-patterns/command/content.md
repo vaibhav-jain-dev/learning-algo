@@ -16,28 +16,33 @@ The Command pattern encapsulates a request as an object, thereby letting you par
 
 ### Structure
 
-```
-┌─────────────────┐         ┌─────────────────┐
-│     Invoker     │────────→│    Command      │
-├─────────────────┤         ├─────────────────┤
-│ + setCommand()  │         │ + execute()     │
-│ + invoke()      │         │ + undo()        │
-└─────────────────┘         └────────┬────────┘
-                                     │
-                            ┌────────┴────────┐
-                            │ConcreteCommand  │
-                            ├─────────────────┤
-                            │ - receiver      │
-                            │ - state         │
-                            │ + execute()     │
-                            │ + undo()        │
-                            └────────┬────────┘
-                                     │
-                            ┌────────┴────────┐
-                            │    Receiver     │
-                            │ + action()      │
-                            └─────────────────┘
-```
+<div style="display: flex; align-items: flex-start; justify-content: center; gap: 2.5rem; margin: 2rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Invoker</div>
+    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">
+      + setCommand()<br>+ invoke()
+    </div>
+  </div>
+  <div style="display: flex; align-items: center; color: #667eea; font-size: 1.5rem; padding-top: 1rem;">→</div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+    <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; text-align: center;">
+      <div style="font-weight: 600;">Command (interface)</div>
+      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">+ execute()<br>+ undo()</div>
+    </div>
+    <div style="color: #4ecdc4; font-size: 1.25rem;">↑ implements</div>
+    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+      <div style="font-weight: 700;">ConcreteCommand</div>
+      <div style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; margin-top: 0.5rem;">
+        - receiver<br>- state<br>+ execute()<br>+ undo()
+      </div>
+    </div>
+    <div style="color: #f093fb; font-size: 1.25rem;">↓ calls</div>
+    <div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 10px; padding: 1rem 1.5rem; color: #f093fb; text-align: center;">
+      <div style="font-weight: 600;">Receiver</div>
+      <div style="font-size: 0.8rem; opacity: 0.8;">+ action()</div>
+    </div>
+  </div>
+</div>
 
 ## Implementation
 

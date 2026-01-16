@@ -8,12 +8,59 @@ Database sharding is a horizontal scaling technique that partitions data across 
 
 ### Why Sharding?
 
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
 1. **Horizontal Scalability**: Distribute data across many machines
 2. **Improved Performance**: Queries only hit relevant shards
 3. **Higher Availability**: Failure of one shard doesn't affect others
 4. **Geographic Distribution**: Place data closer to users
 
+</div>
+
+### The Scaling Problem
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    WHY SINGLE DATABASE DOESN'T SCALE                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   VERTICAL SCALING (Scale Up)                                               │
+│   ───────────────────────────                                               │
+│                                                                             │
+│   ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐      │
+│   │   Small DB      │ ──► │   Bigger DB     │ ──► │  BIGGEST DB     │      │
+│   │   8 CPU         │     │   32 CPU        │     │  128 CPU        │      │
+│   │   32 GB RAM     │     │   256 GB RAM    │     │  1 TB RAM       │      │
+│   │   1 TB Disk     │     │   10 TB SSD     │     │  100 TB SSD     │      │
+│   └─────────────────┘     └─────────────────┘     └─────────────────┘      │
+│                                                           │                 │
+│                                                    ┌──────▼──────┐          │
+│                                                    │   LIMIT!    │          │
+│                                                    │  Can't buy  │          │
+│                                                    │ bigger box  │          │
+│                                                    └─────────────┘          │
+│                                                                             │
+│   HORIZONTAL SCALING (Scale Out) with Sharding                              │
+│   ────────────────────────────────────────────                              │
+│                                                                             │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐     ┌──────────┐     │
+│   │ Shard 1  │ │ Shard 2  │ │ Shard 3  │ │ Shard 4  │ ... │ Shard N  │     │
+│   │ Users    │ │ Users    │ │ Users    │ │ Users    │     │ Users    │     │
+│   │ 1-1M     │ │ 1M-2M    │ │ 2M-3M    │ │ 3M-4M    │     │ ...      │     │
+│   └──────────┘ └──────────┘ └──────────┘ └──────────┘     └──────────┘     │
+│        │            │            │            │                 │           │
+│        └────────────┴────────────┴────────────┴─────────────────┘           │
+│                                  │                                          │
+│                           NO LIMIT! ∞                                       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
 ### Sharding vs Replication
+
+<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 | Sharding | Replication |
 |----------|-------------|
@@ -22,11 +69,91 @@ Database sharding is a horizontal scaling technique that partitions data across 
 | Each shard has unique data | All replicas have same data |
 | Complex queries across shards | Simple failover |
 
+</div>
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     SHARDING vs REPLICATION                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   SHARDING (Different Data)              REPLICATION (Same Data)            │
+│   ─────────────────────────              ──────────────────────             │
+│                                                                             │
+│   ┌─────────────────────┐               ┌─────────────────────┐             │
+│   │   All Users Data    │               │   All Users Data    │             │
+│   └─────────────────────┘               └─────────────────────┘             │
+│            │                                       │                        │
+│    ┌───────┼───────┐                      ┌────────┼────────┐               │
+│    ▼       ▼       ▼                      ▼        ▼        ▼               │
+│ ┌──────┐┌──────┐┌──────┐              ┌──────┐┌──────┐┌──────┐              │
+│ │Shard1││Shard2││Shard3│              │Copy 1││Copy 2││Copy 3│              │
+│ │Users ││Users ││Users │              │ ALL  ││ ALL  ││ ALL  │              │
+│ │A-M   ││N-S   ││T-Z   │              │Users ││Users ││Users │              │
+│ └──────┘└──────┘└──────┘              └──────┘└──────┘└──────┘              │
+│                                                                             │
+│   Total capacity: 3x                   Read capacity: 3x                    │
+│   Write capacity: 3x                   Write capacity: 1x                   │
+│                                        (all writes go to all)               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
 ## Sharding Strategies
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      SHARDING STRATEGY COMPARISON                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  Strategy          │ Distribution │ Range Queries │ Resharding │ Use Case  │
+│  ──────────────────┼──────────────┼───────────────┼────────────┼───────────│
+│  Range-Based       │ Uneven       │ Excellent     │ Medium     │ Time data │
+│  Hash-Based        │ Even         │ Poor          │ Hard       │ Random    │
+│  Consistent Hash   │ Even         │ Poor          │ Easy       │ Dynamic   │
+│  Directory-Based   │ Flexible     │ Good          │ Easy       │ Custom    │
+│  Geographic        │ By region    │ N/A           │ N/A        │ Multi-DC  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ### 1. Range-Based Sharding
 
 Partition data by ranges of a key value.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        RANGE-BASED SHARDING                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   user_id = 1,500,000                                                       │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌─────────────────────────────────────────────────────────────────┐       │
+│   │                     SHARD ROUTER                                │       │
+│   │   if id < 1M      → Shard 1                                     │       │
+│   │   if id < 2M      → Shard 2  ◄── This one!                      │       │
+│   │   if id < 3M      → Shard 3                                     │       │
+│   │   else            → Shard 4                                     │       │
+│   └─────────────────────────────────────────────────────────────────┘       │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                      │
+│   │ Shard 1  │ │ Shard 2  │ │ Shard 3  │ │ Shard 4  │                      │
+│   │  0-1M    │ │  1M-2M   │ │  2M-3M   │ │  3M+     │                      │
+│   │          │ │    ✓     │ │          │ │          │                      │
+│   └──────────┘ └──────────┘ └──────────┘ └──────────┘                      │
+│                                                                             │
+│   ⚠️ Problem: Hotspots!                                                     │
+│   New users (high IDs) always hit the last shard                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 def get_shard_by_range(user_id):
@@ -40,12 +167,59 @@ def get_shard_by_range(user_id):
         return "shard_4"
 ```
 
-**Pros**: Simple, efficient range queries
-**Cons**: Uneven distribution (hotspots), requires rebalancing
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
+
+**Pros**
+- Simple to implement
+- Efficient range queries (e.g., "get all users 1-1000")
+- Data locality for related records
+
+</div>
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
+
+**Cons**
+- Uneven distribution (hotspots)
+- Requires rebalancing when shards fill up
+- New data hits one shard
+
+</div>
+
+</div>
 
 ### 2. Hash-Based Sharding
 
 Use hash function to determine shard.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         HASH-BASED SHARDING                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   user_id = "user_12345"                                                    │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌─────────────────────────────────────────────────────────────────┐       │
+│   │                      HASH FUNCTION                              │       │
+│   │   hash("user_12345") = 0x7A3B... = 2,045,678,901               │       │
+│   │   shard_index = 2,045,678,901 % 4 = 1                          │       │
+│   └─────────────────────────────────────────────────────────────────┘       │
+│        │                                                                    │
+│        ▼                                                                    │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                      │
+│   │ Shard 0  │ │ Shard 1  │ │ Shard 2  │ │ Shard 3  │                      │
+│   │ ~25%     │ │ ~25%  ✓  │ │ ~25%     │ │ ~25%     │                      │
+│   │ of data  │ │ of data  │ │ of data  │ │ of data  │                      │
+│   └──────────┘ └──────────┘ └──────────┘ └──────────┘                      │
+│                                                                             │
+│   ✓ Even distribution across all shards!                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 import hashlib
@@ -55,12 +229,68 @@ def get_shard_by_hash(user_id, num_shards):
     return f"shard_{hash_value % num_shards}"
 ```
 
-**Pros**: Even distribution
-**Cons**: Range queries require hitting all shards, resharding is expensive
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
+
+**Pros**
+- Even distribution of data
+- No hotspots
+- Simple to implement
+
+</div>
+
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
+
+**Cons**
+- Range queries hit ALL shards
+- Resharding moves ~all data
+- Adding shards is expensive
+
+</div>
+
+</div>
 
 ### 3. Consistent Hashing
 
 Minimizes data movement when adding/removing shards.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CONSISTENT HASHING                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│              The Hash Ring (0 to 2^32)                                      │
+│                                                                             │
+│                          0°                                                 │
+│                          │                                                  │
+│                    ●─────┼─────●                                            │
+│                 Node A   │   Node B                                         │
+│                   ╱      │      ╲                                           │
+│                  ╱       │       ╲                                          │
+│            270° ●        │        ● 90°                                     │
+│               Node D     │     Node C                                       │
+│                  ╲       │       ╱                                          │
+│                   ╲      │      ╱                                           │
+│                    ●─────┼─────●                                            │
+│                        180°                                                 │
+│                                                                             │
+│   Key "user_123" → hash() = 45° → Find next node clockwise → Node B       │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ADDING A NEW NODE (E at 67°):                                            │
+│                                                                             │
+│   Before:  Keys 45°-90° go to Node B                                       │
+│   After:   Keys 45°-67° go to Node E  ← Only these keys move!              │
+│            Keys 67°-90° go to Node B                                       │
+│                                                                             │
+│   Only ~1/N of data moves (not all data like in hash-based!)               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 class ConsistentHashSharding:
@@ -137,10 +367,58 @@ def get_shard_by_region(user_region):
 
 The shard key is crucial for performance:
 
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        SHARD KEY SELECTION                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   GOOD SHARD KEY: user_id                                                  │
+│   ─────────────────────────                                                │
+│                                                                             │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐                          │
+│   │████████ │ │████████ │ │████████ │ │████████ │  ← Even distribution!   │
+│   │████████ │ │████████ │ │████████ │ │████████ │                          │
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘                          │
+│    Shard 1     Shard 2     Shard 3     Shard 4                             │
+│                                                                             │
+│   BAD SHARD KEY: country                                                   │
+│   ──────────────────────                                                   │
+│                                                                             │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐                          │
+│   │████████ │ │██       │ │█        │ │         │  ← Hotspot on US!       │
+│   │████████ │ │         │ │         │ │         │                          │
+│   │████████ │ │         │ │         │ │         │                          │
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘                          │
+│    US (90%)   EU (7%)    Asia (2%)   Other (1%)                            │
+│                                                                             │
+│   BAD SHARD KEY: created_at (time-based)                                   │
+│   ──────────────────────────────────────                                   │
+│                                                                             │
+│   Time:  Day 1      Day 2      Day 3      Day 4                            │
+│          ↓          ↓          ↓          ↓                                │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐                          │
+│   │████████ │ │         │ │         │ │         │                          │
+│   │████████ │ │████████ │ │         │ │         │                          │
+│   │████████ │ │████████ │ │████████ │ │         │                          │
+│   │████████ │ │████████ │ │████████ │ │████████ │  ← All writes here!     │
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘                          │
+│    Jan 1-7    Jan 8-14   Jan 15-21   Jan 22-28 (current)                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
 ### Good Shard Key Properties
-1. **High Cardinality**: Many unique values
-2. **Even Distribution**: Avoids hotspots
-3. **Query Patterns**: Matches common access patterns
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+
+1. **High Cardinality**: Many unique values (user_id: millions, country: ~200)
+2. **Even Distribution**: Data spreads evenly across shards
+3. **Query Patterns**: Matches how you query (shard by user_id if you query by user)
+4. **Immutable**: Shouldn't change (changing shard key = moving data!)
+
+</div>
 
 ### Examples
 
@@ -158,9 +436,56 @@ The shard key is crucial for performance:
 
 ## Cross-Shard Operations
 
+<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
+
+⚠️ **Cross-shard operations are expensive!** Design your schema to minimize them. If you frequently need to join data across shards, you may have chosen the wrong shard key.
+
+</div>
+
 ### Scatter-Gather Pattern
 
 Query all shards and aggregate results.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        SCATTER-GATHER PATTERN                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Query: "SELECT * FROM orders WHERE product='iPhone' ORDER BY date"       │
+│   (Can't use shard key - must query all shards!)                           │
+│                                                                             │
+│                    ┌────────────────────────┐                              │
+│                    │      Coordinator       │                              │
+│                    └────────────────────────┘                              │
+│                              │                                              │
+│                    1. SCATTER (parallel)                                   │
+│                 ┌────────────┼────────────┐                                │
+│                 ▼            ▼            ▼                                │
+│           ┌──────────┐ ┌──────────┐ ┌──────────┐                          │
+│           │ Shard 1  │ │ Shard 2  │ │ Shard 3  │                          │
+│           │ Query... │ │ Query... │ │ Query... │                          │
+│           │ 50 rows  │ │ 30 rows  │ │ 70 rows  │                          │
+│           └──────────┘ └──────────┘ └──────────┘                          │
+│                 │            │            │                                │
+│                 └────────────┼────────────┘                                │
+│                              │                                              │
+│                     2. GATHER (merge)                                      │
+│                              ▼                                              │
+│                    ┌────────────────────────┐                              │
+│                    │   Merge & Sort         │                              │
+│                    │   150 total rows       │                              │
+│                    │   Sort by date         │                              │
+│                    └────────────────────────┘                              │
+│                              │                                              │
+│                              ▼                                              │
+│                         Return to client                                   │
+│                                                                             │
+│   ⚠️ Latency = slowest shard + merge time                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 async def search_all_shards(query):
@@ -175,6 +500,55 @@ async def search_all_shards(query):
 ### Distributed Transactions
 
 Two-phase commit for cross-shard consistency.
+
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TWO-PHASE COMMIT (2PC)                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Transaction: Transfer $100 from User A (Shard 1) to User B (Shard 2)    │
+│                                                                             │
+│                    ┌────────────────────────┐                              │
+│                    │     Coordinator        │                              │
+│                    └────────────────────────┘                              │
+│                              │                                              │
+│   ═══════════════════════════════════════════════════════════════════════  │
+│   PHASE 1: PREPARE                                                         │
+│   ═══════════════════════════════════════════════════════════════════════  │
+│                              │                                              │
+│            ┌─────────────────┼─────────────────┐                           │
+│            ▼                 │                 ▼                           │
+│   ┌────────────────┐         │        ┌────────────────┐                  │
+│   │   Shard 1      │         │        │   Shard 2      │                  │
+│   │   PREPARE      │         │        │   PREPARE      │                  │
+│   │   -$100 from A │         │        │   +$100 to B   │                  │
+│   │   Lock row     │         │        │   Lock row     │                  │
+│   │   → VOTE YES ✓ │         │        │   → VOTE YES ✓ │                  │
+│   └────────────────┘         │        └────────────────┘                  │
+│            │                 │                 │                           │
+│            └─────────────────┼─────────────────┘                           │
+│                              │                                              │
+│   ═══════════════════════════════════════════════════════════════════════  │
+│   PHASE 2: COMMIT (if all voted YES)                                       │
+│   ═══════════════════════════════════════════════════════════════════════  │
+│                              │                                              │
+│            ┌─────────────────┼─────────────────┐                           │
+│            ▼                 │                 ▼                           │
+│   ┌────────────────┐         │        ┌────────────────┐                  │
+│   │   Shard 1      │         │        │   Shard 2      │                  │
+│   │   COMMIT       │         │        │   COMMIT       │                  │
+│   │   Apply -$100  │         │        │   Apply +$100  │                  │
+│   │   Release lock │         │        │   Release lock │                  │
+│   │   → ACK ✓      │         │        │   → ACK ✓      │                  │
+│   └────────────────┘         │        └────────────────┘                  │
+│                              │                                              │
+│   ⚠️ If any shard votes NO → ABORT all (rollback)                         │
+│   ⚠️ Blocking: If coordinator fails, shards wait forever!                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
 
 ```python
 class TwoPhaseCommit:
@@ -377,6 +751,46 @@ user = session.query(User).filter_by(id=12345).first()
 
 When you need to add or remove shards:
 
+<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
+<pre style="margin: 0; white-space: pre;">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    ONLINE RESHARDING (Zero Downtime)                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   Step 1: Add New Shards                                                   │
+│   ──────────────────────                                                   │
+│   ┌────────┐ ┌────────┐ ┌────────┐         ┌────────┐                     │
+│   │Shard 1 │ │Shard 2 │ │Shard 3 │   +     │Shard 4 │  ← New empty shard  │
+│   │████████│ │████████│ │████████│         │        │                     │
+│   └────────┘ └────────┘ └────────┘         └────────┘                     │
+│                                                                             │
+│   Step 2: Double-Write (writes go to both old and new location)            │
+│   ─────────────────────────────────────────────────────────────            │
+│   New Write ─┬──► Shard 2 (old location)                                   │
+│              └──► Shard 4 (new location)                                   │
+│                                                                             │
+│   Step 3: Backfill (copy existing data in background)                      │
+│   ────────────────────────────────────────────────────                     │
+│   ┌────────┐ ┌────────┐ ┌────────┐         ┌────────┐                     │
+│   │████████│ │████░░░░│─────────────────►  │░░░░████│                     │
+│   │████████│ │████████│ │████████│         │████████│  ← Backfilling...   │
+│   └────────┘ └────────┘ └────────┘         └────────┘                     │
+│                                                                             │
+│   Step 4: Switch Reads (read from new location)                            │
+│   ─────────────────────────────────────────────                            │
+│   Read ──► Router ──► Shard 4 (new location)                              │
+│                                                                             │
+│   Step 5: Remove Double-Write & Cleanup                                    │
+│   ─────────────────────────────────────                                    │
+│   ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐                             │
+│   │████████│ │████    │ │████████│ │    ████│  ← Data redistributed!     │
+│   │████████│ │████████│ │████████│ │████████│                             │
+│   └────────┘ └────────┘ └────────┘ └────────┘                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
 ### Online Resharding Steps
 
 1. **Add new shards** - Provision new database instances
@@ -389,6 +803,8 @@ When you need to add or remove shards:
 
 ## Common Interview Questions
 
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
 1. **How do you handle joins across shards?**
    - Denormalize data
    - Application-level joins
@@ -396,7 +812,7 @@ When you need to add or remove shards:
 
 2. **How do you maintain auto-increment IDs?**
    - UUID/GUID
-   - Centralized ID service
+   - Centralized ID service (like Twitter's Snowflake)
    - Shard prefix + local sequence
 
 3. **What happens when a shard fails?**
@@ -409,7 +825,11 @@ When you need to add or remove shards:
    - Consider data growth projections
    - Balance between overhead and flexibility
 
+</div>
+
 ## Best Practices
+
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 1. **Choose shard key carefully** - It's hard to change later
 2. **Plan for resharding** - Use consistent hashing
@@ -417,6 +837,8 @@ When you need to add or remove shards:
 4. **Replicate each shard** - For high availability
 5. **Avoid cross-shard transactions** - Design for single-shard operations
 6. **Use connection pooling** - Manage connections efficiently
+
+</div>
 
 ## Related Topics
 
