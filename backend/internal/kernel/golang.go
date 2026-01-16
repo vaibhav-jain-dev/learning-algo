@@ -329,34 +329,11 @@ func (k *GoKernel) executeWithGoRun(ctx context.Context, mainFile, goCache strin
 		"GOCACHE="+goCache,
 	)
 
-	var compileErr bytes.Buffer
-	compileCmd.Stderr = &compileErr
-
-	// Compile the code
-	if err := compileCmd.Run(); err != nil {
-		errStr := compileErr.String()
-		if errStr == "" {
-			errStr = err.Error()
-		}
-		// Clean up error paths
-		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
-		errStr = strings.ReplaceAll(errStr, k.workDir, "")
-		return &ExecutionResult{
-			Error:    errStr,
-			ExitCode: 1,
-			Duration: time.Since(start),
-		}, nil
-	}
-
-	// Run the compiled binary
-	execCmd := exec.CommandContext(ctx, binaryPath)
-	execCmd.Dir = k.workDir
-
 	var stdout, stderr bytes.Buffer
-	execCmd.Stdout = &stdout
-	execCmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 
-	err := execCmd.Run()
+	err := cmd.Run()
 	execTime := time.Since(execStart)
 	duration := time.Since(start)
 
