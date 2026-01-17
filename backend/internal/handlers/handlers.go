@@ -69,6 +69,16 @@ func (h *Handlers) Practice(c *fiber.Ctx) error {
 	})
 }
 
+// MustSolveProblems renders the 200 must solve problems page
+func (h *Handlers) MustSolveProblems(c *fiber.Ctx) error {
+	category := h.topicIndexer.GetCategory("must-solve-problems")
+	return c.Render("pages/must-solve-problems", fiber.Map{
+		"Title":        "200 Must Solve Problems",
+		"Category":     category,
+		"CategorySlug": "must-solve-problems",
+	})
+}
+
 // SystemDesign renders the system design page
 func (h *Handlers) SystemDesign(c *fiber.Ctx) error {
 	category := h.topicIndexer.GetCategory("system-design")

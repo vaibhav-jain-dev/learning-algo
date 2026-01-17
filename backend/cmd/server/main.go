@@ -181,6 +181,7 @@ func main() {
 	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
 
 	// Other learning routes
+	app.Get("/must-solve-problems", h.MustSolveProblems) // 200 Must Solve Problems
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)

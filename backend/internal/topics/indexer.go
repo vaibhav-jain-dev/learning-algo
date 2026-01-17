@@ -44,6 +44,11 @@ var categoryMeta = map[string]struct {
 	Description string
 	Order       int
 }{
+	"must-solve-problems": {
+		Title:       "200 Must Solve Problems",
+		Description: "Master DSA with curated problems organized by topic - from easy to very hard",
+		Order:       0,
+	},
 	"system-design": {
 		Title:       "System Design",
 		Description: "Master distributed systems concepts with real-world examples",
@@ -347,6 +352,16 @@ func containsTag(tags []string, tag string) bool {
 
 func generateDefaultTags(category, topic string) []string {
 	tagMap := map[string]map[string][]string{
+		"must-solve-problems": {
+			"arrays":             {"Arrays", "Two Pointers"},
+			"binary-search-trees": {"BST", "Trees"},
+			"binary-trees":       {"Trees", "Traversal"},
+			"dynamic-programming": {"DP", "Optimization"},
+			"graphs":             {"Graphs", "BFS/DFS"},
+			"famous-algorithms":  {"Algorithms", "Classic"},
+			"linked-lists":       {"Linked Lists", "Pointers"},
+			"recursion":          {"Recursion", "Backtracking"},
+		},
 		"system-design": {
 			"load-balancing":       {"Scalability", "High Availability"},
 			"caching":              {"Performance", "Redis"},
