@@ -1,22 +1,46 @@
 """
-Transpose Matrix - Python Solution
+Transpose Matrix - Python Solutions
 
 Return the transpose of a 2D matrix.
 Element at (i, j) moves to (j, i).
 
-Time Complexity: O(m * n)
-Space Complexity: O(m * n)
+This file contains MULTIPLE solution approaches with explanations.
 """
 
-def transpose_matrix(matrix):
+from typing import List
+
+
+# ============================================================================
+# APPROACH 1: Direct Construction ⭐ RECOMMENDED
+# ============================================================================
+# Time Complexity:  O(m × n) - visit each element once
+# Space Complexity: O(m × n) - for the output matrix
+#
+# WHY THIS IS BEST:
+# - Simple and intuitive
+# - Single pass through all elements
+# - Works for any matrix dimensions
+# ============================================================================
+
+def transpose_matrix(matrix: List[List[int]]) -> List[List[int]]:
     """
-    Return the transpose of the given matrix.
+    Return the transpose using direct index swapping.
 
-    Args:
-        matrix: 2D list of integers (m x n)
+    Key Insight: Element at (i, j) moves to (j, i)
 
-    Returns:
-        List[List[int]]: Transposed matrix (n x m)
+    How it works:
+    1. Original matrix: m rows × n cols
+    2. Create result: n rows × m cols
+    3. For each position, swap indices: result[j][i] = original[i][j]
+
+    Visual:
+        Original (3×2):      Transpose (2×3):
+        [[1, 2],             [[1, 3, 5],
+         [3, 4],      →       [2, 4, 6]]
+         [5, 6]]
+
+        matrix[0][1]=2 → result[1][0]=2
+        matrix[2][0]=5 → result[0][2]=5
     """
     if not matrix or not matrix[0]:
         return []
@@ -24,7 +48,7 @@ def transpose_matrix(matrix):
     rows = len(matrix)
     cols = len(matrix[0])
 
-    # Create new matrix with swapped dimensions
+    # Create new matrix with swapped dimensions (cols × rows)
     transposed = [[0] * rows for _ in range(cols)]
 
     for i in range(rows):
@@ -34,87 +58,198 @@ def transpose_matrix(matrix):
     return transposed
 
 
-def transpose_matrix_pythonic(matrix):
-    """Pythonic one-liner using zip."""
-    return [list(row) for row in zip(*matrix)]
+# ============================================================================
+# APPROACH 2: Column Extraction
+# ============================================================================
+# Time Complexity:  O(m × n)
+# Space Complexity: O(m × n)
+#
+# INTUITION:
+# - Each column of original becomes a row of result
+# - Build result row by row
+# ============================================================================
 
+def transpose_matrix_column(matrix: List[List[int]]) -> List[List[int]]:
+    """
+    Build transpose by extracting columns as rows.
 
-def transpose_matrix_list_comp(matrix):
-    """Using list comprehension."""
+    How it works:
+    - Column 0 of original → Row 0 of result
+    - Column 1 of original → Row 1 of result
+    - ... and so on
+
+    Visual:
+        Original:              Result:
+        [[1, 2],              [[1, 3, 5],  ← column 0
+         [3, 4],     →         [2, 4, 6]]  ← column 1
+         [5, 6]]
+    """
     if not matrix or not matrix[0]:
         return []
 
     rows = len(matrix)
     cols = len(matrix[0])
 
+    # Build each row of result from column of original
     return [[matrix[i][j] for i in range(rows)] for j in range(cols)]
 
 
-def print_matrix(matrix, name="Matrix"):
+# ============================================================================
+# APPROACH 3: Pythonic Using zip ⭐ MOST ELEGANT IN PYTHON
+# ============================================================================
+# Time Complexity:  O(m × n)
+# Space Complexity: O(m × n)
+#
+# HOW IT WORKS:
+# - zip(*matrix) unpacks rows and groups by position
+# - This naturally transposes the matrix!
+# ============================================================================
+
+def transpose_matrix_zip(matrix: List[List[int]]) -> List[List[int]]:
+    """
+    Pythonic one-liner using zip.
+
+    How zip(*matrix) works:
+    1. *matrix unpacks: zip([1,2], [3,4], [5,6])
+    2. zip groups by position: (1,3,5), (2,4,6)
+    3. Convert tuples to lists
+
+    Visual:
+        matrix = [[1,2], [3,4], [5,6]]
+
+        *matrix unpacks to: [1,2], [3,4], [5,6]
+
+        zip groups:
+          Position 0: (1, 3, 5)  → [1, 3, 5]
+          Position 1: (2, 4, 6)  → [2, 4, 6]
+
+        Result: [[1,3,5], [2,4,6]]
+
+    This is the most Pythonic solution!
+    """
+    return [list(row) for row in zip(*matrix)]
+
+
+# ============================================================================
+# APPROACH 4: In-Place for Square Matrix
+# ============================================================================
+# Time Complexity:  O(n²)
+# Space Complexity: O(1) - truly in-place!
+#
+# IMPORTANT: Only works for SQUARE matrices (m = n)
+# ============================================================================
+
+def transpose_matrix_inplace(matrix: List[List[int]]) -> List[List[int]]:
+    """
+    In-place transpose for SQUARE matrices only.
+
+    Key Insight: Only swap upper triangle with lower triangle
+    to avoid double-swapping.
+
+    Visual for 3×3:
+        ┌───┬───┬───┐
+        │ X │ S │ S │   X = diagonal (don't touch)
+        ├───┼───┼───┤   S = swap with corresponding
+        │ s │ X │ S │   s = already swapped (skip)
+        ├───┼───┼───┤
+        │ s │ s │ X │
+        └───┴───┴───┘
+
+        Only swap upper triangle: (0,1), (0,2), (1,2)
+
+    WARNING: Returns the same matrix modified, not a copy!
+    """
+    n = len(matrix)
+
+    # Verify it's a square matrix
+    if n == 0 or len(matrix[0]) != n:
+        raise ValueError("In-place transpose only works for square matrices")
+
+    # Swap upper triangle with lower triangle
+    for i in range(n):
+        for j in range(i + 1, n):  # j starts at i+1 to avoid diagonal and lower
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+    return matrix
+
+
+# ============================================================================
+# HELPER FUNCTION
+# ============================================================================
+
+def print_matrix(matrix: List[List[int]], name: str = "Matrix") -> None:
     """Helper function to print matrix nicely."""
     print(f"{name}:")
     for row in matrix:
         print(f"  {row}")
 
 
-# Test cases
+# ============================================================================
+# TEST CASES
+# ============================================================================
+
+def run_tests():
+    """Run comprehensive tests for all approaches."""
+
+    test_cases = [
+        # (matrix, description)
+        ([[1, 2], [3, 4], [5, 6]], "3×2 matrix"),
+        ([[1, 2, 3], [4, 5, 6], [7, 8, 9]], "3×3 square matrix"),
+        ([[1, 2, 3]], "1×3 row vector"),
+        ([[1], [2], [3]], "3×1 column vector"),
+        ([[5]], "1×1 single element"),
+        ([[1, 2, 3, 4], [5, 6, 7, 8]], "2×4 matrix"),
+    ]
+
+    approaches = [
+        ("Direct Construction (Recommended)", transpose_matrix),
+        ("Column Extraction", transpose_matrix_column),
+        ("Pythonic zip", transpose_matrix_zip),
+    ]
+
+    print("=" * 70)
+    print("TRANSPOSE MATRIX - TEST RESULTS")
+    print("=" * 70)
+
+    for matrix, desc in test_cases:
+        print(f"\n{desc}:")
+        print_matrix(matrix, "  Original")
+
+        # All approaches should give same result
+        results = []
+        for name, func in approaches:
+            result = func([row[:] for row in matrix])  # Copy to avoid mutation
+            results.append((name, result))
+
+        # Show first result
+        print_matrix(results[0][1], "  Transposed")
+
+        # Verify all approaches match
+        all_match = all(r[1] == results[0][1] for r in results)
+        print(f"  All approaches match: {'✓' if all_match else '✗'}")
+
+    # Test in-place for square matrix
+    print("\n" + "-" * 50)
+    print("In-Place Transpose (Square Matrix Only):")
+    square = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    print_matrix(square, "  Original")
+    transpose_matrix_inplace(square)
+    print_matrix(square, "  After in-place transpose")
+
+    print("\n" + "=" * 70)
+    print("COMPLEXITY COMPARISON")
+    print("=" * 70)
+    print("""
+    ┌──────────────────────────┬─────────┬──────────┬──────────────────┐
+    │        Approach          │  Time   │  Space   │  Recommendation  │
+    ├──────────────────────────┼─────────┼──────────┼──────────────────┤
+    │ 1. Direct Construction   │ O(m×n)  │  O(m×n)  │  ⭐ BEST CHOICE  │
+    │ 2. Column Extraction     │ O(m×n)  │  O(m×n)  │  ✓ Alternative   │
+    │ 3. Pythonic (zip)        │ O(m×n)  │  O(m×n)  │  ✓ Most elegant  │
+    │ 4. In-Place (square)     │ O(n²)   │   O(1)   │  ⚠️ Square only  │
+    └──────────────────────────┴─────────┴──────────┴──────────────────┘
+    """)
+
+
 if __name__ == "__main__":
-    # Test 1: 3x2 matrix
-    matrix1 = [
-        [1, 2],
-        [3, 4],
-        [5, 6]
-    ]
-    result1 = transpose_matrix(matrix1)
-    print("Test 1:")
-    print_matrix(matrix1, "Original")
-    print_matrix(result1, "Transposed")
-    # Expected: [[1,3,5], [2,4,6]]
-    print()
-
-    # Test 2: 3x3 square matrix
-    matrix2 = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
-    ]
-    result2 = transpose_matrix(matrix2)
-    print("Test 2:")
-    print_matrix(matrix2, "Original")
-    print_matrix(result2, "Transposed")
-    # Expected: [[1,4,7], [2,5,8], [3,6,9]]
-    print()
-
-    # Test 3: 1x3 row vector
-    matrix3 = [[1, 2, 3]]
-    result3 = transpose_matrix(matrix3)
-    print("Test 3:")
-    print_matrix(matrix3, "Original")
-    print_matrix(result3, "Transposed")
-    # Expected: [[1], [2], [3]]
-    print()
-
-    # Test 4: 3x1 column vector
-    matrix4 = [[1], [2], [3]]
-    result4 = transpose_matrix(matrix4)
-    print("Test 4:")
-    print_matrix(matrix4, "Original")
-    print_matrix(result4, "Transposed")
-    # Expected: [[1, 2, 3]]
-    print()
-
-    # Test 5: 1x1 matrix
-    matrix5 = [[5]]
-    result5 = transpose_matrix(matrix5)
-    print(f"Test 5: {matrix5} -> {result5}")
-    # Expected: [[5]]
-
-    # Test 6: Pythonic version comparison
-    matrix6 = [[1, 2], [3, 4], [5, 6]]
-    result6a = transpose_matrix(matrix6)
-    result6b = transpose_matrix_pythonic(matrix6)
-    print(f"\nTest 6 - Methods comparison:")
-    print(f"Standard: {result6a}")
-    print(f"Pythonic: {result6b}")
-
-    print("\nAll tests completed!")
+    run_tests()
