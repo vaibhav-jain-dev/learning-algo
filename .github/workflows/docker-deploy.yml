@@ -1,0 +1,530 @@
+# Docker Compose Deployment via SSH
+#
+# This workflow deploys a Docker Compose application to a remote server.
+# It handles code synchronization, container management, and optional Cloudflare tunnel configuration.
+#
+# Required Secrets:
+#   - SSH_PRIVATE_KEY: Private key for SSH authentication (required)
+#   - ENV_FILE: Content of .env file for the application (optional)
+#
+# Required Secrets or Variables:
+#   - SSH_HOST: Server IP or hostname
+#   - SSH_USERNAME: SSH user
+#   - SSH_PORT: SSH port (optional, defaults to 22)
+
+name: Deploy Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      force_restart:
+        description: 'Force restart (teardown and rebuild all containers)'
+        required: false
+        default: false
+        type: boolean
+      project_path:
+        description: 'Custom project path on server (default: /projects/<repo-name>)'
+        required: false
+        type: string
+
+env:
+  DEFAULT_PROJECT_BASE: /projects
+
+jobs:
+  validate:
+    name: Validate Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      ssh_host: ${{ steps.check.outputs.ssh_host }}
+      ssh_username: ${{ steps.check.outputs.ssh_username }}
+      ssh_port: ${{ steps.check.outputs.ssh_port }}
+      has_env_file: ${{ steps.check.outputs.has_env_file }}
+      validation_passed: ${{ steps.check.outputs.validation_passed }}
+    steps:
+      - name: Check required secrets and variables
+        id: check
+        run: |
+          echo "=========================================="
+          echo "  Configuration Validation"
+          echo "=========================================="
+
+          VALIDATION_PASSED=true
+
+          # Check SSH_HOST (can be secret or variable)
+          if [ -n "${{ secrets.SSH_HOST }}" ]; then
+            echo "SSH_HOST: Present (from Secrets)"
+            echo "ssh_host=${{ secrets.SSH_HOST }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ vars.SSH_HOST }}" ]; then
+            echo "SSH_HOST: Present (from Variables)"
+            echo "ssh_host=${{ vars.SSH_HOST }}" >> $GITHUB_OUTPUT
+          else
+            echo "SSH_HOST: MISSING"
+            VALIDATION_PASSED=false
+          fi
+
+          # Check SSH_USERNAME (can be secret or variable)
+          if [ -n "${{ secrets.SSH_USERNAME }}" ]; then
+            echo "SSH_USERNAME: Present (from Secrets)"
+            echo "ssh_username=${{ secrets.SSH_USERNAME }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ vars.SSH_USERNAME }}" ]; then
+            echo "SSH_USERNAME: Present (from Variables)"
+            echo "ssh_username=${{ vars.SSH_USERNAME }}" >> $GITHUB_OUTPUT
+          else
+            echo "SSH_USERNAME: MISSING"
+            VALIDATION_PASSED=false
+          fi
+
+          # Check SSH_PRIVATE_KEY (must be secret)
+          if [ -n "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "SSH_PRIVATE_KEY: Present (from Secrets)"
+            # Sanity check for key format
+            KEY_PREVIEW="${{ secrets.SSH_PRIVATE_KEY }}"
+            if [[ ! "$KEY_PREVIEW" =~ ^-----BEGIN ]]; then
+              echo "WARNING: SSH_PRIVATE_KEY may be malformed (missing BEGIN header)"
+              echo "  Ensure the key includes the full header: -----BEGIN ... PRIVATE KEY-----"
+            fi
+          else
+            echo "SSH_PRIVATE_KEY: MISSING (REQUIRED)"
+            VALIDATION_PASSED=false
+          fi
+
+          # Check SSH_PORT (optional, can be secret or variable)
+          if [ -n "${{ secrets.SSH_PORT }}" ]; then
+            echo "SSH_PORT: Present (from Secrets)"
+            echo "ssh_port=${{ secrets.SSH_PORT }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ vars.SSH_PORT }}" ]; then
+            echo "SSH_PORT: Present (from Variables)"
+            echo "ssh_port=${{ vars.SSH_PORT }}" >> $GITHUB_OUTPUT
+          else
+            echo "SSH_PORT: Not set (will use default: 22)"
+            echo "ssh_port=22" >> $GITHUB_OUTPUT
+          fi
+
+          # Check ENV_FILE (optional)
+          if [ -n "${{ secrets.ENV_FILE }}" ]; then
+            echo "ENV_FILE: Present (from Secrets)"
+            echo "has_env_file=true" >> $GITHUB_OUTPUT
+          else
+            echo "ENV_FILE: Not configured (optional)"
+            echo "has_env_file=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "=========================================="
+
+          if [ "$VALIDATION_PASSED" = "false" ]; then
+            echo "VALIDATION FAILED: Missing required configuration"
+            echo "Please add the missing values in Settings > Secrets and variables > Actions"
+            echo "validation_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "All required configuration present"
+          echo "validation_passed=true" >> $GITHUB_OUTPUT
+
+  test-connection:
+    name: Test SSH Connection
+    runs-on: ubuntu-latest
+    needs: validate
+    if: needs.validate.outputs.validation_passed == 'true'
+    steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          # Add host to known_hosts to avoid interactive prompt
+          ssh-keyscan -p ${{ needs.validate.outputs.ssh_port }} -H ${{ needs.validate.outputs.ssh_host }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Test SSH connection
+        run: |
+          echo "=========================================="
+          echo "  SSH Connection Test"
+          echo "=========================================="
+          echo "Host: ${{ needs.validate.outputs.ssh_host }}"
+          echo "User: ${{ needs.validate.outputs.ssh_username }}"
+          echo "Port: ${{ needs.validate.outputs.ssh_port }}"
+          echo "=========================================="
+
+          # Verbose connection test for debugging
+          ssh -v -o BatchMode=yes \
+              -o ConnectTimeout=30 \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p ${{ needs.validate.outputs.ssh_port }} \
+              ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
+              "echo 'SSH connection successful'; uname -a; docker --version; docker compose version" 2>&1 || {
+            echo "=========================================="
+            echo "SSH Connection FAILED"
+            echo ""
+            echo "Troubleshooting tips:"
+            echo "1. Verify SSH_HOST is correct and reachable"
+            echo "2. Verify SSH_USERNAME has SSH access"
+            echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
+            echo "4. Check if the server allows SSH on port ${{ needs.validate.outputs.ssh_port }}"
+            echo "5. Ensure the server's firewall allows incoming SSH connections"
+            echo "=========================================="
+            exit 1
+          }
+
+          echo "=========================================="
+          echo "Connection test PASSED"
+          echo "=========================================="
+
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs: [validate, test-connection]
+    if: needs.validate.outputs.validation_passed == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ needs.validate.outputs.ssh_port }} -H ${{ needs.validate.outputs.ssh_host }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Determine project path
+        id: project
+        run: |
+          if [ -n "${{ inputs.project_path }}" ]; then
+            PROJECT_PATH="${{ inputs.project_path }}"
+          else
+            PROJECT_PATH="${{ env.DEFAULT_PROJECT_BASE }}/${{ github.event.repository.name }}"
+          fi
+          echo "path=$PROJECT_PATH" >> $GITHUB_OUTPUT
+          echo "Project will be deployed to: $PROJECT_PATH"
+
+      - name: Deploy to server
+        env:
+          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
+          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
+          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
+          PROJECT_PATH: ${{ steps.project.outputs.path }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          REPO_BRANCH: ${{ github.ref_name }}
+          FORCE_RESTART: ${{ inputs.force_restart || 'false' }}
+          HAS_ENV_FILE: ${{ needs.validate.outputs.has_env_file }}
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
+        run: |
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USER@$SSH_HOST << 'DEPLOY_SCRIPT'
+
+          set -e
+
+          echo "=========================================="
+          echo "  Deployment Started"
+          echo "  $(date)"
+          echo "=========================================="
+
+          PROJECT_PATH="${{ steps.project.outputs.path }}"
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}.git"
+          REPO_BRANCH="${{ github.ref_name }}"
+          FORCE_RESTART="${{ inputs.force_restart }}"
+
+          # Step 1: Directory Setup
+          echo ""
+          echo "[1/5] Setting up project directory..."
+          echo "----------------------------------------"
+
+          PROJECT_BASE=$(dirname "$PROJECT_PATH")
+          if [ ! -d "$PROJECT_BASE" ]; then
+            echo "Creating base directory: $PROJECT_BASE"
+            sudo mkdir -p "$PROJECT_BASE"
+            sudo chown $USER:$USER "$PROJECT_BASE"
+          fi
+
+          # Step 2: Code Synchronization
+          echo ""
+          echo "[2/5] Synchronizing code..."
+          echo "----------------------------------------"
+
+          if [ ! -d "$PROJECT_PATH/.git" ]; then
+            echo "Cloning repository..."
+            git clone --branch "$REPO_BRANCH" "$REPO_URL" "$PROJECT_PATH"
+            cd "$PROJECT_PATH"
+          else
+            echo "Updating existing repository..."
+            cd "$PROJECT_PATH"
+            git fetch origin
+            git checkout "$REPO_BRANCH"
+            git reset --hard "origin/$REPO_BRANCH"
+            git pull origin "$REPO_BRANCH"
+          fi
+
+          echo "Current commit: $(git rev-parse --short HEAD)"
+          echo "Commit message: $(git log -1 --pretty=%B | head -1)"
+
+          # Step 3: Environment Configuration
+          echo ""
+          echo "[3/5] Configuring environment..."
+          echo "----------------------------------------"
+
+          DEPLOY_SCRIPT
+
+          # Handle ENV_FILE separately to avoid quoting issues
+          if [ "$HAS_ENV_FILE" = "true" ]; then
+            echo "Creating .env file on server..."
+            ssh -o BatchMode=yes \
+                -o StrictHostKeyChecking=no \
+                -i ~/.ssh/deploy_key \
+                -p $SSH_PORT \
+                $SSH_USER@$SSH_HOST "cat > $PROJECT_PATH/.env" << 'ENV_EOF'
+          ${{ secrets.ENV_FILE }}
+          ENV_EOF
+
+            ssh -o BatchMode=yes \
+                -o StrictHostKeyChecking=no \
+                -i ~/.ssh/deploy_key \
+                -p $SSH_PORT \
+                $SSH_USER@$SSH_HOST "chmod 600 $PROJECT_PATH/.env && echo '.env file created successfully'"
+          else
+            echo "No ENV_FILE configured, skipping..."
+          fi
+
+          # Continue deployment
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USER@$SSH_HOST << DEPLOY_CONTINUE
+
+          set -e
+          cd "$PROJECT_PATH"
+
+          # Export env vars if .env exists
+          if [ -f ".env" ]; then
+            echo "Loading environment variables..."
+            set -a
+            source .env
+            set +a
+            echo "Environment variables loaded"
+          else
+            echo "No .env file present"
+          fi
+
+          # Step 4: Container Management
+          echo ""
+          echo "[4/5] Managing Docker containers..."
+          echo "----------------------------------------"
+
+          echo "BEFORE - Running containers:"
+          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" || echo "No containers running"
+          echo ""
+
+          FORCE_RESTART="${{ inputs.force_restart }}"
+
+          if [ "\$FORCE_RESTART" = "true" ]; then
+            echo "Force restart requested - performing full teardown..."
+            docker compose down --remove-orphans --timeout 30 || true
+            echo "Containers stopped and removed"
+          fi
+
+          echo "Pulling latest images..."
+          docker compose pull --ignore-pull-failures || true
+
+          echo "Starting containers..."
+          docker compose up -d --build --remove-orphans
+
+          echo ""
+          echo "Waiting for containers to stabilize..."
+          sleep 10
+
+          echo ""
+          echo "AFTER - Running containers:"
+          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+          # Step 5: Status Report
+          echo ""
+          echo "[5/5] Deployment Status"
+          echo "----------------------------------------"
+          echo "Project: $PROJECT_PATH"
+          echo "Branch: $REPO_BRANCH"
+          echo "Commit: \$(git rev-parse --short HEAD)"
+          echo "Time: \$(date)"
+          echo ""
+          echo "Container Health:"
+          docker compose ps
+
+          echo ""
+          echo "=========================================="
+          echo "  Deployment Complete!"
+          echo "=========================================="
+
+          DEPLOY_CONTINUE
+
+      - name: Configure Cloudflare Tunnel (if applicable)
+        env:
+          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
+          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
+          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
+          PROJECT_PATH: ${{ steps.project.outputs.path }}
+        run: |
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USER@$SSH_HOST << 'CLOUDFLARE_SCRIPT'
+
+          set -e
+
+          PROJECT_PATH="${{ steps.project.outputs.path }}"
+          COMPOSE_FILE="$PROJECT_PATH/docker-compose.yml"
+          CLOUDFLARE_CONFIG="/etc/cloudflared/config.yml"
+
+          echo ""
+          echo "=========================================="
+          echo "  Cloudflare Tunnel Configuration"
+          echo "=========================================="
+
+          # Check if docker-compose.yml exists
+          if [ ! -f "$COMPOSE_FILE" ]; then
+            echo "No docker-compose.yml found, skipping Cloudflare configuration"
+            exit 0
+          fi
+
+          # Check if cloudflared is installed
+          if ! command -v cloudflared &> /dev/null; then
+            echo "cloudflared not installed, skipping tunnel configuration"
+            exit 0
+          fi
+
+          # Check if config file exists
+          if [ ! -f "$CLOUDFLARE_CONFIG" ]; then
+            echo "Cloudflare config not found at $CLOUDFLARE_CONFIG"
+            echo "Skipping tunnel configuration"
+            exit 0
+          fi
+
+          # Extract cloudflare labels from docker-compose.yml
+          # Format: labels: cloudflare:subdomain:port
+          echo "Scanning docker-compose.yml for Cloudflare labels..."
+
+          LABELS=$(grep -oP 'cloudflare:\K[^"'\'']+' "$COMPOSE_FILE" 2>/dev/null || true)
+
+          if [ -z "$LABELS" ]; then
+            echo "No Cloudflare labels found in docker-compose.yml"
+            echo "To enable auto-configuration, add labels like:"
+            echo "  labels:"
+            echo "    - \"cloudflare:myapp:8080\""
+            exit 0
+          fi
+
+          echo "Found Cloudflare labels:"
+          echo "$LABELS"
+          echo ""
+
+          # Backup current config
+          sudo cp "$CLOUDFLARE_CONFIG" "${CLOUDFLARE_CONFIG}.backup.$(date +%Y%m%d_%H%M%S)"
+
+          CONFIG_CHANGED=false
+
+          # Process each label
+          while IFS= read -r label; do
+            if [ -z "$label" ]; then
+              continue
+            fi
+
+            # Parse subdomain:port format
+            SUBDOMAIN=$(echo "$label" | cut -d: -f1)
+            PORT=$(echo "$label" | cut -d: -f2)
+
+            if [ -z "$SUBDOMAIN" ] || [ -z "$PORT" ]; then
+              echo "Invalid label format: $label (expected subdomain:port)"
+              continue
+            fi
+
+            echo "Processing: $SUBDOMAIN -> localhost:$PORT"
+
+            # Check if this ingress rule already exists
+            if grep -q "hostname:.*$SUBDOMAIN" "$CLOUDFLARE_CONFIG" 2>/dev/null; then
+              # Update existing rule
+              echo "  Updating existing rule for $SUBDOMAIN"
+              sudo sed -i "s|hostname:.*$SUBDOMAIN.*|hostname: $SUBDOMAIN|g" "$CLOUDFLARE_CONFIG"
+              CONFIG_CHANGED=true
+            else
+              # Check if we can add a new ingress rule
+              # This is a simplified approach - in production you'd use yq or similar
+              echo "  New subdomain detected: $SUBDOMAIN"
+              echo "  Manual configuration may be required for new subdomains"
+            fi
+
+          done <<< "$LABELS"
+
+          if [ "$CONFIG_CHANGED" = "true" ]; then
+            echo ""
+            echo "Configuration updated, restarting Cloudflare tunnel..."
+            sudo systemctl restart cloudflared || sudo service cloudflared restart || {
+              echo "Warning: Could not restart cloudflared service"
+              echo "You may need to restart it manually"
+            }
+            echo "Cloudflare tunnel restarted"
+          else
+            echo ""
+            echo "No configuration changes needed"
+          fi
+
+          echo ""
+          echo "=========================================="
+          echo "  Cloudflare Configuration Complete"
+          echo "=========================================="
+
+          CLOUDFLARE_SCRIPT
+
+      - name: Post-deployment health check
+        env:
+          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
+          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
+          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
+          PROJECT_PATH: ${{ steps.project.outputs.path }}
+        run: |
+          echo "Performing post-deployment health check..."
+
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USER@$SSH_HOST << 'HEALTH_SCRIPT'
+
+          cd "${{ steps.project.outputs.path }}"
+
+          echo "Container Status:"
+          docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Health}}"
+
+          echo ""
+          echo "Recent Container Logs (last 20 lines per container):"
+          for container in $(docker compose ps -q); do
+            CONTAINER_NAME=$(docker inspect --format '{{.Name}}' $container | sed 's/\///')
+            echo ""
+            echo "--- $CONTAINER_NAME ---"
+            docker logs --tail 20 $container 2>&1 | head -20 || true
+          done
+
+          # Check for unhealthy containers
+          UNHEALTHY=$(docker compose ps --format json | grep -c '"Health":"unhealthy"' || true)
+          if [ "$UNHEALTHY" -gt 0 ]; then
+            echo ""
+            echo "WARNING: $UNHEALTHY unhealthy container(s) detected"
+            exit 1
+          fi
+
+          echo ""
+          echo "All containers are healthy!"
+
+          HEALTH_SCRIPT
+
+      - name: Cleanup SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+          echo "SSH key cleaned up"
