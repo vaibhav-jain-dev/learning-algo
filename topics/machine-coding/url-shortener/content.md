@@ -89,25 +89,97 @@ Store in database, mark as "used" when assigned
 
 ### Part 4: System Architecture
 
-```
-                                     WRITE PATH
-┌──────────┐    ┌──────────────┐    ┌───────────────┐    ┌─────────────┐
-│  Client  │───►│ Load Balancer │───►│   App Server  │───►│  Database   │
-└──────────┘    └──────────────┘    │               │    │ (Cassandra) │
-                                    │ 1. Validate   │    └─────────────┘
-                                    │ 2. Generate ID│           │
-                                    │ 3. Store      │           │
-                                    └───────────────┘           │
-                                                                │
-                                     READ PATH                  │
-┌──────────┐    ┌──────────────┐    ┌───────────────┐    ┌─────▼───────┐
-│  Client  │◄───│ Load Balancer │◄───│   App Server  │◄───│    Cache    │
-└──────────┘    └──────────────┘    │               │    │   (Redis)   │
-      │                             │ 1. Check cache│    └─────────────┘
-      │         ┌──────────────┐    │ 2. DB if miss │
-      └────────►│     CDN      │    │ 3. 301/302    │
-                └──────────────┘    └───────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+
+<!-- WRITE PATH -->
+<div style="margin-bottom: 32px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 16px; text-align: center;">WRITE PATH</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">👤</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Client</div>
+</div>
+
+<div style="color: #7ee787; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">⚖️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Load Balancer</div>
+</div>
+
+<div style="color: #7ee787; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">🖥️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">App Server</div>
+<div style="color: #d1f5d3; font-size: 9px; margin-top: 4px;">1. Validate</div>
+<div style="color: #d1f5d3; font-size: 9px;">2. Generate ID</div>
+<div style="color: #d1f5d3; font-size: 9px;">3. Store</div>
+</div>
+
+<div style="color: #7ee787; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">🗄️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Database</div>
+<div style="color: #ffe2cc; font-size: 9px;">(Cassandra)</div>
+</div>
+
+</div>
+</div>
+
+<!-- READ PATH -->
+<div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 16px; text-align: center;">READ PATH</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">👤</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Client</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">←</div>
+
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">⚖️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Load Balancer</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">←</div>
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">🖥️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">App Server</div>
+<div style="color: #d1f5d3; font-size: 9px; margin-top: 4px;">1. Check cache</div>
+<div style="color: #d1f5d3; font-size: 9px;">2. DB if miss</div>
+<div style="color: #d1f5d3; font-size: 9px;">3. 301/302</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">←</div>
+
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 18px;">⚡</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Cache</div>
+<div style="color: #ffd6d6; font-size: 9px;">(Redis)</div>
+</div>
+
+</div>
+
+<!-- CDN Branch -->
+<div style="display: flex; justify-content: center; margin-top: 16px;">
+<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+<div style="color: #8b949e; font-size: 11px;">Client also uses</div>
+<div style="color: #ffa657; font-size: 16px;">→</div>
+<div style="background: linear-gradient(135deg, #9e6a03 0%, #d29922 100%); padding: 8px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 14px;">🌐</div>
+<div style="color: #fff; font-weight: bold; font-size: 10px;">CDN</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
 
 ### Part 5: 301 vs 302 Redirect - Why It Matters
 
@@ -132,23 +204,52 @@ Store in database, mark as "used" when assigned
 
 ### Alternative 1: Zookeeper for Distributed Counter
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Zookeeper                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
-│  │ Range: 1-1M │  │ Range: 1M-2M│  │ Range: 2M-3M│          │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘          │
-│         │                │                │                  │
-└─────────┼────────────────┼────────────────┼──────────────────┘
-          │                │                │
-          ▼                ▼                ▼
-    ┌──────────┐     ┌──────────┐     ┌──────────┐
-    │ Server 1 │     │ Server 2 │     │ Server 3 │
-    │ Uses 1-1M│     │ Uses 1M-2M│    │ Uses 2M-3M│
-    └──────────┘     └──────────┘     └──────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #30363d;">
+
+<!-- Zookeeper Header -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px;">🦓 Zookeeper</div>
+</div>
+
+<!-- Ranges -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Range: 1-1M</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Range: 1M-2M</div>
+</div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Range: 2M-3M</div>
+</div>
+</div>
+
+<!-- Arrows -->
+<div style="display: flex; justify-content: center; gap: 80px; margin-bottom: 12px;">
+<div style="color: #7ee787; font-size: 20px;">↓</div>
+<div style="color: #7ee787; font-size: 20px;">↓</div>
+<div style="color: #7ee787; font-size: 20px;">↓</div>
+</div>
+
+<!-- Servers -->
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 16px 20px; border-radius: 8px; text-align: center; border: 2px solid #238636;">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px;">Server 1</div>
+<div style="color: #8b949e; font-size: 10px;">Uses 1-1M</div>
+</div>
+<div style="background: #21262d; padding: 16px 20px; border-radius: 8px; text-align: center; border: 2px solid #1f6feb;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">Server 2</div>
+<div style="color: #8b949e; font-size: 10px;">Uses 1M-2M</div>
+</div>
+<div style="background: #21262d; padding: 16px 20px; border-radius: 8px; text-align: center; border: 2px solid #f78166;">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px;">Server 3</div>
+<div style="color: #8b949e; font-size: 10px;">Uses 2M-3M</div>
+</div>
+</div>
+
+</div>
 
 **How it works:**
 1. Each server requests a range from Zookeeper (e.g., 1 million IDs)
@@ -189,27 +290,88 @@ def generate_short_code(url: str) -> str:
 
 ### Alternative 3: KGS (Key Generation Service)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                 Key Generation Service                       │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  Pre-generated Keys Table                            │    │
-│  │  ┌──────────┬────────┐                              │    │
-│  │  │   Key    │  Used  │                              │    │
-│  │  ├──────────┼────────┤                              │    │
-│  │  │  a7Bc3Df │   No   │ ← Available                  │    │
-│  │  │  x9Yz2Qw │   No   │                              │    │
-│  │  │  k3Mn8Pv │   Yes  │ ← Already used               │    │
-│  │  └──────────┴────────┘                              │    │
-│  └─────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #30363d;">
 
-Flow:
-1. KGS generates keys offline (batch job)
-2. App server requests key from KGS
-3. KGS marks key as used, returns it
-4. App server maps URL to key
-```
+<!-- KGS Header -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 24px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px;">🔑 Key Generation Service</div>
+</div>
+
+<!-- Pre-generated Keys Table -->
+<div style="background: #21262d; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Pre-generated Keys Table</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+<!-- Header Row -->
+<div style="background: #30363d; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #c9d1d9; font-weight: bold; font-size: 11px;">Key</div>
+</div>
+<div style="background: #30363d; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #c9d1d9; font-weight: bold; font-size: 11px;">Used</div>
+</div>
+<div style="background: #30363d; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #c9d1d9; font-weight: bold; font-size: 11px;">Status</div>
+</div>
+
+<!-- Row 1 -->
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #7ee787; font-family: monospace; font-size: 11px;">a7Bc3Df</div>
+</div>
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #7ee787; font-size: 11px;">No</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Available</div>
+</div>
+
+<!-- Row 2 -->
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #7ee787; font-family: monospace; font-size: 11px;">x9Yz2Qw</div>
+</div>
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #7ee787; font-size: 11px;">No</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Available</div>
+</div>
+
+<!-- Row 3 -->
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #8b949e; font-family: monospace; font-size: 11px;">k3Mn8Pv</div>
+</div>
+<div style="background: #0d1117; padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #f85149; font-size: 11px;">Yes</div>
+</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Already used</div>
+</div>
+</div>
+</div>
+
+<!-- Flow Steps -->
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Flow:</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #238636; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">1</div>
+<div style="color: #c9d1d9; font-size: 11px;">KGS generates keys offline (batch job)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #1f6feb; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">2</div>
+<div style="color: #c9d1d9; font-size: 11px;">App server requests key from KGS</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #8957e5; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">3</div>
+<div style="color: #c9d1d9; font-size: 11px;">KGS marks key as used, returns it</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #f78166; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">4</div>
+<div style="color: #c9d1d9; font-size: 11px;">App server maps URL to key</div>
+</div>
+</div>
+</div>
+
+</div>
 
 ---
 

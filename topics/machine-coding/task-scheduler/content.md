@@ -717,14 +717,50 @@ func main() {
 
 ### Priority Queue Implementation
 
-```
-Task Queue (Min-Heap by scheduled_time, then priority):
-┌─────────────────────────────────────────┐
-│  [task1: 10:00, p=5]                    │
-│     /              \                    │
-│ [task2: 10:01, p=3] [task3: 10:02, p=8] │
-└─────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 8px 0; text-align: center; font-size: 14px;">Task Queue (Min-Heap)</h4>
+<div style="color: #8b949e; font-size: 11px; text-align: center; margin-bottom: 24px;">Ordered by scheduled_time, then priority</div>
+
+<!-- Heap Structure -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+
+<!-- Root Node -->
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task1</div>
+<div style="color: #d1f5d3; font-size: 10px;">10:00, p=5</div>
+</div>
+
+<!-- Connector Lines -->
+<div style="display: flex; justify-content: center; gap: 60px;">
+<div style="color: #30363d; font-size: 20px;">╱</div>
+<div style="color: #30363d; font-size: 20px;">╲</div>
+</div>
+
+<!-- Child Nodes -->
+<div style="display: flex; justify-content: center; gap: 24px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task2</div>
+<div style="color: #a5d6ff; font-size: 10px;">10:01, p=3</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task3</div>
+<div style="color: #eddeff; font-size: 10px;">10:02, p=8</div>
+</div>
+</div>
+
+</div>
+
+<!-- Legend -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
+<span style="color: #7ee787; font-size: 10px;">Root = Next task to execute</span>
+</div>
+<div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
+<span style="color: #ffa657; font-size: 10px;">p = priority (higher = more urgent)</span>
+</div>
+</div>
+
+</div>
 
 ### Cron Expression Support
 

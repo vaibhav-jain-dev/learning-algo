@@ -10,48 +10,59 @@ As AI agents become integral to software development and operations, microservic
 
 ## Why AI-Friendly Architecture Matters
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                AI AGENTS IN MICROSERVICES ECOSYSTEM                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  AI AGENTS ARE BEING USED FOR:                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  1. CODE GENERATION & REVIEW                                        │    │
-│  │     • GitHub Copilot, Claude, ChatGPT generating code               │    │
-│  │     • Automated PR reviews                                          │    │
-│  │     • Code refactoring suggestions                                  │    │
-│  │                                                                      │    │
-│  │  2. INCIDENT RESPONSE                                               │    │
-│  │     • Automated root cause analysis                                 │    │
-│  │     • Runbook execution                                             │    │
-│  │     • Alert correlation                                             │    │
-│  │                                                                      │    │
-│  │  3. INFRASTRUCTURE MANAGEMENT                                       │    │
-│  │     • Auto-scaling decisions                                        │    │
-│  │     • Resource optimization                                         │    │
-│  │     • Deployment automation                                         │    │
-│  │                                                                      │    │
-│  │  4. DOCUMENTATION & ONBOARDING                                      │    │
-│  │     • Generating documentation from code                            │    │
-│  │     • Answering developer questions                                 │    │
-│  │     • Creating architecture diagrams                                │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE PROBLEM:                                                                │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  AI agents struggle with:                                            │    │
-│  │  • Undocumented service relationships                                │    │
-│  │  • Inconsistent naming conventions                                   │    │
-│  │  • Missing context about business logic                              │    │
-│  │  • Unclear API contracts                                             │    │
-│  │  • Lack of standardized metadata                                     │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI Agents in Microservices Ecosystem</h3>
+
+  <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
+    <h4 style="color: #4facfe; margin: 0 0 16px 0; font-size: 1.1em;">AI Agents Are Being Used For:</h4>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 16px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">1. Code Generation & Review</div>
+        <ul style="color: #e0e0e0; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>GitHub Copilot, Claude, ChatGPT generating code</li>
+          <li>Automated PR reviews</li>
+          <li>Code refactoring suggestions</li>
+        </ul>
+      </div>
+      <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 16px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">2. Incident Response</div>
+        <ul style="color: #e0e0e0; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Automated root cause analysis</li>
+          <li>Runbook execution</li>
+          <li>Alert correlation</li>
+        </ul>
+      </div>
+      <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 8px; padding: 16px;">
+        <div style="color: #1a1a2e; font-weight: 600; margin-bottom: 8px;">3. Infrastructure Management</div>
+        <ul style="color: #1a1a2e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Auto-scaling decisions</li>
+          <li>Resource optimization</li>
+          <li>Deployment automation</li>
+        </ul>
+      </div>
+      <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 8px; padding: 16px;">
+        <div style="color: #1a1a2e; font-weight: 600; margin-bottom: 8px;">4. Documentation & Onboarding</div>
+        <ul style="color: #1a1a2e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Generating documentation from code</li>
+          <li>Answering developer questions</li>
+          <li>Creating architecture diagrams</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 20px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">The Problem:</h4>
+    <div style="color: #ffe0e0; font-size: 0.95em;">AI agents struggle with:</div>
+    <ul style="color: #fff; margin: 8px 0 0 0; padding-left: 20px;">
+      <li>Undocumented service relationships</li>
+      <li>Inconsistent naming conventions</li>
+      <li>Missing context about business logic</li>
+      <li>Unclear API contracts</li>
+      <li>Lack of standardized metadata</li>
+    </ul>
+  </div>
+</div>
 
 ---
 
@@ -257,80 +268,115 @@ runbooks:
 
 ## Standard 2: Consistent Naming Conventions
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    NAMING CONVENTION STANDARDS                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  SERVICE NAMES:                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Pattern: {domain}-service                                           │    │
-│  │                                                                      │    │
-│  │  ✅ Good:                          ❌ Bad:                           │    │
-│  │  • order-service                   • orders                          │    │
-│  │  • user-service                    • user-svc                        │    │
-│  │  • payment-service                 • PaymentAPI                      │    │
-│  │  • inventory-service               • inv_service                     │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Lowercase with hyphens                                            │    │
-│  │  • Singular noun + "-service"                                        │    │
-│  │  • Match business domain terminology                                 │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  API ENDPOINTS:                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Pattern: /api/{version}/{resource}                                  │    │
-│  │                                                                      │    │
-│  │  ✅ Good:                          ❌ Bad:                           │    │
-│  │  • GET /api/v1/orders              • GET /api/getOrders              │    │
-│  │  • POST /api/v1/orders             • POST /api/createOrder           │    │
-│  │  • GET /api/v1/orders/{id}         • GET /api/v1/order/{id}          │    │
-│  │  • DELETE /api/v1/orders/{id}      • POST /api/v1/orders/{id}/delete │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Plural nouns for collections                                      │    │
-│  │  • Use HTTP verbs, not action words in URL                           │    │
-│  │  • Consistent versioning (v1, v2)                                    │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  EVENT NAMES:                                                                │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Pattern: {domain}.{entity}.{action}                                 │    │
-│  │                                                                      │    │
-│  │  ✅ Good:                          ❌ Bad:                           │    │
-│  │  • order.created                   • ORDER_CREATED                   │    │
-│  │  • order.payment.completed         • orderPaymentCompleted           │    │
-│  │  • user.address.updated            • UserAddressUpdate               │    │
-│  │  • inventory.stock.depleted        • stockOut                        │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Lowercase with dots as separators                                 │    │
-│  │  • Past tense for events (created, updated, deleted)                 │    │
-│  │  • Include domain prefix                                             │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  DATABASE TABLES:                                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Pattern: {entity} (plural)                                          │    │
-│  │                                                                      │    │
-│  │  ✅ Good:                          ❌ Bad:                           │    │
-│  │  • orders                          • Order                           │    │
-│  │  • order_items                     • orderItems                      │    │
-│  │  • user_addresses                  • tbl_user_addresses              │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Lowercase with underscores                                        │    │
-│  │  • Plural nouns                                                      │    │
-│  │  • No table prefixes                                                 │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Naming Convention Standards</h3>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 8px 0;">Service Names</h4>
+      <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; color: #4facfe; font-size: 0.9em;">{domain}-service</code>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <div style="flex: 1;">
+          <div style="color: #43e97b; font-weight: 600; margin-bottom: 4px;">Good:</div>
+          <ul style="color: #e0e0e0; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>order-service</li>
+            <li>user-service</li>
+            <li>payment-service</li>
+          </ul>
+        </div>
+        <div style="flex: 1;">
+          <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 4px;">Bad:</div>
+          <ul style="color: #e0e0e0; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>orders</li>
+            <li>user-svc</li>
+            <li>PaymentAPI</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); color: #c0c0c0; font-size: 0.85em;">
+        <strong>Rules:</strong> Lowercase with hyphens, singular noun + "-service"
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 8px 0;">API Endpoints</h4>
+      <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; color: #fff; font-size: 0.9em;">/api/{version}/{resource}</code>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <div style="flex: 1;">
+          <div style="color: #43e97b; font-weight: 600; margin-bottom: 4px;">Good:</div>
+          <ul style="color: #fff; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>GET /api/v1/orders</li>
+            <li>POST /api/v1/orders</li>
+            <li>GET /api/v1/orders/{id}</li>
+          </ul>
+        </div>
+        <div style="flex: 1;">
+          <div style="color: #1a1a2e; font-weight: 600; margin-bottom: 4px;">Bad:</div>
+          <ul style="color: #ffe0e0; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>GET /api/getOrders</li>
+            <li>POST /api/createOrder</li>
+            <li>POST /orders/{id}/delete</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 0.85em;">
+        <strong>Rules:</strong> Plural nouns, use HTTP verbs not action words
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 8px 0;">Event Names</h4>
+      <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; color: #1a1a2e; font-size: 0.9em;">{domain}.{entity}.{action}</code>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <div style="flex: 1;">
+          <div style="color: #1a5e1a; font-weight: 600; margin-bottom: 4px;">Good:</div>
+          <ul style="color: #1a1a2e; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>order.created</li>
+            <li>order.payment.completed</li>
+            <li>user.address.updated</li>
+          </ul>
+        </div>
+        <div style="flex: 1;">
+          <div style="color: #8b0000; font-weight: 600; margin-bottom: 4px;">Bad:</div>
+          <ul style="color: #1a1a2e; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>ORDER_CREATED</li>
+            <li>orderPaymentCompleted</li>
+            <li>UserAddressUpdate</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.2); color: #1a1a2e; font-size: 0.85em;">
+        <strong>Rules:</strong> Lowercase with dots, past tense for events
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 8px 0;">Database Tables</h4>
+      <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; color: #1a1a2e; font-size: 0.9em;">{entity} (plural)</code>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <div style="flex: 1;">
+          <div style="color: #1a5e1a; font-weight: 600; margin-bottom: 4px;">Good:</div>
+          <ul style="color: #1a1a2e; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>orders</li>
+            <li>order_items</li>
+            <li>user_addresses</li>
+          </ul>
+        </div>
+        <div style="flex: 1;">
+          <div style="color: #8b0000; font-weight: 600; margin-bottom: 4px;">Bad:</div>
+          <ul style="color: #1a1a2e; margin: 0; padding-left: 16px; font-size: 0.85em;">
+            <li>Order</li>
+            <li>orderItems</li>
+            <li>tbl_user_addresses</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.2); color: #1a1a2e; font-size: 0.85em;">
+        <strong>Rules:</strong> Lowercase with underscores, plural nouns, no prefixes
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -670,62 +716,65 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
 
 ## Standard 5: Structured Logging
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    STRUCTURED LOGGING FOR AI                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  LOG FORMAT (JSON):                                                          │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  {                                                                   │    │
-│  │    "timestamp": "2024-01-15T10:30:00.123Z",                          │    │
-│  │    "level": "info",                                                  │    │
-│  │    "service": "order-service",                                       │    │
-│  │    "version": "2.1.0",                                               │    │
-│  │    "environment": "production",                                      │    │
-│  │                                                                      │    │
-│  │    // Tracing context                                                │    │
-│  │    "trace_id": "abc123",                                             │    │
-│  │    "span_id": "def456",                                              │    │
-│  │    "parent_span_id": "ghi789",                                       │    │
-│  │                                                                      │    │
-│  │    // Business context                                               │    │
-│  │    "operation": "create_order",                                      │    │
-│  │    "entity_type": "order",                                           │    │
-│  │    "entity_id": "order_123",                                         │    │
-│  │    "user_id": "user_456",                                            │    │
-│  │                                                                      │    │
-│  │    // Message                                                        │    │
-│  │    "message": "Order created successfully",                          │    │
-│  │    "details": {                                                      │    │
-│  │      "order_number": "ORD-1234567890",                               │    │
-│  │      "total": 150.00,                                                │    │
-│  │      "items_count": 3                                                │    │
-│  │    },                                                                │    │
-│  │                                                                      │    │
-│  │    // Duration for operations                                        │    │
-│  │    "duration_ms": 145,                                               │    │
-│  │                                                                      │    │
-│  │    // For errors                                                     │    │
-│  │    "error_code": null,                                               │    │
-│  │    "error_message": null,                                            │    │
-│  │    "stack_trace": null                                               │    │
-│  │  }                                                                   │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  REQUIRED FIELDS:                                                            │
-│  • timestamp, level, service, trace_id                                      │
-│  • operation (what action is being performed)                               │
-│  • entity_type, entity_id (what resource is affected)                       │
-│                                                                              │
-│  ERROR LOGS MUST INCLUDE:                                                    │
-│  • error_code (machine-readable)                                            │
-│  • error_message (human-readable)                                           │
-│  • stack_trace (for debugging)                                              │
-│  • context (what was being attempted)                                       │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Structured Logging for AI</h3>
+
+  <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
+    <h4 style="color: #4facfe; margin: 0 0 12px 0;">Log Format (JSON):</h4>
+    <pre style="background: #0d1117; border-radius: 8px; padding: 16px; color: #c9d1d9; font-size: 0.85em; overflow-x: auto; margin: 0;"><code>{
+  "timestamp": "2024-01-15T10:30:00.123Z",
+  "level": "info",
+  "service": "order-service",
+  "version": "2.1.0",
+  "environment": "production",
+
+  <span style="color: #8b949e;">// Tracing context</span>
+  "trace_id": "abc123",
+  "span_id": "def456",
+  "parent_span_id": "ghi789",
+
+  <span style="color: #8b949e;">// Business context</span>
+  "operation": "create_order",
+  "entity_type": "order",
+  "entity_id": "order_123",
+  "user_id": "user_456",
+
+  <span style="color: #8b949e;">// Message</span>
+  "message": "Order created successfully",
+  "details": {
+    "order_number": "ORD-1234567890",
+    "total": 150.00,
+    "items_count": 3
+  },
+
+  "duration_ms": 145,
+  "error_code": null,
+  "error_message": null,
+  "stack_trace": null
+}</code></pre>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 10px 0;">Required Fields:</h4>
+      <ul style="color: #1a1a2e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li><code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">timestamp</code>, <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">level</code>, <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">service</code>, <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">trace_id</code></li>
+        <li><code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">operation</code> (what action is being performed)</li>
+        <li><code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">entity_type</code>, <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">entity_id</code> (what resource is affected)</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 10px 0;">Error Logs Must Include:</h4>
+      <ul style="color: #fff; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li><code style="background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 3px;">error_code</code> (machine-readable)</li>
+        <li><code style="background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 3px;">error_message</code> (human-readable)</li>
+        <li><code style="background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 3px;">stack_trace</code> (for debugging)</li>
+        <li><code style="background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 3px;">context</code> (what was being attempted)</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -868,49 +917,89 @@ patterns:
 
 ## Implementation Checklist
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                  AI-FRIENDLY MICROSERVICES CHECKLIST                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ☐ SERVICE MANIFEST                                                          │
-│    ☐ service.yaml in every service repo                                     │
-│    ☐ Dependencies documented with purpose                                   │
-│    ☐ Events published/subscribed documented                                 │
-│    ☐ Configuration documented                                               │
-│                                                                              │
-│  ☐ API DOCUMENTATION                                                         │
-│    ☐ OpenAPI spec with x-ai-context extensions                              │
-│    ☐ Examples for all endpoints                                             │
-│    ☐ Error responses documented                                             │
-│    ☐ Idempotency documented                                                 │
-│                                                                              │
-│  ☐ CODE DOCUMENTATION                                                        │
-│    ☐ Package-level AI context comments                                      │
-│    ☐ Function-level documentation with side effects                         │
-│    ☐ Error types and handling documented                                    │
-│    ☐ State machines documented                                              │
-│                                                                              │
-│  ☐ NAMING CONVENTIONS                                                        │
-│    ☐ Consistent service naming                                              │
-│    ☐ Consistent API endpoint patterns                                       │
-│    ☐ Consistent event naming                                                │
-│    ☐ Consistent database naming                                             │
-│                                                                              │
-│  ☐ OBSERVABILITY                                                             │
-│    ☐ Structured JSON logging                                                │
-│    ☐ Correlation IDs in all logs                                            │
-│    ☐ Distributed tracing enabled                                            │
-│    ☐ Runbooks for common issues                                             │
-│                                                                              │
-│  ☐ SERVICE CATALOG                                                           │
-│    ☐ All services registered                                                │
-│    ☐ Dependencies mapped                                                    │
-│    ☐ Team ownership documented                                              │
-│    ☐ Kept up to date                                                        │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI-Friendly Microservices Checklist</h3>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #fff; border-radius: 4px; display: inline-block;"></span>
+        Service Manifest
+      </h4>
+      <ul style="color: #e0e0e0; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> service.yaml in every service repo</li>
+        <li style="margin-bottom: 4px;"><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> Dependencies documented with purpose</li>
+        <li style="margin-bottom: 4px;"><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> Events published/subscribed documented</li>
+        <li><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> Configuration documented</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #fff; border-radius: 4px; display: inline-block;"></span>
+        API Documentation
+      </h4>
+      <ul style="color: #fff; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> OpenAPI spec with x-ai-context extensions</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> Examples for all endpoints</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> Error responses documented</li>
+        <li><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> Idempotency documented</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
+        Code Documentation
+      </h4>
+      <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Package-level AI context comments</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Function-level documentation with side effects</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Error types and handling documented</li>
+        <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> State machines documented</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
+        Naming Conventions
+      </h4>
+      <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent service naming</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent API endpoint patterns</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent event naming</li>
+        <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent database naming</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
+        Observability
+      </h4>
+      <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Structured JSON logging</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Correlation IDs in all logs</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Distributed tracing enabled</li>
+        <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Runbooks for common issues</li>
+      </ul>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
+        Service Catalog
+      </h4>
+      <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> All services registered</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Dependencies mapped</li>
+        <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Team ownership documented</li>
+        <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Kept up to date</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 ---
 

@@ -209,33 +209,77 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 
 ### Alternative 1: Destination Dispatch System
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Modern approach used in skyscrapers:**
 
-```
-Traditional:            Destination Dispatch:
-┌───────────┐           ┌───────────────────┐
-│ ▲  ▼      │           │ Enter destination │
-│ UP DOWN   │           │ ┌─────────────┐   │
-│ buttons   │           │ │ Floor: [12] │   │
-└───────────┘           │ └─────────────┘   │
-      │                 │ Assigned: Elev B  │
-      ▼                 └───────────────────┘
-Wait for any                    │
-elevator                        ▼
-                        Go directly to
-                        Elevator B
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0;">
 
-**Pros**:
-- Group passengers by destination
-- Reduce stops per trip
+<!-- Traditional System -->
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
+<div style="color: #f85149; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Traditional</div>
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+<div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px;">
+<div style="background: #238636; padding: 8px 16px; border-radius: 6px;">
+<div style="color: #fff; font-size: 16px;">▲</div>
+<div style="color: #fff; font-size: 10px;">UP</div>
+</div>
+<div style="background: #da3633; padding: 8px 16px; border-radius: 6px;">
+<div style="color: #fff; font-size: 16px;">▼</div>
+<div style="color: #fff; font-size: 10px;">DOWN</div>
+</div>
+</div>
+<div style="color: #8b949e; font-size: 10px;">buttons</div>
+</div>
+
+<div style="text-align: center; color: #ffa657; font-size: 20px; margin-bottom: 8px;">↓</div>
+
+<div style="background: #21262d; padding: 12px; border-radius: 6px; text-align: center;">
+<div style="color: #8b949e; font-size: 11px;">Wait for any elevator</div>
+</div>
+</div>
+
+<!-- Destination Dispatch System -->
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Destination Dispatch</div>
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+<div style="color: #58a6ff; font-size: 11px; margin-bottom: 8px;">Enter destination</div>
+<div style="background: #0d1117; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">
+<span style="color: #8b949e; font-size: 11px;">Floor: </span>
+<span style="color: #7ee787; font-weight: bold; font-size: 14px;">[12]</span>
+</div>
+<div style="color: #ffa657; font-size: 11px;">Assigned: Elev B</div>
+</div>
+
+<div style="text-align: center; color: #7ee787; font-size: 20px; margin-bottom: 8px;">↓</div>
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 11px;">Go directly to Elevator B</div>
+</div>
+</div>
+
+</div>
+
+<!-- Pros and Cons -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: #21262d; padding: 12px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Pros:</div>
+<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+- Group passengers by destination<br>
+- Reduce stops per trip<br>
 - 30-40% efficiency improvement
-
-**Cons**:
-- More complex hardware
+</div>
+</div>
+<div style="background: #21262d; padding: 12px; border-radius: 8px;">
+<div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Cons:</div>
+<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+- More complex hardware<br>
 - User education needed
+</div>
+</div>
+</div>
 
 </div>
 

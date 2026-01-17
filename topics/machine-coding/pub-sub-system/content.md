@@ -815,12 +815,73 @@ func main() {
 
 ## Architecture Patterns
 
-```
-Publishers ──┬──> [Topic A] ──┬──> Subscriber 1
-             │                └──> Subscriber 2
-             └──> [Topic B] ──┬──> Subscriber 2
-                              └──> Subscriber 3
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Pub-Sub Architecture Flow</h4>
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+
+<!-- Publishers -->
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📤</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Publishers</div>
+</div>
+</div>
+
+<!-- First Arrow Split -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="display: flex; gap: 4px;">
+<div style="color: #7ee787; font-size: 18px;">→</div>
+</div>
+</div>
+
+<!-- Topics Column -->
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<!-- Topic A with subscribers -->
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 18px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Topic A</div>
+</div>
+<div style="color: #7ee787; font-size: 16px;">→</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 8px 14px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Subscriber 1</div>
+</div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 8px 14px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Subscriber 2</div>
+</div>
+</div>
+</div>
+
+<!-- Topic B with subscribers -->
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 18px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Topic B</div>
+</div>
+<div style="color: #58a6ff; font-size: 16px;">→</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 8px 14px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Subscriber 2</div>
+</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 14px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">Subscriber 3</div>
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- Legend -->
+<div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
+<span style="color: #7ee787; font-size: 11px;">Subscriber 2 receives from both topics</span>
+</div>
+</div>
+
+</div>
 
 ## Interview Tips
 
