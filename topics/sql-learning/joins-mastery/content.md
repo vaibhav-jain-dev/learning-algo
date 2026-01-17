@@ -12,9 +12,7 @@ Joins combine rows from two or more tables based on related columns. Understandi
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px; text-align: center;">SQL JOIN TYPES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px;">INNER JOIN</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -23,7 +21,6 @@ Joins combine rows from two or more tables based on related columns. Understandi
 </div>
 <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #8b949e;">Returns only matching rows</div>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 16px;">LEFT JOIN</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -32,7 +29,6 @@ Joins combine rows from two or more tables based on related columns. Understandi
 </div>
 <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #8b949e;">All from left + matches from right</div>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 14px; margin-bottom: 16px;">RIGHT JOIN</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -41,7 +37,6 @@ Joins combine rows from two or more tables based on related columns. Understandi
 </div>
 <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #8b949e;">Matches from left + all from right</div>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 16px;">FULL OUTER JOIN</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -50,7 +45,6 @@ Joins combine rows from two or more tables based on related columns. Understandi
 </div>
 <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #8b949e;">All rows from both tables</div>
 </div>
-
 </div>
 </div>
 
@@ -344,31 +338,25 @@ JOIN products p ON
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0;">Join Performance Optimization</h4>
-
 <div style="display: grid; gap: 16px;">
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">1. Index Join Columns</div>
 <div style="color: #c9d1d9; font-size: 14px;">Always index foreign key columns used in JOIN conditions</div>
 <code style="background: #161b22; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #8b949e;">CREATE INDEX idx_orders_user_id ON orders(user_id);</code>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">2. Select Only Needed Columns</div>
 <div style="color: #c9d1d9; font-size: 14px;">Avoid SELECT * - specify only columns you need</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #f0883e;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">3. Filter Early</div>
 <div style="color: #c9d1d9; font-size: 14px;">Apply WHERE conditions to reduce rows before joining</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #a371f7;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">4. Use EXPLAIN</div>
 <div style="color: #c9d1d9; font-size: 14px;">Analyze query plans to identify bottlenecks</div>
 <code style="background: #161b22; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #8b949e;">EXPLAIN ANALYZE SELECT ...</code>
 </div>
-
 </div>
 </div>
 

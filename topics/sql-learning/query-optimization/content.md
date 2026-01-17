@@ -12,7 +12,6 @@ Query optimization is about writing efficient SQL that executes quickly and uses
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">QUERY EXECUTION ORDER</h4>
-
 <div style="display: flex; flex-direction: column; gap: 8px; max-width: 500px; margin: 0 auto;">
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #238636; color: #fff; padding: 8px 16px; border-radius: 6px; min-width: 120px; text-align: center; font-size: 13px;">1. FROM</div>
@@ -77,27 +76,22 @@ GROUP BY u.id, u.name;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Seq Scan</div>
 <div style="color: #8b949e; font-size: 13px;">Full table scan - may need index</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Index Scan</div>
 <div style="color: #8b949e; font-size: 13px;">Using index - usually good</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Nested Loop</div>
 <div style="color: #8b949e; font-size: 13px;">For each row in A, scan B - slow for large tables</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Hash Join</div>
 <div style="color: #8b949e; font-size: 13px;">Build hash table, probe - efficient for equality joins</div>
 </div>
-
 </div>
 </div>
 
@@ -271,29 +265,23 @@ LIMIT 20;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0;">Join Performance Tips</h4>
-
 <div style="display: grid; gap: 12px;">
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">1. Index Join Columns</div>
 <div style="color: #c9d1d9; font-size: 13px;">Foreign keys should always be indexed</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">2. Filter Before Joining</div>
 <div style="color: #c9d1d9; font-size: 13px;">Reduce rows in subquery before join</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #f0883e;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">3. Start with Smallest Table</div>
 <div style="color: #c9d1d9; font-size: 13px;">Put smaller/filtered table first in join order</div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #a371f7;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">4. Avoid Unnecessary Joins</div>
 <div style="color: #c9d1d9; font-size: 13px;">Only join tables you actually need</div>
 </div>
-
 </div>
 </div>
 
@@ -386,9 +374,7 @@ SHOW INDEX FROM orders;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0;">Optimization Checklist</h4>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-
 <div>
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">✓ DO</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -401,7 +387,6 @@ SHOW INDEX FROM orders;
 <li>Monitor query performance</li>
 </ul>
 </div>
-
 <div>
 <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">✗ AVOID</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -414,7 +399,6 @@ SHOW INDEX FROM orders;
 <li>Type mismatches in WHERE</li>
 </ul>
 </div>
-
 </div>
 </div>
 

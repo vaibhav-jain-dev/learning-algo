@@ -337,7 +337,6 @@ class WALReplication:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">AUTOMATIC FAILOVER</div>
-
   <div style="margin-bottom: 32px;">
     <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">BEFORE FAILURE:</div>
     <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
@@ -363,7 +362,6 @@ class WALReplication:
       </div>
     </div>
   </div>
-
   <div style="margin-bottom: 32px;">
     <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">FAILURE DETECTED:</div>
     <div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
@@ -385,7 +383,6 @@ class WALReplication:
       </div>
     </div>
   </div>
-
   <div>
     <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">AFTER FAILOVER:</div>
     <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">

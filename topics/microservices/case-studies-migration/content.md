@@ -16,7 +16,6 @@ This guide presents detailed case studies of companies that successfully migrate
     <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2001-2006</span>
     <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: Millions of customers to Billions in revenue</span>
   </div>
-
   <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">The Problem (2001): "Obidos" Monolith</h4>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -38,7 +37,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">The Mandate (2002): Jeff Bezos API Mandate</h4>
     <ol style="color: #e0e0ff; margin: 0; padding-left: 20px; font-size: 0.9em;">
@@ -50,7 +48,6 @@ This guide presents detailed case studies of companies that successfully migrate
       <li><em style="color: #ff9900;">Anyone who doesn't do this will be fired</em></li>
     </ol>
   </div>
-
   <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">The Approach</h4>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
@@ -81,7 +78,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">Results (2006)</h4>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9em;">
@@ -96,7 +92,6 @@ This guide presents detailed case studies of companies that successfully migrate
     </div>
     <div style="text-align: center; margin-top: 12px; color: #ff9900; font-weight: 600;">Bonus: AWS was born from this infrastructure!</div>
   </div>
-
   <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
     <h4 style="color: #4facfe; margin: 0 0 8px 0;">Key Lessons:</h4>
     <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em;">
@@ -118,7 +113,6 @@ This guide presents detailed case studies of companies that successfully migrate
     <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2008-2016</span>
     <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: 8M to 130M+ subscribers</span>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
     <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">The Catalyst (2008)</h4>
@@ -143,7 +137,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </ul>
     </div>
   </div>
-
   <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">Migration Strategy (8 Years)</h4>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
@@ -181,7 +174,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
     <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">Netflix OSS Contributions</h4>
@@ -206,7 +198,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
     <h4 style="color: #e50914; margin: 0 0 8px 0;">Key Lessons:</h4>
     <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
@@ -229,7 +220,6 @@ This guide presents detailed case studies of companies that successfully migrate
     <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2014-2018</span>
     <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: $0 to $11B revenue, 3 to 600+ cities</span>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
     <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #4facfe; margin: 0 0 10px 0;">Before State (2014)</h4>
@@ -274,7 +264,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
     <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 10px 0;">Technology Choices</h4>
@@ -298,7 +287,6 @@ This guide presents detailed case studies of companies that successfully migrate
       <div style="color: #fff; font-style: italic; margin-top: 8px; font-size: 0.85em; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">"We went from 2 services everyone understood to 2000 services nobody understood"</div>
     </div>
   </div>
-
   <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
     <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">The Correction (2018+): DOMA - Domain-Oriented Microservice Architecture</h4>
     <div style="display: flex; gap: 16px; align-items: center;">
@@ -321,7 +309,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
     <h4 style="color: #000; margin: 0 0 8px 0;"><span style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px;">Key Lessons:</span></h4>
     <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
@@ -344,7 +331,6 @@ This guide presents detailed case studies of companies that successfully migrate
     <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2016-2020</span>
     <span style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: 1M+ stores, $300B+ GMV</span>
   </div>
-
   <!-- The Decision -->
   <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">THE DECISION: NOT TO DO MICROSERVICES</h4>
@@ -367,7 +353,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </div>
     </div>
   </div>
-
   <!-- Component-Based Architecture -->
   <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 16px 0;">THE APPROACH: COMPONENT-BASED ARCHITECTURE</h4>
@@ -406,7 +391,6 @@ This guide presents detailed case studies of companies that successfully migrate
       </ul>
     </div>
   </div>
-
   <!-- Packwerk -->
   <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #f97316;">
     <h4 style="color: #f97316; margin: 0 0 16px 0;">PACKWERK: THE ENFORCEMENT TOOL</h4>
@@ -414,11 +398,9 @@ This guide presents detailed case studies of companies that successfully migrate
     <pre style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; margin: 0 0 16px 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e6edf3;"># package.yml in each component
 enforce_privacy: true
 enforce_dependencies: true
-
 dependencies:
   - shop                   <span style="color: #8b949e;"># Can depend on shop component</span>
   - products               <span style="color: #8b949e;"># Can depend on products component</span>
-
 public_path: app/public/   <span style="color: #8b949e;"># Only this folder is accessible</span></code></pre>
     <div style="background: rgba(248,81,73,0.2); border-radius: 8px; padding: 12px;">
       <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">CI fails if:</div>
@@ -429,7 +411,6 @@ public_path: app/public/   <span style="color: #8b949e;"># Only this folder is a
       </ul>
     </div>
   </div>
-
   <!-- Selective Extraction -->
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #8957e5;">
@@ -465,7 +446,6 @@ public_path: app/public/   <span style="color: #8b949e;"># Only this folder is a
       <div style="color: #8b949e; font-size: 0.85em; font-style: italic;">(Core business logic that needs strong consistency)</div>
     </div>
   </div>
-
   <!-- Results -->
   <div style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">RESULTS</h4>
@@ -495,7 +475,6 @@ public_path: app/public/   <span style="color: #8b949e;"># Only this folder is a
       <div style="color: #d1fae5; font-style: italic; font-size: 0.9em;">"The modular monolith gives us the benefits of microservices (clear boundaries, team ownership) without the costs (network latency, distributed transactions)"</div>
     </div>
   </div>
-
   <!-- Key Lessons -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 12px 0;">KEY LESSONS</h4>

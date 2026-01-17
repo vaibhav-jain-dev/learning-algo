@@ -10,9 +10,7 @@ Consensus algorithms enable distributed systems to agree on a single value or st
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">THE CONSENSUS PROBLEM</div>
-
   <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Multiple nodes must agree on a single value:</div>
-
   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
       <div style="color: #ffffff; font-weight: 600;">Node A</div>
@@ -27,17 +25,13 @@ Consensus algorithms enable distributed systems to agree on a single value or st
       <div style="color: #aaddff; font-size: 12px; margin-top: 4px;">proposes X</div>
     </div>
   </div>
-
   <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓ ↓ ↓</div>
-
   <div style="text-align: center; margin-bottom: 20px;">
     <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px 40px; display: inline-block;">
       <div style="color: #ffffff; font-weight: 600;">CONSENSUS PROTOCOL</div>
     </div>
   </div>
-
   <div style="text-align: center; color: #a371f7; font-size: 24px; margin-bottom: 16px;">↓ ↓ ↓</div>
-
   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
       <div style="color: #ffffff; font-weight: 600;">Node A</div>
@@ -52,7 +46,6 @@ Consensus algorithms enable distributed systems to agree on a single value or st
       <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">decides: X</div>
     </div>
   </div>
-
   <div style="text-align: center; background: rgba(46, 160, 67, 0.1); border: 1px solid #238636; border-radius: 8px; padding: 12px;">
     <span style="color: #7ee787;">All nodes agree on X (could have been Y, but MUST be same value)</span>
   </div>
@@ -61,29 +54,23 @@ Consensus algorithms enable distributed systems to agree on a single value or st
 ### Properties of Consensus
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 1. **Agreement**: All correct nodes decide on the same value
 2. **Validity**: The decided value was proposed by some node
 3. **Termination**: All correct nodes eventually decide
 4. **Integrity**: Each node decides at most once
-
 </div>
 
 ### FLP Impossibility
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 ⚠️ **The FLP Impossibility Theorem (1985)**: In an asynchronous system with even one faulty node, no deterministic consensus algorithm can guarantee all three properties (agreement, validity, termination) simultaneously.
-
 Practical algorithms use **timeouts** to work around this, accepting that termination may not be guaranteed if too many failures occur.
-
 </div>
 
 ## Common Consensus Algorithms
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">CONSENSUS ALGORITHM COMPARISON</div>
-
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
       <thead>
@@ -127,7 +114,6 @@ Practical algorithms use **timeouts** to work around this, accepting that termin
       </tbody>
     </table>
   </div>
-
   <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
     <div style="background: rgba(46, 160, 67, 0.1); border-radius: 8px; padding: 12px;">
       <span style="color: #7ee787; font-weight: 600;">Crash fault:</span>
@@ -146,11 +132,9 @@ The classic consensus algorithm, known for being difficult to understand but fou
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">PAXOS PROTOCOL</div>
-
   <div style="text-align: center; color: #8b949e; margin-bottom: 24px;">
     Roles: <span style="color: #58a6ff;">Proposer</span> (proposes values), <span style="color: #a371f7;">Acceptor</span> (votes), <span style="color: #7ee787;">Learner</span> (learns)
   </div>
-
   <div style="background: rgba(88, 166, 255, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px;">PHASE 1: PREPARE</div>
     <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
@@ -176,7 +160,6 @@ The classic consensus algorithm, known for being difficult to understand but fou
       </div>
     </div>
   </div>
-
   <div style="background: rgba(163, 113, 247, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="color: #a371f7; font-weight: 600; margin-bottom: 16px;">PHASE 2: ACCEPT</div>
     <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
@@ -202,7 +185,6 @@ The classic consensus algorithm, known for being difficult to understand but fou
       </div>
     </div>
   </div>
-
   <div style="background: rgba(46, 160, 67, 0.2); border: 1px solid #238636; border-radius: 8px; padding: 12px; text-align: center;">
     <span style="color: #7ee787; font-weight: 600;">Majority accepted → Value X is chosen!</span>
   </div>
@@ -304,7 +286,6 @@ Designed for understandability, widely used in practice.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">RAFT PROTOCOL</div>
-
   <div style="text-align: center; margin-bottom: 24px;">
     <span style="color: #8b949e;">Three states:</span>
     <span style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); color: #f0f6fc; padding: 4px 12px; border-radius: 6px; margin: 0 8px;">FOLLOWER</span>
@@ -313,11 +294,9 @@ Designed for understandability, widely used in practice.
     <span style="color: #58a6ff;">→</span>
     <span style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); color: #ffffff; padding: 4px 12px; border-radius: 6px; margin: 0 8px;">LEADER</span>
   </div>
-
   <div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 24px;">
     <span style="color: #58a6ff; font-weight: 600;">LEADER ELECTION</span>
   </div>
-
   <div style="margin-bottom: 24px;">
     <div style="color: #ffa657; font-weight: 600; margin-bottom: 12px;">Step 1: Timeout (no heartbeat from leader)</div>
     <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px;">
@@ -341,7 +320,6 @@ Designed for understandability, widely used in practice.
       <div style="color: #fff8dd; font-size: 11px; margin-top: 4px;">term++, vote for self</div>
     </div>
   </div>
-
   <div style="margin-bottom: 24px;">
     <div style="color: #ffa657; font-weight: 600; margin-bottom: 12px;">Step 2: Request votes</div>
     <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
@@ -367,7 +345,6 @@ Designed for understandability, widely used in practice.
       </div>
     </div>
   </div>
-
   <div>
     <div style="color: #7ee787; font-weight: 600; margin-bottom: 12px;">Step 3: Wins election (got majority)</div>
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; width: fit-content; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
@@ -380,9 +357,7 @@ Designed for understandability, widely used in practice.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
   <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">RAFT LOG REPLICATION</div>
-
   <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Client sends command <span style="color: #58a6ff; font-family: monospace;">"SET X=5"</span> to Leader</div>
-
   <div style="margin-bottom: 24px;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Leader's Log:</div>
     <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
@@ -409,7 +384,6 @@ Designed for understandability, widely used in practice.
     </div>
     <div style="color: #7ee787; font-size: 12px; margin-left: 180px;">↑ commitIndex</div>
   </div>
-
   <div style="background: rgba(88, 166, 255, 0.1); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
     <div style="color: #58a6ff; font-size: 13px; line-height: 1.8;">
       <div>1. Leader appends entry to log</div>
@@ -419,7 +393,6 @@ Designed for understandability, widely used in practice.
       <div>5. Leader notifies followers of commit</div>
     </div>
   </div>
-
   <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
     <div style="text-align: center;">
       <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 14px; min-width: 100px; margin-bottom: 8px;">
@@ -431,7 +404,6 @@ Designed for understandability, widely used in practice.
       <div style="color: #7ee787; font-size: 12px; font-weight: 600;">COMMIT!</div>
       <div style="color: #8b949e; font-size: 11px;">(majority replicated)</div>
     </div>
-
     <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 10px;">
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="color: #58a6ff;">append →</span>

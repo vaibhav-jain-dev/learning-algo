@@ -5,11 +5,9 @@
 The CAP theorem, proposed by Eric Brewer in 2000, states that a distributed data store can provide only two of the following three guarantees simultaneously:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 - **Consistency**: Every read receives the most recent write
 - **Availability**: Every request receives a response (success or failure)
 - **Partition Tolerance**: System continues to operate despite network partitions
-
 </div>
 
 ## Key Concepts
@@ -18,7 +16,6 @@ The CAP theorem, proposed by Eric Brewer in 2000, states that a distributed data
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THE CAP THEOREM</h3>
-
   <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
     <!-- Triangle visualization -->
     <div style="position: relative; width: 300px; height: 260px;">
@@ -26,43 +23,35 @@ The CAP theorem, proposed by Eric Brewer in 2000, states that a distributed data
       <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center;">
         <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600;">CONSISTENCY</div>
       </div>
-
       <!-- Triangle shape with labels -->
       <div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 130px solid transparent; border-right: 130px solid transparent; border-bottom: 180px solid rgba(88, 166, 255, 0.1);"></div>
-
       <!-- CP label -->
       <div style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%); text-align: center;">
         <div style="color: #7ee787; font-weight: 600; font-size: 14px;">CP</div>
         <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">MongoDB, HBase<br>Zookeeper</div>
       </div>
-
       <!-- CA label (left) -->
       <div style="position: absolute; top: 140px; left: 10px; text-align: center;">
         <div style="color: #f0883e; font-weight: 600; font-size: 12px;">CA</div>
         <div style="color: #8b949e; font-size: 10px;">(Single Node)</div>
       </div>
-
       <!-- AP label (right) -->
       <div style="position: absolute; top: 140px; right: 10px; text-align: center;">
         <div style="color: #a371f7; font-weight: 600; font-size: 12px;">AP</div>
         <div style="color: #8b949e; font-size: 10px;">Cassandra<br>DynamoDB</div>
       </div>
-
       <!-- Center label -->
       <div style="position: absolute; top: 150px; left: 50%; transform: translateX(-50%); background: rgba(248, 81, 73, 0.2); border: 1px solid #f85149; padding: 6px 12px; border-radius: 6px;">
         <span style="color: #f85149; font-weight: 600; font-size: 13px;">PICK TWO!</span>
       </div>
-
       <!-- Bottom vertices -->
       <div style="position: absolute; bottom: 0; left: 0; text-align: center;">
         <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">AVAILABILITY</div>
       </div>
-
       <div style="position: absolute; bottom: 0; right: 0; text-align: center;">
         <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); color: white; padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">PARTITION<br>TOLERANCE</div>
       </div>
     </div>
-
     <!-- Warning note -->
     <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.4); border-radius: 8px; padding: 16px; margin-top: 16px; max-width: 500px;">
       <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">⚠️ In distributed systems, P is mandatory!</div>
@@ -79,30 +68,25 @@ All nodes see the same data at the same time. After a write completes, all subse
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CONSISTENCY</h3>
-
   <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
     <!-- Client write action -->
     <div style="color: #c9d1d9; font-size: 14px;">Client writes <span style="color: #7ee787; font-weight: 600;">X=5</span></div>
     <div style="color: #58a6ff; font-size: 20px;">↓</div>
-
     <!-- Nodes with replication -->
     <div style="display: flex; align-items: center; gap: 40px;">
       <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px 30px; border-radius: 12px; text-align: center;">
         <div style="color: white; font-weight: 600; margin-bottom: 8px;">Node A</div>
         <div style="color: rgba(255,255,255,0.9); font-size: 14px;">X=5</div>
       </div>
-
       <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
         <div style="color: #58a6ff; font-size: 24px;">→→→</div>
         <div style="color: #8b949e; font-size: 12px;">Replicate</div>
       </div>
-
       <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px 30px; border-radius: 12px; text-align: center;">
         <div style="color: white; font-weight: 600; margin-bottom: 8px;">Node B</div>
         <div style="color: rgba(255,255,255,0.9); font-size: 14px;">X=5</div>
       </div>
     </div>
-
     <!-- Read results -->
     <div style="display: flex; gap: 80px; margin-top: 8px;">
       <div style="text-align: center;">
@@ -114,7 +98,6 @@ All nodes see the same data at the same time. After a write completes, all subse
         <div style="color: #7ee787;">Read X → 5 ✓</div>
       </div>
     </div>
-
     <!-- Success note -->
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
       <span style="color: #7ee787; font-weight: 600;">✓ CONSISTENT:</span>
@@ -129,7 +112,6 @@ Every request to a non-failing node returns a response. The system remains opera
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">AVAILABILITY</h3>
-
   <div style="display: flex; flex-direction: column; gap: 16px;">
     <!-- Client 1 -->
     <div style="display: flex; align-items: center; gap: 16px;">
@@ -146,7 +128,6 @@ Every request to a non-failing node returns a response. The system remains opera
         <span style="color: #8b949e; font-size: 12px;">(within timeout)</span>
       </div>
     </div>
-
     <!-- Client 2 -->
     <div style="display: flex; align-items: center; gap: 16px;">
       <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 20px; border-radius: 8px; min-width: 100px; text-align: center;">
@@ -162,7 +143,6 @@ Every request to a non-failing node returns a response. The system remains opera
         <span style="color: #8b949e; font-size: 12px;">(within timeout)</span>
       </div>
     </div>
-
     <!-- Client 3 -->
     <div style="display: flex; align-items: center; gap: 16px;">
       <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 20px; border-radius: 8px; min-width: 100px; text-align: center;">
@@ -178,7 +158,6 @@ Every request to a non-failing node returns a response. The system remains opera
         <span style="color: #8b949e; font-size: 12px;">(within timeout)</span>
       </div>
     </div>
-
     <!-- Success note -->
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
       <span style="color: #7ee787; font-weight: 600;">✓ AVAILABLE:</span>
@@ -193,7 +172,6 @@ The system continues to function despite network partitions (communication break
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">PARTITION TOLERANCE</h3>
-
   <div style="display: flex; flex-direction: column; gap: 24px;">
     <!-- Normal operation -->
     <div>
@@ -211,7 +189,6 @@ The system continues to function despite network partitions (communication break
         </div>
       </div>
     </div>
-
     <!-- Partition scenario -->
     <div>
       <div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Network Partition (cable cut, router failure, etc.):</div>
@@ -228,7 +205,6 @@ The system continues to function despite network partitions (communication break
           <span style="color: white; font-weight: 600;">Node B</span>
         </div>
       </div>
-
       <!-- Still serving -->
       <div style="display: flex; justify-content: center; gap: 120px; margin-top: 16px;">
         <div style="text-align: center;">
@@ -241,7 +217,6 @@ The system continues to function despite network partitions (communication break
         </div>
       </div>
     </div>
-
     <!-- Success note -->
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 12px 20px;">
       <span style="color: #7ee787; font-weight: 600;">✓ PARTITION TOLERANT:</span>
@@ -256,7 +231,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THE PARTITION DILEMMA</h3>
-
   <!-- Scenario -->
   <div style="margin-bottom: 24px;">
     <div style="color: #8b949e; font-size: 13px; margin-bottom: 16px;">Scenario: Network partition occurs</div>
@@ -280,7 +254,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
       </div>
     </div>
   </div>
-
   <!-- Options grid -->
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     <!-- Option 1: CP -->
@@ -295,7 +268,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
         <span style="color: #f85149;">X Not Available: Write rejected</span>
       </div>
     </div>
-
     <!-- Option 2: AP -->
     <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 12px; padding: 20px;">
       <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">OPTION 2: CHOOSE AVAILABILITY (AP)</div>
@@ -315,7 +287,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CAP TRADE-OFF COMPARISON</h3>
-
   <div style="display: grid; gap: 12px;">
     <!-- Header -->
     <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
@@ -324,7 +295,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
       <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Examples</div>
       <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Best For</div>
     </div>
-
     <!-- CP Row -->
     <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr; gap: 12px; padding: 16px; background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 8px;">
       <div style="color: #7ee787; font-weight: 700; font-size: 16px;">CP</div>
@@ -332,7 +302,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
       <div style="color: #8b949e; font-size: 13px;">MongoDB, Zookeeper, HBase, Redis Cluster</div>
       <div style="color: #c9d1d9; font-size: 13px;">Banking, Config, Inventory</div>
     </div>
-
     <!-- AP Row -->
     <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr; gap: 12px; padding: 16px; background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px;">
       <div style="color: #58a6ff; font-weight: 700; font-size: 16px;">AP</div>
@@ -340,7 +309,6 @@ In a distributed system, network partitions are inevitable. When a partition occ
       <div style="color: #8b949e; font-size: 13px;">Cassandra, DynamoDB, CouchDB, Riak</div>
       <div style="color: #c9d1d9; font-size: 13px;">Social feeds, Shopping carts</div>
     </div>
-
     <!-- CA Row -->
     <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr; gap: 12px; padding: 16px; background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px;">
       <div style="color: #f0883e; font-weight: 700; font-size: 16px;">CA</div>
@@ -358,7 +326,6 @@ Sacrifices availability during partitions.
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">CP SYSTEM: QUORUM-BASED</h3>
   <div style="color: #8b949e; text-align: center; margin-bottom: 24px; font-size: 14px;">3 nodes, quorum = 2 (majority)</div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <!-- Write succeeds -->
     <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 12px; padding: 20px;">
@@ -385,7 +352,6 @@ Sacrifices availability during partitions.
         <span style="color: #7ee787; font-weight: 600;">Result: Write succeeds (2/3 = quorum)</span>
       </div>
     </div>
-
     <!-- During partition -->
     <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 12px; padding: 20px;">
       <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">DURING PARTITION (only 1 node reachable)</div>
@@ -411,7 +377,6 @@ Sacrifices availability during partitions.
       </div>
     </div>
   </div>
-
   <!-- Summary -->
   <div style="display: flex; gap: 16px; margin-top: 20px;">
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px; flex: 1;">
@@ -460,11 +425,8 @@ class CPDatabase:
 ```
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #4ecdc4;">
-
 **Examples**: MongoDB (default), HBase, Redis Cluster, Zookeeper
-
 **Use Cases**: Financial transactions, inventory management, configuration management
-
 </div>
 
 ### AP Systems (Availability + Partition Tolerance)
@@ -473,12 +435,10 @@ Sacrifices consistency during partitions. May return stale data.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">AP SYSTEM: ALWAYS AVAILABLE</h3>
-
   <div style="display: flex; flex-direction: column; gap: 24px;">
     <!-- During Partition -->
     <div>
       <div style="color: #f0883e; font-weight: 600; margin-bottom: 16px;">DURING PARTITION:</div>
-
       <!-- Nodes with partition -->
       <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 16px;">
         <div style="text-align: center;">
@@ -497,7 +457,6 @@ Sacrifices consistency during partitions. May return stale data.
           </div>
         </div>
       </div>
-
       <!-- Client actions -->
       <div style="display: flex; justify-content: center; gap: 80px; margin-bottom: 16px;">
         <div style="text-align: center;">
@@ -511,7 +470,6 @@ Sacrifices consistency during partitions. May return stale data.
           <div style="color: #f0883e; font-weight: 600;">X = 5 (stale!) ✓</div>
         </div>
       </div>
-
       <!-- Result nodes -->
       <div style="display: flex; align-items: center; justify-content: center; gap: 60px;">
         <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
@@ -524,7 +482,6 @@ Sacrifices consistency during partitions. May return stale data.
         </div>
       </div>
     </div>
-
     <!-- After partition heals -->
     <div>
       <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">AFTER PARTITION HEALS:</div>
@@ -543,7 +500,6 @@ Sacrifices consistency during partitions. May return stale data.
         </div>
       </div>
     </div>
-
     <!-- Summary -->
     <div style="display: flex; gap: 16px;">
       <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px; flex: 1;">
@@ -584,11 +540,8 @@ class APDatabase:
 ```
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #4ecdc4;">
-
 **Examples**: Cassandra, DynamoDB, CouchDB, Riak
-
 **Use Cases**: Social media feeds, shopping carts, session storage
-
 </div>
 
 ### CA Systems (Consistency + Availability)
@@ -596,9 +549,7 @@ class APDatabase:
 Only possible when there are no partitions (single node or reliable network).
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 ⚠️ **Note**: In practice, network partitions happen, so CA systems are not truly distributed. A single-node PostgreSQL is CA but not distributed!
-
 </div>
 
 **Examples**: Traditional RDBMS (PostgreSQL, MySQL) on single node
@@ -607,15 +558,12 @@ Only possible when there are no partitions (single node or reliable network).
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CONSISTENCY SPECTRUM</h3>
-
   <!-- Spectrum bar -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
     <span style="color: #7ee787; font-weight: 600; font-size: 13px;">Strongest</span>
     <span style="color: #f85149; font-weight: 600; font-size: 13px;">Weakest</span>
   </div>
-
   <div style="background: linear-gradient(90deg, #238636 0%, #1f6feb 25%, #8957e5 50%, #f0883e 75%, #f85149 100%); height: 8px; border-radius: 4px; margin-bottom: 20px;"></div>
-
   <!-- Consistency levels -->
   <div style="display: flex; justify-content: space-between; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
     <div style="background: rgba(35, 134, 54, 0.2); border: 1px solid #238636; padding: 8px 12px; border-radius: 6px; text-align: center;">
@@ -642,7 +590,6 @@ Only possible when there are no partitions (single node or reliable network).
       <span style="color: #f85149; font-size: 12px; font-weight: 600;">Eventual</span>
     </div>
   </div>
-
   <!-- Trade-off note -->
   <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 8px; padding: 14px 20px; text-align: center;">
     <span style="color: #58a6ff; font-weight: 600;">Trade-off:</span>
@@ -656,7 +603,6 @@ All reads return the most recent write. As if there's only one copy of data.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">STRONG CONSISTENCY</h3>
-
   <!-- Timeline -->
   <div style="margin-bottom: 24px;">
     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -673,7 +619,6 @@ All reads return the most recent write. As if there's only one copy of data.
       <span style="color: #8b949e; font-size: 11px;">t=4</span>
     </div>
   </div>
-
   <!-- Client A action -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
     <div style="min-width: 100px; color: #58a6ff; font-weight: 600;">Client A:</div>
@@ -684,7 +629,6 @@ All reads return the most recent write. As if there's only one copy of data.
       </div>
     </div>
   </div>
-
   <!-- All Nodes -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
     <div style="min-width: 100px; color: #c9d1d9; font-weight: 600;">All Nodes:</div>
@@ -700,7 +644,6 @@ All reads return the most recent write. As if there's only one copy of data.
       <span style="color: #7ee787;">→</span>
     </div>
   </div>
-
   <!-- Client B action -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
     <div style="min-width: 100px; color: #a371f7; font-weight: 600;">Client B:</div>
@@ -711,7 +654,6 @@ All reads return the most recent write. As if there's only one copy of data.
       </div>
     </div>
   </div>
-
   <!-- Success notes -->
   <div style="display: flex; flex-direction: column; gap: 8px;">
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
@@ -729,7 +671,6 @@ Reads may return stale data, but will eventually return the most recent write.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EVENTUAL CONSISTENCY</h3>
-
   <!-- Timeline -->
   <div style="margin-bottom: 24px;">
     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -746,7 +687,6 @@ Reads may return stale data, but will eventually return the most recent write.
       <span style="color: #8b949e; font-size: 11px;">t=4</span>
     </div>
   </div>
-
   <!-- Client A -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
     <div style="min-width: 80px; color: #58a6ff; font-weight: 600; font-size: 13px;">Client A:</div>
@@ -757,7 +697,6 @@ Reads may return stale data, but will eventually return the most recent write.
       </div>
     </div>
   </div>
-
   <!-- Node A -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
     <div style="min-width: 80px; color: #7ee787; font-weight: 600; font-size: 13px;">Node A:</div>
@@ -772,7 +711,6 @@ Reads may return stale data, but will eventually return the most recent write.
       <div style="flex: 1; height: 2px; background: #7ee787;"></div>
     </div>
   </div>
-
   <!-- Async replicate indicator -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
     <div style="min-width: 80px;"></div>
@@ -781,7 +719,6 @@ Reads may return stale data, but will eventually return the most recent write.
       <div style="color: #f0883e; font-size: 12px; font-style: italic;">↘ Async replicate</div>
     </div>
   </div>
-
   <!-- Node B -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
     <div style="min-width: 80px; color: #a371f7; font-weight: 600; font-size: 13px;">Node B:</div>
@@ -800,7 +737,6 @@ Reads may return stale data, but will eventually return the most recent write.
       <div style="flex: 1; height: 2px; background: #7ee787;"></div>
     </div>
   </div>
-
   <!-- Client B reads -->
   <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
     <div style="min-width: 80px; color: #c9d1d9; font-weight: 600; font-size: 13px;">Client B:</div>
@@ -814,7 +750,6 @@ Reads may return stale data, but will eventually return the most recent write.
       </div>
     </div>
   </div>
-
   <!-- Notes -->
   <div style="display: flex; flex-direction: column; gap: 8px;">
     <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.4); border-radius: 8px; padding: 10px 16px;">
@@ -832,7 +767,6 @@ Causally related operations are seen in order.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CAUSAL CONSISTENCY</h3>
-
   <!-- Client A flow -->
   <div style="margin-bottom: 24px;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px;">Client A:</div>
@@ -851,7 +785,6 @@ Causally related operations are seen in order.
     </div>
     <div style="color: #8b949e; font-size: 12px; margin-top: 8px; margin-left: 280px; font-style: italic;">↑ comment depends on post</div>
   </div>
-
   <!-- Client B -->
   <div style="margin-bottom: 24px;">
     <div style="color: #a371f7; font-weight: 600; margin-bottom: 12px;">Client B:</div>
@@ -862,7 +795,6 @@ Causally related operations are seen in order.
       <span style="color: #7ee787; font-weight: 600;">post="Hello"</span>
     </div>
   </div>
-
   <!-- Causal chain explanation -->
   <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Causal chain:</div>
@@ -881,7 +813,6 @@ Causally related operations are seen in order.
     </div>
     <div style="color: #c9d1d9; font-size: 13px;">B cannot see effect (comment) without seeing cause (post)</div>
   </div>
-
   <!-- Summary notes -->
   <div style="display: flex; flex-direction: column; gap: 8px;">
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
@@ -1255,7 +1186,6 @@ print(f"After sync - Node B sees: {node_b.read('x')}")
 ## Database CAP Classifications
 
 <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 | Database | Category | Notes |
 |----------|----------|-------|
 | PostgreSQL | CA (single) | CP with streaming replication |
@@ -1266,43 +1196,35 @@ print(f"After sync - Node B sees: {node_b.read('x')}")
 | Redis Cluster | CP | Uses Raft consensus |
 | CockroachDB | CP | Serializable isolation |
 | Spanner | CP | TrueTime for consistency |
-
 </div>
 
 ## Common Interview Questions
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Why can't we have all three (CAP)?**
    - Network partitions are unavoidable
    - During partition, must choose: reject requests (CP) or allow divergence (AP)
-
 2. **How do AP systems handle conflicts?**
    - Last-write-wins (timestamp)
    - Vector clocks
    - Application-level merge (CRDTs)
-
 3. **What is the difference between ACID and CAP?**
    - ACID: Transaction guarantees (single database)
    - CAP: Distributed system trade-offs
-
 4. **How do you choose between CP and AP?**
    - CP: When consistency is critical (banking, inventory)
    - AP: When availability is more important (social feeds, shopping carts)
-
 </div>
 
 ## Best Practices
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Understand your requirements** - Which guarantee matters most?
 2. **Design for partition tolerance** - It will happen
 3. **Use tunable consistency** - Many databases offer per-query settings
 4. **Implement conflict resolution** - For AP systems
 5. **Monitor replication lag** - Track staleness in AP systems
 6. **Test failure scenarios** - Chaos engineering
-
 </div>
 
 ## Related Topics

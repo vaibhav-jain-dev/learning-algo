@@ -19,9 +19,7 @@ Microservices architecture breaks down a complex application into smaller, auton
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Microservices Architecture Overview</h4>
-
 <div style="display: flex; flex-direction: column; gap: 24px;">
-
 <!-- API Gateway Layer -->
 <div style="display: flex; justify-content: center;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 32px; border-radius: 12px; text-align: center;">
@@ -29,10 +27,8 @@ Microservices architecture breaks down a complex application into smaller, auton
 <div style="color: #d1f5d3; font-size: 12px; margin-top: 4px;">Authentication, Routing, Rate Limiting</div>
 </div>
 </div>
-
 <!-- Arrow -->
 <div style="text-align: center; color: #58a6ff; font-size: 24px;">↓</div>
-
 <!-- Services Layer -->
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px; border-radius: 12px; text-align: center;">
@@ -64,7 +60,6 @@ Microservices architecture breaks down a complex application into smaller, auton
 </div>
 </div>
 </div>
-
 <!-- Key Characteristics -->
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
 <div style="background: #21262d; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
@@ -77,7 +72,6 @@ Microservices architecture breaks down a complex application into smaller, auton
 <div style="color: #7ee787; font-size: 11px; font-weight: bold;">✓ Technology Freedom</div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -100,7 +94,6 @@ Each service owns and manages its data.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #f85149; margin: 0 0 24px 0; text-align: center; font-size: 16px;">❌ Anti-Pattern: Shared Database</h4>
-
 <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 24px;">
 <div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; border: 2px dashed #f85149;">
 <div style="font-size: 20px;">📦</div>
@@ -127,7 +120,6 @@ Each service owns and manages its data.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #7ee787; margin: 0 0 24px 0; text-align: center; font-size: 16px;">✅ Correct: Database per Service</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px; border-radius: 8px;">
@@ -203,13 +195,11 @@ Microservices require:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Synchronous (Request/Response) Pattern</h4>
-
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="font-size: 24px;">📦</div>
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-top: 8px;">Order Service</div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
 <div style="display: flex; align-items: center; gap: 8px;">
 <div style="color: #7ee787; font-size: 13px;">HTTP Request</div>
@@ -223,13 +213,11 @@ Microservices require:
 <div style="color: #f78166; font-size: 13px;">JSON Response</div>
 </div>
 </div>
-
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="font-size: 24px;">👤</div>
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-top: 8px;">User Service</div>
 </div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
 <div style="background: #238636; padding: 12px; border-radius: 8px;">
 <div style="color: #fff; font-size: 12px; font-weight: bold;">✓ Protocols</div>
@@ -249,31 +237,26 @@ Microservices require:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #a371f7; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Asynchronous (Event-Driven) Pattern</h4>
-
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="font-size: 24px;">📦</div>
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-top: 8px;">Order Service</div>
 <div style="color: #a5d6ff; font-size: 10px; margin-top: 4px;">Publisher</div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
 <div style="color: #7ee787; font-size: 20px;">→</div>
 <div style="background: #21262d; padding: 8px 16px; border-radius: 6px;">
 <div style="color: #ffa657; font-size: 11px; font-family: monospace;">OrderCreated Event</div>
 </div>
 </div>
-
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 20px 32px; border-radius: 12px; text-align: center;">
 <div style="font-size: 24px;">📨</div>
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-top: 8px;">Message Broker</div>
 <div style="color: #ffe2cc; font-size: 10px; margin-top: 4px;">Kafka / RabbitMQ</div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
 <div style="color: #7ee787; font-size: 20px;">→</div>
 </div>
-
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px; border-radius: 8px; text-align: center;">
 <div style="font-size: 16px;">📧</div>
@@ -289,7 +272,6 @@ Microservices require:
 </div>
 </div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
 <div style="background: #238636; padding: 12px; border-radius: 8px;">
 <div style="color: #fff; font-size: 12px; font-weight: bold;">✓ Benefits</div>
@@ -313,9 +295,7 @@ Microservices require:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">E-Commerce Domain: Bounded Contexts</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
-
 <!-- Order Context -->
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; border: 2px dashed #58a6ff;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">📦 Order Context</div>
@@ -331,7 +311,6 @@ Microservices require:
 <div style="color: #c9d1d9; font-size: 10px; font-family: monospace;">• OrderShipped</div>
 </div>
 </div>
-
 <!-- Customer Context -->
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px; border: 2px dashed #a371f7;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">👤 Customer Context</div>
@@ -347,7 +326,6 @@ Microservices require:
 <div style="color: #c9d1d9; font-size: 10px; font-family: monospace;">• AddressUpdated</div>
 </div>
 </div>
-
 <!-- Inventory Context -->
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; border: 2px dashed #2ea043;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">📊 Inventory Context</div>
@@ -363,9 +341,7 @@ Microservices require:
 <div style="color: #c9d1d9; font-size: 10px; font-family: monospace;">• StockDepleted</div>
 </div>
 </div>
-
 </div>
-
 <!-- Key Principle -->
 <div style="background: #21262d; padding: 16px; border-radius: 8px; border-left: 4px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 8px;">🔑 Key Principle: Bounded Context = Microservice</div>

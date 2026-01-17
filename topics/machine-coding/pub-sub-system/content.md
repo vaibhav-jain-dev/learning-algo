@@ -20,27 +20,22 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 ### Part 1: Understanding the Pub-Sub Pattern
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 **Why Pub-Sub?**
 - **Decoupling**: Publishers don't know about subscribers (and vice versa)
 - **Scalability**: Add subscribers without changing publishers
 - **Flexibility**: Filter, transform, or route messages dynamically
-
 **Key Concepts:**
 - **Publisher**: Sends messages to a topic (doesn't care who receives)
 - **Subscriber**: Registers interest in topics (receives matching messages)
 - **Broker**: The middleman that routes messages from publishers to subscribers
 - **Topic**: A named channel for organizing messages
-
 </div>
 
 ### Part 2: Message Flow Architecture
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Message Flow: Publish to Delivery</h4>
-
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-
 <!-- Publishers -->
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
@@ -52,12 +47,10 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 <div style="color: #fff; font-size: 11px;">Publisher B</div>
 </div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center;">
 <div style="color: #7ee787; font-size: 10px;">publish()</div>
 <div style="color: #7ee787; font-size: 20px;">→</div>
 </div>
-
 <!-- Broker with Topics -->
 <div style="background: #21262d; padding: 20px; border-radius: 12px; border: 2px solid #30363d;">
 <div style="color: #ffa657; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 12px;">🔀 Broker</div>
@@ -74,12 +67,10 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 </div>
 <div style="color: #8b949e; font-size: 9px; text-align: center; margin-top: 8px;">Topic Registry</div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center;">
 <div style="color: #a371f7; font-size: 10px;">dispatch()</div>
 <div style="color: #a371f7; font-size: 20px;">→</div>
 </div>
-
 <!-- Message Queue -->
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px; border-radius: 12px; text-align: center;">
 <div style="color: #fff; font-size: 20px;">📨</div>
@@ -90,12 +81,10 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 <div style="background: rgba(0,0,0,0.3); width: 12px; height: 12px; border-radius: 2px;"></div>
 </div>
 </div>
-
 <div style="display: flex; flex-direction: column; align-items: center;">
 <div style="color: #7ee787; font-size: 10px;">deliver()</div>
 <div style="color: #7ee787; font-size: 20px;">→</div>
 </div>
-
 <!-- Subscribers -->
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
@@ -111,23 +100,18 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 <div style="color: #fff; font-size: 11px;">Subscriber 3</div>
 </div>
 </div>
-
 </div>
-
 </div>
 
 ### Part 3: Topic Pattern Matching
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-
 **Wildcard Patterns:**
-
 | Pattern | Matches | Doesn't Match |
 |---------|---------|---------------|
 | `orders.created` | `orders.created` only | `orders.updated` |
 | `orders.*` | `orders.created`, `orders.updated`, `orders.cancelled` | `users.created` |
 | `*` | Everything | - |
-
 **Pattern Matching Logic:**
 ```python
 def matches_topic(pattern: str, topic: str) -> bool:
@@ -138,30 +122,24 @@ def matches_topic(pattern: str, topic: str) -> bool:
         return topic.startswith(prefix)  # Prefix match
     return False
 ```
-
 **Example Flow:**
 ```
 Subscriber subscribes to: "orders.*"
 Publisher publishes to: "orders.created"
-
 1. Broker receives message for "orders.created"
 2. Checks all subscriptions: "orders.*".matches("orders.created") → True!
 3. Message delivered to subscriber
 ```
-
 </div>
 
 ### Part 4: Message Filtering
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 **Beyond topic matching**, subscribers can add custom filters:
-
 ```python
 # Only receive orders above $100
 def high_value_filter(msg: Message) -> bool:
     return msg.payload.get('amount', 0) > 100
-
 broker.subscribe(
     subscriber_id="analytics",
     topic_pattern="orders.*",
@@ -169,21 +147,17 @@ broker.subscribe(
     filter_func=high_value_filter  # Custom filter!
 )
 ```
-
 **Filter Evaluation Order:**
 1. Topic pattern match ← If fails, skip
 2. Custom filter function ← If fails, skip
 3. Deliver to subscriber ← Both passed
-
 </div>
 
 ### Part 5: Worker Thread Pool
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Async Message Delivery</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-
 <div style="background: #21262d; padding: 16px; border-radius: 8px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Why Worker Pool?</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
@@ -193,7 +167,6 @@ broker.subscribe(
 • Isolated failures per subscriber
 </div>
 </div>
-
 <div style="background: #21262d; padding: 16px; border-radius: 8px;">
 <div style="color: #ffa657; font-weight: bold; font-size: 13px; margin-bottom: 12px;">How It Works</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
@@ -204,9 +177,7 @@ broker.subscribe(
 5. Log failures, continue to next
 </div>
 </div>
-
 </div>
-
 </div>
 
 ---
@@ -817,9 +788,7 @@ func main() {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Pub-Sub Architecture Flow</h4>
-
 <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
-
 <!-- Publishers -->
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
@@ -827,17 +796,14 @@ func main() {
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Publishers</div>
 </div>
 </div>
-
 <!-- First Arrow Split -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
 <div style="display: flex; gap: 4px;">
 <div style="color: #7ee787; font-size: 18px;">→</div>
 </div>
 </div>
-
 <!-- Topics Column -->
 <div style="display: flex; flex-direction: column; gap: 12px;">
-
 <!-- Topic A with subscribers -->
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 18px; border-radius: 8px; text-align: center;">
@@ -853,7 +819,6 @@ func main() {
 </div>
 </div>
 </div>
-
 <!-- Topic B with subscribers -->
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 18px; border-radius: 8px; text-align: center;">
@@ -869,18 +834,14 @@ func main() {
 </div>
 </div>
 </div>
-
 </div>
-
 </div>
-
 <!-- Legend -->
 <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
 <div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #7ee787; font-size: 11px;">Subscriber 2 receives from both topics</span>
 </div>
 </div>
-
 </div>
 
 ## Interview Tips

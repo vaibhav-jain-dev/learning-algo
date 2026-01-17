@@ -12,7 +12,6 @@ As AI agents become integral to software development and operations, microservic
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI Agents in Microservices Ecosystem</h3>
-
   <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #4facfe; margin: 0 0 16px 0; font-size: 1.1em;">AI Agents Are Being Used For:</h4>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
@@ -50,7 +49,6 @@ As AI agents become integral to software development and operations, microservic
       </div>
     </div>
   </div>
-
   <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 20px;">
     <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">The Problem:</h4>
     <div style="color: #ffe0e0; font-size: 0.95em;">AI agents struggle with:</div>
@@ -270,7 +268,6 @@ runbooks:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Naming Convention Standards</h3>
-
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 8px 0;">Service Names</h4>
@@ -297,7 +294,6 @@ runbooks:
         <strong>Rules:</strong> Lowercase with hyphens, singular noun + "-service"
       </div>
     </div>
-
     <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 8px 0;">API Endpoints</h4>
       <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; color: #fff; font-size: 0.9em;">/api/{version}/{resource}</code>
@@ -323,7 +319,6 @@ runbooks:
         <strong>Rules:</strong> Plural nouns, use HTTP verbs not action words
       </div>
     </div>
-
     <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 8px 0;">Event Names</h4>
       <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; color: #1a1a2e; font-size: 0.9em;">{domain}.{entity}.{action}</code>
@@ -349,7 +344,6 @@ runbooks:
         <strong>Rules:</strong> Lowercase with dots, past tense for events
       </div>
     </div>
-
     <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 8px 0;">Database Tables</h4>
       <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px; color: #1a1a2e; font-size: 0.9em;">{entity} (plural)</code>
@@ -718,7 +712,6 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Structured Logging for AI</h3>
-
   <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #4facfe; margin: 0 0 12px 0;">Log Format (JSON):</h4>
     <pre style="background: #0d1117; border-radius: 8px; padding: 16px; color: #c9d1d9; font-size: 0.85em; overflow-x: auto; margin: 0;"><code>{
@@ -727,18 +720,15 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
   "service": "order-service",
   "version": "2.1.0",
   "environment": "production",
-
   <span style="color: #8b949e;">// Tracing context</span>
   "trace_id": "abc123",
   "span_id": "def456",
   "parent_span_id": "ghi789",
-
   <span style="color: #8b949e;">// Business context</span>
   "operation": "create_order",
   "entity_type": "order",
   "entity_id": "order_123",
   "user_id": "user_456",
-
   <span style="color: #8b949e;">// Message</span>
   "message": "Order created successfully",
   "details": {
@@ -746,14 +736,12 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
     "total": 150.00,
     "items_count": 3
   },
-
   "duration_ms": 145,
   "error_code": null,
   "error_message": null,
   "stack_trace": null
 }</code></pre>
   </div>
-
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 10px 0;">Required Fields:</h4>
@@ -763,7 +751,6 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
         <li><code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">entity_type</code>, <code style="background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 3px;">entity_id</code> (what resource is affected)</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">Error Logs Must Include:</h4>
       <ul style="color: #fff; margin: 0; padding-left: 20px; font-size: 0.9em;">
@@ -919,7 +906,6 @@ patterns:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI-Friendly Microservices Checklist</h3>
-
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
@@ -933,7 +919,6 @@ patterns:
         <li><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> Configuration documented</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
         <span style="width: 20px; height: 20px; border: 2px solid #fff; border-radius: 4px; display: inline-block;"></span>
@@ -946,7 +931,6 @@ patterns:
         <li><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> Idempotency documented</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
         <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
@@ -959,7 +943,6 @@ patterns:
         <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> State machines documented</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
         <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
@@ -972,7 +955,6 @@ patterns:
         <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent database naming</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
         <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
@@ -985,7 +967,6 @@ patterns:
         <li><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Runbooks for common issues</li>
       </ul>
     </div>
-
     <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 10px; padding: 16px;">
       <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
         <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>

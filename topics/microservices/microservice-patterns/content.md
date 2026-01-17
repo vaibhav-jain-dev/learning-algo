@@ -12,9 +12,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Microservices Pattern Categories</h3>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
-
 <!-- Decomposition -->
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🔧 DECOMPOSITION</div>
@@ -24,7 +22,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #a5d6ff; font-size: 11px;">• Strangler Fig</div>
 </div>
 </div>
-
 <!-- Data Management -->
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🗄️ DATA MANAGEMENT</div>
@@ -35,7 +32,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #d1f5d3; font-size: 11px;">• Event Sourcing</div>
 </div>
 </div>
-
 <!-- Communication -->
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">📡 COMMUNICATION</div>
@@ -46,11 +42,8 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #eddeff; font-size: 11px;">• Service Mesh</div>
 </div>
 </div>
-
 </div>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- Resilience -->
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🛡️ RESILIENCE</div>
@@ -61,7 +54,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #ffe2cc; font-size: 11px;">• Timeout</div>
 </div>
 </div>
-
 <!-- Observability -->
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">👁️ OBSERVABILITY</div>
@@ -72,7 +64,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #ffd1cc; font-size: 11px;">• Metrics Collection</div>
 </div>
 </div>
-
 <!-- Deployment -->
 <div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 12px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🚀 DEPLOYMENT</div>
@@ -83,7 +74,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #e6edf3; font-size: 11px;">• Sidecar Pattern</div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -93,17 +83,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: DATABASE PER SERVICE</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to manage data in a microservices architecture while maintaining loose coupling between services?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Each service has its own private database.</div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="display: flex; justify-content: space-around; gap: 16px; margin-bottom: 24px;">
 <div style="text-align: center;">
@@ -129,7 +116,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="margin-left: 12px; color: #c9d1d9;">• Cannot directly access other service's database</div>
 </div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">BENEFITS:</div>
@@ -157,17 +143,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: SAGA</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to maintain data consistency across services without distributed transactions (2PC)?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Implement a saga - a sequence of local transactions with compensating transactions for rollback.</div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">TYPE 1: CHOREOGRAPHY (Event-Driven)</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
@@ -188,7 +171,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">TYPE 2: ORCHESTRATION (Central Coordinator)</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="text-align: center; margin-bottom: 20px;">
@@ -212,7 +194,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #f85149;">4. On failure: Call compensating actions in reverse</div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">COMPARISON:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
@@ -238,17 +219,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: CQRS</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to handle complex queries that span multiple services efficiently?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Separate read and write models.</div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="text-align: center; margin-bottom: 20px;">
 <div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 8px; padding: 12px 32px; color: #fff; font-weight: bold; font-size: 13px; display: inline-block;">APPLICATION</div>
@@ -285,7 +263,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">WHEN TO USE:</div>
@@ -313,17 +290,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: EVENT SOURCING</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to maintain an audit log of all changes and enable rebuilding state from history?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Store state changes as a sequence of events, not current state.</div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(248,81,73,0.3);">
 <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">TRADITIONAL (State Storage):</div>
@@ -342,7 +316,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 <div style="color: #f85149; font-size: 11px; font-style: italic;">Lost information: How did it become DELIVERED?</div>
 </div>
-
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(126,231,135,0.3);">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">EVENT SOURCING:</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 10px; color: #c9d1d9; margin-bottom: 12px;">
@@ -361,7 +334,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #7ee787; font-size: 11px;">Current state = replay(all events for ORD-1)</div>
 </div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Benefits:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: #c9d1d9; font-size: 12px;">
@@ -371,7 +343,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div>• Can derive new read models from existing events</div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">EVENT STORE STRUCTURE:</div>
 <div style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
 <div>{</div>
@@ -393,17 +364,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: API GATEWAY</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How should clients access individual microservices?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Single entry point that handles cross-cutting concerns.</div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="text-align: center; margin-bottom: 20px;">
 <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">CLIENTS</div>
@@ -414,9 +382,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 6px; padding: 8px 16px; color: #fff; font-size: 11px;">Admin</div>
 </div>
 </div>
-
 <div style="text-align: center; color: #58a6ff; margin-bottom: 16px;">↓</div>
-
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
 <div style="color: #fff; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px;">API GATEWAY</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
@@ -430,16 +396,13 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 10px;">Monitor/Log</div>
 </div>
 </div>
-
 <div style="text-align: center; color: #58a6ff; margin-bottom: 16px;">↓</div>
-
 <div style="display: flex; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">User Service</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">Order Service</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">Product Svc</div>
 </div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
@@ -473,17 +436,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: BACKEND FOR FRONTEND (BFF)</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Different clients (web, mobile, IoT) have different data needs. A single API is either over-fetching or under-fetching.</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Create separate backend for each frontend type.</div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
 <div style="text-align: center;">
@@ -511,16 +471,13 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="text-align: center; color: #58a6ff; margin-bottom: 16px;">↓ ↓ ↓</div>
-
 <div style="display: flex; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">User Service</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">Order Service</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 10px 16px; color: #fff; font-weight: bold; font-size: 11px;">Product Svc</div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">EXAMPLE: Mobile BFF vs Web BFF</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: rgba(137,87,229,0.1); border-radius: 8px; padding: 16px; border: 1px solid rgba(137,87,229,0.3);">
@@ -552,17 +509,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: CIRCUIT BREAKER</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to prevent cascade failures when a service is unavailable?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Implement a circuit breaker that stops requests when failures exceed a threshold.</div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">STATE MACHINE:</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
@@ -598,7 +552,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #f85149;">← failure → OPEN</div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">IMPLEMENTATION EXAMPLE (Go):</div>
 <div style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px; color: #c9d1d9; margin-bottom: 24px; overflow-x: auto;">
 <div><span style="color: #ff7b72;">breaker</span> := gobreaker.NewCircuitBreaker(gobreaker.Settings{</div>
@@ -610,7 +563,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div>})</div>
 <div style="margin-top: 8px;"><span style="color: #ff7b72;">result</span>, err := breaker.Execute(<span style="color: #ff7b72;">func</span>() { <span style="color: #ff7b72;">return</span> paymentClient.ProcessPayment(ctx, payment) })</div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 8px;">CONFIGURATION:</div>
 <div style="color: #c9d1d9; font-size: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
 <div>• Failure threshold: 50% failures in 10 seconds</div>
@@ -626,17 +578,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: BULKHEAD</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to isolate failures to prevent total system failure?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Partition resources into isolated pools (like ship bulkheads).</div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(248,81,73,0.3);">
 <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">WITHOUT BULKHEAD:</div>
@@ -649,7 +598,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(126,231,135,0.3);">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">WITH BULKHEAD:</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
@@ -671,7 +619,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">TYPES OF BULKHEADS:</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
 <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
@@ -704,17 +651,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: SIDECAR</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to add common functionality (logging, monitoring, proxy) to services without modifying them?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Deploy helper functionality as a separate container alongside the main application container.</div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="color: #8b949e; font-size: 12px; text-align: center; margin-bottom: 16px;">POD</div>
 <div style="background: rgba(0,0,0,0.3); border: 2px dashed #30363d; border-radius: 12px; padding: 20px;">
@@ -734,7 +678,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">COMMON SIDECAR USE CASES:</div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
 <span style="background: rgba(137,87,229,0.2); color: #a371f7; padding: 6px 12px; border-radius: 6px; font-size: 11px;">Envoy Proxy - Service mesh (Istio)</span>
@@ -751,17 +694,14 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 16px;">PATTERN: STRANGLER FIG</h3>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
 <div style="color: #c9d1d9; font-size: 13px;">How to migrate from monolith to microservices incrementally?</div>
 </div>
-
 <div style="margin-bottom: 24px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
 <div style="color: #c9d1d9; font-size: 13px;">Gradually replace monolith functionality with new services, like a strangler fig tree grows around and replaces its host.</div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PHASE 1: Add Facade</div>
@@ -773,7 +713,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 4px; padding: 8px 16px; color: #fff; font-size: 10px; display: inline-block; margin-top: 8px;">MONOLITH<br/><span style="opacity: 0.8;">[All functionality]</span></div>
 </div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PHASE 2: Extract First Service</div>
 <div style="text-align: center;">
@@ -786,7 +725,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PHASE 3: Continue Extraction</div>
 <div style="text-align: center;">
@@ -801,7 +739,6 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 </div>
-
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(126,231,135,0.3);">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PHASE 4: Decommission Monolith</div>
 <div style="text-align: center;">

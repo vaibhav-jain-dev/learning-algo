@@ -12,7 +12,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">TYPES OF BOTTLENECKS</h3>
-
   <!-- 1. Service Bottleneck -->
   <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #f85149;">
     <h4 style="color: #f85149; margin: 0 0 16px 0;">1. SERVICE BOTTLENECK</h4>
@@ -32,7 +31,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
     </div>
     <div style="color: #8b949e; font-size: 0.9em; text-align: center; font-style: italic;">Symptom: All services slow down when Auth Service is busy</div>
   </div>
-
   <!-- 2. Database Bottleneck -->
   <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #f97316;">
     <h4 style="color: #f97316; margin: 0 0 16px 0;">2. DATABASE BOTTLENECK</h4>
@@ -54,7 +52,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
       </div>
     </div>
   </div>
-
   <!-- 3. Network Bottleneck -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">3. NETWORK BOTTLENECK</h4>
@@ -67,7 +64,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
       <div style="background: #8957e5; border-radius: 6px; padding: 10px 20px; color: #fff;">Service B</div>
     </div>
   </div>
-
   <!-- 4. External Dependency Bottleneck -->
   <div style="background: rgba(136,136,136,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #8b949e;">
     <h4 style="color: #8b949e; margin: 0 0 16px 0;">4. EXTERNAL DEPENDENCY BOTTLENECK</h4>
@@ -88,7 +84,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #7ee787; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: HORIZONTAL SCALING</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
     <!-- Before -->
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
@@ -102,7 +97,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
         </div>
       </div>
     </div>
-
     <!-- After -->
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">AFTER</h4>
@@ -120,7 +114,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
       </div>
     </div>
   </div>
-
   <!-- Requirements -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 16px 0;">REQUIREMENTS FOR HORIZONTAL SCALING</h4>
@@ -148,7 +141,6 @@ In microservices architectures, bottlenecks emerge when a single service or reso
       </div>
     </div>
   </div>
-
   <!-- Kubernetes Auto-Scaling -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">KUBERNETES AUTO-SCALING</h4>
@@ -179,7 +171,6 @@ spec:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: CACHING</h3>
-
   <!-- Multi-Level Caching -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 16px 0;">MULTI-LEVEL CACHING</h4>
@@ -203,7 +194,6 @@ spec:
       <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; color: #f85149;">L4: Redis Cache</div>
     </div>
   </div>
-
   <!-- Cache-Aside Pattern -->
   <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #7ee787;">
     <h4 style="color: #7ee787; margin: 0 0 16px 0;">CACHE-ASIDE PATTERN</h4>
@@ -213,19 +203,16 @@ spec:
     if err == nil {
         return user, nil  <span style="color: #7ee787;">// Cache hit</span>
     }
-
     <span style="color: #8b949e;">// 2. Cache miss - fetch from DB</span>
     user, err = db.GetUser(ctx, userID)
     if err != nil {
         return nil, err
     }
-
     <span style="color: #8b949e;">// 3. Populate cache</span>
     cache.Set(ctx, "user:"+userID, user, 1*time.Hour)
     return user, nil
 }</code></pre>
   </div>
-
   <!-- Cache Invalidation Strategies -->
   <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #f97316;">
     <h4 style="color: #f97316; margin: 0 0 16px 0;">CACHE INVALIDATION STRATEGIES</h4>
@@ -248,7 +235,6 @@ spec:
       </div>
     </div>
   </div>
-
   <!-- Target -->
   <div style="background: rgba(126,231,135,0.2); border-radius: 8px; padding: 12px; text-align: center;">
     <span style="color: #7ee787; font-weight: 600;">CACHE HIT RATIO TARGET:</span>
@@ -262,7 +248,6 @@ spec:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #8957e5; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: ASYNC PROCESSING</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
     <!-- Before (Synchronous) -->
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
@@ -281,7 +266,6 @@ spec:
         Total response time: <strong>2000ms</strong> (500ms + 1500ms email)
       </div>
     </div>
-
     <!-- After (Asynchronous) -->
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">AFTER (Asynchronous)</h4>
@@ -304,7 +288,6 @@ spec:
       </div>
     </div>
   </div>
-
   <!-- When to Use Async -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 16px 0;">WHEN TO USE ASYNC</h4>
@@ -327,7 +310,6 @@ spec:
       </div>
     </div>
   </div>
-
   <!-- Implementation -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">IMPLEMENTATION</h4>
@@ -338,16 +320,13 @@ func CreateOrder(order *Order) error {
     if err != nil {
         return err
     }
-
     <span style="color: #8b949e;">// Publish event (non-blocking)</span>
     kafka.Publish("order.created", OrderCreatedEvent{
         OrderID: order.ID,
         Email:   order.CustomerEmail,
     })
-
     return nil  <span style="color: #7ee787;">// Return immediately</span>
 }
-
 <span style="color: #8b949e;">// Consumer (Email Service)</span>
 func HandleOrderCreated(event OrderCreatedEvent) {
     <span style="color: #8b949e;">// Send email (takes 1500ms)</span>
@@ -362,7 +341,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #0891b2; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: DATABASE OPTIMIZATION</h3>
-
   <!-- 1. Read Replicas -->
   <div style="background: rgba(8,145,178,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #0891b2;">
     <h4 style="color: #0891b2; margin: 0 0 16px 0;">1. READ REPLICAS</h4>
@@ -397,7 +375,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
       Write/Read ratio: <strong style="color: #7ee787;">1:10</strong> typical in most applications. Scale reads by adding replicas.
     </div>
   </div>
-
   <!-- 2. Connection Pooling -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">2. CONNECTION POOLING</h4>
@@ -438,7 +415,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
       </div>
     </div>
   </div>
-
   <!-- 3. Query Optimization -->
   <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f97316;">
     <h4 style="color: #f97316; margin: 0 0 16px 0;">3. QUERY OPTIMIZATION</h4>
@@ -470,29 +446,23 @@ func HandleOrderCreated(event OrderCreatedEvent) {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f97316; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: CIRCUIT BREAKER WITH FALLBACK</h3>
-
   <div style="background: rgba(249,115,22,0.1); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: center;">
     <span style="color: #f97316;">When a dependency is the bottleneck, fail fast and use fallback</span>
   </div>
-
   <!-- Implementation -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">IMPLEMENTATION</h4>
     <pre style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; margin: 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e6edf3;">func GetProductWithFallback(productID string) *Product {
-
     result, err := circuitBreaker.Execute(func() (*Product, error) {
         <span style="color: #8b949e;">// Try primary: Product Service</span>
         return productClient.GetProduct(productID)
     })
-
     if err != nil {
         <span style="color: #f85149;">// Circuit open or call failed</span>
-
         <span style="color: #58a6ff;">// Fallback 1: Try cache</span>
         if cached, ok := cache.Get(productID); ok {
             return cached
         }
-
         <span style="color: #f97316;">// Fallback 2: Return degraded response</span>
         return &Product{
             ID:        productID,
@@ -501,11 +471,9 @@ func HandleOrderCreated(event OrderCreatedEvent) {
             Available: false,
         }
     }
-
     return result
 }</code></pre>
   </div>
-
   <!-- Fallback Strategies -->
   <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
     <h4 style="color: #7ee787; margin: 0 0 16px 0;">FALLBACK STRATEGIES</h4>
@@ -540,11 +508,9 @@ func HandleOrderCreated(event OrderCreatedEvent) {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: SERVICE DECOMPOSITION</h3>
-
   <div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: center;">
     <span style="color: #58a6ff;">Split overloaded service into smaller, specialized services</span>
   </div>
-
   <!-- Before -->
   <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #f85149;">
     <h4 style="color: #f85149; margin: 0 0 16px 0;">BEFORE: Monolithic User Service (Bottleneck)</h4>
@@ -562,7 +528,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
       </div>
     </div>
   </div>
-
   <!-- After -->
   <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #7ee787;">
     <h4 style="color: #7ee787; margin: 0 0 16px 0;">AFTER: Decomposed Services</h4>
@@ -620,7 +585,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
       Each service: <span style="color: #7ee787;">Scales independently</span> | <span style="color: #58a6ff;">Uses optimal database</span> | <span style="color: #a371f7;">Has focused responsibility</span>
     </div>
   </div>
-
   <!-- Decomposition Criteria -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 12px 0;">DECOMPOSITION CRITERIA</h4>
@@ -639,11 +603,9 @@ func HandleOrderCreated(event OrderCreatedEvent) {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #7ee787; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRATEGY: REQUEST COALESCING</h3>
-
   <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: center;">
     <span style="color: #7ee787;">Combine multiple requests into one to reduce backend load</span>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
     <!-- Before (Thundering Herd) -->
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
@@ -665,7 +627,6 @@ func HandleOrderCreated(event OrderCreatedEvent) {
         Result: <strong>100 identical queries</strong> to database
       </div>
     </div>
-
     <!-- After (Request Coalescing) -->
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">AFTER (Request Coalescing)</h4>
@@ -693,31 +654,25 @@ func HandleOrderCreated(event OrderCreatedEvent) {
       </div>
     </div>
   </div>
-
   <!-- Implementation -->
   <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #8957e5;">
     <h4 style="color: #8957e5; margin: 0 0 16px 0;">IMPLEMENTATION (Go with singleflight)</h4>
     <pre style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; margin: 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e6edf3;">import "golang.org/x/sync/singleflight"
-
 var group singleflight.Group
-
 func GetProduct(productID string) (*Product, error) {
     <span style="color: #8b949e;">// All concurrent requests for same productID</span>
     <span style="color: #8b949e;">// will share the same database call</span>
-
     result, err, _ := group.Do(productID, func() (interface{}, error) {
         <span style="color: #7ee787;">// This function runs only ONCE</span>
         <span style="color: #7ee787;">// even if called 100 times concurrently</span>
         return db.GetProduct(productID)
     })
-
     if err != nil {
         return nil, err
     }
     return result.(*Product), nil
 }</code></pre>
   </div>
-
   <!-- Use Cases -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 12px 0;">USE CASES</h4>
@@ -736,7 +691,6 @@ func GetProduct(productID string) (*Product, error) {
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">BOTTLENECK IDENTIFICATION CHECKLIST</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <!-- Monitoring Metrics -->
     <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
@@ -762,7 +716,6 @@ func GetProduct(productID string) (*Product, error) {
         </div>
       </div>
     </div>
-
     <!-- Tools -->
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">TOOLS</h4>
@@ -786,7 +739,6 @@ func GetProduct(productID string) (*Product, error) {
       </div>
     </div>
   </div>
-
   <!-- Red Flags -->
   <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; margin-top: 20px; border-left: 4px solid #f85149;">
     <h4 style="color: #f85149; margin: 0 0 16px 0;">RED FLAGS</h4>

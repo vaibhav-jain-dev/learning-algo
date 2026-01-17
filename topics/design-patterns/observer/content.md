@@ -17,7 +17,6 @@ The Observer pattern defines a one-to-many dependency between objects so that wh
   <div class="metaphor-title">Think of a Newspaper Subscription</div>
   <div class="metaphor-description">
     Imagine you're a newspaper publisher (Subject). Instead of people coming to your office every morning to check if there's news, they subscribe once. When you have news, you deliver it to ALL subscribers automatically.
-
     Subscribers don't poll you. You push to them. They can unsubscribe anytime without affecting others.
   </div>
   <div class="metaphor-mapping">
@@ -174,7 +173,6 @@ def notify(self, event_type: str, changed_data: dict):
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Observer Pattern Structure</h4>
-
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <!-- Subject Box -->
 <div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 280px;">
@@ -188,9 +186,7 @@ def notify(self, event_type: str, changed_data: dict):
 <code style="color: #dcdcaa;">+ notify()</code>
 </div>
 </div>
-
 <div style="color: #569cd6; font-size: 24px;">↓ <span style="font-size: 14px; color: #888;">notifies</span></div>
-
 <!-- Observer Interface Box -->
 <div style="background: #252540; border: 2px solid #4ecdc4; border-radius: 8px; width: 280px;">
 <div style="background: #4ecdc4; color: #1a1a2e; padding: 8px 16px; font-weight: bold; text-align: center;">«interface» Observer</div>
@@ -198,9 +194,7 @@ def notify(self, event_type: str, changed_data: dict):
 <code style="color: #dcdcaa;">+ update(data)</code>
 </div>
 </div>
-
 <div style="color: #4ecdc4; font-size: 24px;">△</div>
-
 <!-- Concrete Observers -->
 <div style="display: flex; gap: 20px; justify-content: center;">
 <div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 130px; text-align: center; padding: 12px;">
@@ -813,19 +807,16 @@ func main() {
     <p><strong>The Setup:</strong> Order service emitted events. One observer updated inventory, another sent emails, another wrote audit logs.</p>
     <p><strong>The Bug:</strong> The audit log observer was synchronous and wrote to the database. When DB was slow, it blocked ALL order processing.</p>
     <p><strong>The Impact:</strong> 45-minute outage during peak hours. ~$500K in lost orders.</p>
-
 ```python
 # BEFORE: Synchronous death spiral
 class OrderSubject:
     def notify(self):
         for observer in self._observers:
             observer.update(self._state)  # Each blocks the next!
-
 class AuditLogObserver:
     def update(self, order):
         # This blocked everything when DB was slow
         self.db.insert("audit_logs", order)  # 2 second timeout!
-
 # AFTER: Async with timeout and fallback
 class OrderSubject:
     async def notify(self):
@@ -838,7 +829,6 @@ class OrderSubject:
                 )
             )
             tasks.append(task)
-
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for i, result in enumerate(results):
             if isinstance(result, Exception):
@@ -846,7 +836,6 @@ class OrderSubject:
                 # Queue for retry
                 self._failed_queue.put((self._observers[i], self._state))
 ```
-
     <p><strong>Lesson:</strong> Never let a slow observer block critical paths. Use async, timeouts, and fallback queues.</p>
   </div>
 </div>
@@ -859,7 +848,6 @@ class OrderSubject:
   <div class="war-story-content">
     <p><strong>The Setup:</strong> React-style component system. Each component subscribed to a global state store.</p>
     <p><strong>The Bug:</strong> Components subscribed in constructor but never unsubscribed. Components were recreated frequently (tab switches, navigation).</p>
-
 ```javascript
 // BEFORE: Memory leak
 class UserProfile {
@@ -867,10 +855,8 @@ class UserProfile {
         // Subscribes but never unsubscribes
         stateStore.subscribe('user.updated', this.onUserUpdate.bind(this));
     }
-
     // No cleanup method!
 }
-
 // AFTER: Proper lifecycle management
 class UserProfile {
     constructor() {
@@ -879,26 +865,22 @@ class UserProfile {
             this.onUserUpdate.bind(this)
         );
     }
-
     destroy() {
         // ALWAYS unsubscribe!
         this.subscription.unsubscribe();
     }
 }
-
 // Or use weak references (advanced)
 class WeakEventEmitter {
     constructor() {
         this._listeners = new WeakMap();
     }
-
     subscribe(observer) {
         // Garbage collector can clean up if observer is gone
         this._listeners.set(observer, true);
     }
 }
 ```
-
     <p><strong>Lesson:</strong> Always pair subscribe with unsubscribe. Use weak references when possible. Monitor memory in production.</p>
   </div>
 </div>
@@ -911,7 +893,6 @@ class WeakEventEmitter {
   <div class="war-story-content">
     <p><strong>The Setup:</strong> Microservices communicating via events. Service A listened to Service B, and B listened to A.</p>
     <p><strong>The Bug:</strong> A's handler for B's events triggered an event that B listened to, which triggered A again.</p>
-
 ```python
 # Service A
 @event_bus.on("user.updated")
@@ -920,7 +901,6 @@ def handle_user_update(event):
     update_cache(event.data)
     # This triggers Service B!
     event_bus.emit("cache.invalidated", event.data)
-
 # Service B
 @event_bus.on("cache.invalidated")
 def handle_cache_invalidation(event):
@@ -928,12 +908,9 @@ def handle_cache_invalidation(event):
     refresh_data(event.data)
     # This triggers Service A again!
     event_bus.emit("user.updated", event.data)
-
 # INFINITE LOOP!
 ```
-
     <p><strong>The Fix:</strong></p>
-
 ```python
 # Solution 1: Track event origin
 @event_bus.on("user.updated")
@@ -941,24 +918,19 @@ def handle_user_update(event):
     # Don't process events we originated
     if event.source == "service_a":
         return
-
     update_cache(event.data)
     event_bus.emit("cache.invalidated", event.data, source="service_a")
-
 # Solution 2: Use correlation ID to detect cycles
 @event_bus.on("user.updated")
 def handle_user_update(event):
     if event.correlation_id in self._processed_ids:
         logger.warning(f"Cycle detected: {event.correlation_id}")
         return
-
     self._processed_ids.add(event.correlation_id)
     # Process...
-
 # Solution 3: Separate event types
 # "user.updated.external" vs "user.updated.internal"
 ```
-
     <p><strong>Lesson:</strong> In distributed systems, always consider event cycles. Use correlation IDs, source tracking, or idempotent handlers.</p>
   </div>
 </div>
@@ -971,7 +943,6 @@ def handle_user_update(event):
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Local vs Distributed Observer</h4>
-
 <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
 <div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px; border-left: 4px solid #569cd6;">
 <h5 style="color: #569cd6; margin-top: 0;">Local Observer</h5>
@@ -984,7 +955,6 @@ def handle_user_update(event):
 <li>Risk: Memory leaks</li>
 </ul>
 </div>
-
 <div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px; border-left: 4px solid #4ecdc4;">
 <h5 style="color: #4ecdc4; margin-top: 0;">Distributed Observer</h5>
 <code style="color: #dcdcaa;">message_queue.publish()</code>

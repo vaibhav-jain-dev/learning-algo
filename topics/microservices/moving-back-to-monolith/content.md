@@ -12,7 +12,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">THE ARCHITECTURE PENDULUM</h3>
-
   <!-- Timeline visualization -->
   <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 120px; padding: 0 20px; position: relative;">
@@ -43,7 +42,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </div>
     </div>
   </div>
-
   <!-- What happened -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 12px 0;">What happened:</h4>
@@ -64,7 +62,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f97316; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">CASE STUDY: AMAZON PRIME VIDEO MONITORING</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <!-- Before -->
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
@@ -82,7 +79,6 @@ After years of microservices adoption, many companies are reconsidering their ar
         <li>Limited by Step Functions scale limits</li>
       </ul>
     </div>
-
     <!-- After -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">AFTER: Monolithic Architecture</h4>
@@ -101,7 +97,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
     </div>
   </div>
-
   <!-- Key Insight -->
   <div style="background: rgba(249,115,22,0.2); border-radius: 8px; padding: 16px; border-left: 4px solid #f97316;">
     <div style="color: #f97316; font-weight: 600; margin-bottom: 8px;">KEY INSIGHT:</div>
@@ -113,7 +108,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">CASE STUDY: SEGMENT'S MICROSERVICES TO MONOREPO</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <!-- Before -->
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
@@ -131,7 +125,6 @@ After years of microservices adoption, many companies are reconsidering their ar
         <li><strong>3-person team couldn't manage 140 services</strong></li>
       </ul>
     </div>
-
     <!-- After -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">AFTER: Monorepo with Centrifuge</h4>
@@ -150,7 +143,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
     </div>
   </div>
-
   <!-- Key Insight -->
   <div style="background: rgba(137,87,229,0.2); border-radius: 8px; padding: 16px; border-left: 4px solid #8957e5;">
     <div style="color: #8957e5; font-weight: 600; margin-bottom: 8px;">KEY INSIGHT:</div>
@@ -162,7 +154,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">INDUSTRY LEADER PERSPECTIVE</h3>
-
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Kelsey Hightower (2023):</div>
     <blockquote style="color: #8b949e; margin: 0 0 16px 0; padding-left: 16px; border-left: 3px solid #58a6ff; font-style: italic;">
@@ -178,7 +169,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       "A well-designed monolith deployed to production beats a distributed system designed on a whiteboard every time."
     </blockquote>
   </div>
-
   <!-- Recommendation -->
   <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
     <div style="color: #8b949e; font-weight: 600; margin-bottom: 16px; text-align: center;">His Recommendation:</div>
@@ -209,7 +199,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">REASON 1: OPERATIONAL COMPLEXITY</h3>
-
   <!-- Complexity Growth Chart -->
   <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="color: #8b949e; font-weight: 600; margin-bottom: 12px; text-align: center;">COMPLEXITY GROWTH</div>
@@ -228,7 +217,6 @@ After years of microservices adoption, many companies are reconsidering their ar
     </div>
     <div style="text-align: center; color: #8b949e; font-size: 0.85em; margin-top: 8px;">Number of Services</div>
   </div>
-
   <!-- What you need to manage -->
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
@@ -254,7 +242,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
     </div>
   </div>
-
   <!-- When to consolidate -->
   <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 16px; border-left: 4px solid #7ee787;">
     <div style="color: #7ee787; font-weight: 600; margin-bottom: 8px;">WHEN TO CONSOLIDATE:</div>
@@ -270,12 +257,10 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">REASON 2: TEAM SIZE MISMATCH</h3>
-
   <div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
     <div style="color: #58a6ff; font-weight: 600;">Conway's Law in reverse:</div>
     <div style="color: #8b949e; font-style: italic;">"Architecture should match team structure"</div>
   </div>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <!-- Netflix Model -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
@@ -289,7 +274,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
       <div style="color: #d1fae5; font-size: 0.85em; margin-top: 12px; text-align: center;">Each team owns their services</div>
     </div>
-
     <!-- Startup Model -->
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">STARTUP MODEL (Doesn't Work)</h4>
@@ -301,7 +285,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
     </div>
   </div>
-
   <!-- Rule of Thumb -->
   <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #f97316;">
     <div style="color: #f97316; font-weight: 600; margin-bottom: 12px;">RULE OF THUMB - Services per engineer ratio:</div>
@@ -327,7 +310,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">REASON 3: PERFORMANCE DEGRADATION</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <!-- Monolith Request -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
@@ -340,7 +322,6 @@ After years of microservices adoption, many companies are reconsidering their ar
         <span style="font-size: 0.85em;">(in-process function calls)</span>
       </div>
     </div>
-
     <!-- Microservices Request -->
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">MICROSERVICES REQUEST</h4>
@@ -353,7 +334,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </div>
     </div>
   </div>
-
   <!-- Each hop adds -->
   <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
     <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Each hop adds:</div>
@@ -364,7 +344,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <div style="background: rgba(0,0,0,0.2); border-radius: 4px; padding: 6px; color: #8b949e;">Potential<br/>retries</div>
     </div>
   </div>
-
   <!-- Impact and When to Consolidate -->
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
@@ -390,7 +369,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">REASON 4: DEBUGGING COMPLEXITY</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
     <!-- Monolith Debugging -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
@@ -406,7 +384,6 @@ After years of microservices adoption, many companies are reconsidering their ar
         <span style="color: #7ee787; font-weight: 600;">Time to resolution: Minutes to hours</span>
       </div>
     </div>
-
     <!-- Microservices Debugging -->
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">MICROSERVICES DEBUGGING</h4>
@@ -426,7 +403,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </div>
     </div>
   </div>
-
   <!-- Common Incident Pattern -->
   <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
     <div style="color: #f85149; font-weight: 600; margin-bottom: 12px;">COMMON INCIDENT PATTERNS:</div>
@@ -446,7 +422,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">REASON 5: WRONG SERVICE BOUNDARIES</h3>
-
   <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #f85149;">
     <h4 style="color: #f85149; margin: 0 0 12px 0;">ANTI-PATTERN: DISTRIBUTED MONOLITH</h4>
     <div style="color: #8b949e; margin-bottom: 12px;">Signs you have a distributed monolith:</div>
@@ -457,7 +432,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Circular dependencies</li>
       <li>Same data replicated everywhere</li>
     </ul>
-
     <!-- Diagram -->
     <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; text-align: center;">
       <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 12px;">
@@ -470,7 +444,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <div style="color: #8b949e;">|______|______|</div>
       <div style="background: #da3633; border-radius: 6px; padding: 8px 20px; display: inline-block; color: #fff; margin-top: 8px;">Shared Database</div>
     </div>
-
     <div style="margin-top: 16px; color: #f85149; font-weight: 600;">This is WORSE than a monolith:</div>
     <ul style="color: #fecaca; margin: 8px 0 0 0; padding-left: 20px; font-size: 0.9em;">
       <li>All the coupling of a monolith</li>
@@ -478,7 +451,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Plus deployment complexity</li>
     </ul>
   </div>
-
   <div style="background: rgba(126,231,135,0.2); border-radius: 8px; padding: 12px; text-align: center; border-left: 4px solid #7ee787;">
     <span style="color: #7ee787; font-weight: 600;">BETTER:</span>
     <span style="color: #8b949e;"> Merge into monolith, then properly refactor later</span>
@@ -491,7 +463,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SCENARIOS FAVORING MONOLITH</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     <!-- Early Stage Startup -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
@@ -504,7 +475,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
       <div style="background: rgba(0,0,0,0.2); padding: 6px; border-radius: 4px; text-align: center; font-size: 0.8em; color: #d1fae5;">Build modular monolith, extract later</div>
     </div>
-
     <!-- Data-Intensive Applications -->
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">2. DATA-INTENSIVE APPLICATIONS</h4>
@@ -516,7 +486,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
       <div style="background: rgba(0,0,0,0.2); padding: 6px; border-radius: 4px; text-align: center; font-size: 0.8em; color: #dbeafe;">Monolith with powerful DB is simpler</div>
     </div>
-
     <!-- Latency-Critical Systems -->
     <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">3. LATENCY-CRITICAL SYSTEMS</h4>
@@ -527,7 +496,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
       <div style="background: rgba(0,0,0,0.2); padding: 6px; border-radius: 4px; text-align: center; font-size: 0.8em; color: #ede9fe;">In-process calls beat network calls</div>
     </div>
-
     <!-- Small to Medium Teams -->
     <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">4. SMALL TO MEDIUM TEAMS</h4>
@@ -538,7 +506,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       </ul>
       <div style="background: rgba(0,0,0,0.2); padding: 6px; border-radius: 4px; text-align: center; font-size: 0.8em; color: #fed7aa;">Can't afford microservices overhead</div>
     </div>
-
     <!-- Strong Consistency Requirements -->
     <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); border-radius: 12px; padding: 16px; grid-column: span 2;">
       <h4 style="color: #fff; margin: 0 0 10px 0;">5. STRONG CONSISTENCY REQUIREMENTS</h4>
@@ -559,7 +526,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MODULAR MONOLITH</h3>
   <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Best of both worlds</div>
-
   <!-- Architecture Diagram -->
   <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
@@ -582,7 +548,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <div style="color: #8b949e; font-size: 0.85em;">Database, Logging, Metrics, Auth</div>
     </div>
   </div>
-
   <!-- Rules -->
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #58a6ff;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">RULES:</div>
@@ -594,7 +559,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Single deployment, but logical separation</li>
     </ol>
   </div>
-
   <!-- Benefits -->
   <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
     <div style="color: #7ee787; font-weight: 600; margin-bottom: 12px;">BENEFITS:</div>
@@ -615,7 +579,6 @@ After years of microservices adoption, many companies are reconsidering their ar
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MICROSERVICES TO MONOLITH MIGRATION</h3>
-
   <!-- Phase 1: Analyze -->
   <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 12px;">
@@ -630,7 +593,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Identify candidates for consolidation</li>
     </ol>
   </div>
-
   <!-- Phase 2: Consolidate Data -->
   <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 12px;">
@@ -645,7 +607,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Switch reads to new database</li>
     </ol>
   </div>
-
   <!-- Phase 3: Merge Code -->
   <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 12px;">
@@ -660,7 +621,6 @@ After years of microservices adoption, many companies are reconsidering their ar
       <li>Update tests</li>
     </ol>
   </div>
-
   <!-- Phase 4: Deploy -->
   <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
     <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 12px;">

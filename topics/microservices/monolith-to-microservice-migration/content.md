@@ -14,10 +14,8 @@ This guide covers the complete journey of migrating from a monolithic applicatio
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MONOLITHIC APPLICATION</h3>
-
   <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin-top: 16px;">
     <h4 style="color: #8b949e; margin: 0 0 16px 0; text-align: center;">SINGLE CODEBASE</h4>
-
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
       <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px;">
         <div style="color: #fff; font-weight: 600; margin-bottom: 8px; text-align: center;">User Module</div>
@@ -47,21 +45,17 @@ This guide covers the complete journey of migrating from a monolithic applicatio
         </ul>
       </div>
     </div>
-
     <div style="text-align: center; color: #8b949e; margin: 16px 0; font-size: 0.9em;">
       <span style="display: inline-block; border-top: 2px dashed #30363d; width: 80%; padding-top: 8px;">DIRECT METHOD CALLS</span>
     </div>
-
     <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px;">
       <div style="color: #58a6ff; font-weight: 600;">SHARED DATA ACCESS LAYER</div>
       <div style="color: #8b949e; font-size: 0.9em;">(ORM/Repository)</div>
     </div>
   </div>
-
   <div style="text-align: center; margin: 16px 0;">
     <span style="color: #8b949e; font-size: 1.5em;">↓</span>
   </div>
-
   <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
     <div style="color: #fff; font-weight: 600; text-align: center; margin-bottom: 12px;">SINGLE DATABASE (PostgreSQL)</div>
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
@@ -203,7 +197,6 @@ LEFT JOIN shipments s ON s.order_id = o.id;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">PROBLEMS WITH MONOLITHIC DB</h3>
-
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">1. TIGHT COUPLING</h4>
@@ -250,7 +243,6 @@ LEFT JOIN shipments s ON s.order_id = o.id;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MICROSERVICES ARCHITECTURE</h3>
-
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
     <!-- User Service -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
@@ -267,7 +259,6 @@ LEFT JOIN shipments s ON s.order_id = o.id;
         <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; margin-top: 4px; color: #fff; font-size: 0.85em;">PostgreSQL<br/><span style="color: #d1fae5;">(User Data)</span></div>
       </div>
     </div>
-
     <!-- Order Service -->
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">ORDER SERVICE</h4>
@@ -283,7 +274,6 @@ LEFT JOIN shipments s ON s.order_id = o.id;
         <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; margin-top: 4px; color: #fff; font-size: 0.85em;">PostgreSQL<br/><span style="color: #dbeafe;">(Order Data)</span></div>
       </div>
     </div>
-
     <!-- Logistics Service -->
     <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">LOGISTICS SERVICE</h4>
@@ -300,7 +290,6 @@ LEFT JOIN shipments s ON s.order_id = o.id;
       </div>
     </div>
   </div>
-
   <!-- Kafka Event Bus -->
   <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px; text-align: center;">
     <h4 style="color: #fff; margin: 0 0 12px 0;">KAFKA (Event Bus)</h4>
@@ -612,7 +601,6 @@ WHERE published_at IS NULL;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SCHEMA COMPARISON: BEFORE vs AFTER</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <!-- Before Column -->
     <div>
@@ -638,7 +626,6 @@ WHERE published_at IS NULL;
         </div>
       </div>
     </div>
-
     <!-- After Column -->
     <div>
       <h4 style="color: #7ee787; margin: 0 0 16px 0; text-align: center; padding: 8px; background: rgba(126,231,135,0.1); border-radius: 8px;">AFTER (Microservices)</h4>
@@ -677,7 +664,6 @@ WHERE published_at IS NULL;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SERVICE EVENTS</h3>
-
   <div style="display: flex; flex-direction: column; gap: 20px;">
     <!-- User Service Events -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
@@ -704,7 +690,6 @@ WHERE published_at IS NULL;
         <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">UserDeleted</span>
       </div>
     </div>
-
     <!-- Order Service Events -->
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">ORDER SERVICE EVENTS</h4>
@@ -732,7 +717,6 @@ WHERE published_at IS NULL;
         <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">OrderCompleted</span>
       </div>
     </div>
-
     <!-- Logistics Service Events -->
     <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0;">LOGISTICS SERVICE EVENTS</h4>
@@ -756,7 +740,6 @@ WHERE published_at IS NULL;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRANGLER FIG MIGRATION PHASES</h3>
-
   <div style="display: flex; flex-direction: column; gap: 16px;">
     <!-- Phase 1 -->
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
@@ -771,7 +754,6 @@ WHERE published_at IS NULL;
         <li>Define service contracts (APIs, Events)</li>
       </ul>
     </div>
-
     <!-- Phase 2 -->
     <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
@@ -799,7 +781,6 @@ WHERE published_at IS NULL;
         </div>
       </div>
     </div>
-
     <!-- Phase 3 -->
     <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
@@ -813,7 +794,6 @@ WHERE published_at IS NULL;
         <li>Switch reads to new service</li>
       </ul>
     </div>
-
     <!-- Phase 4 -->
     <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
@@ -826,7 +806,6 @@ WHERE published_at IS NULL;
         <li>Implement Saga for order creation workflow</li>
       </ul>
     </div>
-
     <!-- Phase 5 -->
     <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
@@ -839,7 +818,6 @@ WHERE published_at IS NULL;
         <li>Remove shipments table from monolith</li>
       </ul>
     </div>
-
     <!-- Phase 6 -->
     <div style="background: linear-gradient(135deg, #7ee787 0%, #3fb950 100%); border-radius: 12px; padding: 20px;">
       <h4 style="color: #0d1117; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">

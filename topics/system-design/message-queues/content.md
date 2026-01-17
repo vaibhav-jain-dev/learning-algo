@@ -731,40 +731,33 @@ func main() {
 ## Common Interview Questions
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **How do you handle message ordering?**
    - Use partitions with partition keys
    - Single consumer per partition
    - Sequence numbers for verification
-
 2. **How do you ensure exactly-once processing?**
    - Idempotent consumers
    - Deduplication with message IDs
    - Transactional outbox pattern
-
 3. **What happens if a consumer crashes?**
    - Message remains unacknowledged
    - Redelivered after visibility timeout
    - Use heartbeats for long processing
-
 4. **How do you scale consumers?**
    - Consumer groups share partitions
    - Each partition assigned to one consumer
    - Add partitions to increase parallelism
-
 </div>
 
 ## Best Practices
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Make consumers idempotent** - Handle duplicate messages
 2. **Use dead letter queues** - Don't lose failed messages
 3. **Set appropriate timeouts** - Visibility timeout > processing time
 4. **Monitor queue depth** - Alert on growing backlogs
 5. **Use batching** - Improve throughput for high-volume
 6. **Implement backpressure** - Prevent overwhelming consumers
-
 </div>
 
 ## Related Topics

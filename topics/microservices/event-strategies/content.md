@@ -12,9 +12,7 @@ Event-based systems use various strategies to handle events reliably, maintain o
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT DELIVERY GUARANTEES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- At-Most-Once -->
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. AT-MOST-ONCE</div>
@@ -35,7 +33,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #f85149;">Use:</strong> Metrics, logs, analytics
 </div>
 </div>
-
 <!-- At-Least-Once -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. AT-LEAST-ONCE</div>
@@ -56,7 +53,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #7ee787;">Use:</strong> Orders, payments, notifications
 </div>
 </div>
-
 <!-- Exactly-Once -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. EXACTLY-ONCE</div>
@@ -77,7 +73,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #8957e5;">Use:</strong> Financial txns, inventory
 </div>
 </div>
-
 </div>
 </div>
 
@@ -87,9 +82,7 @@ Event-based systems use various strategies to handle events reliably, maintain o
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT ORDERING STRATEGIES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- Global Ordering -->
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. GLOBAL ORDERING</div>
@@ -105,7 +98,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong>Use:</strong> When global order is absolutely required (rare)
 </div>
 </div>
-
 <!-- Partition-Level Ordering -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. PARTITION-LEVEL (Most Common)</div>
@@ -121,7 +113,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <div style="color: #7ee787;">+ Scalable</div>
 </div>
 </div>
-
 <!-- Causal Ordering -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. CAUSAL ORDERING</div>
@@ -138,7 +129,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <div style="color: #f85149;">- Complex to implement</div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -148,9 +138,7 @@ Event-based systems use various strategies to handle events reliably, maintain o
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CONSUMER GROUP STRATEGIES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- Competing Consumers -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. COMPETING CONSUMERS</div>
@@ -167,7 +155,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #7ee787;">Use:</strong> Parallel processing, load distribution
 </div>
 </div>
-
 <!-- Fan-Out -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. FAN-OUT (Broadcast)</div>
@@ -184,7 +171,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #58a6ff;">Use:</strong> Multiple services need same event
 </div>
 </div>
-
 <!-- Selective Consumption -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. SELECTIVE (Filtering)</div>
@@ -198,7 +184,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 <strong style="color: #8957e5;">Alt:</strong> Separate topics per event type
 </div>
 </div>
-
 </div>
 </div>
 
@@ -208,9 +193,7 @@ Event-based systems use various strategies to handle events reliably, maintain o
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">ERROR HANDLING STRATEGIES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-
 <!-- Retry with Backoff -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. RETRY WITH BACKOFF</div>
@@ -227,7 +210,6 @@ Event-based systems use various strategies to handle events reliably, maintain o
 Skip non-recoverable errors immediately
 </div>
 </div>
-
 <!-- Dead Letter Queue -->
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. DEAD LETTER QUEUE (DLQ)</div>
@@ -244,7 +226,6 @@ Skip non-recoverable errors immediately
 Contains: Original event, error, retry count, timestamp
 </div>
 </div>
-
 <!-- Circuit Breaker -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. CIRCUIT BREAKER</div>
@@ -264,7 +245,6 @@ When OPEN: Stop consuming, wait, alert ops<br/>
 <span style="color: #8b949e;">Prevents: Endless retries, resource exhaustion</span>
 </div>
 </div>
-
 <!-- Poison Pill -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">4. POISON PILL HANDLING</div>
@@ -282,7 +262,6 @@ A message that <strong>always fails</strong> processing
 Without this: One bad message blocks entire partition!
 </div>
 </div>
-
 </div>
 </div>
 
@@ -292,14 +271,11 @@ Without this: One bad message blocks entire partition!
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">IDEMPOTENCY STRATEGIES</h4>
-
 <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
 <span style="color: #f85149; font-weight: bold;">PROBLEM:</span> <span style="color: #c9d1d9;">Events may be delivered more than once</span><br/>
 <span style="color: #7ee787; font-weight: bold;">SOLUTION:</span> <span style="color: #c9d1d9;">Make consumers idempotent</span>
 </div>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- Idempotency Key Tracking -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. IDEMPOTENCY KEY TRACKING</div>
@@ -318,7 +294,6 @@ Without this: One bad message blocks entire partition!
 <span style="color: #8957e5;">else</span> process + record atomically
 </div>
 </div>
-
 <!-- Natural Idempotency -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. NATURAL IDEMPOTENCY</div>
@@ -335,7 +310,6 @@ Without this: One bad message blocks entire partition!
 <strong>Transform:</strong> balance += 100 → balance = 1000 WHERE balance = 900
 </div>
 </div>
-
 <!-- Version/Sequence Checking -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. VERSION CHECKING</div>
@@ -351,7 +325,6 @@ Without this: One bad message blocks entire partition!
 <div>version == current+1 → <span style="color: #7ee787;">Process</span></div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -361,9 +334,7 @@ Without this: One bad message blocks entire partition!
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT REPLAY STRATEGIES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-
 <!-- Full Replay -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">1. FULL REPLAY</div>
@@ -378,7 +349,6 @@ Without this: One bad message blocks entire partition!
 kafka-consumer-groups --reset-offsets --to-earliest
 </div>
 </div>
-
 <!-- Point-in-Time Replay -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">2. POINT-IN-TIME REPLAY</div>
@@ -391,7 +361,6 @@ kafka-consumer-groups --reset-offsets --to-earliest
 Reset to specific timestamp
 </div>
 </div>
-
 <!-- Selective Replay -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">3. SELECTIVE REPLAY</div>
@@ -403,9 +372,7 @@ Reset to specific timestamp
 <div><span style="color: #8957e5;">4.</span> Consumer processes</div>
 </div>
 </div>
-
 </div>
-
 <!-- Replay Considerations -->
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">REPLAY CONSIDERATIONS</div>
@@ -433,13 +400,10 @@ Reset to specific timestamp
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">BACKPRESSURE STRATEGIES</h4>
-
 <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center;">
 <span style="color: #f85149; font-weight: bold;">PROBLEM:</span> <span style="color: #c9d1d9;">Producer faster than consumer → Queue grows unbounded</span>
 </div>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-
 <!-- Consumer Pull -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. CONSUMER PULL (Kafka Default)</div>
@@ -453,7 +417,6 @@ consumer.commitSync()&nbsp;&nbsp;&nbsp;<span style="color: #8b949e;">// Commit</
 Natural backpressure: Consumer takes only what it can handle
 </div>
 </div>
-
 <!-- Rate Limiting -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. RATE LIMITING AT PRODUCER</div>
@@ -465,7 +428,6 @@ rateLimiter.Wait(ctx)&nbsp;&nbsp;<span style="color: #8b949e;">// Block if over<
 producer.Send(event)
 </div>
 </div>
-
 <!-- Buffer Overflow -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">3. BUFFERING WITH OVERFLOW</div>
@@ -476,7 +438,6 @@ producer.Send(event)
 <div><span style="color: #f78166;">c)</span> Block producer (apply backpressure)</div>
 </div>
 </div>
-
 <!-- Dynamic Scaling -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">4. DYNAMIC SCALING</div>
@@ -490,7 +451,6 @@ lag = latestOffset - consumerOffset<br/><br/>
 Note: Max scale = number of partitions
 </div>
 </div>
-
 </div>
 </div>
 

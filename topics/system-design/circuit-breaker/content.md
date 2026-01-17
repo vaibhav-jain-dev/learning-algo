@@ -46,7 +46,6 @@ Think of your home's electrical circuit breaker:
       </div>
     </div>
   </div>
-
   <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Software Circuit Breaker Equivalent</h3>
   <div class="circuit-diagram">
     <div class="diagram-row">
@@ -125,26 +124,21 @@ After 20+ years of operating distributed systems, here's what you learn:
         <div class="state-title">CLOSED</div>
         <div class="state-desc">Normal operation<br>Counting failures</div>
       </div>
-
       <div class="state-transition transition-failure">
         <div class="transition-label">Failure threshold reached</div>
       </div>
-
       <div class="state-box state-open">
         <div class="state-title">OPEN</div>
         <div class="state-desc">Failing fast<br>Requests blocked</div>
       </div>
-
       <div class="state-transition transition-timeout">
         <div class="transition-label">Timeout expires</div>
       </div>
-
       <div class="state-box state-half-open">
         <div class="state-title">HALF-OPEN</div>
         <div class="state-desc">Testing recovery<br>Limited requests</div>
       </div>
     </div>
-
     <div class="state-transitions">
       <div class="transition-row">
         <div class="transition-arrow success-arrow">↶ Success</div>
@@ -1598,7 +1592,6 @@ Use both:
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 16px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center; font-size: 14px;">Circuit Breakers in Microservices</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-
 <div style="background: #21262d; border-radius: 12px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Service A</div>
 <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 12px;">
@@ -1622,7 +1615,6 @@ Use both:
 </div>
 </div>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 16px;">
 <div style="color: #d2a8ff; font-weight: bold; margin-bottom: 12px;">Service B</div>
 <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 12px;">
@@ -1640,7 +1632,6 @@ Use both:
 </div>
 </div>
 </div>
-
 </div>
 <div style="color: #8b949e; font-size: 11px; text-align: center; margin-top: 12px;">CB = Circuit Breaker</div>
 </div>

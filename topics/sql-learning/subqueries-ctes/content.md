@@ -12,33 +12,27 @@ Subqueries and Common Table Expressions (CTEs) allow you to write modular, reada
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">SUBQUERY TYPES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">Scalar Subquery</div>
 <div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Returns single value</div>
 <code style="color: #c9d1d9; font-size: 12px;">SELECT name, (SELECT MAX(sal) FROM emp)</code>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Row Subquery</div>
 <div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Returns single row</div>
 <code style="color: #c9d1d9; font-size: 12px;">WHERE (dept, job) = (SELECT ...)</code>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Table Subquery</div>
 <div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Returns multiple rows/columns</div>
 <code style="color: #c9d1d9; font-size: 12px;">FROM (SELECT ...) AS subq</code>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Correlated Subquery</div>
 <div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">References outer query</div>
 <code style="color: #c9d1d9; font-size: 12px;">WHERE sal > (SELECT AVG(sal) FROM emp e2 WHERE e2.dept = e1.dept)</code>
 </div>
-
 </div>
 </div>
 
@@ -160,9 +154,7 @@ WHERE o1.created_at = (
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">EXISTS vs IN COMPARISON</h4>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(126,231,135,0.3);">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">EXISTS</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -173,7 +165,6 @@ WHERE o1.created_at = (
 <li>Correlated by nature</li>
 </ul>
 </div>
-
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(88,166,255,0.3);">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">IN</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -184,7 +175,6 @@ WHERE o1.created_at = (
 <li>Can be non-correlated</li>
 </ul>
 </div>
-
 </div>
 </div>
 
@@ -359,9 +349,7 @@ SELECT date FROM dates;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">WHEN TO USE CTE vs SUBQUERY</h4>
-
 <div style="display: grid; gap: 16px;">
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Use CTE When:</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -371,7 +359,6 @@ SELECT date FROM dates;
 <li>Readability is priority</li>
 </ul>
 </div>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Use Subquery When:</div>
 <ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px;">
@@ -381,7 +368,6 @@ SELECT date FROM dates;
 <li>Legacy database compatibility</li>
 </ul>
 </div>
-
 </div>
 </div>
 

@@ -29,7 +29,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT-DRIVEN ARCHITECTURE</h4>
-
 <!-- Traditional Request-Response -->
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">TRADITIONAL REQUEST-RESPONSE:</div>
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 3px solid #f85149;">
@@ -54,7 +53,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <span style="background: rgba(248,81,73,0.2); color: #f85149; padding: 4px 10px; border-radius: 4px; font-size: 10px;">Failure propagates</span>
 </div>
 </div>
-
 <!-- Event-Driven -->
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">EVENT-DRIVEN:</div>
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
@@ -96,9 +94,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CORE EDA CONCEPTS</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-
 <!-- EVENT -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENT</div>
@@ -111,7 +107,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>- Self-describing (includes type and schema version)</div>
 </div>
 </div>
-
 <!-- PRODUCER -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PRODUCER (Publisher)</div>
@@ -124,7 +119,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>- Not responsible for post-publish handling</div>
 </div>
 </div>
-
 <!-- CONSUMER -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CONSUMER (Subscriber)</div>
@@ -137,7 +131,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>- Manage consumer offsets</div>
 </div>
 </div>
-
 <!-- EVENT BROKER -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENT BROKER</div>
@@ -156,7 +149,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>- Handle consumer groups and partitioning</div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -168,9 +160,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT TYPES</h4>
-
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-
 <!-- Domain Events -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">1. DOMAIN EVENTS</div>
@@ -187,7 +177,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>- Triggers business workflows</div>
 </div>
 </div>
-
 <!-- Integration Events -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">2. INTEGRATION EVENTS</div>
@@ -202,7 +191,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <span style="color: #f85149; font-weight: bold;">Anti-pattern:</span> <span style="color: #8b949e;">Exposing all domain events as integration events</span>
 </div>
 </div>
-
 <!-- Event Notification -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">3. EVENT NOTIFICATION</div>
@@ -215,7 +203,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <span style="color: #f85149;">Cons:</span> <span style="color: #8b949e;">Requires callback for details</span>
 </div>
 </div>
-
 <!-- Event-Carried State Transfer -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">4. EVENT-CARRIED STATE TRANSFER</div>
@@ -230,7 +217,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <span style="color: #f85149;">Cons:</span> <span style="color: #8b949e;">Larger payload, data duplication</span>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -238,9 +224,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">STANDARD EVENT STRUCTURE</h4>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-
 <!-- Metadata Section -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">METADATA (Envelope)</div>
@@ -257,7 +241,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 </div>
 </div>
 </div>
-
 <!-- Payload Section -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PAYLOAD (Business Data)</div>
@@ -274,9 +257,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div>}</div>
 </div>
 </div>
-
 </div>
-
 <!-- CloudEvents Specification -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CLOUDEVENTS SPECIFICATION</div>
@@ -302,7 +283,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">KAFKA ARCHITECTURE</h4>
-
 <!-- Cluster Topology -->
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CLUSTER TOPOLOGY:</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -333,7 +313,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <span style="color: #7ee787;">P* = Partition Leader</span> | <span style="color: #8b949e;">P = Partition Replica</span>
 </div>
 </div>
-
 <!-- Topic & Partitions -->
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">TOPIC & PARTITIONS:</div>
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 3px solid #f78166;">
@@ -350,7 +329,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="margin-top: 8px; color: #7ee787;"><strong>Same key always goes to same partition - Ordering guarantee</strong></div>
 </div>
 </div>
-
 <!-- Consumer Groups -->
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CONSUMER GROUPS:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -379,9 +357,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">TOPIC DESIGN PATTERNS</h4>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-
 <!-- Single Event Type Per Topic -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">1. SINGLE EVENT TYPE PER TOPIC</div>
@@ -398,7 +374,6 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #f85149;">- No ordering across event types</div>
 </div>
 </div>
-
 <!-- Multiple Event Types Per Topic -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. MULTIPLE EVENT TYPES PER TOPIC</div>
@@ -412,9 +387,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #f85149;">- Consumers receive unneeded events</div>
 </div>
 </div>
-
 </div>
-
 <!-- Partition Count Guidelines -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PARTITION COUNT GUIDELINES</div>
@@ -451,7 +424,6 @@ Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | 
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT SOURCING ARCHITECTURE</h4>
-
 <!-- Overview -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">OVERVIEW</div>
@@ -465,7 +437,6 @@ Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | 
 </div>
 </div>
 </div>
-
 <!-- Event Store -->
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">EVENT STORE:</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px; overflow-x: auto;">
@@ -505,7 +476,6 @@ Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | 
 <strong style="color: #f85149;">Constraints:</strong> UNIQUE(stream_id, version) | Append-only (no updates/deletes)
 </div>
 </div>
-
 <!-- Rebuilding State & Snapshots -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
@@ -520,7 +490,6 @@ for event in events:<br/>
 &nbsp;&nbsp;order.Apply(event)
 </div>
 </div>
-
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SNAPSHOTS (Optimization)</div>
 <div style="font-size: 10px; color: #c9d1d9; margin-bottom: 8px;">
@@ -545,14 +514,11 @@ Load snapshot v100, apply events 101-150
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CQRS + EVENT SOURCING</h4>
-
 <!-- Application Flow -->
 <div style="text-align: center; margin-bottom: 16px;">
 <div style="background: #6e7681; border-radius: 8px; padding: 12px 24px; display: inline-block; color: #fff; font-weight: bold; font-size: 12px;">APPLICATION</div>
 </div>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
-
 <!-- Commands (Write) Side -->
 <div>
 <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
@@ -578,7 +544,6 @@ Load snapshot v100, apply events 101-150
 <strong>PostgreSQL</strong><br/>(Event Store)
 </div>
 </div>
-
 <!-- Queries (Read) Side -->
 <div>
 <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
@@ -608,16 +573,13 @@ Load snapshot v100, apply events 101-150
 </div>
 </div>
 </div>
-
 </div>
-
 <!-- Events Flow -->
 <div style="text-align: center; margin-bottom: 16px;">
 <div style="background: rgba(247,129,102,0.2); border-radius: 20px; padding: 8px 24px; display: inline-block; color: #f78166; font-size: 11px;">
 <strong>Events</strong> flow from Write Model → Read Model
 </div>
 </div>
-
 <!-- Projection Example -->
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">PROJECTION EXAMPLE:</div>
@@ -635,7 +597,6 @@ Load snapshot v100, apply events 101-150
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">SCHEMA EVOLUTION</h4>
-
 <!-- Schema Registry Flow -->
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">SCHEMA REGISTRY:</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -657,7 +618,6 @@ Load snapshot v100, apply events 101-150
 <span style="background: rgba(137,87,229,0.2); color: #a371f7; padding: 2px 8px; border-radius: 4px; font-size: 9px;">Karapace</span>
 </div>
 </div>
-
 <!-- Compatibility Modes -->
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">COMPATIBILITY MODES:</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
@@ -688,7 +648,6 @@ Load snapshot v100, apply events 101-150
 </div>
 </div>
 </div>
-
 <!-- Avro Schema Example -->
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">AVRO SCHEMA EXAMPLE:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -721,7 +680,6 @@ Load snapshot v100, apply events 101-150
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EDA OBSERVABILITY</h4>
-
 <!-- Key Metrics -->
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">KEY METRICS:</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
@@ -754,7 +712,6 @@ Load snapshot v100, apply events 101-150
 </div>
 </div>
 </div>
-
 <!-- Distributed Tracing -->
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DISTRIBUTED TRACING:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
@@ -778,7 +735,6 @@ ctx, span := tracer.Start(<br/>
 </div>
 </div>
 </div>
-
 <!-- Alerting -->
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">ALERTING:</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -807,9 +763,7 @@ ctx, span := tracer.Start(<br/>
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">PRODUCTION CHECKLIST</h4>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
 <!-- Message Durability -->
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 12px;">MESSAGE DURABILITY</div>
@@ -820,7 +774,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Retention 7+ days for critical</div>
 </div>
 </div>
-
 <!-- Consumer Reliability -->
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 12px;">CONSUMER RELIABILITY</div>
@@ -832,7 +785,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Consumer lag alerting</div>
 </div>
 </div>
-
 <!-- Schema Management -->
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 11px; margin-bottom: 12px;">SCHEMA MANAGEMENT</div>
@@ -842,7 +794,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Schema validation in CI/CD</div>
 </div>
 </div>
-
 <!-- Observability -->
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
 <div style="color: #f78166; font-weight: bold; font-size: 11px; margin-bottom: 12px;">OBSERVABILITY</div>
@@ -854,7 +805,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Alerting configured</div>
 </div>
 </div>
-
 <!-- Security -->
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 12px;">SECURITY</div>
@@ -865,7 +815,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Encryption at rest</div>
 </div>
 </div>
-
 <!-- Operations -->
 <div style="background: rgba(210,153,34,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #d29922;">
 <div style="color: #d29922; font-weight: bold; font-size: 11px; margin-bottom: 12px;">OPERATIONS</div>
@@ -876,7 +825,6 @@ ctx, span := tracer.Start(<br/>
 <div>[ ] Replay procedures</div>
 </div>
 </div>
-
 </div>
 </div>
 

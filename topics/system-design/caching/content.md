@@ -9,19 +9,16 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 ### Why Caching?
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 1. **Reduced Latency**: Memory access is ~100x faster than disk, ~1000x faster than network
 2. **Lower Database Load**: Fewer queries hit the primary database
 3. **Cost Efficiency**: Serve more requests with fewer resources
 4. **Improved User Experience**: Faster response times
-
 </div>
 
 ### Cache Layers Architecture
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE HIERARCHY</h3>
-
   <!-- Flow diagram -->
   <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
@@ -40,7 +37,6 @@ Caching is a technique that stores copies of frequently accessed data in a faste
       <div style="color: white; font-weight: 600; font-size: 13px;">Database</div>
     </div>
   </div>
-
   <!-- Cache types -->
   <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
     <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px; padding: 12px; text-align: center;">
@@ -60,7 +56,6 @@ Caching is a technique that stores copies of frequently accessed data in a faste
       <div style="color: #7ee787; font-size: 11px;">~10ms</div>
     </div>
   </div>
-
   <!-- Latency spectrum -->
   <div style="margin-bottom: 16px;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
@@ -69,7 +64,6 @@ Caching is a technique that stores copies of frequently accessed data in a faste
     </div>
     <div style="background: linear-gradient(90deg, #238636 0%, #1f6feb 25%, #8957e5 50%, #f0883e 75%, #f85149 100%); height: 6px; border-radius: 3px;"></div>
   </div>
-
   <!-- Latency table -->
   <div style="background: #21262d; border-radius: 8px; padding: 16px;">
     <div style="color: #8b949e; font-size: 12px; margin-bottom: 12px;">Typical latencies:</div>
@@ -92,7 +86,6 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 ### Strategy Comparison
 
 <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 | Strategy | Read Path | Write Path | Consistency | Best For |
 |----------|-----------|------------|-------------|----------|
 | **Cache-Aside** | App checks cache → DB on miss | App updates DB, invalidates cache | Eventual | General purpose |
@@ -100,14 +93,12 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 | **Write-Through** | Same as cache-aside | Write to cache + DB together | Strong | Read-heavy + consistency |
 | **Write-Behind** | Same as cache-aside | Write to cache, async DB | Eventual | Write-heavy |
 | **Refresh-Ahead** | Proactive refresh before expiry | N/A | Fresh data | Predictable access |
-
 </div>
 
 ### 1. Cache-Aside (Lazy Loading)
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE-ASIDE PATTERN</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <!-- Read Flow -->
     <div>
@@ -138,7 +129,6 @@ Caching is a technique that stores copies of frequently accessed data in a faste
         <div style="color: #7ee787; font-size: 12px;">↓ 4. Return data</div>
       </div>
     </div>
-
     <!-- Write Flow -->
     <div>
       <div style="color: #f0883e; font-weight: 600; margin-bottom: 16px;">WRITE FLOW:</div>
@@ -162,39 +152,29 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-
 **Pros**
 - Only caches what's needed
 - Cache failures don't break system
 - Simple to implement
-
 </div>
-
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-
 **Cons**
 - Initial requests are slow (cache miss)
 - Potential for stale data
 - Cache stampede on expiry
-
 </div>
-
 </div>
 
 ### 2. Write-Through
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WRITE-THROUGH PATTERN</h3>
-
   <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 28px; border-radius: 10px;">
       <span style="color: white; font-weight: 600;">Application</span>
     </div>
-
     <div style="color: #58a6ff; font-size: 13px;">↓ Write request</div>
-
     <div style="display: flex; align-items: center; gap: 24px;">
       <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 28px; border-radius: 10px;">
         <span style="color: white; font-weight: 600;">Cache</span>
@@ -207,15 +187,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
         <span style="color: white; font-weight: 600;">Database</span>
       </div>
     </div>
-
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 12px 24px; text-align: center;">
       <div style="color: #7ee787; font-weight: 600;">Both updated atomically</div>
     </div>
-
     <div style="color: #58a6ff; font-size: 13px;">↓</div>
-
     <div style="color: #7ee787; font-weight: 600;">Return success</div>
-
     <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
       <span style="color: #58a6ff; font-weight: 600;">Result:</span>
       <span style="color: #c9d1d9;"> Cache always consistent with database</span>
@@ -230,14 +206,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WRITE-BEHIND PATTERN</h3>
-
   <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
     <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 28px; border-radius: 10px;">
       <span style="color: white; font-weight: 600;">Application</span>
     </div>
-
     <div style="color: #58a6ff; font-size: 13px;">↓ 1. Write request</div>
-
     <div style="display: flex; align-items: center; gap: 16px;">
       <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 28px; border-radius: 10px;">
         <span style="color: white; font-weight: 600;">Cache</span>
@@ -246,9 +219,7 @@ Caching is a technique that stores copies of frequently accessed data in a faste
         <span style="color: #7ee787; font-size: 12px;">← Return immediately (fast!)</span>
       </div>
     </div>
-
     <div style="color: #58a6ff; font-size: 13px;">↓ 2. Queue write</div>
-
     <div style="background: #21262d; border: 2px solid #30363d; border-radius: 10px; padding: 16px; text-align: center;">
       <div style="color: #c9d1d9; font-size: 13px; margin-bottom: 8px;">Write Queue</div>
       <div style="display: flex; gap: 8px; justify-content: center;">
@@ -258,13 +229,10 @@ Caching is a technique that stores copies of frequently accessed data in a faste
       </div>
       <div style="color: #8b949e; font-size: 11px; margin-top: 6px;">← Pending writes</div>
     </div>
-
     <div style="color: #58a6ff; font-size: 13px;">↓ 3. Async batch write</div>
-
     <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 14px 28px; border-radius: 10px;">
       <span style="color: white; font-weight: 600;">Database</span>
     </div>
-
     <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
       <span style="color: #f85149; font-weight: 600;">⚠️ Risk:</span>
       <span style="color: #f85149;"> Data loss if cache fails before flush!</span>
@@ -273,10 +241,8 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 **Pros**: Very fast writes, reduced database load, batch optimization
 **Cons**: Risk of data loss if cache fails before flush, complexity
-
 </div>
 
 ### 4. Read-Through
@@ -293,7 +259,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE EVICTION POLICIES</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <!-- LRU -->
     <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 12px; padding: 16px;">
@@ -311,7 +276,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
       </div>
       <div style="color: #8b949e; font-size: 11px; margin-top: 6px; text-align: center;">Access A → A moves to front</div>
     </div>
-
     <!-- LFU -->
     <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 12px; padding: 16px;">
       <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">2. LFU (Least Frequently Used)</div>
@@ -330,7 +294,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
         </div>
       </div>
     </div>
-
     <!-- TTL -->
     <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 12px; padding: 16px;">
       <div style="color: #a371f7; font-weight: 600; margin-bottom: 12px;">3. TTL (Time To Live)</div>
@@ -344,7 +307,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
       </div>
       <div style="color: #8b949e; font-size: 11px; margin-top: 8px;">← Auto-expire after TTL</div>
     </div>
-
     <!-- FIFO & Random -->
     <div style="display: flex; flex-direction: column; gap: 12px;">
       <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 12px; padding: 12px;">
@@ -364,34 +326,28 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
 ## Cache Invalidation
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-
 > "There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton
-
 </div>
 
 ### Strategies
 
 <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 | Strategy | How It Works | Best For |
 |----------|--------------|----------|
 | **TTL-based** | Set expiration time | Tolerant of staleness |
 | **Event-based** | Invalidate on data changes | Strong consistency needs |
 | **Version-based** | Include version in cache key | Config, static data |
-
 </div>
 
 ### Cache Stampede Prevention
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE STAMPEDE PROBLEM</h3>
-
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <!-- Problem -->
     <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 12px; padding: 20px;">
       <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">THE PROBLEM</div>
       <div style="color: #8b949e; font-size: 12px; margin-bottom: 12px;">Cache expires at T=0</div>
-
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
           <span style="color: #8b949e;">T=0.001</span>
@@ -419,16 +375,13 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
         </div>
         <div style="color: #8b949e; font-size: 12px; text-align: center;">...</div>
       </div>
-
       <div style="background: rgba(248, 81, 73, 0.2); padding: 10px 14px; border-radius: 8px; text-align: center;">
         <span style="color: #f85149; font-weight: 600;">Result: Database overwhelmed!</span>
       </div>
     </div>
-
     <!-- Solution -->
     <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 12px; padding: 20px;">
       <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">SOLUTION: Lock-based approach</div>
-
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
           <span style="color: #8b949e;">T=0.001</span>
@@ -475,7 +428,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
           <span style="color: #7ee787;">Cache HIT! ✓</span>
         </div>
       </div>
-
       <div style="background: rgba(126, 231, 135, 0.2); padding: 10px 14px; border-radius: 8px; text-align: center;">
         <span style="color: #7ee787; font-weight: 600;">Result: Only ONE database query! ✓</span>
       </div>
@@ -491,32 +443,25 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CONSISTENT HASHING FOR CACHE</h3>
-
   <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
     <!-- Ring visualization -->
     <div style="position: relative; width: 200px; height: 200px;">
       <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid #30363d; border-radius: 50%;"></div>
-
       <!-- Markers -->
       <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 11px;">0</div>
       <div style="position: absolute; top: 50%; right: -35px; transform: translateY(-50%); color: #8b949e; font-size: 11px;">2^32*3/4</div>
       <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 11px;">2^32/2</div>
       <div style="position: absolute; top: 50%; left: -25px; transform: translateY(-50%); color: #8b949e; font-size: 11px;">2^32/4</div>
-
       <!-- Nodes -->
       <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
       <div style="position: absolute; top: 10px; left: 50%; transform: translateX(20px); color: #7ee787; font-size: 11px;">Node A</div>
-
       <div style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #1f6feb; width: 14px; height: 14px; border-radius: 50%;"></div>
       <div style="position: absolute; top: 50%; right: -50px; transform: translateY(-50%); color: #58a6ff; font-size: 11px;">Node B</div>
-
       <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #8957e5; width: 14px; height: 14px; border-radius: 50%;"></div>
       <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(20px); color: #a371f7; font-size: 11px;">Node C</div>
-
       <div style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: #f0883e; width: 14px; height: 14px; border-radius: 50%;"></div>
       <div style="position: absolute; top: 50%; left: -50px; transform: translateY(-50%); color: #f0883e; font-size: 11px;">Node D</div>
     </div>
-
     <!-- Explanation -->
     <div style="display: flex; flex-direction: column; gap: 16px; max-width: 320px;">
       <!-- Key routing -->
@@ -528,7 +473,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
           → <span style="color: #58a6ff; font-weight: 600;">Routes to Node B</span>
         </div>
       </div>
-
       <!-- When node fails -->
       <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 8px; padding: 12px 16px;">
         <div style="color: #f85149; font-weight: 600; font-size: 13px; margin-bottom: 8px;">When Node B fails:</div>
@@ -537,7 +481,6 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
           - <span style="color: #7ee787;">Keys on other nodes stay put!</span>
         </div>
       </div>
-
       <!-- Virtual nodes -->
       <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 8px; padding: 12px 16px;">
         <div style="color: #7ee787; font-weight: 600; font-size: 13px; margin-bottom: 4px;">Virtual Nodes:</div>
@@ -552,26 +495,21 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
 ## Common Interview Questions
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **How do you handle cache invalidation in a distributed system?**
    - Use pub/sub for cache invalidation events
    - Version-based keys
    - Short TTLs with refresh-ahead
-
 2. **What's the difference between Redis and Memcached?**
    - Redis: Data structures, persistence, replication, Lua scripting
    - Memcached: Simpler, multi-threaded, slightly faster for simple use cases
-
 3. **How do you prevent cache stampede?**
    - Locking/mutex
    - Probabilistic early expiration
    - Background refresh
-
 4. **When should you NOT use caching?**
    - Highly dynamic data
    - Write-heavy workloads
    - When consistency is critical
-
 </div>
 
 ---
@@ -579,14 +517,12 @@ Proactively refresh cache before expiration - prevents cache miss latency for pr
 ## Best Practices
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Set appropriate TTLs** - Balance freshness vs. hit rate
 2. **Monitor cache hit rates** - Target 90%+ for frequently accessed data
 3. **Use cache warming** - Pre-populate cache on startup
 4. **Handle cache failures gracefully** - Fall back to database
 5. **Avoid caching sensitive data** - Or encrypt if necessary
 6. **Use consistent hashing** - For distributed caches
-
 </div>
 
 ---

@@ -19,26 +19,20 @@ Design an elevator system for a building with multiple floors and elevators. Han
 ### Part 1: Understanding the Domain
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 **Two Types of Requests:**
 1. **External Request**: Person at floor X presses UP or DOWN button
 2. **Internal Request**: Person inside elevator presses floor Y button
-
 **Key Challenges:**
 - How to assign the "best" elevator to an external request?
 - How to handle multiple simultaneous requests?
 - How to minimize total wait time across all users?
-
 </div>
 
 ### Part 2: State Machine for Elevator
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Elevator State Machine</h4>
-
 <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
-
 <!-- IDLE State -->
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
@@ -48,14 +42,12 @@ Design an elevator system for a building with multiple floors and elevators. Han
 </div>
 </div>
 </div>
-
 <!-- Arrow from IDLE to MOVING -->
 <div style="display: flex; flex-direction: column; align-items: center;">
 <div style="color: #7ee787; font-size: 11px; margin-bottom: 4px;">Request</div>
 <div style="color: #7ee787; font-size: 24px;">→</div>
 <div style="color: #7ee787; font-size: 11px; margin-top: 4px;">received</div>
 </div>
-
 <!-- MOVING State -->
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
@@ -69,14 +61,12 @@ Design an elevator system for a building with multiple floors and elevators. Han
 <div style="background: #21262d; padding: 4px 8px; border-radius: 4px; color: #f85149; font-size: 10px;">↓ DOWN</div>
 </div>
 </div>
-
 <!-- Arrow from MOVING to DOORS_OPEN -->
 <div style="display: flex; flex-direction: column; align-items: center;">
 <div style="color: #ffa657; font-size: 11px; margin-bottom: 4px;">Arrived</div>
 <div style="color: #ffa657; font-size: 24px;">→</div>
 <div style="color: #ffa657; font-size: 11px; margin-top: 4px;">at stop</div>
 </div>
-
 <!-- DOORS_OPEN State -->
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
@@ -87,9 +77,7 @@ Design an elevator system for a building with multiple floors and elevators. Han
 </div>
 </div>
 </div>
-
 </div>
-
 <!-- Return arrows -->
 <div style="display: flex; justify-content: center; gap: 48px; margin-top: 24px;">
 <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; text-align: center;">
@@ -98,7 +86,6 @@ Design an elevator system for a building with multiple floors and elevators. Han
 <div style="color: #c9d1d9; font-size: 10px;">DOORS_OPEN → IDLE (no stops)</div>
 </div>
 </div>
-
 </div>
 
 **State Transitions:**
@@ -111,57 +98,44 @@ Design an elevator system for a building with multiple floors and elevators. Han
 ### Part 3: The SCAN Algorithm (Elevator Algorithm)
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-
 **Why SCAN/LOOK?**
-
 ```
 Scenario: Elevator at floor 5, going UP
 Requests: [3, 7, 2, 9, 4]
-
 FCFS Order: 3, 7, 2, 9, 4 → Total movement: 2+4+5+7+5 = 23 floors
-
 SCAN Order: 7, 9, 4, 3, 2 → Total movement: 2+2+5+1+1 = 11 floors
             (go up)  (go down)
 ```
-
 **SCAN Strategy:**
 1. Continue in current direction, serving all stops
 2. When no more stops in that direction, reverse
 3. Repeat
-
 **LOOK Optimization:** Don't go all the way to top/bottom, just to the last request
-
 </div>
 
 ### Part 4: Elevator Assignment Strategy
 
 <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 **How to pick which elevator serves a new request?**
-
 ```
 Request: Floor 5, Direction UP
 Elevators:
   A: Floor 2, going UP    → distance = 3, same direction ✓
   B: Floor 8, going DOWN  → distance = 6 (8→0→5), opposite direction
   C: Floor 5, IDLE        → distance = 0, perfect! ✓✓
-
 Scoring Formula:
   score = distance + direction_penalty + load_penalty
 ```
-
 **Factors to Consider:**
 1. **Distance**: Closer is better
 2. **Direction**: Same direction is better (especially if floor is on the way)
 3. **Load**: Less crowded elevator is better (if tracking capacity)
 4. **Wait time**: Elevator already serving many stops will be slower
-
 </div>
 
 ### Part 5: Data Structures for Stops
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 **Option 1: Two Sets (Our Approach)**
 ```python
 up_stops: Set[int] = {3, 7, 9}     # Stops when going up
@@ -169,7 +143,6 @@ down_stops: Set[int] = {6, 2, 1}  # Stops when going down
 ```
 - **Pros**: O(1) add/remove, easy to separate directions
 - **Cons**: Need to check both sets
-
 **Option 2: Priority Queues**
 ```python
 up_heap: MinHeap[int] = [3, 7, 9]    # Next up stop = min
@@ -177,14 +150,12 @@ down_heap: MaxHeap[int] = [6, 2, 1]  # Next down stop = max
 ```
 - **Pros**: O(1) get next stop, O(log n) add
 - **Cons**: Can't efficiently remove arbitrary stops
-
 **Option 3: Sorted List**
 ```python
 stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 ```
 - **Pros**: Easy to find next stop in either direction
 - **Cons**: O(n) insert/delete
-
 </div>
 
 ---
@@ -192,7 +163,6 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 ## Scheduling Algorithms Compared
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-
 | Algorithm | Description | Pros | Cons |
 |-----------|-------------|------|------|
 | **FCFS** | First Come First Served | Fair, simple | Very inefficient |
@@ -200,7 +170,6 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 | **SCAN** | Sweep up then down | No starvation | Unfair to middle floors |
 | **LOOK** | Like SCAN, stops at last request | More efficient | Slightly complex |
 | **C-SCAN** | Circular SCAN (one direction only) | Uniform wait time | More movement |
-
 </div>
 
 ---
@@ -210,15 +179,11 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 ### Alternative 1: Destination Dispatch System
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
-
 **Modern approach used in skyscrapers:**
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0;">
-
 <!-- Traditional System -->
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
 <div style="color: #f85149; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Traditional</div>
-
 <div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
 <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px;">
 <div style="background: #238636; padding: 8px 16px; border-radius: 6px;">
@@ -232,18 +197,14 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 </div>
 <div style="color: #8b949e; font-size: 10px;">buttons</div>
 </div>
-
 <div style="text-align: center; color: #ffa657; font-size: 20px; margin-bottom: 8px;">↓</div>
-
 <div style="background: #21262d; padding: 12px; border-radius: 6px; text-align: center;">
 <div style="color: #8b949e; font-size: 11px;">Wait for any elevator</div>
 </div>
 </div>
-
 <!-- Destination Dispatch System -->
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
 <div style="color: #7ee787; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Destination Dispatch</div>
-
 <div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
 <div style="color: #58a6ff; font-size: 11px; margin-bottom: 8px;">Enter destination</div>
 <div style="background: #0d1117; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">
@@ -252,16 +213,12 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 </div>
 <div style="color: #ffa657; font-size: 11px;">Assigned: Elev B</div>
 </div>
-
 <div style="text-align: center; color: #7ee787; font-size: 20px; margin-bottom: 8px;">↓</div>
-
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px; border-radius: 6px; text-align: center;">
 <div style="color: #fff; font-size: 11px;">Go directly to Elevator B</div>
 </div>
 </div>
-
 </div>
-
 <!-- Pros and Cons -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: #21262d; padding: 12px; border-radius: 8px;">
@@ -280,7 +237,6 @@ stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
 </div>
 </div>
 </div>
-
 </div>
 
 ### Alternative 2: Zone-Based Allocation
@@ -296,17 +252,14 @@ Express: Floors 1, 15, 30 only → Elevator 7
 ```
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 **When to use zones:**
 - Very tall buildings (50+ floors)
 - High traffic between specific floors
 - Different tenant areas
-
 **When NOT to use:**
 - Small buildings
 - Uniform traffic patterns
 - Limited number of elevators
-
 </div>
 
 ### Alternative 3: Machine Learning Approach
@@ -335,31 +288,22 @@ def preposition_elevators():
 ## Pros and Cons Analysis
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-
 ### SCAN Algorithm Pros
-
 - **No starvation** - Every floor eventually served
 - **Efficient** - Minimizes direction changes
 - **Predictable** - Easy to estimate wait time
 - **Simple** - Easy to implement
 - **Fair** - All floors get service
-
 </div>
-
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-
 ### SCAN Algorithm Cons
-
 - **Edge bias** - Top/bottom floors served less frequently
 - **Not optimal** - SSTF can be faster for sparse requests
 - **No load balancing** - Doesn't consider elevator capacity
 - **Static** - Doesn't adapt to traffic patterns
 - **Direction locked** - Must finish direction before reversing
-
 </div>
-
 </div>
 
 ---
@@ -394,7 +338,6 @@ def preposition_elevators():
 ## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Start with single elevator** - Then extend to multiple
 2. **Draw the state machine** - Shows systematic thinking
 3. **Explain SCAN algorithm** - Classic disk scheduling parallel
@@ -403,13 +346,11 @@ def preposition_elevators():
    - All elevators busy
    - Elevator breakdown
    - Simultaneous requests at same floor
-
 **Common Follow-ups:**
 - How to handle rush hour (morning/evening)?
 - How to prioritize emergency requests?
 - How to implement maintenance mode?
 - How to handle capacity limits?
-
 </div>
 
 ---

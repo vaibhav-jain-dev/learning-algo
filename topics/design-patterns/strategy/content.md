@@ -22,7 +22,6 @@ The Strategy pattern defines a family of algorithms, encapsulates each one, and 
     - Avoid tolls
     - Scenic route
     - Avoid highways
-
     The GPS app (Context) doesn't care HOW the route is calculated. It just asks the current strategy for directions. You can switch strategies mid-trip without the app's core code changing.
   </div>
   <div class="metaphor-mapping">
@@ -1097,24 +1096,20 @@ func main() {
     <p><strong>The Setup:</strong> Pricing engine with discount strategies. Black Friday had a 50% off strategy.</p>
     <p><strong>The Bug:</strong> The Black Friday strategy was registered with highest priority but its can_handle() always returned true. It was supposed to check the date!</p>
     <p><strong>The Impact:</strong> 50% discounts applied in October during testing. Lost ~$100K before caught.</p>
-
 ```python
 # BEFORE: Bug - always applies
 class BlackFridayStrategy(PricingStrategy):
     def can_handle(self, context):
         return True  # BUG: Should check date!
-
 # AFTER: Fixed with proper date check
 class BlackFridayStrategy(PricingStrategy):
     def __init__(self, start_date: datetime, end_date: datetime):
         self.start_date = start_date
         self.end_date = end_date
-
     def can_handle(self, context):
         now = datetime.now()
         return self.start_date <= now <= self.end_date
 ```
-
     <p><strong>Lesson:</strong> Always test strategy eligibility conditions. Use feature flags for time-based strategies.</p>
   </div>
 </div>
@@ -1127,24 +1122,19 @@ class BlackFridayStrategy(PricingStrategy):
   <div class="war-story-content">
     <p><strong>The Setup:</strong> 50+ pricing strategies registered. Selection iterating through all to find match.</p>
     <p><strong>The Problem:</strong> Each strategy's can_handle() made database calls to check customer eligibility.</p>
-
 ```python
 # BEFORE: N database calls per price calculation!
 class LoyaltyStrategy:
     def can_handle(self, context):
         customer = self.db.get_customer(context["user_id"])  # DB call!
         return customer.loyalty_tier == "gold"
-
 class PremiumStrategy:
     def can_handle(self, context):
         customer = self.db.get_customer(context["user_id"])  # Another DB call!
         return customer.is_premium
-
 # Called for every strategy = 50 DB calls per price calculation!
 ```
-
     <p><strong>The Fix:</strong></p>
-
 ```python
 # AFTER: Pre-fetch data, pass in context
 def calculate_price(self, base_price, user_id):
@@ -1157,15 +1147,12 @@ def calculate_price(self, base_price, user_id):
         "is_premium": customer.is_premium,
         # Pre-computed eligibility flags
     }
-
     return self.engine.calculate_price(base_price, context)
-
 # Strategies now check in-memory context
 class LoyaltyStrategy:
     def can_handle(self, context):
         return context.get("loyalty_tier") == "gold"  # No DB call!
 ```
-
     <p><strong>Lesson:</strong> Strategy selection must be O(1) per strategy. Pre-fetch data, pass in context.</p>
   </div>
 </div>

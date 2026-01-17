@@ -12,7 +12,6 @@ Window functions perform calculations across a set of table rows that are relate
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">WINDOW FUNCTION SYNTAX</h4>
-
 <div style="background: #21262d; border-radius: 12px; padding: 20px; font-family: monospace;">
 <div style="margin-bottom: 16px;">
 <span style="color: #7ee787;">function</span><span style="color: #c9d1d9;">(</span><span style="color: #ffa657;">column</span><span style="color: #c9d1d9;">) </span>
@@ -32,7 +31,6 @@ Window functions perform calculations across a set of table rows that are relate
 </div>
 <div style="color: #c9d1d9;">)</div>
 </div>
-
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
 <div style="background: rgba(126,231,135,0.1); padding: 12px; border-radius: 8px; text-align: center;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px;">PARTITION BY</div>
@@ -261,9 +259,7 @@ FROM employees;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">WINDOW FRAME OPTIONS</h4>
-
 <div style="display: grid; gap: 16px;">
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">ROWS BETWEEN ... AND ...</div>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
@@ -274,7 +270,6 @@ FROM employees;
 <code style="background: #161b22; padding: 4px 8px; border-radius: 4px; color: #ffa657; font-size: 12px;">UNBOUNDED FOLLOWING</code>
 </div>
 </div>
-
 <div style="background: #21262d; border-radius: 8px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Common Frame Examples</div>
 <div style="font-size: 13px; color: #c9d1d9;">
@@ -284,7 +279,6 @@ FROM employees;
 <div><code style="color: #7ee787;">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code> - Entire partition</div>
 </div>
 </div>
-
 </div>
 </div>
 
@@ -405,16 +399,13 @@ FROM daily_sales;
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">WINDOW FUNCTION vs GROUP BY</h4>
-
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(126,231,135,0.3);">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">GROUP BY</div>
 <div style="font-size: 13px; color: #c9d1d9; margin-bottom: 12px;">Collapses rows into groups</div>
 <pre style="background: #0d1117; padding: 10px; border-radius: 6px; font-size: 11px; margin: 0;"><code style="color: #c9d1d9;">SELECT dept, SUM(sal)
 FROM employees
 GROUP BY dept;
-
 -- Result: 3 rows
 | dept | sum   |
 |------|-------|
@@ -422,21 +413,18 @@ GROUP BY dept;
 | HR   | 40000 |
 | Sales| 60000 |</code></pre>
 </div>
-
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(88,166,255,0.3);">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">WINDOW FUNCTION</div>
 <div style="font-size: 13px; color: #c9d1d9; margin-bottom: 12px;">Keeps all rows, adds computed column</div>
 <pre style="background: #0d1117; padding: 10px; border-radius: 6px; font-size: 11px; margin: 0;"><code style="color: #c9d1d9;">SELECT name, dept, sal,
   SUM(sal) OVER(PARTITION BY dept)
 FROM employees;
-
 -- Result: All 10 rows
 | name  | dept | sal  | sum   |
 |-------|------|------|-------|
 | Alice | IT   | 5000 | 50000 |
 | Bob   | IT   | 4500 | 50000 |</code></pre>
 </div>
-
 </div>
 </div>
 
