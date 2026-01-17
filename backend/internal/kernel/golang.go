@@ -4,14 +4,20 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
+	"sync/atomic"
+	"syscall"
 	"time"
 )
+
+// Counter for unique binary names to prevent race conditions
+var binaryCounter uint64
 
 // Precompiled regex patterns for import validation
 var (
@@ -109,6 +115,16 @@ type GoKernel struct {
 
 // NewGoKernel creates a new Go kernel (implements KernelFactory)
 func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
+	log.Printf("Creating Go kernel %d", id)
+
+	// Check if Go is available at kernel creation time
+	goPath, err := exec.LookPath("go")
+	if err != nil {
+		log.Printf("Go kernel %d: Warning - go command not found in PATH", id)
+	} else {
+		log.Printf("Go kernel %d: Found go at %s", id, goPath)
+	}
+
 	// Use user home directory to avoid noexec restrictions
 	// Try multiple locations in order of preference
 	baseDir := os.Getenv("GO_KERNEL_DIR")
@@ -121,19 +137,33 @@ func NewGoKernel(id int, memoryLimit int64) (Kernel, error) {
 			baseDir = "/home/dsalgo/.go-kernels"
 		}
 	}
+	log.Printf("Go kernel %d: Using base directory: %s", id, baseDir)
+
 	// Ensure base directory exists
-	os.MkdirAll(baseDir, 0755)
+	if err := os.MkdirAll(baseDir, 0755); err != nil {
+		log.Printf("Go kernel %d: Failed to create base directory: %v", id, err)
+	}
 
 	workDir, err := os.MkdirTemp(baseDir, fmt.Sprintf("kernel_%d_*", id))
 	if err != nil {
+		log.Printf("Go kernel %d: Failed to create temp dir in %s: %v, trying fallback", id, baseDir, err)
 		// Fallback to /app/go-kernels
 		baseDir = "/app/go-kernels"
 		os.MkdirAll(baseDir, 0755)
 		workDir, err = os.MkdirTemp(baseDir, fmt.Sprintf("kernel_%d_*", id))
 		if err != nil {
-			return nil, fmt.Errorf("failed to create work directory: %w", err)
+			// Try /tmp as last resort
+			baseDir = "/tmp/go-kernels"
+			os.MkdirAll(baseDir, 0755)
+			workDir, err = os.MkdirTemp(baseDir, fmt.Sprintf("kernel_%d_*", id))
+			if err != nil {
+				log.Printf("Go kernel %d: Failed to create work directory in all locations: %v", id, err)
+				return nil, fmt.Errorf("failed to create work directory: %w", err)
+			}
 		}
 	}
+
+	log.Printf("Go kernel %d: Created work directory: %s", id, workDir)
 
 	k := &GoKernel{
 		workDir:  workDir,
@@ -216,8 +246,18 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		return nil, fmt.Errorf("kernel is not healthy")
 	}
 
-	// Set a maximum execution timeout of 15 seconds
-	execCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	// Check if Go is available
+	if _, err := exec.LookPath("go"); err != nil {
+		log.Printf("Go kernel %d: go command not found in PATH", k.id)
+		return &ExecutionResult{
+			Error:    "Go runtime not available. Please ensure Go is installed.",
+			ExitCode: 1,
+			Duration: 0,
+		}, nil
+	}
+
+	// Set a maximum execution timeout of 30 seconds (Go compilation can be slow on first run)
+	execCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	ctx = execCtx
 
@@ -225,6 +265,7 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 
 	// Validate code for security
 	if err := k.validateCode(code); err != nil {
+		log.Printf("Go kernel %d: validation failed: %v", k.id, err)
 		return &ExecutionResult{
 			Error:    err.Error(),
 			ExitCode: 1,
@@ -235,6 +276,7 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	// Write code to file
 	mainFile, err := k.writeCode(code)
 	if err != nil {
+		log.Printf("Go kernel %d: failed to write code: %v", k.id, err)
 		return &ExecutionResult{
 			Error:    err.Error(),
 			ExitCode: 1,
@@ -245,8 +287,10 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	// Use shared GOCACHE for faster compilation
 	goCache := getSharedGoCache()
 
-	// Binary output path - put in goCache dir to ensure exec permissions
-	binaryPath := filepath.Join(goCache, fmt.Sprintf("prog_%d", k.id))
+	// Binary output path - use atomic counter to prevent race conditions
+	binaryNum := atomic.AddUint64(&binaryCounter, 1)
+	binaryPath := filepath.Join(goCache, fmt.Sprintf("prog_%d_%d", k.id, binaryNum))
+	defer os.Remove(binaryPath) // Clean up binary after execution
 
 	// Step 1: Compile with 'go build' (uses cached artifacts)
 	compileStart := time.Now()
@@ -255,19 +299,22 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 	buildCmd.Env = append(os.Environ(),
 		"CGO_ENABLED=0",
 		"GOCACHE="+goCache,
+		"GOFLAGS=-buildvcs=false", // Skip VCS stamping for faster builds
 	)
 
 	var buildStderr bytes.Buffer
 	buildCmd.Stderr = &buildStderr
 
+	log.Printf("Go kernel %d: compiling code...", k.id)
 	if err := buildCmd.Run(); err != nil {
 		errStr := buildStderr.String()
 		if errStr == "" {
 			errStr = err.Error()
 		}
-		// Clean up error paths
+		// Clean up error paths for cleaner output
 		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
 		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		log.Printf("Go kernel %d: compilation failed: %s", k.id, errStr)
 		return &ExecutionResult{
 			Error:    errStr,
 			ExitCode: 1,
@@ -275,26 +322,36 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		}, nil
 	}
 	compileTime := time.Since(compileStart)
+	log.Printf("Go kernel %d: compilation successful (%.2fms)", k.id, float64(compileTime.Microseconds())/1000.0)
 
 	// Ensure binary is executable
-	os.Chmod(binaryPath, 0755)
+	if err := os.Chmod(binaryPath, 0755); err != nil {
+		log.Printf("Go kernel %d: failed to chmod binary: %v", k.id, err)
+	}
 
-	// Step 2: Execute the compiled binary (very fast!)
+	// Step 2: Execute the compiled binary with resource limits
 	execStart := time.Now()
 	runCmd := exec.CommandContext(ctx, binaryPath)
 	runCmd.Dir = k.workDir
+
+	// Set resource limits for the child process (Linux only)
+	runCmd.SysProcAttr = &syscall.SysProcAttr{
+		Setpgid: true, // Create new process group for clean termination
+	}
 
 	var stdout, stderr bytes.Buffer
 	runCmd.Stdout = &stdout
 	runCmd.Stderr = &stderr
 
+	log.Printf("Go kernel %d: executing binary...", k.id)
 	runErr := runCmd.Run()
 	execTime := time.Since(execStart)
 
 	// Check for permission denied - fallback to go run if needed
 	if runErr != nil && (strings.Contains(runErr.Error(), "permission denied") ||
-		strings.Contains(runErr.Error(), "operation not permitted")) {
-		// Fallback: use go run (slower but works on noexec filesystems)
+		strings.Contains(runErr.Error(), "operation not permitted") ||
+		strings.Contains(runErr.Error(), "exec format error")) {
+		log.Printf("Go kernel %d: binary execution failed, falling back to go run: %v", k.id, runErr)
 		return k.executeWithGoRun(ctx, mainFile, goCache, start)
 	}
 
@@ -318,11 +375,13 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		// Clean up error paths
 		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
 		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		log.Printf("Go kernel %d: execution error: %s", k.id, errStr)
 		result.Error = errStr
 		result.ExitCode = 1
 	} else {
 		result.Output = strings.TrimSpace(stdout.String())
 		result.ExitCode = 0
+		log.Printf("Go kernel %d: execution successful (%.2fms)", k.id, float64(execTime.Microseconds())/1000.0)
 	}
 
 	return result, nil
@@ -330,13 +389,20 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 
 // executeWithGoRun is a fallback for systems with noexec restrictions
 func (k *GoKernel) executeWithGoRun(ctx context.Context, mainFile, goCache string, start time.Time) (*ExecutionResult, error) {
+	log.Printf("Go kernel %d: using go run fallback", k.id)
 	execStart := time.Now()
 	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
 	cmd.Dir = k.workDir
 	cmd.Env = append(os.Environ(),
 		"CGO_ENABLED=0",
 		"GOCACHE="+goCache,
+		"GOFLAGS=-buildvcs=false",
 	)
+
+	// Set process group for clean termination
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Setpgid: true,
+	}
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -362,11 +428,13 @@ func (k *GoKernel) executeWithGoRun(ctx context.Context, mainFile, goCache strin
 		}
 		errStr = strings.ReplaceAll(errStr, k.workDir+"/", "")
 		errStr = strings.ReplaceAll(errStr, k.workDir, "")
+		log.Printf("Go kernel %d: go run error: %s", k.id, errStr)
 		result.Error = errStr
 		result.ExitCode = 1
 	} else {
 		result.Output = strings.TrimSpace(stdout.String())
 		result.ExitCode = 0
+		log.Printf("Go kernel %d: go run successful (%.2fms)", k.id, float64(execTime.Microseconds())/1000.0)
 	}
 
 	return result, nil

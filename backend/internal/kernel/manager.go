@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -41,10 +42,10 @@ func NewExecutionManager(pythonPool *PythonPool, goPool *GoPool, stateDir string
 
 // Execute starts a new code execution
 func (em *ExecutionManager) Execute(code, language string) (*Execution, error) {
-	// Set timeout based on language (Go needs more time for compilation)
-	timeout := 10 * time.Second
+	// Set timeout based on language (Go needs more time for compilation, especially first run)
+	timeout := 15 * time.Second
 	if language == "go" || language == "golang" {
-		timeout = 30 * time.Second
+		timeout = 45 * time.Second // Allow extra time for Go compilation + execution
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 
@@ -75,11 +76,14 @@ func (em *ExecutionManager) runExecution(ctx context.Context, exec *Execution) {
 	defer func() {
 		// Recover from panics and ensure execution completes
 		if r := recover(); r != nil {
+			log.Printf("Execution %s panicked: %v", exec.ID, r)
 			exec.Update(StateError, "", fmt.Sprintf("Internal error: %v", r), 1)
 			em.notifySubscribers(exec.ID, exec)
 		}
 		em.saveState()
 	}()
+
+	log.Printf("Starting execution %s (language: %s)", exec.ID, exec.Language)
 
 	var result *ExecutionResult
 	var err error
@@ -88,20 +92,26 @@ func (em *ExecutionManager) runExecution(ctx context.Context, exec *Execution) {
 	case "python":
 		result, err = em.pythonPool.Execute(ctx, exec.Code)
 	case "go", "golang":
+		log.Printf("Execution %s: Acquiring Go kernel...", exec.ID)
 		result, err = em.goPool.Execute(ctx, exec.Code)
 	default:
+		log.Printf("Execution %s: Unsupported language: %s", exec.ID, exec.Language)
 		exec.Update(StateError, "", "Unsupported language: "+exec.Language, 1)
 		em.notifySubscribers(exec.ID, exec)
 		return
 	}
 
 	if err != nil {
+		log.Printf("Execution %s failed with error: %v", exec.ID, err)
 		exec.Update(StateError, "", err.Error(), 1)
 	} else if result == nil {
+		log.Printf("Execution %s: No result returned", exec.ID)
 		exec.Update(StateError, "", "No result returned from execution", 1)
 	} else if result.Error != "" {
+		log.Printf("Execution %s completed with error: %s", exec.ID, result.Error)
 		exec.UpdateWithMetrics(StateError, result.Output, result.Error, result.ExitCode, result.Metrics)
 	} else {
+		log.Printf("Execution %s completed successfully", exec.ID)
 		exec.UpdateWithMetrics(StateComplete, result.Output, "", result.ExitCode, result.Metrics)
 	}
 

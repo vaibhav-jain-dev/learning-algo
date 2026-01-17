@@ -355,8 +355,14 @@ func (h *Handlers) Execute(c *fiber.Ctx) error {
 		}, "")
 	}
 
+	// Set timeout based on language (Go needs more time for compilation)
+	timeout := 20 * time.Second
+	if language == "go" || language == "golang" {
+		timeout = 45 * time.Second
+	}
+
 	// For HTMX fallback (non-WebSocket), do synchronous execution
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	var result *kernel.ExecutionResult
