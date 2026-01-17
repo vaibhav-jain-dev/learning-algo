@@ -1,0 +1,759 @@
+<div class="practice-page">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>200 Problems</h2>
+            <input type="search" id="search" placeholder="Search problems..."
+                   onkeyup="filterTree(this.value)">
+        </div>
+        <div id="problem-tree" hx-get="/htmx/200-problems-tree" hx-trigger="load" hx-swap="innerHTML">
+            <div class="loading">Loading problems...</div>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="tabs">
+            <button class="tab" onclick="showTab('description')">Description</button>
+            <button class="tab active" onclick="showTab('code')">Code</button>
+            <button class="tab" onclick="showTab('output')">Output</button>
+        </div>
+
+        <div id="description-tab" class="tab-content">
+            <div id="problem-description">
+                <div class="placeholder">
+                    <h2>200 Must Solve Problems</h2>
+                    <p>Select a problem from the sidebar to get started.</p>
+                    <p>Each problem includes:</p>
+                    <ul style="text-align: left; display: inline-block;">
+                        <li>Problem description with examples</li>
+                        <li>Hints and approach</li>
+                        <li>Python & Go solutions</li>
+                        <li>3 similar problems for practice</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="code-tab" class="tab-content active">
+            <div class="editor-header">
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="python" onclick="setLanguage('python')">Python</button>
+                    <button class="lang-btn" data-lang="go" onclick="setLanguage('go')">Go</button>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="formatCode()" title="Format Code">
+                        Format
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetCode()">Reset</button>
+                    <button id="stop-btn" class="btn btn-danger hidden" onclick="stopExecution()">
+                        Stop
+                    </button>
+                    <button id="run-btn" class="btn btn-primary" onclick="runCode()">
+                        <span class="run-icon">▶</span> Run
+                    </button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <textarea id="code-editor-fallback" style="display:none;"></textarea>
+                <div id="code-editor-wrapper"></div>
+            </div>
+        </div>
+
+        <div id="output-tab" class="tab-content">
+            <div id="output-container">
+                <div class="placeholder">
+                    <p>Run your code to see output here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // State management - unique key for 200 problems
+    const STATE_KEY = 'dsalgo_200_problems_state';
+    let currentLanguage = 'python';
+    let originalCode = { python: '', go: '' };
+    let currentCode = { python: '', go: '' };
+    let ws = null;
+    let currentExecutionId = null;
+    let isRunning = false;
+    let editor = null;
+    let editorInitialized = false;
+
+    // Default code templates
+    function getDefaultCode(lang) {
+        if (lang === 'python') {
+            return `def solution():
+    # Write your solution here
+    # Test with the examples provided
+    result = []
+    print(result)
+    return result
+
+if __name__ == "__main__":
+    solution()`;
+        } else {
+            return `package main
+
+import "fmt"
+
+func solution() {
+    // Write your solution here
+    // Test with the examples provided
+    result := []int{}
+    fmt.Println(result)
+}
+
+func main() {
+    solution()
+}`;
+        }
+    }
+
+    // Python and Go Autocomplete Hints
+    const pythonKeywords = [
+        'def', 'class', 'if', 'elif', 'else', 'for', 'while', 'break', 'continue',
+        'return', 'import', 'from', 'as', 'try', 'except', 'finally', 'raise',
+        'with', 'pass', 'lambda', 'yield', 'assert', 'del', 'global', 'nonlocal',
+        'True', 'False', 'None', 'and', 'or', 'not', 'in', 'is'
+    ];
+
+    const pythonBuiltins = [
+        'print', 'len', 'range', 'enumerate', 'zip', 'map', 'filter', 'sorted',
+        'sum', 'max', 'min', 'abs', 'round', 'int', 'float', 'str', 'list', 'dict',
+        'set', 'tuple', 'append', 'extend', 'insert', 'remove', 'pop', 'clear',
+        'keys', 'values', 'items', 'get', 'update', 'join', 'split', 'strip',
+        'startswith', 'endswith', 'find', 'replace', 'upper', 'lower', 'capitalize',
+        'sort', 'reverse', 'copy', 'count', 'index', 'isinstance', 'type',
+        'heapq', 'collections', 'deque', 'defaultdict', 'Counter', 'bisect'
+    ];
+
+    const goKeywords = [
+        'package', 'import', 'func', 'const', 'var', 'type', 'struct', 'interface',
+        'if', 'else', 'for', 'switch', 'case', 'default', 'break', 'continue',
+        'return', 'defer', 'go', 'chan', 'select', 'map', 'range', 'fallthrough',
+        'true', 'false', 'iota', 'nil', 'init', 'main'
+    ];
+
+    const goBuiltins = [
+        'fmt.Print', 'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'make', 'new', 'len',
+        'cap', 'copy', 'append', 'delete', 'complex', 'real', 'imag', 'close',
+        'panic', 'recover', 'math.Max', 'math.Min', 'math.Sqrt', 'sort.Ints',
+        'sort.Strings', 'strings.Split', 'strings.Join', 'strconv.Atoi', 'strconv.Itoa'
+    ];
+
+    // Register Python hint helper
+    CodeMirror.registerHelper('hint', 'python-200', function(editor) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const start = token.start;
+        const end = cur.ch;
+        const word = token.string;
+        const lowerWord = word.toLowerCase();
+
+        let hints = [];
+        hints = hints.concat(
+            pythonKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+        hints = hints.concat(
+            pythonBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+        if (hints.length === 0) return null;
+
+        return {
+            from: CodeMirror.Pos(cur.line, start),
+            to: CodeMirror.Pos(cur.line, end),
+            list: hints.slice(0, 15)
+        };
+    });
+
+    // Register Go hint helper
+    CodeMirror.registerHelper('hint', 'go-200', function(editor) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const start = token.start;
+        const end = cur.ch;
+        const word = token.string;
+        const lowerWord = word.toLowerCase();
+
+        let hints = [];
+        hints = hints.concat(
+            goKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+        hints = hints.concat(
+            goBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+        if (hints.length === 0) return null;
+
+        return {
+            from: CodeMirror.Pos(cur.line, start),
+            to: CodeMirror.Pos(cur.line, end),
+            list: hints.slice(0, 15)
+        };
+    });
+
+    // Initialize CodeMirror
+    function initEditor() {
+        if (editorInitialized) return;
+
+        const wrapper = document.getElementById('code-editor-wrapper');
+        if (!wrapper) return;
+
+        if (typeof CodeMirror === 'undefined') {
+            console.error('CodeMirror not loaded, using fallback textarea');
+            useFallbackEditor();
+            return;
+        }
+
+        try {
+            editor = CodeMirror(wrapper, {
+                value: getDefaultCode('python'),
+                mode: 'python',
+                theme: 'eclipse',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                extraKeys: {
+                    'Tab': function(cm) {
+                        if (cm.somethingSelected()) {
+                            cm.indentSelection('add');
+                        } else {
+                            cm.replaceSelection('    ', 'end', '+input');
+                        }
+                    },
+                    'Shift-Tab': function(cm) {
+                        cm.indentSelection('subtract');
+                    },
+                    'Ctrl-Enter': function() { runCode(); },
+                    'Cmd-Enter': function() { runCode(); },
+                    'Ctrl-S': function() { formatCode(); return false; },
+                    'Cmd-S': function() { formatCode(); return false; },
+                    'Ctrl-Space': 'autocomplete'
+                }
+            });
+
+            editor.setSize('100%', '100%');
+            editor.on('change', function() {
+                currentCode[currentLanguage] = editor.getValue();
+            });
+
+            let hintTimeout = null;
+            editor.on('inputRead', function(instance, changeObj) {
+                if (changeObj.origin !== 'complete' && /^[\w.]/.test(changeObj.text[0])) {
+                    clearTimeout(hintTimeout);
+                    hintTimeout = setTimeout(function() {
+                        const hintType = currentLanguage === 'python' ? 'python-200' : 'go-200';
+                        instance.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                    }, 200);
+                }
+            });
+
+            window.editor = editor;
+            editorInitialized = true;
+            currentCode.python = getDefaultCode('python');
+            currentCode.go = getDefaultCode('go');
+
+            setTimeout(function() {
+                if (editor) editor.refresh();
+            }, 100);
+
+        } catch (e) {
+            console.error('Failed to initialize CodeMirror:', e);
+            useFallbackEditor();
+        }
+    }
+
+    function useFallbackEditor() {
+        const wrapper = document.getElementById('code-editor-wrapper');
+        const fallback = document.getElementById('code-editor-fallback');
+        if (wrapper) wrapper.style.display = 'none';
+        if (fallback) {
+            fallback.style.display = 'block';
+            fallback.value = getDefaultCode('python');
+            fallback.style.width = '100%';
+            fallback.style.height = '100%';
+            fallback.style.fontFamily = 'monospace';
+            fallback.style.fontSize = '14px';
+            fallback.style.padding = '1rem';
+            fallback.style.border = 'none';
+            fallback.style.resize = 'none';
+            fallback.style.backgroundColor = '#f5f5f5';
+            fallback.style.color = '#333';
+        }
+        currentCode.python = getDefaultCode('python');
+        currentCode.go = getDefaultCode('go');
+        editorInitialized = true;
+    }
+
+    function getCode() {
+        if (editor) {
+            return editor.getValue();
+        }
+        const fallback = document.getElementById('code-editor-fallback');
+        return fallback ? fallback.value : '';
+    }
+
+    function setCode(code) {
+        if (editor) {
+            editor.setValue(code);
+        } else {
+            const fallback = document.getElementById('code-editor-fallback');
+            if (fallback) fallback.value = code;
+        }
+    }
+
+    window.formatCode = function() {
+        if (isRunning) return;
+
+        const code = getCode();
+        let formatted = code;
+
+        if (currentLanguage === 'python') {
+            formatted = formatPython(code);
+        } else if (currentLanguage === 'go') {
+            formatted = formatGo(code);
+        }
+
+        setCode(formatted);
+    };
+
+    function formatPython(code) {
+        const lines = code.split('\n');
+        let formatted = [];
+        let indentLevel = 0;
+        const indentSize = 4;
+
+        for (let line of lines) {
+            let trimmed = line.trim();
+
+            if (trimmed.startsWith('elif ') || trimmed.startsWith('else:') ||
+                trimmed.startsWith('except') || trimmed.startsWith('finally:')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+
+            if (trimmed) {
+                formatted.push(' '.repeat(indentLevel * indentSize) + trimmed);
+            } else {
+                formatted.push('');
+            }
+
+            if (trimmed.endsWith(':') && !trimmed.startsWith('#')) {
+                indentLevel++;
+            }
+        }
+
+        return formatted.join('\n');
+    }
+
+    function formatGo(code) {
+        const lines = code.split('\n');
+        let formatted = [];
+        let indentLevel = 0;
+
+        for (let line of lines) {
+            let trimmed = line.trim();
+
+            if (trimmed.startsWith('}') || trimmed.startsWith(')')) {
+                indentLevel = Math.max(0, indentLevel - 1);
+            }
+
+            if (trimmed) {
+                formatted.push('\t'.repeat(indentLevel) + trimmed);
+            } else {
+                formatted.push('');
+            }
+
+            if (trimmed.endsWith('{') || trimmed.endsWith('(')) {
+                indentLevel++;
+            }
+        }
+
+        return formatted.join('\n');
+    }
+
+    function connectWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(protocol + '//' + window.location.host + '/ws/execute');
+
+        ws.onopen = function() {
+            console.log('WebSocket connected');
+            const savedState = loadState();
+            if (savedState && savedState.id && savedState.state === 'running') {
+                reconnectToExecution(savedState.id);
+            }
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            handleExecutionUpdate(data);
+        };
+
+        ws.onclose = function() {
+            console.log('WebSocket disconnected, reconnecting...');
+            setTimeout(connectWebSocket, 2000);
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+    }
+
+    function handleExecutionUpdate(data) {
+        const outputContainer = document.getElementById('output-container');
+        if (!outputContainer) return;
+
+        switch (data.type) {
+            case 'started':
+                currentExecutionId = data.id;
+                setRunningState(true);
+                saveState({ id: data.id, state: 'running' });
+                outputContainer.innerHTML = renderLoading(data.id);
+                break;
+
+            case 'update':
+                if (data.state === 'running') {
+                    outputContainer.innerHTML = renderLoading(data.id);
+                } else {
+                    setRunningState(false);
+                    outputContainer.innerHTML = renderOutput(data);
+                    saveState({ id: data.id, state: data.state });
+                }
+                break;
+
+            case 'stopped':
+                setRunningState(false);
+                outputContainer.innerHTML = renderOutput({
+                    state: 'stopped',
+                    error: 'Execution stopped by user'
+                });
+                clearState();
+                break;
+
+            case 'error':
+                setRunningState(false);
+                outputContainer.innerHTML = renderOutput({
+                    state: 'error',
+                    error: data.error
+                });
+                clearState();
+                break;
+        }
+    }
+
+    function renderLoading(id) {
+        return '<div class="output-loading">' +
+            '<div class="output-header">' +
+            '<span class="loading-spinner"></span>' +
+            '<span class="status-text">Running...</span>' +
+            '</div>' +
+            '<div class="loading-info">' +
+            '<p>Execution ID: ' + id + '</p>' +
+            '</div></div>';
+    }
+
+    function renderOutput(data) {
+        const isError = data.state === 'error' || data.state === 'stopped' || data.error;
+        const statusIcon = isError ? '✗' : '✓';
+        const statusText = isError ? 'Error' : 'Success';
+        const statusClass = isError ? 'output-error' : 'output-success';
+
+        let output = data.output || '';
+        let error = data.error || '';
+        let duration = data.duration || 0;
+        let metrics = data.metrics || null;
+
+        let html = '<div class="output-result ' + (isError ? 'has-error' : '') + '">' +
+            '<div class="' + statusClass + '">' +
+            '<div class="output-header">' +
+            '<span class="status-icon">' + statusIcon + '</span>' +
+            '<span class="status-text">' + statusText + '</span>';
+
+        if (duration) {
+            html += '<span class="duration">' + duration + 'ms</span>';
+        }
+
+        html += '</div>';
+
+        if (error) {
+            html += '<pre class="error-output">' + escapeHtml(error) + '</pre>';
+        }
+        if (output) {
+            html += '<pre class="success-output">' + escapeHtml(output) + '</pre>';
+        } else if (!error) {
+            html += '<pre class="success-output">(no output)</pre>';
+        }
+
+        if (metrics && !isError) {
+            var isGoMetrics = metrics.memory_current === 0 && metrics.memory_peak === 0;
+
+            html += '<div class="execution-metrics">' +
+                '<div class="metrics-header">Performance Metrics</div>' +
+                '<div class="metrics-grid">';
+
+            if (isGoMetrics) {
+                html += '<div class="metric">' +
+                    '<span class="metric-label">Run Time:</span>' +
+                    '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">' + (metrics.memory_fmt || 'Compile: 0ms') + '</span>' +
+                    '</div>';
+            } else {
+                html += '<div class="metric">' +
+                    '<span class="metric-label">Execution Time:</span>' +
+                    '<span class="metric-value">' + (metrics.time_ms || 0).toFixed(2) + 'ms</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">Memory Used:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_fmt || metrics.memory_current_fmt || '0 B') + '</span>' +
+                    '</div>' +
+                    '<div class="metric">' +
+                    '<span class="metric-label">Peak Memory:</span>' +
+                    '<span class="metric-value">' + (metrics.memory_peak_fmt || '0 B') + '</span>' +
+                    '</div>';
+            }
+
+            html += '</div></div>';
+        }
+
+        html += '</div></div>';
+        return html;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function setRunningState(running) {
+        isRunning = running;
+        const runBtn = document.getElementById('run-btn');
+        const stopBtn = document.getElementById('stop-btn');
+
+        if (running) {
+            if (runBtn) {
+                runBtn.disabled = true;
+                runBtn.classList.add('disabled');
+            }
+            if (stopBtn) stopBtn.classList.remove('hidden');
+            if (editor) editor.setOption('readOnly', true);
+        } else {
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.classList.remove('disabled');
+            }
+            if (stopBtn) stopBtn.classList.add('hidden');
+            if (editor) editor.setOption('readOnly', false);
+            currentExecutionId = null;
+        }
+    }
+
+    window.runCode = function() {
+        if (isRunning) return;
+
+        const code = getCode();
+        currentCode[currentLanguage] = code;
+
+        if (!code.trim()) {
+            document.getElementById('output-container').innerHTML = renderOutput({
+                state: 'error',
+                error: 'No code provided'
+            });
+            showTab('output');
+            return;
+        }
+
+        showTab('output');
+        document.getElementById('output-container').innerHTML = '<div class="loading">Connecting...</div>';
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                action: 'execute',
+                code: code,
+                language: currentLanguage
+            }));
+        } else {
+            htmx.ajax('POST', '/htmx/execute', {
+                target: '#output-container',
+                swap: 'innerHTML',
+                values: { code: code, language: currentLanguage }
+            });
+        }
+    };
+
+    window.stopExecution = function() {
+        if (!currentExecutionId) return;
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                action: 'stop',
+                id: currentExecutionId
+            }));
+        }
+    };
+
+    function reconnectToExecution(id) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            setRunningState(true);
+            showTab('output');
+            document.getElementById('output-container').innerHTML = renderLoading(id);
+            currentExecutionId = id;
+
+            ws.send(JSON.stringify({
+                action: 'reconnect',
+                id: id
+            }));
+        }
+    }
+
+    function saveState(state) {
+        try {
+            localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            const state = localStorage.getItem(STATE_KEY);
+            return state ? JSON.parse(state) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function clearState() {
+        try {
+            localStorage.removeItem(STATE_KEY);
+        } catch (e) {}
+    }
+
+    window.showTab = function(tabName) {
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+
+        var tabContent = document.getElementById(tabName + '-tab');
+        if (tabContent) tabContent.classList.add('active');
+
+        document.querySelectorAll('.tab').forEach(function(t) {
+            if (t.getAttribute('onclick') && t.getAttribute('onclick').indexOf(tabName) !== -1) {
+                t.classList.add('active');
+            }
+        });
+
+        if (tabName === 'code' && editor) {
+            setTimeout(function() { editor.refresh(); }, 10);
+        }
+    };
+
+    window.setLanguage = function(lang) {
+        if (isRunning) return;
+
+        currentCode[currentLanguage] = getCode();
+        currentLanguage = lang;
+
+        document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+        var langBtn = document.querySelector('.lang-btn[data-lang="' + lang + '"]');
+        if (langBtn) langBtn.classList.add('active');
+
+        if (editor) {
+            var mode = lang === 'go' ? 'text/x-go' : 'python';
+            editor.setOption('mode', mode);
+        }
+
+        setCode(currentCode[lang] || originalCode[lang] || getDefaultCode(lang));
+    };
+
+    window.resetCode = function() {
+        if (isRunning) return;
+        var code = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
+        setCode(code);
+        currentCode[currentLanguage] = code;
+    };
+
+    // Load problem - uses 200-problems specific endpoint
+    window.loadProblem = function(path) {
+        history.pushState({ problem: path }, '', '/200-problems?problem=' + encodeURIComponent(path));
+
+        htmx.ajax('GET', '/htmx/200-problem-content/' + path, {
+            target: '#problem-description',
+            swap: 'innerHTML'
+        }).then(function() {
+            showTab('description');
+        });
+    };
+
+    function loadProblemFromURL() {
+        var params = new URLSearchParams(window.location.search);
+        var problem = params.get('problem');
+        if (problem) {
+            loadProblem(problem);
+        }
+    }
+
+    window.loadProblemCode = function(pythonCode, goCode) {
+        if (isRunning) return;
+        originalCode.python = pythonCode || getDefaultCode('python');
+        originalCode.go = goCode || getDefaultCode('go');
+        currentCode.python = originalCode.python;
+        currentCode.go = originalCode.go;
+
+        setCode(currentCode[currentLanguage]);
+        showTab('code');
+    };
+
+    window.filterTree = function(query) {
+        var tree = document.getElementById('problem-tree');
+        if (!tree) return;
+
+        var items = tree.querySelectorAll('.tree-item');
+        var folders = tree.querySelectorAll('.tree-folder');
+        query = query.toLowerCase();
+
+        items.forEach(function(item) {
+            var text = item.textContent.toLowerCase();
+            item.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+        });
+
+        folders.forEach(function(folder) {
+            var hasVisible = folder.querySelector('.tree-item:not([style*="display: none"])');
+            folder.style.display = hasVisible ? '' : 'none';
+        });
+    };
+
+    // Initialize
+    initEditor();
+    connectWebSocket();
+    loadProblemFromURL();
+
+    window.onpopstate = function(event) {
+        if (event.state && event.state.problem) {
+            loadProblem(event.state.problem);
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!editorInitialized) initEditor();
+            loadProblemFromURL();
+        });
+    }
+
+    document.body.addEventListener('htmx:afterSettle', function() {
+        if (!editorInitialized) initEditor();
+        if (editor) editor.refresh();
+    });
+})();
+</script>

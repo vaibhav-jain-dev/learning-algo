@@ -69,7 +69,7 @@ func (h *Handlers) Practice(c *fiber.Ctx) error {
 	})
 }
 
-// MustSolveProblems renders the 200 must solve problems page
+// MustSolveProblems renders the 200 must solve problems page (topic overview)
 func (h *Handlers) MustSolveProblems(c *fiber.Ctx) error {
 	category := h.topicIndexer.GetCategory("must-solve-problems")
 	return c.Render("pages/must-solve-problems", fiber.Map{
@@ -77,6 +77,146 @@ func (h *Handlers) MustSolveProblems(c *fiber.Ctx) error {
 		"Category":     category,
 		"CategorySlug": "must-solve-problems",
 	})
+}
+
+// TwoHundredProblems renders the dedicated 200 problems practice page
+func (h *Handlers) TwoHundredProblems(c *fiber.Ctx) error {
+	return c.Render("pages/200-problems", fiber.Map{
+		"Title": "200 Must Solve Problems - Practice",
+	})
+}
+
+// TwoHundredProblemsTree returns HTMX partial for 200 problems tree
+func (h *Handlers) TwoHundredProblemsTree(c *fiber.Ctx) error {
+	tree := h.buildProblemTreeFrom("./problems/200-must-solve")
+	return c.Render("partials/problem-tree", fiber.Map{
+		"Tree": tree,
+	}, "")
+}
+
+// TwoHundredProblemContent returns HTMX partial for 200 problem content
+func (h *Handlers) TwoHundredProblemContent(c *fiber.Ctx) error {
+	path := c.Params("*")
+	if path == "" {
+		return c.Status(400).SendString("path required")
+	}
+
+	fullPath := filepath.Join("./problems/200-must-solve", path)
+
+	mdPath := filepath.Join(fullPath, "problem.md")
+	mdContent, err := os.ReadFile(mdPath)
+	if err != nil {
+		return c.Status(404).SendString("problem not found")
+	}
+
+	var buf bytes.Buffer
+	if err := h.md.Convert(mdContent, &buf); err != nil {
+		return c.Status(500).SendString("failed to parse markdown")
+	}
+
+	pythonPath := filepath.Join(fullPath, "python_code.py")
+	pythonCode, _ := os.ReadFile(pythonPath)
+
+	goPath := filepath.Join(fullPath, "golang_code.go")
+	goCode, _ := os.ReadFile(goPath)
+
+	return c.Render("partials/problem-content", fiber.Map{
+		"Description": buf.String(),
+		"PythonCode":  string(pythonCode),
+		"GolangCode":  string(goCode),
+		"Path":        path,
+	}, "")
+}
+
+// buildProblemTreeFrom builds problem tree from a specific directory
+func (h *Handlers) buildProblemTreeFrom(dir string) []*models.TreeNode {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil
+	}
+
+	var nodes []*models.TreeNode
+
+	for _, entry := range entries {
+		if !entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
+		path := filepath.Join(dir, entry.Name())
+		relPath, _ := filepath.Rel(dir, path)
+
+		if _, err := os.Stat(filepath.Join(path, "problem.md")); err == nil {
+			title := h.getProblemTitle(filepath.Join(path, "problem.md"))
+			nodes = append(nodes, &models.TreeNode{
+				Name: title,
+				Type: "problem",
+				Path: relPath,
+			})
+		} else {
+			children := h.buildProblemTreeFromRecursive(path, dir)
+			if len(children) > 0 {
+				nodes = append(nodes, &models.TreeNode{
+					Name:     formatName(entry.Name()),
+					Type:     "folder",
+					Children: children,
+				})
+			}
+		}
+	}
+
+	sort.Slice(nodes, func(i, j int) bool {
+		if nodes[i].Type != nodes[j].Type {
+			return nodes[i].Type == "folder"
+		}
+		return nodes[i].Name < nodes[j].Name
+	})
+
+	return nodes
+}
+
+func (h *Handlers) buildProblemTreeFromRecursive(dir, baseDir string) []*models.TreeNode {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil
+	}
+
+	var nodes []*models.TreeNode
+
+	for _, entry := range entries {
+		if !entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
+		path := filepath.Join(dir, entry.Name())
+		relPath, _ := filepath.Rel(baseDir, path)
+
+		if _, err := os.Stat(filepath.Join(path, "problem.md")); err == nil {
+			title := h.getProblemTitle(filepath.Join(path, "problem.md"))
+			nodes = append(nodes, &models.TreeNode{
+				Name: title,
+				Type: "problem",
+				Path: relPath,
+			})
+		} else {
+			children := h.buildProblemTreeFromRecursive(path, baseDir)
+			if len(children) > 0 {
+				nodes = append(nodes, &models.TreeNode{
+					Name:     formatName(entry.Name()),
+					Type:     "folder",
+					Children: children,
+				})
+			}
+		}
+	}
+
+	sort.Slice(nodes, func(i, j int) bool {
+		if nodes[i].Type != nodes[j].Type {
+			return nodes[i].Type == "folder"
+		}
+		return nodes[i].Name < nodes[j].Name
+	})
+
+	return nodes
 }
 
 // SystemDesign renders the system design page
