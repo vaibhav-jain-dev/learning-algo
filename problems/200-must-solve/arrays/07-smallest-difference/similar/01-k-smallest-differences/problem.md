@@ -88,25 +88,66 @@ This is a classic **"K Smallest in Sorted Matrix"** variant:
 
 ## Visual Diagram: How Min-Heap Works
 
-```
-arr1 = [1, 3, 5], arr2 = [2, 4]
+### Input
 
-Difference Matrix:
-         arr2[0]=2  arr2[1]=4
-arr1[0]=1    1         3
-arr1[1]=3    1         1
-arr1[2]=5    3         1
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>arr1 = [1, 3, 5]</code><br>
+<code>arr2 = [2, 4]</code><br>
+<code>k = 3</code>
+</div>
 
-Min-Heap approach (simplified):
-1. Start with pairs from first elements
-2. Pop smallest, add neighbors
-3. Repeat k times
+### Difference Matrix
 
-Initial heap: [(diff=1, 1, 2), ...]
-Pop (1, 2), add neighbors -> [[1, 2]]
-Pop (3, 2), add neighbors -> [[1, 2], [3, 2]]
-Pop (3, 4), add neighbors -> [[1, 2], [3, 2], [3, 4]]
-```
+<table style="border-collapse: collapse; margin: 20px 0; font-family: monospace;">
+<tr style="background: #e9ecef;">
+<th style="border: 1px solid #dee2e6; padding: 10px;"></th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">arr2[0]=2</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">arr2[1]=4</th>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">arr1[0]=1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">arr1[1]=3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">arr1[2]=5</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+</tr>
+</table>
+
+### Min-Heap Steps
+
+**Step 1:** Initialize heap with first column candidates
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">Heap: [(diff=1, 1, 2)]</span>
+</div>
+
+**Step 2:** Pop (1, 2), add to result, push neighbor (1, 4)
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">Result: [[1, 2]]</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">Heap: [(diff=1, 3, 2), (diff=3, 1, 4)]</span>
+</div>
+
+**Step 3:** Pop (3, 2), add to result, push neighbor (3, 4)
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">Result: [[1, 2], [3, 2]]</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">Heap: [(diff=1, 3, 4), (diff=3, 1, 4)]</span>
+</div>
+
+**Step 4:** Pop (3, 4), add to result
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+<strong>Final Result: [[1, 2], [3, 2], [3, 4]]</strong> (k=3 pairs found)
+</div>
 
 ---
 

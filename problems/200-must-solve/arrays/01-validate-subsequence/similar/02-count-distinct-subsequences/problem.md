@@ -67,90 +67,175 @@ Else:
 
 ---
 
-## 📊 Visual Diagram: How It Works
+## Visual Diagram: How It Works
 
-<details>
-<summary><strong>Click to see step-by-step visualization</strong></summary>
+### Input
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    COUNT DISTINCT SUBSEQUENCES VISUALIZATION                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  s = "rabbbit"                                                               │
-│  t = "rabbit"                                                                │
-│                                                                              │
-│  Building the DP Table (dp[i][j] = ways to form t[0:j] from s[0:i]):        │
-│                                                                              │
-│           ""    r    a    b    b    i    t                                   │
-│        ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┐                          │
-│   ""   │  1  │  0  │  0  │  0  │  0  │  0  │  0  │  ← Empty s can only     │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤    form empty t          │
-│   r    │  1  │  1  │  0  │  0  │  0  │  0  │  0  │  ← 'r' matches 'r'      │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   a    │  1  │  1  │  1  │  0  │  0  │  0  │  0  │  ← 'a' matches 'a'      │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   b    │  1  │  1  │  1  │  1  │  0  │  0  │  0  │  ← first 'b' match      │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   b    │  1  │  1  │  1  │  2  │  1  │  0  │  0  │  ← second 'b': 2 ways!  │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   b    │  1  │  1  │  1  │  3  │  3  │  0  │  0  │  ← third 'b': 3 ways!   │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   i    │  1  │  1  │  1  │  3  │  3  │  3  │  0  │  ← 'i' matches 'i'      │
-│        ├─────┼─────┼─────┼─────┼─────┼─────┼─────┤                          │
-│   t    │  1  │  1  │  1  │  3  │  3  │  3  │  3  │  ← 't' matches 't' ✓   │
-│        └─────┴─────┴─────┴─────┴─────┴─────┴─────┘                          │
-│                                                                              │
-│  Answer: dp[7][6] = 3 ways                                                   │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                         KEY INSIGHT: THE THREE B's                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  s = "r a b₁ b₂ b₃ i t"                                                     │
-│  t = "r a b  b  i  t"                                                        │
-│                                                                              │
-│  Three ways to pick two b's from three b's:                                  │
-│                                                                              │
-│  Way 1: Use b₁ and b₂                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  s: [ r ][ a ][►b₁][►b₂][ b₃][ i ][ t ]                            │   │
-│  │  t: [ r ][ a ][►b ][►b ][ i ][ t ]                                  │   │
-│  │  Match: r-a-b₁-b₂-i-t                                                │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-│  Way 2: Use b₁ and b₃                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  s: [ r ][ a ][►b₁][ b₂][►b₃][ i ][ t ]                            │   │
-│  │  t: [ r ][ a ][►b ][►b ][ i ][ t ]                                  │   │
-│  │  Match: r-a-b₁-b₃-i-t                                                │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-│  Way 3: Use b₂ and b₃                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  s: [ r ][ a ][ b₁][►b₂][►b₃][ i ][ t ]                            │   │
-│  │  t: [ r ][ a ][►b ][►b ][ i ][ t ]                                  │   │
-│  │  Match: r-a-b₂-b₃-i-t                                                │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                         WHY dp[5][4] = 3?                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  At s[4]='b₃' and t[3]='b' (second 'b' in target):                         │
-│                                                                              │
-│  dp[5][4] = dp[4][3] + dp[4][4]                                             │
-│           = (use b₃)  + (skip b₃)                                           │
-│           =    2      +    1                                                 │
-│           =    3                                                             │
-│                                                                              │
-│  The 2 comes from: ways to form "rab" using "rabbb" before this b           │
-│  The 1 comes from: ways to form "rabb" using "rabb" before this b           │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>s = "rabbbit"</code><br>
+<code>t = "rabbit"</code>
+</div>
 
-</details>
+### DP Table Construction
+
+The table shows `dp[i][j]` = number of ways to form `t[0:j]` from `s[0:i]`:
+
+<table style="border-collapse: collapse; margin: 20px 0; font-family: monospace;">
+<tr style="background: #e9ecef;">
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;"></th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">""</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">r</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">a</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">b</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">b</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">i</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">t</th>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">""</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">r</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">a</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">b</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">b</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #fff3cd; color: #856404;"><strong>2</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">b</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #fff3cd; color: #856404;"><strong>3</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #fff3cd; color: #856404;"><strong>3</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">i</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>3</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">t</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>3</strong></td>
+</tr>
+</table>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+<strong>Answer:</strong> dp[7][6] = 3 ways to form "rabbit" from "rabbbit"
+</div>
+
+---
+
+### Key Insight: The Three B's
+
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>s = "r a b1 b2 b3 i t"</code><br>
+<code>t = "r a b  b  i  t"</code>
+</div>
+
+**Three ways to pick two b's from three b's:**
+
+**Way 1:** Use b1 and b2
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">r</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b1</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b2</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b3</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">i</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">t</span>
+</div>
+
+**Way 2:** Use b1 and b3
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">r</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b1</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b2</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b3</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">i</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">t</span>
+</div>
+
+**Way 3:** Use b2 and b3
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">r</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b1</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b2</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">b3</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">i</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">t</span>
+</div>
+
+---
+
+### Why dp[5][4] = 3?
+
+<div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 10px 0;">
+At s[4]='b3' and t[3]='b' (second 'b' in target):<br><br>
+<code>dp[5][4] = dp[4][3] + dp[4][4]</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (use b3) + (skip b3)</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 2 + 1 = 3</code>
+</div>
+
+---
 
 ---
 
