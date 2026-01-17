@@ -8,22 +8,56 @@ Event Sourcing is an architectural pattern where application state is stored as 
 
 ### Traditional vs Event Sourcing
 
-```
-Traditional (State-based):
-┌─────────────────────────┐
-│ User: { balance: 150 }  │  ← Only current state
-└─────────────────────────┘
-
-Event Sourcing:
-┌─────────────────────────────────────┐
-│ 1. AccountCreated { balance: 0 }   │
-│ 2. MoneyDeposited { amount: 100 }  │
-│ 3. MoneyDeposited { amount: 100 }  │
-│ 4. MoneyWithdrawn { amount: 50 }   │
-└─────────────────────────────────────┘
-           ↓ Replay
-   Current balance: 150
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #30363d;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #8b949e; border-radius: 50%;"></div>
+      <span style="color: #c9d1d9; font-weight: 600; font-size: 16px;">Traditional (State-based)</span>
+    </div>
+    <div style="background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 14px; text-align: center;">
+      <span style="color: #c9d1d9;">User: { </span><span style="color: #58a6ff;">balance</span><span style="color: #c9d1d9;">: </span><span style="color: #7ee787;">150</span><span style="color: #c9d1d9;"> }</span>
+    </div>
+    <div style="text-align: center; margin-top: 16px; color: #8b949e; font-size: 13px;">
+      Only current state stored
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #58a6ff33;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #58a6ff; border-radius: 50%;"></div>
+      <span style="color: #58a6ff; font-weight: 600; font-size: 16px;">Event Sourcing</span>
+    </div>
+    <div style="background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px;">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #30363d;">
+        <span style="color: #8b949e;">1.</span>
+        <span style="color: #d2a8ff;">AccountCreated</span>
+        <span style="color: #8b949e;">{ balance: </span><span style="color: #7ee787;">0</span><span style="color: #8b949e;"> }</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #30363d;">
+        <span style="color: #8b949e;">2.</span>
+        <span style="color: #7ee787;">MoneyDeposited</span>
+        <span style="color: #8b949e;">{ amount: </span><span style="color: #7ee787;">100</span><span style="color: #8b949e;"> }</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #30363d;">
+        <span style="color: #8b949e;">3.</span>
+        <span style="color: #7ee787;">MoneyDeposited</span>
+        <span style="color: #8b949e;">{ amount: </span><span style="color: #7ee787;">100</span><span style="color: #8b949e;"> }</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
+        <span style="color: #8b949e;">4.</span>
+        <span style="color: #f85149;">MoneyWithdrawn</span>
+        <span style="color: #8b949e;">{ amount: </span><span style="color: #f85149;">50</span><span style="color: #8b949e;"> }</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px;">
+      <span style="color: #58a6ff; font-size: 20px;">|</span>
+      <span style="color: #58a6ff; font-size: 12px;">Replay</span>
+      <span style="color: #58a6ff; font-size: 20px;">v</span>
+    </div>
+    <div style="background: #23863633; border: 1px solid #238636; border-radius: 8px; padding: 12px; text-align: center; margin-top: 12px;">
+      <span style="color: #7ee787; font-weight: 600;">Current balance: 150</span>
+    </div>
+  </div>
+</div>
 
 ### Benefits
 

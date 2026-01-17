@@ -8,27 +8,65 @@ Microservices is an architectural style that structures an application as a coll
 
 ### Monolith vs Microservices
 
-```
-Monolith:
-┌─────────────────────────────────┐
-│  ┌─────┐ ┌─────┐ ┌─────────┐  │
-│  │Users│ │Orders│ │Inventory│  │
-│  └─────┘ └─────┘ └─────────┘  │
-│  ┌──────────────────────────┐  │
-│  │      Shared Database      │  │
-│  └──────────────────────────┘  │
-└─────────────────────────────────┘
-
-Microservices:
-┌────────┐   ┌────────┐   ┌──────────┐
-│ Users  │   │ Orders │   │Inventory │
-│Service │   │Service │   │ Service  │
-└───┬────┘   └───┬────┘   └────┬─────┘
-    │            │              │
-┌───┴───┐   ┌───┴───┐    ┌────┴────┐
-│User DB│   │OrderDB│    │Inv DB   │
-└───────┘   └───────┘    └─────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #30363d;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+      <div style="width: 12px; height: 12px; background: #8b949e; border-radius: 50%;"></div>
+      <span style="color: #c9d1d9; font-weight: 600; font-size: 16px;">Monolith</span>
+    </div>
+    <div style="background: #21262d; border: 2px solid #30363d; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
+        <div style="background: #30363d; padding: 10px 20px; border-radius: 6px; color: #58a6ff; font-size: 13px;">Users</div>
+        <div style="background: #30363d; padding: 10px 20px; border-radius: 6px; color: #d2a8ff; font-size: 13px;">Orders</div>
+        <div style="background: #30363d; padding: 10px 20px; border-radius: 6px; color: #7ee787; font-size: 13px;">Inventory</div>
+      </div>
+      <div style="background: #f0883e33; border: 1px solid #f0883e; padding: 12px; border-radius: 8px; text-align: center;">
+        <span style="color: #f0883e; font-size: 13px;">Shared Database</span>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 16px; color: #8b949e; font-size: 12px;">
+      Tightly coupled, single deployment
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Microservices</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+      <div style="text-align: center;">
+        <div style="background: #58a6ff22; border: 1px solid #58a6ff; padding: 16px 8px; border-radius: 8px; color: #58a6ff; font-size: 12px; margin-bottom: 8px;">
+          Users<br/>Service
+        </div>
+        <div style="color: #8b949e; font-size: 16px;">|</div>
+        <div style="background: #21262d; border: 1px solid #30363d; padding: 10px 8px; border-radius: 6px; color: #8b949e; font-size: 11px; margin-top: 8px;">
+          User DB
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <div style="background: #d2a8ff22; border: 1px solid #d2a8ff; padding: 16px 8px; border-radius: 8px; color: #d2a8ff; font-size: 12px; margin-bottom: 8px;">
+          Orders<br/>Service
+        </div>
+        <div style="color: #8b949e; font-size: 16px;">|</div>
+        <div style="background: #21262d; border: 1px solid #30363d; padding: 10px 8px; border-radius: 6px; color: #8b949e; font-size: 11px; margin-top: 8px;">
+          Order DB
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <div style="background: #7ee78722; border: 1px solid #7ee787; padding: 16px 8px; border-radius: 8px; color: #7ee787; font-size: 12px; margin-bottom: 8px;">
+          Inventory<br/>Service
+        </div>
+        <div style="color: #8b949e; font-size: 16px;">|</div>
+        <div style="background: #21262d; border: 1px solid #30363d; padding: 10px 8px; border-radius: 6px; color: #8b949e; font-size: 11px; margin-top: 8px;">
+          Inv DB
+        </div>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 16px; color: #8b949e; font-size: 12px;">
+      Loosely coupled, independent deployment
+    </div>
+  </div>
+</div>
 
 ### Core Principles
 

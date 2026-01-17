@@ -182,29 +182,97 @@ def add_to_front(node):
 
 ### Part 5: Operation Walkthrough
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
 
-**GET Operation:**
-```
-1. Check HashMap for key
-   ├── Not found → return -1
-   └── Found → get node pointer
-       ├── Remove node from current position (O(1))
-       ├── Add node to front (O(1))
-       └── Return node.value
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
-**PUT Operation:**
-```
-1. Check if key exists in HashMap
-   ├── Exists → Update value, move to front
-   └── Not exists:
-       ├── Check capacity
-       │   └── At capacity → Remove LRU (tail.prev), delete from HashMap
-       ├── Create new node
-       ├── Add to HashMap
-       └── Add to front of list
-```
+<!-- GET Operation -->
+<div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
+<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #238636; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">GET</span>
+Operation Flow
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<!-- Step 1 -->
+<div style="background: #30363d; padding: 12px; border-radius: 8px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">1. Check HashMap for key</div>
+</div>
+
+<!-- Branches -->
+<div style="display: flex; gap: 12px; margin-left: 16px;">
+<!-- Not Found Branch -->
+<div style="flex: 1; position: relative;">
+<div style="position: absolute; left: -12px; top: 0; bottom: 50%; width: 2px; background: #484f58;"></div>
+<div style="position: absolute; left: -12px; top: 50%; width: 12px; height: 2px; background: #484f58;"></div>
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4a2828 100%); padding: 10px; border-radius: 6px; border: 1px solid #f85149;">
+<div style="color: #f85149; font-size: 11px; font-weight: bold;">Not found</div>
+<div style="color: #f0883e; font-size: 10px; margin-top: 4px;">return -1</div>
+</div>
+</div>
+
+<!-- Found Branch -->
+<div style="flex: 2; position: relative;">
+<div style="position: absolute; left: -12px; top: 0; height: 100%; width: 2px; background: #484f58;"></div>
+<div style="position: absolute; left: -12px; top: 12px; width: 12px; height: 2px; background: #484f58;"></div>
+<div style="background: linear-gradient(135deg, #1f3d1f 0%, #284a28 100%); padding: 10px; border-radius: 6px; border: 1px solid #7ee787;">
+<div style="color: #7ee787; font-size: 11px; font-weight: bold;">Found → get node pointer</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-left: 8px; border-left: 2px solid #484f58;">
+<div style="color: #a5d6ff; font-size: 10px;">Remove node from current position <span style="color: #7ee787;">(O(1))</span></div>
+<div style="color: #a5d6ff; font-size: 10px;">Add node to front <span style="color: #7ee787;">(O(1))</span></div>
+<div style="color: #a5d6ff; font-size: 10px;">Return node.value</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PUT Operation -->
+<div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">PUT</span>
+Operation Flow
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<!-- Step 1 -->
+<div style="background: #30363d; padding: 12px; border-radius: 8px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">1. Check if key exists in HashMap</div>
+</div>
+
+<!-- Branches -->
+<div style="display: flex; gap: 12px; margin-left: 16px;">
+<!-- Exists Branch -->
+<div style="flex: 1; position: relative;">
+<div style="position: absolute; left: -12px; top: 0; bottom: 50%; width: 2px; background: #484f58;"></div>
+<div style="position: absolute; left: -12px; top: 50%; width: 12px; height: 2px; background: #484f58;"></div>
+<div style="background: linear-gradient(135deg, #1f3d1f 0%, #284a28 100%); padding: 10px; border-radius: 6px; border: 1px solid #7ee787;">
+<div style="color: #7ee787; font-size: 11px; font-weight: bold;">Exists</div>
+<div style="color: #a5d6ff; font-size: 10px; margin-top: 4px;">Update value, move to front</div>
+</div>
+</div>
+
+<!-- Not Exists Branch -->
+<div style="flex: 2; position: relative;">
+<div style="position: absolute; left: -12px; top: 0; height: 100%; width: 2px; background: #484f58;"></div>
+<div style="position: absolute; left: -12px; top: 12px; width: 12px; height: 2px; background: #484f58;"></div>
+<div style="background: linear-gradient(135deg, #1f2d3d 0%, #283a4a 100%); padding: 10px; border-radius: 6px; border: 1px solid #58a6ff;">
+<div style="color: #58a6ff; font-size: 11px; font-weight: bold;">Not exists</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-left: 8px; border-left: 2px solid #484f58;">
+<div style="color: #f0883e; font-size: 10px;">Check capacity</div>
+<div style="color: #f85149; font-size: 9px; padding-left: 8px; border-left: 1px solid #484f58;">At capacity → Remove LRU (tail.prev), delete from HashMap</div>
+<div style="color: #a5d6ff; font-size: 10px;">Create new node</div>
+<div style="color: #a5d6ff; font-size: 10px;">Add to HashMap</div>
+<div style="color: #a5d6ff; font-size: 10px;">Add to front of list</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
 
 </div>
 

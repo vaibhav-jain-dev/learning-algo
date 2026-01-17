@@ -8,39 +8,43 @@ API design determines how developers interact with your service. Good APIs are i
 
 Think of API design like a restaurant menu:
 
-```
-Bad Menu (Bad API):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Item #47 - $12.99                                              │
-│  Item #48 - $14.99                                              │
-│  (Ask server for details)                                       │
-│                                                                 │
-│  Note: Prices subject to change without notice                  │
-│  Note: Some items unavailable on Tuesdays                       │
-│  Note: See other menu for drinks                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-Good Menu (Good API):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  APPETIZERS                                                     │
-│  ───────────                                                    │
-│  Soup of the Day (V) (GF) ...................... $8.99          │
-│    Today: Tomato basil, served with crusty bread                │
-│                                                                 │
-│  MAINS                                                          │
-│  ─────                                                          │
-│  Grilled Salmon (GF) ........................... $24.99         │
-│    Atlantic salmon, lemon butter, seasonal vegetables           │
-│    Allergens: Fish, Dairy                                       │
-│                                                                 │
-│  (V) = Vegetarian  (GF) = Gluten Free                          │
-│  Prices include tax. Substitutions available on request.        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
+      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Bad Menu (Bad API)</span>
+    </div>
+    <div style="font-family: monospace; color: #8b949e; font-size: 13px; line-height: 1.6;">
+      <div style="color: #8b949e;">Item #47 - $12.99</div>
+      <div style="color: #8b949e;">Item #48 - $14.99</div>
+      <div style="color: #8b949e; font-style: italic;">(Ask server for details)</div>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #30363d;">
+        <div style="color: #f8514999;">Note: Prices subject to change without notice</div>
+        <div style="color: #f8514999;">Note: Some items unavailable on Tuesdays</div>
+        <div style="color: #f8514999;">Note: See other menu for drinks</div>
+      </div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Good Menu (Good API)</span>
+    </div>
+    <div style="font-family: monospace; color: #c9d1d9; font-size: 13px; line-height: 1.6;">
+      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">APPETIZERS</div>
+      <div>Soup of the Day <span style="color: #7ee787;">(V)</span> <span style="color: #7ee787;">(GF)</span> <span style="color: #8b949e;">............</span> $8.99</div>
+      <div style="color: #8b949e; font-size: 12px; margin-left: 12px;">Today: Tomato basil, served with crusty bread</div>
+      <div style="color: #58a6ff; font-weight: 600; margin: 12px 0 8px 0;">MAINS</div>
+      <div>Grilled Salmon <span style="color: #7ee787;">(GF)</span> <span style="color: #8b949e;">............</span> $24.99</div>
+      <div style="color: #8b949e; font-size: 12px; margin-left: 12px;">Atlantic salmon, lemon butter, seasonal vegetables</div>
+      <div style="color: #f8514999; font-size: 12px; margin-left: 12px;">Allergens: Fish, Dairy</div>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #30363d; color: #8b949e; font-size: 12px;">
+        <span style="color: #7ee787;">(V)</span> = Vegetarian  <span style="color: #7ee787;">(GF)</span> = Gluten Free<br/>
+        Prices include tax. Substitutions available on request.
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -320,11 +324,25 @@ def list_posts():
 
 ### The Problem
 
-```
-Client → POST /payments → Server processes → Response lost → Client retries
-                                                              ↓
-                                          Customer charged twice!
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; color: #58a6ff; font-weight: 500;">Client</div>
+    <div style="color: #8b949e;">---></div>
+    <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; color: #c9d1d9;">POST /payments</div>
+    <div style="color: #8b949e;">---></div>
+    <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; color: #7ee787;">Server processes</div>
+    <div style="color: #8b949e;">---></div>
+    <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; color: #f85149; border: 1px solid #f85149;">Response lost</div>
+    <div style="color: #8b949e;">---></div>
+    <div style="background: #21262d; padding: 12px 20px; border-radius: 8px; color: #58a6ff;">Client retries</div>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 20px;">
+    <div style="color: #8b949e; font-size: 24px;">|</div>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 8px;">
+    <div style="background: #f8514933; border: 1px solid #f85149; padding: 16px 24px; border-radius: 8px; color: #f85149; font-weight: 600; font-size: 16px;">Customer charged twice!</div>
+  </div>
+</div>
 
 ### The Solution: Idempotency Keys
 

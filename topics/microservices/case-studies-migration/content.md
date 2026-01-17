@@ -338,126 +338,176 @@ This guide presents detailed case studies of companies that successfully migrate
 
 ## Case Study 4: Shopify (2016-2020)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  CASE STUDY: SHOPIFY'S MODULAR MONOLITH                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TIMELINE: 2016-2020                                                         │
-│  SCALE: Powering 1M+ stores, handling $300B+ GMV                            │
-│                                                                              │
-│  THE DECISION: NOT TO DO MICROSERVICES                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  In 2016, Shopify evaluated microservices and decided against them.  │    │
-│  │                                                                      │    │
-│  │  Reasons:                                                            │    │
-│  │  • Ruby on Rails monolith was working well                           │    │
-│  │  • Team was productive in monolith                                   │    │
-│  │  • Operational complexity of microservices was too high              │    │
-│  │  • Data consistency requirements were strong                         │    │
-│  │                                                                      │    │
-│  │  Instead, they chose: MODULAR MONOLITH                               │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE APPROACH:                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  1. COMPONENT-BASED ARCHITECTURE                                     │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │                                                          │        │    │
-│  │  │                    SHOPIFY MONOLITH                      │        │    │
-│  │  │  ┌────────────────────────────────────────────────────┐ │        │    │
-│  │  │  │                                                     │ │        │    │
-│  │  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │ │        │    │
-│  │  │  │  │  Shop   │ │Checkout │ │ Orders  │ │Products │  │ │        │    │
-│  │  │  │  │Component│ │Component│ │Component│ │Component│  │ │        │    │
-│  │  │  │  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘  │ │        │    │
-│  │  │  │       │           │           │           │        │ │        │    │
-│  │  │  │       │     PUBLIC INTERFACES ONLY       │        │ │        │    │
-│  │  │  │       │           │           │           │        │ │        │    │
-│  │  │  │  ┌────▼───────────▼───────────▼───────────▼────┐  │ │        │    │
-│  │  │  │  │              SHARED DATABASE                 │  │ │        │    │
-│  │  │  │  └──────────────────────────────────────────────┘  │ │        │    │
-│  │  │  │                                                     │ │        │    │
-│  │  │  └─────────────────────────────────────────────────────┘ │        │    │
-│  │  │                                                          │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Components communicate through defined public interfaces          │    │
-│  │  • No reaching into another component's internals                    │    │
-│  │  • Database tables are owned by components                           │    │
-│  │  • Violations are caught by automated tools                          │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PACKWERK: THE ENFORCEMENT TOOL                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Shopify built Packwerk to enforce component boundaries:             │    │
-│  │                                                                      │    │
-│  │  # package.yml in each component                                     │    │
-│  │  enforce_privacy: true                                               │    │
-│  │  enforce_dependencies: true                                          │    │
-│  │                                                                      │    │
-│  │  dependencies:                                                       │    │
-│  │    - shop                   # Can depend on shop component           │    │
-│  │    - products               # Can depend on products component       │    │
-│  │                                                                      │    │
-│  │  public_path: app/public/   # Only this folder is accessible        │    │
-│  │                                                                      │    │
-│  │  CI fails if:                                                        │    │
-│  │  • Code accesses private methods of other components                 │    │
-│  │  • Code depends on undeclared components                             │    │
-│  │  • Circular dependencies are introduced                              │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  SELECTIVE EXTRACTION:                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Some components were extracted as services when it made sense:      │    │
-│  │                                                                      │    │
-│  │  Extracted to service:          Reason:                              │    │
-│  │  ─────────────────────────────────────────────────────               │    │
-│  │  • Storefront Renderer        Different scaling needs                │    │
-│  │  • Identity                   Security isolation                     │    │
-│  │  • Payments                   PCI compliance                         │    │
-│  │  • Analytics                  Different data patterns                │    │
-│  │                                                                      │    │
-│  │  Kept in monolith:                                                   │    │
-│  │  • Shop, Products, Orders, Checkout, Inventory                       │    │
-│  │  • (Core business logic that needs strong consistency)               │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  RESULTS:                                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  • 3M+ lines of Ruby code, well-organized                            │    │
-│  │  • 500+ engineers working productively                               │    │
-│  │  • Handles Black Friday traffic (biggest day of year)                │    │
-│  │  • Fast deployments (multiple per day)                               │    │
-│  │  • Simple debugging (one codebase)                                   │    │
-│  │                                                                      │    │
-│  │  Quote from Shopify:                                                 │    │
-│  │  "The modular monolith gives us the benefits of microservices        │    │
-│  │   (clear boundaries, team ownership) without the costs               │    │
-│  │   (network latency, distributed transactions)"                       │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  KEY LESSONS:                                                                │
-│  • Microservices are not the only path to scaling                           │
-│  • Modular monolith can handle massive scale                                │
-│  • Enforce boundaries with tooling, not just convention                     │
-│  • Extract services selectively based on real needs                         │
-│  • Consistency is easier with shared database                               │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #95bf47; margin: 0 0 8px 0; font-size: 1.4em; text-align: center;">Case Study: Shopify's Modular Monolith</h3>
+  <div style="text-align: center; color: #8b949e; margin-bottom: 24px;">
+    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2016-2020</span>
+    <span style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: 1M+ stores, $300B+ GMV</span>
+  </div>
+
+  <!-- The Decision -->
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">THE DECISION: NOT TO DO MICROSERVICES</h4>
+    <div style="color: #ede9fe; margin-bottom: 16px; font-size: 0.9em;">In 2016, Shopify evaluated microservices and decided against them.</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 14px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">Reasons:</div>
+        <ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.85em;">
+          <li>Ruby on Rails monolith was working well</li>
+          <li>Team was productive in monolith</li>
+          <li>Operational complexity of microservices was too high</li>
+          <li>Data consistency requirements were strong</li>
+        </ul>
+      </div>
+      <div style="background: rgba(126,231,135,0.2); border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center;">
+          <div style="color: #fff; font-size: 0.9em; margin-bottom: 8px;">Instead, they chose:</div>
+          <div style="color: #7ee787; font-size: 1.3em; font-weight: 600;">MODULAR MONOLITH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Component-Based Architecture -->
+  <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #58a6ff;">
+    <h4 style="color: #58a6ff; margin: 0 0 16px 0;">THE APPROACH: COMPONENT-BASED ARCHITECTURE</h4>
+    <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+      <div style="text-align: center; color: #58a6ff; font-weight: 600; margin-bottom: 16px;">SHOPIFY MONOLITH</div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+        <div style="background: #238636; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Shop</div>
+          <div style="color: #d1fae5; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #1f6feb; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Checkout</div>
+          <div style="color: #dbeafe; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #f97316; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Orders</div>
+          <div style="color: #fed7aa; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #8957e5; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Products</div>
+          <div style="color: #ede9fe; font-size: 0.75em;">Component</div>
+        </div>
+      </div>
+      <div style="text-align: center; color: #8b949e; font-size: 0.85em; margin-bottom: 12px;">| PUBLIC INTERFACES ONLY |</div>
+      <div style="background: #95bf47; border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="color: #fff; font-weight: 600;">SHARED DATABASE</div>
+      </div>
+    </div>
+    <div style="color: #8b949e; font-size: 0.9em;">
+      <strong style="color: #58a6ff;">Rules:</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Components communicate through defined public interfaces</li>
+        <li>No reaching into another component's internals</li>
+        <li>Database tables are owned by components</li>
+        <li>Violations are caught by automated tools</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Packwerk -->
+  <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+    <h4 style="color: #f97316; margin: 0 0 16px 0;">PACKWERK: THE ENFORCEMENT TOOL</h4>
+    <div style="color: #8b949e; margin-bottom: 12px; font-size: 0.9em;">Shopify built Packwerk to enforce component boundaries:</div>
+    <pre style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; margin: 0 0 16px 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e6edf3;"># package.yml in each component
+enforce_privacy: true
+enforce_dependencies: true
+
+dependencies:
+  - shop                   <span style="color: #8b949e;"># Can depend on shop component</span>
+  - products               <span style="color: #8b949e;"># Can depend on products component</span>
+
+public_path: app/public/   <span style="color: #8b949e;"># Only this folder is accessible</span></code></pre>
+    <div style="background: rgba(248,81,73,0.2); border-radius: 8px; padding: 12px;">
+      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">CI fails if:</div>
+      <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.85em;">
+        <li>Code accesses private methods of other components</li>
+        <li>Code depends on undeclared components</li>
+        <li>Circular dependencies are introduced</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Selective Extraction -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+    <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #8957e5;">
+      <h4 style="color: #8957e5; margin: 0 0 12px 0;">EXTRACTED TO SERVICES</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Storefront Renderer</span>
+          <span style="color: #8b949e;">Different scaling needs</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Identity</span>
+          <span style="color: #8b949e;">Security isolation</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Payments</span>
+          <span style="color: #8b949e;">PCI compliance</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Analytics</span>
+          <span style="color: #8b949e;">Different data patterns</span>
+        </div>
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0;">KEPT IN MONOLITH</h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Shop</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Products</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Orders</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Checkout</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Inventory</span>
+      </div>
+      <div style="color: #8b949e; font-size: 0.85em; font-style: italic;">(Core business logic that needs strong consistency)</div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">RESULTS</h4>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px;">
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">3M+</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">lines of Ruby code</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">500+</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">engineers</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Black Friday</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">traffic handled</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Multiple</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">deploys/day</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Simple</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">debugging</div>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #d1fae5; font-style: italic; font-size: 0.9em;">"The modular monolith gives us the benefits of microservices (clear boundaries, team ownership) without the costs (network latency, distributed transactions)"</div>
+    </div>
+  </div>
+
+  <!-- Key Lessons -->
+  <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #58a6ff;">
+    <h4 style="color: #58a6ff; margin: 0 0 12px 0;">KEY LESSONS</h4>
+    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em; columns: 2; column-gap: 20px;">
+      <li>Microservices are not the only path to scaling</li>
+      <li>Modular monolith can handle massive scale</li>
+      <li>Enforce boundaries with tooling, not just convention</li>
+      <li>Extract services selectively based on real needs</li>
+      <li>Consistency is easier with shared database</li>
+    </ul>
+  </div>
+</div>
 
 ---
 

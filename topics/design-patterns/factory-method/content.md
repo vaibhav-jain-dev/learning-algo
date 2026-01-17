@@ -969,19 +969,91 @@ class WindowsFactory(GUIFactory):
 
 ### The Relationship Diagram
 
-```
-                    Object Creation Patterns
-                            │
-            ┌───────────────┼───────────────┐
-            │               │               │
-      Simple Factory   Factory Method  Abstract Factory
-            │               │               │
-       (function)      (inheritance)   (composition)
-            │               │               │
-       One product    One product     Multiple products
-       Centralized    Deferred to     Families of
-       creation       subclasses      related products
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+
+<!-- Title -->
+<div style="text-align: center; margin-bottom: 24px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px;">Object Creation Patterns</div>
+<div style="width: 2px; height: 20px; background: #58a6ff; margin: 12px auto;"></div>
+</div>
+
+<!-- Three branches -->
+<div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
+<div style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent 0%, #7ee787 100%);"></div>
+<div style="width: 2px; height: 2px; background: #58a6ff;"></div>
+<div style="width: 120px; height: 2px; background: linear-gradient(90deg, #7ee787 0%, transparent 100%);"></div>
+</div>
+
+<!-- Vertical connectors -->
+<div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
+<div style="width: 2px; height: 16px; background: #7ee787;"></div>
+<div style="width: 2px; height: 16px; background: #58a6ff;"></div>
+<div style="width: 2px; height: 16px; background: #a371f7;"></div>
+</div>
+
+<!-- Pattern cards -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+<!-- Simple Factory -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #7ee787; text-align: center;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Simple Factory</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(function)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">One product</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #7ee787; font-size: 11px;">Centralized creation</div>
+</div>
+</div>
+</div>
+
+<!-- Factory Method -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #58a6ff; text-align: center;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Factory Method</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(inheritance)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">One product</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #58a6ff; font-size: 11px;">Deferred to subclasses</div>
+</div>
+</div>
+</div>
+
+<!-- Abstract Factory -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #a371f7; text-align: center;">
+<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Abstract Factory</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(composition)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">Multiple products</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #a371f7; font-size: 11px;">Families of related products</div>
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
 
 ---
 

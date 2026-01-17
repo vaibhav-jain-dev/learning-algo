@@ -8,35 +8,64 @@ Connection pooling is a technique that maintains a cache of reusable connections
 
 Think of connection pooling like a car rental company:
 
-```
-Without Pooling (Manufacturing on Demand):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Customer needs car → Factory builds car → Customer uses car    │
-│                            │                    │               │
-│                        [30 minutes]         [2 hours]          │
-│                            │                    │               │
-│  Customer returns → Factory scraps car ← Customer done          │
-│                        [5 minutes]                              │
-│                                                                 │
-│  Total overhead: 35 minutes per trip!                           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-With Pooling (Car Rental):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Customer needs car → Pick from fleet → Customer uses car       │
-│                            │                    │               │
-│                        [30 seconds]         [2 hours]          │
-│                            │                    │               │
-│  Car returned to fleet ← Customer done                          │
-│                        [30 seconds]                             │
-│                                                                 │
-│  Total overhead: 1 minute per trip!                             │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
+      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Without Pooling (Manufacturing on Demand)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #58a6ff;">Customer needs car</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #f8514933; padding: 8px 14px; border-radius: 6px; color: #f85149;">Factory builds car</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer uses car</span>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 80px; color: #8b949e; font-size: 12px; margin: 8px 0;">
+        <span style="color: #f85149;">[30 minutes]</span>
+        <span>[2 hours]</span>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer returns</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #f8514933; padding: 8px 14px; border-radius: 6px; color: #f85149;">Factory scraps car</span>
+      </div>
+      <div style="text-align: center; color: #f85149; font-size: 12px; margin-top: 8px;">[5 minutes]</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; text-align: center;">
+      <span style="color: #f85149; font-weight: 600;">Total overhead: 35 minutes per trip!</span>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">With Pooling (Car Rental)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #58a6ff;">Customer needs car</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #23863633; padding: 8px 14px; border-radius: 6px; color: #7ee787;">Pick from fleet</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer uses car</span>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 80px; color: #8b949e; font-size: 12px; margin: 8px 0;">
+        <span style="color: #7ee787;">[30 seconds]</span>
+        <span>[2 hours]</span>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer done</span>
+        <span style="color: #8b949e;">-></span>
+        <span style="background: #23863633; padding: 8px 14px; border-radius: 6px; color: #7ee787;">Return to fleet</span>
+      </div>
+      <div style="text-align: center; color: #7ee787; font-size: 12px; margin-top: 8px;">[30 seconds]</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; text-align: center;">
+      <span style="color: #7ee787; font-weight: 600;">Total overhead: 1 minute per trip!</span>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -72,31 +101,66 @@ After 20+ years of database performance tuning:
 
 ### Cost of Creating a New Connection
 
-```
-Database Connection (PostgreSQL):
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. TCP Handshake:          ~0.5ms (local), ~50ms (remote)       │
-│ 2. TLS Handshake:          ~10ms (with certs)                   │
-│ 3. Authentication:         ~5ms (password), ~50ms (LDAP)        │
-│ 4. Session Setup:          ~2ms (server-side state)             │
-│ 5. pg_stat tracking:       ~1ms (monitoring overhead)           │
-│                                                                 │
-│ Total: 18-113ms per connection!                                 │
-│                                                                 │
-│ If your query takes 5ms, you're spending 80%+ on setup          │
-└─────────────────────────────────────────────────────────────────┘
-
-HTTP Connection (with TLS):
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. DNS Lookup:             ~20ms (cached) to ~200ms (cold)      │
-│ 2. TCP Handshake:          ~30ms (RTT)                          │
-│ 3. TLS Handshake:          ~60ms (2 RTTs with TLS 1.2)          │
-│                                                                 │
-│ Total: 110-290ms before first byte!                             │
-│                                                                 │
-│ With HTTP/2 keep-alive: ~0ms (reuse existing)                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #58a6ff33;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #58a6ff; border-radius: 50%;"></div>
+      <span style="color: #58a6ff; font-weight: 600; font-size: 16px;">Database Connection (PostgreSQL)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>1. TCP Handshake</span>
+        <span style="color: #f0883e;">~0.5ms - ~50ms</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>2. TLS Handshake</span>
+        <span style="color: #f0883e;">~10ms</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>3. Authentication</span>
+        <span style="color: #f0883e;">~5ms - ~50ms</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>4. Session Setup</span>
+        <span style="color: #f0883e;">~2ms</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>5. pg_stat tracking</span>
+        <span style="color: #f0883e;">~1ms</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d;">
+      <div style="color: #f85149; font-weight: 600; text-align: center;">Total: 18-113ms per connection!</div>
+      <div style="color: #8b949e; font-size: 12px; text-align: center; margin-top: 8px;">If your query takes 5ms, you're spending 80%+ on setup</div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #d2a8ff33;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #d2a8ff; border-radius: 50%;"></div>
+      <span style="color: #d2a8ff; font-weight: 600; font-size: 16px;">HTTP Connection (with TLS)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>1. DNS Lookup</span>
+        <span style="color: #f0883e;">~20ms - ~200ms</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>2. TCP Handshake</span>
+        <span style="color: #f0883e;">~30ms (RTT)</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+        <span>3. TLS Handshake</span>
+        <span style="color: #f0883e;">~60ms (2 RTTs)</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d;">
+      <div style="color: #f85149; font-weight: 600; text-align: center;">Total: 110-290ms before first byte!</div>
+      <div style="background: #23863633; padding: 10px 16px; border-radius: 6px; margin-top: 12px; text-align: center;">
+        <span style="color: #7ee787;">With HTTP/2 keep-alive: ~0ms (reuse existing)</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -153,29 +217,75 @@ print(calculate_optimal_pool_size(50, 200))   # 50 RPS, 200ms → 15 connections
 
 ### Why Larger Pools Can Be Slower
 
-```
-Scenario: Database with 4 CPU cores
-
-Pool Size = 10:
-┌─────────────────────────────────────────────────────────────────┐
-│ Queries run in parallel:     4 at a time                        │
-│ CPU utilization:             100% (all cores busy)              │
-│ Memory per connection:       ~10MB                              │
-│ Total memory:                100MB                              │
-│ Query time:                  10ms (CPU not contended)           │
-│ Throughput:                  400 queries/second                 │
-└─────────────────────────────────────────────────────────────────┘
-
-Pool Size = 200:
-┌─────────────────────────────────────────────────────────────────┐
-│ Queries run in parallel:     200 competing for 4 cores          │
-│ CPU utilization:             100% (but context switching!)      │
-│ Memory per connection:       ~10MB                              │
-│ Total memory:                2GB (may cause swapping)           │
-│ Query time:                  50ms (contention + context switch) │
-│ Throughput:                  80 queries/second (SLOWER!)        │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px 32px; margin: 24px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Scenario: Database with <span style="color: #58a6ff; font-weight: 600;">4 CPU cores</span></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: #23863622; border: 1px solid #23863666; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+        <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Pool Size = 10</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; line-height: 2;">
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Queries in parallel</span>
+          <span style="color: #7ee787;">4 at a time</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>CPU utilization</span>
+          <span style="color: #7ee787;">100% (all cores busy)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Memory per connection</span>
+          <span>~10MB</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Total memory</span>
+          <span style="color: #7ee787;">100MB</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Query time</span>
+          <span style="color: #7ee787;">10ms</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9; padding-top: 8px; border-top: 1px solid #30363d; margin-top: 8px;">
+          <span style="font-weight: 600;">Throughput</span>
+          <span style="color: #7ee787; font-weight: 600;">400 queries/sec</span>
+        </div>
+      </div>
+    </div>
+    <div style="background: #f8514922; border: 1px solid #f8514966; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
+        <span style="color: #f85149; font-weight: 600; font-size: 16px;">Pool Size = 200</span>
+      </div>
+      <div style="font-family: monospace; font-size: 12px; line-height: 2;">
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Queries in parallel</span>
+          <span style="color: #f85149;">200 competing for 4 cores</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>CPU utilization</span>
+          <span style="color: #f0883e;">100% (context switching!)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Memory per connection</span>
+          <span>~10MB</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Total memory</span>
+          <span style="color: #f85149;">2GB (may swap)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
+          <span>Query time</span>
+          <span style="color: #f85149;">50ms</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #c9d1d9; padding-top: 8px; border-top: 1px solid #30363d; margin-top: 8px;">
+          <span style="font-weight: 600;">Throughput</span>
+          <span style="color: #f85149; font-weight: 600;">80 queries/sec (SLOWER!)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### The HikariCP Formula (Production Proven)
 
