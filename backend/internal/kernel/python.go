@@ -130,21 +130,22 @@ while True:
         # Create restricted namespace
         namespace = {"__builtins__": safe_builtins}
 
-        exec(code, namespace)
+        # Capture stdout from the START (including module-level prints during exec)
+        old_stdout = sys.stdout
+        sys.stdout = captured = _io.StringIO()
 
-        result = None
-        output_lines = []
+        try:
+            exec(code, namespace)
 
-        if "main" in namespace and callable(namespace["main"]):
-            old_stdout = sys.stdout
-            sys.stdout = captured = _io.StringIO()
-            try:
+            result = None
+
+            if "main" in namespace and callable(namespace["main"]):
                 result = namespace["main"]()
-            finally:
-                output_lines = captured.getvalue().split('\n')
-                sys.stdout = old_stdout
-        else:
-            raise ValueError("Code must define a main() function that returns a value")
+            else:
+                raise ValueError("Code must define a main() function that returns a value")
+        finally:
+            output_lines = captured.getvalue().split('\n')
+            sys.stdout = old_stdout
 
         # Get metrics
         end_time = _time.perf_counter()

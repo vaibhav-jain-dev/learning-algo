@@ -216,6 +216,11 @@ func (k *GoKernel) Execute(ctx context.Context, code string) (*ExecutionResult, 
 		return nil, fmt.Errorf("kernel is not healthy")
 	}
 
+	// Set a maximum execution timeout of 15 seconds
+	execCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	ctx = execCtx
+
 	start := time.Now()
 
 	// Validate code for security
