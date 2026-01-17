@@ -336,7 +336,7 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                     <p>When you run a query, the database creates an <strong>execution plan</strong> to determine the most efficient way to retrieve data.</p>
 
                     <!-- Query Plan Flow Diagram -->
-                    <div class="query-plan-diagram" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                    <div class="query-plan-diagram" style="background: linear-gradient(135deg, #2d3748 0%, #3b4c63 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
                         <h4 style="color: #4ecdc4; margin-bottom: 1rem;">Query Execution Flow: SELECT * FROM requests WHERE status = 'completed'</h4>
                         <div style="display: flex; flex-direction: column; gap: 1rem; font-family: system-ui, sans-serif;">
                             <!-- Step 1: Parser -->
@@ -345,7 +345,7 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                                     <div style="font-weight: 700;">1. Parser</div>
                                     <div style="font-size: 0.75rem; opacity: 0.8;">Syntax Check</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #252540; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
+                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
                                     SQL → Parse Tree → Validates syntax & table/column names exist
                                 </div>
                             </div>
@@ -356,7 +356,7 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                                     <div style="font-weight: 700;">2. Optimizer</div>
                                     <div style="font-size: 0.75rem; opacity: 0.8;">Plan Selection</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #252540; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
+                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
                                     Evaluates multiple plans → Estimates costs → Picks cheapest plan
                                 </div>
                             </div>
@@ -383,11 +383,11 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
 
                             <!-- Step 4: Results -->
                             <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: #1a1a2e; min-width: 140px; text-align: center;">
+                                <div style="background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: #1e293b; min-width: 140px; text-align: center;">
                                     <div style="font-weight: 700;">4. Results</div>
                                     <div style="font-size: 0.75rem; opacity: 0.8;">Return Data</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #252540; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
+                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
                                     Rows matching criteria → Format output → Return to client
                                 </div>
                             </div>
@@ -395,13 +395,13 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                     </div>
 
                     <!-- Index Utilization Visual -->
-                    <div class="index-diagram" style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border: 1px solid #30363d; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+                    <div class="index-diagram" style="background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%); border: 1px solid #4b5563; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
                         <h4 style="color: #f093fb; margin-bottom: 1rem;">How Indexes Speed Up Queries</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.85rem;">
                             <!-- Without Index -->
                             <div>
                                 <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 0.5rem;">❌ Without Index (Sequential Scan)</div>
-                                <div style="background: #1a1a2e; border-radius: 8px; padding: 1rem;">
+                                <div style="background: #2d3748; border-radius: 8px; padding: 1rem;">
                                     <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.75rem;">
                                         <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row1</span>
                                         <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row2</span>
@@ -418,7 +418,7 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                             <!-- With Index -->
                             <div>
                                 <div style="color: #38ef7d; font-weight: 600; margin-bottom: 0.5rem;">✅ With Index (B-Tree Lookup)</div>
-                                <div style="background: #1a1a2e; border-radius: 8px; padding: 1rem;">
+                                <div style="background: #2d3748; border-radius: 8px; padding: 1rem;">
                                     <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                                             <span style="color: #4ecdc4;">Index:</span>
@@ -954,7 +954,7 @@ FROM blood_tests;</code></pre>
     padding: 0.75rem;
     border: 1px solid #555;
     border-radius: 4px;
-    background: #2d2d30;
+    background: #374151;
     color: #d4d4d4;
     resize: vertical;
     min-height: 80px;
