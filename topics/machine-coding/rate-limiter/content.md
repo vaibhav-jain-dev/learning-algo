@@ -18,98 +18,138 @@ Design a rate limiter that controls the rate of requests a client can make to an
 ### Part 1: Why Do We Need Rate Limiting?
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 **Protection Against:**
 - **DoS attacks** - Malicious users flooding your API
 - **Misbehaving clients** - Buggy code in infinite loops
 - **Resource exhaustion** - Preventing database/server overload
 - **Cost control** - Limiting expensive operations
-
 **Business Use Cases:**
 - API monetization (free tier: 100 req/day, paid: unlimited)
 - Fair usage policies
 - Protecting downstream services
-
 </div>
 
 ### Part 2: The Core Algorithms Compared
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-
-<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
-
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Rate Limiting Algorithms Visualized</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<!-- Token Bucket -->
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">🪣 Token Bucket</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #21262d; width: 16px; height: 16px; border-radius: 50%; border: 2px dashed #30363d;"></div>
+<div style="background: #21262d; width: 16px; height: 16px; border-radius: 50%; border: 2px dashed #30363d;"></div>
+</div>
+<div style="color: #7ee787; font-size: 11px;">3 tokens available, 2 slots empty</div>
+</div>
+<div style="color: #a5d6ff; font-size: 11px;">+ Allows bursts up to bucket size</div>
+<div style="color: #a5d6ff; font-size: 11px;">+ Refills at constant rate</div>
+</div>
+<!-- Sliding Window -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">📊 Sliding Window</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: flex-end; gap: 4px; height: 40px;">
+<div style="background: #a371f7; width: 20px; height: 70%; border-radius: 2px; opacity: 0.5;"></div>
+<div style="background: #a371f7; width: 20px; height: 100%; border-radius: 2px;"></div>
+<div style="background: #a371f7; width: 20px; height: 50%; border-radius: 2px;"></div>
+<div style="background: #a371f7; width: 20px; height: 80%; border-radius: 2px;"></div>
+<div style="background: #21262d; width: 20px; height: 30%; border-radius: 2px; border: 1px dashed #a371f7;"></div>
+</div>
+<div style="color: #d2a8ff; font-size: 11px; margin-top: 8px;">Weighted avg of prev + current window</div>
+</div>
+<div style="color: #eddeff; font-size: 11px;">+ Smooth, no boundary spikes</div>
+<div style="color: #eddeff; font-size: 11px;">+ More accurate than fixed window</div>
+</div>
+<!-- Fixed Window -->
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">⏱️ Fixed Window</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 4px;">
+<div style="background: #ffa657; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #fff;">Window 1: 98/100</div>
+<div style="color: #ffa657;">|</div>
+<div style="background: #ffa657; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #fff;">Window 2: 5/100</div>
+</div>
+<div style="color: #ffd1cc; font-size: 11px; margin-top: 8px;">Counter resets at window boundary</div>
+</div>
+<div style="color: #ffe2cc; font-size: 11px;">+ Very simple to implement</div>
+<div style="color: #f85149; font-size: 11px;">- Boundary spike problem!</div>
+</div>
+<!-- Leaky Bucket -->
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">🚰 Leaky Bucket</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="position: relative; height: 50px;">
+<div style="background: #238636; width: 60px; height: 40px; border-radius: 0 0 8px 8px; position: absolute; left: 50%; transform: translateX(-50%);">
+<div style="background: #7ee787; width: 100%; height: 60%; border-radius: 0 0 8px 8px; position: absolute; bottom: 0;"></div>
+</div>
+<div style="color: #7ee787; font-size: 16px; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">💧</div>
+</div>
+<div style="color: #d1f5d3; font-size: 11px; margin-top: 8px;">Output at constant rate</div>
+</div>
+<div style="color: #d1f5d3; font-size: 11px;">+ Smooth output rate</div>
+<div style="color: #d1f5d3; font-size: 11px;">- No burst handling</div>
+</div>
+</div>
 </div>
 
 ### Part 3: Token Bucket Deep Dive
 
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-
 **Why Token Bucket is Often Preferred:**
-
 1. **Allows Bursts**: If bucket is full (say 20 tokens), user can make 20 requests immediately
 2. **Smooth Refill**: Tokens accumulate continuously, not in chunks
 3. **Simple State**: Only need `tokens` and `last_update_time`
 4. **Memory Efficient**: O(1) per client
-
 **The Math:**
 ```
 current_tokens = min(capacity, old_tokens + (time_elapsed × rate))
 ```
-
 **Example**: Rate = 10/sec, Capacity = 20
 - At t=0: 20 tokens (full)
 - User makes 15 requests: 5 tokens left
 - After 1 second: 5 + 10 = 15 tokens
 - After 0.5 seconds: 5 + 5 = 10 tokens
-
 </div>
 
 ### Part 4: Why NOT Fixed Window?
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 **The Boundary Problem:**
-
 ```
 Limit: 100 requests per minute
-
 Window 1 (00:00 - 01:00)     Window 2 (01:00 - 02:00)
         ↓                            ↓
 [.....▪▪▪▪▪▪▪▪▪▪] 100 req   [▪▪▪▪▪▪▪▪▪▪.....] 100 req
        ↑                     ↑
     At 00:59               At 01:00
-
 Result: 200 requests in 2 seconds! (00:59 to 01:01)
 ```
-
 **Solution**: Sliding window uses weighted average of current + previous window
-
 </div>
 
 ### Part 5: Sliding Window Counter Explained
 
 <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 **The Weighted Average Trick:**
-
 ```
 Window size: 60 seconds
 Limit: 100 requests
-
 Previous window (00:00-01:00): 84 requests
 Current window (01:00-02:00): 36 requests so far
 Current time: 01:15 (25% into current window)
-
 Weighted count = 84 × (1 - 0.25) + 36 × 1.0
                = 84 × 0.75 + 36
                = 63 + 36
                = 99
-
 → Still under 100, request allowed!
 ```
-
 **Why this works**: Approximates how many requests happened in last 60 seconds without storing each timestamp
-
 </div>
 
 ---
@@ -117,7 +157,6 @@ Weighted count = 84 × (1 - 0.25) + 36 × 1.0
 ## Algorithm Comparison
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-
 | Algorithm | Pros | Cons | Best For |
 |-----------|------|------|----------|
 | **Token Bucket** | Allows bursts, simple | Memory per client | API rate limiting |
@@ -125,7 +164,6 @@ Weighted count = 84 × (1 - 0.25) + 36 × 1.0
 | **Fixed Window** | Very simple | Boundary spike problem | Rough estimates |
 | **Sliding Window** | Accurate, no boundary issues | More computation | Strict rate limiting |
 | **Sliding Log** | Most accurate | O(n) memory per client | When accuracy critical |
-
 </div>
 
 ---
@@ -135,7 +173,6 @@ Weighted count = 84 × (1 - 0.25) + 36 × 1.0
 ### Alternative 1: Redis-based (Distributed)
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
-
 ```lua
 -- Redis Lua script for atomic token bucket
 local key = KEYS[1]
@@ -143,15 +180,12 @@ local rate = tonumber(ARGV[1])
 local capacity = tonumber(ARGV[2])
 local now = tonumber(ARGV[3])
 local requested = tonumber(ARGV[4])
-
 local data = redis.call('HMGET', key, 'tokens', 'last_update')
 local tokens = tonumber(data[1]) or capacity
 local last_update = tonumber(data[2]) or now
-
 -- Refill tokens
 local elapsed = now - last_update
 tokens = math.min(capacity, tokens + elapsed * rate)
-
 -- Check and consume
 if tokens >= requested then
     tokens = tokens - requested
@@ -162,9 +196,7 @@ else
     return {0, tokens}  -- denied, remaining
 end
 ```
-
 **Why Lua script?** Atomic execution - no race conditions between read and write
-
 </div>
 
 ### Alternative 2: Leaky Bucket (for Traffic Shaping)
@@ -219,16 +251,13 @@ class SlidingWindowLog:
 ```
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 **When to use Sliding Log:**
 - When you need exact counts (compliance requirements)
 - Low request volume
 - When memory isn't a concern
-
 **Avoid when:**
 - High traffic (storing millions of timestamps)
 - Need sub-millisecond performance
-
 </div>
 
 ---
@@ -236,31 +265,22 @@ class SlidingWindowLog:
 ## Pros and Cons Analysis
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-
 ### Token Bucket Pros
-
 - **O(1) time and space** per operation
 - **Allows bursts** - good UX for legitimate users
 - **Simple to implement** - just two variables
 - **Memory efficient** - constant per client
 - **Easy to distribute** - works well with Redis
-
 </div>
-
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-
 ### Token Bucket Cons
-
 - **Burst can overwhelm** - if all clients burst simultaneously
 - **Memory per client** - need to track each key
 - **Clock sync issues** - in distributed systems
 - **No request queuing** - just accept/reject
 - **Cleanup needed** - stale buckets waste memory
-
 </div>
-
 </div>
 
 ---
@@ -292,19 +312,16 @@ class SlidingWindowLog:
 ## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Start with requirements** - Per-user? Per-IP? Global?
 2. **Explain trade-offs** - Why token bucket over sliding window?
 3. **Discuss distributed case** - How to share state across servers?
 4. **Mention race conditions** - Why Redis Lua scripts?
 5. **HTTP headers** - `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
 6. **Status code** - 429 Too Many Requests
-
 **Common Follow-ups:**
 - How to handle clock skew?
 - How to rate limit by API key + IP combined?
 - How to implement tiered rate limits (free vs paid)?
-
 </div>
 
 ---

@@ -657,13 +657,50 @@ func main() {
 
 ## Game State Machine
 
-```
-RUNNING ─── eat food ───> RUNNING (grow)
-    │
-    │── hit wall/self ──> GAME_OVER
-    │
-    │── fill board ────> WIN
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Snake Game State Transitions</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<!-- Main RUNNING state -->
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="color: #fff; font-size: 20px;">🎮</div>
+<div style="color: #fff; font-weight: bold; font-size: 13px;">RUNNING</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #7ee787; font-size: 11px;">eat food</div>
+<div style="color: #7ee787; font-size: 20px;">→</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="color: #fff; font-size: 20px;">🐍</div>
+<div style="color: #fff; font-weight: bold; font-size: 13px;">RUNNING</div>
+<div style="color: #d1f5d3; font-size: 10px;">(grow)</div>
+</div>
+</div>
+<!-- Transition paths -->
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #21262d; padding: 8px 12px; border-radius: 6px;">
+<div style="color: #f85149; font-size: 10px;">hit wall/self</div>
+</div>
+<div style="color: #f85149; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">💀</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">GAME_OVER</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #21262d; padding: 8px 12px; border-radius: 6px;">
+<div style="color: #ffa657; font-size: 10px;">fill board</div>
+</div>
+<div style="color: #ffa657; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #9e6a03 0%, #ffa657 100%); padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">🏆</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">WIN</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 ## Interview Tips
 

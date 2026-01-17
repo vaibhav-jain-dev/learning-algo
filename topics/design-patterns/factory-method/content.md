@@ -19,7 +19,6 @@ The Factory Method pattern defines an interface for creating objects, but lets s
     Imagine you own a pizza chain. Each location (NYC, Chicago, California) makes pizza differently.
     The headquarters defines WHAT a pizza is (dough, sauce, toppings) and the general process (prepare, bake, box).
     But each location DECIDES HOW to make it - NYC style thin crust, Chicago deep dish, California with avocado.
-
     The "Factory Method" is like telling each franchise: "You implement your own createPizza() - headquarters doesn't care HOW you make it, just that you deliver a Pizza object we can work with."
   </div>
   <div class="metaphor-mapping">
@@ -56,14 +55,12 @@ After decades of building systems, here's what separates novice from expert unde
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0;">Expert Mental Model: Factory Method is HALF of the story</h4>
-
 <div style="background: #252540; padding: 16px; border-radius: 8px; font-family: monospace;">
 <code style="color: #dcdcaa;">Creator.someOperation()</code> {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;product = <code style="color: #4ecdc4;">this.factoryMethod()</code> <span style="color: #6a9955;">← Factory Method (varies)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;product.doSomething() <span style="color: #6a9955;">← Uses the product</span><br>
 }
 </div>
-
 <p style="color: #ddd; margin-top: 16px; margin-bottom: 0;">The <strong style="color: #4ecdc4;">COMBINATION</strong> of fixed algorithm + varying creation is where the real power lies.</p>
 </div>
 
@@ -140,7 +137,6 @@ After decades of building systems, here's what separates novice from expert unde
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Factory Method Pattern Structure</h4>
-
 <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px;">
 <!-- Creator side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
@@ -159,10 +155,8 @@ After decades of building systems, here's what separates novice from expert unde
 </div>
 </div>
 </div>
-
 <!-- Arrow -->
 <div style="display: flex; align-items: center; color: #888; font-size: 24px;">→</div>
-
 <!-- Product side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="background: #252540; border: 2px solid #4ecdc4; border-radius: 8px; width: 160px;">
@@ -820,34 +814,27 @@ func main() {
     <p><strong>The Bug:</strong> The factory checked <code>amount > 10000</code> but the amount was in cents, not dollars. So orders over $100 went to the premium processor which had higher minimums and rejected small orders.</p>
     <p><strong>The Impact:</strong> 3 hours of failed payments, ~$2M in abandoned carts</p>
     <p><strong>The Fix:</strong></p>
-
 ```python
 # BEFORE (Bug)
 def create_processor(amount: int) -> PaymentProcessor:
     if amount > 10000:  # BUG: amount is in cents!
         return PremiumProcessor()
     return StandardProcessor()
-
 # AFTER (Fixed with explicit types)
 @dataclass
 class Money:
     cents: int
-
     @property
     def dollars(self) -> Decimal:
         return Decimal(self.cents) / 100
-
     def __gt__(self, other: 'Money') -> bool:
         return self.cents > other.cents
-
 PREMIUM_THRESHOLD = Money(cents=1_000_000)  # $10,000
-
 def create_processor(amount: Money) -> PaymentProcessor:
     if amount > PREMIUM_THRESHOLD:
         return PremiumProcessor()
     return StandardProcessor()
 ```
-
     <p><strong>Lesson:</strong> Never use primitive types for money. Use value objects with explicit units.</p>
   </div>
 </div>
@@ -860,34 +847,27 @@ def create_processor(amount: Money) -> PaymentProcessor:
   <div class="war-story-content">
     <p><strong>The Setup:</strong> Factory created new database connection pools for each "type" of query.</p>
     <p><strong>The Problem:</strong> The "type" was accidentally derived from user input (query parameters), creating thousands of unique pools.</p>
-
 ```go
 // PROBLEMATIC CODE
 func (f *QueryFactory) GetPool(queryType string) *sql.DB {
     f.mu.Lock()
     defer f.mu.Unlock()
-
     if pool, exists := f.pools[queryType]; exists {
         return pool
     }
-
     // Creates new pool for EVERY unique queryType!
     pool := createPool()
     f.pools[queryType] = pool  // Memory leak: pools never cleaned up
     return pool
 }
-
 // Called with user input:
 // queryType = request.URL.Query().Get("type")  // Oops!
 ```
-
     <p><strong>The Fix:</strong> Validate and normalize factory keys</p>
-
 ```go
 var validQueryTypes = map[string]bool{
     "read": true, "write": true, "analytics": true,
 }
-
 func (f *QueryFactory) GetPool(queryType string) (*sql.DB, error) {
     // Validate input
     if !validQueryTypes[queryType] {
@@ -969,19 +949,82 @@ class WindowsFactory(GUIFactory):
 
 ### The Relationship Diagram
 
-```
-                    Object Creation Patterns
-                            │
-            ┌───────────────┼───────────────┐
-            │               │               │
-      Simple Factory   Factory Method  Abstract Factory
-            │               │               │
-       (function)      (inheritance)   (composition)
-            │               │               │
-       One product    One product     Multiple products
-       Centralized    Deferred to     Families of
-       creation       subclasses      related products
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+<!-- Title -->
+<div style="text-align: center; margin-bottom: 24px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px;">Object Creation Patterns</div>
+<div style="width: 2px; height: 20px; background: #58a6ff; margin: 12px auto;"></div>
+</div>
+<!-- Three branches -->
+<div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
+<div style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent 0%, #7ee787 100%);"></div>
+<div style="width: 2px; height: 2px; background: #58a6ff;"></div>
+<div style="width: 120px; height: 2px; background: linear-gradient(90deg, #7ee787 0%, transparent 100%);"></div>
+</div>
+<!-- Vertical connectors -->
+<div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
+<div style="width: 2px; height: 16px; background: #7ee787;"></div>
+<div style="width: 2px; height: 16px; background: #58a6ff;"></div>
+<div style="width: 2px; height: 16px; background: #a371f7;"></div>
+</div>
+<!-- Pattern cards -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<!-- Simple Factory -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #7ee787; text-align: center;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Simple Factory</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(function)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">One product</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #7ee787; font-size: 11px;">Centralized creation</div>
+</div>
+</div>
+</div>
+<!-- Factory Method -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #58a6ff; text-align: center;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Factory Method</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(inheritance)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">One product</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #58a6ff; font-size: 11px;">Deferred to subclasses</div>
+</div>
+</div>
+</div>
+<!-- Abstract Factory -->
+<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #a371f7; text-align: center;">
+<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Abstract Factory</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(composition)</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
+<div style="color: #e6edf3; font-size: 11px;">Multiple products</div>
+</div>
+<div style="background: #30363d; padding: 8px; border-radius: 6px;">
+<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
+<div style="color: #a371f7; font-size: 11px;">Families of related products</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 ---
 

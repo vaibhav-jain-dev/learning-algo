@@ -60,62 +60,126 @@ Retry-After: 30               # Seconds until retry (when limited)
 
 ## Rate Limiting Algorithms
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    RATE LIMITING ALGORITHMS                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Algorithm           │ Allows Bursts │ Memory │ Accuracy │ Complexity      │
-│  ────────────────────┼───────────────┼────────┼──────────┼──────────────── │
-│  Token Bucket        │ Yes           │ O(1)   │ Good     │ Simple          │
-│  Leaky Bucket        │ No            │ O(n)   │ Good     │ Medium          │
-│  Fixed Window        │ Edge bursts   │ O(1)   │ Low      │ Simple          │
-│  Sliding Window Log  │ No            │ O(n)   │ High     │ Medium          │
-│  Sliding Window Cnt  │ Weighted      │ O(1)   │ High     │ Medium          │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">RATE LIMITING ALGORITHMS</h3>
+  <div style="display: grid; gap: 8px;">
+    <!-- Header -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Algorithm</div>
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Allows Bursts</div>
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Memory</div>
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Accuracy</div>
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Complexity</div>
+    </div>
+    <!-- Token Bucket -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 8px;">
+      <div style="color: #7ee787; font-weight: 600; font-size: 13px;">Token Bucket</div>
+      <div style="color: #7ee787; font-size: 13px;">Yes</div>
+      <div style="color: #c9d1d9; font-size: 13px;">O(1)</div>
+      <div style="color: #c9d1d9; font-size: 13px;">Good</div>
+      <div style="color: #7ee787; font-size: 13px;">Simple</div>
+    </div>
+    <!-- Leaky Bucket -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px;">
+      <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Leaky Bucket</div>
+      <div style="color: #f85149; font-size: 13px;">No</div>
+      <div style="color: #f0883e; font-size: 13px;">O(n)</div>
+      <div style="color: #c9d1d9; font-size: 13px;">Good</div>
+      <div style="color: #f0883e; font-size: 13px;">Medium</div>
+    </div>
+    <!-- Fixed Window -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px;">
+      <div style="color: #f0883e; font-weight: 600; font-size: 13px;">Fixed Window</div>
+      <div style="color: #f0883e; font-size: 13px;">Edge bursts</div>
+      <div style="color: #c9d1d9; font-size: 13px;">O(1)</div>
+      <div style="color: #f85149; font-size: 13px;">Low</div>
+      <div style="color: #7ee787; font-size: 13px;">Simple</div>
+    </div>
+    <!-- Sliding Window Log -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 8px;">
+      <div style="color: #a371f7; font-weight: 600; font-size: 13px;">Sliding Window Log</div>
+      <div style="color: #f85149; font-size: 13px;">No</div>
+      <div style="color: #f0883e; font-size: 13px;">O(n)</div>
+      <div style="color: #7ee787; font-size: 13px;">High</div>
+      <div style="color: #f0883e; font-size: 13px;">Medium</div>
+    </div>
+    <!-- Sliding Window Counter -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 1fr; gap: 12px; padding: 12px 16px; background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 8px;">
+      <div style="color: #7ee787; font-weight: 600; font-size: 13px;">Sliding Window Cnt</div>
+      <div style="color: #f0883e; font-size: 13px;">Weighted</div>
+      <div style="color: #c9d1d9; font-size: 13px;">O(1)</div>
+      <div style="color: #7ee787; font-size: 13px;">High</div>
+      <div style="color: #f0883e; font-size: 13px;">Medium</div>
+    </div>
+  </div>
 </div>
 
 ### 1. Token Bucket
 
 Tokens accumulate at fixed rate, each request consumes a token.
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         TOKEN BUCKET                                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Capacity: 10 tokens, Refill: 2 tokens/second                             │
-│                                                                             │
-│              ┌───────────────────┐                                         │
-│              │   Token Bucket    │                                         │
-│              │ ┌─┬─┬─┬─┬─┬─┬─┬─┐ │                                         │
-│   Refill ───►│ │●│●│●│●│●│●│ │ │ │◄─── Requests consume tokens            │
-│   2/sec      │ └─┴─┴─┴─┴─┴─┴─┴─┘ │                                         │
-│              │   6 tokens        │                                         │
-│              └───────────────────┘                                         │
-│                                                                             │
-│   Timeline:                                                                │
-│   ─────────────────────────────────────────────────────────────────────    │
-│   t=0    Bucket: ●●●●●●●●●● (10/10)                                       │
-│          │                                                                  │
-│          ▼ 5 requests arrive                                               │
-│   t=0.1  Bucket: ●●●●●      (5/10)  → All ALLOWED                         │
-│          │                                                                  │
-│          ▼ 1 second passes, +2 tokens                                      │
-│   t=1.0  Bucket: ●●●●●●●    (7/10)                                        │
-│          │                                                                  │
-│          ▼ 10 requests arrive (burst!)                                     │
-│   t=1.1  Bucket:            (0/10)  → 7 ALLOWED, 3 REJECTED               │
-│                                                                             │
-│   ✓ Allows controlled bursts up to capacity                               │
-│   ✓ Smooth average rate over time                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">TOKEN BUCKET</h3>
+  <div style="color: #8b949e; text-align: center; margin-bottom: 24px; font-size: 14px;">Capacity: 10 tokens, Refill: 2 tokens/second</div>
+  <!-- Bucket visualization -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 32px; margin-bottom: 32px;">
+    <div style="text-align: center;">
+      <div style="color: #7ee787; font-size: 13px; margin-bottom: 8px;">Refill 2/sec</div>
+      <div style="color: #7ee787; font-size: 24px;">→</div>
+    </div>
+    <div style="background: #21262d; border: 2px solid #30363d; border-radius: 12px; padding: 20px; text-align: center;">
+      <div style="color: #c9d1d9; font-size: 13px; margin-bottom: 12px;">Token Bucket</div>
+      <div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px;">
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #7ee787; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #30363d; width: 16px; height: 16px; border-radius: 50%;"></span>
+        <span style="background: #30363d; width: 16px; height: 16px; border-radius: 50%;"></span>
+      </div>
+      <div style="color: #8b949e; font-size: 12px;">6 tokens</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="color: #f0883e; font-size: 13px; margin-bottom: 8px;">Requests consume</div>
+      <div style="color: #f0883e; font-size: 24px;">←</div>
+    </div>
+  </div>
+  <!-- Timeline -->
+  <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px;">Timeline:</div>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: rgba(126, 231, 135, 0.1); border-radius: 8px;">
+      <span style="color: #8b949e; font-weight: 600; min-width: 50px;">t=0</span>
+      <span style="color: #7ee787; font-size: 13px;">Bucket: 10/10 (full)</span>
+    </div>
+    <div style="margin-left: 30px; color: #58a6ff; font-size: 12px;">↓ 5 requests arrive</div>
+    <div style="display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: rgba(126, 231, 135, 0.1); border-radius: 8px;">
+      <span style="color: #8b949e; font-weight: 600; min-width: 50px;">t=0.1</span>
+      <span style="color: #c9d1d9; font-size: 13px;">Bucket: 5/10</span>
+      <span style="color: #7ee787; font-size: 13px; margin-left: auto;">→ All ALLOWED ✓</span>
+    </div>
+    <div style="margin-left: 30px; color: #58a6ff; font-size: 12px;">↓ 1 second passes, +2 tokens</div>
+    <div style="display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
+      <span style="color: #8b949e; font-weight: 600; min-width: 50px;">t=1.0</span>
+      <span style="color: #c9d1d9; font-size: 13px;">Bucket: 7/10</span>
+    </div>
+    <div style="margin-left: 30px; color: #f0883e; font-size: 12px;">↓ 10 requests arrive (burst!)</div>
+    <div style="display: flex; align-items: center; gap: 16px; padding: 10px 16px; background: rgba(248, 81, 73, 0.1); border-radius: 8px;">
+      <span style="color: #8b949e; font-weight: 600; min-width: 50px;">t=1.1</span>
+      <span style="color: #c9d1d9; font-size: 13px;">Bucket: 0/10</span>
+      <span style="font-size: 13px; margin-left: auto;"><span style="color: #7ee787;">7 ALLOWED</span>, <span style="color: #f85149;">3 REJECTED</span></span>
+    </div>
+  </div>
+  <!-- Summary -->
+  <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 20px;">
+    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
+      <span style="color: #7ee787;">✓ Allows controlled bursts up to capacity</span>
+    </div>
+    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
+      <span style="color: #7ee787;">✓ Smooth average rate over time</span>
+    </div>
+  </div>
 </div>
 
 ```python
@@ -208,34 +272,59 @@ limiter = LeakyBucket(rate=5, capacity=10)
 
 Count requests in fixed time windows.
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       FIXED WINDOW COUNTER                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Limit: 100 requests per minute                                           │
-│                                                                             │
-│   │ Window 1 (0:00-1:00) │ Window 2 (1:00-2:00) │ Window 3 (2:00-3:00) │  │
-│   │                      │                      │                      │  │
-│   │  ███████░░░ 70/100   │  █████████░ 90/100   │  ██░░░░░░░ 20/100   │  │
-│   │  Requests            │  Requests            │  Requests            │  │
-│   └──────────────────────┴──────────────────────┴──────────────────────┘  │
-│                                                                             │
-│   ⚠️ PROBLEM: Burst at window boundary!                                    │
-│                                                                             │
-│   │      Window 1        │      Window 2        │                          │
-│   │                      │                      │                          │
-│   │              ████████│████████              │                          │
-│   │              90 req  │100 req               │                          │
-│   │         at 0:59      │at 1:00               │                          │
-│   └──────────────────────┴──────────────────────┘                          │
-│                                                                             │
-│   In 2 seconds (0:59 to 1:01): 190 requests allowed!                       │
-│   This is nearly 2x the intended rate!                                     │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">FIXED WINDOW COUNTER</h3>
+  <div style="color: #8b949e; text-align: center; margin-bottom: 24px; font-size: 14px;">Limit: 100 requests per minute</div>
+  <!-- Normal operation -->
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px;">
+    <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 8px; padding: 16px;">
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">Window 1 (0:00-1:00)</div>
+      <div style="background: #21262d; border-radius: 4px; height: 20px; overflow: hidden; margin-bottom: 6px;">
+        <div style="background: linear-gradient(90deg, #238636, #2ea043); width: 70%; height: 100%;"></div>
+      </div>
+      <div style="color: #7ee787; font-size: 13px;">70/100 Requests</div>
+    </div>
+    <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px; padding: 16px;">
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">Window 2 (1:00-2:00)</div>
+      <div style="background: #21262d; border-radius: 4px; height: 20px; overflow: hidden; margin-bottom: 6px;">
+        <div style="background: linear-gradient(90deg, #f0883e, #f0883e); width: 90%; height: 100%;"></div>
+      </div>
+      <div style="color: #f0883e; font-size: 13px;">90/100 Requests</div>
+    </div>
+    <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 8px; padding: 16px;">
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">Window 3 (2:00-3:00)</div>
+      <div style="background: #21262d; border-radius: 4px; height: 20px; overflow: hidden; margin-bottom: 6px;">
+        <div style="background: linear-gradient(90deg, #58a6ff, #58a6ff); width: 20%; height: 100%;"></div>
+      </div>
+      <div style="color: #58a6ff; font-size: 13px;">20/100 Requests</div>
+    </div>
+  </div>
+  <!-- Problem illustration -->
+  <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 12px; padding: 20px;">
+    <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">⚠️ PROBLEM: Burst at window boundary!</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 16px;">
+      <div style="background: #21262d; border-radius: 8px 0 0 8px; padding: 16px; text-align: center;">
+        <div style="color: #8b949e; font-size: 11px; margin-bottom: 8px;">Window 1</div>
+        <div style="display: flex; justify-content: flex-end;">
+          <div style="background: #f85149; width: 80%; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 11px;">90 req at 0:59</span>
+          </div>
+        </div>
+      </div>
+      <div style="background: #21262d; border-radius: 0 8px 8px 0; padding: 16px; text-align: center;">
+        <div style="color: #8b949e; font-size: 11px; margin-bottom: 8px;">Window 2</div>
+        <div style="display: flex; justify-content: flex-start;">
+          <div style="background: #f85149; width: 80%; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 11px;">100 req at 1:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background: rgba(248, 81, 73, 0.2); padding: 12px 16px; border-radius: 8px; text-align: center;">
+      <span style="color: #f85149; font-weight: 600;">In 2 seconds (0:59 to 1:01): 190 requests allowed!</span>
+      <div style="color: #f85149; font-size: 13px; margin-top: 4px;">This is nearly 2x the intended rate!</div>
+    </div>
+  </div>
 </div>
 
 ```python
@@ -322,38 +411,58 @@ limiter = SlidingWindowLog(limit=100, window_seconds=60)
 
 Combines fixed window efficiency with sliding window accuracy.
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      SLIDING WINDOW COUNTER                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Limit: 100 requests per minute                                           │
-│   Current time: 1:15 (15 seconds into Window 2)                           │
-│                                                                             │
-│   │    Window 1 (0:00-1:00)    │    Window 2 (1:00-2:00)    │              │
-│   │                            │                            │              │
-│   │  ████████████ 84 requests │  ██████░░░░ 36 requests   │              │
-│   │                            │                            │              │
-│   └────────────────────────────┴────────────────────────────┘              │
-│                                │◄─────────────────────────►│              │
-│                                        15 seconds                          │
-│                                        (25% of window)                     │
-│                                                                             │
-│   Weighted count = prev_window × (1 - progress) + curr_window              │
-│                  = 84 × (1 - 0.25) + 36                                    │
-│                  = 84 × 0.75 + 36                                          │
-│                  = 63 + 36                                                 │
-│                  = 99 requests                                             │
-│                                                                             │
-│   99 < 100 → ALLOW next request                                            │
-│                                                                             │
-│   ✓ No boundary burst problem                                             │
-│   ✓ Memory efficient (only 2 counters per user)                           │
-│   ✓ Approximation is very accurate in practice                            │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">SLIDING WINDOW COUNTER</h3>
+  <div style="color: #8b949e; text-align: center; margin-bottom: 8px; font-size: 14px;">Limit: 100 requests per minute</div>
+  <div style="color: #f0883e; text-align: center; margin-bottom: 24px; font-size: 13px;">Current time: 1:15 (15 seconds into Window 2)</div>
+  <!-- Windows visualization -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 24px;">
+    <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 8px 0 0 8px; padding: 16px;">
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">Window 1 (0:00-1:00)</div>
+      <div style="background: #21262d; border-radius: 4px; height: 24px; overflow: hidden; margin-bottom: 6px;">
+        <div style="background: linear-gradient(90deg, #8957e5, #a371f7); width: 84%; height: 100%;"></div>
+      </div>
+      <div style="color: #a371f7; font-size: 14px; font-weight: 600;">84 requests</div>
+    </div>
+    <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 0 8px 8px 0; padding: 16px;">
+      <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">Window 2 (1:00-2:00)</div>
+      <div style="background: #21262d; border-radius: 4px; height: 24px; overflow: hidden; margin-bottom: 6px;">
+        <div style="background: linear-gradient(90deg, #238636, #2ea043); width: 36%; height: 100%;"></div>
+      </div>
+      <div style="color: #7ee787; font-size: 14px; font-weight: 600;">36 requests</div>
+    </div>
+  </div>
+  <!-- Progress indicator -->
+  <div style="text-align: center; margin-bottom: 24px;">
+    <div style="color: #f0883e; font-size: 13px; margin-bottom: 4px;">← 15 seconds (25% of window) →</div>
+  </div>
+  <!-- Calculation -->
+  <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Weighted count calculation:</div>
+    <div style="font-family: monospace; font-size: 13px; color: #c9d1d9; line-height: 1.8;">
+      <div>= prev_window x (1 - progress) + curr_window</div>
+      <div>= <span style="color: #a371f7;">84</span> x (1 - 0.25) + <span style="color: #7ee787;">36</span></div>
+      <div>= <span style="color: #a371f7;">84</span> x 0.75 + <span style="color: #7ee787;">36</span></div>
+      <div>= 63 + 36</div>
+      <div style="color: #7ee787; font-weight: 600; font-size: 15px; margin-top: 8px;">= 99 requests</div>
+    </div>
+  </div>
+  <!-- Result -->
+  <div style="background: rgba(126, 231, 135, 0.2); border: 1px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center; margin-bottom: 20px;">
+    <span style="color: #7ee787; font-weight: 600; font-size: 15px;">99 &lt; 100 → ALLOW next request ✓</span>
+  </div>
+  <!-- Summary -->
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
+      <span style="color: #7ee787;">✓ No boundary burst problem</span>
+    </div>
+    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
+      <span style="color: #7ee787;">✓ Memory efficient (only 2 counters per user)</span>
+    </div>
+    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 10px 16px;">
+      <span style="color: #7ee787;">✓ Approximation is very accurate in practice</span>
+    </div>
+  </div>
 </div>
 
 ```python
@@ -726,39 +835,32 @@ class AdaptiveRateLimiter:
 ## Common Interview Questions
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **How do you rate limit in a distributed system?**
    - Centralized store (Redis)
    - Sticky sessions
    - Local + global limits
-
 2. **What happens when rate limit is exceeded?**
    - Return 429 Too Many Requests
    - Include Retry-After header
    - Log for monitoring
-
 3. **How do you prevent DDoS with rate limiting?**
    - Rate limit by IP at edge
    - Use CDN's DDoS protection
    - Implement CAPTCHAs
-
 4. **Token bucket vs sliding window - when to use each?**
    - Token bucket: Allow bursts, smooth average
    - Sliding window: Strict limit, no bursts
-
 </div>
 
 ## Best Practices
 
 <div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-
 1. **Return informative headers** - Let clients know their limits
 2. **Fail open** - Allow requests if rate limiter fails
 3. **Use multiple dimensions** - IP + user + endpoint
 4. **Monitor and alert** - Track rate limit hits
 5. **Provide quotas** - Let users check their usage
 6. **Implement graceful degradation** - Reduce features under load
-
 </div>
 
 ## Related Topics

@@ -12,45 +12,60 @@ This guide covers the complete journey of migrating from a monolithic applicatio
 
 ### Original Monolith Structure
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MONOLITHIC APPLICATION                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │                     SINGLE CODEBASE                        │  │
-│  │                                                            │  │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │  │
-│  │  │    User      │  │    Order     │  │   Logistics  │     │  │
-│  │  │   Module     │  │   Module     │  │    Module    │     │  │
-│  │  │              │  │              │  │              │     │  │
-│  │  │ • Register   │  │ • Create     │  │ • Assign     │     │  │
-│  │  │ • Login      │  │ • Cancel     │  │ • Track      │     │  │
-│  │  │ • Profile    │  │ • History    │  │ • Deliver    │     │  │
-│  │  │ • Address    │  │ • Return     │  │ • Return     │     │  │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │  │
-│  │         │                 │                 │              │  │
-│  │         │    DIRECT METHOD CALLS            │              │  │
-│  │         │                 │                 │              │  │
-│  │  ┌──────▼─────────────────▼─────────────────▼───────────┐ │  │
-│  │  │              SHARED DATA ACCESS LAYER                 │ │  │
-│  │  │                    (ORM/Repository)                   │ │  │
-│  │  └──────────────────────────┬────────────────────────────┘ │  │
-│  │                             │                               │  │
-│  └─────────────────────────────┼───────────────────────────────┘  │
-│                                │                                   │
-│  ┌─────────────────────────────▼───────────────────────────────┐  │
-│  │                     SINGLE DATABASE                          │  │
-│  │                      (PostgreSQL)                            │  │
-│  │                                                              │  │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐       │  │
-│  │  │  users   │ │  orders  │ │shipments │ │ addresses│       │  │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘       │  │
-│  │                                                              │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MONOLITHIC APPLICATION</h3>
+  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin-top: 16px;">
+    <h4 style="color: #8b949e; margin: 0 0 16px 0; text-align: center;">SINGLE CODEBASE</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px; text-align: center;">User Module</div>
+        <ul style="color: #d1fae5; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Register</li>
+          <li>Login</li>
+          <li>Profile</li>
+          <li>Address</li>
+        </ul>
+      </div>
+      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 16px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px; text-align: center;">Order Module</div>
+        <ul style="color: #dbeafe; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Create</li>
+          <li>Cancel</li>
+          <li>History</li>
+          <li>Return</li>
+        </ul>
+      </div>
+      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 10px; padding: 16px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px; text-align: center;">Logistics Module</div>
+        <ul style="color: #ede9fe; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Assign</li>
+          <li>Track</li>
+          <li>Deliver</li>
+          <li>Return</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align: center; color: #8b949e; margin: 16px 0; font-size: 0.9em;">
+      <span style="display: inline-block; border-top: 2px dashed #30363d; width: 80%; padding-top: 8px;">DIRECT METHOD CALLS</span>
+    </div>
+    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px;">
+      <div style="color: #58a6ff; font-weight: 600;">SHARED DATA ACCESS LAYER</div>
+      <div style="color: #8b949e; font-size: 0.9em;">(ORM/Repository)</div>
+    </div>
+  </div>
+  <div style="text-align: center; margin: 16px 0;">
+    <span style="color: #8b949e; font-size: 1.5em;">↓</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
+    <div style="color: #fff; font-weight: 600; text-align: center; margin-bottom: 12px;">SINGLE DATABASE (PostgreSQL)</div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+      <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 0.9em;">users</div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 0.9em;">orders</div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 0.9em;">shipments</div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 0.9em;">addresses</div>
+    </div>
+  </div>
+</div>
 
 ### Original Database Schema (Monolith)
 
@@ -180,35 +195,45 @@ LEFT JOIN shipments s ON s.order_id = o.id;
 
 ### Problems with this Monolithic Schema
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                 PROBLEMS WITH MONOLITHIC DB                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. TIGHT COUPLING                                              │
-│     ├─ Orders table has FK to users table                       │
-│     ├─ Shipments table has FK to orders table                   │
-│     ├─ Cannot change user schema without affecting orders       │
-│     └─ All changes require coordinated releases                 │
-│                                                                  │
-│  2. SINGLE POINT OF FAILURE                                     │
-│     ├─ Database outage affects entire application               │
-│     ├─ Cannot scale components independently                    │
-│     └─ One slow query affects all modules                       │
-│                                                                  │
-│  3. CONFLICTING REQUIREMENTS                                    │
-│     ├─ Users need fast reads (profile lookups)                  │
-│     ├─ Orders need ACID transactions                            │
-│     ├─ Logistics needs real-time tracking updates               │
-│     └─ Cannot optimize for all patterns simultaneously          │
-│                                                                  │
-│  4. DEPLOYMENT BOTTLENECK                                       │
-│     ├─ Database migrations require downtime                     │
-│     ├─ One team's changes block others                          │
-│     └─ Cannot release features independently                    │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">PROBLEMS WITH MONOLITHIC DB</h3>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">1. TIGHT COUPLING</h4>
+      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Orders table has FK to users table</li>
+        <li>Shipments table has FK to orders table</li>
+        <li>Cannot change user schema without affecting orders</li>
+        <li>All changes require coordinated releases</li>
+      </ul>
+    </div>
+    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">2. SINGLE POINT OF FAILURE</h4>
+      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Database outage affects entire application</li>
+        <li>Cannot scale components independently</li>
+        <li>One slow query affects all modules</li>
+      </ul>
+    </div>
+    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">3. CONFLICTING REQUIREMENTS</h4>
+      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Users need fast reads (profile lookups)</li>
+        <li>Orders need ACID transactions</li>
+        <li>Logistics needs real-time tracking updates</li>
+        <li>Cannot optimize for all patterns simultaneously</li>
+      </ul>
+    </div>
+    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; font-size: 1.1em;">4. DEPLOYMENT BOTTLENECK</h4>
+      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Database migrations require downtime</li>
+        <li>One team's changes block others</li>
+        <li>Cannot release features independently</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -216,48 +241,65 @@ LEFT JOIN shipments s ON s.order_id = o.id;
 
 ### Microservices Structure
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     MICROSERVICES ARCHITECTURE                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐       │
-│  │   USER SERVICE    │  │   ORDER SERVICE   │  │ LOGISTICS SERVICE │       │
-│  │                   │  │                   │  │                   │       │
-│  │  ┌─────────────┐  │  │  ┌─────────────┐  │  │  ┌─────────────┐  │       │
-│  │  │   API       │  │  │  │   API       │  │  │  │   API       │  │       │
-│  │  │  Handlers   │  │  │  │  Handlers   │  │  │  │  Handlers   │  │       │
-│  │  └──────┬──────┘  │  │  └──────┬──────┘  │  │  └──────┬──────┘  │       │
-│  │         │         │  │         │         │  │         │         │       │
-│  │  ┌──────▼──────┐  │  │  ┌──────▼──────┐  │  │  ┌──────▼──────┐  │       │
-│  │  │  Business   │  │  │  │  Business   │  │  │  │  Business   │  │       │
-│  │  │   Logic     │  │  │  │   Logic     │  │  │  │   Logic     │  │       │
-│  │  └──────┬──────┘  │  │  └──────┬──────┘  │  │  └──────┬──────┘  │       │
-│  │         │         │  │         │         │  │         │         │       │
-│  │  ┌──────▼──────┐  │  │  ┌──────▼──────┐  │  │  ┌──────▼──────┐  │       │
-│  │  │ Event       │  │  │  │ Event       │  │  │  │ Event       │  │       │
-│  │  │ Publisher   │  │  │  │ Publisher   │  │  │  │ Publisher   │  │       │
-│  │  └──────┬──────┘  │  │  └──────┬──────┘  │  │  └──────┬──────┘  │       │
-│  │         │         │  │         │         │  │         │         │       │
-│  └─────────┼─────────┘  └─────────┼─────────┘  └─────────┼─────────┘       │
-│            │                      │                      │                  │
-│  ┌─────────▼─────────┐  ┌─────────▼─────────┐  ┌─────────▼─────────┐       │
-│  │    PostgreSQL     │  │    PostgreSQL     │  │    PostgreSQL     │       │
-│  │   (User Data)     │  │   (Order Data)    │  │  (Shipping Data)  │       │
-│  └───────────────────┘  └───────────────────┘  └───────────────────┘       │
-│                                                                              │
-│                         ┌─────────────────────┐                             │
-│                         │       KAFKA         │                             │
-│                         │   (Event Bus)       │                             │
-│                         │                     │                             │
-│                         │ Topics:             │                             │
-│                         │ • user.events       │                             │
-│                         │ • order.events      │                             │
-│                         │ • shipment.events   │                             │
-│                         └─────────────────────┘                             │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MICROSERVICES ARCHITECTURE</h3>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+    <!-- User Service -->
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">USER SERVICE</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #d1fae5; font-size: 0.85em;">API Handlers</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #d1fae5; font-size: 0.85em;">Business Logic</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #d1fae5; font-size: 0.85em;">Event Publisher</div>
+      </div>
+      <div style="text-align: center; margin-top: 12px;">
+        <div style="color: #fff;">↓</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; margin-top: 4px; color: #fff; font-size: 0.85em;">PostgreSQL<br/><span style="color: #d1fae5;">(User Data)</span></div>
+      </div>
+    </div>
+    <!-- Order Service -->
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">ORDER SERVICE</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #dbeafe; font-size: 0.85em;">API Handlers</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #dbeafe; font-size: 0.85em;">Business Logic</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #dbeafe; font-size: 0.85em;">Event Publisher</div>
+      </div>
+      <div style="text-align: center; margin-top: 12px;">
+        <div style="color: #fff;">↓</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; margin-top: 4px; color: #fff; font-size: 0.85em;">PostgreSQL<br/><span style="color: #dbeafe;">(Order Data)</span></div>
+      </div>
+    </div>
+    <!-- Logistics Service -->
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">LOGISTICS SERVICE</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #ede9fe; font-size: 0.85em;">API Handlers</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #ede9fe; font-size: 0.85em;">Business Logic</div>
+        <div style="text-align: center; color: #fff;">↓</div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; text-align: center; color: #ede9fe; font-size: 0.85em;">Event Publisher</div>
+      </div>
+      <div style="text-align: center; margin-top: 12px;">
+        <div style="color: #fff;">↓</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px; margin-top: 4px; color: #fff; font-size: 0.85em;">PostgreSQL<br/><span style="color: #ede9fe;">(Shipping Data)</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Kafka Event Bus -->
+  <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px; text-align: center;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">KAFKA (Event Bus)</h4>
+    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+      <span style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; color: #fff; font-size: 0.85em;">user.events</span>
+      <span style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; color: #fff; font-size: 0.85em;">order.events</span>
+      <span style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; color: #fff; font-size: 0.85em;">shipment.events</span>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -557,33 +599,62 @@ WHERE published_at IS NULL;
 
 ## Data Comparison: Before vs After
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SCHEMA COMPARISON: BEFORE vs AFTER                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  BEFORE (Monolith)                    AFTER (Microservices)                  │
-│  ──────────────────                   ─────────────────────                  │
-│                                                                              │
-│  orders.user_id → FK to users         orders.user_id = UUID (no FK)         │
-│                                       orders.customer_email = copied        │
-│                                       orders.customer_name = copied         │
-│                                                                              │
-│  orders.shipping_address_id → FK      orders.shipping_address = JSONB       │
-│                                       (complete address snapshot)            │
-│                                                                              │
-│  shipments.order_id → FK to orders    shipments.order_id = UUID (no FK)     │
-│                                       shipments.order_number = copied       │
-│                                       shipments.recipient_* = copied        │
-│                                                                              │
-│  Cross-service JOINs in queries       Events + Denormalized data            │
-│                                                                              │
-│  Cascading deletes                    Soft deletes + Eventual cleanup       │
-│                                                                              │
-│  Single transaction for order         Saga pattern with compensations       │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SCHEMA COMPARISON: BEFORE vs AFTER</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- Before Column -->
+    <div>
+      <h4 style="color: #f85149; margin: 0 0 16px 0; text-align: center; padding: 8px; background: rgba(248,81,73,0.1); border-radius: 8px;">BEFORE (Monolith)</h4>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <code style="color: #f85149;">orders.user_id</code><span style="color: #8b949e;"> → FK to users</span>
+        </div>
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <code style="color: #f85149;">orders.shipping_address_id</code><span style="color: #8b949e;"> → FK</span>
+        </div>
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <code style="color: #f85149;">shipments.order_id</code><span style="color: #8b949e;"> → FK to orders</span>
+        </div>
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <span style="color: #8b949e;">Cross-service JOINs in queries</span>
+        </div>
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <span style="color: #8b949e;">Cascading deletes</span>
+        </div>
+        <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #f85149;">
+          <span style="color: #8b949e;">Single transaction for order</span>
+        </div>
+      </div>
+    </div>
+    <!-- After Column -->
+    <div>
+      <h4 style="color: #7ee787; margin: 0 0 16px 0; text-align: center; padding: 8px; background: rgba(126,231,135,0.1); border-radius: 8px;">AFTER (Microservices)</h4>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <code style="color: #7ee787;">orders.user_id</code><span style="color: #8b949e;"> = UUID (no FK)</span><br/>
+          <span style="color: #8b949e; font-size: 0.85em;">+ customer_email, customer_name copied</span>
+        </div>
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <code style="color: #7ee787;">orders.shipping_address</code><span style="color: #8b949e;"> = JSONB</span><br/>
+          <span style="color: #8b949e; font-size: 0.85em;">(complete address snapshot)</span>
+        </div>
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <code style="color: #7ee787;">shipments.order_id</code><span style="color: #8b949e;"> = UUID (no FK)</span><br/>
+          <span style="color: #8b949e; font-size: 0.85em;">+ order_number, recipient_* copied</span>
+        </div>
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <span style="color: #8b949e;">Events + Denormalized data</span>
+        </div>
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <span style="color: #8b949e;">Soft deletes + Eventual cleanup</span>
+        </div>
+        <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px; border-left: 3px solid #7ee787;">
+          <span style="color: #8b949e;">Saga pattern with compensations</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -591,133 +662,176 @@ WHERE published_at IS NULL;
 
 ### Events Published by Each Service
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         SERVICE EVENTS                                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  USER SERVICE EVENTS:                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Topic: user.events                                                  │    │
-│  │                                                                      │    │
-│  │  UserCreated:                                                        │    │
-│  │  {                                                                   │    │
-│  │    "event_id": "uuid",                                               │    │
-│  │    "event_type": "UserCreated",                                      │    │
-│  │    "timestamp": "2024-01-15T10:30:00Z",                              │    │
-│  │    "data": {                                                         │    │
-│  │      "user_id": "uuid",                                              │    │
-│  │      "email": "user@example.com",                                    │    │
-│  │      "name": "John Doe"                                              │    │
-│  │    }                                                                 │    │
-│  │  }                                                                   │    │
-│  │                                                                      │    │
-│  │  AddressAdded, AddressUpdated, UserDeleted                           │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ORDER SERVICE EVENTS:                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Topic: order.events                                                 │    │
-│  │                                                                      │    │
-│  │  OrderCreated:                                                       │    │
-│  │  {                                                                   │    │
-│  │    "event_id": "uuid",                                               │    │
-│  │    "event_type": "OrderCreated",                                     │    │
-│  │    "timestamp": "2024-01-15T10:30:00Z",                              │    │
-│  │    "data": {                                                         │    │
-│  │      "order_id": "uuid",                                             │    │
-│  │      "order_number": "ORD-123456",                                   │    │
-│  │      "user_id": "uuid",                                              │    │
-│  │      "total": 1500.00,                                               │    │
-│  │      "shipping_address": { ... }                                     │    │
-│  │    }                                                                 │    │
-│  │  }                                                                   │    │
-│  │                                                                      │    │
-│  │  OrderConfirmed, OrderCancelled, OrderCompleted                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  LOGISTICS SERVICE EVENTS:                                                   │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  Topic: shipment.events                                              │    │
-│  │                                                                      │    │
-│  │  ShipmentCreated, ShipmentDispatched, ShipmentDelivered              │    │
-│  │  DeliveryAttemptFailed, ShipmentReturned                             │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SERVICE EVENTS</h3>
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <!-- User Service Events -->
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0;">USER SERVICE EVENTS</h4>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <span style="color: #d1fae5; font-weight: 600;">Topic: user.events</span>
+      </div>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 0.85em;">
+        <div style="color: #7ee787; margin-bottom: 8px;">UserCreated:</div>
+        <pre style="color: #d1fae5; margin: 0; white-space: pre-wrap;">{
+  "event_id": "uuid",
+  "event_type": "UserCreated",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "user_id": "uuid",
+    "email": "user@example.com",
+    "name": "John Doe"
+  }
+}</pre>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">AddressAdded</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">AddressUpdated</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">UserDeleted</span>
+      </div>
+    </div>
+    <!-- Order Service Events -->
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0;">ORDER SERVICE EVENTS</h4>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <span style="color: #dbeafe; font-weight: 600;">Topic: order.events</span>
+      </div>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 0.85em;">
+        <div style="color: #58a6ff; margin-bottom: 8px;">OrderCreated:</div>
+        <pre style="color: #dbeafe; margin: 0; white-space: pre-wrap;">{
+  "event_id": "uuid",
+  "event_type": "OrderCreated",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "data": {
+    "order_id": "uuid",
+    "order_number": "ORD-123456",
+    "user_id": "uuid",
+    "total": 1500.00,
+    "shipping_address": { ... }
+  }
+}</pre>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">OrderConfirmed</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">OrderCancelled</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">OrderCompleted</span>
+      </div>
+    </div>
+    <!-- Logistics Service Events -->
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0;">LOGISTICS SERVICE EVENTS</h4>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <span style="color: #ede9fe; font-weight: 600;">Topic: shipment.events</span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">ShipmentCreated</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">ShipmentDispatched</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">ShipmentDelivered</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">DeliveryAttemptFailed</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.85em;">ShipmentReturned</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
 ## Migration Strategy: Strangler Fig Pattern
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    STRANGLER FIG MIGRATION PHASES                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  PHASE 1: IDENTIFY BOUNDARIES                                               │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  • Analyze domain boundaries (User, Order, Logistics)                │    │
-│  │  • Identify shared data and cross-cutting concerns                   │    │
-│  │  • Map current database dependencies                                 │    │
-│  │  • Define service contracts (APIs, Events)                           │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PHASE 2: EXTRACT USER SERVICE (Least Dependencies)                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  ┌──────────────────────────────────────────────────────────────┐   │    │
-│  │  │                      MONOLITH                                 │   │    │
-│  │  │  ┌────────┐  ┌────────┐  ┌────────┐                          │   │    │
-│  │  │  │ User   │  │ Order  │  │Logistics│                          │   │    │
-│  │  │  └───┬────┘  └───┬────┘  └───┬────┘                          │   │    │
-│  │  │      │           │           │                                │   │    │
-│  │  │      │     ┌─────▼───────────▼────┐                          │   │    │
-│  │  │      │     │   Shared Database    │                          │   │    │
-│  │  │      │     └──────────────────────┘                          │   │    │
-│  │  └──────│────────────────────────────────────────────────────────┘   │    │
-│  │         │                                                            │    │
-│  │         │  Extract                                                   │    │
-│  │         ▼                                                            │    │
-│  │  ┌──────────────┐                                                   │    │
-│  │  │ User Service │ ◀── API calls from monolith                       │    │
-│  │  │  (New DB)    │                                                   │    │
-│  │  └──────────────┘                                                   │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PHASE 3: DATA SYNCHRONIZATION                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  • Dual-write to both old and new databases                          │    │
-│  │  • Sync existing user data to new User Service DB                    │    │
-│  │  • Validate data consistency                                         │    │
-│  │  • Switch reads to new service                                       │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PHASE 4: EXTRACT ORDER SERVICE                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  • Copy user data (email, name) into orders (denormalization)        │    │
-│  │  • Replace FK relationships with event-driven updates                │    │
-│  │  • Implement Saga for order creation workflow                        │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PHASE 5: EXTRACT LOGISTICS SERVICE                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  • Subscribe to order.events                                         │    │
-│  │  • Copy shipping address and order details                           │    │
-│  │  • Remove shipments table from monolith                              │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PHASE 6: DECOMMISSION MONOLITH                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  • Redirect all traffic to microservices                             │    │
-│  │  • Archive old database                                              │    │
-│  │  • Remove monolith infrastructure                                    │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">STRANGLER FIG MIGRATION PHASES</h3>
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Phase 1 -->
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">PHASE 1</span>
+        IDENTIFY BOUNDARIES
+      </h4>
+      <ul style="color: #dbeafe; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Analyze domain boundaries (User, Order, Logistics)</li>
+        <li>Identify shared data and cross-cutting concerns</li>
+        <li>Map current database dependencies</li>
+        <li>Define service contracts (APIs, Events)</li>
+      </ul>
+    </div>
+    <!-- Phase 2 -->
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">PHASE 2</span>
+        EXTRACT USER SERVICE (Least Dependencies)
+      </h4>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: center;">
+        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+          <div style="color: #d1fae5; font-weight: 600; margin-bottom: 12px; text-align: center;">MONOLITH</div>
+          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+            <span style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 0.85em;">User</span>
+            <span style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 0.85em;">Order</span>
+            <span style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 6px; color: #fff; font-size: 0.85em;">Logistics</span>
+          </div>
+          <div style="text-align: center; color: #fff;">↓</div>
+          <div style="background: rgba(248,81,73,0.3); border-radius: 6px; padding: 8px; text-align: center; color: #fff; font-size: 0.85em; margin-top: 8px;">Shared Database</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="color: #fff; margin-bottom: 8px;">Extract →</div>
+          <div style="background: #7ee787; border-radius: 8px; padding: 12px; color: #0d1117;">
+            <div style="font-weight: 600;">User Service</div>
+            <div style="font-size: 0.85em;">(New DB)</div>
+          </div>
+          <div style="color: #d1fae5; font-size: 0.8em; margin-top: 8px;">API calls from monolith</div>
+        </div>
+      </div>
+    </div>
+    <!-- Phase 3 -->
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">PHASE 3</span>
+        DATA SYNCHRONIZATION
+      </h4>
+      <ul style="color: #ede9fe; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Dual-write to both old and new databases</li>
+        <li>Sync existing user data to new User Service DB</li>
+        <li>Validate data consistency</li>
+        <li>Switch reads to new service</li>
+      </ul>
+    </div>
+    <!-- Phase 4 -->
+    <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">PHASE 4</span>
+        EXTRACT ORDER SERVICE
+      </h4>
+      <ul style="color: #fed7aa; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Copy user data (email, name) into orders (denormalization)</li>
+        <li>Replace FK relationships with event-driven updates</li>
+        <li>Implement Saga for order creation workflow</li>
+      </ul>
+    </div>
+    <!-- Phase 5 -->
+    <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em;">PHASE 5</span>
+        EXTRACT LOGISTICS SERVICE
+      </h4>
+      <ul style="color: #cffafe; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Subscribe to order.events</li>
+        <li>Copy shipping address and order details</li>
+        <li>Remove shipments table from monolith</li>
+      </ul>
+    </div>
+    <!-- Phase 6 -->
+    <div style="background: linear-gradient(135deg, #7ee787 0%, #3fb950 100%); border-radius: 12px; padding: 20px;">
+      <h4 style="color: #0d1117; margin: 0 0 12px 0; display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em; color: #fff;">PHASE 6</span>
+        DECOMMISSION MONOLITH
+      </h4>
+      <ul style="color: #064e3b; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Redirect all traffic to microservices</li>
+        <li>Archive old database</li>
+        <li>Remove monolith infrastructure</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 ---
 

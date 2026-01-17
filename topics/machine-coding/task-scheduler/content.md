@@ -12,6 +12,161 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 - Support task cancellation
 - Thread-safe execution
 
+---
+
+## Solution Breakdown
+
+### Part 1: Understanding the Core Challenge
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+**The Key Challenge**: We need to efficiently:
+1. **Store tasks** ordered by execution time (when should this run?)
+2. **Execute tasks** at the right time without busy-waiting
+3. **Handle priorities** when multiple tasks are due simultaneously
+4. **Support recurring** tasks that reschedule themselves
+**Why is this tricky?**
+- Simple polling (check every second) wastes CPU
+- Sleeping until next task ignores new high-priority tasks
+- Thread-safety when multiple workers grab tasks
+</div>
+
+### Part 2: Task Lifecycle State Machine
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Task State Transitions</h4>
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;">
+<!-- PENDING State -->
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 16px 20px; border-radius: 12px;">
+<div style="color: #fff; font-size: 20px;">⏳</div>
+<div style="color: #fff; font-weight: bold; font-size: 12px;">PENDING</div>
+</div>
+<div style="color: #8b949e; font-size: 10px; margin-top: 4px;">In queue</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="color: #7ee787; font-size: 10px;">Time reached</div>
+<div style="color: #7ee787; font-size: 20px;">→</div>
+</div>
+<!-- RUNNING State -->
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 20px; border-radius: 12px;">
+<div style="color: #fff; font-size: 20px;">⚡</div>
+<div style="color: #fff; font-weight: bold; font-size: 12px;">RUNNING</div>
+</div>
+<div style="color: #8b949e; font-size: 10px; margin-top: 4px;">Executing</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 4px;">
+<div style="color: #7ee787; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 12px; border-radius: 8px;">
+<div style="color: #fff; font-size: 10px;">✓ COMPLETED</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 4px;">
+<div style="color: #f85149; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 12px; border-radius: 8px;">
+<div style="color: #fff; font-size: 10px;">✗ FAILED</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Cancel path -->
+<div style="display: flex; justify-content: center; margin-top: 16px;">
+<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #ffa657; font-size: 11px;">PENDING → CANCELLED (on cancel() call)</div>
+<div style="color: #a371f7; font-size: 11px; margin-top: 4px;">COMPLETED → PENDING (if recurring task)</div>
+</div>
+</div>
+</div>
+
+### Part 3: Why a Min-Heap for Scheduling?
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+**Data Structure Comparison:**
+| Structure | Get Next Task | Insert Task | Cancel Task |
+|-----------|--------------|-------------|-------------|
+| **Sorted List** | O(1) | O(n) | O(n) |
+| **Min-Heap** | O(1) peek, O(log n) pop | O(log n) | O(n) |
+| **Sorted Map** | O(log n) | O(log n) | O(log n) |
+**Why Min-Heap wins:**
+- We frequently need the **earliest** task (smallest timestamp) → peek is O(1)
+- Tasks are inserted sporadically → O(log n) insert is acceptable
+- Cancel is rare → O(n) is tolerable
+- Python's `heapq` is highly optimized
+**The Heap Ordering:**
+```
+Task comparison: (scheduled_time, -priority)
+- First by time: earlier tasks float to top
+- Then by priority: higher priority (lower -priority value) wins ties
+```
+</div>
+
+### Part 4: Worker Thread Synchronization
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #a371f7; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Condition Variable Pattern</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Producer (schedule)</div>
+<div style="color: #c9d1d9; font-size: 11px; font-family: monospace; line-height: 1.6;">
+1. Acquire lock<br>
+2. Add task to heap<br>
+3. <span style="color: #ffa657;">condition.notify()</span><br>
+4. Release lock
+</div>
+</div>
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Consumer (worker)</div>
+<div style="color: #c9d1d9; font-size: 11px; font-family: monospace; line-height: 1.6;">
+1. Acquire lock<br>
+2. <span style="color: #ffa657;">condition.wait(timeout)</span><br>
+   &nbsp;&nbsp;- Sleeps until notified<br>
+   &nbsp;&nbsp;- Or until timeout<br>
+3. Pop task from heap<br>
+4. Release lock, execute task
+</div>
+</div>
+</div>
+<div style="background: #238636; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Why condition.wait(timeout)?</div>
+<div style="color: #d1f5d3; font-size: 11px;">
+• <strong>timeout = next_task.scheduled_time - now</strong>: Wakes exactly when task is due<br>
+• <strong>notify()</strong>: Wakes worker if new urgent task arrives<br>
+• No busy-waiting, no missed tasks, no wasted CPU
+</div>
+</div>
+</div>
+
+### Part 5: Recurring Task Rescheduling
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+**After a recurring task completes:**
+```python
+if task.recurrence == RecurrenceType.INTERVAL:
+    task.scheduled_time = time.time() + task.interval
+    task.status = TaskStatus.PENDING
+    heapq.heappush(self.task_queue, task)  # Re-add to heap
+```
+**Key insight**: The same Task object is reused, just with:
+- Updated `scheduled_time`
+- Reset `status` to PENDING
+- Pushed back onto the heap
+This allows tracking total executions, cumulative results, etc.
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| `schedule()` | O(log n) | O(1) |
+| `cancel()` | O(1) lookup + O(n) worst case for removal | O(1) |
+| Get next task | O(log n) | O(1) |
+| **Total Space** | - | O(n) tasks |
+
+---
+
 ## Solution
 
 ### Python
@@ -535,14 +690,43 @@ func main() {
 
 ### Priority Queue Implementation
 
-```
-Task Queue (Min-Heap by scheduled_time, then priority):
-┌─────────────────────────────────────────┐
-│  [task1: 10:00, p=5]                    │
-│     /              \                    │
-│ [task2: 10:01, p=3] [task3: 10:02, p=8] │
-└─────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 8px 0; text-align: center; font-size: 14px;">Task Queue (Min-Heap)</h4>
+<div style="color: #8b949e; font-size: 11px; text-align: center; margin-bottom: 24px;">Ordered by scheduled_time, then priority</div>
+<!-- Heap Structure -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<!-- Root Node -->
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task1</div>
+<div style="color: #d1f5d3; font-size: 10px;">10:00, p=5</div>
+</div>
+<!-- Connector Lines -->
+<div style="display: flex; justify-content: center; gap: 60px;">
+<div style="color: #30363d; font-size: 20px;">╱</div>
+<div style="color: #30363d; font-size: 20px;">╲</div>
+</div>
+<!-- Child Nodes -->
+<div style="display: flex; justify-content: center; gap: 24px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task2</div>
+<div style="color: #a5d6ff; font-size: 10px;">10:01, p=3</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">task3</div>
+<div style="color: #eddeff; font-size: 10px;">10:02, p=8</div>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-top: 24px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
+<span style="color: #7ee787; font-size: 10px;">Root = Next task to execute</span>
+</div>
+<div style="background: #21262d; padding: 8px 14px; border-radius: 6px;">
+<span style="color: #ffa657; font-size: 10px;">p = priority (higher = more urgent)</span>
+</div>
+</div>
+</div>
 
 ### Cron Expression Support
 

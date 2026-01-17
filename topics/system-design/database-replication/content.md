@@ -335,53 +335,71 @@ class WALReplication:
 
 ## Failover Strategies
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       AUTOMATIC FAILOVER                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   BEFORE FAILURE:                                                          │
-│                                                                             │
-│   ┌─────────────────┐         ┌─────────────────┐                         │
-│   │    PRIMARY      │────────►│   REPLICA 1     │                         │
-│   │    (Active)     │    │    │   (Standby)     │                         │
-│   └─────────────────┘    │    └─────────────────┘                         │
-│                          │                                                  │
-│                          └───►┌─────────────────┐                         │
-│                               │   REPLICA 2     │                         │
-│                               │   (Standby)     │                         │
-│                               └─────────────────┘                         │
-│                                                                             │
-│   FAILURE DETECTED:                                                        │
-│                                                                             │
-│   ┌─────────────────┐                                                      │
-│   │    PRIMARY      │  💥 FAILED!                                          │
-│   │    (Down)       │                                                      │
-│   └─────────────────┘                                                      │
-│          │                                                                  │
-│          │  Health check timeout                                           │
-│          ▼                                                                  │
-│   ┌─────────────────────────────────────────┐                             │
-│   │           FAILOVER PROCESS              │                             │
-│   │                                         │                             │
-│   │   1. Detect failure (heartbeat timeout) │                             │
-│   │   2. Select best replica (most current) │                             │
-│   │   3. Promote replica to primary         │                             │
-│   │   4. Reconfigure remaining replicas     │                             │
-│   │   5. Update DNS/routing                 │                             │
-│   └─────────────────────────────────────────┘                             │
-│                                                                             │
-│   AFTER FAILOVER:                                                          │
-│                                                                             │
-│   ┌─────────────────┐         ┌─────────────────┐                         │
-│   │   REPLICA 1     │────────►│   REPLICA 2     │                         │
-│   │  (NEW PRIMARY)  │         │   (Standby)     │                         │
-│   │     ✓ Active    │         └─────────────────┘                         │
-│   └─────────────────┘                                                      │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">AUTOMATIC FAILOVER</div>
+  <div style="margin-bottom: 32px;">
+    <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">BEFORE FAILURE:</div>
+    <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
+        <div style="color: #ffffff; font-weight: 600;">PRIMARY</div>
+        <div style="color: #aaffaa; font-size: 12px;">(Active)</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: #58a6ff; font-size: 20px;">→</span>
+          <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 130px; text-align: center;">
+            <div style="color: #f0f6fc; font-weight: 500;">REPLICA 1</div>
+            <div style="color: #8b949e; font-size: 12px;">(Standby)</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: #58a6ff; font-size: 20px;">→</span>
+          <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 130px; text-align: center;">
+            <div style="color: #f0f6fc; font-weight: 500;">REPLICA 2</div>
+            <div style="color: #8b949e; font-size: 12px;">(Standby)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom: 32px;">
+    <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">FAILURE DETECTED:</div>
+    <div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; opacity: 0.7;">
+        <div style="color: #ffffff; font-weight: 600;">PRIMARY</div>
+        <div style="color: #ffaaaa; font-size: 12px;">(Down)</div>
+        <div style="color: #ffffff; font-size: 18px; margin-top: 8px;">FAILED!</div>
+      </div>
+      <div style="color: #f85149; font-size: 20px; align-self: center;">↓</div>
+      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px; flex: 1; min-width: 280px;">
+        <div style="color: #ffffff; font-weight: 600; margin-bottom: 12px; text-align: center;">FAILOVER PROCESS</div>
+        <div style="color: #aaddff; font-size: 13px;">
+          <div style="margin-bottom: 6px;">1. Detect failure (heartbeat timeout)</div>
+          <div style="margin-bottom: 6px;">2. Select best replica (most current)</div>
+          <div style="margin-bottom: 6px;">3. Promote replica to primary</div>
+          <div style="margin-bottom: 6px;">4. Reconfigure remaining replicas</div>
+          <div>5. Update DNS/routing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">AFTER FAILOVER:</div>
+    <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
+        <div style="color: #ffffff; font-weight: 600;">REPLICA 1</div>
+        <div style="color: #aaffaa; font-size: 12px;">(NEW PRIMARY)</div>
+        <div style="color: #7ee787; font-size: 16px; margin-top: 4px;">✓ Active</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="color: #58a6ff; font-size: 20px;">→</span>
+        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 130px; text-align: center;">
+          <div style="color: #f0f6fc; font-weight: 500;">REPLICA 2</div>
+          <div style="color: #8b949e; font-size: 12px;">(Standby)</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Automatic Failover

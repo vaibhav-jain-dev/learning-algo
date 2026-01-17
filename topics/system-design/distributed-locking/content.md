@@ -8,34 +8,53 @@ Distributed locking coordinates access to shared resources across multiple proce
 
 Think of distributed locking like a hotel key card system:
 
-```
-Single-Location Lock (Easy):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Guest → Reception → Physical Key → Room                        │
-│                                                                 │
-│  - Only one key exists                                          │
-│  - Reception knows who has it                                   │
-│  - Simple and reliable                                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-Distributed Lock (Hard - Multiple Hotels in Chain):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Guest → Any Reception → Electronic Key Card → Any Room         │
-│             │                                                   │
-│      [Must coordinate                                           │
-│       across all hotels]                                        │
-│             │                                                   │
-│  Problems:                                                      │
-│  - What if network fails between hotels?                        │
-│  - What if guest's card expires mid-stay?                       │
-│  - What if hotel database is out of sync?                       │
-│  - What if two receptions issue cards simultaneously?           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Single-Location Lock (Easy)</span>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #58a6ff;">Guest</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #c9d1d9;">Reception</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #23863633; padding: 10px 16px; border-radius: 6px; color: #7ee787; border: 1px solid #238636;">Physical Key</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #c9d1d9;">Room</span>
+    </div>
+    <div style="font-size: 13px; color: #8b949e; line-height: 1.8;">
+      <div style="color: #7ee787;">- Only one key exists</div>
+      <div style="color: #7ee787;">- Reception knows who has it</div>
+      <div style="color: #7ee787;">- Simple and reliable</div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
+      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Distributed Lock (Hard - Multiple Hotels)</span>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px;">
+      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #58a6ff;">Guest</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9;">Any Reception</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #f8514933; padding: 8px 12px; border-radius: 6px; color: #f85149; border: 1px solid #f8514966;">Electronic Key</span>
+      <span style="color: #8b949e;">-></span>
+      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9;">Any Room</span>
+    </div>
+    <div style="background: #f0883e22; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+      <span style="color: #f0883e; font-size: 12px;">[Must coordinate across all hotels]</span>
+    </div>
+    <div style="font-size: 12px; color: #8b949e; line-height: 1.8;">
+      <div style="color: #f85149;">Problems:</div>
+      <div>- What if network fails between hotels?</div>
+      <div>- What if guest's card expires mid-stay?</div>
+      <div>- What if hotel database is out of sync?</div>
+      <div>- What if two receptions issue cards simultaneously?</div>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -71,23 +90,41 @@ After 20+ years of distributed systems:
 
 ### The Fundamental Problem
 
-```
-Time →
-           t1          t2          t3          t4
-           │           │           │           │
-Client A:  ├───────────┤           │           │
-           │ Acquires  │ Pause     │ Executes  │ (thinks it has lock)
-           │ Lock      │ (GC, etc.)│ Write     │
-           │           │           │     │     │
-Client B:  │           ├───────────┤     │     │
-           │           │ Lock      │ Executes  │
-           │           │ Expired   │ Write     │
-           │           │ B Acquires│     │     │
-           │           │           │     │     │
-                                         ▼
-                              TWO WRITES TO SAME RESOURCE!
-                              DATA CORRUPTION!
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+  <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #8b949e;">
+    <span>Time -></span>
+    <div style="display: flex; gap: 80px;">
+      <span>t1</span>
+      <span>t2</span>
+      <span>t3</span>
+      <span>t4</span>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: 600; font-size: 14px;">Client A:</div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <div style="background: #23863644; border: 1px solid #238636; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Acquires Lock</div>
+      <div style="background: #f0883e33; border: 1px solid #f0883e; padding: 8px 16px; border-radius: 6px; color: #f0883e; font-size: 12px;">Pause (GC, etc.)</div>
+      <div style="flex: 1;"></div>
+      <div style="background: #f8514944; border: 1px solid #f85149; padding: 8px 16px; border-radius: 6px; color: #f85149; font-size: 12px;">Executes Write</div>
+      <span style="color: #8b949e; font-size: 11px; margin-left: 8px;">(thinks it has lock)</span>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
+    <div style="color: #d2a8ff; font-weight: 600; font-size: 14px;">Client B:</div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <div style="width: 120px;"></div>
+      <div style="background: #23863644; border: 1px solid #238636; padding: 8px 12px; border-radius: 6px; color: #7ee787; font-size: 11px;">Lock Expired, B Acquires</div>
+      <div style="background: #7ee78744; border: 1px solid #7ee787; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Executes Write</div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #30363d;">
+    <div style="background: #f8514933; border: 2px solid #f85149; padding: 20px 32px; border-radius: 12px; text-align: center;">
+      <div style="color: #f85149; font-weight: 600; font-size: 16px; margin-bottom: 8px;">TWO WRITES TO SAME RESOURCE!</div>
+      <div style="color: #f85149; font-size: 18px; font-weight: 700;">DATA CORRUPTION!</div>
+    </div>
+  </div>
+</div>
 
 This is the **pausing problem**. Any client can pause (GC, network delay, swap) while holding a lock, causing the lock to expire while they still think they hold it.
 
@@ -486,22 +523,45 @@ CREATE INDEX idx_locks_expires ON distributed_locks(expires_at);
 
 ### The Problem Without Fencing
 
-```
-Time →
-           t1          t2          t3          t4
-           │           │           │           │
-Client A:  ├───────────┼───────────┤           │
-           │ Gets lock │ GC pause  │ Writes    │ ← PROBLEM!
-           │ token=1   │           │ resource  │
-           │           │           │           │
-Client B:  │           ├───────────┤           │
-           │           │ Gets lock │ Writes    │ ← This should win
-           │           │ token=2   │ resource  │
-           │           │           │           │
-
-Without fencing: A's write (token=1) happens AFTER B's write (token=2)
-Result: Stale data overwrites fresh data!
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+  <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #8b949e;">
+    <span>Time -></span>
+    <div style="display: flex; gap: 80px;">
+      <span>t1</span>
+      <span>t2</span>
+      <span>t3</span>
+      <span>t4</span>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: 600; font-size: 14px;">Client A:</div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <div style="background: #21262d; border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9; font-size: 11px;">Gets lock <span style="color: #8b949e;">token=1</span></div>
+      <div style="background: #f0883e33; border: 1px solid #f0883e; padding: 8px 16px; border-radius: 6px; color: #f0883e; font-size: 12px;">GC pause</div>
+      <div style="flex: 1;"></div>
+      <div style="background: #f8514944; border: 1px solid #f85149; padding: 8px 16px; border-radius: 6px; color: #f85149; font-size: 12px;">Writes resource</div>
+      <span style="color: #f85149; font-size: 11px; margin-left: 8px; font-weight: 600;">PROBLEM!</span>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
+    <div style="color: #d2a8ff; font-weight: 600; font-size: 14px;">Client B:</div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <div style="width: 100px;"></div>
+      <div style="background: #21262d; border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9; font-size: 11px;">Gets lock <span style="color: #7ee787;">token=2</span></div>
+      <div style="background: #7ee78744; border: 1px solid #7ee787; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Writes resource</div>
+      <span style="color: #7ee787; font-size: 11px; margin-left: 8px;">This should win</span>
+    </div>
+  </div>
+  <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #30363d;">
+    <div style="background: #f0883e22; border: 1px solid #f0883e; padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">
+      <span style="color: #f0883e; font-weight: 500;">Without fencing:</span>
+      <span style="color: #c9d1d9;"> A's write (token=1) happens AFTER B's write (token=2)</span>
+    </div>
+    <div style="background: #f8514933; border: 1px solid #f85149; padding: 16px 24px; border-radius: 8px; text-align: center;">
+      <span style="color: #f85149; font-weight: 600;">Result: Stale data overwrites fresh data!</span>
+    </div>
+  </div>
+</div>
 
 ### The Solution: Fencing Tokens
 

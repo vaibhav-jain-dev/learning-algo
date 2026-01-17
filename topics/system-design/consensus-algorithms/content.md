@@ -8,125 +8,186 @@ Consensus algorithms enable distributed systems to agree on a single value or st
 
 ### The Consensus Problem
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      THE CONSENSUS PROBLEM                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Multiple nodes must agree on a single value:                             │
-│                                                                             │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
-│   │  Node A  │    │  Node B  │    │  Node C  │                            │
-│   │proposes X│    │proposes Y│    │proposes X│                            │
-│   └────┬─────┘    └────┬─────┘    └────┬─────┘                            │
-│        │               │               │                                    │
-│        └───────────────┼───────────────┘                                    │
-│                        │                                                    │
-│                        ▼                                                    │
-│                 ┌─────────────┐                                            │
-│                 │  CONSENSUS  │                                            │
-│                 │  PROTOCOL   │                                            │
-│                 └─────────────┘                                            │
-│                        │                                                    │
-│        ┌───────────────┼───────────────┐                                    │
-│        ▼               ▼               ▼                                    │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
-│   │  Node A  │    │  Node B  │    │  Node C  │                            │
-│   │decides: X│    │decides: X│    │decides: X│                            │
-│   └──────────┘    └──────────┘    └──────────┘                            │
-│                                                                             │
-│   All nodes agree on X (could have been Y, but MUST be same value)        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">THE CONSENSUS PROBLEM</div>
+  <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Multiple nodes must agree on a single value:</div>
+  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node A</div>
+      <div style="color: #aaddff; font-size: 12px; margin-top: 4px;">proposes X</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node B</div>
+      <div style="color: #ffdddd; font-size: 12px; margin-top: 4px;">proposes Y</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node C</div>
+      <div style="color: #aaddff; font-size: 12px; margin-top: 4px;">proposes X</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓ ↓ ↓</div>
+  <div style="text-align: center; margin-bottom: 20px;">
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px 40px; display: inline-block;">
+      <div style="color: #ffffff; font-weight: 600;">CONSENSUS PROTOCOL</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #a371f7; font-size: 24px; margin-bottom: 16px;">↓ ↓ ↓</div>
+  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node A</div>
+      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">decides: X</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node B</div>
+      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">decides: X</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center;">
+      <div style="color: #ffffff; font-weight: 600;">Node C</div>
+      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">decides: X</div>
+    </div>
+  </div>
+  <div style="text-align: center; background: rgba(46, 160, 67, 0.1); border: 1px solid #238636; border-radius: 8px; padding: 12px;">
+    <span style="color: #7ee787;">All nodes agree on X (could have been Y, but MUST be same value)</span>
+  </div>
 </div>
 
 ### Properties of Consensus
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-
 1. **Agreement**: All correct nodes decide on the same value
 2. **Validity**: The decided value was proposed by some node
 3. **Termination**: All correct nodes eventually decide
 4. **Integrity**: Each node decides at most once
-
 </div>
 
 ### FLP Impossibility
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-
 ⚠️ **The FLP Impossibility Theorem (1985)**: In an asynchronous system with even one faulty node, no deterministic consensus algorithm can guarantee all three properties (agreement, validity, termination) simultaneously.
-
 Practical algorithms use **timeouts** to work around this, accepting that termination may not be guaranteed if too many failures occur.
-
 </div>
 
 ## Common Consensus Algorithms
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CONSENSUS ALGORITHM COMPARISON                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  Algorithm │ Fault Model  │ Nodes for f faults │ Rounds │ Used In          │
-│  ──────────┼──────────────┼────────────────────┼────────┼──────────────────│
-│  Paxos     │ Crash        │ 2f + 1             │ 2      │ Chubby, Spanner  │
-│  Raft      │ Crash        │ 2f + 1             │ 2      │ etcd, CockroachDB│
-│  PBFT      │ Byzantine    │ 3f + 1             │ 3      │ Hyperledger      │
-│  Zab       │ Crash        │ 2f + 1             │ 2      │ Zookeeper        │
-│                                                                             │
-│  Crash fault: Node stops responding                                        │
-│  Byzantine: Node may behave maliciously (lie, send conflicting messages)   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">CONSENSUS ALGORITHM COMPARISON</div>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <thead>
+        <tr style="border-bottom: 2px solid #30363d;">
+          <th style="padding: 12px; text-align: left; color: #58a6ff;">Algorithm</th>
+          <th style="padding: 12px; text-align: center; color: #58a6ff;">Fault Model</th>
+          <th style="padding: 12px; text-align: center; color: #58a6ff;">Nodes for f faults</th>
+          <th style="padding: 12px; text-align: center; color: #58a6ff;">Rounds</th>
+          <th style="padding: 12px; text-align: left; color: #58a6ff;">Used In</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid #21262d;">
+          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Paxos</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Crash</span></td>
+          <td style="padding: 12px; text-align: center; color: #ffa657;">2f + 1</td>
+          <td style="padding: 12px; text-align: center; color: #f0f6fc;">2</td>
+          <td style="padding: 12px; color: #8b949e;">Chubby, Spanner</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #21262d;">
+          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Raft</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Crash</span></td>
+          <td style="padding: 12px; text-align: center; color: #ffa657;">2f + 1</td>
+          <td style="padding: 12px; text-align: center; color: #f0f6fc;">2</td>
+          <td style="padding: 12px; color: #8b949e;">etcd, CockroachDB</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #21262d;">
+          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">PBFT</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #f85149;">Byzantine</span></td>
+          <td style="padding: 12px; text-align: center; color: #ffa657;">3f + 1</td>
+          <td style="padding: 12px; text-align: center; color: #f0f6fc;">3</td>
+          <td style="padding: 12px; color: #8b949e;">Hyperledger</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Zab</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Crash</span></td>
+          <td style="padding: 12px; text-align: center; color: #ffa657;">2f + 1</td>
+          <td style="padding: 12px; text-align: center; color: #f0f6fc;">2</td>
+          <td style="padding: 12px; color: #8b949e;">Zookeeper</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div style="background: rgba(46, 160, 67, 0.1); border-radius: 8px; padding: 12px;">
+      <span style="color: #7ee787; font-weight: 600;">Crash fault:</span>
+      <span style="color: #f0f6fc;"> Node stops responding</span>
+    </div>
+    <div style="background: rgba(248, 81, 73, 0.1); border-radius: 8px; padding: 12px;">
+      <span style="color: #f85149; font-weight: 600;">Byzantine:</span>
+      <span style="color: #f0f6fc;"> Node may behave maliciously</span>
+    </div>
+  </div>
 </div>
 
 ### 1. Paxos
 
 The classic consensus algorithm, known for being difficult to understand but foundational.
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          PAXOS PROTOCOL                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Roles: Proposer (proposes values), Acceptor (votes), Learner (learns)    │
-│                                                                             │
-│   PHASE 1: PREPARE                                                         │
-│   ─────────────────                                                        │
-│                                                                             │
-│   Proposer                 Acceptors                                       │
-│      │                     A    B    C                                     │
-│      │──PREPARE(n=5)──────►│    │    │                                     │
-│      │──PREPARE(n=5)────────────►│    │                                     │
-│      │──PREPARE(n=5)──────────────────►│                                     │
-│      │                     │    │    │                                     │
-│      │◄──PROMISE(n=5)──────│    │    │  "I won't accept proposals < 5"    │
-│      │◄──PROMISE(n=5)───────────│    │                                     │
-│      │◄──PROMISE(n=5)────────────────│                                     │
-│                                                                             │
-│   PHASE 2: ACCEPT                                                          │
-│   ───────────────                                                          │
-│                                                                             │
-│   Proposer                 Acceptors                                       │
-│      │                     A    B    C                                     │
-│      │──ACCEPT(n=5,v=X)───►│    │    │                                     │
-│      │──ACCEPT(n=5,v=X)─────────►│    │                                     │
-│      │──ACCEPT(n=5,v=X)───────────────►│                                     │
-│      │                     │    │    │                                     │
-│      │◄──ACCEPTED(n=5,v=X)─│    │    │                                     │
-│      │◄──ACCEPTED(n=5,v=X)──────│    │                                     │
-│      │◄──ACCEPTED(n=5,v=X)───────────│                                     │
-│                                                                             │
-│   Majority accepted → Value X is chosen!                                   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">PAXOS PROTOCOL</div>
+  <div style="text-align: center; color: #8b949e; margin-bottom: 24px;">
+    Roles: <span style="color: #58a6ff;">Proposer</span> (proposes values), <span style="color: #a371f7;">Acceptor</span> (votes), <span style="color: #7ee787;">Learner</span> (learns)
+  </div>
+  <div style="background: rgba(88, 166, 255, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px;">PHASE 1: PREPARE</div>
+    <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
+        <div style="color: #ffffff; font-weight: 600;">Proposer</div>
+      </div>
+      <div style="flex: 1; min-width: 280px;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">A</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">B</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">C</div>
+          </div>
+        </div>
+        <div style="font-size: 13px;">
+          <div style="color: #58a6ff; margin-bottom: 8px;">→ PREPARE(n=5) to all acceptors</div>
+          <div style="color: #7ee787;">← PROMISE(n=5) "I won't accept proposals &lt; 5"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background: rgba(163, 113, 247, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <div style="color: #a371f7; font-weight: 600; margin-bottom: 16px;">PHASE 2: ACCEPT</div>
+    <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
+        <div style="color: #ffffff; font-weight: 600;">Proposer</div>
+      </div>
+      <div style="flex: 1; min-width: 280px;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">A</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">B</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; flex: 1; text-align: center;">
+            <div style="color: #ffffff; font-weight: 600; font-size: 13px;">C</div>
+          </div>
+        </div>
+        <div style="font-size: 13px;">
+          <div style="color: #a371f7; margin-bottom: 8px;">→ ACCEPT(n=5, v=X) to all acceptors</div>
+          <div style="color: #7ee787;">← ACCEPTED(n=5, v=X)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background: rgba(46, 160, 67, 0.2); border: 1px solid #238636; border-radius: 8px; padding: 12px; text-align: center;">
+    <span style="color: #7ee787; font-weight: 600;">Majority accepted → Value X is chosen!</span>
+  </div>
 </div>
 
 ```python
@@ -223,95 +284,149 @@ class PaxosNode:
 
 Designed for understandability, widely used in practice.
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           RAFT PROTOCOL                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Three states: FOLLOWER → CANDIDATE → LEADER                              │
-│                                                                             │
-│   ┌────────────────────────────────────────────────────────────────────┐   │
-│   │                      LEADER ELECTION                               │   │
-│   └────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   Step 1: Timeout (no heartbeat from leader)                               │
-│                                                                             │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐                            │
-│   │ Follower │    │ Follower │    │ Follower │                            │
-│   │  Node A  │    │  Node B  │    │  Node C  │                            │
-│   └────┬─────┘    └──────────┘    └──────────┘                            │
-│        │                                                                    │
-│        │ timeout!                                                           │
-│        ▼                                                                    │
-│   ┌──────────┐                                                             │
-│   │Candidate │ term++, vote for self                                       │
-│   │  Node A  │                                                             │
-│   └────┬─────┘                                                             │
-│        │                                                                    │
-│   Step 2: Request votes                                                    │
-│        │                                                                    │
-│        ├──RequestVote──────────►┌──────────┐                              │
-│        │                        │ Follower │ vote: YES                     │
-│        │                        │  Node B  │                               │
-│        │                        └──────────┘                               │
-│        │                                                                    │
-│        ├──RequestVote──────────►┌──────────┐                              │
-│        │                        │ Follower │ vote: YES                     │
-│        │                        │  Node C  │                               │
-│        │                        └──────────┘                               │
-│        │                                                                    │
-│   Step 3: Wins election (got majority)                                     │
-│        ▼                                                                    │
-│   ┌──────────┐                                                             │
-│   │  LEADER  │ sends heartbeats to all followers                           │
-│   │  Node A  │                                                             │
-│   └──────────┘                                                             │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">RAFT PROTOCOL</div>
+  <div style="text-align: center; margin-bottom: 24px;">
+    <span style="color: #8b949e;">Three states:</span>
+    <span style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); color: #f0f6fc; padding: 4px 12px; border-radius: 6px; margin: 0 8px;">FOLLOWER</span>
+    <span style="color: #58a6ff;">→</span>
+    <span style="background: linear-gradient(135deg, #ffa657 0%, #d29922 100%); color: #ffffff; padding: 4px 12px; border-radius: 6px; margin: 0 8px;">CANDIDATE</span>
+    <span style="color: #58a6ff;">→</span>
+    <span style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); color: #ffffff; padding: 4px 12px; border-radius: 6px; margin: 0 8px;">LEADER</span>
+  </div>
+  <div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 24px;">
+    <span style="color: #58a6ff; font-weight: 600;">LEADER ELECTION</span>
+  </div>
+  <div style="margin-bottom: 24px;">
+    <div style="color: #ffa657; font-weight: 600; margin-bottom: 12px;">Step 1: Timeout (no heartbeat from leader)</div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px;">
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 100px; text-align: center;">
+        <div style="color: #f0f6fc; font-weight: 500;">Follower</div>
+        <div style="color: #8b949e; font-size: 12px;">Node A</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 100px; text-align: center;">
+        <div style="color: #f0f6fc; font-weight: 500;">Follower</div>
+        <div style="color: #8b949e; font-size: 12px;">Node B</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 14px; min-width: 100px; text-align: center;">
+        <div style="color: #f0f6fc; font-weight: 500;">Follower</div>
+        <div style="color: #8b949e; font-size: 12px;">Node C</div>
+      </div>
+    </div>
+    <div style="color: #f85149; font-size: 14px; margin-left: 10px;">↓ timeout!</div>
+    <div style="background: linear-gradient(135deg, #ffa657 0%, #d29922 100%); border-radius: 10px; padding: 14px; width: 100px; text-align: center; margin-top: 8px;">
+      <div style="color: #ffffff; font-weight: 600;">Candidate</div>
+      <div style="color: #fff8dd; font-size: 12px;">Node A</div>
+      <div style="color: #fff8dd; font-size: 11px; margin-top: 4px;">term++, vote for self</div>
+    </div>
+  </div>
+  <div style="margin-bottom: 24px;">
+    <div style="color: #ffa657; font-weight: 600; margin-bottom: 12px;">Step 2: Request votes</div>
+    <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+      <div style="background: linear-gradient(135deg, #ffa657 0%, #d29922 100%); border-radius: 10px; padding: 14px; min-width: 100px; text-align: center;">
+        <div style="color: #ffffff; font-weight: 600;">Candidate</div>
+        <div style="color: #fff8dd; font-size: 12px;">Node A</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: #58a6ff;">RequestVote →</span>
+          <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 8px; padding: 10px; text-align: center;">
+            <div style="color: #f0f6fc; font-size: 13px;">Node B</div>
+            <div style="color: #7ee787; font-size: 12px;">vote: YES</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: #58a6ff;">RequestVote →</span>
+          <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 8px; padding: 10px; text-align: center;">
+            <div style="color: #f0f6fc; font-size: 13px;">Node C</div>
+            <div style="color: #7ee787; font-size: 12px;">vote: YES</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div style="color: #7ee787; font-weight: 600; margin-bottom: 12px;">Step 3: Wins election (got majority)</div>
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; width: fit-content; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
+      <div style="color: #ffffff; font-weight: 600; font-size: 16px;">LEADER</div>
+      <div style="color: #aaffaa; font-size: 12px;">Node A</div>
+      <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">sends heartbeats to all followers</div>
+    </div>
+  </div>
 </div>
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 14px; line-height: 1.6;">
-<pre style="margin: 0; white-space: pre;">
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        RAFT LOG REPLICATION                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   Client sends command "SET X=5" to Leader                                 │
-│                                                                             │
-│   Leader's Log:                                                            │
-│   ┌─────┬─────┬─────┬─────┬─────┐                                         │
-│   │  1  │  2  │  3  │  4  │  5  │  ← Log entries                          │
-│   │T1:A │T1:B │T2:C │T3:D │T3:X │                                         │
-│   └─────┴─────┴─────┴─────┴─────┘                                         │
-│                           ▲                                                 │
-│                      commitIndex                                            │
-│                                                                             │
-│   1. Leader appends entry to log                                           │
-│   2. Leader sends AppendEntries to followers                               │
-│   3. Followers append to their logs and ACK                                │
-│   4. When majority ACK → Leader commits                                    │
-│   5. Leader notifies followers of commit                                   │
-│                                                                             │
-│   Leader          Follower 1       Follower 2                              │
-│   ┌─────┐         ┌─────┐         ┌─────┐                                 │
-│   │T3:X │────────►│T3:X │         │     │                                 │
-│   └─────┘  append └─────┘         └─────┘                                 │
-│      │                │                                                     │
-│      │      ACK ◄─────┘                                                     │
-│      │                                                                      │
-│      │◄───────────────────────────ACK                                      │
-│      │                             │                                        │
-│   COMMIT!                          │                                        │
-│   (majority                        │                                        │
-│    replicated)    ┌─────┐         ┌─────┐                                 │
-│      │            │T3:X │         │T3:X │                                 │
-│      └───────────►└─────┘         └─────┘                                 │
-│         commit                                                              │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
+  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">RAFT LOG REPLICATION</div>
+  <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Client sends command <span style="color: #58a6ff; font-family: monospace;">"SET X=5"</span> to Leader</div>
+  <div style="margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Leader's Log:</div>
+    <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 6px; padding: 10px 16px; text-align: center;">
+        <div style="color: #8b949e; font-size: 11px;">1</div>
+        <div style="color: #f0f6fc; font-size: 12px;">T1:A</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 6px; padding: 10px 16px; text-align: center;">
+        <div style="color: #8b949e; font-size: 11px;">2</div>
+        <div style="color: #f0f6fc; font-size: 12px;">T1:B</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 6px; padding: 10px 16px; text-align: center;">
+        <div style="color: #8b949e; font-size: 11px;">3</div>
+        <div style="color: #f0f6fc; font-size: 12px;">T2:C</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 10px 16px; text-align: center;">
+        <div style="color: #aaffaa; font-size: 11px;">4</div>
+        <div style="color: #ffffff; font-size: 12px;">T3:D</div>
+      </div>
+      <div style="background: linear-gradient(135deg, #ffa657 0%, #d29922 100%); border-radius: 6px; padding: 10px 16px; text-align: center;">
+        <div style="color: #fff8dd; font-size: 11px;">5</div>
+        <div style="color: #ffffff; font-size: 12px;">T3:X</div>
+      </div>
+    </div>
+    <div style="color: #7ee787; font-size: 12px; margin-left: 180px;">↑ commitIndex</div>
+  </div>
+  <div style="background: rgba(88, 166, 255, 0.1); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-size: 13px; line-height: 1.8;">
+      <div>1. Leader appends entry to log</div>
+      <div>2. Leader sends AppendEntries to followers</div>
+      <div>3. Followers append to their logs and ACK</div>
+      <div>4. When majority ACK → Leader commits</div>
+      <div>5. Leader notifies followers of commit</div>
+    </div>
+  </div>
+  <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 14px; min-width: 100px; margin-bottom: 8px;">
+        <div style="color: #ffffff; font-weight: 600;">Leader</div>
+        <div style="background: rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 10px; margin-top: 8px;">
+          <span style="color: #aaffaa; font-size: 12px;">T3:X</span>
+        </div>
+      </div>
+      <div style="color: #7ee787; font-size: 12px; font-weight: 600;">COMMIT!</div>
+      <div style="color: #8b949e; font-size: 11px;">(majority replicated)</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="color: #58a6ff;">append →</span>
+        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 8px; padding: 10px; text-align: center; min-width: 90px;">
+          <div style="color: #f0f6fc; font-size: 13px;">Follower 1</div>
+          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 4px 8px; margin-top: 6px;">
+            <span style="color: #7ee787; font-size: 11px;">T3:X</span>
+          </div>
+        </div>
+        <span style="color: #7ee787;">← ACK</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="color: #58a6ff;">append →</span>
+        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 8px; padding: 10px; text-align: center; min-width: 90px;">
+          <div style="color: #f0f6fc; font-size: 13px;">Follower 2</div>
+          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 4px 8px; margin-top: 6px;">
+            <span style="color: #7ee787; font-size: 11px;">T3:X</span>
+          </div>
+        </div>
+        <span style="color: #7ee787;">← ACK</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 ```python

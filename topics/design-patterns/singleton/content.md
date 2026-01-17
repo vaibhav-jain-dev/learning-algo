@@ -18,7 +18,6 @@ Ask yourself these questions:
 
 <div class="decision-tree" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Should You Use Singleton?</h4>
-
 <div style="display: flex; flex-direction: column; gap: 16px;">
 <div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
 <strong style="color: #569cd6;">Question 1:</strong> <span style="color: #ddd;">Do you need exactly ONE instance?</span>
@@ -26,14 +25,12 @@ Ask yourself these questions:
 <span style="color: #ff6b6b;">NO →</span> <span style="color: #888;">Don't use Singleton. Consider regular classes or factory patterns.</span>
 </div>
 </div>
-
 <div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
 <strong style="color: #569cd6;">Question 2:</strong> <span style="color: #ddd;">Is global access truly necessary?</span>
 <div style="margin-top: 8px; padding-left: 20px;">
 <span style="color: #ff6b6b;">NO →</span> <span style="color: #888;">Consider Dependency Injection instead. It's more testable.</span>
 </div>
 </div>
-
 <div style="background: #252540; padding: 16px; border-radius: 8px; border-left: 4px solid #569cd6;">
 <strong style="color: #569cd6;">Question 3:</strong> <span style="color: #ddd;">Is the object stateless or has simple state?</span>
 <div style="margin-top: 8px; padding-left: 20px;">
@@ -68,7 +65,6 @@ Ask yourself these questions:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Singleton Class Structure</h4>
-
 <div style="display: flex; justify-content: center; margin-bottom: 24px;">
 <div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 320px;">
 <div style="background: #569cd6; color: white; padding: 8px 16px; font-weight: bold; text-align: center;">Singleton</div>
@@ -85,9 +81,7 @@ Ask yourself these questions:
 </div>
 </div>
 </div>
-
 <h4 style="color: #4ecdc4; margin-top: 24px; text-align: center;">How It Works</h4>
-
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 16px;">
 <div style="text-align: center;">
 <div style="background: #252540; padding: 12px 20px; border-radius: 8px; color: #ddd; margin-bottom: 8px;">Thread 1<br><code style="color: #569cd6;">getInstance()</code></div>
@@ -102,7 +96,6 @@ Ask yourself these questions:
 <div style="color: #569cd6; font-size: 24px;">↓</div>
 </div>
 </div>
-
 <div style="display: flex; justify-content: center; margin-top: 16px;">
 <div style="background: #4ecdc4; color: #1a1a2e; padding: 16px 32px; border-radius: 8px; text-align: center; font-weight: bold;">
 Single Instance<br>
@@ -138,7 +131,6 @@ Single Instance<br>
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; overflow-x: auto;">
 <h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Trade-off Comparison</h4>
-
 <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
 <thead>
 <tr style="border-bottom: 2px solid #30363d;">
@@ -187,7 +179,6 @@ Single Instance<br>
 </tr>
 </tbody>
 </table>
-
 <div style="background: #252540; padding: 16px; border-radius: 8px; margin-top: 16px;">
 <strong style="color: #4ecdc4;">Recommendations:</strong>
 <ul style="color: #ddd; margin: 8px 0 0 0; padding-left: 20px;">

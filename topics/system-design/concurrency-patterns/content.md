@@ -8,37 +8,55 @@ Concurrency patterns help manage multiple tasks executing simultaneously. Unders
 
 Think of concurrency like a restaurant kitchen:
 
-```
-Single-Threaded (One Chef):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Order 1 → Prep → Cook → Plate → Done                           │
-│                                  ↓                              │
-│  Order 2 → Prep → Cook → Plate → Done                           │
-│                                  ↓                              │
-│  Order 3 → Prep → Cook → Plate → Done                           │
-│                                                                 │
-│  Total time: 30 minutes (10 min × 3)                            │
-│  Problem: Orders wait in queue                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-
-Multi-Threaded (Multiple Chefs):
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Chef 1: Order 1 → Prep → Cook → Plate → Done                   │
-│  Chef 2: Order 2 → Prep → Cook → Plate → Done  (parallel!)      │
-│  Chef 3: Order 3 → Prep → Cook → Plate → Done  (parallel!)      │
-│                                                                 │
-│  Total time: 10 minutes (all run simultaneously)                │
-│                                                                 │
-│  New problems:                                                  │
-│  - Who uses the single oven? (Resource contention)              │
-│  - Don't use the same knife simultaneously! (Race condition)    │
-│  - Chef A waits for B's pan, B waits for A's knife (Deadlock)   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #30363d;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #8b949e; border-radius: 50%;"></div>
+      <span style="color: #c9d1d9; font-weight: 600; font-size: 16px;">Single-Threaded (One Chef)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px; line-height: 2;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Order 1</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
+      </div>
+      <div style="color: #8b949e; text-align: center; font-size: 16px;">|</div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Order 2</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
+      </div>
+      <div style="color: #8b949e; text-align: center; font-size: 16px;">|</div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Order 3</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
+      <div style="color: #8b949e;">Total time: <span style="color: #f85149;">30 minutes</span> (10 min x 3)</div>
+      <div style="color: #f85149; margin-top: 8px;">Problem: Orders wait in queue</div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Multi-Threaded (Multiple Chefs)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px; line-height: 2;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #d2a8ff;">Chef 1:</span> <span style="color: #58a6ff;">Order 1</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #d2a8ff;">Chef 2:</span> <span style="color: #58a6ff;">Order 2</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span> <span style="color: #7ee787; font-size: 11px;">(parallel!)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #d2a8ff;">Chef 3:</span> <span style="color: #58a6ff;">Order 3</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span> <span style="color: #7ee787; font-size: 11px;">(parallel!)</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
+      <div style="color: #8b949e;">Total time: <span style="color: #7ee787;">10 minutes</span> (all run simultaneously)</div>
+      <div style="color: #f0883e; margin-top: 12px; font-weight: 500;">New problems:</div>
+      <div style="color: #8b949e; margin-top: 4px; font-size: 12px;">- Who uses the single oven? <span style="color: #f0883e;">(Resource contention)</span></div>
+      <div style="color: #8b949e; font-size: 12px;">- Don't use the same knife simultaneously! <span style="color: #f85149;">(Race condition)</span></div>
+      <div style="color: #8b949e; font-size: 12px;">- Chef A waits for B's pan, B waits for A's knife <span style="color: #f85149;">(Deadlock)</span></div>
+    </div>
+  </div>
+</div>
 
 ### Mapping the Metaphor
 
@@ -75,29 +93,59 @@ After 20+ years of debugging production concurrency issues:
 
 ### Why Thread Pools?
 
-```
-Without pool (create/destroy threads):
-┌─────────────────────────────────────────────────────────────────┐
-│  Request 1 → Create Thread → Execute → Destroy Thread           │
-│  Request 2 → Create Thread → Execute → Destroy Thread           │
-│  Request 3 → Create Thread → Execute → Destroy Thread           │
-│                                                                 │
-│  Thread creation: ~1ms each                                     │
-│  1000 requests = 1000ms of overhead!                            │
-└─────────────────────────────────────────────────────────────────┘
-
-With pool (reuse threads):
-┌─────────────────────────────────────────────────────────────────┐
-│  Pool: [Thread1, Thread2, Thread3, Thread4]                     │
-│                                                                 │
-│  Request 1 → Thread1 (from pool) → Execute → Return to pool     │
-│  Request 2 → Thread2 (from pool) → Execute → Return to pool     │
-│  Request 3 → Thread3 (from pool) → Execute → Return to pool     │
-│                                                                 │
-│  Thread creation: 0ms (already created)                         │
-│  Overhead eliminated!                                           │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
+      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Without Pool (create/destroy threads)</span>
+    </div>
+    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 1</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 2</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 3</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
+      <div style="color: #8b949e;">Thread creation: <span style="color: #f0883e;">~1ms each</span></div>
+      <div style="color: #f85149; margin-top: 8px; font-weight: 500;">1000 requests = 1000ms of overhead!</div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
+      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">With Pool (reuse threads)</span>
+    </div>
+    <div style="background: #21262d; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+      <span style="color: #8b949e; font-size: 12px;">Pool:</span>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread1</span>
+        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread2</span>
+        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread3</span>
+        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread4</span>
+      </div>
+    </div>
+    <div style="font-family: monospace; font-size: 12px; line-height: 2;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 1</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread1 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 2</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread2 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
+        <span style="color: #58a6ff;">Request 3</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread3 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
+      <div style="color: #8b949e;">Thread creation: <span style="color: #7ee787;">0ms</span> (already created)</div>
+      <div style="color: #7ee787; margin-top: 8px; font-weight: 500;">Overhead eliminated!</div>
+    </div>
+  </div>
+</div>
 
 ### Python - Production Thread Pool
 
@@ -593,19 +641,56 @@ func (p *Pool) Shutdown(timeout time.Duration) {
 
 ### What is a Race Condition?
 
-```
-Thread A                   Thread B                 Counter
-───────                   ────────                 ───────
-Read counter (= 0)                                    0
-                          Read counter (= 0)          0
-Increment (local = 1)                                 0
-                          Increment (local = 1)       0
-Write counter (= 1)                                   1
-                          Write counter (= 1)         1
-
-Expected: 2
-Actual: 1  ← RACE CONDITION!
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 24px; font-family: monospace; font-size: 13px;">
+    <div>
+      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Thread A</div>
+      <div style="line-height: 2.2;">
+        <div style="color: #c9d1d9;">Read counter (= 0)</div>
+        <div style="color: #30363d;">.</div>
+        <div style="color: #d2a8ff;">Increment (local = 1)</div>
+        <div style="color: #30363d;">.</div>
+        <div style="color: #7ee787;">Write counter (= 1)</div>
+        <div style="color: #30363d;">.</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #d2a8ff; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Thread B</div>
+      <div style="line-height: 2.2;">
+        <div style="color: #30363d;">.</div>
+        <div style="color: #c9d1d9;">Read counter (= 0)</div>
+        <div style="color: #30363d;">.</div>
+        <div style="color: #d2a8ff;">Increment (local = 1)</div>
+        <div style="color: #30363d;">.</div>
+        <div style="color: #7ee787;">Write counter (= 1)</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #8b949e; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Counter</div>
+      <div style="line-height: 2.2; text-align: center;">
+        <div style="color: #8b949e;">0</div>
+        <div style="color: #8b949e;">0</div>
+        <div style="color: #8b949e;">0</div>
+        <div style="color: #8b949e;">0</div>
+        <div style="color: #f0883e;">1</div>
+        <div style="color: #f85149; font-weight: 600;">1</div>
+      </div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; gap: 40px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #30363d;">
+    <div style="text-align: center;">
+      <div style="color: #8b949e; font-size: 12px;">Expected</div>
+      <div style="color: #7ee787; font-size: 24px; font-weight: 600;">2</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="color: #8b949e; font-size: 12px;">Actual</div>
+      <div style="color: #f85149; font-size: 24px; font-weight: 600;">1</div>
+    </div>
+    <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 24px; border-radius: 8px; color: #f85149; font-weight: 600; display: flex; align-items: center;">
+      RACE CONDITION!
+    </div>
+  </div>
+</div>
 
 ### Fixing Race Conditions
 
@@ -738,17 +823,31 @@ class Singleton:
 
 ### What is a Deadlock?
 
-```
-Thread A                    Thread B
-────────                    ────────
-Acquires Lock 1
-                            Acquires Lock 2
-Waits for Lock 2 ←────────────────→ Waits for Lock 1
-        ↓                           ↓
-     BLOCKED                     BLOCKED
-
-Both threads wait forever = DEADLOCK
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; font-family: monospace; font-size: 14px;">
+    <div style="text-align: center;">
+      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #30363d;">Thread A</div>
+      <div style="background: #23863633; border: 1px solid #238636; padding: 12px 20px; border-radius: 8px; color: #7ee787; margin-bottom: 16px;">Acquires Lock 1</div>
+      <div style="color: #8b949e; margin-bottom: 16px;">|</div>
+      <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 20px; border-radius: 8px; color: #f85149;">Waits for Lock 2</div>
+      <div style="color: #f85149; margin-top: 16px; font-size: 18px;">|</div>
+      <div style="background: #f85149; color: #fff; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-weight: 600;">BLOCKED</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="color: #d2a8ff; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #30363d;">Thread B</div>
+      <div style="background: #23863633; border: 1px solid #238636; padding: 12px 20px; border-radius: 8px; color: #7ee787; margin-bottom: 16px;">Acquires Lock 2</div>
+      <div style="color: #8b949e; margin-bottom: 16px;">|</div>
+      <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 20px; border-radius: 8px; color: #f85149;">Waits for Lock 1</div>
+      <div style="color: #f85149; margin-top: 16px; font-size: 18px;">|</div>
+      <div style="background: #f85149; color: #fff; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-weight: 600;">BLOCKED</div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #30363d;">
+    <div style="background: #f8514933; border: 2px solid #f85149; padding: 16px 32px; border-radius: 12px; text-align: center;">
+      <div style="color: #f85149; font-weight: 600; font-size: 18px;">Both threads wait forever = DEADLOCK</div>
+    </div>
+  </div>
+</div>
 
 ### The Four Conditions for Deadlock
 

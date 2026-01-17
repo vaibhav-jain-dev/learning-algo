@@ -785,18 +785,18 @@ import (
 )
 
 func main() {
-    // Demonstrate lightweight nature: spawn 10,000 goroutines
+    // Demonstrate goroutine spawning (reduced for demo)
     start := time.Now()
     var wg sync.WaitGroup
 
-    numGoroutines := 10000
+    numGoroutines := 100 // Keep small for demo
     wg.Add(numGoroutines)
 
     for i := 0; i < numGoroutines; i++ {
         go func(id int) {
             defer wg.Done()
-            // Simulate some work
-            time.Sleep(1 * time.Millisecond)
+            // Quick work - no sleep needed for demo
+            _ = id * id
         }(i)
     }
 
@@ -804,7 +804,7 @@ func main() {
     elapsed := time.Since(start)
 
     fmt.Printf("Spawned and completed %d goroutines in %v\n", numGoroutines, elapsed)
-    fmt.Printf("Average time per goroutine: %v\n", elapsed/time.Duration(numGoroutines))
+    // Note: In production, Go can handle millions of goroutines!
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
@@ -951,7 +951,7 @@ type Result struct {
 
 func compute(n int, results chan<- Result) {
     // Simulate computation
-    time.Sleep(50 * time.Millisecond)
+    time.Sleep(5 * time.Millisecond)
     results <- Result{Value: n * n, Err: nil}
 }
 
@@ -1093,7 +1093,7 @@ func fetchUser(id int, wg *sync.WaitGroup) {
     defer wg.Done() // Signal completion when function returns
 
     // Simulate API call
-    time.Sleep(100 * time.Millisecond)
+    time.Sleep(10 * time.Millisecond)
     fmt.Printf("Fetched user %d\n", id)
 }
 
@@ -1138,7 +1138,7 @@ type Result struct {
 
 func fetchUserData(id int, results chan<- Result) {
     // Simulate API call
-    time.Sleep(50 * time.Millisecond)
+    time.Sleep(5 * time.Millisecond)
 
     // Send result through channel
     results <- Result{
@@ -1188,12 +1188,12 @@ func main() {
     ch2 := make(chan string)
 
     go func() {
-        time.Sleep(100 * time.Millisecond)
+        time.Sleep(10 * time.Millisecond)
         ch1 <- "Result from service 1"
     }()
 
     go func() {
-        time.Sleep(50 * time.Millisecond)
+        time.Sleep(5 * time.Millisecond)
         ch2 <- "Result from service 2"
     }()
 
@@ -1210,14 +1210,14 @@ func main() {
     // Select with timeout
     timeout := make(chan string)
     go func() {
-        time.Sleep(200 * time.Millisecond)
+        time.Sleep(20 * time.Millisecond)
         timeout <- "slow result"
     }()
 
     select {
     case result := <-timeout:
         fmt.Println("Got:", result)
-    case <-time.After(100 * time.Millisecond):
+    case <-time.After(10 * time.Millisecond):
         fmt.Println("Timeout! Service too slow")
     }
 }</code></pre>
@@ -1274,7 +1274,7 @@ func main() {
     properGoroutine(ctx)
 
     fmt.Println("Main function completed")
-    time.Sleep(50 * time.Millisecond)
+    time.Sleep(5 * time.Millisecond)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
@@ -1476,7 +1476,7 @@ func fetchFromDB(ctx context.Context, query string) (string, error) {
 
     go func() {
         // Simulate slow database query
-        time.Sleep(200 * time.Millisecond)
+        time.Sleep(20 * time.Millisecond)
         resultCh <- "DB Result: " + query
     }()
 
@@ -1512,12 +1512,12 @@ func handleRequest(ctx context.Context) {
 func main() {
     ctx := context.Background()
 
-    fmt.Println("Request with 100ms timeout (DB takes 200ms):")
+    fmt.Println("Request with 100ms timeout (DB takes 20ms - will succeed):")
     handleRequest(ctx)
 
-    // Increase timeout
-    fmt.Println("\nRequest with longer timeout:")
-    ctx2, cancel := context.WithTimeout(ctx, 300*time.Millisecond)
+    // Different query
+    fmt.Println("\nAnother request:")
+    ctx2, cancel := context.WithTimeout(ctx, 50*time.Millisecond)
     defer cancel()
 
     result, err := fetchFromDB(ctx2, "SELECT * FROM products")
@@ -1629,8 +1629,8 @@ func worker(id int, jobs <-chan Job, results chan<- Result, wg *sync.WaitGroup) 
     defer wg.Done()
 
     for job := range jobs {
-        // Simulate processing
-        time.Sleep(50 * time.Millisecond)
+        // Simulate processing (minimal for demo)
+        time.Sleep(5 * time.Millisecond)
 
         results <- Result{
             JobID:  job.ID,
@@ -1865,7 +1865,7 @@ func (cb *CircuitBreaker) Execute(fn func() error) error {
 }
 
 func main() {
-    cb := NewCircuitBreaker(3, 500*time.Millisecond)
+    cb := NewCircuitBreaker(3, 50*time.Millisecond) // Short timeout for demo
 
     callCount := 0
 
@@ -1887,13 +1887,13 @@ func main() {
             fmt.Printf("Call %d: Success\n", i)
         }
 
-        // Small delay between calls
-        time.Sleep(100 * time.Millisecond)
+        // Minimal delay for demo
+        time.Sleep(5 * time.Millisecond)
     }
 
     // Wait for reset timeout
     fmt.Println("\nWaiting for circuit to reset...")
-    time.Sleep(600 * time.Millisecond)
+    time.Sleep(60 * time.Millisecond)
 
     // Try again after reset
     callCount = 5 // Force success
@@ -1944,7 +1944,7 @@ func (s *Server) HandleRequest(ctx context.Context, reqID int) {
 
     // Simulate work with context awareness
     select {
-    case <-time.After(200 * time.Millisecond):
+    case <-time.After(50 * time.Millisecond):
         fmt.Printf("Request %d: Completed\n", reqID)
     case <-ctx.Done():
         fmt.Printf("Request %d: Cancelled\n", reqID)
@@ -1989,11 +1989,11 @@ func main() {
     // Simulate incoming requests
     for i := 1; i <= 3; i++ {
         go server.HandleRequest(ctx, i)
-        time.Sleep(50 * time.Millisecond)
+        time.Sleep(5 * time.Millisecond)
     }
 
     // Wait a bit then initiate shutdown
-    time.Sleep(100 * time.Millisecond)
+    time.Sleep(10 * time.Millisecond)
 
     // Try to send more requests during shutdown
     go server.HandleRequest(ctx, 99)
@@ -2142,7 +2142,7 @@ func main() {
             // Do work
             elapsed := time.Since(start).Round(time.Millisecond)
             fmt.Printf("Op %d: Started at %v\n", id, elapsed)
-            time.Sleep(100 * time.Millisecond)
+            time.Sleep(10 * time.Millisecond)
 
             elapsed = time.Since(start).Round(time.Millisecond)
             fmt.Printf("Op %d: Completed at %v\n", id, elapsed)
@@ -2187,7 +2187,7 @@ func square(in <-chan int) <-chan int {
     out := make(chan int)
     go func() {
         for n := range in {
-            time.Sleep(50 * time.Millisecond) // Simulate work
+            time.Sleep(5 * time.Millisecond) // Simulate work
             out <- n * n
         }
         close(out)

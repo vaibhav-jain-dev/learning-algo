@@ -10,461 +10,483 @@ This guide presents detailed case studies of companies that successfully migrate
 
 ## Case Study 1: Amazon (2001-2006)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  CASE STUDY: AMAZON'S MICROSERVICES TRANSFORMATION                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TIMELINE: 2001-2006                                                         │
-│  SCALE: Millions of customers → Billions in revenue                         │
-│                                                                              │
-│  THE PROBLEM (2001):                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  "Obidos" Monolith:                                                  │    │
-│  │  • Single C++ application handling everything                        │    │
-│  │  • All teams worked on same codebase                                 │    │
-│  │  • 2-week deployment cycles                                          │    │
-│  │  • Single failure could take down entire site                        │    │
-│  │  • Couldn't scale individual components                              │    │
-│  │                                                                      │    │
-│  │  Pain Points:                                                        │    │
-│  │  • Feature releases took months                                      │    │
-│  │  • Deployments required coordinated downtime                         │    │
-│  │  • Database was single point of failure                              │    │
-│  │  • Team conflicts over shared code                                   │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE MANDATE (2002):                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Jeff Bezos API Mandate:                                             │    │
-│  │                                                                      │    │
-│  │  1. All teams will expose their data and functionality through       │    │
-│  │     service interfaces                                               │    │
-│  │                                                                      │    │
-│  │  2. Teams must communicate with each other through these interfaces  │    │
-│  │                                                                      │    │
-│  │  3. There will be no other form of inter-process communication:      │    │
-│  │     no direct linking, no direct reads of another team's data store, │    │
-│  │     no shared-memory model                                           │    │
-│  │                                                                      │    │
-│  │  4. It doesn't matter what technology they use                       │    │
-│  │                                                                      │    │
-│  │  5. All service interfaces must be designed to be externalizable     │    │
-│  │                                                                      │    │
-│  │  6. Anyone who doesn't do this will be fired                         │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE APPROACH:                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Phase 1: Define Service Boundaries                                  │    │
-│  │  • Product catalog                                                   │    │
-│  │  • Customer data                                                     │    │
-│  │  • Orders                                                            │    │
-│  │  • Payments                                                          │    │
-│  │  • Inventory                                                         │    │
-│  │  • Recommendations                                                   │    │
-│  │                                                                      │    │
-│  │  Phase 2: Extract Services (Strangler Pattern)                       │    │
-│  │  • Start with low-risk services                                      │    │
-│  │  • Build API layer in front of monolith                              │    │
-│  │  • Gradually route traffic to new services                           │    │
-│  │  • Keep monolith running until service proven                        │    │
-│  │                                                                      │    │
-│  │  Phase 3: Scale and Iterate                                          │    │
-│  │  • Two-pizza teams (6-10 people) own services                        │    │
-│  │  • Teams choose their own technology                                 │    │
-│  │  • Services can have their own databases                             │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  RESULTS (2006):                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Before (2001)          │  After (2006)                              │    │
-│  │  ─────────────────────────┼─────────────────────────                 │    │
-│  │  1 monolith             │  100+ services                            │    │
-│  │  2-week deployments     │  Multiple deploys/day                     │    │
-│  │  Coordinated releases   │  Independent releases                     │    │
-│  │  Single database        │  Database per service                     │    │
-│  │  All-or-nothing scaling │  Service-level scaling                    │    │
-│  │                                                                      │    │
-│  │  Bonus: AWS was born from this infrastructure!                       │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  KEY LESSONS:                                                                │
-│  • Strong mandate from leadership is essential                              │
-│  • Service boundaries should align with business domains                     │
-│  • Small, autonomous teams work best                                        │
-│  • Design APIs as if they'll be public                                      │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #ff9900; margin: 0 0 8px 0; font-size: 1.4em; text-align: center;">Case Study: Amazon's Microservices Transformation</h3>
+  <div style="text-align: center; color: #8892b0; margin-bottom: 20px;">
+    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2001-2006</span>
+    <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: Millions of customers to Billions in revenue</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">The Problem (2001): "Obidos" Monolith</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div>
+        <ul style="color: #ffe0e0; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Single C++ application handling everything</li>
+          <li>All teams worked on same codebase</li>
+          <li>2-week deployment cycles</li>
+          <li>Single failure could take down entire site</li>
+        </ul>
+      </div>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 6px;">Pain Points:</div>
+        <ul style="color: #ffe0e0; margin: 0; padding-left: 16px; font-size: 0.85em;">
+          <li>Feature releases took months</li>
+          <li>Deployments required coordinated downtime</li>
+          <li>Database was single point of failure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">The Mandate (2002): Jeff Bezos API Mandate</h4>
+    <ol style="color: #e0e0ff; margin: 0; padding-left: 20px; font-size: 0.9em;">
+      <li style="margin-bottom: 6px;">All teams will expose their data and functionality through <strong style="color: #fff;">service interfaces</strong></li>
+      <li style="margin-bottom: 6px;">Teams must communicate with each other <strong style="color: #fff;">through these interfaces</strong></li>
+      <li style="margin-bottom: 6px;">No other form of inter-process communication: no direct linking, no direct reads of another team's data store</li>
+      <li style="margin-bottom: 6px;">It doesn't matter what <strong style="color: #fff;">technology</strong> they use</li>
+      <li style="margin-bottom: 6px;">All service interfaces must be designed to be <strong style="color: #fff;">externalizable</strong></li>
+      <li><em style="color: #ff9900;">Anyone who doesn't do this will be fired</em></li>
+    </ol>
+  </div>
+  <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">The Approach</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+      <div style="background: rgba(255,255,255,0.9); border-radius: 8px; padding: 12px;">
+        <div style="color: #667eea; font-weight: 600; margin-bottom: 6px;">Phase 1: Define Boundaries</div>
+        <ul style="color: #333; margin: 0; padding-left: 16px; font-size: 0.8em;">
+          <li>Product catalog</li>
+          <li>Customer data</li>
+          <li>Orders & Payments</li>
+          <li>Inventory</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.9); border-radius: 8px; padding: 12px;">
+        <div style="color: #667eea; font-weight: 600; margin-bottom: 6px;">Phase 2: Extract Services</div>
+        <ul style="color: #333; margin: 0; padding-left: 16px; font-size: 0.8em;">
+          <li>Start with low-risk services</li>
+          <li>Build API layer in front</li>
+          <li>Strangler Pattern</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.9); border-radius: 8px; padding: 12px;">
+        <div style="color: #667eea; font-weight: 600; margin-bottom: 6px;">Phase 3: Scale & Iterate</div>
+        <ul style="color: #333; margin: 0; padding-left: 16px; font-size: 0.8em;">
+          <li>Two-pizza teams</li>
+          <li>Choose own tech</li>
+          <li>Own databases</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">Results (2006)</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9em;">
+      <div style="background: rgba(0,0,0,0.1); border-radius: 8px; padding: 10px;">
+        <div style="color: #8b0000; font-weight: 600;">Before (2001)</div>
+        <div style="color: #1a1a2e;">1 monolith, 2-week deployments, Single database</div>
+      </div>
+      <div style="background: rgba(0,0,0,0.1); border-radius: 8px; padding: 10px;">
+        <div style="color: #006400; font-weight: 600;">After (2006)</div>
+        <div style="color: #1a1a2e;">100+ services, Multiple deploys/day, Database per service</div>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: 12px; color: #ff9900; font-weight: 600;">Bonus: AWS was born from this infrastructure!</div>
+  </div>
+  <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
+    <h4 style="color: #4facfe; margin: 0 0 8px 0;">Key Lessons:</h4>
+    <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em;">
+      <li>Strong mandate from leadership is essential</li>
+      <li>Service boundaries should align with business domains</li>
+      <li>Small, autonomous teams work best</li>
+      <li>Design APIs as if they'll be public</li>
+    </ul>
+  </div>
+</div>
 
 ---
 
 ## Case Study 2: Netflix (2008-2016)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  CASE STUDY: NETFLIX CLOUD MIGRATION                                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TIMELINE: 2008-2016                                                         │
-│  SCALE: 8M → 130M+ subscribers                                              │
-│                                                                              │
-│  THE CATALYST (2008):                                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Major database corruption caused 3-day outage                       │    │
-│  │  • DVD shipping stopped                                              │    │
-│  │  • Massive revenue loss                                              │    │
-│  │  • Customer trust damaged                                            │    │
-│  │                                                                      │    │
-│  │  Leadership decision:                                                │    │
-│  │  "We need to move to the cloud and become a distributed system"      │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE BEFORE STATE:                                                           │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  • Vertically scaled data center                                     │    │
-│  │  • Oracle database (single point of failure)                         │    │
-│  │  • Java monolith                                                     │    │
-│  │  • Tight coupling between DVD and streaming                          │    │
-│  │  • Manual scaling                                                    │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  MIGRATION STRATEGY (8 years):                                               │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Year 1-2: Foundation                                                │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │  • Moved non-critical systems to AWS first               │        │    │
-│  │  │  • Video encoding (stateless, easy to migrate)           │        │    │
-│  │  │  • Built Netflix OSS tools (Eureka, Hystrix, Zuul)       │        │    │
-│  │  │  • Learned cloud patterns                                │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  │  Year 3-4: Core Systems                                              │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │  • Decomposed monolith into services                     │        │    │
-│  │  │  • Member service, Video service, Playback service       │        │    │
-│  │  │  • Moved from Oracle to Cassandra/DynamoDB               │        │    │
-│  │  │  • Built custom streaming infrastructure                 │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  │  Year 5-6: Full Migration                                            │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │  • Migrated customer-facing APIs                         │        │    │
-│  │  │  • Moved billing and payments                            │        │    │
-│  │  │  • Closed data center                                    │        │    │
-│  │  │  • 100% on AWS                                           │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  │  Year 7-8: Optimization                                              │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │  • Chaos Engineering (Chaos Monkey)                      │        │    │
-│  │  │  • Multi-region deployment                               │        │    │
-│  │  │  • Full active-active                                    │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  NETFLIX OSS CONTRIBUTIONS:                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Tool           │  Purpose                                           │    │
-│  │  ────────────────┼────────────────────────────────────               │    │
-│  │  Eureka         │  Service discovery                                 │    │
-│  │  Zuul           │  API Gateway                                       │    │
-│  │  Hystrix        │  Circuit breaker                                   │    │
-│  │  Ribbon         │  Client-side load balancing                        │    │
-│  │  Chaos Monkey   │  Failure injection                                 │    │
-│  │  Spinnaker      │  Continuous deployment                             │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  RESULTS:                                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Before (2008)          │  After (2016)                              │    │
-│  │  ─────────────────────────┼─────────────────────────────             │    │
-│  │  Data center            │  100% AWS                                 │    │
-│  │  Oracle DB              │  Cassandra, DynamoDB                      │    │
-│  │  1 monolith             │  700+ microservices                       │    │
-│  │  Hours to deploy        │  Thousands of deploys/day                 │    │
-│  │  Single region          │  Multi-region active-active               │    │
-│  │  99.9% availability     │  99.99% availability                      │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  KEY LESSONS:                                                                │
-│  • Migration takes years, not months                                        │
-│  • Build tools as you go (then open source them)                            │
-│  • Start with stateless services                                            │
-│  • Invest heavily in observability                                          │
-│  • Embrace failure as normal (Chaos Engineering)                            │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #e50914; margin: 0 0 8px 0; font-size: 1.4em; text-align: center;">Case Study: Netflix Cloud Migration</h3>
+  <div style="text-align: center; color: #8892b0; margin-bottom: 20px;">
+    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2008-2016</span>
+    <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: 8M to 130M+ subscribers</span>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 10px 0;">The Catalyst (2008)</h4>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; color: #fff; font-size: 0.9em;">
+        <strong>Major database corruption caused 3-day outage</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #ffe0e0;">
+          <li>DVD shipping stopped</li>
+          <li>Massive revenue loss</li>
+          <li>Customer trust damaged</li>
+        </ul>
+      </div>
+      <div style="color: #fff; font-style: italic; margin-top: 10px; font-size: 0.9em;">"We need to move to the cloud and become a distributed system"</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #4facfe; margin: 0 0 10px 0;">Before State</h4>
+      <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em;">
+        <li>Vertically scaled data center</li>
+        <li>Oracle database (single point of failure)</li>
+        <li>Java monolith</li>
+        <li>Tight coupling between DVD and streaming</li>
+        <li>Manual scaling</li>
+      </ul>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">Migration Strategy (8 Years)</h4>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+      <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px;">
+        <div style="color: #4facfe; font-weight: 600; font-size: 0.85em;">Year 1-2: Foundation</div>
+        <ul style="color: #e0e0ff; margin: 6px 0 0 0; padding-left: 14px; font-size: 0.75em;">
+          <li>Non-critical systems to AWS</li>
+          <li>Built Netflix OSS tools</li>
+          <li>Learned cloud patterns</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px;">
+        <div style="color: #4facfe; font-weight: 600; font-size: 0.85em;">Year 3-4: Core Systems</div>
+        <ul style="color: #e0e0ff; margin: 6px 0 0 0; padding-left: 14px; font-size: 0.75em;">
+          <li>Decomposed monolith</li>
+          <li>Oracle to Cassandra</li>
+          <li>Custom streaming infra</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px;">
+        <div style="color: #4facfe; font-weight: 600; font-size: 0.85em;">Year 5-6: Full Migration</div>
+        <ul style="color: #e0e0ff; margin: 6px 0 0 0; padding-left: 14px; font-size: 0.75em;">
+          <li>Customer-facing APIs</li>
+          <li>Billing and payments</li>
+          <li>100% on AWS</li>
+        </ul>
+      </div>
+      <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px;">
+        <div style="color: #4facfe; font-weight: 600; font-size: 0.85em;">Year 7-8: Optimization</div>
+        <ul style="color: #e0e0ff; margin: 6px 0 0 0; padding-left: 14px; font-size: 0.75em;">
+          <li>Chaos Engineering</li>
+          <li>Multi-region deployment</li>
+          <li>Active-active</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 10px 0;">Netflix OSS Contributions</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.85em;">
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Eureka</strong> <span style="color: #ffe0e0;">- Service discovery</span></div>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Zuul</strong> <span style="color: #ffe0e0;">- API Gateway</span></div>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Hystrix</strong> <span style="color: #ffe0e0;">- Circuit breaker</span></div>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Ribbon</strong> <span style="color: #ffe0e0;">- Load balancing</span></div>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Chaos Monkey</strong> <span style="color: #ffe0e0;">- Failure injection</span></div>
+        <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 6px 10px;"><strong style="color: #fff;">Spinnaker</strong> <span style="color: #ffe0e0;">- CD pipeline</span></div>
+      </div>
+    </div>
+    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 10px 0;">Results</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em;">
+        <div><span style="color: #666;">Data center</span> <span style="color: #006400; font-weight: 600;">100% AWS</span></div>
+        <div><span style="color: #666;">Oracle DB</span> <span style="color: #006400; font-weight: 600;">Cassandra/DynamoDB</span></div>
+        <div><span style="color: #666;">1 monolith</span> <span style="color: #006400; font-weight: 600;">700+ microservices</span></div>
+        <div><span style="color: #666;">Hours to deploy</span> <span style="color: #006400; font-weight: 600;">1000s deploys/day</span></div>
+        <div><span style="color: #666;">Single region</span> <span style="color: #006400; font-weight: 600;">Multi-region active</span></div>
+        <div><span style="color: #666;">99.9% uptime</span> <span style="color: #006400; font-weight: 600;">99.99% uptime</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
+    <h4 style="color: #e50914; margin: 0 0 8px 0;">Key Lessons:</h4>
+    <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+      <li>Migration takes years, not months</li>
+      <li>Build tools as you go (then open source them)</li>
+      <li>Start with stateless services</li>
+      <li>Invest heavily in observability</li>
+      <li>Embrace failure as normal (Chaos Engineering)</li>
+    </ul>
+  </div>
+</div>
 
 ---
 
 ## Case Study 3: Uber (2014-2018)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  CASE STUDY: UBER'S MICROSERVICES JOURNEY                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TIMELINE: 2014-2018                                                         │
-│  SCALE: $0 → $11B revenue, 3 cities → 600+ cities                           │
-│                                                                              │
-│  THE BEFORE STATE (2014):                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Two Python monoliths:                                               │    │
-│  │  • API (dispatch, user management, trips)                            │    │
-│  │  • Dispatch (matching riders with drivers)                           │    │
-│  │                                                                      │    │
-│  │  Problems:                                                           │    │
-│  │  • Deployment took 1 hour, frequent rollbacks                        │    │
-│  │  • All engineers worked on same codebase                             │    │
-│  │  • Dispatch changes could break payments                             │    │
-│  │  • Couldn't scale dispatch independently                             │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  DOMAIN-DRIVEN DECOMPOSITION:                                                │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Identified Business Domains:                                        │    │
-│  │                                                                      │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │                                                          │        │    │
-│  │  │  MARKETPLACE                      PLATFORM               │        │    │
-│  │  │  ├─ Dispatch                      ├─ Geospatial          │        │    │
-│  │  │  ├─ Pricing                       ├─ Maps                │        │    │
-│  │  │  ├─ Surge                         ├─ Notifications       │        │    │
-│  │  │  └─ Matching                      └─ Communications      │        │    │
-│  │  │                                                          │        │    │
-│  │  │  PAYMENTS                         IDENTITY               │        │    │
-│  │  │  ├─ Billing                       ├─ User Management     │        │    │
-│  │  │  ├─ Invoicing                     ├─ Authentication      │        │    │
-│  │  │  └─ Fraud Detection               └─ Authorization       │        │    │
-│  │  │                                                          │        │    │
-│  │  │  TRIPS                            DRIVER                 │        │    │
-│  │  │  ├─ Trip Service                  ├─ Driver Onboarding   │        │    │
-│  │  │  ├─ Tracking                      ├─ Earnings            │        │    │
-│  │  │  └─ Rating                        └─ Vehicle Management  │        │    │
-│  │  │                                                          │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  TECHNOLOGY CHOICES:                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  • Go for most services (performance, simplicity)                    │    │
-│  │  • Java for data-intensive services                                  │    │
-│  │  • Node.js for real-time features                                    │    │
-│  │  • Python for ML services                                            │    │
-│  │                                                                      │    │
-│  │  Infrastructure:                                                     │    │
-│  │  • gRPC for service communication                                    │    │
-│  │  • Kafka for event streaming                                         │    │
-│  │  • Cassandra, MySQL, Redis for data                                  │    │
-│  │  • Kubernetes for orchestration                                      │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE PROBLEMS THAT EMERGED:                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  By 2018, Uber had:                                                  │    │
-│  │  • 2,200+ microservices                                              │    │
-│  │  • Dependency hell                                                   │    │
-│  │  • "Service sprawl"                                                  │    │
-│  │  • Inconsistent patterns across services                             │    │
-│  │  • Debugging nightmares                                              │    │
-│  │                                                                      │    │
-│  │  Quote from Uber engineer:                                           │    │
-│  │  "We went from 2 services everyone understood to 2000 services       │    │
-│  │   nobody understood"                                                 │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE CORRECTION (2018+):                                                     │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  DOMA (Domain-Oriented Microservice Architecture):                   │    │
-│  │                                                                      │    │
-│  │  1. Group services into domains                                      │    │
-│  │  2. Each domain has gateway service                                  │    │
-│  │  3. External communication only through gateway                      │    │
-│  │  4. Domain teams own entire domain                                   │    │
-│  │                                                                      │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │                                                          │        │    │
-│  │  │  External Request                                        │        │    │
-│  │  │        │                                                 │        │    │
-│  │  │        ▼                                                 │        │    │
-│  │  │  ┌──────────────┐                                       │        │    │
-│  │  │  │   PAYMENTS   │◀──── Domain Gateway                   │        │    │
-│  │  │  │   DOMAIN     │                                       │        │    │
-│  │  │  │ ┌──────────┐ │                                       │        │    │
-│  │  │  │ │ Billing  │ │◀──── Internal services               │        │    │
-│  │  │  │ │ Invoice  │ │      (hidden from outside)           │        │    │
-│  │  │  │ │ Fraud    │ │                                       │        │    │
-│  │  │  │ └──────────┘ │                                       │        │    │
-│  │  │  └──────────────┘                                       │        │    │
-│  │  │                                                          │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  KEY LESSONS:                                                                │
-│  • More services ≠ better architecture                                      │
-│  • Domain boundaries matter more than service boundaries                    │
-│  • Standardization across services is essential                             │
-│  • Ownership should be at domain level, not service level                   │
-│  • Course correction is normal and expected                                 │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #000; margin: 0 0 8px 0; font-size: 1.4em; text-align: center;"><span style="background: #000; color: #fff; padding: 4px 12px; border-radius: 4px;">Case Study: Uber's Microservices Journey</span></h3>
+  <div style="text-align: center; color: #8892b0; margin-bottom: 20px;">
+    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2014-2018</span>
+    <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: $0 to $11B revenue, 3 to 600+ cities</span>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #4facfe; margin: 0 0 10px 0;">Before State (2014)</h4>
+      <div style="color: #c0c0c0; font-size: 0.9em; margin-bottom: 10px;">Two Python monoliths: API & Dispatch</div>
+      <div style="background: rgba(255,65,108,0.2); border-radius: 8px; padding: 10px;">
+        <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 6px;">Problems:</div>
+        <ul style="color: #e0e0e0; margin: 0; padding-left: 16px; font-size: 0.85em;">
+          <li>Deployment took 1 hour, frequent rollbacks</li>
+          <li>All engineers worked on same codebase</li>
+          <li>Dispatch changes could break payments</li>
+          <li>Couldn't scale dispatch independently</li>
+        </ul>
+      </div>
+    </div>
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 10px 0;">Domain-Driven Decomposition</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8em;">
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Marketplace</div>
+          <div style="color: #e0e0ff;">Dispatch, Pricing, Surge, Matching</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Platform</div>
+          <div style="color: #e0e0ff;">Geospatial, Maps, Notifications</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Payments</div>
+          <div style="color: #e0e0ff;">Billing, Invoicing, Fraud</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Identity</div>
+          <div style="color: #e0e0ff;">Users, Auth, Authorization</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Trips</div>
+          <div style="color: #e0e0ff;">Trip Service, Tracking, Rating</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px;">
+          <div style="color: #4facfe; font-weight: 600;">Driver</div>
+          <div style="color: #e0e0ff;">Onboarding, Earnings, Vehicles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #1a1a2e; margin: 0 0 10px 0;">Technology Choices</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em;">
+        <div style="background: rgba(255,255,255,0.7); border-radius: 6px; padding: 8px;">
+          <strong>Languages:</strong><br/>Go, Java, Node.js, Python
+        </div>
+        <div style="background: rgba(255,255,255,0.7); border-radius: 6px; padding: 8px;">
+          <strong>Infrastructure:</strong><br/>gRPC, Kafka, K8s
+        </div>
+      </div>
+    </div>
+    <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 10px; padding: 16px;">
+      <h4 style="color: #fff; margin: 0 0 10px 0;">Problems That Emerged (2018)</h4>
+      <ul style="color: #ffe0e0; margin: 0; padding-left: 18px; font-size: 0.9em;">
+        <li><strong style="color: #fff;">2,200+ microservices</strong></li>
+        <li>Dependency hell & service sprawl</li>
+        <li>Inconsistent patterns</li>
+        <li>Debugging nightmares</li>
+      </ul>
+      <div style="color: #fff; font-style: italic; margin-top: 8px; font-size: 0.85em; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">"We went from 2 services everyone understood to 2000 services nobody understood"</div>
+    </div>
+  </div>
+  <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+    <h4 style="color: #1a1a2e; margin: 0 0 12px 0;">The Correction (2018+): DOMA - Domain-Oriented Microservice Architecture</h4>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <div style="flex: 1;">
+        <ol style="color: #1a1a2e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+          <li>Group services into domains</li>
+          <li>Each domain has gateway service</li>
+          <li>External communication only through gateway</li>
+          <li>Domain teams own entire domain</li>
+        </ol>
+      </div>
+      <div style="flex: 1; background: rgba(0,0,0,0.1); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="color: #666; font-size: 0.85em; margin-bottom: 8px;">External Request</div>
+        <div style="font-size: 1.5em; color: #1a1a2e;">v</div>
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 12px; border-radius: 8px; margin-top: 4px;">
+          <strong>PAYMENTS DOMAIN</strong>
+          <div style="font-size: 0.8em; margin-top: 4px; color: #e0e0ff;">Gateway | Billing | Invoice | Fraud</div>
+        </div>
+        <div style="color: #666; font-size: 0.75em; margin-top: 6px;">Internal services hidden from outside</div>
+      </div>
+    </div>
+  </div>
+  <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
+    <h4 style="color: #000; margin: 0 0 8px 0;"><span style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px;">Key Lessons:</span></h4>
+    <ul style="color: #c0c0c0; margin: 0; padding-left: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+      <li>More services does not equal better architecture</li>
+      <li>Domain boundaries matter more than service boundaries</li>
+      <li>Standardization across services is essential</li>
+      <li>Ownership should be at domain level</li>
+      <li>Course correction is normal and expected</li>
+    </ul>
+  </div>
+</div>
 
 ---
 
 ## Case Study 4: Shopify (2016-2020)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  CASE STUDY: SHOPIFY'S MODULAR MONOLITH                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TIMELINE: 2016-2020                                                         │
-│  SCALE: Powering 1M+ stores, handling $300B+ GMV                            │
-│                                                                              │
-│  THE DECISION: NOT TO DO MICROSERVICES                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  In 2016, Shopify evaluated microservices and decided against them.  │    │
-│  │                                                                      │    │
-│  │  Reasons:                                                            │    │
-│  │  • Ruby on Rails monolith was working well                           │    │
-│  │  • Team was productive in monolith                                   │    │
-│  │  • Operational complexity of microservices was too high              │    │
-│  │  • Data consistency requirements were strong                         │    │
-│  │                                                                      │    │
-│  │  Instead, they chose: MODULAR MONOLITH                               │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  THE APPROACH:                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  1. COMPONENT-BASED ARCHITECTURE                                     │    │
-│  │  ┌─────────────────────────────────────────────────────────┐        │    │
-│  │  │                                                          │        │    │
-│  │  │                    SHOPIFY MONOLITH                      │        │    │
-│  │  │  ┌────────────────────────────────────────────────────┐ │        │    │
-│  │  │  │                                                     │ │        │    │
-│  │  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │ │        │    │
-│  │  │  │  │  Shop   │ │Checkout │ │ Orders  │ │Products │  │ │        │    │
-│  │  │  │  │Component│ │Component│ │Component│ │Component│  │ │        │    │
-│  │  │  │  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘  │ │        │    │
-│  │  │  │       │           │           │           │        │ │        │    │
-│  │  │  │       │     PUBLIC INTERFACES ONLY       │        │ │        │    │
-│  │  │  │       │           │           │           │        │ │        │    │
-│  │  │  │  ┌────▼───────────▼───────────▼───────────▼────┐  │ │        │    │
-│  │  │  │  │              SHARED DATABASE                 │  │ │        │    │
-│  │  │  │  └──────────────────────────────────────────────┘  │ │        │    │
-│  │  │  │                                                     │ │        │    │
-│  │  │  └─────────────────────────────────────────────────────┘ │        │    │
-│  │  │                                                          │        │    │
-│  │  └─────────────────────────────────────────────────────────┘        │    │
-│  │                                                                      │    │
-│  │  Rules:                                                              │    │
-│  │  • Components communicate through defined public interfaces          │    │
-│  │  • No reaching into another component's internals                    │    │
-│  │  • Database tables are owned by components                           │    │
-│  │  • Violations are caught by automated tools                          │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  PACKWERK: THE ENFORCEMENT TOOL                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Shopify built Packwerk to enforce component boundaries:             │    │
-│  │                                                                      │    │
-│  │  # package.yml in each component                                     │    │
-│  │  enforce_privacy: true                                               │    │
-│  │  enforce_dependencies: true                                          │    │
-│  │                                                                      │    │
-│  │  dependencies:                                                       │    │
-│  │    - shop                   # Can depend on shop component           │    │
-│  │    - products               # Can depend on products component       │    │
-│  │                                                                      │    │
-│  │  public_path: app/public/   # Only this folder is accessible        │    │
-│  │                                                                      │    │
-│  │  CI fails if:                                                        │    │
-│  │  • Code accesses private methods of other components                 │    │
-│  │  • Code depends on undeclared components                             │    │
-│  │  • Circular dependencies are introduced                              │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  SELECTIVE EXTRACTION:                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  Some components were extracted as services when it made sense:      │    │
-│  │                                                                      │    │
-│  │  Extracted to service:          Reason:                              │    │
-│  │  ─────────────────────────────────────────────────────               │    │
-│  │  • Storefront Renderer        Different scaling needs                │    │
-│  │  • Identity                   Security isolation                     │    │
-│  │  • Payments                   PCI compliance                         │    │
-│  │  • Analytics                  Different data patterns                │    │
-│  │                                                                      │    │
-│  │  Kept in monolith:                                                   │    │
-│  │  • Shop, Products, Orders, Checkout, Inventory                       │    │
-│  │  • (Core business logic that needs strong consistency)               │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  RESULTS:                                                                    │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                                                                      │    │
-│  │  • 3M+ lines of Ruby code, well-organized                            │    │
-│  │  • 500+ engineers working productively                               │    │
-│  │  • Handles Black Friday traffic (biggest day of year)                │    │
-│  │  • Fast deployments (multiple per day)                               │    │
-│  │  • Simple debugging (one codebase)                                   │    │
-│  │                                                                      │    │
-│  │  Quote from Shopify:                                                 │    │
-│  │  "The modular monolith gives us the benefits of microservices        │    │
-│  │   (clear boundaries, team ownership) without the costs               │    │
-│  │   (network latency, distributed transactions)"                       │    │
-│  │                                                                      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  KEY LESSONS:                                                                │
-│  • Microservices are not the only path to scaling                           │
-│  • Modular monolith can handle massive scale                                │
-│  • Enforce boundaries with tooling, not just convention                     │
-│  • Extract services selectively based on real needs                         │
-│  • Consistency is easier with shared database                               │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #95bf47; margin: 0 0 8px 0; font-size: 1.4em; text-align: center;">Case Study: Shopify's Modular Monolith</h3>
+  <div style="text-align: center; color: #8b949e; margin-bottom: 24px;">
+    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4px 12px; border-radius: 12px; font-size: 0.85em; margin-right: 8px;">Timeline: 2016-2020</span>
+    <span style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); color: #1a1a2e; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Scale: 1M+ stores, $300B+ GMV</span>
+  </div>
+  <!-- The Decision -->
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">THE DECISION: NOT TO DO MICROSERVICES</h4>
+    <div style="color: #ede9fe; margin-bottom: 16px; font-size: 0.9em;">In 2016, Shopify evaluated microservices and decided against them.</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 14px;">
+        <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">Reasons:</div>
+        <ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.85em;">
+          <li>Ruby on Rails monolith was working well</li>
+          <li>Team was productive in monolith</li>
+          <li>Operational complexity of microservices was too high</li>
+          <li>Data consistency requirements were strong</li>
+        </ul>
+      </div>
+      <div style="background: rgba(126,231,135,0.2); border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center;">
+          <div style="color: #fff; font-size: 0.9em; margin-bottom: 8px;">Instead, they chose:</div>
+          <div style="color: #7ee787; font-size: 1.3em; font-weight: 600;">MODULAR MONOLITH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Component-Based Architecture -->
+  <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #58a6ff;">
+    <h4 style="color: #58a6ff; margin: 0 0 16px 0;">THE APPROACH: COMPONENT-BASED ARCHITECTURE</h4>
+    <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+      <div style="text-align: center; color: #58a6ff; font-weight: 600; margin-bottom: 16px;">SHOPIFY MONOLITH</div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+        <div style="background: #238636; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Shop</div>
+          <div style="color: #d1fae5; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #1f6feb; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Checkout</div>
+          <div style="color: #dbeafe; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #f97316; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Orders</div>
+          <div style="color: #fed7aa; font-size: 0.75em;">Component</div>
+        </div>
+        <div style="background: #8957e5; border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="color: #fff; font-weight: 600;">Products</div>
+          <div style="color: #ede9fe; font-size: 0.75em;">Component</div>
+        </div>
+      </div>
+      <div style="text-align: center; color: #8b949e; font-size: 0.85em; margin-bottom: 12px;">| PUBLIC INTERFACES ONLY |</div>
+      <div style="background: #95bf47; border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="color: #fff; font-weight: 600;">SHARED DATABASE</div>
+      </div>
+    </div>
+    <div style="color: #8b949e; font-size: 0.9em;">
+      <strong style="color: #58a6ff;">Rules:</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <li>Components communicate through defined public interfaces</li>
+        <li>No reaching into another component's internals</li>
+        <li>Database tables are owned by components</li>
+        <li>Violations are caught by automated tools</li>
+      </ul>
+    </div>
+  </div>
+  <!-- Packwerk -->
+  <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+    <h4 style="color: #f97316; margin: 0 0 16px 0;">PACKWERK: THE ENFORCEMENT TOOL</h4>
+    <div style="color: #8b949e; margin-bottom: 12px; font-size: 0.9em;">Shopify built Packwerk to enforce component boundaries:</div>
+    <pre style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 16px; margin: 0 0 16px 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e6edf3;"># package.yml in each component
+enforce_privacy: true
+enforce_dependencies: true
+dependencies:
+  - shop                   <span style="color: #8b949e;"># Can depend on shop component</span>
+  - products               <span style="color: #8b949e;"># Can depend on products component</span>
+public_path: app/public/   <span style="color: #8b949e;"># Only this folder is accessible</span></code></pre>
+    <div style="background: rgba(248,81,73,0.2); border-radius: 8px; padding: 12px;">
+      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">CI fails if:</div>
+      <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.85em;">
+        <li>Code accesses private methods of other components</li>
+        <li>Code depends on undeclared components</li>
+        <li>Circular dependencies are introduced</li>
+      </ul>
+    </div>
+  </div>
+  <!-- Selective Extraction -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+    <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #8957e5;">
+      <h4 style="color: #8957e5; margin: 0 0 12px 0;">EXTRACTED TO SERVICES</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Storefront Renderer</span>
+          <span style="color: #8b949e;">Different scaling needs</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Identity</span>
+          <span style="color: #8b949e;">Security isolation</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Payments</span>
+          <span style="color: #8b949e;">PCI compliance</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; font-size: 0.85em;">
+          <span style="color: #a371f7;">Analytics</span>
+          <span style="color: #8b949e;">Different data patterns</span>
+        </div>
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0;">KEPT IN MONOLITH</h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Shop</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Products</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Orders</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Checkout</span>
+        <span style="background: #238636; border-radius: 6px; padding: 6px 12px; color: #fff; font-size: 0.85em;">Inventory</span>
+      </div>
+      <div style="color: #8b949e; font-size: 0.85em; font-style: italic;">(Core business logic that needs strong consistency)</div>
+    </div>
+  </div>
+  <!-- Results -->
+  <div style="background: linear-gradient(135deg, #95bf47 0%, #7ab535 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0;">RESULTS</h4>
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px;">
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">3M+</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">lines of Ruby code</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">500+</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">engineers</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Black Friday</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">traffic handled</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Multiple</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">deploys/day</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="color: #fff; font-weight: 600; font-size: 1.1em;">Simple</div>
+        <div style="color: #d1fae5; font-size: 0.75em;">debugging</div>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #d1fae5; font-style: italic; font-size: 0.9em;">"The modular monolith gives us the benefits of microservices (clear boundaries, team ownership) without the costs (network latency, distributed transactions)"</div>
+    </div>
+  </div>
+  <!-- Key Lessons -->
+  <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #58a6ff;">
+    <h4 style="color: #58a6ff; margin: 0 0 12px 0;">KEY LESSONS</h4>
+    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em; columns: 2; column-gap: 20px;">
+      <li>Microservices are not the only path to scaling</li>
+      <li>Modular monolith can handle massive scale</li>
+      <li>Enforce boundaries with tooling, not just convention</li>
+      <li>Extract services selectively based on real needs</li>
+      <li>Consistency is easier with shared database</li>
+    </ul>
+  </div>
+</div>
 
 ---
 
