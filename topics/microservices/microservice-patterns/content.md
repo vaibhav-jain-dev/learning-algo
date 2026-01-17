@@ -10,33 +10,82 @@ This comprehensive guide covers the essential design patterns you need to know w
 
 ## Pattern Categories
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    MICROSERVICES PATTERN CATEGORIES                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐           │
-│  │  DECOMPOSITION   │  │  DATA MANAGEMENT │  │  COMMUNICATION   │           │
-│  │                  │  │                  │  │                  │           │
-│  │  • By Business   │  │  • Database per  │  │  • API Gateway   │           │
-│  │    Capability    │  │    Service       │  │  • BFF           │           │
-│  │  • By Subdomain  │  │  • Saga Pattern  │  │  • Async Messaging│          │
-│  │  • Strangler Fig │  │  • CQRS          │  │  • Service Mesh  │           │
-│  │                  │  │  • Event Sourcing│  │                  │           │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘           │
-│                                                                              │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐           │
-│  │   RESILIENCE     │  │  OBSERVABILITY   │  │   DEPLOYMENT     │           │
-│  │                  │  │                  │  │                  │           │
-│  │  • Circuit Breaker│ │  • Log Aggregation│ │  • Blue-Green    │           │
-│  │  • Bulkhead      │  │  • Distributed   │  │  • Canary        │           │
-│  │  • Retry         │  │    Tracing       │  │  • Feature Flags │           │
-│  │  • Timeout       │  │  • Health Check  │  │  • Sidecar       │           │
-│  │                  │  │                  │  │                  │           │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘           │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Microservices Pattern Categories</h3>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+
+<!-- Decomposition -->
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🔧 DECOMPOSITION</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #a5d6ff; font-size: 11px; margin-bottom: 4px;">• By Business Capability</div>
+<div style="color: #a5d6ff; font-size: 11px; margin-bottom: 4px;">• By Subdomain (DDD)</div>
+<div style="color: #a5d6ff; font-size: 11px;">• Strangler Fig</div>
+</div>
+</div>
+
+<!-- Data Management -->
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🗄️ DATA MANAGEMENT</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #d1f5d3; font-size: 11px; margin-bottom: 4px;">• Database per Service</div>
+<div style="color: #d1f5d3; font-size: 11px; margin-bottom: 4px;">• Saga Pattern</div>
+<div style="color: #d1f5d3; font-size: 11px; margin-bottom: 4px;">• CQRS</div>
+<div style="color: #d1f5d3; font-size: 11px;">• Event Sourcing</div>
+</div>
+</div>
+
+<!-- Communication -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">📡 COMMUNICATION</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #eddeff; font-size: 11px; margin-bottom: 4px;">• API Gateway</div>
+<div style="color: #eddeff; font-size: 11px; margin-bottom: 4px;">• Backend for Frontend</div>
+<div style="color: #eddeff; font-size: 11px; margin-bottom: 4px;">• Async Messaging</div>
+<div style="color: #eddeff; font-size: 11px;">• Service Mesh</div>
+</div>
+</div>
+
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+<!-- Resilience -->
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🛡️ RESILIENCE</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #ffe2cc; font-size: 11px; margin-bottom: 4px;">• Circuit Breaker</div>
+<div style="color: #ffe2cc; font-size: 11px; margin-bottom: 4px;">• Bulkhead</div>
+<div style="color: #ffe2cc; font-size: 11px; margin-bottom: 4px;">• Retry with Backoff</div>
+<div style="color: #ffe2cc; font-size: 11px;">• Timeout</div>
+</div>
+</div>
+
+<!-- Observability -->
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">👁️ OBSERVABILITY</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd1cc; font-size: 11px; margin-bottom: 4px;">• Log Aggregation</div>
+<div style="color: #ffd1cc; font-size: 11px; margin-bottom: 4px;">• Distributed Tracing</div>
+<div style="color: #ffd1cc; font-size: 11px; margin-bottom: 4px;">• Health Checks</div>
+<div style="color: #ffd1cc; font-size: 11px;">• Metrics Collection</div>
+</div>
+</div>
+
+<!-- Deployment -->
+<div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 12px; padding: 16px;">
+<div style="color: #fff; font-weight: bold; font-size: 13px; margin-bottom: 12px; text-align: center;">🚀 DEPLOYMENT</div>
+<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px;">
+<div style="color: #e6edf3; font-size: 11px; margin-bottom: 4px;">• Blue-Green</div>
+<div style="color: #e6edf3; font-size: 11px; margin-bottom: 4px;">• Canary Releases</div>
+<div style="color: #e6edf3; font-size: 11px; margin-bottom: 4px;">• Feature Flags</div>
+<div style="color: #e6edf3; font-size: 11px;">• Sidecar Pattern</div>
+</div>
+</div>
+
+</div>
+</div>
 
 ---
 

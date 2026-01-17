@@ -47,7 +47,104 @@ Design and implement a Least Recently Used (LRU) cache with O(1) time complexity
 
 ### Part 3: The Data Structure Architecture
 
-<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">LRU Cache: HashMap + Doubly Linked List</h4>
+
+<div style="display: flex; flex-direction: column; gap: 24px;">
+
+<!-- HashMap Section -->
+<div>
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">🗺️ HashMap (Key → Node Pointer)</div>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">"A"</div>
+<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 1</div>
+</div>
+<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">"B"</div>
+<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 2</div>
+</div>
+<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">"C"</div>
+<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 3</div>
+</div>
+<div style="background: #21262d; padding: 12px; border-radius: 8px; text-align: center; border: 2px dashed #30363d;">
+<div style="color: #6e7681; font-size: 12px;">...</div>
+</div>
+</div>
+<div style="color: #8b949e; font-size: 11px; margin-top: 8px;">O(1) lookup: key → direct node access</div>
+</div>
+
+<!-- Arrows -->
+<div style="text-align: center; color: #58a6ff; font-size: 24px;">↓ ↓ ↓</div>
+
+<!-- Doubly Linked List Section -->
+<div>
+<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">🔗 Doubly Linked List (Most Recent → Least Recent)</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+
+<!-- Dummy Head -->
+<div style="background: #21262d; padding: 12px 16px; border-radius: 8px; border: 2px dashed #30363d; text-align: center;">
+<div style="color: #6e7681; font-size: 10px;">HEAD</div>
+<div style="color: #6e7681; font-size: 10px;">(dummy)</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">⟷</div>
+
+<!-- Node 1 (Most Recent) -->
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 1</div>
+<div style="color: #a5d6ff; font-size: 10px;">"A": 100</div>
+<div style="color: #7ee787; font-size: 9px; margin-top: 4px;">← Most Recent</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">⟷</div>
+
+<!-- Node 2 -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 2</div>
+<div style="color: #eddeff; font-size: 10px;">"B": 200</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">⟷</div>
+
+<!-- Node 3 (Least Recent) -->
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 3</div>
+<div style="color: #ffe2cc; font-size: 10px;">"C": 300</div>
+<div style="color: #f85149; font-size: 9px; margin-top: 4px;">Least Recent →</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 20px;">⟷</div>
+
+<!-- Dummy Tail -->
+<div style="background: #21262d; padding: 12px 16px; border-radius: 8px; border: 2px dashed #30363d; text-align: center;">
+<div style="color: #6e7681; font-size: 10px;">TAIL</div>
+<div style="color: #6e7681; font-size: 10px;">(dummy)</div>
+</div>
+
+</div>
+<div style="color: #8b949e; font-size: 11px; margin-top: 8px; text-align: center;">Each node has prev & next pointers → O(1) insert/delete</div>
+</div>
+
+<!-- Key Operations -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
+<div style="background: #238636; padding: 16px; border-radius: 8px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">GET(key)</div>
+<div style="color: #d1f5d3; font-size: 11px;">1. HashMap lookup → O(1)</div>
+<div style="color: #d1f5d3; font-size: 11px;">2. Move node to front → O(1)</div>
+<div style="color: #d1f5d3; font-size: 11px;">3. Return value</div>
+</div>
+<div style="background: #1f6feb; padding: 16px; border-radius: 8px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PUT(key, value)</div>
+<div style="color: #a5d6ff; font-size: 11px;">1. If at capacity: evict tail.prev</div>
+<div style="color: #a5d6ff; font-size: 11px;">2. Create node, add to HashMap</div>
+<div style="color: #a5d6ff; font-size: 11px;">3. Insert after head → O(1)</div>
+</div>
+</div>
+
+</div>
+</div>
 
 ### Part 4: Why Dummy Head and Tail Nodes?
 

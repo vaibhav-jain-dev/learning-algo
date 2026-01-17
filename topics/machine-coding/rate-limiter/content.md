@@ -36,7 +36,76 @@ Design a rate limiter that controls the rate of requests a client can make to an
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
-<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Rate Limiting Algorithms Visualized</h4>
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+
+<!-- Token Bucket -->
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">🪣 Token Bucket</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #238636; width: 16px; height: 16px; border-radius: 50%;"></div>
+<div style="background: #21262d; width: 16px; height: 16px; border-radius: 50%; border: 2px dashed #30363d;"></div>
+<div style="background: #21262d; width: 16px; height: 16px; border-radius: 50%; border: 2px dashed #30363d;"></div>
+</div>
+<div style="color: #7ee787; font-size: 11px;">3 tokens available, 2 slots empty</div>
+</div>
+<div style="color: #a5d6ff; font-size: 11px;">+ Allows bursts up to bucket size</div>
+<div style="color: #a5d6ff; font-size: 11px;">+ Refills at constant rate</div>
+</div>
+
+<!-- Sliding Window -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">📊 Sliding Window</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: flex-end; gap: 4px; height: 40px;">
+<div style="background: #a371f7; width: 20px; height: 70%; border-radius: 2px; opacity: 0.5;"></div>
+<div style="background: #a371f7; width: 20px; height: 100%; border-radius: 2px;"></div>
+<div style="background: #a371f7; width: 20px; height: 50%; border-radius: 2px;"></div>
+<div style="background: #a371f7; width: 20px; height: 80%; border-radius: 2px;"></div>
+<div style="background: #21262d; width: 20px; height: 30%; border-radius: 2px; border: 1px dashed #a371f7;"></div>
+</div>
+<div style="color: #d2a8ff; font-size: 11px; margin-top: 8px;">Weighted avg of prev + current window</div>
+</div>
+<div style="color: #eddeff; font-size: 11px;">+ Smooth, no boundary spikes</div>
+<div style="color: #eddeff; font-size: 11px;">+ More accurate than fixed window</div>
+</div>
+
+<!-- Fixed Window -->
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">⏱️ Fixed Window</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 4px;">
+<div style="background: #ffa657; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #fff;">Window 1: 98/100</div>
+<div style="color: #ffa657;">|</div>
+<div style="background: #ffa657; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #fff;">Window 2: 5/100</div>
+</div>
+<div style="color: #ffd1cc; font-size: 11px; margin-top: 8px;">Counter resets at window boundary</div>
+</div>
+<div style="color: #ffe2cc; font-size: 11px;">+ Very simple to implement</div>
+<div style="color: #f85149; font-size: 11px;">- Boundary spike problem!</div>
+</div>
+
+<!-- Leaky Bucket -->
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">🚰 Leaky Bucket</div>
+<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="position: relative; height: 50px;">
+<div style="background: #238636; width: 60px; height: 40px; border-radius: 0 0 8px 8px; position: absolute; left: 50%; transform: translateX(-50%);">
+<div style="background: #7ee787; width: 100%; height: 60%; border-radius: 0 0 8px 8px; position: absolute; bottom: 0;"></div>
+</div>
+<div style="color: #7ee787; font-size: 16px; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">💧</div>
+</div>
+<div style="color: #d1f5d3; font-size: 11px; margin-top: 8px;">Output at constant rate</div>
+</div>
+<div style="color: #d1f5d3; font-size: 11px;">+ Smooth output rate</div>
+<div style="color: #d1f5d3; font-size: 11px;">- No burst handling</div>
+</div>
+
+</div>
 
 </div>
 

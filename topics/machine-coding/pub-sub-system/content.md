@@ -13,6 +13,215 @@ Design a publish-subscribe (pub-sub) messaging system that allows publishers to 
 - Handle concurrent operations
 - Optional: Message persistence, acknowledgments
 
+---
+
+## Solution Breakdown
+
+### Part 1: Understanding the Pub-Sub Pattern
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
+**Why Pub-Sub?**
+- **Decoupling**: Publishers don't know about subscribers (and vice versa)
+- **Scalability**: Add subscribers without changing publishers
+- **Flexibility**: Filter, transform, or route messages dynamically
+
+**Key Concepts:**
+- **Publisher**: Sends messages to a topic (doesn't care who receives)
+- **Subscriber**: Registers interest in topics (receives matching messages)
+- **Broker**: The middleman that routes messages from publishers to subscribers
+- **Topic**: A named channel for organizing messages
+
+</div>
+
+### Part 2: Message Flow Architecture
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Message Flow: Publish to Delivery</h4>
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+
+<!-- Publishers -->
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📤</div>
+<div style="color: #fff; font-size: 11px;">Publisher A</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📤</div>
+<div style="color: #fff; font-size: 11px;">Publisher B</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #7ee787; font-size: 10px;">publish()</div>
+<div style="color: #7ee787; font-size: 20px;">→</div>
+</div>
+
+<!-- Broker with Topics -->
+<div style="background: #21262d; padding: 20px; border-radius: 12px; border: 2px solid #30363d;">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 12px;">🔀 Broker</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="background: #238636; padding: 6px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">orders.*</div>
+</div>
+<div style="background: #8957e5; padding: 6px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">users.*</div>
+</div>
+<div style="background: #f78166; padding: 6px 12px; border-radius: 4px; text-align: center;">
+<div style="color: #fff; font-size: 10px;">payments.*</div>
+</div>
+</div>
+<div style="color: #8b949e; font-size: 9px; text-align: center; margin-top: 8px;">Topic Registry</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #a371f7; font-size: 10px;">dispatch()</div>
+<div style="color: #a371f7; font-size: 20px;">→</div>
+</div>
+
+<!-- Message Queue -->
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px; border-radius: 12px; text-align: center;">
+<div style="color: #fff; font-size: 20px;">📨</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Message Queue</div>
+<div style="display: flex; gap: 4px; justify-content: center; margin-top: 8px;">
+<div style="background: rgba(0,0,0,0.3); width: 12px; height: 12px; border-radius: 2px;"></div>
+<div style="background: rgba(0,0,0,0.3); width: 12px; height: 12px; border-radius: 2px;"></div>
+<div style="background: rgba(0,0,0,0.3); width: 12px; height: 12px; border-radius: 2px;"></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #7ee787; font-size: 10px;">deliver()</div>
+<div style="color: #7ee787; font-size: 20px;">→</div>
+</div>
+
+<!-- Subscribers -->
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📥</div>
+<div style="color: #fff; font-size: 11px;">Subscriber 1</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📥</div>
+<div style="color: #fff; font-size: 11px;">Subscriber 2</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 16px;">📥</div>
+<div style="color: #fff; font-size: 11px;">Subscriber 3</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+### Part 3: Topic Pattern Matching
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+
+**Wildcard Patterns:**
+
+| Pattern | Matches | Doesn't Match |
+|---------|---------|---------------|
+| `orders.created` | `orders.created` only | `orders.updated` |
+| `orders.*` | `orders.created`, `orders.updated`, `orders.cancelled` | `users.created` |
+| `*` | Everything | - |
+
+**Pattern Matching Logic:**
+```python
+def matches_topic(pattern: str, topic: str) -> bool:
+    if pattern == topic:
+        return True                    # Exact match
+    if pattern.endswith('*'):
+        prefix = pattern[:-1]          # Remove wildcard
+        return topic.startswith(prefix)  # Prefix match
+    return False
+```
+
+**Example Flow:**
+```
+Subscriber subscribes to: "orders.*"
+Publisher publishes to: "orders.created"
+
+1. Broker receives message for "orders.created"
+2. Checks all subscriptions: "orders.*".matches("orders.created") → True!
+3. Message delivered to subscriber
+```
+
+</div>
+
+### Part 4: Message Filtering
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+**Beyond topic matching**, subscribers can add custom filters:
+
+```python
+# Only receive orders above $100
+def high_value_filter(msg: Message) -> bool:
+    return msg.payload.get('amount', 0) > 100
+
+broker.subscribe(
+    subscriber_id="analytics",
+    topic_pattern="orders.*",
+    callback=process_order,
+    filter_func=high_value_filter  # Custom filter!
+)
+```
+
+**Filter Evaluation Order:**
+1. Topic pattern match ← If fails, skip
+2. Custom filter function ← If fails, skip
+3. Deliver to subscriber ← Both passed
+
+</div>
+
+### Part 5: Worker Thread Pool
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Async Message Delivery</h4>
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Why Worker Pool?</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+• Publishers shouldn't wait for slow subscribers<br>
+• One slow subscriber shouldn't block others<br>
+• Parallel delivery = higher throughput<br>
+• Isolated failures per subscriber
+</div>
+</div>
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #ffa657; font-weight: bold; font-size: 13px; margin-bottom: 12px;">How It Works</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+1. publish() → enqueue message<br>
+2. Worker dequeues message<br>
+3. Find matching subscriptions<br>
+4. Call each callback (in try/except)<br>
+5. Log failures, continue to next
+</div>
+</div>
+
+</div>
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| `publish()` | O(1) enqueue | O(1) |
+| `subscribe()` | O(1) | O(1) |
+| `dispatch()` | O(s) where s = subscriptions | O(1) |
+| **Total Space** | - | O(t + s + m) topics, subs, messages |
+
+---
+
 ## Solution
 
 ### Python

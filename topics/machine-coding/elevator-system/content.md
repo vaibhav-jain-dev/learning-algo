@@ -35,7 +35,71 @@ Design an elevator system for a building with multiple floors and elevators. Han
 
 <div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
-<!-- Custom diagram: replace with HTML+JS implementation using diagramEngine -->
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Elevator State Machine</h4>
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
+
+<!-- IDLE State -->
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+<div>
+<div style="color: #fff; font-size: 24px;">⏸️</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">IDLE</div>
+</div>
+</div>
+</div>
+
+<!-- Arrow from IDLE to MOVING -->
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #7ee787; font-size: 11px; margin-bottom: 4px;">Request</div>
+<div style="color: #7ee787; font-size: 24px;">→</div>
+<div style="color: #7ee787; font-size: 11px; margin-top: 4px;">received</div>
+</div>
+
+<!-- MOVING State -->
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+<div>
+<div style="color: #fff; font-size: 24px;">🔄</div>
+<div style="color: #fff; font-weight: bold; font-size: 11px;">MOVING</div>
+</div>
+</div>
+<div style="margin-top: 8px; display: flex; gap: 8px; justify-content: center;">
+<div style="background: #21262d; padding: 4px 8px; border-radius: 4px; color: #7ee787; font-size: 10px;">↑ UP</div>
+<div style="background: #21262d; padding: 4px 8px; border-radius: 4px; color: #f85149; font-size: 10px;">↓ DOWN</div>
+</div>
+</div>
+
+<!-- Arrow from MOVING to DOORS_OPEN -->
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #ffa657; font-size: 11px; margin-bottom: 4px;">Arrived</div>
+<div style="color: #ffa657; font-size: 24px;">→</div>
+<div style="color: #ffa657; font-size: 11px; margin-top: 4px;">at stop</div>
+</div>
+
+<!-- DOORS_OPEN State -->
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+<div>
+<div style="color: #fff; font-size: 24px;">🚪</div>
+<div style="color: #fff; font-weight: bold; font-size: 10px;">DOORS</div>
+<div style="color: #fff; font-weight: bold; font-size: 10px;">OPEN</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- Return arrows -->
+<div style="display: flex; justify-content: center; gap: 48px; margin-top: 24px;">
+<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #a371f7; font-size: 11px;">After timeout</div>
+<div style="color: #c9d1d9; font-size: 10px; margin-top: 4px;">DOORS_OPEN → MOVING (more stops)</div>
+<div style="color: #c9d1d9; font-size: 10px;">DOORS_OPEN → IDLE (no stops)</div>
+</div>
+</div>
+
+</div>
 
 **State Transitions:**
 - `IDLE` → `MOVING_UP/DOWN`: When request received
