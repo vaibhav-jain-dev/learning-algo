@@ -1,6 +1,6 @@
 # Longest Common Subsequence
 
-**Difficulty:** Medium (Yellow)
+**Difficulty:** Medium
 
 ## Problem Statement
 
@@ -21,14 +21,12 @@ Explanation: The longest common subsequence is "ace" with length 3.
 ```
 Input: text1 = "abc", text2 = "abc"
 Output: 3
-Explanation: The longest common subsequence is "abc" with length 3.
 ```
 
 **Example 3:**
 ```
 Input: text1 = "abc", text2 = "def"
 Output: 0
-Explanation: No common subsequence exists.
 ```
 
 ## Constraints
@@ -38,24 +36,24 @@ Explanation: No common subsequence exists.
 
 ---
 
-## 🧠 Thought Process & Pattern Recognition
-
-<details>
-<summary><strong>Click to reveal thinking pattern</strong></summary>
+## Thought Process & Pattern Recognition
 
 ### Step 1: Understand the Core Problem
+
 **Question to ask yourself:** "What decisions do I make for each character?"
 
 For each pair of characters (text1[i], text2[j]):
-- If they MATCH: This character is part of LCS, extend from previous LCS
-- If they DON'T MATCH: Take the better of two options (skip char from text1 OR text2)
+- If they **MATCH**: This character is part of LCS, extend from previous LCS
+- If they **DON'T MATCH**: Take the better of two options (skip char from text1 OR text2)
 
 ### Step 2: Identify the Pattern
+
 **Key insight:** This is a classic **Dynamic Programming** problem because:
 - Optimal substructure: LCS of full strings depends on LCS of prefixes
 - Overlapping subproblems: Same prefixes are computed multiple times
 
 ### Step 3: Define the Recurrence
+
 ```
 If text1[i] == text2[j]:
     dp[i][j] = dp[i-1][j-1] + 1    // Match! Extend LCS
@@ -63,113 +61,155 @@ Else:
     dp[i][j] = max(dp[i-1][j], dp[i][j-1])  // Take best without this char
 ```
 
-### Step 4: Recognize Similar Problems
-This pattern appears in:
-- Edit Distance
-- Shortest Common Supersequence
-- DNA sequence alignment
+---
 
-</details>
+## Visual Diagram: How It Works
+
+### Input
+
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>text1 = "abcde"</code><br>
+<code>text2 = "ace"</code>
+</div>
+
+### DP Table Construction
+
+The table below shows how we build `dp[i][j]` = LCS length for `text1[0:i]` and `text2[0:j]`:
+
+<table style="border-collapse: collapse; margin: 20px 0; font-family: monospace;">
+<tr style="background: #e9ecef;">
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;"></th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">""</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">a</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">c</th>
+<th style="border: 1px solid #dee2e6; padding: 10px; width: 50px;">e</th>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">""</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">a</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>1</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">b</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">c</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>2</strong></td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">2</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">d</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">2</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">2</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #e9ecef; font-weight: bold;">e</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">0</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">1</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">2</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda; color: #155724;"><strong>3</strong></td>
+</tr>
+</table>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+<strong>Answer:</strong> dp[5][3] = 3 → LCS = "ace"
+</div>
+
+### Step-by-Step Execution
+
+**Step 1:** Compare `a` with `a`
+
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">d</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+<span style="margin: 0 10px;">←</span>
+<span style="font-style: italic;">text1</span>
+</div>
+
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+<span style="margin: 0 10px;">←</span>
+<span style="font-style: italic;">text2</span>
+</div>
+
+<div style="background: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0;">
+✓ <strong>MATCH!</strong> → dp[1][1] = dp[0][0] + 1 = <strong>1</strong>
+</div>
 
 ---
 
-## 📊 Visual Diagram: How It Works
+**Step 2:** Compare `c` with `c`
 
-<details>
-<summary><strong>Click to see step-by-step visualization</strong></summary>
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">d</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+</div>
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    LONGEST COMMON SUBSEQUENCE VISUALIZATION                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  text1 = "abcde"                                                            │
-│  text2 = "ace"                                                               │
-│                                                                              │
-│  Building the DP Table:                                                      │
-│                                                                              │
-│           ""    a    c    e                                                  │
-│        ┌─────┬─────┬─────┬─────┐                                            │
-│   ""   │  0  │  0  │  0  │  0  │  ← Base case: empty string                 │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   a    │  0  │  1  │  1  │  1  │  ← 'a' matches 'a', LCS = 1               │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   b    │  0  │  1  │  1  │  1  │  ← 'b' doesn't match, carry forward       │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   c    │  0  │  1  │  2  │  2  │  ← 'c' matches 'c', LCS = 2               │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   d    │  0  │  1  │  2  │  2  │  ← 'd' doesn't match, carry forward       │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   e    │  0  │  1  │  2  │  3  │  ← 'e' matches 'e', LCS = 3 ✓            │
-│        └─────┴─────┴─────┴─────┘                                            │
-│                                                                              │
-│  Answer: dp[5][3] = 3  (LCS = "ace")                                        │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                         STEP-BY-STEP EXECUTION                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  STEP 1: Compare text1[0]='a' with text2[0]='a'                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  text1:  [►a ][ b ][ c ][ d ][ e ]                                  │   │
-│  │  text2:  [►a ][ c ][ e ]                                            │   │
-│  │                                                                      │   │
-│  │  'a' == 'a'  ✓ MATCH!                                               │   │
-│  │  dp[1][1] = dp[0][0] + 1 = 0 + 1 = 1                                │   │
-│  │                                                                      │   │
-│  │  Current LCS: "a" (length 1)                                        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-│  STEP 2: Compare text1[2]='c' with text2[1]='c'                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  text1:  [ a ][ b ][►c ][ d ][ e ]                                  │   │
-│  │  text2:  [ a ][►c ][ e ]                                            │   │
-│  │                                                                      │   │
-│  │  'c' == 'c'  ✓ MATCH!                                               │   │
-│  │  dp[3][2] = dp[2][1] + 1 = 1 + 1 = 2                                │   │
-│  │                                                                      │   │
-│  │  Current LCS: "ac" (length 2)                                       │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-│  STEP 3: Compare text1[4]='e' with text2[2]='e'                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  text1:  [ a ][ b ][ c ][ d ][►e ]                                  │   │
-│  │  text2:  [ a ][ c ][►e ]                                            │   │
-│  │                                                                      │   │
-│  │  'e' == 'e'  ✓ MATCH!                                               │   │
-│  │  dp[5][3] = dp[4][2] + 1 = 2 + 1 = 3                                │   │
-│  │                                                                      │   │
-│  │  Final LCS: "ace" (length 3)                                        │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                         BACKTRACKING TO FIND LCS                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Start at dp[5][3] = 3, trace back:                                         │
-│                                                                              │
-│           ""    a    c    e                                                  │
-│        ┌─────┬─────┬─────┬─────┐                                            │
-│   ""   │  0  │  0  │  0  │  0  │                                            │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   a    │  0  │ [1] │  1  │  1  │  ← 'a' added (diagonal move)              │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   b    │  0  │  1  │  1  │  1  │                                            │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   c    │  0  │  1  │ [2] │  2  │  ← 'c' added (diagonal move)              │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   d    │  0  │  1  │  2  │  2  │                                            │
-│        ├─────┼─────┼─────┼─────┤                                            │
-│   e    │  0  │  1  │  2  │ [3] │  ← 'e' added (diagonal move)              │
-│        └─────┴─────┴─────┴─────┘                                            │
-│                                                                              │
-│  Path: (5,3) → (4,2) → (2,1) → (0,0)                                        │
-│  LCS: "e" + "c" + "a" → reverse → "ace" ✓                                   │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+</div>
 
-</details>
+<div style="background: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0;">
+✓ <strong>MATCH!</strong> → dp[3][2] = dp[2][1] + 1 = <strong>2</strong>
+</div>
+
+---
+
+**Step 3:** Compare `e` with `e`
+
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">b</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">d</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+</div>
+
+<div style="display: flex; gap: 10px; margin: 15px 0;">
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">a</span>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px;">c</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">e</span>
+</div>
+
+<div style="background: #d4edda; padding: 10px; border-radius: 5px; margin: 10px 0;">
+✓ <strong>MATCH!</strong> → dp[5][3] = dp[4][2] + 1 = <strong>3</strong>
+</div>
+
+---
+
+### Final Result
+
+<div style="background: #cce5ff; color: #004085; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+<strong>LCS = "ace"</strong><br>
+<strong>Length = 3</strong>
+</div>
 
 ---
 
@@ -177,8 +217,10 @@ This pattern appears in:
 
 ### Approach 1: Dynamic Programming (2D Table) ⭐ RECOMMENDED
 
-**Time Complexity:** O(m × n)
-**Space Complexity:** O(m × n)
+| Metric | Value |
+|--------|-------|
+| Time Complexity | O(m × n) |
+| Space Complexity | O(m × n) |
 
 **Why this is best:**
 - Clear visualization of subproblem relationships
@@ -187,32 +229,28 @@ This pattern appears in:
 
 ### Approach 2: Space-Optimized DP
 
-**Time Complexity:** O(m × n)
-**Space Complexity:** O(min(m, n))
+| Metric | Value |
+|--------|-------|
+| Time Complexity | O(m × n) |
+| Space Complexity | O(min(m, n)) |
 
-**When to use:**
-- Memory is constrained
-- Only need the length, not the actual LCS
+**When to use:** Memory is constrained, only need the length.
 
 ### Approach 3: Recursive with Memoization
 
-**Time Complexity:** O(m × n)
-**Space Complexity:** O(m × n)
+| Metric | Value |
+|--------|-------|
+| Time Complexity | O(m × n) |
+| Space Complexity | O(m × n) |
 
-**When to use:**
-- More intuitive top-down thinking
-- When only some subproblems need solving
+**When to use:** More intuitive top-down thinking.
 
 ---
 
-## 📈 Complexity Comparison
+## Complexity Comparison
 
-```
-┌─────────────────────────────┬──────────────┬──────────────┬────────────────┐
-│         Approach            │     Time     │    Space     │  Recommendation │
-├─────────────────────────────┼──────────────┼──────────────┼────────────────┤
-│ 2D DP Table                 │   O(m × n)   │   O(m × n)   │  ⭐ BEST       │
-│ Space-Optimized DP          │   O(m × n)   │ O(min(m,n))  │  ✓ Low memory  │
-│ Recursive + Memo            │   O(m × n)   │   O(m × n)   │  ✓ Intuitive   │
-└─────────────────────────────┴──────────────┴──────────────┴────────────────┘
-```
+| Approach | Time | Space | Recommendation |
+|----------|------|-------|----------------|
+| 2D DP Table | O(m × n) | O(m × n) | ⭐ BEST |
+| Space-Optimized DP | O(m × n) | O(min(m,n)) | ✓ Low memory |
+| Recursive + Memo | O(m × n) | O(m × n) | ✓ Intuitive |

@@ -85,29 +85,57 @@ Space Complexity: O(1) - Only tracking best sum
 ```
 
 #### Visual Example
-```
-Array: [-1, 2, 1, -4], Target: 1
 
-Step 0: Sort -> [-4, -1, 1, 2]
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>Array: [-1, 2, 1, -4]</code>, <code>Target: 1</code><br>
+After sorting: <code>[-4, -1, 1, 2]</code>
+</div>
 
-Fix i=0 (-4), left=1 (-1), right=3 (2)
-  sum = -4 + -1 + 2 = -3, diff = |(-3) - 1| = 4
-  -3 < 1, move left right
+**Step 1:** Fix i=0 (-4), left=1, right=3
 
-  left=2 (1), right=3 (2)
-  sum = -4 + 1 + 2 = -1, diff = |(-1) - 1| = 2
-  -1 < 1, move left right
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">-4 (i)</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">-1 (L)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">1</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">2 (R)</span>
+</div>
 
-  left >= right, done with i=0
+<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0;">
+sum = -4 + -1 + 2 = -3, diff = |-3 - 1| = 4<br>
+-3 < 1 → Move L right
+</div>
 
-Fix i=1 (-1), left=2 (1), right=3 (2)
-  sum = -1 + 1 + 2 = 2, diff = |(2) - 1| = 1  <- new best!
-  2 > 1, move right left
+**Step 2:** left=2 (1), right=3 (2)
 
-  left >= right, done with i=1
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">-4 (i)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">-1</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">1 (L)</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">2 (R)</span>
+</div>
 
-Result: 2 (closest sum found)
-```
+<div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+sum = -4 + 1 + 2 = -1, diff = |-1 - 1| = 2<br>
+-1 < 1 → Move L right (L crosses R, done with i=0)
+</div>
+
+**Step 3:** Fix i=1 (-1), left=2 (1), right=3 (2)
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">-4</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">-1 (i)</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">1 (L)</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">2 (R)</span>
+</div>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+sum = -1 + 1 + 2 = <strong>2</strong>, diff = |2 - 1| = 1 ← New best!<br>
+2 > 1 → Move R left (L crosses R, done with i=1)
+</div>
+
+<div style="background: #cce5ff; color: #004085; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center;">
+<strong>Result: 2</strong> (closest sum found)
+</div>
 
 #### Complexity Analysis
 ```

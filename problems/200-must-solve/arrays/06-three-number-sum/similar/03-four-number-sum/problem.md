@@ -65,108 +65,129 @@ Store all pair sums, then look for complement pairs:
 
 ---
 
-## 📊 Visual Diagram: How It Works
+## Visual Diagram: How It Works
 
-<details>
-<summary><strong>Click to see step-by-step visualization</strong></summary>
+### Input
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       FOUR NUMBER SUM VISUALIZATION                          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  array = [7, 6, 4, -1, 1, 2], target = 16                                   │
-│                                                                              │
-│  After sorting: [-1, 1, 2, 4, 6, 7]                                         │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                     TWO POINTERS APPROACH (O(n³))                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Fix i=0 (-1), Fix j=1 (1), Two pointers for remaining:                     │
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  [-1][ 1 ][ 2 ][ 4 ][ 6 ][ 7 ]                                        │  │
-│  │   i    j    L              R                                           │  │
-│  │                                                                        │  │
-│  │  target - (-1) - 1 = 16                                               │  │
-│  │  Need: L + R = 16                                                      │  │
-│  │  Current: 2 + 7 = 9 < 16  →  Move L right                             │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  Continue searching... (no valid quadruplet with i=0, j=1)                  │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                       FINDING FIRST QUADRUPLET                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Fix i=0 (-1), Fix j=2 (2):                                                 │
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  [-1][ 1 ][ 2 ][ 4 ][ 6 ][ 7 ]                                        │  │
-│  │   i         j    L         R                                           │  │
-│  │                                                                        │  │
-│  │  Need: L + R = 16 - (-1) - 2 = 15                                     │  │
-│  │  Check: 4 + 7 = 11 < 15  →  Move L                                    │  │
-│  │  Check: 6 + 7 = 13 < 15  →  Move L (L crosses R, done)               │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  Fix i=0 (-1), Fix j=3 (4):                                                 │
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  [-1][ 1 ][ 2 ][ 4 ][ 6 ][ 7 ]                                        │  │
-│  │   i              j    L    R                                           │  │
-│  │                                                                        │  │
-│  │  Need: L + R = 16 - (-1) - 4 = 13                                     │  │
-│  │  Check: 6 + 7 = 13 = 13  ✓ MATCH!                                     │  │
-│  │                                                                        │  │
-│  │  Quadruplet found: [-1, 4, 6, 7]                                      │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                       FINDING SECOND QUADRUPLET                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Fix i=1 (1), Fix j=2 (2):                                                  │
-│                                                                              │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  [-1][ 1 ][ 2 ][ 4 ][ 6 ][ 7 ]                                        │  │
-│  │        i    j    L         R                                           │  │
-│  │                                                                        │  │
-│  │  Need: L + R = 16 - 1 - 2 = 13                                        │  │
-│  │  Check: 4 + 7 = 11 < 13  →  Move L                                    │  │
-│  │  Check: 6 + 7 = 13 = 13  ✓ MATCH!                                     │  │
-│  │                                                                        │  │
-│  │  Quadruplet found: [1, 2, 6, 7]                                       │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                         HASHMAP APPROACH (O(n²))                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Phase 1: Build pair sums hash                                               │
-│                                                                              │
-│  pairSums = {                                                                │
-│      6:  [(-1, 7)],         // -1 + 7 = 6                                   │
-│      5:  [(-1, 6)],         // -1 + 6 = 5                                   │
-│      3:  [(-1, 4)],         // -1 + 4 = 3                                   │
-│      1:  [(-1, 2)],         // -1 + 2 = 1                                   │
-│      0:  [(-1, 1)],         // -1 + 1 = 0                                   │
-│      8:  [(1, 7)],          // 1 + 7 = 8                                    │
-│      ...                                                                     │
-│  }                                                                           │
-│                                                                              │
-│  Phase 2: For each new pair, check for complement                            │
-│                                                                              │
-│  Current pair: (6, 7), sum = 13                                              │
-│  Need complement: 16 - 13 = 3                                               │
-│  Check pairSums[3] = [(-1, 4)]  ✓                                           │
-│  Quadruplet: [-1, 4, 6, 7]                                                   │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>array = [7, 6, 4, -1, 1, 2]</code><br>
+<code>target = 16</code><br>
+<code>After sorting: [-1, 1, 2, 4, 6, 7]</code>
+</div>
 
-</details>
+---
+
+### Two Pointers Approach (O(n^3))
+
+**Step 1:** Fix i=0 (-1), Fix j=1 (1), Two pointers for remaining
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">-1 (i)</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">1 (j)</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">2 (L)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">4</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">6</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">7 (R)</span>
+</div>
+
+<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Need: L + R = 16 - (-1) - 1 = 16<br>
+Current: 2 + 7 = 9 < 16 → Move L right
+</div>
+
+---
+
+### Finding First Quadruplet
+
+**Fix i=0 (-1), Fix j=3 (4):**
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">-1 (i)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">1</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">2</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">4 (j)</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">6 (L)</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">7 (R)</span>
+</div>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Need: L + R = 16 - (-1) - 4 = 13<br>
+Check: 6 + 7 = 13 = 13 ✓ MATCH!<br>
+<strong>Quadruplet found: [-1, 4, 6, 7]</strong>
+</div>
+
+---
+
+### Finding Second Quadruplet
+
+**Fix i=1 (1), Fix j=2 (2):**
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">-1</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">1 (i)</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">2 (j)</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">4 (L)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">6</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">7 (R)</span>
+</div>
+
+<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Need: L + R = 16 - 1 - 2 = 13<br>
+Check: 4 + 7 = 11 < 13 → Move L
+</div>
+
+<div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; align-items: center;">
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">-1</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">1 (i)</span>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px;">2 (j)</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px;">4</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">6 (L)</span>
+<span style="background: #ffc107; color: black; padding: 8px 15px; border-radius: 5px;">7 (R)</span>
+</div>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Check: 6 + 7 = 13 = 13 ✓ MATCH!<br>
+<strong>Quadruplet found: [1, 2, 6, 7]</strong>
+</div>
+
+---
+
+### HashMap Approach (O(n^2) average)
+
+**Phase 1:** Build pair sums hash
+
+<table style="border-collapse: collapse; margin: 20px 0; font-family: monospace;">
+<tr style="background: #e9ecef;">
+<th style="border: 1px solid #dee2e6; padding: 10px;">Sum</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">Pairs</th>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">6</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">[(-1, 7)]</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">5</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">[(-1, 6)]</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center; background: #d4edda;">3</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; background: #d4edda;">[(-1, 4)]</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px; text-align: center;">8</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">[(1, 7)]</td>
+</tr>
+</table>
+
+**Phase 2:** For pair (6, 7), sum = 13
+
+<div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 10px 0;">
+Need complement: 16 - 13 = <strong>3</strong><br>
+Check pairSums[3] = [(-1, 4)] ✓<br>
+<strong>Quadruplet: [-1, 4, 6, 7]</strong>
+</div>
+
+---
 
 ---
 

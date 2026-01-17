@@ -56,96 +56,143 @@ Moving the minimum pointer always gives us the best chance of reducing the range
 
 ---
 
-## 📊 Visual Diagram: How It Works
+## Visual Diagram: How It Works
 
-<details>
-<summary><strong>Click to see step-by-step visualization</strong></summary>
+### Input
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    SMALLEST DIFFERENCE TRIPLET VISUALIZATION                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  arr1 = [1, 4, 5]                                                           │
-│  arr2 = [10, 20]                                                             │
-│  arr3 = [14, 19]                                                             │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                       THREE POINTERS APPROACH                                │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  STEP 1: Initialize pointers at start of each array                         │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  arr1: [►1 ][ 4 ][ 5 ]                                                │  │
-│  │  arr2: [►10][ 20]                                                     │  │
-│  │  arr3: [►14][ 19]                                                     │  │
-│  │                                                                        │  │
-│  │  Current triplet: (1, 10, 14)                                         │  │
-│  │  min = 1, max = 14, range = 13                                        │  │
-│  │  Best so far: range = 13                                              │  │
-│  │                                                                        │  │
-│  │  Minimum is in arr1 → Move arr1 pointer                              │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  STEP 2: After moving arr1 pointer                                          │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  arr1: [ 1 ][►4 ][ 5 ]                                                │  │
-│  │  arr2: [►10][ 20]                                                     │  │
-│  │  arr3: [►14][ 19]                                                     │  │
-│  │                                                                        │  │
-│  │  Current triplet: (4, 10, 14)                                         │  │
-│  │  min = 4, max = 14, range = 10                                        │  │
-│  │  Best so far: range = 10 (improved!)                                  │  │
-│  │                                                                        │  │
-│  │  Minimum is in arr1 → Move arr1 pointer                              │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  STEP 3: After moving arr1 pointer again                                    │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  arr1: [ 1 ][ 4 ][►5 ]                                                │  │
-│  │  arr2: [►10][ 20]                                                     │  │
-│  │  arr3: [►14][ 19]                                                     │  │
-│  │                                                                        │  │
-│  │  Current triplet: (5, 10, 14)                                         │  │
-│  │  min = 5, max = 14, range = 9                                         │  │
-│  │  Best so far: range = 9 (improved!) ⭐                                │  │
-│  │                                                                        │  │
-│  │  Minimum is in arr1 → Move arr1 pointer                              │  │
-│  │  But arr1 is exhausted!                                               │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  RESULT: Best triplet = (5, 10, 14) with range = 9                          │
-│                                                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           WHY MOVE MINIMUM?                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Consider triplet (5, 10, 14):                                               │
-│                                                                              │
-│  Option A: Move pointer of minimum (5)                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  5 could become 6, 7, 8... (increases)                                │  │
-│  │  Range could become: 14-6=8, 14-7=7, 14-8=6... (decreases!) ✓        │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  Option B: Move pointer of maximum (14)                                      │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  14 could become 15, 16, 19... (increases)                            │  │
-│  │  Range becomes: 15-5=10, 16-5=11, 19-5=14... (increases!) ✗          │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  Option C: Move pointer of middle (10)                                       │
-│  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │  10 could become 20 (increases)                                       │  │
-│  │  Range becomes: 20-5=15 (increases!) ✗                                │  │
-│  └───────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│  Conclusion: Always move the minimum for best chance to reduce range!        │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+<code>arr1 = [1, 4, 5]</code><br>
+<code>arr2 = [10, 20]</code><br>
+<code>arr3 = [14, 19]</code>
+</div>
 
-</details>
+---
+
+### Three Pointers Approach
+
+**Step 1:** Initialize pointers at start of each array
+
+<div style="display: flex; gap: 20px; margin: 15px 0; flex-wrap: wrap;">
+<div>
+<strong>arr1:</strong>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">1</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">4</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">5</span>
+</div>
+<div>
+<strong>arr2:</strong>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">10</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">20</span>
+</div>
+<div>
+<strong>arr3:</strong>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">14</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">19</span>
+</div>
+</div>
+
+<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Triplet: (1, 10, 14) → min = 1, max = 14, <strong>range = 13</strong><br>
+Minimum is in arr1 → Move arr1 pointer
+</div>
+
+---
+
+**Step 2:** After moving arr1 pointer
+
+<div style="display: flex; gap: 20px; margin: 15px 0; flex-wrap: wrap;">
+<div>
+<strong>arr1:</strong>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">1</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">4</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">5</span>
+</div>
+<div>
+<strong>arr2:</strong>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">10</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">20</span>
+</div>
+<div>
+<strong>arr3:</strong>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">14</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">19</span>
+</div>
+</div>
+
+<div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Triplet: (4, 10, 14) → min = 4, max = 14, <strong>range = 10</strong> (improved!)
+</div>
+
+---
+
+**Step 3:** After moving arr1 pointer again
+
+<div style="display: flex; gap: 20px; margin: 15px 0; flex-wrap: wrap;">
+<div>
+<strong>arr1:</strong>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">1</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">4</span>
+<span style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">5</span>
+</div>
+<div>
+<strong>arr2:</strong>
+<span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">10</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">20</span>
+</div>
+<div>
+<strong>arr3:</strong>
+<span style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">14</span>
+<span style="background: #6c757d; color: white; padding: 8px 15px; border-radius: 5px; margin: 0 5px;">19</span>
+</div>
+</div>
+
+<div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0;">
+Triplet: (5, 10, 14) → min = 5, max = 14, <strong>range = 9</strong> (best!)<br>
+arr1 exhausted → <strong>DONE</strong>
+</div>
+
+---
+
+### Why Move Minimum?
+
+Consider triplet (5, 10, 14):
+
+<table style="border-collapse: collapse; margin: 20px 0; font-family: monospace; width: 100%;">
+<tr style="background: #e9ecef;">
+<th style="border: 1px solid #dee2e6; padding: 10px;">Option</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">Move</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">Next Value</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">New Range</th>
+<th style="border: 1px solid #dee2e6; padding: 10px;">Result</th>
+</tr>
+<tr style="background: #d4edda;">
+<td style="border: 1px solid #dee2e6; padding: 10px;">A</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">Minimum (5)</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">6, 7, 8...</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">14-6=8, 14-7=7...</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; color: #155724;"><strong>Decreases ✓</strong></td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px;">B</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">Maximum (14)</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">19</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">19-5=14</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; color: #dc3545;">Increases ✗</td>
+</tr>
+<tr>
+<td style="border: 1px solid #dee2e6; padding: 10px;">C</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">Middle (10)</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">20</td>
+<td style="border: 1px solid #dee2e6; padding: 10px;">20-5=15</td>
+<td style="border: 1px solid #dee2e6; padding: 10px; color: #dc3545;">Increases ✗</td>
+</tr>
+</table>
+
+<div style="background: #cce5ff; color: #004085; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: center;">
+<strong>Conclusion:</strong> Always move the minimum for best chance to reduce range!
+</div>
+
+---
 
 ---
 
