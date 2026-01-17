@@ -51,78 +51,129 @@ jobs:
           echo "=========================================="
           echo "  Configuration Validation"
           echo "=========================================="
+          echo ""
 
           VALIDATION_PASSED=true
+          MISSING_KEYS=""
+          WARNINGS=""
 
           # Check SSH_HOST (can be secret or variable)
+          echo "[Checking] SSH_HOST..."
           if [ -n "${{ secrets.SSH_HOST }}" ]; then
-            echo "SSH_HOST: Present (from Secrets)"
+            echo "  ✓ SSH_HOST: Present (from Secrets)"
             echo "ssh_host=${{ secrets.SSH_HOST }}" >> $GITHUB_OUTPUT
           elif [ -n "${{ vars.SSH_HOST }}" ]; then
-            echo "SSH_HOST: Present (from Variables)"
+            echo "  ✓ SSH_HOST: Present (from Variables)"
             echo "ssh_host=${{ vars.SSH_HOST }}" >> $GITHUB_OUTPUT
           else
-            echo "SSH_HOST: MISSING"
+            echo "  ✗ SSH_HOST: MISSING"
+            MISSING_KEYS="${MISSING_KEYS}\n  - SSH_HOST (Add to Secrets or Variables)"
             VALIDATION_PASSED=false
           fi
 
           # Check SSH_USERNAME (can be secret or variable)
+          echo "[Checking] SSH_USERNAME..."
           if [ -n "${{ secrets.SSH_USERNAME }}" ]; then
-            echo "SSH_USERNAME: Present (from Secrets)"
+            echo "  ✓ SSH_USERNAME: Present (from Secrets)"
             echo "ssh_username=${{ secrets.SSH_USERNAME }}" >> $GITHUB_OUTPUT
           elif [ -n "${{ vars.SSH_USERNAME }}" ]; then
-            echo "SSH_USERNAME: Present (from Variables)"
+            echo "  ✓ SSH_USERNAME: Present (from Variables)"
             echo "ssh_username=${{ vars.SSH_USERNAME }}" >> $GITHUB_OUTPUT
           else
-            echo "SSH_USERNAME: MISSING"
+            echo "  ✗ SSH_USERNAME: MISSING"
+            MISSING_KEYS="${MISSING_KEYS}\n  - SSH_USERNAME (Add to Secrets or Variables)"
             VALIDATION_PASSED=false
           fi
 
           # Check SSH_PRIVATE_KEY (must be secret)
+          echo "[Checking] SSH_PRIVATE_KEY..."
           if [ -n "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "SSH_PRIVATE_KEY: Present (from Secrets)"
+            echo "  ✓ SSH_PRIVATE_KEY: Present (from Secrets)"
             # Sanity check for key format
             KEY_PREVIEW="${{ secrets.SSH_PRIVATE_KEY }}"
             if [[ ! "$KEY_PREVIEW" =~ ^-----BEGIN ]]; then
-              echo "WARNING: SSH_PRIVATE_KEY may be malformed (missing BEGIN header)"
-              echo "  Ensure the key includes the full header: -----BEGIN ... PRIVATE KEY-----"
+              echo "  ⚠ WARNING: SSH_PRIVATE_KEY may be malformed (missing BEGIN header)"
+              WARNINGS="${WARNINGS}\n  - SSH_PRIVATE_KEY: Missing '-----BEGIN ... PRIVATE KEY-----' header"
+              WARNINGS="${WARNINGS}\n    Make sure to copy the ENTIRE key including headers"
+            fi
+            if [[ ! "$KEY_PREVIEW" =~ -----END ]]; then
+              echo "  ⚠ WARNING: SSH_PRIVATE_KEY may be malformed (missing END footer)"
+              WARNINGS="${WARNINGS}\n  - SSH_PRIVATE_KEY: Missing '-----END ... PRIVATE KEY-----' footer"
             fi
           else
-            echo "SSH_PRIVATE_KEY: MISSING (REQUIRED)"
+            echo "  ✗ SSH_PRIVATE_KEY: MISSING (REQUIRED)"
+            MISSING_KEYS="${MISSING_KEYS}\n  - SSH_PRIVATE_KEY (MUST be added to Secrets, not Variables)"
             VALIDATION_PASSED=false
           fi
 
           # Check SSH_PORT (optional, can be secret or variable)
+          echo "[Checking] SSH_PORT..."
           if [ -n "${{ secrets.SSH_PORT }}" ]; then
-            echo "SSH_PORT: Present (from Secrets)"
+            echo "  ✓ SSH_PORT: Present (from Secrets)"
             echo "ssh_port=${{ secrets.SSH_PORT }}" >> $GITHUB_OUTPUT
           elif [ -n "${{ vars.SSH_PORT }}" ]; then
-            echo "SSH_PORT: Present (from Variables)"
+            echo "  ✓ SSH_PORT: Present (from Variables)"
             echo "ssh_port=${{ vars.SSH_PORT }}" >> $GITHUB_OUTPUT
           else
-            echo "SSH_PORT: Not set (will use default: 22)"
+            echo "  ○ SSH_PORT: Not set (will use default: 22)"
             echo "ssh_port=22" >> $GITHUB_OUTPUT
           fi
 
           # Check ENV_FILE (optional)
+          echo "[Checking] ENV_FILE..."
           if [ -n "${{ secrets.ENV_FILE }}" ]; then
-            echo "ENV_FILE: Present (from Secrets)"
+            echo "  ✓ ENV_FILE: Present (from Secrets)"
             echo "has_env_file=true" >> $GITHUB_OUTPUT
           else
-            echo "ENV_FILE: Not configured (optional)"
+            echo "  ○ ENV_FILE: Not configured (optional)"
             echo "has_env_file=false" >> $GITHUB_OUTPUT
           fi
 
+          echo ""
           echo "=========================================="
 
+          # Print warnings if any
+          if [ -n "$WARNINGS" ]; then
+            echo ""
+            echo "⚠️  WARNINGS:"
+            echo -e "$WARNINGS"
+            echo ""
+          fi
+
           if [ "$VALIDATION_PASSED" = "false" ]; then
-            echo "VALIDATION FAILED: Missing required configuration"
-            echo "Please add the missing values in Settings > Secrets and variables > Actions"
+            echo ""
+            echo "❌ VALIDATION FAILED"
+            echo ""
+            echo "Missing required configuration:"
+            echo -e "$MISSING_KEYS"
+            echo ""
+            echo "=========================================="
+            echo "📋 HOW TO FIX:"
+            echo "=========================================="
+            echo ""
+            echo "1. Go to your repository on GitHub"
+            echo "2. Navigate to: Settings > Secrets and variables > Actions"
+            echo "3. Add the missing keys listed above"
+            echo ""
+            echo "For SSH_PRIVATE_KEY:"
+            echo "  - Click 'New repository secret'"
+            echo "  - Name: SSH_PRIVATE_KEY"
+            echo "  - Value: Paste your ENTIRE private key including:"
+            echo "    -----BEGIN OPENSSH PRIVATE KEY-----"
+            echo "    ... (key content) ..."
+            echo "    -----END OPENSSH PRIVATE KEY-----"
+            echo ""
+            echo "For SSH_HOST and SSH_USERNAME:"
+            echo "  - Can be added as Secrets or Variables"
+            echo "  - Go to 'Variables' tab for non-sensitive values"
+            echo ""
+            echo "=========================================="
             echo "validation_passed=false" >> $GITHUB_OUTPUT
             exit 1
           fi
 
-          echo "All required configuration present"
+          echo ""
+          echo "✅ All required configuration present"
           echo "validation_passed=true" >> $GITHUB_OUTPUT
 
   test-connection:

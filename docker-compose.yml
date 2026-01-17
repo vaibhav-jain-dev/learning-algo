@@ -167,6 +167,9 @@ services:
     image: dsalgo-learn-platform:latest
     container_name: dsalgo-learn-app
     hostname: dsalgo-learn-app
+    labels:
+      - "cloudflare:learn:8080"
+      - "cloudflare:learn-api:8080"
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
@@ -188,6 +191,9 @@ services:
       - PORT=8080
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
+      # CORS - Allowed origins (comma-separated)
+      # Supports wildcards: https://learn.*, https://learn-api.*
+      - ALLOWED_ORIGINS=http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*
       # Kernel pool configuration
       - PYTHON_KERNEL_COUNT=3
       - GO_KERNEL_COUNT=2
@@ -245,6 +251,9 @@ services:
       dockerfile: Dockerfile.dev
     image: dsalgo-learn-platform:dev
     container_name: dsalgo-learn-dev
+    labels:
+      - "cloudflare:learn:8080"
+      - "cloudflare:learn-api:8080"
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
@@ -264,6 +273,8 @@ services:
       - PORT=8080
       - DEV_MODE=true
       - STATE_DIR=/app/state
+      # CORS - Allowed origins (comma-separated)
+      - ALLOWED_ORIGINS=http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*
       # PostgreSQL connection
       - DB_HOST=dsalgo-postgres
       - DB_PORT=5432

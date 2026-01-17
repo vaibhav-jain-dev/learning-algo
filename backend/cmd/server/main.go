@@ -57,10 +57,20 @@ func main() {
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} - ${method} ${path} (${latency})\n",
 	}))
+
+	// CORS configuration - supports custom domains via ALLOWED_ORIGINS env var
+	// Default allows localhost and common development/production domains
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	if allowedOrigins == "" {
+		// Default origins: localhost variants + learn/learn-api subdomains
+		allowedOrigins = "http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*"
+	}
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
-		AllowHeaders: "Origin,Content-Type,Accept,HX-Request,HX-Trigger,HX-Target",
+		AllowOrigins:     allowedOrigins,
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowHeaders:     "Origin,Content-Type,Accept,HX-Request,HX-Trigger,HX-Target,Authorization,X-Requested-With",
+		AllowCredentials: true,
+		MaxAge:           86400,
 	}))
 
 	// Initialize kernel pools with standby mode (starts on-demand)
