@@ -59,11 +59,11 @@ func main() {
 	}))
 
 	// CORS configuration - supports custom domains via ALLOWED_ORIGINS env var
-	// Default allows localhost and common development/production domains
+	// Default allows localhost and *.arvaibhav.cloud domains
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
-		// Default origins: localhost variants + learn/learn-api subdomains
-		allowedOrigins = "http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*"
+		// Default origins: localhost variants + *.arvaibhav.cloud subdomains
+		allowedOrigins = "http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud,*"
 	}
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigins,

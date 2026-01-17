@@ -395,6 +395,8 @@ flowchart LR
 
 The workflow automatically configures Cloudflare Tunnel routes by scanning your `docker-compose.yml` for special labels.
 
+**Domain Pattern:** `{subdomain}.arvaibhav.cloud`
+
 ### Adding Cloudflare Labels
 
 ```yaml
@@ -402,34 +404,108 @@ services:
   webapp:
     image: nginx
     labels:
-      - "cloudflare:myapp.example.com:80"
+      - "cloudflare:learn.arvaibhav.cloud:8080"
     ports:
-      - "80:80"
+      - "8080:8080"
 
   api:
     image: node:18
     labels:
-      - "cloudflare:api.example.com:3000"
+      - "cloudflare:learn-api.arvaibhav.cloud:8080"
     ports:
-      - "3000:3000"
+      - "8080:8080"
 ```
 
 ### Label Format
 
 ```
-cloudflare:<subdomain>:<port>
+cloudflare:<subdomain>.arvaibhav.cloud:<port>
 ```
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `subdomain` | Your Cloudflare subdomain | `myapp.example.com` |
-| `port` | Container's internal port | `80`, `3000`, `8080` |
+| `subdomain` | Your subdomain | `learn`, `learn-api` |
+| `domain` | Base domain | `arvaibhav.cloud` |
+| `port` | Container's internal port | `8080` |
+
+### Current Configured Routes
+
+| Subdomain | URL | Port |
+|-----------|-----|------|
+| Frontend | `https://learn.arvaibhav.cloud` | 8080 |
+| API | `https://learn-api.arvaibhav.cloud` | 8080 |
 
 ### Requirements
 
 - `cloudflared` installed on server
 - Tunnel configured at `/etc/cloudflared/config.yml`
 - Tunnel service running
+
+---
+
+## External Services Configuration
+
+The application supports external Redis, PostgreSQL, and Elasticsearch services via environment variables. By default, it uses the local Docker services.
+
+### Environment Variables
+
+Set these in your `.env` file or GitHub Secrets (`ENV_FILE`):
+
+```bash
+# PostgreSQL - External Database
+DB_HOST=your-postgres-host.com
+DB_PORT=5432
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=your_database
+
+# Elasticsearch - External Service
+ES_URL=https://your-elasticsearch-host.com:9200
+
+# Redis - External Service
+REDIS_URL=redis://your-redis-host.com:6379
+
+# Kibana (optional)
+KIBANA_URL=https://your-kibana-host.com:5601
+
+# CORS Origins (optional - customize allowed domains)
+ALLOWED_ORIGINS=https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud
+```
+
+### Using External Services Only
+
+If using only external services, you can start without local dependencies:
+
+```bash
+# Start app without local Redis/Postgres/Elasticsearch
+docker compose up dsalgo-learn-app --no-deps
+```
+
+Or modify `docker-compose.yml` to remove `depends_on` for external services.
+
+```mermaid
+flowchart TB
+    subgraph Docker["🐳 Docker Compose"]
+        APP["📱 App Container"]
+    end
+
+    subgraph External["☁️ External Services"]
+        PG["🐘 PostgreSQL"]
+        ES["🔍 Elasticsearch"]
+        REDIS["📦 Redis"]
+    end
+
+    subgraph EnvVars["📋 Environment Variables"]
+        DB_URL["DB_HOST, DB_PORT, etc."]
+        ES_URL_VAR["ES_URL"]
+        REDIS_URL_VAR["REDIS_URL"]
+    end
+
+    EnvVars --> APP
+    APP -->|"DB_HOST"| PG
+    APP -->|"ES_URL"| ES
+    APP -->|"REDIS_URL"| REDIS
+```
 
 ---
 

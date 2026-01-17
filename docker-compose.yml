@@ -168,8 +168,9 @@ services:
     container_name: dsalgo-learn-app
     hostname: dsalgo-learn-app
     labels:
-      - "cloudflare:learn:8080"
-      - "cloudflare:learn-api:8080"
+      - "cloudflare:learn.arvaibhav.cloud:8080"
+      - "cloudflare:learn-api.arvaibhav.cloud:8080"
+    # Dependencies - can be removed if using external services via env vars
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
@@ -192,26 +193,26 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
       # CORS - Allowed origins (comma-separated)
-      # Supports wildcards: https://learn.*, https://learn-api.*
-      - ALLOWED_ORIGINS=http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*
+      # Domain: *.arvaibhav.cloud
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud,*}
       # Kernel pool configuration
       - PYTHON_KERNEL_COUNT=3
       - GO_KERNEL_COUNT=2
       - KERNEL_MEMORY_LIMIT=256M
       # State persistence directory
       - STATE_DIR=/app/state
-      # PostgreSQL connection
-      - DB_HOST=dsalgo-postgres
-      - DB_PORT=5432
-      - DB_USER=dsalgo
-      - DB_PASSWORD=dsalgo_secret
-      - DB_NAME=order_management
-      # Elasticsearch connection
-      - ES_URL=http://dsalgo-elasticsearch:9200
+      # PostgreSQL connection - override via env vars for external DB
+      - DB_HOST=${DB_HOST:-dsalgo-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_USER=${DB_USER:-dsalgo}
+      - DB_PASSWORD=${DB_PASSWORD:-dsalgo_secret}
+      - DB_NAME=${DB_NAME:-order_management}
+      # Elasticsearch connection - override via ES_URL env var for external
+      - ES_URL=${ES_URL:-http://dsalgo-elasticsearch:9200}
       # Kibana URL (for reference in app)
-      - KIBANA_URL=http://dsalgo-kibana:5601
-      # Redis connection
-      - REDIS_URL=redis://dsalgo-redis:6379
+      - KIBANA_URL=${KIBANA_URL:-http://dsalgo-kibana:5601}
+      # Redis connection - override via REDIS_URL env var for external
+      - REDIS_URL=${REDIS_URL:-redis://dsalgo-redis:6379}
     networks:
       - dsalgo-learn-network
     restart: unless-stopped
@@ -252,8 +253,9 @@ services:
     image: dsalgo-learn-platform:dev
     container_name: dsalgo-learn-dev
     labels:
-      - "cloudflare:learn:8080"
-      - "cloudflare:learn-api:8080"
+      - "cloudflare:learn.arvaibhav.cloud:8080"
+      - "cloudflare:learn-api.arvaibhav.cloud:8080"
+    # Dependencies - can be removed if using external services via env vars
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
@@ -274,19 +276,20 @@ services:
       - DEV_MODE=true
       - STATE_DIR=/app/state
       # CORS - Allowed origins (comma-separated)
-      - ALLOWED_ORIGINS=http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.*,https://learn-api.*,*
-      # PostgreSQL connection
-      - DB_HOST=dsalgo-postgres
-      - DB_PORT=5432
-      - DB_USER=dsalgo
-      - DB_PASSWORD=dsalgo_secret
-      - DB_NAME=order_management
-      # Elasticsearch connection
-      - ES_URL=http://dsalgo-elasticsearch:9200
+      # Domain: *.arvaibhav.cloud
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud,*}
+      # PostgreSQL connection - override via env vars for external DB
+      - DB_HOST=${DB_HOST:-dsalgo-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_USER=${DB_USER:-dsalgo}
+      - DB_PASSWORD=${DB_PASSWORD:-dsalgo_secret}
+      - DB_NAME=${DB_NAME:-order_management}
+      # Elasticsearch connection - override via ES_URL env var for external
+      - ES_URL=${ES_URL:-http://dsalgo-elasticsearch:9200}
       # Kibana URL (for reference in app)
-      - KIBANA_URL=http://dsalgo-kibana:5601
-      # Redis connection
-      - REDIS_URL=redis://dsalgo-redis:6379
+      - KIBANA_URL=${KIBANA_URL:-http://dsalgo-kibana:5601}
+      # Redis connection - override via REDIS_URL env var for external
+      - REDIS_URL=${REDIS_URL:-redis://dsalgo-redis:6379}
     networks:
       - dsalgo-learn-network
     tmpfs:
