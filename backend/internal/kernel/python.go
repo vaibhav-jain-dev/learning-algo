@@ -22,6 +22,12 @@ import signal
 import builtins
 import tracemalloc
 import time as _time
+import io as _io
+
+# Redirect stderr to capture all error output
+_stderr_capture = _io.StringIO()
+_original_stderr = sys.stderr
+sys.stderr = _stderr_capture
 
 # Security: Disable dangerous functions
 BLOCKED_BUILTINS = ['eval', 'exec', 'compile', '__import__', 'open', 'input']
@@ -63,7 +69,11 @@ safe_builtins['__import__'] = safe_import
 def timeout_handler(signum, frame):
     raise TimeoutError("Execution timed out (10 second limit)")
 
-signal.signal(signal.SIGALRM, timeout_handler)
+# Only set signal handler in main thread
+try:
+    signal.signal(signal.SIGALRM, timeout_handler)
+except ValueError:
+    pass  # Not in main thread, skip signal handling
 
 def format_result(value):
     if value is None:
@@ -82,17 +92,36 @@ def format_bytes(size):
         size /= 1024
     return f"{size:.2f} TB"
 
+def get_stderr():
+    """Get captured stderr and reset buffer"""
+    global _stderr_capture
+    stderr_output = _stderr_capture.getvalue()
+    _stderr_capture = _io.StringIO()
+    sys.stderr = _stderr_capture
+    return stderr_output.strip()
+
+def safe_alarm(seconds):
+    """Set alarm only if in main thread"""
+    try:
+        signal.alarm(seconds)
+    except (ValueError, AttributeError):
+        pass  # Not in main thread or no signal support
+
 while True:
+    response = None
     try:
         line = sys.stdin.readline()
         if not line:
             break
 
+        # Clear any previous stderr
+        get_stderr()
+
         data = json.loads(line.strip())
         code = data.get("code", "")
         timeout = min(data.get("timeout", 10), 10)
 
-        signal.alarm(timeout)
+        safe_alarm(timeout)
 
         # Start memory tracking
         tracemalloc.start()
@@ -107,7 +136,6 @@ while True:
         output_lines = []
 
         if "main" in namespace and callable(namespace["main"]):
-            import io as _io
             old_stdout = sys.stdout
             sys.stdout = captured = _io.StringIO()
             try:
@@ -123,14 +151,22 @@ while True:
         current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        signal.alarm(0)
+        safe_alarm(0)
 
         exec_time_ms = (end_time - start_time) * 1000
+
+        # Check for any stderr warnings
+        stderr_output = get_stderr()
+        output_str = "\n".join(output_lines) if output_lines else ""
+        if stderr_output and output_str:
+            output_str = output_str + "\n[warnings: " + stderr_output + "]"
+        elif stderr_output:
+            output_str = "[warnings: " + stderr_output + "]"
 
         response = {
             "success": True,
             "result": format_result(result),
-            "output": "\n".join(output_lines) if output_lines else "",
+            "output": output_str,
             "type": type(result).__name__ if result is not None else "None",
             "metrics": {
                 "time_ms": round(exec_time_ms, 2),
@@ -143,29 +179,41 @@ while True:
 
     except TimeoutError as e:
         tracemalloc.stop() if tracemalloc.is_tracing() else None
-        signal.alarm(0)
+        safe_alarm(0)
         response = {"success": False, "error": str(e), "error_type": "timeout"}
     except ImportError as e:
         tracemalloc.stop() if tracemalloc.is_tracing() else None
-        signal.alarm(0)
+        safe_alarm(0)
         response = {"success": False, "error": str(e), "error_type": "security"}
     except SyntaxError as e:
         tracemalloc.stop() if tracemalloc.is_tracing() else None
-        signal.alarm(0)
+        safe_alarm(0)
         response = {"success": False, "error": f"Syntax Error: {e.msg} at line {e.lineno}", "error_type": "syntax"}
     except Exception as e:
         tracemalloc.stop() if tracemalloc.is_tracing() else None
-        signal.alarm(0)
+        safe_alarm(0)
         tb = traceback.format_exc()
         tb_lines = [l for l in tb.split('\n') if '<string>' in l or not l.strip().startswith('File')]
+        stderr_output = get_stderr()
+        error_msg = str(e)
+        if stderr_output:
+            error_msg = error_msg + "\n" + stderr_output
         response = {
             "success": False,
-            "error": str(e),
+            "error": error_msg,
             "traceback": '\n'.join(tb_lines[-5:]) if tb_lines else "",
             "error_type": type(e).__name__
         }
 
-    print(json.dumps(response), flush=True)
+    # Always output valid JSON
+    if response is None:
+        response = {"success": False, "error": "Unknown error", "error_type": "internal"}
+
+    try:
+        print(json.dumps(response), flush=True)
+    except Exception as json_err:
+        # Fallback if JSON serialization fails
+        print(json.dumps({"success": False, "error": str(json_err), "error_type": "json_error"}), flush=True)
 `
 
 // PythonKernel implements a persistent Python execution environment
@@ -298,6 +346,15 @@ func (k *PythonKernel) Execute(ctx context.Context, code string) (*ExecutionResu
 		}
 
 		if err := json.Unmarshal([]byte(result.line), &response); err != nil {
+			// If response is not valid JSON, treat it as an error message
+			trimmedLine := strings.TrimSpace(result.line)
+			if trimmedLine != "" {
+				return &ExecutionResult{
+					Error:    "Execution error: " + trimmedLine,
+					ExitCode: 1,
+					Duration: time.Since(start),
+				}, nil
+			}
 			return nil, fmt.Errorf("failed to parse response: %w", err)
 		}
 
