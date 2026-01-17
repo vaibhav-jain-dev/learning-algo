@@ -570,6 +570,7 @@ func (h *Handlers) GetOutput(c *fiber.Ctx) error {
 }
 
 // buildProblemTree recursively builds the problem tree
+// Excludes 200-must-solve folder which has its own dedicated page
 func (h *Handlers) buildProblemTree(dir string) []*models.TreeNode {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -580,6 +581,11 @@ func (h *Handlers) buildProblemTree(dir string) []*models.TreeNode {
 
 	for _, entry := range entries {
 		if !entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
+		// Skip 200-must-solve folder - it has its own dedicated page at /200-problems
+		if entry.Name() == "200-must-solve" {
 			continue
 		}
 
