@@ -44,7 +44,7 @@ var blockedGoPackages = []string{
 	"path/filepath",
 }
 
-// Allowed Go packages for algorithm problems
+// Allowed Go packages for algorithm problems and concurrency learning
 var allowedGoPackages = map[string]bool{
 	"fmt":            true,
 	"math":           true,
@@ -66,6 +66,10 @@ var allowedGoPackages = map[string]bool{
 	"slices":         true,
 	"maps":           true,
 	"cmp":            true,
+	"sync":           true,
+	"sync/atomic":    true,
+	"context":        true,
+	"runtime":        true,
 }
 
 // Dangerous function calls that are blocked

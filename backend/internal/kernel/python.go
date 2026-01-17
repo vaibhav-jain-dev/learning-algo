@@ -29,19 +29,20 @@ BLOCKED_MODULES = [
     'os', 'subprocess', 'shutil', 'pathlib',
     'socket', 'urllib', 'http', 'ftplib', 'smtplib',
     'pickle', 'shelve', 'marshal',
-    'ctypes', 'multiprocessing', 'threading',
+    'ctypes', 'multiprocessing',
     'pty', 'fcntl', 'resource', 'grp', 'pwd',
     'importlib', 'pkgutil', 'zipimport',
     'sys', 'builtins',
 ]
 
-# Allowed modules for algorithms
+# Allowed modules for algorithms and concurrency learning
 ALLOWED_MODULES = [
     'math', 'random', 'collections', 'heapq', 'bisect',
     'itertools', 'functools', 'operator', 'string',
     'copy', 'types', 're', 'json', 'datetime', 'time',
     'decimal', 'fractions', 'statistics',
     'dataclasses', 'enum', 'typing',
+    'threading', 'asyncio', 'concurrent', 'queue',
 ]
 
 # Safe builtins
