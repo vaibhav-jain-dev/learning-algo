@@ -1,0 +1,330 @@
+<div class="must-solve-page">
+    <div class="page-header">
+        <h1>200 Must Solve Problems</h1>
+        <p class="page-description">Master Data Structures & Algorithms with curated problems organized by topic - from easy to very hard</p>
+        <div class="difficulty-legend">
+            <span class="legend-item"><span class="difficulty-dot easy"></span> Easy</span>
+            <span class="legend-item"><span class="difficulty-dot medium"></span> Medium</span>
+            <span class="legend-item"><span class="difficulty-dot hard"></span> Hard</span>
+            <span class="legend-item"><span class="difficulty-dot very-hard"></span> Very Hard</span>
+        </div>
+    </div>
+
+    {{if .Category.Topics}}
+    <div class="topic-grid">
+        {{range .Category.Topics}}
+        <a href="/topic/{{$.CategorySlug}}/{{.Slug}}" class="topic-card{{if not .HasContent}} coming-soon{{end}}">
+            <div class="card-header">
+                <span class="topic-icon">
+                    {{if eq .Slug "arrays"}}🧮{{end}}
+                    {{if eq .Slug "binary-search-trees"}}🌳{{end}}
+                    {{if eq .Slug "binary-trees"}}🌲{{end}}
+                    {{if eq .Slug "dynamic-programming"}}📈{{end}}
+                    {{if eq .Slug "graphs"}}🌐{{end}}
+                    {{if eq .Slug "famous-algorithms"}}🧠{{end}}
+                    {{if eq .Slug "linked-lists"}}📚{{end}}
+                    {{if eq .Slug "recursion"}}🔁{{end}}
+                </span>
+                <h3>{{.Title}}</h3>
+            </div>
+            {{if .Description}}
+            <p>{{.Description}}</p>
+            {{else}}
+            <p>Master {{.Title}} with comprehensive problems and solutions.</p>
+            {{end}}
+            {{if .Tags}}
+            <div class="tags">
+                {{range .Tags}}
+                <span class="tag">{{.}}</span>
+                {{end}}
+            </div>
+            {{end}}
+            {{if not .HasContent}}
+            <span class="coming-soon-badge">Coming Soon</span>
+            {{end}}
+        </a>
+        {{end}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <p>No topics available yet. Check back soon!</p>
+    </div>
+    {{end}}
+
+    <div class="quick-reference">
+        <h2>Problem Categories Overview</h2>
+        <div class="category-stats">
+            <div class="stat-card">
+                <span class="stat-icon">🧮</span>
+                <div class="stat-info">
+                    <h4>Arrays</h4>
+                    <p>14 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🌳</span>
+                <div class="stat-info">
+                    <h4>BST</h4>
+                    <p>11 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🌲</span>
+                <div class="stat-info">
+                    <h4>Binary Trees</h4>
+                    <p>13 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">📈</span>
+                <div class="stat-info">
+                    <h4>Dynamic Programming</h4>
+                    <p>15 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🌐</span>
+                <div class="stat-info">
+                    <h4>Graphs</h4>
+                    <p>11 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🧠</span>
+                <div class="stat-info">
+                    <h4>Famous Algorithms</h4>
+                    <p>8 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">📚</span>
+                <div class="stat-info">
+                    <h4>Linked Lists</h4>
+                    <p>10 Problems</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🔁</span>
+                <div class="stat-info">
+                    <h4>Recursion</h4>
+                    <p>11 Problems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.must-solve-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.difficulty-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.difficulty-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.difficulty-dot.easy { background: #22c55e; }
+.difficulty-dot.medium { background: #3b82f6; }
+.difficulty-dot.hard { background: #ef4444; }
+.difficulty-dot.very-hard { background: #1f2937; }
+
+[data-theme="dark"] .difficulty-dot.very-hard { background: #6b7280; }
+
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.topic-card {
+    display: block;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.topic-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.topic-card:hover::before {
+    opacity: 1;
+}
+
+.topic-card.coming-soon {
+    opacity: 0.6;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.topic-icon {
+    font-size: 1.75rem;
+}
+
+.topic-card h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.topic-card p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.topic-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.topic-card .tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.coming-soon-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--warning-color, #f59e0b);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.quick-reference {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+}
+
+.quick-reference h2 {
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.category-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: scale(1.02);
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.stat-info p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+}
+
+/* Dark mode */
+[data-theme="dark"] .topic-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+</style>

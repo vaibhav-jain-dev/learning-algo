@@ -181,6 +181,8 @@ func main() {
 	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
 
 	// Other learning routes
+	app.Get("/must-solve-problems", h.MustSolveProblems) // 200 Must Solve Problems (topic overview)
+	app.Get("/200-problems", h.TwoHundredProblems)       // 200 Problems Practice Page
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
@@ -205,6 +207,9 @@ func main() {
 	htmx.Get("/problem-content/*", h.ProblemContent)
 	htmx.Post("/execute", h.Execute)
 	htmx.Get("/output/:id", h.GetOutput)
+	// 200 Problems HTMX routes
+	htmx.Get("/200-problems-tree", h.TwoHundredProblemsTree)
+	htmx.Get("/200-problem-content/*", h.TwoHundredProblemContent)
 
 	// SQL API routes (only if database is available)
 	if sqlHandlers != nil {
