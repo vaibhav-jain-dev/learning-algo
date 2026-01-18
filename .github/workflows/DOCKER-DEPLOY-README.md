@@ -11,12 +11,15 @@ A GitHub Action workflow for automated deployment of Docker Compose applications
 - [Prerequisites](#prerequisites)
 - [Setup Guide](#setup-guide)
   - [Step 1: Server Preparation](#step-1-server-preparation)
-  - [Step 2: SSH Key Generation](#step-2-ssh-key-generation)
+  - [Step 2: SSH Key Generation](#step-2-ssh-key-generation) | [**Detailed SSH Guide**](./SSH-SETUP-GUIDE.md)
   - [Step 3: GitHub Configuration](#step-3-github-configuration)
 - [Workflow Features](#workflow-features)
 - [Usage](#usage)
 - [Cloudflare Integration](#cloudflare-integration)
+- [External Services Configuration](#external-services-configuration)
 - [Troubleshooting](#troubleshooting)
+
+> **New to SSH Keys?** See the [Complete SSH Key Setup Guide](./SSH-SETUP-GUIDE.md) for detailed step-by-step instructions with all commands.
 
 ---
 
@@ -132,6 +135,8 @@ sudo chown deployer:deployer /projects
 
 ### Step 2: SSH Key Generation
 
+> **Detailed Guide Available:** For comprehensive instructions with troubleshooting, see the [**Complete SSH Key Setup Guide**](./SSH-SETUP-GUIDE.md)
+
 ```mermaid
 sequenceDiagram
     participant L as 💻 Your Local Machine
@@ -148,64 +153,31 @@ sequenceDiagram
     Note over G,S: Private key authenticates<br/>against public key
 ```
 
-#### 2.1 Generate SSH Key Pair
-
-Run these commands on your **local machine** (not the server):
+#### Quick Start Commands
 
 ```bash
-# Generate a new SSH key pair specifically for deployment
-ssh-keygen -t ed25519 -C "github-deploy-key" -f ~/.ssh/github_deploy_key
+# 1. Generate key pair (on your local machine)
+ssh-keygen -t ed25519 -C "deploy-key" -f ~/.ssh/deploy_key
+# Press Enter for no passphrase (required for automation)
 
-# This creates two files:
-#   ~/.ssh/github_deploy_key       (Private Key - goes to GitHub)
-#   ~/.ssh/github_deploy_key.pub   (Public Key - goes to Server)
+# 2. Copy public key to server
+ssh-copy-id -i ~/.ssh/deploy_key.pub username@your-server-ip
+
+# 3. Test connection
+ssh -i ~/.ssh/deploy_key username@your-server-ip "echo 'Success!'"
+
+# 4. View private key (for GitHub Secrets)
+cat ~/.ssh/deploy_key
 ```
 
-> **⚠️ Important**: When prompted for a passphrase, press Enter for no passphrase (required for automated deployment).
+#### Key Files Created
 
-#### 2.2 Add Public Key to Server
+| File | Location | Purpose | Goes To |
+|------|----------|---------|---------|
+| Private Key | `~/.ssh/deploy_key` | Authentication | GitHub Secrets / `.env.deploy` |
+| Public Key | `~/.ssh/deploy_key.pub` | Authorization | Server `~/.ssh/authorized_keys` |
 
-Copy the public key to your server's `authorized_keys`:
-
-```bash
-# Option A: Using ssh-copy-id (easiest)
-ssh-copy-id -i ~/.ssh/github_deploy_key.pub deployer@your-server-ip
-
-# Option B: Manual method
-# First, display the public key
-cat ~/.ssh/github_deploy_key.pub
-
-# Then on the server, add it to authorized_keys
-ssh deployer@your-server-ip
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-echo "YOUR_PUBLIC_KEY_CONTENT" >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
-```
-
-#### 2.3 Verify SSH Connection
-
-Test the connection before configuring GitHub:
-
-```bash
-# Test SSH connection with the new key
-ssh -i ~/.ssh/github_deploy_key deployer@your-server-ip "echo 'Connection successful!'"
-```
-
-#### 2.4 Get the Private Key for GitHub
-
-```bash
-# Display the private key (you'll copy this to GitHub)
-cat ~/.ssh/github_deploy_key
-
-# Output will look like:
-# -----BEGIN OPENSSH PRIVATE KEY-----
-# b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAA...
-# ...many more lines...
-# -----END OPENSSH PRIVATE KEY-----
-```
-
-> **🔒 Security Note**: The private key is sensitive. Never share it publicly or commit it to a repository.
+> **Need help?** See [SSH-SETUP-GUIDE.md](./SSH-SETUP-GUIDE.md) for detailed troubleshooting, permission fixes, and best practices.
 
 ---
 
