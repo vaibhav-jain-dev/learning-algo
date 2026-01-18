@@ -1898,6 +1898,407 @@
 .pointer-dot.pink { background: #f472b6; }
 .pointer-dot.green { background: #10b981; }
 
+/* ============================================
+   ENHANCED ANIMATED VISUALIZATIONS
+   ============================================ */
+
+/* Scanning Pointer Arrow */
+.scan-pointer {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: bounce-pointer 0.5s ease-in-out infinite;
+}
+
+.scan-pointer .arrow {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 14px solid #60a5fa;
+}
+
+.scan-pointer .label {
+    background: #60a5fa;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.scan-pointer.seq-pointer .arrow {
+    border-bottom-color: #10b981;
+}
+
+.scan-pointer.seq-pointer .label {
+    background: #10b981;
+}
+
+@keyframes bounce-pointer {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Comparison Bubble */
+.comparison-bubble {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #6366f1;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: pop-in 0.3s ease-out;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.comparison-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #6366f1;
+}
+
+.comparison-bubble .value {
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.4rem;
+}
+
+.comparison-bubble .value.arr-val {
+    background: rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+}
+
+.comparison-bubble .value.seq-val {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.comparison-bubble .operator {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+.comparison-bubble .result {
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.4rem;
+    animation: pulse-result 0.5s ease-in-out;
+}
+
+.comparison-bubble .result.match {
+    background: rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.comparison-bubble .result.no-match {
+    background: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+@keyframes pop-in {
+    0% { transform: translateX(-50%) scale(0); opacity: 0; }
+    50% { transform: translateX(-50%) scale(1.1); }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes pulse-result {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Connection Line between matched elements */
+.match-connection {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(90deg, #60a5fa, #10b981);
+    border-radius: 2px;
+    transform-origin: left center;
+    animation: draw-line 0.4s ease-out forwards;
+    z-index: 5;
+}
+
+@keyframes draw-line {
+    0% { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(1); opacity: 1; }
+}
+
+/* Match Particle Effect */
+.match-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: particle-burst 0.6s ease-out forwards;
+}
+
+@keyframes particle-burst {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* Scanning Line Effect */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #60a5fa, transparent);
+    animation: scan-move 0.3s ease-out;
+}
+
+@keyframes scan-move {
+    0% { opacity: 0; transform: translateX(-20px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(20px); }
+}
+
+/* Cell Animations */
+.array-cell.scanning {
+    animation: cell-scan 0.3s ease-out;
+}
+
+@keyframes cell-scan {
+    0% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7); }
+    50% { box-shadow: 0 0 20px 5px rgba(96, 165, 250, 0.5); }
+    100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+}
+
+.array-cell.match-flash {
+    animation: match-flash 0.5s ease-out;
+}
+
+@keyframes match-flash {
+    0% { background: #10b981; transform: scale(1); }
+    30% { background: #34d399; transform: scale(1.3); }
+    100% { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transform: scale(1.1); }
+}
+
+.array-cell.no-match-shake {
+    animation: shake 0.3s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Thought Process Panel */
+.thought-panel {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.15) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.thought-panel .thought-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: #a5b4fc;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.thought-panel .thought-header .icon {
+    font-size: 1.2rem;
+}
+
+.thought-panel .thought-content {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.thought-panel .variable-state {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.thought-panel .var-item {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+}
+
+.thought-panel .var-item .var-name {
+    color: #94a3b8;
+}
+
+.thought-panel .var-item .var-value {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+/* Progress Timeline */
+.progress-timeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 1.5rem 0;
+    padding: 0 1rem;
+}
+
+.timeline-step {
+    flex: 1;
+    max-width: 60px;
+    height: 6px;
+    background: rgba(71, 85, 105, 0.4);
+    border-radius: 3px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.timeline-step:hover {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+.timeline-step.completed {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.timeline-step.active {
+    background: linear-gradient(90deg, #6366f1, #4f46e5);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.timeline-step.match-step {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+/* Visual Flow Indicator */
+.flow-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 2rem;
+}
+
+.flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.flow-step.active {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.flow-step.completed {
+    color: #10b981;
+}
+
+.flow-arrow {
+    color: #475569;
+    font-size: 0.8rem;
+}
+
+/* Checkmark Animation */
+.checkmark-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: check-pop 0.5s ease-out;
+}
+
+.checkmark-circle svg {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    stroke-width: 3;
+    fill: none;
+    animation: draw-check 0.4s ease-out 0.2s forwards;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+}
+
+@keyframes check-pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes draw-check {
+    to { stroke-dashoffset: 0; }
+}
+
+/* X Mark Animation */
+.x-mark-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: x-pop 0.5s ease-out;
+}
+
+@keyframes x-pop {
+    0% { transform: scale(0) rotate(-180deg); }
+    50% { transform: scale(1.2) rotate(0deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Glowing effect for active elements */
+.glow-effect {
+    animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.8), 0 0 50px rgba(99, 102, 241, 0.4); }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .hero-section {
@@ -2862,95 +3263,251 @@ func main() {
         const canvas = document.getElementById('viz-canvas');
         const stepInfo = document.getElementById('viz-step-info');
 
-        // Render array visualization
+        // Render enhanced animated visualization
         let html = '<div class="array-viz-container">';
 
+        // Flow Indicator - shows current phase of algorithm
+        const flowPhase = step.isResult ? 'result' : (step.comparing ? 'compare' : 'scan');
+        html += `
+            <div class="flow-indicator">
+                <div class="flow-step ${flowPhase === 'scan' ? 'active' : 'completed'}">
+                    <span>1. Scan</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${flowPhase === 'compare' ? 'active' : (flowPhase === 'result' ? 'completed' : '')}">
+                    <span>2. Compare</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${step.isMatch ? 'completed' : ''} ${step.comparing && !step.isResult ? 'active' : ''}">
+                    <span>3. ${step.isMatch ? 'Match!' : 'Check'}</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${flowPhase === 'result' ? 'active' : ''}">
+                    <span>4. Result</span>
+                </div>
+            </div>
+        `;
+
         // Array label
-        html += '<div class="sequence-label">Main Array</div>';
-        html += '<div class="array-row">';
+        html += '<div class="sequence-label" style="font-weight: 600; color: #60a5fa;">Main Array</div>';
+        html += '<div class="array-row" style="position: relative; padding-top: 90px; padding-bottom: 50px;">';
 
         step.array.forEach((val, idx) => {
             let classes = ['array-cell'];
-            let label = '';
+            let extras = '';
+            const isCurrentPointer = idx === step.arrayPointer;
 
-            if (idx === step.arrayPointer) {
+            // Determine cell state and animations
+            if (isCurrentPointer) {
                 classes.push('pointer-1');
-                if (step.comparing && step.isMatch) {
-                    classes.push('matched');
-                } else if (step.comparing) {
-                    classes.push('comparing');
+                if (step.comparing) {
+                    if (step.isMatch) {
+                        classes.push('match-flash');
+                    } else {
+                        classes.push('no-match-shake');
+                    }
+                } else {
+                    classes.push('scanning', 'glow-effect');
                 }
-                label = '<span class="cell-label pointer-i">i</span>';
+
+                // Add scanning pointer arrow
+                extras += `
+                    <div class="scan-pointer">
+                        <div class="arrow"></div>
+                        <div class="label">i = ${idx}</div>
+                    </div>
+                `;
+
+                // Add comparison bubble when comparing
+                if (step.comparing && step.seqPointer < step.sequence.length) {
+                    const seqVal = step.sequence[step.seqPointer];
+                    extras += `
+                        <div class="comparison-bubble">
+                            <span class="value arr-val">${val}</span>
+                            <span class="operator">${step.isMatch ? '==' : '≠'}</span>
+                            <span class="value seq-val">${seqVal}</span>
+                            <span class="result ${step.isMatch ? 'match' : 'no-match'}">
+                                ${step.isMatch ? '✓ MATCH!' : '✗ Skip'}
+                            </span>
+                        </div>
+                    `;
+                }
+
+                // Add particle effects for match
+                if (step.isMatch && step.comparing) {
+                    extras += '<div class="match-particles">';
+                    for (let p = 0; p < 8; p++) {
+                        const angle = (p / 8) * Math.PI * 2;
+                        const tx = Math.cos(angle) * 40;
+                        const ty = Math.sin(angle) * 40;
+                        extras += `<div class="particle" style="--tx: ${tx}px; --ty: ${ty}px; animation-delay: ${p * 0.05}s;"></div>`;
+                    }
+                    extras += '</div>';
+                }
+            }
+
+            // Previously matched cells
+            const matchedArrayIndices = getMatchedArrayIndices(step);
+            if (matchedArrayIndices.includes(idx)) {
+                classes.push('matched');
             }
 
             html += `
-                <div class="${classes.join(' ')}">
+                <div class="${classes.join(' ')}" style="position: relative;">
                     <span class="cell-index">${idx}</span>
                     ${val}
-                    ${label}
+                    ${extras}
                 </div>
             `;
         });
         html += '</div>';
 
-        // Sequence row
-        html += '<div style="margin-top: 2rem;">';
-        html += '<div class="sequence-label">Sequence to Find</div>';
-        html += '<div class="sequence-row">';
+        // Sequence row with enhanced styling
+        html += '<div style="margin-top: 2.5rem;">';
+        html += '<div class="sequence-label" style="font-weight: 600; color: #10b981;">Sequence to Find</div>';
+        html += '<div class="sequence-row" style="position: relative; padding-bottom: 40px;">';
 
         step.sequence.forEach((val, idx) => {
             let classes = ['sequence-cell'];
+            let extras = '';
+
             if (step.matched.includes(idx)) {
                 classes.push('found');
             }
             if (idx === step.seqPointer && !step.isResult) {
-                classes.push('highlight');
+                classes.push('glow-effect');
+                // Add sequence pointer
+                extras = `
+                    <div class="scan-pointer seq-pointer">
+                        <div class="arrow"></div>
+                        <div class="label">Looking for</div>
+                    </div>
+                `;
             }
 
-            html += `<div class="${classes.join(' ')}">${val}</div>`;
+            html += `
+                <div class="${classes.join(' ')}" style="position: relative;">
+                    ${val}
+                    ${extras}
+                </div>
+            `;
         });
         html += '</div></div>';
 
-        // Pointer legend
+        // Thought Process Panel - explains what the algorithm is "thinking"
+        const thoughtContent = getThoughtContent(step);
         html += `
-            <div class="pointer-legend">
-                <div class="pointer-item">
-                    <div class="pointer-dot blue"></div>
-                    <span>Array Pointer (i)</span>
+            <div class="thought-panel">
+                <div class="thought-header">
+                    <span class="icon">💭</span>
+                    <span>Algorithm Thinking</span>
                 </div>
-                <div class="pointer-item">
-                    <div class="pointer-dot green"></div>
-                    <span>Matched Elements</span>
+                <div class="thought-content">${thoughtContent.text}</div>
+                <div class="variable-state">
+                    <div class="var-item">
+                        <span class="var-name">seq_idx = </span>
+                        <span class="var-value">${step.seqPointer}</span>
+                    </div>
+                    <div class="var-item">
+                        <span class="var-name">matched = </span>
+                        <span class="var-value">${step.matched.length} / ${step.sequence.length}</span>
+                    </div>
+                    ${step.arrayPointer >= 0 ? `
+                        <div class="var-item">
+                            <span class="var-name">current = </span>
+                            <span class="var-value">array[${step.arrayPointer}] = ${step.array[step.arrayPointer]}</span>
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
 
-        // Result badge
+        // Result with animated icons
         if (step.isResult) {
-            html += `
-                <div class="viz-result ${step.success ? 'success' : 'failure'}">
-                    ${step.success ? '✓ Valid Subsequence!' : '✗ Not a Subsequence'}
-                </div>
-            `;
+            if (step.success) {
+                html += `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+                        <div class="checkmark-circle">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="4,12 9,17 20,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="viz-result success" style="animation: pop-in 0.3s ease-out 0.3s both;">
+                            ✓ Valid Subsequence Found!
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+                        <div class="x-mark-circle">
+                            <span style="font-size: 1.5rem; color: white; font-weight: bold;">✕</span>
+                        </div>
+                        <div class="viz-result failure" style="animation: pop-in 0.3s ease-out 0.3s both;">
+                            ✗ Not a Valid Subsequence
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         html += '</div>';
         canvas.innerHTML = html;
 
-        // Render step info
+        // Render enhanced step info with clickable timeline
         stepInfo.innerHTML = `
-            <div class="step-counter">
-                <span class="step-number">Step ${vizCurrentStep + 1} of ${vizSteps.length}</span>
-                <div class="step-dots">
-                    ${vizSteps.map((_, i) => `
-                        <div class="step-dot ${i === vizCurrentStep ? 'active' : i < vizCurrentStep ? 'completed' : ''}"></div>
-                    `).join('')}
-                </div>
+            <div class="progress-timeline">
+                ${vizSteps.map((s, i) => {
+                    let stepClass = '';
+                    if (i < vizCurrentStep) stepClass = s.isMatch ? 'match-step' : 'completed';
+                    else if (i === vizCurrentStep) stepClass = 'active';
+                    return `<div class="timeline-step ${stepClass}" onclick="goToVizStep(${i})" title="Step ${i + 1}"></div>`;
+                }).join('')}
             </div>
-            <div class="step-description">${step.description}</div>
+            <div class="step-counter">
+                <span class="step-number" style="font-size: 1rem; font-weight: 600;">
+                    Step ${vizCurrentStep + 1} of ${vizSteps.length}
+                </span>
+            </div>
+            <div class="step-description" style="font-size: 1rem; margin: 1rem 0;">${step.description}</div>
             <div class="step-code-snippet">${step.code}</div>
         `;
     }
+
+    // Helper: Get array indices that were matched
+    function getMatchedArrayIndices(step) {
+        // This would need actual tracking - simplified for now
+        return [];
+    }
+
+    // Helper: Generate thought content based on step
+    function getThoughtContent(step) {
+        if (step.isResult) {
+            if (step.success) {
+                return { text: `All ${step.sequence.length} elements of the sequence were found in order! The algorithm successfully verified this is a valid subsequence.` };
+            } else {
+                return { text: `Reached the end of the array but only found ${step.matched.length} of ${step.sequence.length} elements. The sequence is NOT a valid subsequence.` };
+            }
+        }
+
+        if (!step.comparing) {
+            return { text: `Starting to scan through the main array. We need to find all elements of the sequence [${step.sequence.join(', ')}] in order.` };
+        }
+
+        const arrVal = step.array[step.arrayPointer];
+        const seqVal = step.sequence[step.seqPointer];
+
+        if (step.isMatch) {
+            return { text: `Found a match! The value ${arrVal} at index ${step.arrayPointer} equals the sequence element ${seqVal}. Moving to look for the next sequence element.` };
+        } else {
+            return { text: `No match. The value ${arrVal} at index ${step.arrayPointer} does not equal the sequence element ${seqVal} we're looking for. Continue scanning the array.` };
+        }
+    }
+
+    window.goToVizStep = function(step) {
+        vizCurrentStep = step;
+        renderVizStep();
+    };
 
     window.vizNext = function() {
         if (vizCurrentStep < vizSteps.length - 1) {
