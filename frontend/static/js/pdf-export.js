@@ -5,6 +5,12 @@
 let selectedTopic = null;
 let topicsLoaded = false;
 
+// A4 paper dimensions in mm
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
+const MARGIN_MM = 15;
+const CONTENT_WIDTH_MM = A4_WIDTH_MM - (MARGIN_MM * 2); // 180mm
+
 // Initialize PDF modal functionality
 function initPdfModal() {
     const printBtn = document.getElementById('print-pdf-btn');
@@ -152,25 +158,25 @@ async function generatePdf() {
 
         // Remove elements not suitable for PDF
         const elementsToRemove = [
-            '.code-run-btn',           // Run buttons
-            '.code-copy-btn',          // Copy buttons
-            '.code-block-wrapper button', // All code block buttons
-            '.viz-controls',           // Visualization controls
-            '.viz-controls button',    // Viz control buttons
-            '.playground',             // Playground elements
-            '.editor-container',       // Code editors
-            '.CodeMirror',             // CodeMirror instances
-            '.output-area',            // Output areas
-            '#code-editor-wrapper',    // Editor wrappers
-            '.execution-metrics',      // Execution metrics
-            '.actions',                // Action buttons
-            '.btn-primary:not(.pdf-keep)', // Primary buttons (except marked ones)
-            '.btn-secondary',          // Secondary buttons
-            '.btn-danger',             // Danger buttons
-            'button',                  // All remaining buttons
-            '.collapsible-heading .collapse-icon', // Collapse icons
-            'script',                  // Scripts
-            'style:not(.pdf-styles)', // Inline styles (except PDF styles)
+            '.code-run-btn',
+            '.code-copy-btn',
+            '.code-block-wrapper button',
+            '.viz-controls',
+            '.viz-controls button',
+            '.playground',
+            '.editor-container',
+            '.CodeMirror',
+            '.output-area',
+            '#code-editor-wrapper',
+            '.execution-metrics',
+            '.actions',
+            '.btn-primary:not(.pdf-keep)',
+            '.btn-secondary',
+            '.btn-danger',
+            'button',
+            '.collapsible-heading .collapse-icon',
+            'script',
+            'style:not(.pdf-styles)',
         ];
 
         elementsToRemove.forEach(selector => {
@@ -187,7 +193,6 @@ async function generatePdf() {
 
         // Show all hidden elements that should be visible in PDF
         pdfContent.querySelectorAll('[style*="display: none"]').forEach(el => {
-            // Check if it's content that should be shown
             if (!el.classList.contains('code-run-btn') &&
                 !el.classList.contains('code-copy-btn') &&
                 !el.classList.contains('playground')) {
@@ -195,7 +200,9 @@ async function generatePdf() {
             }
         });
 
-        // Create PDF container
+        // Create PDF container with A4 dimensions
+        // 794px width at 96 DPI = 210mm (A4 width)
+        // Content area: 794 - 113 (margins) = 681px for 180mm content width
         const pdfContainer = document.createElement('div');
         pdfContainer.className = 'pdf-export-container';
         pdfContainer.innerHTML = `
@@ -204,120 +211,214 @@ async function generatePdf() {
                 <p class="pdf-subtitle">DSAlgo Learning Platform</p>
             </div>
             <div class="pdf-body"></div>
-            <div class="pdf-footer">
-                <p>Generated from DSAlgo Learning Platform</p>
-            </div>
         `;
         pdfContainer.querySelector('.pdf-body').appendChild(pdfContent);
 
-        // Add PDF-specific styles
+        // Add PDF-specific styles optimized for A4
         const pdfStyles = document.createElement('style');
         pdfStyles.className = 'pdf-styles';
         pdfStyles.textContent = `
+            /* A4 optimized container */
             .pdf-export-container {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 color: #1a1a2e;
                 background: white;
-                padding: 20mm;
-                max-width: 210mm;
+                width: 680px;
+                max-width: 680px;
                 margin: 0 auto;
+                padding: 0;
+                font-size: 11pt;
+                line-height: 1.5;
+                box-sizing: border-box;
             }
+
+            /* Header styling */
             .pdf-header {
                 text-align: center;
-                margin-bottom: 30px;
-                padding-bottom: 20px;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
                 border-bottom: 2px solid #0d6efd;
             }
             .pdf-header h1 {
-                font-size: 28px;
-                margin: 0 0 10px 0;
+                font-size: 22pt;
+                margin: 0 0 8px 0;
                 color: #1a1a2e;
+                font-weight: 600;
             }
             .pdf-subtitle {
                 color: #6c757d;
                 margin: 0;
-                font-size: 14px;
+                font-size: 10pt;
             }
+
+            /* Body content */
             .pdf-body {
                 line-height: 1.6;
             }
-            .pdf-body h1 { font-size: 24px; margin-top: 30px; color: #1a1a2e; }
-            .pdf-body h2 { font-size: 20px; margin-top: 25px; color: #1a1a2e; border-bottom: 1px solid #dee2e6; padding-bottom: 8px; }
-            .pdf-body h3 { font-size: 16px; margin-top: 20px; color: #1a1a2e; }
-            .pdf-body h4 { font-size: 14px; margin-top: 15px; color: #495057; }
-            .pdf-body p { margin-bottom: 12px; color: #495057; }
-            .pdf-body ul, .pdf-body ol { margin-bottom: 12px; padding-left: 25px; }
-            .pdf-body li { margin-bottom: 6px; color: #495057; }
+            .pdf-body * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Headings - sized for A4 readability */
+            .pdf-body h1 {
+                font-size: 18pt;
+                margin: 24px 0 12px 0;
+                color: #1a1a2e;
+                font-weight: 600;
+                page-break-after: avoid;
+            }
+            .pdf-body h2 {
+                font-size: 14pt;
+                margin: 20px 0 10px 0;
+                color: #1a1a2e;
+                border-bottom: 1px solid #dee2e6;
+                padding-bottom: 6px;
+                font-weight: 600;
+                page-break-after: avoid;
+            }
+            .pdf-body h3 {
+                font-size: 12pt;
+                margin: 16px 0 8px 0;
+                color: #1a1a2e;
+                font-weight: 600;
+                page-break-after: avoid;
+            }
+            .pdf-body h4 {
+                font-size: 11pt;
+                margin: 12px 0 6px 0;
+                color: #495057;
+                font-weight: 600;
+                page-break-after: avoid;
+            }
+
+            /* Paragraphs and text */
+            .pdf-body p {
+                margin: 0 0 10px 0;
+                color: #333;
+                text-align: justify;
+                orphans: 3;
+                widows: 3;
+            }
+
+            /* Lists */
+            .pdf-body ul, .pdf-body ol {
+                margin: 0 0 12px 0;
+                padding-left: 24px;
+            }
+            .pdf-body li {
+                margin-bottom: 4px;
+                color: #333;
+            }
+            .pdf-body li > ul, .pdf-body li > ol {
+                margin-top: 4px;
+                margin-bottom: 4px;
+            }
+
+            /* Code blocks - optimized for A4 */
             .pdf-body pre {
-                background: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 6px;
-                padding: 15px;
-                overflow-x: auto;
-                font-size: 12px;
-                line-height: 1.5;
+                background: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                padding: 12px;
+                margin: 12px 0;
+                font-size: 9pt;
+                line-height: 1.4;
+                overflow-x: visible;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                word-break: break-all;
                 page-break-inside: avoid;
+                max-width: 100%;
             }
             .pdf-body code {
-                font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-                font-size: 12px;
-                background: #e9ecef;
-                padding: 2px 6px;
+                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+                font-size: 9pt;
+                background: #f0f0f0;
+                padding: 1px 4px;
                 border-radius: 3px;
             }
             .pdf-body pre code {
                 background: none;
                 padding: 0;
+                font-size: 9pt;
             }
+
+            /* Tables - fit A4 width */
             .pdf-body table {
                 width: 100%;
                 border-collapse: collapse;
-                margin: 15px 0;
+                margin: 12px 0;
+                font-size: 10pt;
                 page-break-inside: avoid;
             }
             .pdf-body th, .pdf-body td {
                 border: 1px solid #dee2e6;
-                padding: 10px;
+                padding: 8px 10px;
                 text-align: left;
+                word-wrap: break-word;
             }
             .pdf-body th {
                 background: #f8f9fa;
                 font-weight: 600;
+                font-size: 10pt;
             }
+            .pdf-body td {
+                font-size: 9pt;
+            }
+
+            /* Blockquotes */
             .pdf-body blockquote {
-                border-left: 4px solid #0d6efd;
-                margin: 15px 0;
-                padding: 10px 20px;
+                border-left: 3px solid #0d6efd;
+                margin: 12px 0;
+                padding: 8px 16px;
                 background: #f8f9fa;
                 page-break-inside: avoid;
+                font-style: italic;
+                color: #555;
             }
+
+            /* Diagrams and images */
             .pdf-body .diagram-container,
             .pdf-body .circuit-diagram,
             .pdf-body .state-diagram,
-            .pdf-body .lb-architecture {
+            .pdf-body .lb-architecture,
+            .pdf-body .flow-diagram,
+            .pdf-body svg {
                 page-break-inside: avoid;
-                margin: 20px 0;
+                margin: 16px 0;
+                max-width: 100%;
+                height: auto;
             }
             .pdf-body img {
                 max-width: 100%;
                 height: auto;
+                page-break-inside: avoid;
             }
-            .pdf-footer {
-                margin-top: 40px;
-                padding-top: 20px;
-                border-top: 1px solid #dee2e6;
-                text-align: center;
-                color: #6c757d;
-                font-size: 12px;
-            }
+
+            /* Code block wrapper */
             .code-block-wrapper {
                 position: relative;
-                margin: 15px 0;
+                margin: 12px 0;
+                page-break-inside: avoid;
             }
-            /* Hide any remaining interactive elements */
-            button, .btn, input, select, textarea {
+
+            /* Info boxes and callouts */
+            .pdf-body .info-box,
+            .pdf-body .warning-box,
+            .pdf-body .note {
+                padding: 10px 14px;
+                margin: 12px 0;
+                border-radius: 4px;
+                page-break-inside: avoid;
+            }
+
+            /* Hide interactive elements */
+            button, .btn, input, select, textarea,
+            .code-run-btn, .code-copy-btn {
                 display: none !important;
             }
+
             /* Ensure collapsible content is visible */
             .collapsible-content {
                 display: block !important;
@@ -331,30 +432,107 @@ async function generatePdf() {
             .collapse-icon {
                 display: none !important;
             }
+
+            /* Page break helpers */
+            .page-break {
+                page-break-before: always;
+            }
+            .no-break {
+                page-break-inside: avoid;
+            }
+
+            /* Strong and emphasis */
+            .pdf-body strong, .pdf-body b {
+                font-weight: 600;
+            }
+            .pdf-body em, .pdf-body i {
+                font-style: italic;
+            }
+
+            /* Links */
+            .pdf-body a {
+                color: #0d6efd;
+                text-decoration: none;
+            }
+
+            /* Horizontal rules */
+            .pdf-body hr {
+                border: none;
+                border-top: 1px solid #dee2e6;
+                margin: 16px 0;
+            }
         `;
         pdfContainer.prepend(pdfStyles);
 
-        // PDF options
+        // Temporarily add to DOM for rendering (hidden)
+        pdfContainer.style.position = 'absolute';
+        pdfContainer.style.left = '-9999px';
+        pdfContainer.style.top = '0';
+        document.body.appendChild(pdfContainer);
+
+        // PDF options optimized for A4
         const opt = {
-            margin: [10, 10, 10, 10],
+            margin: [15, 15, 20, 15], // top, left, bottom, right - extra bottom for page number
             filename: `${selectedTopic.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
+            image: {
+                type: 'jpeg',
+                quality: 0.95
+            },
             html2canvas: {
                 scale: 2,
                 useCORS: true,
                 letterRendering: true,
-                logging: false
+                logging: false,
+                width: 680,
+                windowWidth: 680
             },
             jsPDF: {
                 unit: 'mm',
                 format: 'a4',
-                orientation: 'portrait'
+                orientation: 'portrait',
+                compress: true
             },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            pagebreak: {
+                mode: ['avoid-all', 'css', 'legacy'],
+                before: '.page-break',
+                after: [],
+                avoid: ['pre', 'blockquote', 'table', 'h1', 'h2', 'h3', 'h4', '.diagram-container', '.no-break', 'svg']
+            }
         };
 
-        // Generate PDF
-        await html2pdf().set(opt).from(pdfContainer).save();
+        // Generate PDF with page numbers
+        const pdfInstance = html2pdf().set(opt).from(pdfContainer);
+
+        // Add page numbers after PDF is generated
+        await pdfInstance.toPdf().get('pdf').then(function(pdf) {
+            const totalPages = pdf.internal.getNumberOfPages();
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(9);
+                pdf.setTextColor(128, 128, 128);
+
+                // Add page number at bottom center
+                const pageText = `Page ${i} of ${totalPages}`;
+                const textWidth = pdf.getStringUnitWidth(pageText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+                const xPos = (pageWidth - textWidth) / 2;
+                pdf.text(pageText, xPos, pageHeight - 10);
+
+                // Add topic name at bottom left (optional footer)
+                pdf.setFontSize(8);
+                pdf.text(selectedTopic.name, 15, pageHeight - 10);
+
+                // Add "DSAlgo" at bottom right
+                const rightText = 'DSAlgo Learning Platform';
+                const rightTextWidth = pdf.getStringUnitWidth(rightText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+                pdf.text(rightText, pageWidth - rightTextWidth - 15, pageHeight - 10);
+            }
+        }).save();
+
+        // Remove temporary container
+        document.body.removeChild(pdfContainer);
 
         // Close modal on success
         closePdfModal();
