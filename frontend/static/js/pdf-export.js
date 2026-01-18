@@ -1,107 +1,9 @@
 // PDF Export functionality for DSAlgo Learning Platform
-
-// Topic data for each category
-const pdfTopicData = {
-    'system-design': [
-        { slug: 'design-fundamentals', name: 'Design Fundamentals' },
-        { slug: 'client-server-model', name: 'Client-Server Model' },
-        { slug: 'network-protocols', name: 'Network Protocols' },
-        { slug: 'storage', name: 'Storage' },
-        { slug: 'latency-throughput', name: 'Latency & Throughput' },
-        { slug: 'availability', name: 'Availability' },
-        { slug: 'caching', name: 'Caching' },
-        { slug: 'load-balancing', name: 'Load Balancing' },
-        { slug: 'database-replication', name: 'Database Replication' },
-        { slug: 'database-sharding', name: 'Database Sharding' },
-        { slug: 'cap-theorem', name: 'CAP Theorem' },
-        { slug: 'consensus-algorithms', name: 'Consensus Algorithms' },
-        { slug: 'message-queues', name: 'Message Queues' },
-        { slug: 'rate-limiting', name: 'Rate Limiting' },
-        { slug: 'circuit-breaker', name: 'Circuit Breaker' },
-        { slug: 'cdn', name: 'CDN' },
-        { slug: 'api-gateway', name: 'API Gateway' },
-        { slug: 'api-design', name: 'API Design' },
-        { slug: 'microservices', name: 'Microservices' },
-        { slug: 'event-sourcing', name: 'Event Sourcing' },
-        { slug: 'distributed-locking', name: 'Distributed Locking' },
-        { slug: 'concurrency-patterns', name: 'Concurrency Patterns' },
-        { slug: 'connection-pooling', name: 'Connection Pooling' }
-    ],
-    'design-patterns': [
-        { slug: 'singleton', name: 'Singleton' },
-        { slug: 'factory-method', name: 'Factory Method' },
-        { slug: 'abstract-factory', name: 'Abstract Factory' },
-        { slug: 'builder', name: 'Builder' },
-        { slug: 'prototype', name: 'Prototype' },
-        { slug: 'adapter', name: 'Adapter' },
-        { slug: 'bridge', name: 'Bridge' },
-        { slug: 'composite', name: 'Composite' },
-        { slug: 'decorator', name: 'Decorator' },
-        { slug: 'facade', name: 'Facade' },
-        { slug: 'flyweight', name: 'Flyweight' },
-        { slug: 'proxy', name: 'Proxy' },
-        { slug: 'chain-of-responsibility', name: 'Chain of Responsibility' },
-        { slug: 'command', name: 'Command' },
-        { slug: 'iterator', name: 'Iterator' },
-        { slug: 'mediator', name: 'Mediator' },
-        { slug: 'memento', name: 'Memento' },
-        { slug: 'observer', name: 'Observer' },
-        { slug: 'state', name: 'State' },
-        { slug: 'strategy', name: 'Strategy' },
-        { slug: 'template-method', name: 'Template Method' },
-        { slug: 'visitor', name: 'Visitor' },
-        { slug: 'dependency-injection', name: 'Dependency Injection' }
-    ],
-    'machine-coding': [
-        { slug: 'lru-cache', name: 'LRU Cache' },
-        { slug: 'rate-limiter', name: 'Rate Limiter' },
-        { slug: 'parking-lot', name: 'Parking Lot' },
-        { slug: 'elevator-system', name: 'Elevator System' },
-        { slug: 'task-scheduler', name: 'Task Scheduler' },
-        { slug: 'pub-sub-system', name: 'Pub-Sub System' },
-        { slug: 'url-shortener', name: 'URL Shortener' },
-        { slug: 'file-system', name: 'File System' },
-        { slug: 'in-memory-database', name: 'In-Memory Database' },
-        { slug: 'logger-library', name: 'Logger Library' },
-        { slug: 'tic-tac-toe', name: 'Tic-Tac-Toe' },
-        { slug: 'snake-game', name: 'Snake Game' }
-    ],
-    'microservices': [
-        { slug: 'introduction', name: 'Introduction' },
-        { slug: 'monolith-vs-microservice', name: 'Monolith vs Microservice' },
-        { slug: 'microservice-patterns', name: 'Microservice Patterns' },
-        { slug: 'event-driven-architecture', name: 'Event Driven Architecture' },
-        { slug: 'event-strategies', name: 'Event Strategies' },
-        { slug: 'components-distributed-systems', name: 'Components of Distributed Systems' },
-        { slug: 'monolith-to-microservice-migration', name: 'Monolith to Microservice Migration' },
-        { slug: 'moving-back-to-monolith', name: 'Moving Back to Monolith' },
-        { slug: 'removing-bottlenecks', name: 'Removing Bottlenecks' },
-        { slug: 'designing-ecommerce-flipkart', name: 'Designing E-commerce (Flipkart)' },
-        { slug: 'case-studies-migration', name: 'Case Studies Migration' },
-        { slug: 'ai-agents-standards', name: 'AI Agents Standards' }
-    ],
-    'sql-learning': [
-        { slug: 'sql-fundamentals', name: 'SQL Fundamentals' },
-        { slug: 'joins-mastery', name: 'Joins Mastery' },
-        { slug: 'subqueries-ctes', name: 'Subqueries & CTEs' },
-        { slug: 'window-functions', name: 'Window Functions' },
-        { slug: 'indexing-deep-dive', name: 'Indexing Deep Dive' },
-        { slug: 'query-optimization', name: 'Query Optimization' }
-    ],
-    'must-solve-problems': [
-        { slug: 'arrays', name: 'Arrays' },
-        { slug: 'linked-lists', name: 'Linked Lists' },
-        { slug: 'binary-trees', name: 'Binary Trees' },
-        { slug: 'binary-search-trees', name: 'Binary Search Trees' },
-        { slug: 'graphs', name: 'Graphs' },
-        { slug: 'dynamic-programming', name: 'Dynamic Programming' },
-        { slug: 'recursion', name: 'Recursion' },
-        { slug: 'famous-algorithms', name: 'Famous Algorithms' }
-    ]
-};
+// Topics are fetched dynamically from the server
 
 // Currently selected topic
 let selectedTopic = null;
+let topicsLoaded = false;
 
 // Initialize PDF modal functionality
 function initPdfModal() {
@@ -110,14 +12,6 @@ function initPdfModal() {
 
     printBtn.addEventListener('click', openPdfModal);
 
-    // Populate topics
-    populateTopics('system-design', 'pdf-system-design-topics');
-    populateTopics('design-patterns', 'pdf-design-patterns-topics');
-    populateTopics('machine-coding', 'pdf-machine-coding-topics');
-    populateTopics('microservices', 'pdf-microservices-topics');
-    populateTopics('sql-learning', 'pdf-sql-learning-topics');
-    populateTopics('must-solve-problems', 'pdf-must-solve-topics');
-
     // Generate PDF button handler
     const generateBtn = document.getElementById('generate-pdf-btn');
     if (generateBtn) {
@@ -125,29 +19,62 @@ function initPdfModal() {
     }
 }
 
-// Populate topics for a category
-function populateTopics(category, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+// Fetch topics from server API
+async function fetchTopics() {
+    if (topicsLoaded) return;
 
-    const topics = pdfTopicData[category] || [];
-    container.innerHTML = topics.map(topic => `
-        <label class="pdf-topic-item">
-            <input type="radio" name="pdf-topic" value="${category}/${topic.slug}" data-name="${topic.name}">
-            <span>${topic.name}</span>
-        </label>
-    `).join('');
+    try {
+        const response = await fetch('/api/topics');
+        if (!response.ok) throw new Error('Failed to fetch topics');
 
-    // Add change listeners
-    container.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            selectedTopic = {
-                path: this.value,
-                name: this.dataset.name
-            };
-            updateGenerateButton();
+        const categories = await response.json();
+
+        // Clear existing content and populate with fetched data
+        const categoryList = document.querySelector('.pdf-category-list');
+        if (!categoryList) return;
+
+        categoryList.innerHTML = '';
+
+        categories.forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'pdf-category';
+            categoryDiv.innerHTML = `
+                <h3>${category.title}</h3>
+                <div class="pdf-topics" id="pdf-${category.slug}-topics"></div>
+            `;
+            categoryList.appendChild(categoryDiv);
+
+            // Populate topics
+            const topicsContainer = categoryDiv.querySelector('.pdf-topics');
+            category.topics.forEach(topic => {
+                const label = document.createElement('label');
+                label.className = 'pdf-topic-item';
+                label.innerHTML = `
+                    <input type="radio" name="pdf-topic" value="${category.slug}/${topic.slug}" data-name="${topic.title}">
+                    <span>${topic.title}</span>
+                `;
+                topicsContainer.appendChild(label);
+
+                // Add change listener
+                label.querySelector('input').addEventListener('change', function() {
+                    selectedTopic = {
+                        path: this.value,
+                        name: this.dataset.name
+                    };
+                    updateGenerateButton();
+                });
+            });
         });
-    });
+
+        topicsLoaded = true;
+    } catch (error) {
+        console.error('Failed to fetch topics:', error);
+        // Show error in modal
+        const categoryList = document.querySelector('.pdf-category-list');
+        if (categoryList) {
+            categoryList.innerHTML = '<p class="error">Failed to load topics. Please try again.</p>';
+        }
+    }
 }
 
 // Update generate button state
@@ -167,11 +94,14 @@ function updateGenerateButton() {
 }
 
 // Open PDF modal
-function openPdfModal() {
+async function openPdfModal() {
     const modal = document.getElementById('pdf-modal');
     if (modal) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+
+        // Fetch topics when modal opens
+        await fetchTopics();
     }
 }
 
@@ -449,6 +379,7 @@ if (document.readyState === 'loading') {
 
 // Re-initialize after HTMX swaps (for SPA navigation)
 document.body.addEventListener('htmx:afterSwap', function() {
+    topicsLoaded = false; // Reset so topics are fetched fresh
     initPdfModal();
 });
 

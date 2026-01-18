@@ -44,30 +44,35 @@ var categoryMeta = map[string]struct {
 	Description string
 	Order       int
 }{
-	"must-solve-problems": {
-		Title:       "200 Must Solve Problems",
-		Description: "Master DSA with curated problems organized by topic - from easy to very hard",
-		Order:       0,
-	},
 	"system-design": {
 		Title:       "System Design",
 		Description: "Master distributed systems concepts with real-world examples",
-		Order:       1,
+		Order:       0,
 	},
 	"design-patterns": {
 		Title:       "Design Patterns",
 		Description: "Learn classic software design patterns with practical implementations",
-		Order:       2,
+		Order:       1,
 	},
 	"machine-coding": {
 		Title:       "Machine Coding",
 		Description: "Practice implementing real-world systems from scratch",
-		Order:       3,
+		Order:       2,
 	},
 	"microservices": {
 		Title:       "Microservices",
 		Description: "Master microservices architecture patterns and best practices",
+		Order:       3,
+	},
+	"sql-learning": {
+		Title:       "SQL Learning",
+		Description: "Master SQL queries from basics to advanced optimization techniques",
 		Order:       4,
+	},
+	"must-solve-problems": {
+		Title:       "Must Solve Problems",
+		Description: "Master DSA with curated problems organized by topic - from easy to very hard",
+		Order:       5,
 	},
 }
 
