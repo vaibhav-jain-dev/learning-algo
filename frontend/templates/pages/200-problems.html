@@ -327,12 +327,23 @@
             <!-- Left: Problem Description -->
             <div class="description-panel">
                 <div class="description-tabs">
-                    <button class="desc-tab active" onclick="showDescTab('problem')">Problem</button>
-                    <button class="desc-tab" onclick="showDescTab('hints')">Hints</button>
-                    <button class="desc-tab" onclick="showDescTab('solutions')">Solutions</button>
+                    <button class="desc-tab active" onclick="showDescTab('problem')" data-tab="problem">Problem</button>
+                    <button class="desc-tab" onclick="showDescTab('hints')" data-tab="hints">Hints</button>
+                    <button class="desc-tab" onclick="showDescTab('solutions')" data-tab="solutions">Solutions</button>
+                    <button class="desc-tab" onclick="showDescTab('visualize')" data-tab="visualize">Visualize</button>
                 </div>
                 <div class="description-content" id="description-content">
                     <!-- Problem description loaded here -->
+                </div>
+
+                <!-- Solutions Tab Content (Hidden by default) -->
+                <div class="solutions-content" id="solutions-content" style="display: none;">
+                    <!-- Solutions will be dynamically loaded -->
+                </div>
+
+                <!-- Visualization Tab Content (Hidden by default) -->
+                <div class="visualization-content" id="visualization-content" style="display: none;">
+                    <!-- Visualizations will be dynamically loaded -->
                 </div>
             </div>
 
@@ -1060,6 +1071,1234 @@
     padding: 2rem;
 }
 
+/* ============================================
+   ENHANCED SOLUTIONS VIEW
+   ============================================ */
+
+/* Solutions Container */
+.solutions-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Solution Approach Cards */
+.solution-approach {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.solution-approach:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+}
+
+.solution-approach.best-solution {
+    border: 2px solid #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+
+.solution-header {
+    padding: 1.25rem 1.5rem;
+    background: rgba(30, 41, 59, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.solution-header:hover {
+    background: rgba(71, 85, 105, 0.4);
+}
+
+.solution-title-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.solution-number {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.best-solution .solution-number {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.solution-name {
+    font-weight: 600;
+    color: #f1f5f9;
+    font-size: 1.1rem;
+}
+
+.solution-badges {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.best-badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 20px 3px rgba(16, 185, 129, 0.3); }
+}
+
+.expand-icon {
+    color: #94a3b8;
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.solution-approach.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.solution-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.solution-approach.expanded .solution-body {
+    max-height: 2000px;
+}
+
+.solution-body-inner {
+    padding: 1.5rem;
+}
+
+/* Complexity Badges */
+.complexity-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.complexity-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(30, 41, 59, 0.8);
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.complexity-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.complexity-value {
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.complexity-value.time { color: #60a5fa; }
+.complexity-value.space { color: #c084fc; }
+
+/* Complexity Visual Bar */
+.complexity-visual {
+    margin-bottom: 1.5rem;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.complexity-bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.complexity-bar-row:last-child {
+    margin-bottom: 0;
+}
+
+.bar-label {
+    width: 80px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.bar-container {
+    flex: 1;
+    height: 12px;
+    background: rgba(71, 85, 105, 0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.2) 50%,
+        transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.bar-fill.time { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+.bar-fill.space { background: linear-gradient(90deg, #c084fc, #a855f7); }
+
+.bar-scale {
+    width: 60px;
+    text-align: right;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-family: 'Fira Code', monospace;
+}
+
+/* Best Choice Justification */
+.best-justification {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 78, 59, 0.2) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.justification-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #10b981;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.justification-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.justification-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+    color: #d1fae5;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.justification-points li::before {
+    content: '✓';
+    color: #10b981;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+/* Solution Description */
+.solution-description {
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.solution-description h4 {
+    color: #f1f5f9;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Code Preview */
+.code-preview {
+    background: #0d1117;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.code-preview-header {
+    background: rgba(30, 41, 59, 0.8);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.code-preview-title {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.code-preview-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.preview-action-btn {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preview-action-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #c7d2fe;
+}
+
+.code-preview-body {
+    padding: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.code-preview-body pre {
+    margin: 0;
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #e2e8f0;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+/* Complexity Comparison Table */
+.complexity-comparison {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.comparison-title {
+    background: rgba(30, 41, 59, 0.8);
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+.comparison-table th {
+    background: rgba(30, 41, 59, 0.5);
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.comparison-table td {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+.comparison-table tr:hover td {
+    background: rgba(71, 85, 105, 0.2);
+}
+
+.comparison-table tr.best-row td {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.comparison-table .best-indicator {
+    color: #10b981;
+    font-weight: 600;
+}
+
+/* ============================================
+   VISUALIZATION TAB
+   ============================================ */
+
+.visualization-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Visualization Selector */
+.viz-selector {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.viz-selector-btn {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+    padding: 0.65rem 1.1rem;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.viz-selector-btn:hover {
+    background: rgba(71, 85, 105, 0.5);
+    color: #e2e8f0;
+}
+
+.viz-selector-btn.active {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    border-color: transparent;
+}
+
+/* Visualization Container */
+.viz-container {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.viz-header {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.viz-title {
+    font-weight: 600;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.viz-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.viz-control-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(71, 85, 105, 0.4);
+    border: 1px solid rgba(100, 116, 139, 0.2);
+    border-radius: 0.5rem;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.viz-control-btn:hover {
+    background: rgba(71, 85, 105, 0.7);
+    color: #e2e8f0;
+}
+
+.viz-control-btn.play {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.viz-control-btn.play:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* Visualization Canvas */
+.viz-canvas {
+    padding: 2rem;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Array Visualization */
+.array-viz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.array-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.array-cell {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    border: 2px solid #475569;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.array-cell.highlight {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-color: #818cf8;
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+}
+
+.array-cell.matched {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #34d399;
+    transform: scale(1.1);
+}
+
+.array-cell.comparing {
+    border-color: #fbbf24;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+.array-cell.pointer-1 {
+    border-color: #60a5fa;
+    box-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+}
+
+.array-cell.pointer-2 {
+    border-color: #f472b6;
+    box-shadow: 0 0 12px rgba(244, 114, 182, 0.5);
+}
+
+.array-cell .cell-index {
+    position: absolute;
+    top: -20px;
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.array-cell .cell-label {
+    position: absolute;
+    bottom: -24px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.array-cell .cell-label.pointer-i { color: #60a5fa; }
+.array-cell .cell-label.pointer-j { color: #f472b6; }
+.array-cell .cell-label.pointer-seq { color: #10b981; }
+
+/* Sequence Row */
+.sequence-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.sequence-label {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.sequence-cell {
+    width: 44px;
+    height: 44px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 2px solid #10b981;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    color: #34d399;
+    transition: all 0.3s ease;
+}
+
+.sequence-cell.found {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+/* Step Info Panel */
+.viz-step-info {
+    background: rgba(15, 23, 42, 0.8);
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+    padding: 1.25rem;
+}
+
+.step-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.step-number {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.step-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(71, 85, 105, 0.5);
+    transition: all 0.3s ease;
+}
+
+.step-dot.active {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    transform: scale(1.2);
+}
+
+.step-dot.completed {
+    background: #10b981;
+}
+
+.step-description {
+    text-align: center;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.step-code-snippet {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #a5b4fc;
+    text-align: center;
+}
+
+/* Speed Control */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.speed-label {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.speed-slider {
+    width: 120px;
+    height: 6px;
+    -webkit-appearance: none;
+    background: rgba(71, 85, 105, 0.5);
+    border-radius: 3px;
+    outline: none;
+}
+
+.speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Result Badge */
+.viz-result {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.viz-result.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.viz-result.failure {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Input Configuration */
+.viz-input-config {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.input-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.input-field {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.generate-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.generate-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Pointer Labels */
+.pointer-legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pointer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.pointer-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.pointer-dot.blue { background: #60a5fa; }
+.pointer-dot.pink { background: #f472b6; }
+.pointer-dot.green { background: #10b981; }
+
+/* ============================================
+   ENHANCED ANIMATED VISUALIZATIONS
+   ============================================ */
+
+/* Scanning Pointer Arrow */
+.scan-pointer {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: bounce-pointer 0.5s ease-in-out infinite;
+}
+
+.scan-pointer .arrow {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 14px solid #60a5fa;
+}
+
+.scan-pointer .label {
+    background: #60a5fa;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.scan-pointer.seq-pointer .arrow {
+    border-bottom-color: #10b981;
+}
+
+.scan-pointer.seq-pointer .label {
+    background: #10b981;
+}
+
+@keyframes bounce-pointer {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Comparison Bubble */
+.comparison-bubble {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #6366f1;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: pop-in 0.3s ease-out;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.comparison-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #6366f1;
+}
+
+.comparison-bubble .value {
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.4rem;
+}
+
+.comparison-bubble .value.arr-val {
+    background: rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+}
+
+.comparison-bubble .value.seq-val {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.comparison-bubble .operator {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+.comparison-bubble .result {
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.4rem;
+    animation: pulse-result 0.5s ease-in-out;
+}
+
+.comparison-bubble .result.match {
+    background: rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.comparison-bubble .result.no-match {
+    background: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+@keyframes pop-in {
+    0% { transform: translateX(-50%) scale(0); opacity: 0; }
+    50% { transform: translateX(-50%) scale(1.1); }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes pulse-result {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Connection Line between matched elements */
+.match-connection {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(90deg, #60a5fa, #10b981);
+    border-radius: 2px;
+    transform-origin: left center;
+    animation: draw-line 0.4s ease-out forwards;
+    z-index: 5;
+}
+
+@keyframes draw-line {
+    0% { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(1); opacity: 1; }
+}
+
+/* Match Particle Effect */
+.match-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: particle-burst 0.6s ease-out forwards;
+}
+
+@keyframes particle-burst {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* Scanning Line Effect */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #60a5fa, transparent);
+    animation: scan-move 0.3s ease-out;
+}
+
+@keyframes scan-move {
+    0% { opacity: 0; transform: translateX(-20px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(20px); }
+}
+
+/* Cell Animations */
+.array-cell.scanning {
+    animation: cell-scan 0.3s ease-out;
+}
+
+@keyframes cell-scan {
+    0% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7); }
+    50% { box-shadow: 0 0 20px 5px rgba(96, 165, 250, 0.5); }
+    100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+}
+
+.array-cell.match-flash {
+    animation: match-flash 0.5s ease-out;
+}
+
+@keyframes match-flash {
+    0% { background: #10b981; transform: scale(1); }
+    30% { background: #34d399; transform: scale(1.3); }
+    100% { background: linear-gradient(135deg, #10b981 0%, #059669 100%); transform: scale(1.1); }
+}
+
+.array-cell.no-match-shake {
+    animation: shake 0.3s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Thought Process Panel */
+.thought-panel {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.15) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.thought-panel .thought-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: #a5b4fc;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.thought-panel .thought-header .icon {
+    font-size: 1.2rem;
+}
+
+.thought-panel .thought-content {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.thought-panel .variable-state {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.thought-panel .var-item {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+}
+
+.thought-panel .var-item .var-name {
+    color: #94a3b8;
+}
+
+.thought-panel .var-item .var-value {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+/* Progress Timeline */
+.progress-timeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 1.5rem 0;
+    padding: 0 1rem;
+}
+
+.timeline-step {
+    flex: 1;
+    max-width: 60px;
+    height: 6px;
+    background: rgba(71, 85, 105, 0.4);
+    border-radius: 3px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.timeline-step:hover {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+.timeline-step.completed {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.timeline-step.active {
+    background: linear-gradient(90deg, #6366f1, #4f46e5);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+.timeline-step.match-step {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+/* Visual Flow Indicator */
+.flow-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 2rem;
+}
+
+.flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.flow-step.active {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.flow-step.completed {
+    color: #10b981;
+}
+
+.flow-arrow {
+    color: #475569;
+    font-size: 0.8rem;
+}
+
+/* Checkmark Animation */
+.checkmark-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: check-pop 0.5s ease-out;
+}
+
+.checkmark-circle svg {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    stroke-width: 3;
+    fill: none;
+    animation: draw-check 0.4s ease-out 0.2s forwards;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+}
+
+@keyframes check-pop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes draw-check {
+    to { stroke-dashoffset: 0; }
+}
+
+/* X Mark Animation */
+.x-mark-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: x-pop 0.5s ease-out;
+}
+
+@keyframes x-pop {
+    0% { transform: scale(0) rotate(-180deg); }
+    50% { transform: scale(1.2) rotate(0deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Glowing effect for active elements */
+.glow-effect {
+    animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.8), 0 0 50px rgba(99, 102, 241, 0.4); }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .hero-section {
@@ -1379,8 +2618,1088 @@ func main() {
 
     window.showDescTab = function(tab) {
         document.querySelectorAll('.desc-tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        // Tab content switching logic would go here
+        document.querySelector(`.desc-tab[data-tab="${tab}"]`).classList.add('active');
+
+        // Hide all content sections
+        document.getElementById('description-content').style.display = 'none';
+        document.getElementById('solutions-content').style.display = 'none';
+        document.getElementById('visualization-content').style.display = 'none';
+
+        // Show the selected tab content
+        if (tab === 'problem' || tab === 'hints') {
+            document.getElementById('description-content').style.display = 'block';
+        } else if (tab === 'solutions') {
+            document.getElementById('solutions-content').style.display = 'block';
+            loadSolutionsContent();
+        } else if (tab === 'visualize') {
+            document.getElementById('visualization-content').style.display = 'block';
+            loadVisualizationContent();
+        }
+    };
+
+    // ============================================
+    // SOLUTIONS TAB - Multiple Approaches
+    // ============================================
+
+    // Problem solutions data - defines multiple approaches for each problem
+    const solutionsData = {
+        'validate-subsequence': {
+            name: 'Validate Subsequence',
+            approaches: [
+                {
+                    id: 1,
+                    name: 'Two-Pointer (For-Each Loop)',
+                    isBest: true,
+                    time: 'O(n)',
+                    space: 'O(1)',
+                    timeScore: 100,
+                    spaceScore: 100,
+                    description: 'Use a single pointer to track position in the sequence while iterating through the main array. When elements match, advance the sequence pointer.',
+                    whyBest: [
+                        'Simplest implementation with a single pointer variable',
+                        'Most readable and maintainable code',
+                        'Optimal time complexity - single pass through array',
+                        'Optimal space complexity - constant extra space',
+                        'Pythonic - uses natural iteration patterns'
+                    ],
+                    code: `def validate_subsequence(array, sequence):
+    seq_idx = 0
+    for num in array:
+        if seq_idx == len(sequence):
+            break
+        if num == sequence[seq_idx]:
+            seq_idx += 1
+    return seq_idx == len(sequence)`
+                },
+                {
+                    id: 2,
+                    name: 'Two-Pointer (While Loop)',
+                    isBest: false,
+                    time: 'O(n)',
+                    space: 'O(1)',
+                    timeScore: 100,
+                    spaceScore: 95,
+                    description: 'Explicitly maintain two pointers - one for the main array and one for the sequence. Both start at 0. Advance array pointer always, sequence pointer on match.',
+                    code: `def validate_subsequence_while(array, sequence):
+    arr_idx = 0
+    seq_idx = 0
+    while arr_idx < len(array) and seq_idx < len(sequence):
+        if array[arr_idx] == sequence[seq_idx]:
+            seq_idx += 1
+        arr_idx += 1
+    return seq_idx == len(sequence)`
+                },
+                {
+                    id: 3,
+                    name: 'Recursive Solution',
+                    isBest: false,
+                    time: 'O(n)',
+                    space: 'O(n)',
+                    timeScore: 100,
+                    spaceScore: 30,
+                    description: 'Uses recursion with base cases for empty sequence (success) and empty array with remaining sequence (failure). Each call processes one array element.',
+                    code: `def validate_subsequence_recursive(array, sequence):
+    def helper(arr_idx, seq_idx):
+        if seq_idx == len(sequence):
+            return True
+        if arr_idx == len(array):
+            return False
+        if array[arr_idx] == sequence[seq_idx]:
+            return helper(arr_idx + 1, seq_idx + 1)
+        return helper(arr_idx + 1, seq_idx)
+    return helper(0, 0)`
+                },
+                {
+                    id: 4,
+                    name: 'Index Finding',
+                    isBest: false,
+                    time: 'O(n*m)',
+                    space: 'O(1)',
+                    timeScore: 40,
+                    spaceScore: 100,
+                    description: 'For each sequence element, find its index in the remaining portion of the array using the built-in index() method. Less optimal due to potential re-scanning.',
+                    code: `def validate_subsequence_index(array, sequence):
+    search_start = 0
+    for target in sequence:
+        try:
+            found_idx = array.index(target, search_start)
+            search_start = found_idx + 1
+        except ValueError:
+            return False
+    return True`
+                }
+            ]
+        },
+        'sorted-squared-array': {
+            name: 'Sorted Squared Array',
+            approaches: [
+                {
+                    id: 1,
+                    name: 'Two-Pointer from Ends',
+                    isBest: true,
+                    time: 'O(n)',
+                    space: 'O(n)',
+                    timeScore: 100,
+                    spaceScore: 70,
+                    description: 'Use two pointers at both ends of the array. Compare absolute values and fill the result array from the end (largest values first).',
+                    whyBest: [
+                        'Single pass through the array - O(n) time',
+                        'Handles negative numbers elegantly',
+                        'No need for post-processing or sorting',
+                        'Intuitive comparison of absolute values',
+                        'Fills result array in correct order'
+                    ],
+                    code: `def sorted_squared_array(array):
+    result = [0] * len(array)
+    left, right = 0, len(array) - 1
+    for i in range(len(array) - 1, -1, -1):
+        if abs(array[left]) > abs(array[right]):
+            result[i] = array[left] ** 2
+            left += 1
+        else:
+            result[i] = array[right] ** 2
+            right -= 1
+    return result`
+                },
+                {
+                    id: 2,
+                    name: 'Square then Sort',
+                    isBest: false,
+                    time: 'O(n log n)',
+                    space: 'O(n)',
+                    timeScore: 60,
+                    spaceScore: 70,
+                    description: 'Square all elements first, then sort the result. Simple but not optimal due to the sorting step.',
+                    code: `def sorted_squared_array_naive(array):
+    return sorted([x ** 2 for x in array])`
+                },
+                {
+                    id: 3,
+                    name: 'Find Pivot + Merge',
+                    isBest: false,
+                    time: 'O(n)',
+                    space: 'O(n)',
+                    timeScore: 100,
+                    spaceScore: 60,
+                    description: 'Find where negative numbers end, then merge two sorted subarrays (negatives squared in reverse, positives squared forward).',
+                    code: `def sorted_squared_pivot(array):
+    pivot = 0
+    while pivot < len(array) and array[pivot] < 0:
+        pivot += 1
+
+    result = []
+    left, right = pivot - 1, pivot
+
+    while left >= 0 and right < len(array):
+        if array[left] ** 2 < array[right] ** 2:
+            result.append(array[left] ** 2)
+            left -= 1
+        else:
+            result.append(array[right] ** 2)
+            right += 1
+
+    while left >= 0:
+        result.append(array[left] ** 2)
+        left -= 1
+    while right < len(array):
+        result.append(array[right] ** 2)
+        right += 1
+
+    return result`
+                }
+            ]
+        },
+        'three-number-sum': {
+            name: 'Three Number Sum',
+            approaches: [
+                {
+                    id: 1,
+                    name: 'Sort + Two Pointers',
+                    isBest: true,
+                    time: 'O(n²)',
+                    space: 'O(n)',
+                    timeScore: 100,
+                    spaceScore: 80,
+                    description: 'Sort the array first, then for each element, use two pointers to find pairs that sum to the target minus current element.',
+                    whyBest: [
+                        'Optimal O(n²) time - cannot do better for this problem',
+                        'Elegant use of sorted array properties',
+                        'Two pointers efficiently find complementary pairs',
+                        'Easy to handle duplicates',
+                        'Output naturally comes sorted'
+                    ],
+                    code: `def three_number_sum(array, target):
+    array.sort()
+    triplets = []
+    for i in range(len(array) - 2):
+        left = i + 1
+        right = len(array) - 1
+        while left < right:
+            current_sum = array[i] + array[left] + array[right]
+            if current_sum == target:
+                triplets.append([array[i], array[left], array[right]])
+                left += 1
+                right -= 1
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    return triplets`
+                },
+                {
+                    id: 2,
+                    name: 'Hash Map Approach',
+                    isBest: false,
+                    time: 'O(n²)',
+                    space: 'O(n)',
+                    timeScore: 95,
+                    spaceScore: 70,
+                    description: 'For each pair of elements, use a hash map to check if the complement exists. Requires extra handling for duplicates.',
+                    code: `def three_number_sum_hash(array, target):
+    triplets = set()
+    for i in range(len(array)):
+        seen = set()
+        for j in range(i + 1, len(array)):
+            complement = target - array[i] - array[j]
+            if complement in seen:
+                triplet = tuple(sorted([array[i], array[j], complement]))
+                triplets.add(triplet)
+            seen.add(array[j])
+    return [list(t) for t in sorted(triplets)]`
+                },
+                {
+                    id: 3,
+                    name: 'Brute Force',
+                    isBest: false,
+                    time: 'O(n³)',
+                    space: 'O(n)',
+                    timeScore: 20,
+                    spaceScore: 90,
+                    description: 'Check all possible combinations of three numbers. Simple but very slow for large inputs.',
+                    code: `def three_number_sum_brute(array, target):
+    triplets = []
+    n = len(array)
+    for i in range(n - 2):
+        for j in range(i + 1, n - 1):
+            for k in range(j + 1, n):
+                if array[i] + array[j] + array[k] == target:
+                    triplets.append(sorted([array[i], array[j], array[k]]))
+    return sorted(triplets)`
+                }
+            ]
+        }
+    };
+
+    // Default solutions for problems without specific data
+    function getDefaultSolutions(problemId) {
+        return {
+            name: problemId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+            approaches: [
+                {
+                    id: 1,
+                    name: 'Optimal Solution',
+                    isBest: true,
+                    time: 'O(n)',
+                    space: 'O(1)',
+                    timeScore: 100,
+                    spaceScore: 100,
+                    description: 'The most efficient approach for this problem, balancing time and space complexity.',
+                    whyBest: [
+                        'Optimal time complexity for this problem type',
+                        'Minimal space usage',
+                        'Clean and readable implementation',
+                        'Handles edge cases efficiently'
+                    ],
+                    code: '// See the Code tab for the full implementation'
+                },
+                {
+                    id: 2,
+                    name: 'Alternative Approach',
+                    isBest: false,
+                    time: 'O(n log n)',
+                    space: 'O(n)',
+                    timeScore: 75,
+                    spaceScore: 70,
+                    description: 'A different perspective on solving the problem, may be easier to understand.',
+                    code: '// Alternative implementation available'
+                }
+            ]
+        };
+    }
+
+    function loadSolutionsContent() {
+        if (!currentProblem) return;
+
+        const problemKey = currentProblem.id.replace(/^\d+-/, '');
+        const solutions = solutionsData[problemKey] || getDefaultSolutions(problemKey);
+
+        const container = document.getElementById('solutions-content');
+        container.innerHTML = renderSolutionsHTML(solutions);
+    }
+
+    function renderSolutionsHTML(solutions) {
+        let html = `
+            <div class="solutions-header" style="margin-bottom: 1.5rem;">
+                <h3 style="color: #f1f5f9; margin-bottom: 0.5rem; font-size: 1.3rem;">
+                    Multiple Solution Approaches
+                </h3>
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    Explore different ways to solve this problem, each with trade-offs in time and space complexity.
+                </p>
+            </div>
+        `;
+
+        // Render each approach
+        solutions.approaches.forEach((approach, idx) => {
+            const isExpanded = idx === 0;
+            html += `
+                <div class="solution-approach ${approach.isBest ? 'best-solution' : ''} ${isExpanded ? 'expanded' : ''}"
+                     data-approach-id="${approach.id}">
+                    <div class="solution-header" onclick="toggleSolution(${approach.id})">
+                        <div class="solution-title-area">
+                            <div class="solution-number">${approach.id}</div>
+                            <span class="solution-name">${approach.name}</span>
+                        </div>
+                        <div class="solution-badges">
+                            ${approach.isBest ? '<span class="best-badge">★ BEST CHOICE</span>' : ''}
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="solution-body">
+                        <div class="solution-body-inner">
+                            <!-- Complexity Badges -->
+                            <div class="complexity-row">
+                                <div class="complexity-badge">
+                                    <span class="complexity-label">Time</span>
+                                    <span class="complexity-value time">${approach.time}</span>
+                                </div>
+                                <div class="complexity-badge">
+                                    <span class="complexity-label">Space</span>
+                                    <span class="complexity-value space">${approach.space}</span>
+                                </div>
+                            </div>
+
+                            <!-- Complexity Visual Bars -->
+                            <div class="complexity-visual">
+                                <div class="complexity-bar-row">
+                                    <span class="bar-label">Time</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill time" style="width: ${approach.timeScore}%"></div>
+                                    </div>
+                                    <span class="bar-scale">${approach.time}</span>
+                                </div>
+                                <div class="complexity-bar-row">
+                                    <span class="bar-label">Space</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill space" style="width: ${approach.spaceScore}%"></div>
+                                    </div>
+                                    <span class="bar-scale">${approach.space}</span>
+                                </div>
+                            </div>
+
+                            ${approach.isBest && approach.whyBest ? `
+                                <div class="best-justification">
+                                    <div class="justification-title">
+                                        ★ Why This Is The Best Choice
+                                    </div>
+                                    <ul class="justification-points">
+                                        ${approach.whyBest.map(point => `<li>${point}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            <!-- Description -->
+                            <div class="solution-description">
+                                <h4>How It Works</h4>
+                                <p>${approach.description}</p>
+                            </div>
+
+                            <!-- Code Preview -->
+                            <div class="code-preview">
+                                <div class="code-preview-header">
+                                    <span class="code-preview-title">Python Implementation</span>
+                                    <div class="code-preview-actions">
+                                        <button class="preview-action-btn" onclick="copyCode('${approach.id}')" title="Copy to clipboard">
+                                            📋 Copy
+                                        </button>
+                                        <button class="preview-action-btn" onclick="loadToEditor('${approach.id}')" title="Load into editor">
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="preview-action-btn" onclick="runApproach('${approach.id}')"
+                                                style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3);"
+                                                title="Load and run immediately">
+                                            ▶ Run
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="code-preview-body">
+                                    <pre>${escapeHtml(approach.code)}</pre>
+                                </div>
+                            </div>
+
+                            <!-- Visualize This Approach Button -->
+                            <button class="visualize-approach-btn" onclick="visualizeApproach(${approach.id})"
+                                    style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(79, 70, 229, 0.3) 100%);
+                                           border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 0.75rem; color: #a5b4fc;
+                                           font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+                                           transition: all 0.2s ease;">
+                                <span style="font-size: 1.2rem;">🎬</span>
+                                <span>Watch Step-by-Step Animation</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Add comparison table
+        html += `
+            <div class="complexity-comparison">
+                <div class="comparison-title">
+                    📊 Complexity Comparison
+                </div>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Approach</th>
+                            <th>Time</th>
+                            <th>Space</th>
+                            <th>Recommended</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${solutions.approaches.map(a => `
+                            <tr class="${a.isBest ? 'best-row' : ''}">
+                                <td>${a.name}</td>
+                                <td><code style="color: #60a5fa;">${a.time}</code></td>
+                                <td><code style="color: #c084fc;">${a.space}</code></td>
+                                <td>${a.isBest ? '<span class="best-indicator">★ Best</span>' : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        return html;
+    }
+
+    window.toggleSolution = function(id) {
+        const approach = document.querySelector(`[data-approach-id="${id}"]`);
+        if (approach) {
+            approach.classList.toggle('expanded');
+        }
+    };
+
+    window.copyCode = function(id) {
+        const problemKey = currentProblem ? currentProblem.id.replace(/^\d+-/, '') : '';
+        const solutions = solutionsData[problemKey] || getDefaultSolutions(problemKey);
+        const approach = solutions.approaches.find(a => a.id === parseInt(id));
+
+        if (approach && approach.code) {
+            navigator.clipboard.writeText(approach.code).then(() => {
+                // Show success feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'rgba(16, 185, 129, 0.3)';
+                btn.style.color = '#34d399';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+            });
+        }
+    };
+
+    window.loadToEditor = function(id) {
+        const problemKey = currentProblem ? currentProblem.id.replace(/^\d+-/, '') : '';
+        const solutions = solutionsData[problemKey] || getDefaultSolutions(problemKey);
+        const approach = solutions.approaches.find(a => a.id === parseInt(id));
+
+        if (approach && approach.code && editor) {
+            // Load the code into the editor
+            currentCode.python = approach.code;
+            editor.setValue(approach.code);
+
+            // Switch to problem tab to show the editor
+            showDescTab('problem');
+
+            // Highlight that code was loaded
+            const editorWrapper = document.getElementById('code-editor-wrapper');
+            if (editorWrapper) {
+                editorWrapper.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.5)';
+                setTimeout(() => {
+                    editorWrapper.style.boxShadow = '';
+                }, 1500);
+            }
+
+            // Show notification
+            showNotification(`Loaded "${approach.name}" into editor. Click Run to test!`);
+        }
+    };
+
+    function showNotification(message) {
+        // Create notification element
+        let notif = document.getElementById('code-notification');
+        if (!notif) {
+            notif = document.createElement('div');
+            notif.id = 'code-notification';
+            notif.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.75rem;
+                font-weight: 500;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                z-index: 1000;
+                transform: translateY(100px);
+                opacity: 0;
+                transition: all 0.3s ease;
+            `;
+            document.body.appendChild(notif);
+        }
+
+        notif.textContent = message;
+        notif.style.transform = 'translateY(0)';
+        notif.style.opacity = '1';
+
+        setTimeout(() => {
+            notif.style.transform = 'translateY(100px)';
+            notif.style.opacity = '0';
+        }, 3000);
+    }
+
+    // Add "Run This Approach" functionality
+    window.runApproach = function(id) {
+        loadToEditor(id);
+        setTimeout(() => {
+            runCode();
+        }, 500);
+    };
+
+    // Add "Visualize This Approach" functionality
+    window.visualizeApproach = function(id) {
+        // Switch to visualization tab
+        showDescTab('visualize');
+
+        // Select the corresponding approach in the visualization
+        setTimeout(() => {
+            selectVizApproach(id);
+            showNotification('Visualization loaded! Click Play to watch the animation.');
+        }, 100);
+    };
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ============================================
+    // VISUALIZATION TAB - Step-by-Step Animations
+    // ============================================
+
+    let currentViz = null;
+    let vizInterval = null;
+    let vizSpeed = 1000;
+    let vizPlaying = false;
+    let vizCurrentStep = 0;
+    let vizSteps = [];
+
+    function loadVisualizationContent() {
+        if (!currentProblem) return;
+
+        const container = document.getElementById('visualization-content');
+        container.innerHTML = renderVisualizationHTML();
+        initializeVisualization();
+    }
+
+    function renderVisualizationHTML() {
+        return `
+            <!-- Algorithm Selector -->
+            <div class="viz-selector">
+                <button class="viz-selector-btn active" onclick="selectVizApproach(1)" data-viz="1">
+                    ★ Two-Pointer
+                </button>
+                <button class="viz-selector-btn" onclick="selectVizApproach(2)" data-viz="2">
+                    While Loop
+                </button>
+                <button class="viz-selector-btn" onclick="selectVizApproach(3)" data-viz="3">
+                    Recursive
+                </button>
+            </div>
+
+            <!-- Input Configuration -->
+            <div class="viz-input-config">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label class="input-label">Array</label>
+                        <input type="text" class="input-field" id="viz-array-input"
+                               value="5, 1, 22, 25, 6, -1, 8, 10" style="width: 200px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Sequence</label>
+                        <input type="text" class="input-field" id="viz-seq-input"
+                               value="1, 6, -1, 10" style="width: 150px;">
+                    </div>
+                    <button class="generate-btn" onclick="regenerateViz()">
+                        Generate
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visualization Container -->
+            <div class="viz-container">
+                <div class="viz-header">
+                    <div class="viz-title">
+                        <span id="viz-approach-title">Two-Pointer Approach</span>
+                    </div>
+                    <div class="viz-controls">
+                        <button class="viz-control-btn" onclick="vizReset()" title="Reset">⟲</button>
+                        <button class="viz-control-btn" onclick="vizPrev()" title="Previous">←</button>
+                        <button class="viz-control-btn play" onclick="vizTogglePlay()" id="viz-play-btn" title="Play/Pause">▶</button>
+                        <button class="viz-control-btn" onclick="vizNext()" title="Next">→</button>
+                    </div>
+                </div>
+
+                <div class="viz-canvas" id="viz-canvas">
+                    <!-- Visualization will be rendered here -->
+                </div>
+
+                <div class="viz-step-info" id="viz-step-info">
+                    <!-- Step info will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Speed Control -->
+            <div class="speed-control">
+                <span class="speed-label">Speed:</span>
+                <input type="range" class="speed-slider" id="speed-slider"
+                       min="200" max="2000" value="1000" onchange="updateVizSpeed(this.value)">
+                <span class="speed-label" id="speed-value">1.0x</span>
+            </div>
+        `;
+    }
+
+    function initializeVisualization() {
+        regenerateViz();
+    }
+
+    window.regenerateViz = function() {
+        const arrayInput = document.getElementById('viz-array-input').value;
+        const seqInput = document.getElementById('viz-seq-input').value;
+
+        const array = arrayInput.split(',').map(x => parseInt(x.trim()));
+        const sequence = seqInput.split(',').map(x => parseInt(x.trim()));
+
+        generateVizSteps(array, sequence);
+        renderVizStep();
+    };
+
+    function generateVizSteps(array, sequence) {
+        vizSteps = [];
+        vizCurrentStep = 0;
+        let matchedArrayIndices = [];
+
+        // Initial state
+        vizSteps.push({
+            array: [...array],
+            sequence: [...sequence],
+            arrayPointer: -1,
+            seqPointer: 0,
+            matched: [],
+            matchedArrayIndices: [],
+            comparing: false,
+            description: 'Starting the algorithm. We need to check if the sequence is a subsequence of the array.',
+            code: 'seq_idx = 0  # Start at first sequence element'
+        });
+
+        // Step through the algorithm
+        let seqIdx = 0;
+        const matched = [];
+
+        for (let i = 0; i < array.length && seqIdx < sequence.length; i++) {
+            const isMatch = array[i] === sequence[seqIdx];
+
+            vizSteps.push({
+                array: [...array],
+                sequence: [...sequence],
+                arrayPointer: i,
+                seqPointer: seqIdx,
+                matched: [...matched],
+                matchedArrayIndices: [...matchedArrayIndices],
+                comparing: true,
+                isMatch: isMatch,
+                description: isMatch
+                    ? `Found match! array[${i}] = ${array[i]} matches sequence[${seqIdx}] = ${sequence[seqIdx]}. Move to next sequence element.`
+                    : `No match: array[${i}] = ${array[i]} ≠ sequence[${seqIdx}] = ${sequence[seqIdx]}. Continue searching.`,
+                code: isMatch
+                    ? `if ${array[i]} == ${sequence[seqIdx]}: seq_idx += 1  # Match!`
+                    : `if ${array[i]} != ${sequence[seqIdx]}: continue  # No match`
+            });
+
+            if (isMatch) {
+                matched.push(seqIdx);
+                matchedArrayIndices.push(i);
+                seqIdx++;
+            }
+        }
+
+        // Final result
+        const success = seqIdx === sequence.length;
+        vizSteps.push({
+            array: [...array],
+            sequence: [...sequence],
+            arrayPointer: -1,
+            seqPointer: seqIdx,
+            matched: [...matched],
+            matchedArrayIndices: [...matchedArrayIndices],
+            comparing: false,
+            isResult: true,
+            success: success,
+            description: success
+                ? `Success! All ${sequence.length} sequence elements were found in order. The sequence IS a valid subsequence.`
+                : `Incomplete. Only found ${seqIdx} of ${sequence.length} elements. The sequence is NOT a valid subsequence.`,
+            code: `return seq_idx == len(sequence)  # ${success ? 'True' : 'False'}`
+        });
+    }
+
+    function renderVizStep() {
+        if (vizSteps.length === 0) return;
+
+        const step = vizSteps[vizCurrentStep];
+        const canvas = document.getElementById('viz-canvas');
+        const stepInfo = document.getElementById('viz-step-info');
+
+        // Render enhanced animated visualization
+        let html = '<div class="array-viz-container">';
+
+        // Flow Indicator - shows current phase of algorithm
+        const flowPhase = step.isResult ? 'result' : (step.comparing ? 'compare' : 'scan');
+        html += `
+            <div class="flow-indicator">
+                <div class="flow-step ${flowPhase === 'scan' ? 'active' : 'completed'}">
+                    <span>1. Scan</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${flowPhase === 'compare' ? 'active' : (flowPhase === 'result' ? 'completed' : '')}">
+                    <span>2. Compare</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${step.isMatch ? 'completed' : ''} ${step.comparing && !step.isResult ? 'active' : ''}">
+                    <span>3. ${step.isMatch ? 'Match!' : 'Check'}</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ${flowPhase === 'result' ? 'active' : ''}">
+                    <span>4. Result</span>
+                </div>
+            </div>
+        `;
+
+        // Array label
+        html += '<div class="sequence-label" style="font-weight: 600; color: #60a5fa;">Main Array</div>';
+        html += '<div class="array-row" style="position: relative; padding-top: 90px; padding-bottom: 50px;">';
+
+        step.array.forEach((val, idx) => {
+            let classes = ['array-cell'];
+            let extras = '';
+            const isCurrentPointer = idx === step.arrayPointer;
+
+            // Determine cell state and animations
+            if (isCurrentPointer) {
+                classes.push('pointer-1');
+                if (step.comparing) {
+                    if (step.isMatch) {
+                        classes.push('match-flash');
+                    } else {
+                        classes.push('no-match-shake');
+                    }
+                } else {
+                    classes.push('scanning', 'glow-effect');
+                }
+
+                // Add scanning pointer arrow
+                extras += `
+                    <div class="scan-pointer">
+                        <div class="arrow"></div>
+                        <div class="label">i = ${idx}</div>
+                    </div>
+                `;
+
+                // Add comparison bubble when comparing
+                if (step.comparing && step.seqPointer < step.sequence.length) {
+                    const seqVal = step.sequence[step.seqPointer];
+                    extras += `
+                        <div class="comparison-bubble">
+                            <span class="value arr-val">${val}</span>
+                            <span class="operator">${step.isMatch ? '==' : '≠'}</span>
+                            <span class="value seq-val">${seqVal}</span>
+                            <span class="result ${step.isMatch ? 'match' : 'no-match'}">
+                                ${step.isMatch ? '✓ MATCH!' : '✗ Skip'}
+                            </span>
+                        </div>
+                    `;
+                }
+
+                // Add particle effects for match
+                if (step.isMatch && step.comparing) {
+                    extras += '<div class="match-particles">';
+                    for (let p = 0; p < 8; p++) {
+                        const angle = (p / 8) * Math.PI * 2;
+                        const tx = Math.cos(angle) * 40;
+                        const ty = Math.sin(angle) * 40;
+                        extras += `<div class="particle" style="--tx: ${tx}px; --ty: ${ty}px; animation-delay: ${p * 0.05}s;"></div>`;
+                    }
+                    extras += '</div>';
+                }
+            }
+
+            // Previously matched cells
+            const matchedArrayIndices = getMatchedArrayIndices(step);
+            if (matchedArrayIndices.includes(idx)) {
+                classes.push('matched');
+            }
+
+            html += `
+                <div class="${classes.join(' ')}" style="position: relative;">
+                    <span class="cell-index">${idx}</span>
+                    ${val}
+                    ${extras}
+                </div>
+            `;
+        });
+        html += '</div>';
+
+        // Sequence row with enhanced styling
+        html += '<div style="margin-top: 2.5rem;">';
+        html += '<div class="sequence-label" style="font-weight: 600; color: #10b981;">Sequence to Find</div>';
+        html += '<div class="sequence-row" style="position: relative; padding-bottom: 40px;">';
+
+        step.sequence.forEach((val, idx) => {
+            let classes = ['sequence-cell'];
+            let extras = '';
+
+            if (step.matched.includes(idx)) {
+                classes.push('found');
+            }
+            if (idx === step.seqPointer && !step.isResult) {
+                classes.push('glow-effect');
+                // Add sequence pointer
+                extras = `
+                    <div class="scan-pointer seq-pointer">
+                        <div class="arrow"></div>
+                        <div class="label">Looking for</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="${classes.join(' ')}" style="position: relative;">
+                    ${val}
+                    ${extras}
+                </div>
+            `;
+        });
+        html += '</div></div>';
+
+        // Thought Process Panel - explains what the algorithm is "thinking"
+        const thoughtContent = getThoughtContent(step);
+        html += `
+            <div class="thought-panel">
+                <div class="thought-header">
+                    <span class="icon">💭</span>
+                    <span>Algorithm Thinking</span>
+                </div>
+                <div class="thought-content">${thoughtContent.text}</div>
+                <div class="variable-state">
+                    <div class="var-item">
+                        <span class="var-name">seq_idx = </span>
+                        <span class="var-value">${step.seqPointer}</span>
+                    </div>
+                    <div class="var-item">
+                        <span class="var-name">matched = </span>
+                        <span class="var-value">${step.matched.length} / ${step.sequence.length}</span>
+                    </div>
+                    ${step.arrayPointer >= 0 ? `
+                        <div class="var-item">
+                            <span class="var-name">current = </span>
+                            <span class="var-value">array[${step.arrayPointer}] = ${step.array[step.arrayPointer]}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        // Result with animated icons
+        if (step.isResult) {
+            if (step.success) {
+                html += `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+                        <div class="checkmark-circle">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="4,12 9,17 20,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="viz-result success" style="animation: pop-in 0.3s ease-out 0.3s both;">
+                            ✓ Valid Subsequence Found!
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1.5rem;">
+                        <div class="x-mark-circle">
+                            <span style="font-size: 1.5rem; color: white; font-weight: bold;">✕</span>
+                        </div>
+                        <div class="viz-result failure" style="animation: pop-in 0.3s ease-out 0.3s both;">
+                            ✗ Not a Valid Subsequence
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        html += '</div>';
+        canvas.innerHTML = html;
+
+        // Render enhanced step info with clickable timeline
+        stepInfo.innerHTML = `
+            <div class="progress-timeline">
+                ${vizSteps.map((s, i) => {
+                    let stepClass = '';
+                    if (i < vizCurrentStep) stepClass = s.isMatch ? 'match-step' : 'completed';
+                    else if (i === vizCurrentStep) stepClass = 'active';
+                    return `<div class="timeline-step ${stepClass}" onclick="goToVizStep(${i})" title="Step ${i + 1}"></div>`;
+                }).join('')}
+            </div>
+            <div class="step-counter">
+                <span class="step-number" style="font-size: 1rem; font-weight: 600;">
+                    Step ${vizCurrentStep + 1} of ${vizSteps.length}
+                </span>
+            </div>
+            <div class="step-description" style="font-size: 1rem; margin: 1rem 0;">${step.description}</div>
+            <div class="step-code-snippet">${step.code}</div>
+        `;
+    }
+
+    // Helper: Get array indices that were matched
+    function getMatchedArrayIndices(step) {
+        return step.matchedArrayIndices || [];
+    }
+
+    // Helper: Generate thought content based on step
+    function getThoughtContent(step) {
+        if (step.isResult) {
+            if (step.success) {
+                return { text: `All ${step.sequence.length} elements of the sequence were found in order! The algorithm successfully verified this is a valid subsequence.` };
+            } else {
+                return { text: `Reached the end of the array but only found ${step.matched.length} of ${step.sequence.length} elements. The sequence is NOT a valid subsequence.` };
+            }
+        }
+
+        if (!step.comparing) {
+            return { text: `Starting to scan through the main array. We need to find all elements of the sequence [${step.sequence.join(', ')}] in order.` };
+        }
+
+        const arrVal = step.array[step.arrayPointer];
+        const seqVal = step.sequence[step.seqPointer];
+
+        if (step.isMatch) {
+            return { text: `Found a match! The value ${arrVal} at index ${step.arrayPointer} equals the sequence element ${seqVal}. Moving to look for the next sequence element.` };
+        } else {
+            return { text: `No match. The value ${arrVal} at index ${step.arrayPointer} does not equal the sequence element ${seqVal} we're looking for. Continue scanning the array.` };
+        }
+    }
+
+    window.goToVizStep = function(step) {
+        vizCurrentStep = step;
+        renderVizStep();
+    };
+
+    window.vizNext = function() {
+        if (vizCurrentStep < vizSteps.length - 1) {
+            vizCurrentStep++;
+            renderVizStep();
+        } else {
+            vizPause();
+        }
+    };
+
+    window.vizPrev = function() {
+        if (vizCurrentStep > 0) {
+            vizCurrentStep--;
+            renderVizStep();
+        }
+    };
+
+    window.vizReset = function() {
+        vizPause();
+        vizCurrentStep = 0;
+        renderVizStep();
+    };
+
+    window.vizTogglePlay = function() {
+        if (vizPlaying) {
+            vizPause();
+        } else {
+            vizPlay();
+        }
+    };
+
+    function vizPlay() {
+        vizPlaying = true;
+        document.getElementById('viz-play-btn').textContent = '⏸';
+        vizInterval = setInterval(() => {
+            if (vizCurrentStep < vizSteps.length - 1) {
+                vizCurrentStep++;
+                renderVizStep();
+            } else {
+                vizPause();
+            }
+        }, vizSpeed);
+    }
+
+    function vizPause() {
+        vizPlaying = false;
+        document.getElementById('viz-play-btn').textContent = '▶';
+        if (vizInterval) {
+            clearInterval(vizInterval);
+            vizInterval = null;
+        }
+    }
+
+    window.updateVizSpeed = function(value) {
+        vizSpeed = 2200 - parseInt(value);
+        const speedMultiplier = (2000 / vizSpeed).toFixed(1);
+        document.getElementById('speed-value').textContent = speedMultiplier + 'x';
+
+        if (vizPlaying) {
+            vizPause();
+            vizPlay();
+        }
+    };
+
+    window.selectVizApproach = function(id) {
+        document.querySelectorAll('.viz-selector-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-viz="${id}"]`).classList.add('active');
+
+        const titles = {
+            1: 'Two-Pointer Approach',
+            2: 'While Loop Approach',
+            3: 'Recursive Approach'
+        };
+        document.getElementById('viz-approach-title').textContent = titles[id];
+
+        vizReset();
     };
 
     // Initialize WebSocket for live execution
