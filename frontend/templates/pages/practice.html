@@ -74,6 +74,35 @@
     let isRunning = false;
     let editor = null;
     let editorInitialized = false;
+    let codeMirrorLoaded = false;
+
+    // Wait for LazyLoader to be available
+    function waitForLazyLoader() {
+        return new Promise(function(resolve) {
+            if (typeof LazyLoader !== 'undefined') {
+                resolve();
+            } else {
+                var checkInterval = setInterval(function() {
+                    if (typeof LazyLoader !== 'undefined') {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                }, 10);
+            }
+        });
+    }
+
+    // Load CodeMirror via lazy loader
+    function loadCodeMirror() {
+        if (codeMirrorLoaded) {
+            return Promise.resolve();
+        }
+        return waitForLazyLoader().then(function() {
+            return LazyLoader.loadCodeMirror();
+        }).then(function() {
+            codeMirrorLoaded = true;
+        });
+    }
 
     // Default code templates
     function getDefaultCode(lang) {
@@ -196,15 +225,31 @@ func main() {
     function initEditor() {
         if (editorInitialized) return;
 
-        const wrapper = document.getElementById('code-editor-wrapper');
+        var wrapper = document.getElementById('code-editor-wrapper');
         if (!wrapper) return;
 
-        // Check if CodeMirror is available
-        if (typeof CodeMirror === 'undefined') {
-            console.error('CodeMirror not loaded, using fallback textarea');
+        // Show loading state
+        wrapper.innerHTML = '<div class="loading">Loading editor...</div>';
+
+        // Load CodeMirror via lazy loader
+        loadCodeMirror().then(function() {
+            if (typeof CodeMirror === 'undefined') {
+                console.error('CodeMirror not loaded, using fallback textarea');
+                useFallbackEditor();
+                return;
+            }
+            initCodeMirrorEditor(wrapper);
+        }).catch(function(err) {
+            console.error('Failed to load CodeMirror:', err);
             useFallbackEditor();
-            return;
-        }
+        });
+    }
+
+    // Actually initialize the CodeMirror editor
+    function initCodeMirrorEditor(wrapper) {
+        if (editorInitialized) return;
+
+        wrapper.innerHTML = ''; // Clear loading state
 
         try {
             editor = CodeMirror(wrapper, {

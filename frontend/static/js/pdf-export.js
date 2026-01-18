@@ -4,6 +4,32 @@
 // Currently selected topic
 let selectedTopic = null;
 let topicsLoaded = false;
+let html2pdfLoaded = false;
+
+// Load html2pdf via lazy loader
+function loadHtml2PdfLib() {
+    if (html2pdfLoaded || typeof html2pdf !== 'undefined') {
+        return Promise.resolve();
+    }
+
+    if (typeof LazyLoader !== 'undefined') {
+        return LazyLoader.loadHtml2Pdf().then(function() {
+            html2pdfLoaded = true;
+        });
+    }
+
+    // Fallback: direct script loading
+    return new Promise(function(resolve, reject) {
+        var script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = function() {
+            html2pdfLoaded = true;
+            resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
 
 // Initialize PDF modal functionality
 function initPdfModal() {
@@ -132,6 +158,8 @@ async function generatePdf() {
     if (generateBtn) generateBtn.disabled = true;
 
     try {
+        // Load html2pdf library first
+        await loadHtml2PdfLib();
         // Fetch the topic content
         const response = await fetch(`/topic/${selectedTopic.path}`);
         const html = await response.text();

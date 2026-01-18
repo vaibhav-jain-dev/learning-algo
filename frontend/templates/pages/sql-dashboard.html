@@ -779,6 +779,45 @@
 (function() {
     let editor = null;
     let queryHistory = [];
+    let codeMirrorLoaded = false;
+
+    // Wait for LazyLoader to be available
+    function waitForLazyLoader() {
+        return new Promise(function(resolve) {
+            if (typeof LazyLoader !== 'undefined') {
+                resolve();
+            } else {
+                var checkInterval = setInterval(function() {
+                    if (typeof LazyLoader !== 'undefined') {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                }, 10);
+            }
+        });
+    }
+
+    // Load CodeMirror via lazy loader
+    function loadCodeMirrorLib() {
+        if (codeMirrorLoaded || typeof CodeMirror !== 'undefined') {
+            return Promise.resolve();
+        }
+        return waitForLazyLoader().then(function() {
+            return LazyLoader.loadCodeMirror();
+        }).then(function() {
+            codeMirrorLoaded = true;
+        });
+    }
+
+    // Load SQL Formatter via lazy loader
+    function loadSqlFormatterLib() {
+        if (typeof sqlFormatter !== 'undefined') {
+            return Promise.resolve();
+        }
+        return waitForLazyLoader().then(function() {
+            return LazyLoader.loadSqlFormatter();
+        });
+    }
 
     const sampleQueries = {
         select_all: `-- Select all requests with their status
@@ -896,62 +935,83 @@ ORDER BY final_amount DESC;`
         })
         .catch(function(err) { console.log('Schema hints not available'); });
 
-    // CodeMirror SQL hint provider
-    CodeMirror.registerHelper('hint', 'sql-custom', function(editor) {
-        const cur = editor.getCursor();
-        const token = editor.getTokenAt(cur);
-        const start = token.start;
-        const end = cur.ch;
-        const word = token.string;
-
-        let hints = [];
-        const lowerWord = word.toLowerCase();
-
-        // Add matching keywords
-        hints = hints.concat(
-            sqlKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
-        );
-
-        // Add matching functions
-        hints = hints.concat(
-            sqlFunctions.filter(function(f) { return f.toLowerCase().indexOf(lowerWord) === 0; })
-        );
-
-        // Add table names
-        hints = hints.concat(
-            schemaHints.tables.filter(function(t) { return t.toLowerCase().indexOf(lowerWord) === 0; })
-        );
-
-        // Check if we're completing a table column reference
-        const line = editor.getLine(cur.line);
-        const beforeCursor = line.substring(0, cur.ch);
-        if (beforeCursor.match(/\b(\w+)\.\w*$/)) {
-            const tableMatch = beforeCursor.match(/\b(\w+)\.\w*$/);
-            if (tableMatch) {
-                const tableName = tableMatch[1];
-                if (schemaHints.columns[tableName]) {
-                    hints = schemaHints.columns[tableName].filter(function(c) {
-                        return c.toLowerCase().indexOf(lowerWord) === 0;
-                    });
-                }
-            }
-        }
-
-        // Remove duplicates
-        hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
-
-        if (hints.length === 0) return null;
-
-        return {
-            from: CodeMirror.Pos(cur.line, start),
-            to: CodeMirror.Pos(cur.line, end),
-            list: hints.slice(0, 20)  // Limit to 20 suggestions
-        };
-    });
-
     function initEditor() {
-        const wrapper = document.getElementById('sql-editor-wrapper');
-        if (!wrapper || typeof CodeMirror === 'undefined') return;
+        var wrapper = document.getElementById('sql-editor-wrapper');
+        if (!wrapper) return;
+
+        // Show loading state
+        wrapper.innerHTML = '<div class="loading">Loading SQL editor...</div>';
+
+        // Load CodeMirror via lazy loader
+        loadCodeMirrorLib().then(function() {
+            if (typeof CodeMirror === 'undefined') {
+                wrapper.innerHTML = '<div class="error">Failed to load editor</div>';
+                return;
+            }
+            initCodeMirrorEditor(wrapper);
+        }).catch(function(err) {
+            console.error('Failed to load CodeMirror:', err);
+            wrapper.innerHTML = '<div class="error">Failed to load editor</div>';
+        });
+    }
+
+    function initCodeMirrorEditor(wrapper) {
+        wrapper.innerHTML = ''; // Clear loading state
+
+        // Register SQL hint helper if CodeMirror is available
+        if (typeof CodeMirror !== 'undefined' && CodeMirror.registerHelper) {
+            CodeMirror.registerHelper('hint', 'sql-custom', function(ed) {
+                var cur = ed.getCursor();
+                var token = ed.getTokenAt(cur);
+                var start = token.start;
+                var end = cur.ch;
+                var word = token.string;
+
+                var hints = [];
+                var lowerWord = word.toLowerCase();
+
+                // Add matching keywords
+                hints = hints.concat(
+                    sqlKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+                );
+
+                // Add matching functions
+                hints = hints.concat(
+                    sqlFunctions.filter(function(f) { return f.toLowerCase().indexOf(lowerWord) === 0; })
+                );
+
+                // Add table names
+                hints = hints.concat(
+                    schemaHints.tables.filter(function(t) { return t.toLowerCase().indexOf(lowerWord) === 0; })
+                );
+
+                // Check if we're completing a table column reference
+                var line = ed.getLine(cur.line);
+                var beforeCursor = line.substring(0, cur.ch);
+                if (beforeCursor.match(/\b(\w+)\.\w*$/)) {
+                    var tableMatch = beforeCursor.match(/\b(\w+)\.\w*$/);
+                    if (tableMatch) {
+                        var tableName = tableMatch[1];
+                        if (schemaHints.columns[tableName]) {
+                            hints = schemaHints.columns[tableName].filter(function(c) {
+                                return c.toLowerCase().indexOf(lowerWord) === 0;
+                            });
+                        }
+                    }
+                }
+
+                // Remove duplicates
+                hints = hints.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+                if (hints.length === 0) return null;
+
+                return {
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end),
+                    list: hints.slice(0, 20)
+                };
+            });
+        }
 
         editor = CodeMirror(wrapper, {
             value: `-- Welcome to SQL Learning Dashboard!
@@ -1124,23 +1184,34 @@ LIMIT 10;`,
     };
 
     window.formatSQL = function() {
-        if (!editor || typeof sqlFormatter === 'undefined') return;
+        if (!editor) return;
 
-        const query = editor.getValue().trim();
+        var query = editor.getValue().trim();
         if (!query) return;
 
-        try {
-            const formatted = sqlFormatter.format(query, {
-                language: 'postgresql',
-                indent: '    ',
-                lineWidth: 80,
-                keywordCase: 'upper'
-            });
-            editor.setValue(formatted);
-        } catch (err) {
-            console.error('SQL formatting error:', err);
-            alert('Failed to format SQL: ' + err.message);
-        }
+        // Load SQL formatter on demand
+        loadSqlFormatterLib().then(function() {
+            if (typeof sqlFormatter === 'undefined') {
+                alert('SQL formatter could not be loaded');
+                return;
+            }
+
+            try {
+                var formatted = sqlFormatter.format(query, {
+                    language: 'postgresql',
+                    indent: '    ',
+                    lineWidth: 80,
+                    keywordCase: 'upper'
+                });
+                editor.setValue(formatted);
+            } catch (err) {
+                console.error('SQL formatting error:', err);
+                alert('Failed to format SQL: ' + err.message);
+            }
+        }).catch(function(err) {
+            console.error('Failed to load SQL formatter:', err);
+            alert('Failed to load SQL formatter');
+        });
     };
 
     // Keyboard shortcut for formatting

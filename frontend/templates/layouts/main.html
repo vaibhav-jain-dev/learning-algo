@@ -5,60 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/static/css/styles.css" as="style">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Critical CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="/static/css/animations.css">
     <link rel="stylesheet" href="/static/css/diagrams.css">
-    <!-- Tailwind CSS for utility classes -->
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind CSS - loaded with low priority -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gray: {
-                            950: '#0a0a0f'
+        // Tailwind config will be applied after script loads
+        window.addEventListener('load', function() {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    darkMode: 'class',
+                    theme: {
+                        extend: {
+                            colors: {
+                                gray: {
+                                    950: '#0a0a0f'
+                                }
+                            }
                         }
                     }
-                }
+                };
             }
-        }
+        });
     </script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <!-- Highlight.js for markdown code blocks -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
-    <!-- CodeMirror for code editor -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/brace-fold.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/indent-fold.min.js"></script>
-    <!-- CodeMirror Autocomplete -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/sql-hint.min.js"></script>
-    <!-- SQL Formatter -->
-    <script src="https://cdn.jsdelivr.net/npm/sql-formatter@14.1.0/lib/index.js"></script>
-    <!-- html2pdf.js for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- HTMX - core functionality, loaded immediately but async -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+
+    <!--
+    Heavy libraries are now lazy-loaded via lazy-loader.js:
+    - Highlight.js: Loaded on-demand for code highlighting
+    - CodeMirror: Loaded only on practice/SQL/Redis pages
+    - SQL Formatter: Loaded only on SQL pages
+    - html2pdf: Loaded only when PDF export is triggered
+    -->
 </head>
 <body hx-boost="true">
     <header class="header">
@@ -80,25 +69,54 @@
     <main class="main">
         {{embed}}
     </main>
+    <!-- Core utilities - Load first -->
+    <script src="/static/js/lazy-loader.js"></script>
+    <script src="/static/js/state-manager.js"></script>
+
     <!-- Custom Diagram Engine -->
-    <script src="/static/js/diagrams.js"></script>
+    <script src="/static/js/diagrams.js" defer></script>
     <!-- Algorithm Visualization Engine -->
-    <script src="/static/js/visualizations.js"></script>
+    <script src="/static/js/visualizations.js" defer></script>
     <!-- PDF Export functionality -->
-    <script src="/static/js/pdf-export.js"></script>
+    <script src="/static/js/pdf-export.js" defer></script>
+
     <script>
+        // Wait for lazy loader to be ready
+        function onLazyLoaderReady(callback) {
+            if (typeof LazyLoader !== 'undefined') {
+                callback();
+            } else {
+                setTimeout(function() { onLazyLoaderReady(callback); }, 10);
+            }
+        }
+
         // Re-highlight code blocks and render diagrams after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function(evt) {
-            document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightElement(block);
+            onLazyLoaderReady(function() {
+                LazyLoader.loadHighlight().then(function() {
+                    document.querySelectorAll('pre code:not(.hljs)').forEach(function(block) {
+                        hljs.highlightElement(block);
+                    });
+                });
             });
+
             // Re-initialize visualizations and diagrams if needed
-            initializeVisualizations();
-            diagramEngine.renderAll();
+            if (typeof initializeVisualizations === 'function') {
+                initializeVisualizations();
+            }
+            if (typeof diagramEngine !== 'undefined') {
+                diagramEngine.renderAll();
+            }
         });
 
         // Initial highlight and setup
-        hljs.highlightAll();
+        onLazyLoaderReady(function() {
+            LazyLoader.loadHighlight().then(function() {
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
+                }
+            });
+        });
 
         // Initialize visualizations on page load
         function initializeVisualizations() {
@@ -107,8 +125,8 @@
                 if (container.dataset.vizInitialized) return;
                 container.dataset.vizInitialized = 'true';
 
-                const type = container.dataset.vizType;
-                const demoFn = container.dataset.vizDemo;
+                var type = container.dataset.vizType;
+                var demoFn = container.dataset.vizDemo;
 
                 if (demoFn && window[demoFn]) {
                     window[demoFn](container.id);
