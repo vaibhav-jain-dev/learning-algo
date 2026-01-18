@@ -3019,11 +3019,16 @@ func main() {
                                 <div class="code-preview-header">
                                     <span class="code-preview-title">Python Implementation</span>
                                     <div class="code-preview-actions">
-                                        <button class="preview-action-btn" onclick="copyCode('${approach.id}')">
-                                            Copy
+                                        <button class="preview-action-btn" onclick="copyCode('${approach.id}')" title="Copy to clipboard">
+                                            📋 Copy
                                         </button>
-                                        <button class="preview-action-btn" onclick="loadToEditor('${approach.id}')">
-                                            Try It
+                                        <button class="preview-action-btn" onclick="loadToEditor('${approach.id}')" title="Load into editor">
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="preview-action-btn" onclick="runApproach('${approach.id}')"
+                                                style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3);"
+                                                title="Load and run immediately">
+                                            ▶ Run
                                         </button>
                                     </div>
                                 </div>
@@ -3031,6 +3036,16 @@ func main() {
                                     <pre>${escapeHtml(approach.code)}</pre>
                                 </div>
                             </div>
+
+                            <!-- Visualize This Approach Button -->
+                            <button class="visualize-approach-btn" onclick="visualizeApproach(${approach.id})"
+                                    style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(79, 70, 229, 0.3) 100%);
+                                           border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 0.75rem; color: #a5b4fc;
+                                           font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+                                           transition: all 0.2s ease;">
+                                <span style="font-size: 1.2rem;">🎬</span>
+                                <span>Watch Step-by-Step Animation</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -3077,13 +3092,108 @@ func main() {
     };
 
     window.copyCode = function(id) {
-        // Copy code logic would go here
-        alert('Code copied to clipboard!');
+        const problemKey = currentProblem ? currentProblem.id.replace(/^\d+-/, '') : '';
+        const solutions = solutionsData[problemKey] || getDefaultSolutions(problemKey);
+        const approach = solutions.approaches.find(a => a.id === parseInt(id));
+
+        if (approach && approach.code) {
+            navigator.clipboard.writeText(approach.code).then(() => {
+                // Show success feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'rgba(16, 185, 129, 0.3)';
+                btn.style.color = '#34d399';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+            });
+        }
     };
 
     window.loadToEditor = function(id) {
-        // Load code to editor
-        showDescTab('problem');
+        const problemKey = currentProblem ? currentProblem.id.replace(/^\d+-/, '') : '';
+        const solutions = solutionsData[problemKey] || getDefaultSolutions(problemKey);
+        const approach = solutions.approaches.find(a => a.id === parseInt(id));
+
+        if (approach && approach.code && editor) {
+            // Load the code into the editor
+            currentCode.python = approach.code;
+            editor.setValue(approach.code);
+
+            // Switch to problem tab to show the editor
+            showDescTab('problem');
+
+            // Highlight that code was loaded
+            const editorWrapper = document.getElementById('code-editor-wrapper');
+            if (editorWrapper) {
+                editorWrapper.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.5)';
+                setTimeout(() => {
+                    editorWrapper.style.boxShadow = '';
+                }, 1500);
+            }
+
+            // Show notification
+            showNotification(`Loaded "${approach.name}" into editor. Click Run to test!`);
+        }
+    };
+
+    function showNotification(message) {
+        // Create notification element
+        let notif = document.getElementById('code-notification');
+        if (!notif) {
+            notif = document.createElement('div');
+            notif.id = 'code-notification';
+            notif.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.75rem;
+                font-weight: 500;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                z-index: 1000;
+                transform: translateY(100px);
+                opacity: 0;
+                transition: all 0.3s ease;
+            `;
+            document.body.appendChild(notif);
+        }
+
+        notif.textContent = message;
+        notif.style.transform = 'translateY(0)';
+        notif.style.opacity = '1';
+
+        setTimeout(() => {
+            notif.style.transform = 'translateY(100px)';
+            notif.style.opacity = '0';
+        }, 3000);
+    }
+
+    // Add "Run This Approach" functionality
+    window.runApproach = function(id) {
+        loadToEditor(id);
+        setTimeout(() => {
+            runCode();
+        }, 500);
+    };
+
+    // Add "Visualize This Approach" functionality
+    window.visualizeApproach = function(id) {
+        // Switch to visualization tab
+        showDescTab('visualize');
+
+        // Select the corresponding approach in the visualization
+        setTimeout(() => {
+            selectVizApproach(id);
+            showNotification('Visualization loaded! Click Play to watch the animation.');
+        }, 100);
     };
 
     function escapeHtml(text) {
@@ -3196,6 +3306,7 @@ func main() {
     function generateVizSteps(array, sequence) {
         vizSteps = [];
         vizCurrentStep = 0;
+        let matchedArrayIndices = [];
 
         // Initial state
         vizSteps.push({
@@ -3204,6 +3315,7 @@ func main() {
             arrayPointer: -1,
             seqPointer: 0,
             matched: [],
+            matchedArrayIndices: [],
             comparing: false,
             description: 'Starting the algorithm. We need to check if the sequence is a subsequence of the array.',
             code: 'seq_idx = 0  # Start at first sequence element'
@@ -3222,6 +3334,7 @@ func main() {
                 arrayPointer: i,
                 seqPointer: seqIdx,
                 matched: [...matched],
+                matchedArrayIndices: [...matchedArrayIndices],
                 comparing: true,
                 isMatch: isMatch,
                 description: isMatch
@@ -3234,6 +3347,7 @@ func main() {
 
             if (isMatch) {
                 matched.push(seqIdx);
+                matchedArrayIndices.push(i);
                 seqIdx++;
             }
         }
@@ -3246,6 +3360,7 @@ func main() {
             arrayPointer: -1,
             seqPointer: seqIdx,
             matched: [...matched],
+            matchedArrayIndices: [...matchedArrayIndices],
             comparing: false,
             isResult: true,
             success: success,
@@ -3476,8 +3591,7 @@ func main() {
 
     // Helper: Get array indices that were matched
     function getMatchedArrayIndices(step) {
-        // This would need actual tracking - simplified for now
-        return [];
+        return step.matchedArrayIndices || [];
     }
 
     // Helper: Generate thought content based on step
