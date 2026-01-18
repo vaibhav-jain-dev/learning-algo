@@ -74,6 +74,11 @@ var categoryMeta = map[string]struct {
 		Description: "Master DSA with curated problems organized by topic - from easy to very hard",
 		Order:       5,
 	},
+	"system-architectures": {
+		Title:       "System Architectures",
+		Description: "Learn real-world system architectures with 3-phase evolution from startup to enterprise scale",
+		Order:       6,
+	},
 }
 
 // NewTopicIndexer creates a new topic indexer

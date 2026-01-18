@@ -671,6 +671,16 @@ func (h *Handlers) Microservices(c *fiber.Ctx) error {
 	})
 }
 
+// SystemArchitectures renders the system architectures page
+func (h *Handlers) SystemArchitectures(c *fiber.Ctx) error {
+	category := h.topicIndexer.GetCategory("system-architectures")
+	return c.Render("pages/topic-list", fiber.Map{
+		"Title":        "System Architectures",
+		"Category":     category,
+		"CategorySlug": "system-architectures",
+	})
+}
+
 // SQLDashboard renders the SQL learning dashboard page
 func (h *Handlers) SQLDashboard(c *fiber.Ctx) error {
 	return c.Render("pages/sql-dashboard", fiber.Map{
