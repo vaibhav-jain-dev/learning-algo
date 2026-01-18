@@ -359,15 +359,71 @@ flowchart TB
 
 ## Usage
 
-### Automatic Deployment
+### Local Deployment (Recommended for Testing)
 
-Push to `main` or `master` branch to trigger deployment:
+Use the local deployment script to test deployments without triggering GitHub Actions:
 
 ```bash
-git push origin main
+# 1. Copy the example config
+cp .env.deploy.example .env.deploy
+
+# 2. Edit with your server details
+nano .env.deploy
+
+# 3. Run deployment
+./scripts/deploy.sh
+
+# Or with force restart
+./scripts/deploy.sh --force
+
+# Dry run (show what would happen)
+./scripts/deploy.sh --dry-run
 ```
 
-### Manual Deployment
+#### Quick One-liner
+
+```bash
+SSH_HOST=your-server SSH_USERNAME=ubuntu ./scripts/deploy.sh
+```
+
+#### Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SSH_HOST` | Server IP or hostname | `192.168.1.100` |
+| `SSH_USERNAME` | SSH user | `ubuntu` |
+| `SSH_PRIVATE_KEY` | Path to private key | `~/.ssh/id_rsa` (default) |
+| `SSH_PORT` | SSH port | `22` (default) |
+
+#### Optional Variables
+
+| Variable | Description |
+|----------|-------------|
+| `PROJECT_PATH` | Custom deployment path |
+| `ENV_FILE` | Path to .env file to deploy |
+
+```mermaid
+flowchart LR
+    subgraph Local["💻 Local Machine"]
+        SCRIPT["./scripts/deploy.sh"]
+        ENV[".env.deploy"]
+        KEY["SSH Private Key"]
+    end
+
+    subgraph Server["🖥️ Remote Server"]
+        SSH["SSH Daemon"]
+        DEPLOY["Deployment"]
+    end
+
+    ENV --> SCRIPT
+    KEY --> SCRIPT
+    SCRIPT -->|"SSH"| SSH
+    SSH --> DEPLOY
+```
+
+### GitHub Actions (Manual Trigger)
+
+> **Note:** Automatic deployment on push is disabled. Use manual trigger or local script.
 
 1. Go to **Actions** tab in your repository
 2. Select **"Deploy Docker Compose"** workflow
