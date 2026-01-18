@@ -56,6 +56,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/sql-hint.min.js"></script>
     <!-- SQL Formatter -->
     <script src="https://cdn.jsdelivr.net/npm/sql-formatter@14.1.0/lib/index.js"></script>
+    <!-- html2pdf.js for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body hx-boost="true">
     <header class="header">
@@ -80,6 +82,8 @@
     <script src="/static/js/diagrams.js"></script>
     <!-- Algorithm Visualization Engine -->
     <script src="/static/js/visualizations.js"></script>
+    <!-- PDF Export functionality -->
+    <script src="/static/js/pdf-export.js"></script>
     <script>
         // Re-highlight code blocks and render diagrams after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function(evt) {

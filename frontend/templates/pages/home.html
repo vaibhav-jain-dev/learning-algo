@@ -2,7 +2,57 @@
     <section class="hero">
         <h1>DSAlgo Learning Platform</h1>
         <p>Master Data Structures, Algorithms, and System Design with interactive code execution</p>
+        <button id="print-pdf-btn" class="btn btn-primary" style="margin-top: 1rem;">
+            <span>📄</span> Print as PDF
+        </button>
     </section>
+
+    <!-- PDF Print Modal -->
+    <div id="pdf-modal" class="pdf-modal hidden">
+        <div class="pdf-modal-overlay" onclick="closePdfModal()"></div>
+        <div class="pdf-modal-content">
+            <div class="pdf-modal-header">
+                <h2>Export to PDF</h2>
+                <button class="pdf-modal-close" onclick="closePdfModal()">&times;</button>
+            </div>
+            <div class="pdf-modal-body">
+                <p>Select content to export as PDF:</p>
+                <div class="pdf-category-list">
+                    <div class="pdf-category">
+                        <h3>System Design</h3>
+                        <div class="pdf-topics" id="pdf-system-design-topics"></div>
+                    </div>
+                    <div class="pdf-category">
+                        <h3>Design Patterns</h3>
+                        <div class="pdf-topics" id="pdf-design-patterns-topics"></div>
+                    </div>
+                    <div class="pdf-category">
+                        <h3>Machine Coding</h3>
+                        <div class="pdf-topics" id="pdf-machine-coding-topics"></div>
+                    </div>
+                    <div class="pdf-category">
+                        <h3>Microservices</h3>
+                        <div class="pdf-topics" id="pdf-microservices-topics"></div>
+                    </div>
+                    <div class="pdf-category">
+                        <h3>SQL Learning</h3>
+                        <div class="pdf-topics" id="pdf-sql-learning-topics"></div>
+                    </div>
+                    <div class="pdf-category">
+                        <h3>Must Solve Problems</h3>
+                        <div class="pdf-topics" id="pdf-must-solve-topics"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pdf-modal-footer">
+                <button class="btn btn-secondary" onclick="closePdfModal()">Cancel</button>
+                <button class="btn btn-primary" id="generate-pdf-btn" disabled>
+                    <span id="pdf-btn-text">Select a topic</span>
+                    <span id="pdf-loading" class="hidden">Generating...</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <section class="cards">
         <a href="/practice" class="card">
