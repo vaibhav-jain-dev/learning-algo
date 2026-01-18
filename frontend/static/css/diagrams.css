@@ -1,30 +1,512 @@
 /* ============================================
-   CUSTOM DIAGRAM STYLING
-   Beautiful, animated diagrams for learning
+   MODERN DIAGRAM DESIGN SYSTEM
+   Clean, accessible, and beautiful diagrams
    ============================================ */
 
-/* Container Styles */
+/* ============================================
+   CSS VARIABLES - Design Tokens
+   ============================================ */
+:root {
+    /* Primary Colors */
+    --diagram-primary: #6366f1;
+    --diagram-primary-light: #818cf8;
+    --diagram-primary-dark: #4f46e5;
+
+    /* Semantic Colors */
+    --diagram-success: #10b981;
+    --diagram-success-light: #34d399;
+    --diagram-success-bg: rgba(16, 185, 129, 0.15);
+
+    --diagram-warning: #f59e0b;
+    --diagram-warning-light: #fbbf24;
+    --diagram-warning-bg: rgba(245, 158, 11, 0.15);
+
+    --diagram-error: #ef4444;
+    --diagram-error-light: #f87171;
+    --diagram-error-bg: rgba(239, 68, 68, 0.15);
+
+    --diagram-info: #3b82f6;
+    --diagram-info-light: #60a5fa;
+    --diagram-info-bg: rgba(59, 130, 246, 0.15);
+
+    /* Accent Colors for variety */
+    --diagram-purple: #8b5cf6;
+    --diagram-purple-light: #a78bfa;
+    --diagram-purple-bg: rgba(139, 92, 246, 0.15);
+
+    --diagram-cyan: #06b6d4;
+    --diagram-cyan-light: #22d3ee;
+    --diagram-cyan-bg: rgba(6, 182, 212, 0.15);
+
+    --diagram-pink: #ec4899;
+    --diagram-pink-light: #f472b6;
+    --diagram-pink-bg: rgba(236, 72, 153, 0.15);
+
+    --diagram-orange: #f97316;
+    --diagram-orange-light: #fb923c;
+    --diagram-orange-bg: rgba(249, 115, 22, 0.15);
+
+    /* Neutral Colors */
+    --diagram-bg-primary: #1e293b;
+    --diagram-bg-secondary: #334155;
+    --diagram-bg-tertiary: #475569;
+    --diagram-bg-elevated: #3b4c63;
+
+    --diagram-text-primary: #f1f5f9;
+    --diagram-text-secondary: #cbd5e1;
+    --diagram-text-muted: #94a3b8;
+
+    --diagram-border: #475569;
+    --diagram-border-light: #64748b;
+
+    /* Spacing */
+    --diagram-space-xs: 0.25rem;
+    --diagram-space-sm: 0.5rem;
+    --diagram-space-md: 1rem;
+    --diagram-space-lg: 1.5rem;
+    --diagram-space-xl: 2rem;
+
+    /* Border Radius */
+    --diagram-radius-sm: 6px;
+    --diagram-radius-md: 10px;
+    --diagram-radius-lg: 16px;
+    --diagram-radius-xl: 24px;
+
+    /* Shadows */
+    --diagram-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --diagram-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --diagram-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --diagram-shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+    /* Transitions */
+    --diagram-transition-fast: 150ms ease;
+    --diagram-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --diagram-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   CONTAINER STYLES
+   ============================================ */
 .diagram-container {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: var(--diagram-space-xl) 0;
+    padding: var(--diagram-space-xl);
+    background: linear-gradient(145deg, var(--diagram-bg-primary) 0%, var(--diagram-bg-secondary) 100%);
+    border: 1px solid var(--diagram-border);
+    border-radius: var(--diagram-radius-lg);
+    box-shadow: var(--diagram-shadow-md);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: diagram-fade-in 0.4s ease-out;
 }
 
-.diagram-container.light {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+.diagram-container.compact {
+    padding: var(--diagram-space-lg);
+    margin: var(--diagram-space-lg) 0;
 }
 
-.diagram-container.dark {
-    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+.diagram-container.full-width {
+    border-radius: 0;
+    margin: var(--diagram-space-xl) calc(-1 * var(--diagram-space-lg));
 }
 
-/* Diagram Wrapper */
+/* ============================================
+   DIAGRAM CARD - Modern Card Component
+   ============================================ */
+.diagram-card {
+    background: var(--diagram-bg-elevated);
+    border: 1px solid var(--diagram-border);
+    border-radius: var(--diagram-radius-md);
+    padding: var(--diagram-space-lg);
+    transition: all var(--diagram-transition-normal);
+}
+
+.diagram-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--diagram-shadow-lg);
+    border-color: var(--diagram-primary);
+}
+
+.diagram-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--diagram-space-sm);
+    margin-bottom: var(--diagram-space-md);
+    padding-bottom: var(--diagram-space-sm);
+    border-bottom: 1px solid var(--diagram-border);
+}
+
+.diagram-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--diagram-text-primary);
+    margin: 0;
+}
+
+.diagram-card-subtitle {
+    font-size: 0.85rem;
+    color: var(--diagram-text-muted);
+    margin: 0;
+}
+
+/* ============================================
+   FLOW DIAGRAM COMPONENTS
+   ============================================ */
+.flow-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--diagram-space-md);
+    padding: var(--diagram-space-lg);
+    width: 100%;
+}
+
+.flow-row {
+    display: flex;
+    gap: var(--diagram-space-lg);
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.flow-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--diagram-space-md) var(--diagram-space-lg);
+    border-radius: var(--diagram-radius-md);
+    min-width: 140px;
+    text-align: center;
+    transition: all var(--diagram-transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.flow-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity var(--diagram-transition-fast);
+}
+
+.flow-box:hover::before {
+    opacity: 1;
+}
+
+.flow-box:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--diagram-shadow-lg);
+}
+
+/* Flow Box Variants */
+.flow-box.primary {
+    background: linear-gradient(135deg, var(--diagram-primary) 0%, var(--diagram-primary-dark) 100%);
+    color: white;
+    border: none;
+    box-shadow: var(--diagram-shadow-md), 0 0 20px rgba(99, 102, 241, 0.25);
+}
+
+.flow-box.success {
+    background: var(--diagram-success-bg);
+    border: 2px solid var(--diagram-success);
+    color: var(--diagram-success-light);
+}
+
+.flow-box.warning {
+    background: var(--diagram-warning-bg);
+    border: 2px solid var(--diagram-warning);
+    color: var(--diagram-warning-light);
+}
+
+.flow-box.error {
+    background: var(--diagram-error-bg);
+    border: 2px solid var(--diagram-error);
+    color: var(--diagram-error-light);
+}
+
+.flow-box.info {
+    background: var(--diagram-info-bg);
+    border: 2px solid var(--diagram-info);
+    color: var(--diagram-info-light);
+}
+
+.flow-box.purple {
+    background: var(--diagram-purple-bg);
+    border: 2px solid var(--diagram-purple);
+    color: var(--diagram-purple-light);
+}
+
+.flow-box.cyan {
+    background: var(--diagram-cyan-bg);
+    border: 2px solid var(--diagram-cyan);
+    color: var(--diagram-cyan-light);
+}
+
+.flow-box.pink {
+    background: var(--diagram-pink-bg);
+    border: 2px solid var(--diagram-pink);
+    color: var(--diagram-pink-light);
+}
+
+.flow-box.orange {
+    background: var(--diagram-orange-bg);
+    border: 2px solid var(--diagram-orange);
+    color: var(--diagram-orange-light);
+}
+
+.flow-box.neutral {
+    background: var(--diagram-bg-tertiary);
+    border: 2px solid var(--diagram-border-light);
+    color: var(--diagram-text-secondary);
+}
+
+.flow-box-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: var(--diagram-space-xs);
+}
+
+.flow-box-subtitle {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
+/* Flow Arrows */
+.flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--diagram-text-muted);
+    font-size: 1.5rem;
+    padding: var(--diagram-space-xs);
+    animation: arrow-pulse 2s ease-in-out infinite;
+}
+
+.flow-arrow.vertical {
+    transform: rotate(90deg);
+}
+
+.flow-arrow.horizontal {
+    transform: rotate(0deg);
+}
+
+/* ============================================
+   DATA CARD - For displaying data items
+   ============================================ */
+.data-card {
+    background: var(--diagram-bg-secondary);
+    border-radius: var(--diagram-radius-md);
+    overflow: hidden;
+    transition: all var(--diagram-transition-normal);
+}
+
+.data-card:hover {
+    transform: translateX(4px);
+    box-shadow: var(--diagram-shadow-md);
+}
+
+.data-card-accent {
+    border-left: 4px solid var(--diagram-primary);
+}
+
+.data-card-accent.success {
+    border-left-color: var(--diagram-success);
+    background: linear-gradient(90deg, var(--diagram-success-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.info {
+    border-left-color: var(--diagram-info);
+    background: linear-gradient(90deg, var(--diagram-info-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.warning {
+    border-left-color: var(--diagram-warning);
+    background: linear-gradient(90deg, var(--diagram-warning-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.error {
+    border-left-color: var(--diagram-error);
+    background: linear-gradient(90deg, var(--diagram-error-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.purple {
+    border-left-color: var(--diagram-purple);
+    background: linear-gradient(90deg, var(--diagram-purple-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.pink {
+    border-left-color: var(--diagram-pink);
+    background: linear-gradient(90deg, var(--diagram-pink-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.cyan {
+    border-left-color: var(--diagram-cyan);
+    background: linear-gradient(90deg, var(--diagram-cyan-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-accent.orange {
+    border-left-color: var(--diagram-orange);
+    background: linear-gradient(90deg, var(--diagram-orange-bg) 0%, var(--diagram-bg-secondary) 100%);
+}
+
+.data-card-content {
+    padding: var(--diagram-space-md) var(--diagram-space-lg);
+}
+
+.data-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--diagram-space-sm);
+    margin-bottom: var(--diagram-space-xs);
+}
+
+.data-card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--diagram-text-primary);
+}
+
+.data-card-description {
+    font-size: 0.8rem;
+    color: var(--diagram-text-muted);
+    line-height: 1.5;
+}
+
+/* ============================================
+   BADGE / TAG COMPONENT
+   ============================================ */
+.diagram-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--diagram-space-xs) var(--diagram-space-sm);
+    border-radius: var(--diagram-radius-sm);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.diagram-badge.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--diagram-success-light);
+}
+
+.diagram-badge.info {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--diagram-info-light);
+}
+
+.diagram-badge.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--diagram-warning-light);
+}
+
+.diagram-badge.error {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--diagram-error-light);
+}
+
+.diagram-badge.purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: var(--diagram-purple-light);
+}
+
+.diagram-badge.pink {
+    background: rgba(236, 72, 153, 0.2);
+    color: var(--diagram-pink-light);
+}
+
+.diagram-badge.cyan {
+    background: rgba(6, 182, 212, 0.2);
+    color: var(--diagram-cyan-light);
+}
+
+.diagram-badge.orange {
+    background: rgba(249, 115, 22, 0.2);
+    color: var(--diagram-orange-light);
+}
+
+.diagram-badge.neutral {
+    background: var(--diagram-bg-tertiary);
+    color: var(--diagram-text-secondary);
+}
+
+/* ============================================
+   ARCHITECTURE DIAGRAM
+   ============================================ */
+.architecture-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: var(--diagram-space-lg);
+    width: 100%;
+    max-width: 800px;
+    padding: var(--diagram-space-lg);
+}
+
+.architecture-layer {
+    background: var(--diagram-bg-secondary);
+    border: 1px solid var(--diagram-border);
+    border-radius: var(--diagram-radius-lg);
+    padding: var(--diagram-space-lg);
+    transition: all var(--diagram-transition-normal);
+}
+
+.architecture-layer:hover {
+    border-color: var(--diagram-primary);
+    box-shadow: var(--diagram-shadow-md);
+}
+
+.architecture-layer-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--diagram-text-muted);
+    margin-bottom: var(--diagram-space-md);
+}
+
+.architecture-components {
+    display: flex;
+    gap: var(--diagram-space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ============================================
+   COMPARISON TABLE
+   ============================================ */
+.diagram-comparison {
+    width: 100%;
+    display: grid;
+    gap: var(--diagram-space-md);
+}
+
+.diagram-comparison-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--diagram-space-md);
+    padding: var(--diagram-space-md);
+    background: var(--diagram-bg-secondary);
+    border-radius: var(--diagram-radius-md);
+    border: 1px solid var(--diagram-border);
+    transition: all var(--diagram-transition-normal);
+}
+
+.diagram-comparison-item:hover {
+    background: var(--diagram-bg-elevated);
+    border-color: var(--diagram-border-light);
+}
+
+/* ============================================
+   SVG DIAGRAM STYLES
+   ============================================ */
 svg.state-machine-diagram,
 svg.flowchart-diagram,
 svg.graph-diagram,
@@ -33,39 +515,39 @@ svg.tree-diagram {
     width: 100%;
     max-width: 900px;
     height: auto;
+    filter: drop-shadow(var(--diagram-shadow-sm));
 }
 
-/* ============================================
-   STATE MACHINE DIAGRAM
-   ============================================ */
-
-.state-machine-diagram {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
+/* State Machine Nodes */
 .state-node {
-    fill: #bbdefb;
-    stroke: #1976d2;
+    fill: var(--diagram-bg-elevated);
+    stroke: var(--diagram-primary);
     stroke-width: 2.5;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--diagram-transition-normal);
 }
 
 .state-node:hover {
-    fill: #64b5f6;
-    stroke: #0d47a1;
+    fill: var(--diagram-bg-tertiary);
+    stroke: var(--diagram-primary-light);
     stroke-width: 3;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(var(--diagram-shadow-md));
 }
 
 .state-node.initial {
-    fill: #c8e6c9;
-    stroke: #2e7d32;
+    fill: var(--diagram-success-bg);
+    stroke: var(--diagram-success);
+    stroke-width: 3;
+}
+
+.state-node.final {
+    fill: var(--diagram-error-bg);
+    stroke: var(--diagram-error);
     stroke-width: 3;
 }
 
 .state-node.highlighted {
-    fill: #ffcccc;
-    stroke: #d32f2f;
+    fill: var(--diagram-warning-bg);
+    stroke: var(--diagram-warning);
     stroke-width: 3;
     animation: pulse-state 2s ease-in-out infinite;
 }
@@ -73,419 +555,332 @@ svg.tree-diagram {
 .state-label {
     font-size: 14px;
     font-weight: 600;
-    fill: #1a1a1a;
+    fill: var(--diagram-text-primary);
     pointer-events: none;
 }
 
 .state-description {
     font-size: 11px;
-    fill: #666;
+    fill: var(--diagram-text-muted);
     font-style: italic;
     pointer-events: none;
 }
 
+/* Transition Lines */
 .transition-line {
-    stroke: #2563eb;
+    stroke: var(--diagram-primary);
     stroke-width: 2;
-    transition: stroke-width 0.3s ease;
+    transition: all var(--diagram-transition-fast);
 }
 
 .transition-line:hover {
     stroke-width: 3;
-    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.4));
+    stroke: var(--diagram-primary-light);
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.4));
 }
 
 .transition-label {
     font-size: 12px;
-    fill: #1976d2;
+    fill: var(--diagram-info);
     font-weight: 500;
-    background: white;
-    padding: 2px 6px;
     pointer-events: none;
 }
 
-/* ============================================
-   FLOWCHART DIAGRAM
-   ============================================ */
-
-.flowchart-diagram {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
+/* Flow Nodes */
 .flow-node {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--diagram-transition-normal);
     cursor: default;
 }
 
 .flow-node.process {
-    fill: #bbdefb;
-    stroke: #1976d2;
+    fill: var(--diagram-bg-elevated);
+    stroke: var(--diagram-info);
     stroke-width: 2;
 }
 
 .flow-node.process:hover {
-    fill: #64b5f6;
-    stroke: #0d47a1;
+    fill: var(--diagram-info-bg);
+    stroke: var(--diagram-info-light);
     stroke-width: 2.5;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(var(--diagram-shadow-md));
 }
 
 .flow-node.decision {
-    fill: #fff9c4;
-    stroke: #f57f17;
+    fill: var(--diagram-warning-bg);
+    stroke: var(--diagram-warning);
     stroke-width: 2;
 }
 
 .flow-node.decision:hover {
-    fill: #ffee58;
-    stroke: #f57f17;
+    fill: rgba(245, 158, 11, 0.25);
+    stroke: var(--diagram-warning-light);
     stroke-width: 2.5;
-    filter: drop-shadow(0 4px 8px rgba(245, 127, 23, 0.3));
 }
 
 .flow-node.terminal {
-    fill: #c8e6c9;
-    stroke: #2e7d32;
+    fill: var(--diagram-success-bg);
+    stroke: var(--diagram-success);
     stroke-width: 2;
 }
 
 .flow-node.terminal:hover {
-    fill: #a5d6a7;
-    stroke: #1b5e20;
+    fill: rgba(16, 185, 129, 0.25);
+    stroke: var(--diagram-success-light);
     stroke-width: 2.5;
-    filter: drop-shadow(0 4px 8px rgba(46, 125, 50, 0.3));
 }
 
-.flow-node.highlighted {
-    fill: #ffcccc;
-    stroke: #d32f2f;
-    stroke-width: 3;
-    animation: pulse-node 1.5s ease-in-out infinite;
+/* Graph Nodes */
+.graph-node {
+    transition: all var(--diagram-transition-normal);
+    cursor: default;
 }
 
-.flow-edge {
-    stroke: #2563eb;
+.graph-node.default {
+    fill: var(--diagram-bg-elevated);
+    stroke: var(--diagram-primary);
     stroke-width: 2;
-    transition: stroke-width 0.3s ease;
 }
 
-.flow-edge:hover {
+.graph-node.default:hover {
+    fill: var(--diagram-bg-tertiary);
+    stroke: var(--diagram-primary-light);
     stroke-width: 2.5;
-    filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+    filter: drop-shadow(var(--diagram-shadow-md));
 }
 
+.graph-node.start {
+    fill: var(--diagram-success-bg);
+    stroke: var(--diagram-success);
+    stroke-width: 2.5;
+}
+
+.graph-node.end {
+    fill: var(--diagram-error-bg);
+    stroke: var(--diagram-error);
+    stroke-width: 2.5;
+}
+
+/* Graph Edges */
+.graph-edge {
+    stroke: var(--diagram-primary);
+    stroke-width: 2;
+    transition: all var(--diagram-transition-fast);
+}
+
+.graph-edge:hover {
+    stroke-width: 2.5;
+    stroke: var(--diagram-primary-light);
+}
+
+.graph-edge.cycle {
+    stroke: var(--diagram-error);
+    stroke-width: 2.5;
+    stroke-dasharray: 5, 5;
+}
+
+/* Tree Nodes */
+.tree-node {
+    transition: all var(--diagram-transition-normal);
+    cursor: default;
+}
+
+.tree-node.default {
+    fill: var(--diagram-bg-elevated);
+    stroke: var(--diagram-info);
+    stroke-width: 2;
+}
+
+.tree-node.default:hover {
+    fill: var(--diagram-info-bg);
+    stroke: var(--diagram-info-light);
+    stroke-width: 2.5;
+    filter: drop-shadow(var(--diagram-shadow-md));
+}
+
+.tree-node.root {
+    fill: var(--diagram-success-bg);
+    stroke: var(--diagram-success);
+    stroke-width: 2.5;
+}
+
+.tree-node.leaf {
+    fill: var(--diagram-warning-bg);
+    stroke: var(--diagram-warning);
+    stroke-width: 2;
+}
+
+.tree-edge {
+    stroke: var(--diagram-border-light);
+    stroke-width: 2;
+    transition: stroke-width var(--diagram-transition-fast);
+}
+
+.tree-edge:hover {
+    stroke: var(--diagram-text-muted);
+    stroke-width: 2.5;
+}
+
+/* Labels */
+.node-label,
 .edge-label,
-.node-label {
+.graph-node-label,
+.tree-node-label,
+.component-label {
     font-size: 13px;
     font-weight: 500;
-    fill: #1a1a1a;
+    fill: var(--diagram-text-primary);
     pointer-events: none;
     text-anchor: middle;
 }
 
 /* ============================================
-   GRAPH DIAGRAM
-   ============================================ */
-
-.graph-diagram {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.graph-edge {
-    stroke: #2563eb;
-    stroke-width: 2;
-    transition: all 0.3s ease;
-}
-
-.graph-edge:hover {
-    stroke-width: 2.5;
-    stroke: #1d4ed8;
-    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.4));
-}
-
-.graph-edge.cycle {
-    stroke: #d32f2f;
-    stroke-width: 2.5;
-    stroke-dasharray: 5, 5;
-}
-
-.graph-edge-label {
-    font-size: 11px;
-    fill: #1976d2;
-    font-weight: 500;
-    pointer-events: none;
-}
-
-.graph-node {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: default;
-}
-
-.graph-node.default {
-    fill: #bbdefb;
-    stroke: #1976d2;
-    stroke-width: 2;
-}
-
-.graph-node.default:hover {
-    fill: #64b5f6;
-    stroke: #0d47a1;
-    stroke-width: 2.5;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-.graph-node.start {
-    fill: #c8e6c9;
-    stroke: #2e7d32;
-    stroke-width: 2.5;
-}
-
-.graph-node.end {
-    fill: #ffcccc;
-    stroke: #d32f2f;
-    stroke-width: 2.5;
-}
-
-.graph-node.in-cycle {
-    fill: #ffcccc;
-    stroke: #d32f2f;
-    stroke-width: 3;
-    animation: pulse-cycle 1.5s ease-in-out infinite;
-}
-
-.graph-node-label {
-    font-size: 13px;
-    font-weight: 600;
-    fill: #1a1a1a;
-    pointer-events: none;
-}
-
-/* ============================================
-   ARCHITECTURE DIAGRAM
-   ============================================ */
-
-.architecture-diagram {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.architecture-layer {
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    stroke: #ccc;
-    stroke-width: 1;
-}
-
-.architecture-layer:hover {
-    opacity: 0.9;
-}
-
-.layer-label {
-    font-size: 14px;
-    font-weight: 700;
-    fill: #333;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.component-box {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: default;
-}
-
-.component-box.default {
-    fill: #bbdefb;
-    stroke: #1976d2;
-    stroke-width: 2;
-}
-
-.component-box.default:hover {
-    fill: #64b5f6;
-    stroke: #0d47a1;
-    stroke-width: 2.5;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
-    transform-origin: center;
-}
-
-.component-box.service {
-    fill: #c8e6c9;
-    stroke: #2e7d32;
-    stroke-width: 2;
-}
-
-.component-box.database {
-    fill: #ffe0b2;
-    stroke: #e65100;
-    stroke-width: 2;
-}
-
-.component-box.message-broker {
-    fill: #f8bbd0;
-    stroke: #c2185b;
-    stroke-width: 2;
-}
-
-.component-label {
-    font-size: 12px;
-    font-weight: 600;
-    fill: #1a1a1a;
-    pointer-events: none;
-}
-
-/* ============================================
-   TREE DIAGRAM
-   ============================================ */
-
-.tree-diagram {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.tree-edge {
-    stroke: #999;
-    stroke-width: 2;
-    transition: stroke-width 0.3s ease;
-}
-
-.tree-edge:hover {
-    stroke: #666;
-    stroke-width: 2.5;
-}
-
-.tree-node {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: default;
-}
-
-.tree-node.default {
-    fill: #bbdefb;
-    stroke: #1976d2;
-    stroke-width: 2;
-}
-
-.tree-node.default:hover {
-    fill: #64b5f6;
-    stroke: #0d47a1;
-    stroke-width: 2.5;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
-}
-
-.tree-node.root {
-    fill: #c8e6c9;
-    stroke: #2e7d32;
-    stroke-width: 2.5;
-}
-
-.tree-node.leaf {
-    fill: #fff9c4;
-    stroke: #f57f17;
-    stroke-width: 2;
-}
-
-.tree-node-label {
-    font-size: 12px;
-    font-weight: 600;
-    fill: #1a1a1a;
-    pointer-events: none;
-}
-
-/* ============================================
    ANIMATIONS
    ============================================ */
+@keyframes diagram-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 @keyframes pulse-state {
     0%, 100% {
-        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.4));
+        filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0.4));
     }
     50% {
-        filter: drop-shadow(0 0 8px rgba(211, 47, 47, 0.8));
+        filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.8));
     }
 }
 
-@keyframes pulse-node {
+@keyframes arrow-pulse {
     0%, 100% {
-        stroke-width: 3;
-        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.3));
+        opacity: 0.6;
+        transform: translateY(0);
     }
     50% {
-        stroke-width: 4;
-        filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.7));
+        opacity: 1;
+        transform: translateY(2px);
     }
 }
 
-@keyframes pulse-cycle {
+@keyframes glow-pulse {
     0%, 100% {
-        filter: drop-shadow(0 0 0 rgba(211, 47, 47, 0.4));
+        box-shadow: var(--diagram-shadow-md);
     }
     50% {
-        filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.9));
+        box-shadow: var(--diagram-shadow-glow);
     }
 }
 
-@keyframes slide-in-left {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.diagram-gap-sm { gap: var(--diagram-space-sm); }
+.diagram-gap-md { gap: var(--diagram-space-md); }
+.diagram-gap-lg { gap: var(--diagram-space-lg); }
+.diagram-gap-xl { gap: var(--diagram-space-xl); }
 
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+.diagram-p-sm { padding: var(--diagram-space-sm); }
+.diagram-p-md { padding: var(--diagram-space-md); }
+.diagram-p-lg { padding: var(--diagram-space-lg); }
+.diagram-p-xl { padding: var(--diagram-space-xl); }
 
-.diagram-container {
-    animation: fade-in 0.5s ease-out;
-}
+.diagram-text-center { text-align: center; }
+.diagram-text-left { text-align: left; }
+.diagram-text-right { text-align: right; }
+
+.diagram-flex { display: flex; }
+.diagram-flex-col { flex-direction: column; }
+.diagram-flex-wrap { flex-wrap: wrap; }
+.diagram-items-center { align-items: center; }
+.diagram-justify-center { justify-content: center; }
+.diagram-justify-between { justify-content: space-between; }
 
 /* ============================================
    RESPONSIVE STYLES
    ============================================ */
-
 @media (max-width: 768px) {
+    :root {
+        --diagram-space-lg: 1rem;
+        --diagram-space-xl: 1.5rem;
+    }
+
     .diagram-container {
-        margin: 1.5rem 0;
-        padding: 1rem;
+        margin: var(--diagram-space-lg) 0;
+        padding: var(--diagram-space-md);
+        border-radius: var(--diagram-radius-md);
+    }
+
+    .flow-box {
+        min-width: 120px;
+        padding: var(--diagram-space-sm) var(--diagram-space-md);
+    }
+
+    .flow-box-title {
+        font-size: 0.9rem;
+    }
+
+    .flow-box-subtitle {
+        font-size: 0.7rem;
+    }
+
+    .flow-row {
+        gap: var(--diagram-space-md);
     }
 
     .state-label,
-    .edge-label,
     .node-label,
+    .edge-label,
     .graph-node-label,
-    .tree-node-label,
-    .component-label {
+    .tree-node-label {
         font-size: 11px;
     }
 
-    .state-node,
-    .flow-node,
-    .graph-node,
-    .tree-node {
-        stroke-width: 1.5;
-    }
-
-    .transition-line,
-    .flow-edge,
-    .graph-edge,
-    .tree-edge {
-        stroke-width: 1.5;
+    .data-card-content {
+        padding: var(--diagram-space-sm) var(--diagram-space-md);
     }
 }
 
 /* ============================================
    PRINT STYLES
    ============================================ */
-
 @media print {
     .diagram-container {
         page-break-inside: avoid;
         box-shadow: none;
-        border: 1px solid #ddd;
+        border: 2px solid #333;
+        background: white;
     }
+
+    .flow-box,
+    .data-card,
+    .diagram-card {
+        box-shadow: none;
+        border-width: 2px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus states for keyboard navigation */
+.flow-box:focus-visible,
+.data-card:focus-visible,
+.diagram-card:focus-visible {
+    outline: 2px solid var(--diagram-primary);
+    outline-offset: 2px;
 }

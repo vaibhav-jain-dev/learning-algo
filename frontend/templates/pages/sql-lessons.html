@@ -336,103 +336,120 @@ SELECT column1 AS alias_name FROM table_name;</code></pre>
                     <p>When you run a query, the database creates an <strong>execution plan</strong> to determine the most efficient way to retrieve data.</p>
 
                     <!-- Query Plan Flow Diagram -->
-                    <div class="query-plan-diagram" style="background: linear-gradient(135deg, #2d3748 0%, #3b4c63 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
-                        <h4 style="color: #4ecdc4; margin-bottom: 1rem;">Query Execution Flow: SELECT * FROM requests WHERE status = 'completed'</h4>
-                        <div style="display: flex; flex-direction: column; gap: 1rem; font-family: system-ui, sans-serif;">
+                    <div class="diagram-container compact">
+                        <div class="flow-diagram" style="max-width: 800px;">
+                            <h4 style="color: var(--diagram-cyan); margin-bottom: 1rem; font-size: 1rem;">Query Execution Flow: SELECT * FROM requests WHERE status = 'completed'</h4>
+
                             <!-- Step 1: Parser -->
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; min-width: 140px; text-align: center;">
-                                    <div style="font-weight: 700;">1. Parser</div>
-                                    <div style="font-size: 0.75rem; opacity: 0.8;">Syntax Check</div>
+                            <div class="flow-row" style="justify-content: flex-start;">
+                                <div class="flow-box primary" style="min-width: 140px;">
+                                    <div class="flow-box-title">1. Parser</div>
+                                    <div class="flow-box-subtitle">Syntax Check</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
-                                    SQL → Parse Tree → Validates syntax & table/column names exist
+                                <div class="data-card" style="flex: 1;">
+                                    <div class="data-card-content">
+                                        <div class="data-card-description">SQL → Parse Tree → Validates syntax & table/column names exist</div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Step 2: Optimizer -->
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; min-width: 140px; text-align: center;">
-                                    <div style="font-weight: 700;">2. Optimizer</div>
-                                    <div style="font-size: 0.75rem; opacity: 0.8;">Plan Selection</div>
+                            <div class="flow-row" style="justify-content: flex-start;">
+                                <div class="flow-box pink" style="min-width: 140px;">
+                                    <div class="flow-box-title">2. Optimizer</div>
+                                    <div class="flow-box-subtitle">Plan Selection</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
-                                    Evaluates multiple plans → Estimates costs → Picks cheapest plan
+                                <div class="data-card" style="flex: 1;">
+                                    <div class="data-card-content">
+                                        <div class="data-card-description">Evaluates multiple plans → Estimates costs → Picks cheapest plan</div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Step 3: Executor with Index Decision -->
-                            <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                                <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; min-width: 140px; text-align: center;">
-                                    <div style="font-weight: 700;">3. Executor</div>
-                                    <div style="font-size: 0.75rem; opacity: 0.8;">Data Access</div>
+                            <div class="flow-row" style="justify-content: flex-start; align-items: flex-start;">
+                                <div class="flow-box success" style="min-width: 140px;">
+                                    <div class="flow-box-title">3. Executor</div>
+                                    <div class="flow-box-subtitle">Data Access</div>
                                 </div>
-                                <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <div style="flex: 1; padding: 0.75rem; background: #1a472a; border: 2px solid #38ef7d; border-radius: 6px;">
-                                            <div style="color: #38ef7d; font-weight: 600; font-size: 0.85rem;">✓ Index Scan (Fast)</div>
-                                            <div style="color: #a0aec0; font-size: 0.75rem;">If index on 'status' exists: O(log n) lookup</div>
+                                <div style="flex: 1; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                                    <div class="data-card data-card-accent success" style="flex: 1; min-width: 200px;">
+                                        <div class="data-card-content">
+                                            <div class="data-card-title" style="color: var(--diagram-success-light);">✓ Index Scan (Fast)</div>
+                                            <div class="data-card-description">If index on 'status' exists: O(log n) lookup</div>
                                         </div>
-                                        <div style="flex: 1; padding: 0.75rem; background: #4a1a1a; border: 2px solid #ff6b6b; border-radius: 6px;">
-                                            <div style="color: #ff6b6b; font-weight: 600; font-size: 0.85rem;">✗ Seq Scan (Slow)</div>
-                                            <div style="color: #a0aec0; font-size: 0.75rem;">No index: Full table scan O(n)</div>
+                                    </div>
+                                    <div class="data-card data-card-accent error" style="flex: 1; min-width: 200px;">
+                                        <div class="data-card-content">
+                                            <div class="data-card-title" style="color: var(--diagram-error-light);">✗ Seq Scan (Slow)</div>
+                                            <div class="data-card-description">No index: Full table scan O(n)</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Step 4: Results -->
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: #1e293b; min-width: 140px; text-align: center;">
-                                    <div style="font-weight: 700;">4. Results</div>
-                                    <div style="font-size: 0.75rem; opacity: 0.8;">Return Data</div>
+                            <div class="flow-row" style="justify-content: flex-start;">
+                                <div class="flow-box warning" style="min-width: 140px;">
+                                    <div class="flow-box-title">4. Results</div>
+                                    <div class="flow-box-subtitle">Return Data</div>
                                 </div>
-                                <div style="flex: 1; padding: 0.5rem; background: #3d4a5c; border-radius: 6px; font-size: 0.8rem; color: #a0aec0;">
-                                    Rows matching criteria → Format output → Return to client
+                                <div class="data-card" style="flex: 1;">
+                                    <div class="data-card-content">
+                                        <div class="data-card-description">Rows matching criteria → Format output → Return to client</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Index Utilization Visual -->
-                    <div class="index-diagram" style="background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%); border: 1px solid #4b5563; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
-                        <h4 style="color: #f093fb; margin-bottom: 1rem;">How Indexes Speed Up Queries</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.85rem;">
-                            <!-- Without Index -->
-                            <div>
-                                <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 0.5rem;">❌ Without Index (Sequential Scan)</div>
-                                <div style="background: #2d3748; border-radius: 8px; padding: 1rem;">
-                                    <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.75rem;">
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row1</span>
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row2</span>
-                                        <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">✓ row3</span>
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row4</span>
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row5</span>
-                                        <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">✓ row6</span>
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">...</span>
-                                        <span style="background: #374151; padding: 0.25rem 0.5rem; border-radius: 4px; color: #9ca3af;">row1M</span>
-                                    </div>
-                                    <div style="color: #ff6b6b; font-size: 0.75rem;">Must check ALL 1M rows → O(n) = slow!</div>
-                                </div>
-                            </div>
-                            <!-- With Index -->
-                            <div>
-                                <div style="color: #38ef7d; font-weight: 600; margin-bottom: 0.5rem;">✅ With Index (B-Tree Lookup)</div>
-                                <div style="background: #2d3748; border-radius: 8px; padding: 1rem;">
-                                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;">
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <span style="color: #4ecdc4;">Index:</span>
-                                            <span style="background: #1e3a5f; padding: 0.25rem 0.5rem; border-radius: 4px; color: #4ecdc4;">'completed' → [3, 6, 42, 99, ...]</span>
-                                        </div>
-                                        <div style="color: #a0aec0;">↓ Direct jump to matching rows</div>
-                                        <div style="display: flex; gap: 0.25rem;">
-                                            <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">row3</span>
-                                            <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">row6</span>
-                                            <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">row42</span>
-                                            <span style="background: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; color: #34d399;">row99</span>
+                    <div class="diagram-container compact">
+                        <div style="width: 100%; max-width: 800px;">
+                            <h4 style="color: var(--diagram-pink); margin-bottom: 1rem; font-size: 1rem;">How Indexes Speed Up Queries</h4>
+                            <div class="diagram-comparison">
+                                <!-- Without Index -->
+                                <div class="diagram-comparison-item">
+                                    <div>
+                                        <div style="color: var(--diagram-error-light); font-weight: 600; margin-bottom: 0.75rem;">❌ Without Index (Sequential Scan)</div>
+                                        <div class="data-card">
+                                            <div class="data-card-content">
+                                                <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.75rem;">
+                                                    <span class="diagram-badge neutral">row1</span>
+                                                    <span class="diagram-badge neutral">row2</span>
+                                                    <span class="diagram-badge success">✓ row3</span>
+                                                    <span class="diagram-badge neutral">row4</span>
+                                                    <span class="diagram-badge neutral">row5</span>
+                                                    <span class="diagram-badge success">✓ row6</span>
+                                                    <span class="diagram-badge neutral">...</span>
+                                                    <span class="diagram-badge neutral">row1M</span>
+                                                </div>
+                                                <div style="color: var(--diagram-error-light); font-size: 0.8rem;">Must check ALL 1M rows → O(n) = slow!</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div style="color: #38ef7d; font-size: 0.75rem;">Jump directly to matches → O(log n) = fast!</div>
+                                    <!-- With Index -->
+                                    <div>
+                                        <div style="color: var(--diagram-success-light); font-weight: 600; margin-bottom: 0.75rem;">✅ With Index (B-Tree Lookup)</div>
+                                        <div class="data-card">
+                                            <div class="data-card-content">
+                                                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                                        <span style="color: var(--diagram-cyan);">Index:</span>
+                                                        <span class="diagram-badge info">'completed' → [3, 6, 42, 99, ...]</span>
+                                                    </div>
+                                                    <div style="color: var(--diagram-text-muted);">↓ Direct jump to matching rows</div>
+                                                    <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                                                        <span class="diagram-badge success">row3</span>
+                                                        <span class="diagram-badge success">row6</span>
+                                                        <span class="diagram-badge success">row42</span>
+                                                        <span class="diagram-badge success">row99</span>
+                                                    </div>
+                                                </div>
+                                                <div style="color: var(--diagram-success-light); font-size: 0.8rem;">Jump directly to matches → O(log n) = fast!</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
