@@ -472,7 +472,7 @@ async function generatePdf() {
 
         // PDF options optimized for A4
         const opt = {
-            margin: [15, 15, 15, 15], // 15mm margins on all sides
+            margin: [15, 15, 20, 15], // top, left, bottom, right - extra bottom for page number
             filename: `${selectedTopic.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf`,
             image: {
                 type: 'jpeg',
@@ -500,8 +500,36 @@ async function generatePdf() {
             }
         };
 
-        // Generate PDF
-        await html2pdf().set(opt).from(pdfContainer).save();
+        // Generate PDF with page numbers
+        const pdfInstance = html2pdf().set(opt).from(pdfContainer);
+
+        // Add page numbers after PDF is generated
+        await pdfInstance.toPdf().get('pdf').then(function(pdf) {
+            const totalPages = pdf.internal.getNumberOfPages();
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(9);
+                pdf.setTextColor(128, 128, 128);
+
+                // Add page number at bottom center
+                const pageText = `Page ${i} of ${totalPages}`;
+                const textWidth = pdf.getStringUnitWidth(pageText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+                const xPos = (pageWidth - textWidth) / 2;
+                pdf.text(pageText, xPos, pageHeight - 10);
+
+                // Add topic name at bottom left (optional footer)
+                pdf.setFontSize(8);
+                pdf.text(selectedTopic.name, 15, pageHeight - 10);
+
+                // Add "DSAlgo" at bottom right
+                const rightText = 'DSAlgo Learning Platform';
+                const rightTextWidth = pdf.getStringUnitWidth(rightText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+                pdf.text(rightText, pageWidth - rightTextWidth - 15, pageHeight - 10);
+            }
+        }).save();
 
         // Remove temporary container
         document.body.removeChild(pdfContainer);
