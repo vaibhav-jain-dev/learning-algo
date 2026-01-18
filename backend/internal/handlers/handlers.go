@@ -393,6 +393,12 @@ func (h *Handlers) Stats(c *fiber.Ctx) error {
 	return c.JSON(h.execManager.Stats())
 }
 
+// GetAllTopics returns all topics organized by category for PDF export
+func (h *Handlers) GetAllTopics(c *fiber.Ctx) error {
+	categories := h.topicIndexer.GetAllCategories()
+	return c.JSON(categories)
+}
+
 // DebugTopics returns debug info about topics
 func (h *Handlers) DebugTopics(c *fiber.Ctx) error {
 	cwd, _ := os.Getwd()

@@ -209,6 +209,7 @@ func main() {
 	api.Get("/execution/:id", h.GetExecution)
 	api.Post("/execution/:id/stop", h.StopExecution)
 	api.Get("/stats", h.Stats)
+	api.Get("/topics", h.GetAllTopics)
 	api.Get("/debug/topics", h.DebugTopics)
 
 	// HTMX partial routes
