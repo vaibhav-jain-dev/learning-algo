@@ -643,21 +643,416 @@ class SubredditRouter:
 
 ---
 
+## Interview Deep Dive Questions
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff4500;">
+
+### 1. "Why not show real-time vote counts?"
+
+<div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What They're Probing**: Understanding of eventual consistency trade-offs, performance at scale, and user experience pragmatism.
+
+**Strong Answer**:
+> "Real-time vote counts at Reddit's scale (2B votes/day) would require synchronous writes and invalidation across all cache layers for every vote. The user doesn't actually need millisecond accuracy - seeing '1.2k upvotes' vs '1,247 upvotes' doesn't change behavior. We can batch vote aggregations every 100ms, giving us 10x write throughput while maintaining a 'feels real-time' experience. The key insight is that votes are high-write, low-consistency-requirement data - perfect for eventual consistency."
+
+**When Simpler Works**:
+> "At 10K users, store vote counts directly in the post row. A PostgreSQL `UPDATE posts SET score = score + 1` with row-level locking handles hundreds of concurrent votes fine. Add Redis caching when you hit 1000+ votes/second on hot posts."
+
+</div>
+
+### 2. "How does the hot ranking algorithm actually work?"
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What They're Probing**: Algorithm design thinking, understanding of decay functions, and ability to explain complex math simply.
+
+**Strong Answer**:
+> "Reddit's hot score combines logarithmic vote scaling with linear time decay. The formula `log10(score) + (timestamp / 45000)` means a post needs 10x more votes to overcome 12.5 hours of age. This creates natural content cycling - viral content rises fast but decays predictably. The logarithm prevents vote brigading from dominating (10,000 votes isn't 10x better than 1,000). I'd precompute hot scores on write, store in a sorted set, and recalculate periodically for older posts."
+
+**When Simpler Works**:
+> "For a small community forum, `ORDER BY (upvotes - downvotes) * 0.5 + EXTRACT(EPOCH FROM created_at) / 86400` gives you decent hot ranking. Add a materialized view refreshed every 5 minutes. No Kafka, no precomputation needed until you're generating 10K+ posts/day."
+
+</div>
+
+### 3. "Why separate read and write paths for voting?"
+
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What They're Probing**: CQRS understanding, performance optimization strategies, and recognizing when complexity pays off.
+
+**Strong Answer**:
+> "Votes have asymmetric read/write patterns: writes are bursty (viral posts), reads are constant (every page view shows scores). CQRS lets us optimize each path independently. Writes go to Kafka for buffering and batch processing - we can absorb 100K vote spikes without database pressure. Reads come from Redis with eventual consistency. The separation also enables different scaling: add more Kafka partitions for write throughput, add Redis replicas for read capacity. The key is the write path updates the read model asynchronously."
+
+**When Simpler Works**:
+> "Below 1M monthly users, a single PostgreSQL instance handles both paths. Use `SELECT ... FOR UPDATE SKIP LOCKED` for vote deduplication, and application-level caching with a 30-second TTL. The complexity of CQRS adds operational overhead that isn't worth it until you're seeing clear database contention."
+
+</div>
+
+### 4. "How do you handle the 'thundering herd' on viral posts?"
+
+<div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What They're Probing**: Cache stampede prevention, rate limiting strategies, and graceful degradation thinking.
+
+**Strong Answer**:
+> "Three-layer defense: First, probabilistic cache refresh - instead of all requests hitting DB when cache expires, use `if random() < 0.01 and ttl < 10s: refresh_async()`. Second, request coalescing - use a distributed lock so only one request fetches from DB while others wait on the same promise. Third, stale-while-revalidate - serve slightly stale data while refreshing in background. For truly viral posts (100K+ concurrent), we circuit-break to sampling mode: show top 200 comments only, disable real-time updates, and use edge caching with 30-second TTL."
+
+**When Simpler Works**:
+> "For a forum with occasional popular threads, simple cache-aside with mutex is enough: `if cache miss: if acquire_lock(): fetch_and_cache() else: wait_for_cache()`. The singleflight pattern in Go or similar constructs handle this elegantly without distributed locks."
+
+</div>
+
+### 5. "Why use Cassandra for votes instead of PostgreSQL?"
+
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What They're Probing**: Database selection rationale, understanding of write patterns, and cost-benefit analysis.
+
+**Strong Answer**:
+> "Votes are append-heavy, time-series-like data with a simple access pattern: write once, read by user+target compound key. Cassandra excels here because: 1) Linear write scaling - add nodes for more throughput without sharding complexity. 2) Tunable consistency - we can use LOCAL_QUORUM for writes and ONE for reads. 3) Natural TTL support for vote history cleanup. 4) No single-point-of-failure - important when votes are happening 24/7. PostgreSQL would require manual sharding and has write amplification from its MVCC model that hurts at this scale."
+
+**When Simpler Works**:
+> "PostgreSQL with a partitioned votes table (by month) handles 10M votes/day comfortably. Use `INSERT ... ON CONFLICT DO UPDATE` for idempotency. The operational simplicity of one database type beats Cassandra's performance until you're genuinely hitting PostgreSQL's write limits. I'd consider Cassandra only after seeing sustained 5K+ writes/second."
+
+</div>
+
+</div>
+
+---
+
+## Why This Technology?
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### Decision Matrix
+
+| Decision Point | Options Considered | Chosen | Rationale |
+|----------------|-------------------|--------|-----------|
+| **Vote Storage** | PostgreSQL, DynamoDB, Cassandra | Cassandra (scale) / PostgreSQL (start) | Write throughput at scale; start simple |
+| **Comment Threading** | Adjacency List, Nested Sets, Closure Table, Materialized Path | Materialized Path | Balance of read/write performance; easy depth queries |
+| **Feed Ranking** | Real-time calculation, Pre-computed scores, Hybrid | Hybrid with Redis Sorted Sets | Hot scores pre-computed on write; personalization at read time |
+| **Caching Layer** | Memcached, Redis, Redis Cluster | Redis Cluster | Sorted sets for feeds, pub/sub for real-time, Lua for atomic ops |
+| **Search** | PostgreSQL FTS, Elasticsearch, Algolia | Elasticsearch | Faceted search, relevance tuning, horizontal scaling |
+| **Event Streaming** | RabbitMQ, Kafka, AWS Kinesis | Kafka | Replay capability, partitioning by subreddit, exactly-once semantics |
+
+### Technology Justification Deep Dive
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**Why Materialized Path for Comments?**
+
+```
+Alternatives Analysis:
+├── Adjacency List (parent_id only)
+│   ├── ✅ Simple writes
+│   ├── ❌ Recursive queries for tree loading (N+1 or CTE)
+│   └── Good for: < 100K comments, shallow nesting
+│
+├── Nested Sets (left/right integers)
+│   ├── ❌ Expensive writes (rebalancing)
+│   ├── ✅ Single query for subtrees
+│   └── Good for: Read-heavy, rarely-changing trees
+│
+├── Closure Table (ancestor/descendant pairs)
+│   ├── ❌ O(depth) storage overhead
+│   ├── ✅ Fast subtree queries
+│   └── Good for: Deep trees with frequent subtree operations
+│
+└── Materialized Path ("/1/2/3/")  ← CHOSEN
+    ├── ✅ Single-query subtree (LIKE 'path%')
+    ├── ✅ Easy depth calculation (count slashes)
+    ├── ✅ No joins needed
+    └── Trade-off: Path length limits, string operations
+```
+
+</div>
+
+</div>
+
+---
+
+## When Simpler Solutions Work
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+
+### PostgreSQL JSONB for Comments
+
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**When It Works**: Under 1M total comments, posts with < 500 comments average
+
+```sql
+-- Store entire comment tree as JSONB
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    content TEXT,
+    comments JSONB DEFAULT '[]',  -- Denormalized tree
+    comment_count INT DEFAULT 0
+);
+
+-- Fetch post with all comments in one query
+SELECT * FROM posts WHERE id = 123;
+
+-- Add comment (PostgreSQL 14+)
+UPDATE posts
+SET comments = jsonb_insert(
+    comments,
+    '{0,replies,0}',  -- Path to insert
+    '{"author": "user1", "text": "Great post!", "replies": []}'
+)
+WHERE id = 123;
+```
+
+**Why It Breaks**: JSONB updates rewrite the entire column. At 500+ comments, you're moving megabytes per comment. Switch to normalized tables with materialized path when you see post sizes exceeding 100KB regularly.
+
+</div>
+
+### When You Don't Need Redis for Votes
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**When It Works**: Under 100K daily active users, < 1M votes/day
+
+```sql
+-- Votes directly in PostgreSQL
+CREATE TABLE votes (
+    user_id INT,
+    post_id INT,
+    vote_type SMALLINT,  -- 1 or -1
+    PRIMARY KEY (user_id, post_id)
+);
+
+-- Atomic vote with score update
+WITH vote_change AS (
+    INSERT INTO votes (user_id, post_id, vote_type)
+    VALUES (123, 456, 1)
+    ON CONFLICT (user_id, post_id) DO UPDATE
+    SET vote_type = EXCLUDED.vote_type
+    RETURNING
+        vote_type - COALESCE(
+            (SELECT vote_type FROM votes WHERE user_id = 123 AND post_id = 456),
+            0
+        ) as delta
+)
+UPDATE posts SET score = score + (SELECT delta FROM vote_change)
+WHERE id = 456;
+```
+
+**Why It Breaks**: Row-level locks on hot posts cause contention. When you see `lock wait` times exceeding 50ms on popular posts, introduce Redis for optimistic counting with async reconciliation.
+
+</div>
+
+### Simpler Alternatives Reference
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+| Full Solution | Simpler Alternative | Switch When |
+|--------------|---------------------|-------------|
+| Kafka + Vote Aggregator | PostgreSQL triggers | > 5K votes/second sustained |
+| Elasticsearch | PostgreSQL pg_trgm + GIN | > 10M searchable posts |
+| Redis Sorted Sets for feeds | Materialized views | > 1M feed generations/day |
+| Cassandra for votes | Partitioned PostgreSQL | > 50M votes/day |
+| CDN + Edge caching | Nginx proxy_cache | > 10K requests/second |
+| Microservices | Modular monolith | Team > 20 engineers |
+
+</div>
+
+### The $300/month Forum
+
+<div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**Scenario**: 50K monthly users, 1K posts/day, 10K comments/day
+
+```
+Architecture:
+├── Single $150/month managed PostgreSQL (db.t3.medium)
+│   ├── Posts, comments, votes, users - all in one DB
+│   ├── Materialized view for hot feed (refresh every 5 min)
+│   └── pg_trgm extension for search
+│
+├── $100/month application server (2 vCPU, 4GB RAM)
+│   ├── Rails/Django/Next.js monolith
+│   ├── In-process caching (Rails.cache / Django cache)
+│   └── Background jobs for email, notifications
+│
+├── $50/month Redis (cache.t3.micro)
+│   ├── Session storage
+│   ├── Rate limiting
+│   └── Hot post cache
+│
+└── Cloudflare Free Tier
+    ├── CDN for static assets
+    └── Basic DDoS protection
+
+Performance Expectations:
+- 500 concurrent users: No problem
+- 100ms average response time
+- Search across 100K posts: < 200ms
+- Comment threads 1000 deep: Works with recursive CTE
+```
+
+**Growth Triggers**:
+- Database CPU > 70% sustained → Add read replica
+- Application memory > 3GB → Upgrade or add instance
+- Redis hit rate < 80% → Increase cache size
+- Search latency > 500ms → Consider Elasticsearch
+
+</div>
+
+</div>
+</div>
+
+---
+
+## Trade-off Analysis & Mitigation
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### Core Trade-offs
+
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+| Trade-off | Choice Made | What We Lose | Mitigation |
+|-----------|-------------|--------------|------------|
+| **Vote Consistency** | Eventual (100ms lag) | Real-time accuracy | Optimistic UI updates; reconcile on refresh |
+| **Comment Loading** | Lazy load children | Full tree view | "Load more replies" with prefetch hints |
+| **Feed Freshness** | 60s cache TTL | Instant new post visibility | WebSocket push for subscribed subreddits |
+| **Search Indexing** | Async (5-30s delay) | Immediate searchability | Show "Post submitted" with direct link |
+| **Media Processing** | Async transcode | Immediate media display | Progressive loading with blur placeholder |
+
+</div>
+
+### Mitigation Strategies Deep Dive
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+```
+EVENTUAL CONSISTENCY MITIGATION
+================================
+
+Problem: User votes, refreshes, doesn't see their vote
+
+Solutions (layered):
+├── 1. Optimistic UI
+│   └── Immediately show vote in client state
+│
+├── 2. Write-through to session
+│   └── Store user's recent votes in Redis session
+│   └── Merge with server response: user_votes ∪ cached_votes
+│
+├── 3. Read-your-writes consistency
+│   └── After write, read from primary for 5 seconds
+│   └── Cookie: "last_write_ts=1234567890"
+│
+└── 4. Sticky sessions for hot content
+    └── Route user to same cache node for 60s
+    └── Ensures they see their own writes
+
+CACHE INVALIDATION STRATEGY
+===========================
+
+Problem: Stale feeds, outdated scores, phantom content
+
+Approach: Event-driven selective invalidation
+
+post.created →
+  ├── Invalidate subreddit feed cache
+  ├── Invalidate author's profile cache
+  └── Queue for follower feed fan-out
+
+post.voted →
+  ├── Update score in sorted set (not invalidate)
+  └── Rerank only if score crosses threshold
+
+comment.created →
+  ├── Increment post.comment_count (atomic)
+  ├── Invalidate post detail cache
+  └── Don't touch feed caches (count is denormalized)
+```
+
+</div>
+
+### Failure Modes & Recovery
+
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+| Failure | Impact | Detection | Recovery |
+|---------|--------|-----------|----------|
+| Redis cluster down | No caching, DB overload | Health checks, latency spike | Circuit breaker → serve stale, shed load |
+| Kafka lag > 10s | Vote counts delayed | Consumer lag metrics | Scale consumers, increase batch size |
+| PostgreSQL replica lag | Stale reads | Replication lag monitor | Route to primary, alert on-call |
+| S3 unavailable | No media | 5xx from CloudFront | Serve placeholder, queue retry |
+| Elasticsearch down | Search broken | Health endpoint | Fallback to PostgreSQL pg_trgm |
+
+</div>
+
+</div>
+
+---
+
 ## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 ### Key Discussion Points
 
-1. **Vote count accuracy**: Eventual consistency is acceptable
-2. **Feed personalization**: Balance relevance vs freshness
-3. **Spam detection**: ML models + community moderation
-4. **Rate limiting**: Per-user and per-IP limits
+1. **Vote count accuracy**: Eventual consistency is acceptable - users don't need millisecond precision
+2. **Feed personalization**: Balance relevance vs freshness vs diversity - avoid filter bubbles
+3. **Spam detection**: Layered approach - rate limits → heuristics → ML → community reports
+4. **Rate limiting**: Token bucket per-user, sliding window per-IP, separate limits for reads/writes
+5. **Moderation at scale**: Automod rules + ML flagging + human review queue with SLAs
 
 ### Common Follow-ups
 
-- How would you handle a subreddit going viral?
-- How do you prevent vote manipulation?
-- How would you implement Reddit Premium features?
+- **"How would you handle a subreddit going viral?"** → Edge caching, request coalescing, graceful degradation
+- **"How do you prevent vote manipulation?"** → Device fingerprinting, velocity limits, graph analysis for bot rings
+- **"How would you implement Reddit Premium?"** → Feature flags, separate CDN tier, no-ads rendering path
+
+### Red Flags to Avoid
+
+<div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+| Red Flag | Why It's Bad | Better Approach |
+|----------|--------------|-----------------|
+| "We need Kafka from day one" | Over-engineering; PostgreSQL LISTEN/NOTIFY works for 90% of cases | "Start with PostgreSQL notifications, add Kafka when we need replay or multi-consumer" |
+| "Microservices because Netflix uses them" | Cargo culting; ignores team size and operational cost | "Modular monolith with clear boundaries, extract services when team/scale demands" |
+| "Real-time vote counts via WebSocket" | Massive fan-out cost for low-value feature | "Polling with smart refresh, WebSocket only for user's own actions" |
+| "Shard by user_id for everything" | Wrong access patterns; posts are accessed by subreddit, not author | "Shard votes by post_id, posts by subreddit, users stay unsharded longest" |
+| "NoSQL because we need scale" | SQL scales fine with proper indexing and read replicas | "PostgreSQL to 10TB, evaluate migration at clear pain points" |
+| "Cache everything for 1 hour" | Stale data, cache invalidation nightmares | "Tiered TTLs based on data volatility: user profiles 1hr, feeds 60s, scores 5s" |
+
+</div>
+
+### Impressive Statements
+
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+| Topic | Statement | Why It Impresses |
+|-------|-----------|------------------|
+| **Consistency** | "For votes, we can accept a 100ms consistency window because the UX cost of stronger consistency exceeds the value of real-time accuracy" | Shows cost-benefit thinking, not just technical knowledge |
+| **Scaling** | "I'd keep everything in PostgreSQL until we see specific bottlenecks - premature optimization with specialized databases adds operational complexity without proven benefit" | Demonstrates pragmatism and operational awareness |
+| **Caching** | "Cache invalidation is harder than caching - I'd use event-driven selective invalidation rather than TTL-based expiry to maintain consistency guarantees" | Shows deep understanding of distributed systems challenges |
+| **Trade-offs** | "The hot ranking formula trades computational complexity for content freshness - we precompute on write to shift work from the read path" | Demonstrates understanding of read/write trade-offs |
+| **Failure modes** | "When Redis fails, we circuit-break to database with rate limiting rather than complete outage - graceful degradation over hard failure" | Shows production mindset and resilience thinking |
+| **Growth** | "At 10K users, I'd use PostgreSQL JSONB for comments. At 1M, normalize to tables with materialized paths. At 100M, consider comment service with Cassandra" | Demonstrates ability to right-size solutions |
+
+</div>
+
+### Closing Strong
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**"What would you build first?"**
+
+> "The core voting and feed loop - that's Reddit's flywheel. A user can vote, see updated scores, and get a personalized feed. Everything else (awards, chat, video) are features on top. I'd nail the data model for posts, comments, and votes, get the hot ranking working, then iterate. Shipping a working MVP in PostgreSQL + Redis beats architecting a perfect distributed system that takes 6 months to build."
+
+**"Where does this design break?"**
+
+> "Three places: First, single-subreddit hotspots - r/all or viral AMAs can overwhelm any caching strategy; we'd need request sampling and edge compute. Second, real-time features like chat and live threads require WebSocket infrastructure we haven't designed. Third, global latency - this design assumes single-region; multi-region would need conflict resolution for votes and eventually consistent subreddit state."
+
+</div>
 
 </div>

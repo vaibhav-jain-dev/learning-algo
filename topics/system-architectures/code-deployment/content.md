@@ -879,23 +879,543 @@ Rollback = kubectl rollout undo deployment/myapp
 
 ---
 
+## Interview Deep Dive Questions
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+
+### 1. "Why Kubernetes over just Docker Compose for deployments?"
+
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What they're probing**: Do you understand operational complexity vs. actual need? Can you match tooling to team size and requirements?
+
+**Strong Answer**:
+> "Docker Compose is actually perfect for many scenarios - a 5-person team running 3 services on 2 servers doesn't need Kubernetes. You'd use K8s when you need: auto-scaling based on load, multi-region deployments, self-healing across many nodes, or when you have 15+ microservices. The operational overhead of K8s (etcd clusters, control plane management, networking complexity) only pays off at scale. For a startup doing 100 builds/day, Docker Compose with a simple load balancer is faster to set up and debug."
+
+**When Simpler Works**:
+- Under 10 services: Docker Compose + systemd
+- Single region: Docker Swarm is simpler than K8s
+- 1-5 developers: Just deploy to Heroku or Railway
+
+</div>
+
+### 2. "When is blue-green deployment overkill?"
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What they're probing**: Can you evaluate trade-offs between deployment safety and resource cost?
+
+**Strong Answer**:
+> "Blue-green doubles your infrastructure cost during deployments and requires instant traffic switching capability. It's overkill when: you deploy less than once a day, your service handles gradual rollouts well, or you can't afford 2x infrastructure. Rolling deployments with good health checks cover 80% of use cases. Blue-green shines for: stateless services needing instant rollback, critical payment flows, or when you need to test the exact production environment before switching. For most teams, Kubernetes rolling deployments with `maxUnavailable: 0` gives you safe deployments without the cost."
+
+**When Rolling is Enough**:
+- Stateless web services with good health probes
+- Internal tools with tolerant users
+- Services where 30-second rollback is acceptable
+
+</div>
+
+### 3. "Why not just use Jenkins? Everyone knows it."
+
+<div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What they're probing**: Are you choosing tools based on hype or real technical merit? Do you understand maintenance burden?
+
+**Strong Answer**:
+> "Jenkins is actually a great choice for teams that have Jenkins expertise and need maximum customization. The issues are: plugin compatibility hell (I've spent days debugging plugin conflicts), security patching burden (you own it all), and the Groovy DSL learning curve. GitHub Actions or GitLab CI give you: zero infrastructure to manage, native git integration, and pre-built marketplace actions. But Jenkins wins when you need: air-gapped environments, custom hardware (like Mac build machines for iOS), or complex approval workflows your compliance team requires. For a team of 20 doing standard web apps, I'd pick GitHub Actions. For a 200-person enterprise with 10 years of Jenkins pipelines, migrating would cost more than maintaining."
+
+**When Jenkins Makes Sense**:
+- Air-gapped/on-premise requirements
+- Complex multi-stage approvals
+- Existing Jenkins expertise on team
+- Need for specific hardware build agents
+
+</div>
+
+### 4. "How would you handle a deployment that breaks production but passes all tests?"
+
+<div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What they're probing**: Do you understand the gap between test environments and production? What's your incident response?
+
+**Strong Answer**:
+> "First, immediate rollback - this should take under 60 seconds with `kubectl rollout undo` or switching blue-green environments. Then: investigate why tests passed. Common causes: production-only data patterns, third-party API differences, load-related race conditions, or feature flag states. I'd add: canary deployments to catch issues with real traffic before full rollout, synthetic monitoring that runs against production, and chaos engineering tests. Long-term fix: improve staging data to mirror production patterns, add production smoke tests that run immediately post-deploy, and implement feature flags so code changes can be toggled off without redeployment."
+
+**Key Response Steps**:
+1. Rollback immediately (don't debug while on fire)
+2. Identify the failure mode
+3. Add specific test/monitoring to prevent recurrence
+4. Post-mortem to improve the process
+
+</div>
+
+### 5. "Your CI pipeline takes 45 minutes. The team is frustrated. What do you do?"
+
+<div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**What they're probing**: Can you systematically diagnose and optimize? Do you understand the build speed vs. safety trade-off?
+
+**Strong Answer**:
+> "First, measure - where's the time going? Usually it's: dependency installation (add caching), test suite (parallelize), or Docker builds (multi-stage + layer caching). Quick wins: aggressive caching for npm/pip/gradle, parallel test execution across containers, only run relevant tests on file changes. Harder fixes: split the monolith test suite, use test impact analysis to run affected tests only, or move slow integration tests to a separate pipeline that runs post-merge. A realistic target is 10 minutes for PR builds. But be careful - I've seen teams skip tests to go faster and then spend 2 days debugging production issues. The real goal is fast feedback, not just fast builds. Sometimes that means better local testing tools so developers don't wait for CI."
+
+**Optimization Priority**:
+1. Add dependency caching (saves 5-10 min typically)
+2. Parallelize tests (cut time by 50-70%)
+3. Use incremental/affected-only testing
+4. Move slow tests to post-merge pipeline
+
+</div>
+
+</div>
+
+---
+
+## Why This Technology?
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### CI/CD Technology Decision Matrix
+
+<div style="overflow-x: auto; margin: 20px 0;">
+
+| Scenario | Recommendation | Why Not Alternatives |
+|----------|----------------|---------------------|
+| **5-person startup, 3 services** | GitHub Actions + Heroku/Railway | Jenkins: overkill maintenance. K8s: unnecessary complexity |
+| **20-person team, 15 services** | GitHub Actions + ECS or GKE Autopilot | Self-managed K8s: too much ops burden. Heroku: gets expensive |
+| **50+ devs, microservices** | GitLab CI + Argo CD + EKS | GitHub Actions: limited self-hosted options. Jenkins: scaling pain |
+| **Enterprise, compliance needs** | Jenkins/GitLab + Spinnaker | SaaS options: data residency concerns. Argo: less audit features |
+| **ML/Data pipelines** | GitHub Actions + Argo Workflows | Standard CI: not designed for DAG workflows and long-running jobs |
+
+</div>
+
+### Deep Dive: Why These Choices?
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #58a6ff; margin: 0 0 12px 0;">GitHub Actions Wins When...</h4>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Your code is already on GitHub</li>
+<li>You want zero infrastructure to manage</li>
+<li>Team is < 50 developers</li>
+<li>Standard language ecosystems (JS, Python, Go, Java)</li>
+<li>You can tolerate occasional runner delays</li>
+</ul>
+<p style="color: #7ee787; font-size: 12px; margin-top: 12px;"><strong>Cost reality</strong>: Free tier covers most startups. $20-100/month for active teams.</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #a371f7; margin: 0 0 12px 0;">Argo CD Wins When...</h4>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>You have 20+ services to deploy</li>
+<li>Multiple Kubernetes clusters</li>
+<li>Team has K8s expertise already</li>
+<li>You want GitOps (git as truth)</li>
+<li>Need audit trail for deployments</li>
+</ul>
+<p style="color: #f0883e; font-size: 12px; margin-top: 12px;"><strong>Honest take</strong>: Don't use Argo CD until you have 20+ services or multi-cluster needs.</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d2e1f 0%, #5d4a3a 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f0883e; margin: 0 0 12px 0;">Jenkins Still Makes Sense When...</h4>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Air-gapped or strict compliance environment</li>
+<li>Need Mac/Windows/custom hardware builds</li>
+<li>Have 5+ years of existing pipelines</li>
+<li>Team has deep Jenkins expertise</li>
+<li>Complex manual approval workflows</li>
+</ul>
+<p style="color: #8b949e; font-size: 12px; margin-top: 12px;"><strong>Hidden cost</strong>: 0.5-1 FTE just for Jenkins maintenance at scale.</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #7ee787; margin: 0 0 12px 0;">ECS/Fargate Over K8s When...</h4>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Team lacks K8s expertise</li>
+<li>You're AWS-only (no multi-cloud)</li>
+<li>5-30 services (K8s overhead not worth it)</li>
+<li>Want simpler networking model</li>
+<li>Don't need K8s ecosystem tools</li>
+</ul>
+<p style="color: #58a6ff; font-size: 12px; margin-top: 12px;"><strong>Real talk</strong>: ECS is "boring" but boring is good for startups.</p>
+</div>
+
+</div>
+
+</div>
+
+---
+
+## When Simpler Solutions Work
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+
+### You Don't Need Kubernetes If...
+
+<div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+```
+K8s Necessity Checklist (need 3+ to justify K8s):
+
+[ ] 15+ microservices
+[ ] Auto-scaling based on traffic (not just scheduled)
+[ ] Multi-region deployment requirements
+[ ] Team has dedicated platform/SRE engineers
+[ ] Need service mesh features (mTLS, traffic splitting)
+[ ] Compliance requires specific infrastructure controls
+
+If you checked < 3, consider:
+├── Docker Compose + systemd (< 5 services)
+├── ECS/Fargate (5-15 services, AWS shop)
+├── Cloud Run/App Engine (stateless services)
+├── Heroku/Railway/Render (just ship it)
+└── Fly.io (need edge deployment, simple model)
+```
+
+</div>
+
+### GitHub Actions Alone is Enough When...
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+<div>
+<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Perfectly Fine Scenarios</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Deploying to Vercel/Netlify/Heroku</li>
+<li>Pushing Docker images to registry</li>
+<li>Running Terraform for infrastructure</li>
+<li>Simple kubectl apply deployments</li>
+<li>Lambda/Cloud Functions deployment</li>
+<li>Static site builds</li>
+</ul>
+</div>
+
+<div>
+<h5 style="color: #f0883e; margin: 0 0 8px 0;">When You Need More</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Complex deployment orchestration</li>
+<li>Multi-cluster K8s rollouts</li>
+<li>Canary with automatic rollback</li>
+<li>Deployment approval workflows</li>
+<li>GitOps with drift detection</li>
+<li>Blue-green with traffic management</li>
+</ul>
+</div>
+
+</div>
+
+</div>
+
+### The "$100/month CI/CD Stack" (Real Example)
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+```
+Company: 5-person SaaS startup, 3 services, 50 deployments/month
+
+Stack (Total: ~$85/month):
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  GitHub (Free tier)                              $0/month   │
+│    └── Actions: 2000 mins/month free                       │
+│                                                             │
+│  Railway (Hobby → Team)                         $20/month   │
+│    └── API service + background worker                     │
+│                                                             │
+│  Vercel (Pro)                                   $20/month   │
+│    └── Next.js frontend                                    │
+│                                                             │
+│  PlanetScale (Scaler)                           $29/month   │
+│    └── MySQL with branching for DB migrations              │
+│                                                             │
+│  Upstash Redis (Free → Pay as you go)           $10/month   │
+│    └── Caching + job queues                                │
+│                                                             │
+│  Sentry (Team)                                   $0/month   │
+│    └── Error tracking (free tier)                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+CI/CD Flow:
+  Push to main → GitHub Actions runs tests (3 mins)
+               → Vercel auto-deploys frontend
+               → Railway auto-deploys backend
+               → PlanetScale promotes DB branch
+
+What you DON'T need:
+  ✗ Kubernetes            ✗ Argo CD
+  ✗ Self-hosted Jenkins   ✗ Terraform (yet)
+  ✗ Docker registry       ✗ Secrets manager (use env vars)
+```
+
+</div>
+
+### Simpler Alternatives Comparison
+
+<div style="overflow-x: auto; margin: 16px 0;">
+
+| Complex Tool | Simpler Alternative | When Simpler Works |
+|--------------|--------------------|--------------------|
+| **Kubernetes** | Docker Compose + systemd | < 10 services, single region |
+| **Argo CD** | GitHub Actions kubectl | < 15 services, single cluster |
+| **Spinnaker** | GitHub Actions + Helm | Not Netflix-scale |
+| **HashiCorp Vault** | AWS Secrets Manager / 1Password | < 100 secrets, single cloud |
+| **Terraform** | Pulumi / CDK / Click-ops | < 20 resources, fast iteration |
+| **Jenkins** | GitHub Actions | Standard builds, no special hardware |
+| **Prometheus + Grafana** | Datadog / New Relic | Team < 20, SaaS budget available |
+
+</div>
+
+</div>
+</div>
+
+---
+
+## Trade-off Analysis & Mitigation
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### Deployment Strategy Trade-offs
+
+<div style="overflow-x: auto; margin: 20px 0;">
+
+| Strategy | Pros | Cons | Mitigation |
+|----------|------|------|------------|
+| **Rolling** | Low resource cost, simple | Brief mixed versions, slower rollback | Use readiness probes, keep N-1 compatible |
+| **Blue-Green** | Instant rollback, clean testing | 2x resources, database complexity | Use for stateless only, schedule off-peak |
+| **Canary** | Real traffic validation, safe | Complex traffic splitting, slow | Automate metrics-based promotion |
+| **Recreate** | Simple, clean slate | Downtime | Only for dev/internal tools |
+
+</div>
+
+### Build Speed vs. Safety Trade-offs
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+
+<div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
+<h4 style="color: #7ee787; margin: 0 0 12px 0;">Going Faster</h4>
+
+```
+Optimization                Risk           Mitigation
+─────────────────────────────────────────────────────
+Skip tests on docs-only  → Low          → Path filters
+Parallel test execution  → Flaky tests  → Retry logic
+Cache aggressively       → Stale deps   → Weekly clean build
+Run subset of tests      → Miss bugs    → Full suite on main
+Skip E2E on feature PR   → Integration  → Required on main
+```
+
+</div>
+
+<div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 12px 0;">Going Safer</h4>
+
+```
+Safety Measure           Cost           When Worth It
+─────────────────────────────────────────────────────
+Full E2E on every PR   → +15 min      → Payment flows
+Security scan          → +5 min       → Always
+SAST/DAST             → +10 min       → Public APIs
+Load testing          → +20 min       → Before major release
+Canary deploy         → +30 min       → User-facing services
+Manual approval       → Hours/days    → Production, compliance
+```
+
+</div>
+
+</div>
+
+### GitOps vs. Push-based Deployment
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+
+```
+PUSH-BASED (CI runs kubectl apply)          PULL-BASED (GitOps with Argo CD)
+────────────────────────────────────        ────────────────────────────────────
+✓ Simpler to understand                     ✓ Git is single source of truth
+✓ Works with any CI system                  ✓ Automatic drift detection
+✓ Faster for small teams                    ✓ Built-in audit trail
+✓ No additional infrastructure              ✓ Multi-cluster from one repo
+
+✗ CI needs cluster credentials              ✗ Learning curve for team
+✗ No drift detection                        ✗ Another system to manage
+✗ Manual audit trail                        ✗ Secret management complexity
+✗ Hard to track "what's deployed"           ✗ Slower feedback loop
+
+RECOMMENDATION:
+├── < 10 services, 1 cluster  → Push-based (GitHub Actions + kubectl)
+├── 10-30 services            → Consider GitOps, evaluate team readiness
+└── 30+ services, multi-cluster → GitOps strongly recommended
+```
+
+</div>
+
+### Monorepo vs. Polyrepo CI/CD
+
+<div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 20px 0;">
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+<div>
+<h5 style="color: #a371f7; margin: 0 0 8px 0;">Monorepo CI Challenges</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Build times grow with repo size</li>
+<li>Need affected-target detection</li>
+<li>CI minutes can get expensive</li>
+<li>Complex caching strategies</li>
+<li>All services share CI config</li>
+</ul>
+<p style="color: #8b949e; font-size: 12px; margin-top: 12px;"><strong>Mitigations</strong>: Nx/Turborepo, path-based triggers, remote caching</p>
+</div>
+
+<div>
+<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Polyrepo CI Challenges</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Duplicate CI configs across repos</li>
+<li>Cross-repo dependency hell</li>
+<li>Hard to do atomic multi-service changes</li>
+<li>Version matrix complexity</li>
+<li>Inconsistent tooling</li>
+</ul>
+<p style="color: #8b949e; font-size: 12px; margin-top: 12px;"><strong>Mitigations</strong>: Shared workflow templates, service versioning strategy</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+---
+
 ## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 ### Key Discussion Points
 
-1. **Pipeline as Code**: Explain benefits of version-controlled pipelines
-2. **Build Isolation**: Security implications of shared build infrastructure
-3. **Deployment Strategies**: When to use rolling vs canary vs blue-green
-4. **Rollback Speed**: Importance of fast rollback capability
-5. **Secret Management**: How to handle sensitive data in pipelines
+1. **Pipeline as Code**: Explain benefits of version-controlled pipelines - reproducibility, review process, history
+2. **Build Isolation**: Security implications of shared build infrastructure - credential leakage, crypto mining
+3. **Deployment Strategies**: When to use rolling vs canary vs blue-green - match to risk tolerance and resources
+4. **Rollback Speed**: Importance of fast rollback capability - should be < 60 seconds
+5. **Secret Management**: How to handle sensitive data in pipelines - never in code, rotate regularly
 
 ### Common Follow-ups
 
-- How do you handle flaky tests?
-- How do you manage database migrations during deployments?
-- How do you implement feature flags?
-- How do you handle rollback of stateful services?
+- **Flaky tests**: Quarantine, retry logic, track flake rate, fix or delete
+- **Database migrations**: Run before deployment, backward compatible, separate from app deploy
+- **Feature flags**: Decouple deploy from release, canary by user segment
+- **Stateful rollback**: Requires data migration rollback plan, often can't fully rollback
+
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+
+### Red Flags (What NOT to Say)
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+
+<div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 16px;">
+<h5 style="color: #f85149; margin: 0 0 8px 0;">Avoid Saying</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>"We should use Kubernetes for everything"</li>
+<li>"Jenkins is dead, never use it"</li>
+<li>"Canary deployment for all services"</li>
+<li>"Skip tests to deploy faster"</li>
+<li>"Manual deployments are fine for prod"</li>
+<li>"We don't need rollback, our code is tested"</li>
+</ul>
+</div>
+
+<div style="background: rgba(248, 81, 73, 0.15); border: 1px solid #f85149; border-radius: 8px; padding: 16px;">
+<h5 style="color: #f85149; margin: 0 0 8px 0;">Why It's a Red Flag</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Shows inability to match tools to needs</li>
+<li>Indicates hype-driven decisions</li>
+<li>Ignores resource/complexity costs</li>
+<li>Prioritizes speed over reliability</li>
+<li>Doesn't understand human error risk</li>
+<li>Overconfidence, lacks defensive thinking</li>
+</ul>
+</div>
+
+</div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7ee787;">
+
+### Impressive Statements
+
+<div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+**Show Trade-off Thinking**:
+> "For a 5-person team, I'd start with GitHub Actions deploying to Railway or Heroku. Once we hit 15+ services or need multi-region, then we'd evaluate Kubernetes. The ops overhead of K8s isn't worth it until you have the team to support it."
+
+**Demonstrate Real Experience**:
+> "We reduced our CI time from 45 minutes to 12 by: aggressive npm caching (saved 8 min), parallelizing tests across 4 runners (saved 20 min), and moving E2E tests to post-merge (saved 5 min). The trade-off was accepting slightly higher risk on feature branches."
+
+**Show You Understand Failure**:
+> "Our canary deployment saved us last quarter - we pushed a memory leak that only appeared under production load. The canary's memory growth triggered automatic rollback at 5% traffic. Without it, we'd have had a full outage."
+
+**Acknowledge Complexity**:
+> "GitOps with Argo CD sounds great, but it added 2 weeks of learning curve for our team and introduced secret management complexity we didn't have with simple kubectl. It was worth it at 25 services, but I wouldn't recommend it for a team just starting out."
+
+**Cost-Aware Thinking**:
+> "Blue-green deployments would double our infrastructure costs. For most of our services, rolling deployments with proper health checks are sufficient. We only use blue-green for our payment service where instant rollback is critical."
+
+</div>
+
+### Questions to Ask the Interviewer
+
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+
+<ul style="color: #c9d1d9; font-size: 14px; margin: 0; padding-left: 16px;">
+<li>"What's your current deployment frequency and what's blocking you from going faster?"</li>
+<li>"How long does a typical rollback take today?"</li>
+<li>"What percentage of your deployments require manual intervention?"</li>
+<li>"How do you handle database migrations in your deployment process?"</li>
+<li>"What's your biggest CI/CD pain point right now?"</li>
+</ul>
+
+</div>
+
+</div>
+
+---
+
+## Quick Reference: Scaling Stages
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+```
+TEAM SIZE       RECOMMENDED STACK                      MONTHLY COST
+─────────────────────────────────────────────────────────────────────
+1-5 devs        GitHub Actions + Heroku/Railway        $50-200
+                └── "Just ship it" - minimize ops
+
+5-20 devs       GitHub Actions + ECS/Cloud Run         $500-2,000
+                └── Managed containers, no K8s ops
+
+20-50 devs      GitLab CI + EKS/GKE Autopilot         $2,000-10,000
+                └── Start considering GitOps
+
+50-200 devs     GitLab/GitHub + Argo CD + K8s         $10,000-50,000
+                └── Full GitOps, dedicated platform team
+
+200+ devs       Custom platform + Spinnaker           $50,000+
+                └── Internal developer platform
+─────────────────────────────────────────────────────────────────────
+
+DEPLOYMENT STRATEGY BY RISK:
+─────────────────────────────────────────────────────────────────────
+Low risk (internal tools)     → Rolling, 100% at once
+Medium risk (user-facing)     → Rolling with health checks
+High risk (payments, auth)    → Canary 5% → 25% → 100%
+Critical (financial, health)  → Blue-green + manual approval
+```
 
 </div>
