@@ -235,31 +235,59 @@
             case 'dp-lcs':
                 return runDPLCS(example, config, complexity);
             case 'dp-edit':
+            case 'dp-edit-distance':
             case 'dp-knapsack':
             case 'dp-max-sum':
+            case 'dp-max-subset':
             case 'dp-lis':
+            case 'dp-increasing-subseq':
             case 'dp-matrix':
+            case 'dp-disk-stacking':
+            case 'dp-pi-numbers':
+            case 'dp-transactions':
+            case 'dp-palindrome':
+            case 'dp-string-chain':
+            case 'dp-square-zeroes':
+            case 'dp-graph-traversal':
+            case 'dp-jumps':
                 return runDPGeneric(example, config, complexity);
 
             // BST algorithms
             case 'bst-search':
                 return runBSTSearch(example, config, complexity);
             case 'bst-construction':
+            case 'bst-construction-balanced':
             case 'bst-validate':
+            case 'bst-validation':
+            case 'bst-validation-nodes':
             case 'bst-traversal':
             case 'bst-min-height':
+            case 'bst-kth-largest':
+            case 'bst-reconstruction':
+            case 'bst-comparison':
+            case 'bst-augmented':
+            case 'bst-range':
+            case 'bst-iterator':
+            case 'bst-repair':
+            case 'bst-sum':
                 return runBSTGeneric(example, config, complexity);
 
             // Famous algorithms
             case 'dijkstra':
+            case 'dijkstras-algorithm':
             case 'kruskal':
             case 'kruskals-algorithm':
             case 'prim':
+            case 'prims-algorithm':
             case 'a-star':
+            case 'bfs-astar':
+            case 'a-star-bfs':
             case 'topological-sort':
             case 'union-find':
             case 'kadane':
+            case 'kadanes-algorithm':
             case 'kmp':
+            case 'kmp-algorithm':
                 return runFamousAlgorithm(example, config, complexity);
 
             case 'hash-expansion':
@@ -267,6 +295,8 @@
 
             case 'hash-pair-sum':
             case 'out-of-order-bounds':
+            case 'hash-set':
+            case 'sorting':
             default:
                 // Generic visualization for algorithms without specific runners
                 return runGenericVisualization(example, config, complexity);
@@ -2845,6 +2875,33 @@
     function runBSTGeneric(example, config, complexity) {
         var steps = [];
         var tree = example.input.tree;
+        var arr = example.input.array || example.input.nums || example.input.preorderTraversalValues;
+
+        // If we have an array, show array visualization for array-based BST problems
+        if (!tree && arr && Array.isArray(arr)) {
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Input:</strong> [' + arr.slice(0, 10).join(', ') + (arr.length > 10 ? '...' : '') + ']<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
 
         if (tree) {
             var nodes = [];
