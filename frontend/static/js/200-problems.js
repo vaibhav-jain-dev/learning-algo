@@ -1622,6 +1622,102 @@
         var adjList = example.input.edges || example.input.adjList; // Adjacency list format
         var arr = example.input.array || example.input.nums; // Array format for cycle detection
         var linkedList = example.input.head || example.input.list; // Linked list format
+        var exchangeRates = example.input.exchangeRates; // Exchange rates matrix for arbitrage
+
+        // Handle exchange rates matrix (for arbitrage detection)
+        if (exchangeRates && Array.isArray(exchangeRates) && Array.isArray(exchangeRates[0])) {
+            var currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'MXN'];
+            var numCurrencies = exchangeRates.length;
+            var nodes = [];
+            var edges = [];
+
+            // Create currency nodes
+            for (var i = 0; i < numCurrencies; i++) {
+                nodes.push({
+                    id: 'currency_' + i,
+                    label: currencies[i] || ('C' + i),
+                    value: i
+                });
+            }
+
+            // Create edges with exchange rates as weights
+            for (var i = 0; i < numCurrencies; i++) {
+                for (var j = 0; j < numCurrencies; j++) {
+                    if (i !== j && exchangeRates[i][j] !== 1) {
+                        edges.push({
+                            from: 'currency_' + i,
+                            to: 'currency_' + j,
+                            weight: exchangeRates[i][j].toFixed(4),
+                            label: exchangeRates[i][j].toFixed(4)
+                        });
+                    }
+                }
+            }
+
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: [],
+                queue: [],
+                status: config.name + ' - Initialize',
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> Bellman-Ford for negative cycle detection<br>' +
+                    '<strong>Currencies:</strong> ' + numCurrencies + '<br>' +
+                    '<strong>Input:</strong> ' + numCurrencies + 'x' + numCurrencies + ' exchange rate matrix<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Simulate checking for arbitrage - convert to log space and run Bellman-Ford
+            var visitedSoFar = [];
+            for (var i = 0; i < numCurrencies; i++) {
+                visitedSoFar.push('currency_' + i);
+                var currencyName = currencies[i] || ('C' + i);
+
+                // Show rates from this currency
+                var ratesFrom = [];
+                for (var j = 0; j < numCurrencies; j++) {
+                    if (i !== j) {
+                        ratesFrom.push((currencies[j] || ('C' + j)) + ': ' + exchangeRates[i][j].toFixed(4));
+                    }
+                }
+
+                steps.push({
+                    vizType: 'graph',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: visitedSoFar.slice(),
+                    current: 'currency_' + i,
+                    queue: [],
+                    status: 'Check rates from ' + currencyName,
+                    explanation: '🔍 <strong>Checking exchange rates from ' + currencyName + '</strong><br><br>' +
+                        'Rates: ' + ratesFrom.slice(0, 3).join(', ') + (ratesFrom.length > 3 ? '...' : '') + '<br><br>' +
+                        '• Looking for cycles where product of rates > 1<br>' +
+                        '• Using -log(rate) to convert to shortest path problem'
+                });
+            }
+
+            // Final result
+            var hasArbitrage = example.output === true;
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: nodes.map(function(n) { return n.id; }),
+                queue: [],
+                status: hasArbitrage ? 'Arbitrage Found!' : 'No Arbitrage',
+                explanation: hasArbitrage ?
+                    '✅ <strong>Arbitrage Opportunity Detected!</strong><br><br>' +
+                    'A cycle exists where the product of exchange rates > 1<br>' +
+                    'This means we can profit by trading currencies in a cycle.' :
+                    '❌ <strong>No Arbitrage Opportunity</strong><br><br>' +
+                    'No profitable cycle found in the exchange rate graph.'
+            });
+
+            return steps;
+        }
 
         // Handle linked list format (e.g., floyd cycle detection on linked lists)
         if (linkedList && Array.isArray(linkedList)) {
@@ -2010,6 +2106,145 @@
             if (val === undefined || val === null) return 'null';
             if (typeof val === 'object') return val.value !== undefined ? val.value : JSON.stringify(val);
             return val;
+        }
+
+        // Handle LRU Cache operations format
+        if (example.input.capacity !== undefined && example.input.operations) {
+            var capacity = example.input.capacity;
+            var operations = example.input.operations;
+            var cache = []; // Array of {key, value} from MRU to LRU
+            var cacheMap = {}; // key -> value for quick lookup
+            var hits = 0;
+            var misses = 0;
+
+            steps.push({
+                vizType: 'lru-cache',
+                capacity: capacity,
+                items: [],
+                operation: 'Initialize',
+                hits: 0,
+                misses: 0,
+                status: config.name + ' - Initialize',
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Capacity:</strong> ' + capacity + '<br>' +
+                    '<strong>Operations:</strong> ' + operations.length + ' total<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Process each operation
+            for (var i = 0; i < operations.length; i++) {
+                var op = operations[i];
+                var opType = op[0];
+                var key = op[1];
+                var value = op.length > 2 ? op[2] : null;
+                var opString = opType + '(' + key + (value !== null ? ',' + value : '') + ')';
+                var newItem = -1;
+                var accessedItem = -1;
+                var evictingItem = -1;
+
+                if (opType === 'put') {
+                    // Check if key exists
+                    var existingIdx = -1;
+                    for (var j = 0; j < cache.length; j++) {
+                        if (cache[j].key === key) {
+                            existingIdx = j;
+                            break;
+                        }
+                    }
+
+                    if (existingIdx !== -1) {
+                        // Update existing - move to front (MRU)
+                        cache.splice(existingIdx, 1);
+                        cache.unshift({ key: key, value: value });
+                        accessedItem = 0;
+                    } else {
+                        // Add new
+                        if (cache.length >= capacity) {
+                            // Evict LRU (last item)
+                            var evicted = cache.pop();
+                            delete cacheMap[evicted.key];
+                            evictingItem = cache.length;
+                        }
+                        cache.unshift({ key: key, value: value });
+                        newItem = 0;
+                    }
+                    cacheMap[key] = value;
+
+                    steps.push({
+                        vizType: 'lru-cache',
+                        capacity: capacity,
+                        items: cache.map(function(item) { return { key: item.key, value: item.value }; }),
+                        operation: opString,
+                        newItem: newItem,
+                        accessed: accessedItem,
+                        evicting: evictingItem,
+                        hits: hits,
+                        misses: misses,
+                        status: opString,
+                        explanation: '📥 <strong>' + opString + '</strong><br><br>' +
+                            (newItem !== -1 ? '• Added new entry to cache (MRU position)<br>' : '') +
+                            (accessedItem !== -1 ? '• Updated existing key, moved to MRU<br>' : '') +
+                            (evictingItem !== -1 ? '• Evicted LRU entry to make room<br>' : '') +
+                            '• Cache size: ' + cache.length + '/' + capacity
+                    });
+                } else if (opType === 'get') {
+                    var foundIdx = -1;
+                    for (var j = 0; j < cache.length; j++) {
+                        if (cache[j].key === key) {
+                            foundIdx = j;
+                            break;
+                        }
+                    }
+
+                    var result = -1;
+                    if (foundIdx !== -1) {
+                        // Move to front (MRU)
+                        var item = cache.splice(foundIdx, 1)[0];
+                        cache.unshift(item);
+                        result = item.value;
+                        accessedItem = 0;
+                        hits++;
+                    } else {
+                        misses++;
+                    }
+
+                    steps.push({
+                        vizType: 'lru-cache',
+                        capacity: capacity,
+                        items: cache.map(function(item) { return { key: item.key, value: item.value }; }),
+                        operation: opString + ' → ' + result,
+                        accessed: accessedItem,
+                        hits: hits,
+                        misses: misses,
+                        status: opString + ' → ' + result,
+                        explanation: '🔍 <strong>' + opString + '</strong><br><br>' +
+                            (foundIdx !== -1 ?
+                                '✅ Cache HIT! Found value: ' + result + '<br>• Moved to MRU position' :
+                                '❌ Cache MISS! Key not found<br>• Returned -1') +
+                            '<br><br>Hits: ' + hits + ' | Misses: ' + misses
+                    });
+                }
+            }
+
+            // Final state
+            steps.push({
+                vizType: 'lru-cache',
+                capacity: capacity,
+                items: cache.map(function(item) { return { key: item.key, value: item.value }; }),
+                operation: 'Final State',
+                hits: hits,
+                misses: misses,
+                status: 'Complete',
+                explanation: '✅ <strong>All Operations Complete!</strong><br><br>' +
+                    '• Final cache: {' + cache.map(function(item) { return item.key; }).join(', ') + '}<br>' +
+                    '• Total hits: ' + hits + '<br>' +
+                    '• Total misses: ' + misses + '<br>' +
+                    '• Hit rate: ' + (hits + misses > 0 ? ((hits / (hits + misses)) * 100).toFixed(1) : 0) + '%'
+            });
+
+            return steps;
         }
 
         if (list && Array.isArray(list) && list.length > 0) {
@@ -2876,6 +3111,130 @@
         var steps = [];
         var tree = example.input.tree;
         var arr = example.input.array || example.input.nums || example.input.preorderTraversalValues;
+
+        // Handle Same BSTs problem with arrayOne and arrayTwo
+        if (example.input.arrayOne && example.input.arrayTwo) {
+            var arrayOne = example.input.arrayOne;
+            var arrayTwo = example.input.arrayTwo;
+
+            // Build a BST from arrayOne for visualization
+            function buildBSTFromArray(arr) {
+                if (!arr || arr.length === 0) return { nodes: [], edges: [] };
+
+                var nodes = [];
+                var edges = [];
+                var nodeMap = {};
+
+                // Helper to insert a value into BST
+                function insert(val, nodeId) {
+                    if (nodes.length === 0) {
+                        var id = 'n0';
+                        nodes.push({ id: id, label: String(val), value: val });
+                        nodeMap[val] = id;
+                        return;
+                    }
+
+                    var currIdx = 0;
+                    while (true) {
+                        var currNode = nodes[currIdx];
+                        if (val < currNode.value) {
+                            // Go left
+                            var leftEdge = edges.find(function(e) { return e.from === currNode.id && e.direction === 'left'; });
+                            if (leftEdge) {
+                                currIdx = nodes.findIndex(function(n) { return n.id === leftEdge.to; });
+                            } else {
+                                // Insert here
+                                var id = 'n' + nodes.length;
+                                nodes.push({ id: id, label: String(val), value: val });
+                                edges.push({ from: currNode.id, to: id, direction: 'left' });
+                                nodeMap[val] = id;
+                                break;
+                            }
+                        } else {
+                            // Go right
+                            var rightEdge = edges.find(function(e) { return e.from === currNode.id && e.direction === 'right'; });
+                            if (rightEdge) {
+                                currIdx = nodes.findIndex(function(n) { return n.id === rightEdge.to; });
+                            } else {
+                                // Insert here
+                                var id = 'n' + nodes.length;
+                                nodes.push({ id: id, label: String(val), value: val });
+                                edges.push({ from: currNode.id, to: id, direction: 'right' });
+                                nodeMap[val] = id;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                for (var i = 0; i < arr.length; i++) {
+                    insert(arr[i], i);
+                }
+
+                return { nodes: nodes, edges: edges, nodeMap: nodeMap };
+            }
+
+            var bst1 = buildBSTFromArray(arrayOne);
+            var visited = [];
+
+            steps.push({
+                vizType: 'tree',
+                nodes: bst1.nodes,
+                edges: bst1.edges,
+                visited: [],
+                status: config.name + ' - Initialize',
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Array 1:</strong> [' + arrayOne.slice(0, 8).join(', ') + (arrayOne.length > 8 ? '...' : '') + ']<br>' +
+                    '<strong>Array 2:</strong> [' + arrayTwo.slice(0, 8).join(', ') + (arrayTwo.length > 8 ? '...' : '') + ']<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show BST construction from arrayOne
+            steps.push({
+                vizType: 'tree',
+                nodes: bst1.nodes,
+                edges: bst1.edges,
+                visited: bst1.nodes.map(function(n) { return n.id; }),
+                status: 'BST from Array 1',
+                explanation: '🌳 <strong>BST built from Array 1</strong><br><br>' +
+                    'Root: ' + arrayOne[0] + '<br>' +
+                    'Insertion order: [' + arrayOne.slice(0, 6).join(' → ') + (arrayOne.length > 6 ? '...' : '') + ']'
+            });
+
+            // Compare with arrayTwo - show the comparison process
+            steps.push({
+                vizType: 'tree',
+                nodes: bst1.nodes,
+                edges: bst1.edges,
+                visited: bst1.nodes.map(function(n) { return n.id; }),
+                current: bst1.nodes[0] ? bst1.nodes[0].id : null,
+                comparing: arrayTwo[0],
+                status: 'Compare roots',
+                explanation: '🔍 <strong>Comparing roots</strong><br><br>' +
+                    'Array 1 root: ' + arrayOne[0] + '<br>' +
+                    'Array 2 root: ' + arrayTwo[0] + '<br>' +
+                    (arrayOne[0] === arrayTwo[0] ? '✅ Roots match!' : '❌ Roots differ!')
+            });
+
+            // Final result
+            var sameBST = example.output === true;
+            steps.push({
+                vizType: 'tree',
+                nodes: bst1.nodes,
+                edges: bst1.edges,
+                visited: bst1.nodes.map(function(n) { return n.id; }),
+                status: sameBST ? 'Same BST!' : 'Different BSTs',
+                explanation: sameBST ?
+                    '✅ <strong>Both arrays produce the same BST!</strong><br><br>' +
+                    'The relative ordering of elements in both arrays results in identical tree structure.' :
+                    '❌ <strong>Arrays produce different BSTs!</strong><br><br>' +
+                    'The different ordering causes different tree structures.'
+            });
+
+            return steps;
+        }
 
         // If we have an array, show array visualization for array-based BST problems
         if (!tree && arr && Array.isArray(arr)) {
@@ -6315,6 +6674,8 @@
                 return renderGraphViz(step);
             case 'linked-list':
                 return renderLinkedListViz(step);
+            case 'lru-cache':
+                return renderLRUCacheViz(step);
             case 'tree':
                 return renderTreeViz(step);
             case 'recursion':
@@ -6489,6 +6850,83 @@
             html += '</div></div>';
         }
 
+        return html;
+    }
+
+    // LRU Cache Visualization
+    function renderLRUCacheViz(step) {
+        var html = '';
+        var items = step.items || [];
+        var capacity = step.capacity || 0;
+        var newItem = step.newItem !== undefined ? step.newItem : -1;
+        var accessed = step.accessed !== undefined ? step.accessed : -1;
+        var evicting = step.evicting !== undefined ? step.evicting : -1;
+
+        html += '<div style="padding:1rem;">';
+
+        // Cache header
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
+        html += '<div style="display:flex;gap:1rem;align-items:center;">';
+        html += '<div style="color:#58a6ff;font-size:0.85rem;font-weight:bold;">HEAD (MRU)</div>';
+        html += '</div>';
+        html += '<div style="display:flex;gap:1rem;align-items:center;">';
+        html += '<div style="color:#f85149;font-size:0.85rem;font-weight:bold;">TAIL (LRU)</div>';
+        html += '</div>';
+        html += '</div>';
+
+        // Cache items as linked list
+        html += '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.5rem;min-height:60px;background:#161b22;border-radius:8px;padding:1rem;">';
+
+        if (items.length === 0) {
+            html += '<div style="color:#8b949e;font-style:italic;">Empty cache</div>';
+        } else {
+            items.forEach(function(item, idx) {
+                var isNew = idx === newItem;
+                var isAccessed = idx === accessed;
+                var isEvicting = idx === evicting;
+
+                var bg = isNew ? 'linear-gradient(135deg,#238636,#2ea043)' :
+                         (isAccessed ? 'linear-gradient(135deg,#1f6feb,#388bfd)' :
+                         (isEvicting ? 'linear-gradient(135deg,#da3633,#f85149)' : '#21262d'));
+                var border = isNew ? '2px solid #3fb950' :
+                            (isAccessed ? '2px solid #58a6ff' :
+                            (isEvicting ? '2px solid #f85149' : '2px solid #30363d'));
+                var glow = isNew ? 'box-shadow:0 0 10px rgba(63,185,80,0.5);' :
+                          (isAccessed ? 'box-shadow:0 0 10px rgba(88,166,255,0.5);' :
+                          (isEvicting ? 'box-shadow:0 0 10px rgba(248,81,73,0.5);' : ''));
+
+                html += '<div style="display:flex;align-items:center;">';
+                html += '<div style="background:' + bg + ';border:' + border + ';border-radius:8px;padding:0.5rem 0.75rem;display:flex;flex-direction:column;align-items:center;transition:all 0.3s;' + glow + '">';
+                html += '<span style="color:#fff;font-weight:bold;font-size:1.1rem;">' + item.key + '</span>';
+                html += '<span style="color:#8b949e;font-size:0.75rem;">:' + item.value + '</span>';
+                html += '</div>';
+
+                // Arrow to next
+                if (idx < items.length - 1) {
+                    html += '<div style="color:#58a6ff;margin:0 0.3rem;font-size:1.2rem;">⟷</div>';
+                }
+                html += '</div>';
+            });
+        }
+
+        html += '</div>';
+
+        // Empty slots indicator
+        var emptySlots = capacity - items.length;
+        if (emptySlots > 0) {
+            html += '<div style="margin-top:0.5rem;text-align:center;color:#8b949e;font-size:0.8rem;">';
+            html += emptySlots + ' empty slot' + (emptySlots > 1 ? 's' : '') + ' remaining';
+            html += '</div>';
+        }
+
+        // Legend
+        html += '<div style="display:flex;justify-content:center;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;">';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">New</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#1f6feb;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Accessed</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#da3633;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Evicting</span></div>';
+        html += '</div>';
+
+        html += '</div>';
         return html;
     }
 
@@ -7687,6 +8125,33 @@
                     html += '<span style="color:#c9d1d9;font-family:monospace;">node[' + step.pointers[name] + ']</span>';
                     html += '</div>';
                 });
+            }
+
+        } else if (vizType === 'lru-cache') {
+            // LRU Cache state panel
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">LRU CACHE STATE</div>';
+
+            // Stats row
+            html += '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">';
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.3rem 0.5rem;">';
+            html += '<span style="color:#8b949e;font-size:0.7rem;">Capacity:</span> <span style="color:#58a6ff;">' + (step.capacity || 0) + '</span>';
+            html += '</div>';
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.3rem 0.5rem;">';
+            html += '<span style="color:#8b949e;font-size:0.7rem;">Size:</span> <span style="color:#58a6ff;">' + (step.items ? step.items.length : 0) + '</span>';
+            html += '</div>';
+            html += '<div style="background:#23863622;border-radius:4px;padding:0.3rem 0.5rem;">';
+            html += '<span style="color:#8b949e;font-size:0.7rem;">Hits:</span> <span style="color:#3fb950;">' + (step.hits || 0) + '</span>';
+            html += '</div>';
+            html += '<div style="background:#f8514922;border-radius:4px;padding:0.3rem 0.5rem;">';
+            html += '<span style="color:#8b949e;font-size:0.7rem;">Misses:</span> <span style="color:#f85149;">' + (step.misses || 0) + '</span>';
+            html += '</div>';
+            html += '</div>';
+
+            // Current operation
+            if (step.operation) {
+                html += '<div style="background:#1f6feb22;border:1px solid #58a6ff;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
+                html += '<div style="color:#58a6ff;font-size:0.85rem;font-family:monospace;">' + step.operation + '</div>';
+                html += '</div>';
             }
 
         } else if (vizType === 'tree') {
