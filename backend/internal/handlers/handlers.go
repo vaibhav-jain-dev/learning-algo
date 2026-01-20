@@ -82,8 +82,7 @@ func (h *Handlers) MustSolveProblems(c *fiber.Ctx) error {
 // TwoHundredProblems renders the dedicated 200 problems practice page
 func (h *Handlers) TwoHundredProblems(c *fiber.Ctx) error {
 	return c.Render("pages/200-problems", fiber.Map{
-		"Title":   "200 Must Solve Problems - Practice",
-		"Content": true,
+		"Title": "200 Must Solve Problems - Practice",
 	})
 }
 
