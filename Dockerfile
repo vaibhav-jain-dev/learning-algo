@@ -1,6 +1,6 @@
 # DSAlgo Learn Platform - Dockerfile
 # Optimized multi-stage build for minimal image size
-# Target: < 200MB compressed
+# Target: < 150MB compressed
 
 # =============================================================================
 # Stage 1: Build Go backend
@@ -23,33 +23,44 @@ COPY backend/internal ./internal
 RUN go mod tidy
 
 # Build the binary with maximum optimizations
-# -ldflags="-w -s" strips debug info
+# -ldflags="-w -s" strips debug info, reduces ~30% size
 # CGO_ENABLED=0 creates static binary
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-w -s -extldflags '-static'" \
+    -ldflags="-w -s" \
     -o server ./cmd/server
 
 # =============================================================================
-# Stage 2: Minimal Python runtime with Go for code execution
+# Stage 2: Extract Go toolchain for code execution (minimal)
+# =============================================================================
+FROM golang:1.21-alpine AS go-extractor
+
+# Copy only essential Go files needed for compilation
+RUN mkdir -p /go-minimal/bin /go-minimal/src /go-minimal/pkg && \
+    cp /usr/local/go/bin/go /go-minimal/bin/ && \
+    cp /usr/local/go/bin/gofmt /go-minimal/bin/ && \
+    cp -r /usr/local/go/src /go-minimal/ && \
+    cp -r /usr/local/go/pkg /go-minimal/
+
+# =============================================================================
+# Stage 3: Minimal Python runtime
 # =============================================================================
 FROM python:3.12-alpine AS runtime
 
 # Labels
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
-LABEL app.description="Fast Code Runner with Go/Fiber and HTMX"
 
-# Install minimal dependencies
-# - Go for code execution (using pre-built alpine package - much smaller)
-# - ca-certificates for HTTPS
-# - wget for healthcheck
+# Install minimal dependencies only
 RUN apk add --no-cache \
-    go~=1.21 \
     ca-certificates \
     wget \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* /tmp/*
+
+# Copy minimal Go toolchain from extractor
+COPY --from=go-extractor /go-minimal /usr/local/go
 
 # Set Go environment
+ENV GOROOT="/usr/local/go"
 ENV GOPATH="/go"
 ENV GOCACHE="/app/.go-cache"
 ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
@@ -57,7 +68,7 @@ ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
 # Set working directory
 WORKDIR /app
 
-# Copy built binary from builder
+# Copy built server binary from builder
 COPY --from=go-builder /build/server ./server
 
 # Copy frontend, problems, and topics
