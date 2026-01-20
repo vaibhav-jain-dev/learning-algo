@@ -381,7 +381,7 @@
             });
         } else {
             // Fallback to textarea
-            wrapper.innerHTML = '<textarea id="code-fallback" style="width: 100%; height: 100%; font-family: monospace; padding: 1rem; border: none; background: #1e1e1e; color: #d4d4d4; resize: none;">' + (currentCode[currentLanguage] || getDefaultCode(currentLanguage)) + '</textarea>';
+            wrapper.innerHTML = '<textarea id="code-fallback" style="width: 100%; height: 100%; font-family: monospace; padding: 1rem; border: none; background: #fafafa; color: #333; resize: none;">' + (currentCode[currentLanguage] || getDefaultCode(currentLanguage)) + '</textarea>';
         }
     }
 
@@ -392,12 +392,13 @@
             editor = CodeMirror(wrapper, {
                 value: currentCode[currentLanguage] || getDefaultCode(currentLanguage),
                 mode: currentLanguage === 'go' ? 'text/x-go' : 'python',
-                theme: 'material-darker',
+                theme: 'default',
                 lineNumbers: true,
                 indentUnit: 4,
                 tabSize: 4,
                 matchBrackets: true,
                 autoCloseBrackets: true,
+                lineWrapping: false,
                 extraKeys: {
                     'Ctrl-Enter': function() { window.runCode(); },
                     'Cmd-Enter': function() { window.runCode(); }
@@ -621,12 +622,54 @@
         hintsContent.innerHTML = html;
     }
 
+    // Filter out test code from solution (remove if __name__ == "__main__" and func main())
+    function filterSolutionCode(code, lang) {
+        if (!code) return code;
+
+        if (lang === 'python') {
+            // Remove if __name__ == "__main__": block and everything after
+            var mainMatch = code.match(/^([\s\S]*?)(\n\s*if\s+__name__\s*==\s*["']__main__["']\s*:[\s\S]*$)/m);
+            if (mainMatch) {
+                code = mainMatch[1].trim();
+            }
+            // Also remove standalone run_tests() calls
+            code = code.replace(/\n\s*run_tests\(\)\s*$/gm, '').trim();
+        } else if (lang === 'go') {
+            // Remove func main() block
+            var lines = code.split('\n');
+            var result = [];
+            var inMain = false;
+            var braceCount = 0;
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                if (line.match(/^func\s+main\s*\(\s*\)/)) {
+                    inMain = true;
+                    braceCount = 0;
+                }
+
+                if (inMain) {
+                    braceCount += (line.match(/{/g) || []).length;
+                    braceCount -= (line.match(/}/g) || []).length;
+                    if (braceCount <= 0 && line.includes('}')) {
+                        inMain = false;
+                    }
+                    continue;
+                }
+                result.push(line);
+            }
+            code = result.join('\n').trim();
+        }
+
+        return code;
+    }
+
     function loadSolutions() {
         if (!currentProblem) return;
         var solContent = document.getElementById('solutions-content');
         if (!solContent) return;
 
-        solContent.innerHTML = '<div style="color:#888;padding:1rem;">Loading solutions...</div>';
+        solContent.innerHTML = '<div style="color:#666;padding:1rem;">Loading solutions...</div>';
 
         var basePath = '/problems/200-must-solve/' + currentProblem.category + '/' + currentProblem.id;
         if (currentProblem.similarIdx) {
@@ -638,41 +681,42 @@
             fetch(basePath + '/python_code.py').then(function(r) { return r.ok ? r.text() : null; }),
             fetch(basePath + '/golang_code.go').then(function(r) { return r.ok ? r.text() : null; })
         ]).then(function(results) {
-            var pythonCode = results[0];
-            var goCode = results[1];
+            var pythonCode = filterSolutionCode(results[0], 'python');
+            var goCode = filterSolutionCode(results[1], 'go');
 
-            var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">';
+            var html = '<div style="display:flex;flex-direction:column;gap:1.5rem;">';
 
             // Python Solution
-            html += '<div>';
-            html += '<h3 style="color:#3fb950;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+            html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
+            html += '<h3 style="color:#306998;margin:0 0 1rem 0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
             if (pythonCode) {
-                html += '<pre style="background:#1e1e1e;padding:1rem;border-radius:8px;overflow-x:auto;max-height:500px;overflow-y:auto;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+                html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
             } else {
-                html += '<p style="color:#8b949e;">No Python solution available.</p>';
+                html += '<p style="color:#888;margin:0;">No Python solution available.</p>';
             }
             html += '</div>';
 
             // Go Solution
-            html += '<div>';
-            html += '<h3 style="color:#00ADD8;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+            html += '<div style="background:#f0f5f9;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
+            html += '<h3 style="color:#00ADD8;margin:0 0 1rem 0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
             if (goCode) {
-                html += '<pre style="background:#1e1e1e;padding:1rem;border-radius:8px;overflow-x:auto;max-height:500px;overflow-y:auto;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+                html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
             } else {
-                html += '<p style="color:#8b949e;">No Go solution available.</p>';
+                html += '<p style="color:#888;margin:0;">No Go solution available.</p>';
             }
             html += '</div>';
 
             html += '</div>';
             solContent.innerHTML = html;
 
+            // Apply syntax highlighting
             if (typeof hljs !== 'undefined') {
                 solContent.querySelectorAll('pre code').forEach(function(block) {
                     hljs.highlightElement(block);
                 });
             }
         }).catch(function(err) {
-            solContent.innerHTML = '<p style="color:#da3633;">Error loading solutions: ' + err.message + '</p>';
+            solContent.innerHTML = '<p style="color:#c62828;padding:1rem;">Error loading solutions: ' + err.message + '</p>';
         });
     }
 
