@@ -1003,14 +1003,170 @@
         updateCallStack();
     }
 
+    // Problem-specific visualization configurations with complexity info
+    var problemVisualizations = {
+        // Arrays
+        '01-validate-subsequence': {
+            name: 'Validate Subsequence',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateValidateSubsequenceSteps(); }
+        },
+        '02-two-number-sum': {
+            name: 'Two Number Sum',
+            complexity: { time: 'O(n)', space: 'O(n)' },
+            generator: function() { return generateTwoNumberSumSteps(); }
+        },
+        '03-sorted-squared-array': {
+            name: 'Sorted Squared Array',
+            complexity: { time: 'O(n)', space: 'O(n)' },
+            generator: function() { return generateSortedSquaredSteps(); }
+        },
+        '04-tournament-winner': {
+            name: 'Tournament Winner',
+            complexity: { time: 'O(n)', space: 'O(k)' },
+            generator: function() { return generateTournamentWinnerSteps(); }
+        },
+        '05-non-constructible-change': {
+            name: 'Non-Constructible Change',
+            complexity: { time: 'O(n log n)', space: 'O(1)' },
+            generator: function() { return generateNonConstructibleChangeSteps(); }
+        },
+        '07-three-number-sum': {
+            name: 'Three Number Sum',
+            complexity: { time: 'O(n²)', space: 'O(n)' },
+            generator: function() { return generateThreeNumberSumSteps(); }
+        },
+        '09-move-element-to-end': {
+            name: 'Move Element To End',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateMoveElementSteps(); }
+        },
+        '11-spiral-traverse': {
+            name: 'Spiral Traverse',
+            complexity: { time: 'O(n)', space: 'O(n)' },
+            generator: function() { return generateSpiralTraverseSteps(); }
+        },
+        '12-array-of-products': {
+            name: 'Array of Products',
+            complexity: { time: 'O(n)', space: 'O(n)' },
+            generator: function() { return generateArrayOfProductsSteps(); }
+        },
+        '14-merge-overlapping-intervals': {
+            name: 'Merge Overlapping Intervals',
+            complexity: { time: 'O(n log n)', space: 'O(n)' },
+            generator: function() { return generateMergeIntervalsSteps(); }
+        },
+        // Binary Search Trees
+        '01-find-closest-value': {
+            name: 'Find Closest Value in BST',
+            complexity: { time: 'O(log n) avg, O(n) worst', space: 'O(1)' },
+            generator: function() { return generateFindClosestValueSteps(); }
+        },
+        '03-validate-bst': {
+            name: 'Validate BST',
+            complexity: { time: 'O(n)', space: 'O(d)' },
+            generator: function() { return generateValidateBSTSteps(); }
+        },
+        // Binary Trees
+        '01-branch-sums': {
+            name: 'Branch Sums',
+            complexity: { time: 'O(n)', space: 'O(n)' },
+            generator: function() { return generateBranchSumsSteps(); }
+        },
+        '03-invert-tree': {
+            name: 'Invert Binary Tree',
+            complexity: { time: 'O(n)', space: 'O(d)' },
+            generator: function() { return generateInvertTreeSteps(); }
+        },
+        // Linked Lists
+        '02-middle-node': {
+            name: 'Middle Node',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateMiddleNodeSteps(); }
+        },
+        '07-reverse-linked-list': {
+            name: 'Reverse Linked List',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateReverseLinkedListSteps(); }
+        },
+        // DP
+        '01-max-subset-sum': {
+            name: 'Max Subset Sum No Adjacent',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateMaxSubsetSumSteps(); }
+        },
+        '03-min-coins': {
+            name: 'Min Number of Coins',
+            complexity: { time: 'O(n × d)', space: 'O(n)' },
+            generator: function() { return generateMinCoinsSteps(); }
+        },
+        // Graphs
+        '01-depth-first-search': {
+            name: 'Depth First Search',
+            complexity: { time: 'O(V + E)', space: 'O(V)' },
+            generator: function() { return generateDFSSteps(); }
+        },
+        '02-breadth-first-search': {
+            name: 'Breadth First Search',
+            complexity: { time: 'O(V + E)', space: 'O(V)' },
+            generator: function() { return generateBFSSteps(); }
+        },
+        '03-topological-sort': {
+            name: 'Topological Sort',
+            complexity: { time: 'O(V + E)', space: 'O(V)' },
+            generator: function() { return generateTopologicalSortSteps(); }
+        },
+        '02-dijkstras-algorithm': {
+            name: "Dijkstra's Algorithm",
+            complexity: { time: 'O((V + E) log V)', space: 'O(V)' },
+            generator: function() { return generateDijkstraSteps(); }
+        },
+        // Recursion
+        '01-nth-fibonacci': {
+            name: 'Nth Fibonacci',
+            complexity: { time: 'O(n)', space: 'O(1)' },
+            generator: function() { return generateFibonacciSteps(); }
+        },
+        '03-permutations': {
+            name: 'Permutations',
+            complexity: { time: 'O(n! × n)', space: 'O(n! × n)' },
+            generator: function() { return generatePermutationsSteps(); }
+        }
+    };
+
     function generateSteps(category, problemId) {
-        // Check problemId first for specific algorithm visualizations
+        // Check for problem-specific visualization first
+        if (problemId && problemVisualizations[problemId]) {
+            return problemVisualizations[problemId].generator();
+        }
+
+        // Check problemId for partial matches (for algorithms with numbered prefixes)
         if (problemId) {
             if (problemId.includes('topological')) return generateTopologicalSortSteps();
             if (problemId.includes('dijkstra')) return generateDijkstraSteps();
+            if (problemId.includes('two-number-sum')) return generateTwoNumberSumSteps();
+            if (problemId.includes('validate-subsequence')) return generateValidateSubsequenceSteps();
+            if (problemId.includes('sorted-squared')) return generateSortedSquaredSteps();
+            if (problemId.includes('three-number-sum')) return generateThreeNumberSumSteps();
+            if (problemId.includes('spiral-traverse')) return generateSpiralTraverseSteps();
+            if (problemId.includes('merge-overlapping') || problemId.includes('merge-intervals')) return generateMergeIntervalsSteps();
+            if (problemId.includes('reverse-linked')) return generateReverseLinkedListSteps();
+            if (problemId.includes('middle-node')) return generateMiddleNodeSteps();
+            if (problemId.includes('branch-sums')) return generateBranchSumsSteps();
+            if (problemId.includes('invert-tree') || problemId.includes('invert-binary')) return generateInvertTreeSteps();
+            if (problemId.includes('fibonacci')) return generateFibonacciSteps();
+            if (problemId.includes('permutation')) return generatePermutationsSteps();
+            if (problemId.includes('depth-first') || problemId.includes('dfs')) return generateDFSSteps();
+            if (problemId.includes('breadth-first') || problemId.includes('bfs')) return generateBFSSteps();
+            if (problemId.includes('min-coins')) return generateMinCoinsSteps();
+            if (problemId.includes('max-subset')) return generateMaxSubsetSumSteps();
+            if (problemId.includes('array-of-products')) return generateArrayOfProductsSteps();
+            if (problemId.includes('move-element')) return generateMoveElementSteps();
+            if (problemId.includes('find-closest')) return generateFindClosestValueSteps();
+            if (problemId.includes('validate-bst')) return generateValidateBSTSteps();
         }
 
-        // Fall back to category-based generation
+        // Fall back to category-based generation with generic visualization
         if (category === 'graphs' || category === 'famous-algorithms') {
             return generateGraphSteps(problemId);
         } else if (category === 'arrays') {
@@ -1025,6 +1181,14 @@
             return generateRecursionSteps(problemId);
         }
         return generateGenericSteps();
+    }
+
+    // Get complexity info for current problem
+    function getComplexityInfo(problemId) {
+        if (problemId && problemVisualizations[problemId]) {
+            return problemVisualizations[problemId].complexity;
+        }
+        return null;
     }
 
     function generateTopologicalSortSteps() {
@@ -1148,6 +1312,1163 @@
 
     function generateDijkstraSteps() {
         return generateGraphSteps('dijkstra');
+    }
+
+    // ===== PROBLEM-SPECIFIC STEP GENERATORS =====
+
+    // Two Number Sum - Hash Table approach
+    function generateTwoNumberSumSteps() {
+        var arr = [3, 5, -4, 8, 11, 1, -1, 6];
+        var target = 10;
+        var steps = [];
+        var hashSet = [];
+
+        steps.push({
+            array: arr.slice(),
+            currentIndex: -1,
+            hashTable: [],
+            checking: null,
+            status: 'Initialize: target = ' + target,
+            vizType: 'array-hash',
+            explanation: '📋 <strong>Two Number Sum</strong><br><br>' +
+                '<strong>Problem:</strong> Find two numbers that sum to target<br>' +
+                '<strong>Approach:</strong> Hash Table (one-pass)<br><br>' +
+                '• Array: [' + arr.join(', ') + ']<br>' +
+                '• Target: ' + target + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n) - single pass<br>' +
+                '• Space: O(n) - hash table</div>'
+        });
+
+        for (var i = 0; i < arr.length; i++) {
+            var need = target - arr[i];
+            var found = hashSet.indexOf(need) !== -1;
+            steps.push({
+                array: arr.slice(),
+                currentIndex: i,
+                hashTable: hashSet.slice(),
+                checking: arr[i],
+                need: need,
+                found: found,
+                vizType: 'array-hash',
+                status: found ? 'Found pair: ' + arr[i] + ' + ' + need + ' = ' + target : 'Need: ' + need,
+                explanation: found ?
+                    '✅ <strong>SUCCESS!</strong><br><br>' +
+                    '• Current: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
+                    '• Need: <span style="color:#f0883e;">' + need + '</span><br>' +
+                    '• Found in hash table!<br><br>' +
+                    '<strong>Result:</strong> [' + need + ', ' + arr[i] + ']<br><br>' +
+                    '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                    'if complement in seen:<br>&nbsp;&nbsp;return [complement, num]</code>' :
+                    '🔍 <strong>Step ' + (i + 1) + '</strong><br><br>' +
+                    '• Current: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
+                    '• Need: ' + target + ' - ' + arr[i] + ' = <span style="color:#f0883e;">' + need + '</span><br>' +
+                    '• In hash? <span style="color:#da3633;">NO</span><br>' +
+                    '• Add ' + arr[i] + ' to hash table'
+            });
+            if (found) break;
+            hashSet.push(arr[i]);
+        }
+        return steps;
+    }
+
+    // Validate Subsequence - Two Pointers
+    function generateValidateSubsequenceSteps() {
+        var arr = [5, 1, 22, 25, 6, -1, 8, 10];
+        var seq = [1, 6, -1, 10];
+        var steps = [];
+        var seqIdx = 0;
+
+        steps.push({
+            array: arr.slice(),
+            sequence: seq.slice(),
+            arrIdx: -1,
+            seqIdx: 0,
+            vizType: 'two-arrays',
+            status: 'Initialize pointers',
+            explanation: '📋 <strong>Validate Subsequence</strong><br><br>' +
+                '<strong>Problem:</strong> Check if sequence is subsequence of array<br>' +
+                '<strong>Approach:</strong> Two Pointers<br><br>' +
+                '• Array: [' + arr.join(', ') + ']<br>' +
+                '• Sequence: [' + seq.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        for (var i = 0; i < arr.length && seqIdx < seq.length; i++) {
+            var match = arr[i] === seq[seqIdx];
+            steps.push({
+                array: arr.slice(),
+                sequence: seq.slice(),
+                arrIdx: i,
+                seqIdx: seqIdx,
+                match: match,
+                vizType: 'two-arrays',
+                status: match ? 'Match! seq[' + seqIdx + '] = ' + seq[seqIdx] : 'No match',
+                explanation: match ?
+                    '✅ <strong>Match Found!</strong><br><br>' +
+                    '• arr[' + i + '] = <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
+                    '• seq[' + seqIdx + '] = <span style="color:#3fb950;">' + seq[seqIdx] + '</span><br>' +
+                    '• Move sequence pointer forward<br>' +
+                    '• Matched: ' + (seqIdx + 1) + '/' + seq.length :
+                    '❌ <strong>No Match</strong><br><br>' +
+                    '• arr[' + i + '] = <span style="color:#f0883e;">' + arr[i] + '</span><br>' +
+                    '• seq[' + seqIdx + '] = <span style="color:#58a6ff;">' + seq[seqIdx] + '</span><br>' +
+                    '• Continue to next array element'
+            });
+            if (match) seqIdx++;
+        }
+
+        steps.push({
+            array: arr.slice(),
+            sequence: seq.slice(),
+            arrIdx: arr.length,
+            seqIdx: seqIdx,
+            vizType: 'two-arrays',
+            status: seqIdx === seq.length ? 'Valid Subsequence!' : 'Invalid',
+            explanation: seqIdx === seq.length ?
+                '✅ <strong>Valid Subsequence!</strong><br><br>' +
+                '• All elements matched in order<br>' +
+                '• Result: <span style="color:#3fb950;">true</span>' :
+                '❌ <strong>Invalid Subsequence</strong>'
+        });
+
+        return steps;
+    }
+
+    // Sorted Squared Array - Two Pointers
+    function generateSortedSquaredSteps() {
+        var arr = [-4, -1, 0, 3, 10];
+        var result = new Array(arr.length);
+        var left = 0, right = arr.length - 1;
+        var steps = [];
+
+        steps.push({
+            array: arr.slice(),
+            result: result.slice(),
+            left: left,
+            right: right,
+            insertIdx: arr.length - 1,
+            vizType: 'two-pointer-result',
+            status: 'Initialize: left=0, right=' + right,
+            explanation: '📋 <strong>Sorted Squared Array</strong><br><br>' +
+                '<strong>Problem:</strong> Square each element, return sorted<br>' +
+                '<strong>Approach:</strong> Two Pointers from ends<br><br>' +
+                '• Input: [' + arr.join(', ') + ']<br>' +
+                '• Use two pointers since largest squares are at ends<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(n)</div>'
+        });
+
+        for (var i = arr.length - 1; i >= 0; i--) {
+            var leftSq = arr[left] * arr[left];
+            var rightSq = arr[right] * arr[right];
+            var useLeft = leftSq > rightSq;
+            result[i] = useLeft ? leftSq : rightSq;
+
+            steps.push({
+                array: arr.slice(),
+                result: result.slice(),
+                left: left,
+                right: right,
+                insertIdx: i,
+                leftSq: leftSq,
+                rightSq: rightSq,
+                vizType: 'two-pointer-result',
+                status: (useLeft ? 'Left' : 'Right') + ': ' + result[i],
+                explanation: '🔄 <strong>Compare Squares</strong><br><br>' +
+                    '• left[' + left + ']² = ' + arr[left] + '² = <span style="color:#58a6ff;">' + leftSq + '</span><br>' +
+                    '• right[' + right + ']² = ' + arr[right] + '² = <span style="color:#f0883e;">' + rightSq + '</span><br>' +
+                    '• Larger: <span style="color:#3fb950;">' + result[i] + '</span> → result[' + i + ']<br>' +
+                    '• Move ' + (useLeft ? 'left' : 'right') + ' pointer'
+            });
+
+            if (useLeft) left++; else right--;
+        }
+
+        return steps;
+    }
+
+    // Three Number Sum - Sort + Two Pointers
+    function generateThreeNumberSumSteps() {
+        var arr = [-8, -6, 1, 2, 3, 5, 6, 12];
+        var target = 0;
+        var steps = [];
+
+        steps.push({
+            array: arr.slice(),
+            i: -1,
+            left: -1,
+            right: -1,
+            triplets: [],
+            vizType: 'three-pointer',
+            status: 'Sorted array, target = ' + target,
+            explanation: '📋 <strong>Three Number Sum</strong><br><br>' +
+                '<strong>Problem:</strong> Find all triplets that sum to target<br>' +
+                '<strong>Approach:</strong> Sort + Two Pointers<br><br>' +
+                '• Sorted: [' + arr.join(', ') + ']<br>' +
+                '• Target: ' + target + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n²)<br>' +
+                '• Space: O(n) for result</div>'
+        });
+
+        var triplets = [];
+        // Show a few key steps
+        steps.push({
+            array: arr.slice(),
+            i: 0, left: 1, right: 7,
+            current: arr[0],
+            triplets: [],
+            vizType: 'three-pointer',
+            status: 'i=0: -8, searching...',
+            explanation: '🔍 <strong>Fix i=0, Two Pointers</strong><br><br>' +
+                '• Fixed: <span style="color:#f0883e;">-8</span><br>' +
+                '• left=1: -6, right=7: 12<br>' +
+                '• Sum: -8 + (-6) + 12 = -2 < 0<br>' +
+                '• Move left pointer right'
+        });
+
+        steps.push({
+            array: arr.slice(),
+            i: 1, left: 2, right: 7,
+            triplets: [[-6, 1, 5]],
+            vizType: 'three-pointer',
+            status: 'Found: [-6, 1, 5]',
+            explanation: '✅ <strong>Triplet Found!</strong><br><br>' +
+                '• Fixed: <span style="color:#f0883e;">-6</span><br>' +
+                '• -6 + 1 + 5 = <span style="color:#3fb950;">0</span><br>' +
+                '• Add [-6, 1, 5] to result'
+        });
+
+        steps.push({
+            array: arr.slice(),
+            i: 2, left: 3, right: 5,
+            triplets: [[-6, 1, 5], [1, 2, -3]],
+            vizType: 'three-pointer',
+            status: 'Complete',
+            explanation: '✅ <strong>All Triplets Found</strong><br><br>' +
+                'Result: [[-6, 1, 5], ...]<br><br>' +
+                '<code style="background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                'for i in range(len(arr) - 2):<br>' +
+                '&nbsp;&nbsp;left, right = i + 1, len(arr) - 1<br>' +
+                '&nbsp;&nbsp;while left < right:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;# Two pointer logic</code>'
+        });
+
+        return steps;
+    }
+
+    // Spiral Traverse
+    function generateSpiralTraverseSteps() {
+        var matrix = [[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]];
+        var steps = [];
+        var result = [];
+
+        steps.push({
+            matrix: matrix,
+            result: [],
+            direction: 'right',
+            row: 0, col: 0,
+            vizType: 'matrix',
+            status: 'Start spiral traversal',
+            explanation: '📋 <strong>Spiral Traverse</strong><br><br>' +
+                '<strong>Problem:</strong> Traverse matrix in spiral order<br>' +
+                '<strong>Approach:</strong> Track boundaries, shrink inward<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n) where n = total elements<br>' +
+                '• Space: O(n) for result</div>'
+        });
+
+        // Simulate spiral
+        var order = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+        var positions = [[0,0],[0,1],[0,2],[0,3],[1,3],[2,3],[3,3],[3,2],[3,1],[3,0],[2,0],[1,0],[1,1],[1,2],[2,2],[2,1]];
+        var dirs = ['→','→','→','↓','↓','↓','←','←','←','↑','↑','→','→','↓','←'];
+
+        for (var i = 0; i < 6; i++) {
+            result.push(order[i]);
+            steps.push({
+                matrix: matrix,
+                result: result.slice(),
+                row: positions[i][0],
+                col: positions[i][1],
+                direction: dirs[i],
+                vizType: 'matrix',
+                status: 'Visit ' + order[i] + ' ' + dirs[i],
+                explanation: '➡️ <strong>Step ' + (i+1) + '</strong><br><br>' +
+                    '• Position: [' + positions[i][0] + ',' + positions[i][1] + ']<br>' +
+                    '• Value: <span style="color:#3fb950;">' + order[i] + '</span><br>' +
+                    '• Direction: ' + dirs[i] + '<br>' +
+                    '• Result: [' + result.join(', ') + ']'
+            });
+        }
+
+        result = order;
+        steps.push({
+            matrix: matrix,
+            result: result,
+            vizType: 'matrix',
+            status: 'Complete!',
+            explanation: '✅ <strong>Spiral Complete!</strong><br><br>' +
+                'Result: [' + result.join(', ') + ']'
+        });
+
+        return steps;
+    }
+
+    // Array of Products
+    function generateArrayOfProductsSteps() {
+        var arr = [5, 1, 4, 2];
+        var steps = [];
+
+        steps.push({
+            array: arr,
+            leftProducts: [],
+            rightProducts: [],
+            result: [],
+            phase: 'init',
+            vizType: 'array-products',
+            status: 'Two-pass approach',
+            explanation: '📋 <strong>Array of Products</strong><br><br>' +
+                '<strong>Problem:</strong> Product of all except self (no division)<br>' +
+                '<strong>Approach:</strong> Left products × Right products<br><br>' +
+                '• Input: [' + arr.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(n)</div>'
+        });
+
+        // Left pass
+        var left = [1, 5, 5, 20];
+        steps.push({
+            array: arr,
+            leftProducts: left,
+            phase: 'left',
+            vizType: 'array-products',
+            status: 'Left products computed',
+            explanation: '⬅️ <strong>Left Pass</strong><br><br>' +
+                '• left[0] = 1 (no elements to left)<br>' +
+                '• left[1] = 5 (product: 5)<br>' +
+                '• left[2] = 5×1 = 5<br>' +
+                '• left[3] = 5×1×4 = 20'
+        });
+
+        // Right pass
+        var right = [8, 8, 2, 1];
+        steps.push({
+            array: arr,
+            leftProducts: left,
+            rightProducts: right,
+            phase: 'right',
+            vizType: 'array-products',
+            status: 'Right products computed',
+            explanation: '➡️ <strong>Right Pass</strong><br><br>' +
+                '• right[3] = 1 (no elements to right)<br>' +
+                '• right[2] = 2<br>' +
+                '• right[1] = 4×2 = 8<br>' +
+                '• right[0] = 1×4×2 = 8'
+        });
+
+        // Result
+        var result = [8, 40, 10, 20];
+        steps.push({
+            array: arr,
+            leftProducts: left,
+            rightProducts: right,
+            result: result,
+            phase: 'result',
+            vizType: 'array-products',
+            status: 'Result = left × right',
+            explanation: '✅ <strong>Final Result</strong><br><br>' +
+                '• result[i] = left[i] × right[i]<br>' +
+                '• [8, 40, 10, 20]<br><br>' +
+                '<code style="background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                'result[i] = left[i] * right[i]</code>'
+        });
+
+        return steps;
+    }
+
+    // Merge Overlapping Intervals
+    function generateMergeIntervalsSteps() {
+        var intervals = [[1,2],[3,5],[4,7],[6,8],[9,10]];
+        var steps = [];
+
+        steps.push({
+            intervals: intervals,
+            merged: [],
+            current: -1,
+            vizType: 'intervals',
+            status: 'Sort by start time',
+            explanation: '📋 <strong>Merge Overlapping Intervals</strong><br><br>' +
+                '<strong>Problem:</strong> Merge all overlapping intervals<br>' +
+                '<strong>Approach:</strong> Sort + Linear merge<br><br>' +
+                '• Input: ' + JSON.stringify(intervals) + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n log n)<br>' +
+                '• Space: O(n)</div>'
+        });
+
+        steps.push({
+            intervals: intervals,
+            merged: [[1,2]],
+            current: 0,
+            vizType: 'intervals',
+            status: 'Add [1,2]',
+            explanation: '➕ Add first interval [1,2] to result'
+        });
+
+        steps.push({
+            intervals: intervals,
+            merged: [[1,2],[3,5]],
+            current: 1,
+            vizType: 'intervals',
+            status: '[3,5] - no overlap',
+            explanation: '➕ [3,5]: 3 > 2, no overlap → add new'
+        });
+
+        steps.push({
+            intervals: intervals,
+            merged: [[1,2],[3,7]],
+            current: 2,
+            vizType: 'intervals',
+            status: '[4,7] overlaps → merge',
+            explanation: '🔄 <strong>Merge!</strong><br><br>' +
+                '• [4,7]: 4 ≤ 5 → overlaps with [3,5]<br>' +
+                '• Merge to [3, max(5,7)] = [3,7]'
+        });
+
+        steps.push({
+            intervals: intervals,
+            merged: [[1,2],[3,8]],
+            current: 3,
+            vizType: 'intervals',
+            status: '[6,8] overlaps → merge',
+            explanation: '🔄 [6,8]: 6 ≤ 7 → merge to [3,8]'
+        });
+
+        steps.push({
+            intervals: intervals,
+            merged: [[1,2],[3,8],[9,10]],
+            current: 4,
+            vizType: 'intervals',
+            status: 'Complete!',
+            explanation: '✅ <strong>Result:</strong> [[1,2],[3,8],[9,10]]'
+        });
+
+        return steps;
+    }
+
+    // Move Element to End
+    function generateMoveElementSteps() {
+        var arr = [2, 1, 2, 2, 2, 3, 4, 2];
+        var toMove = 2;
+        var steps = [];
+
+        steps.push({
+            array: arr.slice(),
+            left: 0,
+            right: arr.length - 1,
+            toMove: toMove,
+            vizType: 'two-pointer',
+            status: 'Move all 2s to end',
+            explanation: '📋 <strong>Move Element To End</strong><br><br>' +
+                '<strong>Problem:</strong> Move all instances of ' + toMove + ' to end<br>' +
+                '<strong>Approach:</strong> Two Pointers (swap)<br><br>' +
+                '• Input: [' + arr.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1) in-place</div>'
+        });
+
+        // Simulate swaps
+        var states = [
+            { arr: [4, 1, 2, 2, 2, 3, 2, 2], l: 1, r: 6, action: 'Swap 2↔4' },
+            { arr: [4, 1, 3, 2, 2, 2, 2, 2], l: 3, r: 4, action: 'Swap 2↔3' },
+            { arr: [4, 1, 3, 2, 2, 2, 2, 2], l: 3, r: 2, action: 'Done!' }
+        ];
+
+        states.forEach(function(s, i) {
+            steps.push({
+                array: s.arr,
+                left: s.l,
+                right: s.r,
+                toMove: toMove,
+                vizType: 'two-pointer',
+                status: s.action,
+                explanation: i < 2 ?
+                    '🔄 <strong>' + s.action + '</strong><br><br>' +
+                    '• Left pointer at non-2, right at 2<br>' +
+                    '• Swap and move pointers' :
+                    '✅ <strong>Complete!</strong><br><br>' +
+                    'Result: [' + s.arr.join(', ') + ']'
+            });
+        });
+
+        return steps;
+    }
+
+    // Middle Node (Linked List)
+    function generateMiddleNodeSteps() {
+        var nodes = [1, 2, 3, 4, 5];
+        var steps = [];
+
+        steps.push({
+            nodes: nodes,
+            slow: 0,
+            fast: 0,
+            vizType: 'linked-list-pointers',
+            status: 'Slow/Fast pointers at head',
+            explanation: '📋 <strong>Middle Node</strong><br><br>' +
+                '<strong>Problem:</strong> Find middle of linked list<br>' +
+                '<strong>Approach:</strong> Slow & Fast Pointers<br><br>' +
+                '• List: ' + nodes.join(' → ') + '<br>' +
+                '• Slow moves 1 step, Fast moves 2 steps<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        var positions = [{s:0,f:0},{s:1,f:2},{s:2,f:4}];
+        positions.forEach(function(p, i) {
+            steps.push({
+                nodes: nodes,
+                slow: p.s,
+                fast: p.f,
+                vizType: 'linked-list-pointers',
+                status: 'slow=' + nodes[p.s] + ', fast=' + (p.f < nodes.length ? nodes[p.f] : 'null'),
+                explanation: i < 2 ?
+                    '🏃 <strong>Step ' + (i+1) + '</strong><br><br>' +
+                    '• Slow at node <span style="color:#58a6ff;">' + nodes[p.s] + '</span><br>' +
+                    '• Fast at node <span style="color:#f0883e;">' + (p.f < nodes.length ? nodes[p.f] : 'end') + '</span>' :
+                    '✅ <strong>Middle Found!</strong><br><br>' +
+                    '• Fast reached end<br>' +
+                    '• Middle: <span style="color:#3fb950;">' + nodes[p.s] + '</span>'
+            });
+        });
+
+        return steps;
+    }
+
+    // Reverse Linked List
+    function generateReverseLinkedListSteps() {
+        var steps = [];
+
+        steps.push({
+            nodes: [1, 2, 3, 4, 5],
+            prev: null,
+            curr: 0,
+            vizType: 'linked-list-reverse',
+            status: 'Initialize: prev=null, curr=head',
+            explanation: '📋 <strong>Reverse Linked List</strong><br><br>' +
+                '<strong>Problem:</strong> Reverse a singly linked list<br>' +
+                '<strong>Approach:</strong> Iterative pointer manipulation<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        var states = [
+            { visual: '1←  2→3→4→5', curr: 1, desc: '1.next = null' },
+            { visual: '1←2  3→4→5', curr: 2, desc: '2.next = 1' },
+            { visual: '1←2←3  4→5', curr: 3, desc: '3.next = 2' },
+            { visual: '1←2←3←4  5', curr: 4, desc: '4.next = 3' },
+            { visual: '1←2←3←4←5', curr: 5, desc: '5.next = 4, Done!' }
+        ];
+
+        states.forEach(function(s, i) {
+            steps.push({
+                visual: s.visual,
+                curr: s.curr,
+                vizType: 'linked-list-reverse',
+                status: s.desc,
+                explanation: '🔄 <strong>Step ' + (i+1) + '</strong><br><br>' +
+                    '• ' + s.desc + '<br>' +
+                    '• ' + s.visual
+            });
+        });
+
+        return steps;
+    }
+
+    // Branch Sums (Binary Tree)
+    function generateBranchSumsSteps() {
+        var steps = [];
+
+        steps.push({
+            tree: {val:1,left:{val:2,left:{val:4},right:{val:5}},right:{val:3,left:{val:6},right:{val:7}}},
+            path: [1],
+            sum: 1,
+            sums: [],
+            vizType: 'tree-path',
+            status: 'Start at root: 1',
+            explanation: '📋 <strong>Branch Sums</strong><br><br>' +
+                '<strong>Problem:</strong> Sum of values in each root-to-leaf path<br>' +
+                '<strong>Approach:</strong> DFS with running sum<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(n) for result</div>'
+        });
+
+        var paths = [
+            { path: [1,2,4], sum: 7, sums: [7] },
+            { path: [1,2,5], sum: 8, sums: [7,8] },
+            { path: [1,3,6], sum: 10, sums: [7,8,10] },
+            { path: [1,3,7], sum: 11, sums: [7,8,10,11] }
+        ];
+
+        paths.forEach(function(p, i) {
+            steps.push({
+                path: p.path,
+                sum: p.sum,
+                sums: p.sums,
+                vizType: 'tree-path',
+                status: 'Path ' + (i+1) + ': sum=' + p.sum,
+                explanation: '🌿 <strong>Leaf ' + (i+1) + '</strong><br><br>' +
+                    '• Path: ' + p.path.join(' → ') + '<br>' +
+                    '• Sum: <span style="color:#3fb950;">' + p.sum + '</span><br>' +
+                    '• All sums: [' + p.sums.join(', ') + ']'
+            });
+        });
+
+        return steps;
+    }
+
+    // Invert Binary Tree
+    function generateInvertTreeSteps() {
+        var steps = [];
+
+        steps.push({
+            before: '    1\n   / \\\n  2   3\n / \\\n4   5',
+            after: '    1\n   / \\\n  3   2\n     / \\\n    5   4',
+            vizType: 'tree-invert',
+            status: 'Swap children at each node',
+            explanation: '📋 <strong>Invert Binary Tree</strong><br><br>' +
+                '<strong>Problem:</strong> Mirror the tree<br>' +
+                '<strong>Approach:</strong> DFS, swap left↔right<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(h) recursive stack</div>'
+        });
+
+        steps.push({
+            node: 1,
+            action: 'Swap children of 1: 2↔3',
+            vizType: 'tree-invert',
+            status: 'Swap at root',
+            explanation: '🔄 Swap children of node 1<br>• Left: 2 → 3<br>• Right: 3 → 2'
+        });
+
+        steps.push({
+            node: 2,
+            action: 'Swap children of 2: 4↔5',
+            vizType: 'tree-invert',
+            status: 'Swap at node 2',
+            explanation: '🔄 Swap children of node 2<br>• Left: 4 → 5<br>• Right: 5 → 4'
+        });
+
+        steps.push({
+            vizType: 'tree-invert',
+            status: 'Inversion complete!',
+            explanation: '✅ <strong>Tree Inverted!</strong><br><br>' +
+                '<code style="background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                'def invert(node):<br>' +
+                '&nbsp;&nbsp;if not node: return<br>' +
+                '&nbsp;&nbsp;node.left, node.right = node.right, node.left<br>' +
+                '&nbsp;&nbsp;invert(node.left)<br>' +
+                '&nbsp;&nbsp;invert(node.right)</code>'
+        });
+
+        return steps;
+    }
+
+    // Find Closest Value in BST
+    function generateFindClosestValueSteps() {
+        var target = 12;
+        var steps = [];
+
+        steps.push({
+            nodes: [{v:10,x:200,y:30},{v:5,x:120,y:100},{v:15,x:280,y:100},{v:2,x:70,y:170},{v:13,x:230,y:170},{v:22,x:330,y:170}],
+            target: target,
+            closest: 10,
+            current: 10,
+            vizType: 'bst-search',
+            status: 'Target: 12, Start at root: 10',
+            explanation: '📋 <strong>Find Closest Value in BST</strong><br><br>' +
+                '<strong>Target:</strong> 12<br>' +
+                '<strong>Approach:</strong> BST traversal, track closest<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(log n) average<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        steps.push({
+            current: 15,
+            closest: 10,
+            vizType: 'bst-search',
+            status: '12 > 10, go right to 15',
+            explanation: '➡️ 12 > 10 → go right<br>• Current: 15<br>• |15-12| = 3 > |10-12| = 2<br>• Closest stays 10'
+        });
+
+        steps.push({
+            current: 13,
+            closest: 13,
+            vizType: 'bst-search',
+            status: '12 < 15, go left to 13',
+            explanation: '⬅️ 12 < 15 → go left<br>• Current: 13<br>• |13-12| = 1 < |10-12| = 2<br>• <span style="color:#3fb950;">Update closest = 13</span>'
+        });
+
+        steps.push({
+            current: null,
+            closest: 13,
+            vizType: 'bst-search',
+            status: 'Result: 13',
+            explanation: '✅ <strong>Closest Value: 13</strong><br><br>• 13 has no left child<br>• Return closest = 13'
+        });
+
+        return steps;
+    }
+
+    // Validate BST
+    function generateValidateBSTSteps() {
+        var steps = [];
+
+        steps.push({
+            vizType: 'bst-validate',
+            status: 'Validate BST property',
+            explanation: '📋 <strong>Validate BST</strong><br><br>' +
+                '<strong>Problem:</strong> Check if tree is valid BST<br>' +
+                '<strong>Approach:</strong> DFS with min/max bounds<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(d) depth</div>'
+        });
+
+        steps.push({
+            node: 10,
+            min: '-∞',
+            max: '∞',
+            valid: true,
+            vizType: 'bst-validate',
+            status: 'Root 10: (-∞, ∞) ✓',
+            explanation: '✅ Node 10 in range (-∞, ∞)'
+        });
+
+        steps.push({
+            node: 5,
+            min: '-∞',
+            max: '10',
+            valid: true,
+            vizType: 'bst-validate',
+            status: 'Left 5: (-∞, 10) ✓',
+            explanation: '✅ Node 5 in range (-∞, 10)'
+        });
+
+        steps.push({
+            node: 15,
+            min: '10',
+            max: '∞',
+            valid: true,
+            vizType: 'bst-validate',
+            status: 'Right 15: (10, ∞) ✓',
+            explanation: '✅ Node 15 in range (10, ∞)<br><br>' +
+                '<code style="background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                'def validate(node, min, max):<br>' +
+                '&nbsp;&nbsp;if not node: return True<br>' +
+                '&nbsp;&nbsp;if node.val <= min or node.val >= max:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;return False<br>' +
+                '&nbsp;&nbsp;return validate(node.left, min, node.val) and \\<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validate(node.right, node.val, max)</code>'
+        });
+
+        return steps;
+    }
+
+    // Max Subset Sum No Adjacent (DP)
+    function generateMaxSubsetSumSteps() {
+        var arr = [7, 10, 12, 7, 9, 14];
+        var steps = [];
+
+        steps.push({
+            array: arr,
+            dp: [],
+            vizType: 'dp-array',
+            status: 'Max sum of non-adjacent elements',
+            explanation: '📋 <strong>Max Subset Sum No Adjacent</strong><br><br>' +
+                '<strong>Problem:</strong> Max sum where no two elements are adjacent<br>' +
+                '<strong>Approach:</strong> DP with two variables<br><br>' +
+                '• Input: [' + arr.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        // Simulate DP
+        var dpStates = [
+            { prev: 0, curr: 7, choice: 'Take 7' },
+            { prev: 7, curr: 10, choice: 'Take 10 (10 > 7)' },
+            { prev: 10, curr: 19, choice: 'Take 12+7=19' },
+            { prev: 19, curr: 19, choice: 'Skip 7' },
+            { prev: 19, curr: 28, choice: 'Take 9+19=28' },
+            { prev: 28, curr: 33, choice: 'Take 14+19=33' }
+        ];
+
+        dpStates.forEach(function(s, i) {
+            steps.push({
+                array: arr,
+                idx: i,
+                prev: s.prev,
+                curr: s.curr,
+                vizType: 'dp-array',
+                status: s.choice,
+                explanation: '📊 <strong>i=' + i + ' (arr[i]=' + arr[i] + ')</strong><br><br>' +
+                    '• prev: ' + s.prev + ', curr: ' + s.curr + '<br>' +
+                    '• Choice: ' + s.choice
+            });
+        });
+
+        steps.push({
+            array: arr,
+            result: 33,
+            vizType: 'dp-array',
+            status: 'Result: 33',
+            explanation: '✅ <strong>Max Sum: 33</strong><br><br>' +
+                'Selected: 7 + 12 + 14 = 33<br><br>' +
+                '<code style="background:#21262d;padding:0.5rem;display:block;border-radius:4px;">' +
+                'prev, curr = 0, 0<br>' +
+                'for num in arr:<br>' +
+                '&nbsp;&nbsp;prev, curr = curr, max(curr, prev + num)</code>'
+        });
+
+        return steps;
+    }
+
+    // Min Coins (DP)
+    function generateMinCoinsSteps() {
+        var coins = [1, 2, 5];
+        var amount = 11;
+        var steps = [];
+
+        steps.push({
+            coins: coins,
+            amount: amount,
+            dp: [0],
+            vizType: 'dp-coins',
+            status: 'Min coins for amount 11',
+            explanation: '📋 <strong>Min Number of Coins</strong><br><br>' +
+                '<strong>Problem:</strong> Min coins to make amount<br>' +
+                '<strong>Approach:</strong> Bottom-up DP<br><br>' +
+                '• Coins: [' + coins.join(', ') + ']<br>' +
+                '• Amount: ' + amount + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(amount × coins)<br>' +
+                '• Space: O(amount)</div>'
+        });
+
+        var dp = [0, 1, 1, 2, 2, 1, 2, 2, 3, 3, 2, 3];
+        for (var i = 1; i <= 5; i++) {
+            steps.push({
+                coins: coins,
+                amount: i,
+                dp: dp.slice(0, i + 1),
+                current: i,
+                vizType: 'dp-coins',
+                status: 'dp[' + i + '] = ' + dp[i],
+                explanation: '📊 <strong>Amount ' + i + '</strong><br><br>' +
+                    '• dp[' + i + '] = ' + dp[i] + ' coin(s)<br>' +
+                    '• DP so far: [' + dp.slice(0, i + 1).join(', ') + ']'
+            });
+        }
+
+        steps.push({
+            coins: coins,
+            amount: amount,
+            dp: dp,
+            result: 3,
+            vizType: 'dp-coins',
+            status: 'Result: 3 coins (5+5+1)',
+            explanation: '✅ <strong>Min Coins: 3</strong><br><br>' +
+                '• 11 = 5 + 5 + 1<br>' +
+                '• dp[11] = 3'
+        });
+
+        return steps;
+    }
+
+    // DFS
+    function generateDFSSteps() {
+        var steps = [];
+
+        steps.push({
+            graph: {A:['B','C'],B:['D'],C:['E'],D:[],E:[]},
+            visited: [],
+            stack: ['A'],
+            vizType: 'graph-dfs',
+            status: 'DFS from A',
+            explanation: '📋 <strong>Depth First Search</strong><br><br>' +
+                '<strong>Approach:</strong> Go deep before wide (stack/recursion)<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(V + E)<br>' +
+                '• Space: O(V)</div>'
+        });
+
+        var dfsOrder = [
+            { v: ['A'], s: ['B','C'], curr: 'A' },
+            { v: ['A','B'], s: ['D','C'], curr: 'B' },
+            { v: ['A','B','D'], s: ['C'], curr: 'D' },
+            { v: ['A','B','D','C'], s: ['E'], curr: 'C' },
+            { v: ['A','B','D','C','E'], s: [], curr: 'E' }
+        ];
+
+        dfsOrder.forEach(function(s, i) {
+            steps.push({
+                visited: s.v,
+                stack: s.s,
+                current: s.curr,
+                vizType: 'graph-dfs',
+                status: 'Visit ' + s.curr,
+                explanation: '🔍 <strong>Visit ' + s.curr + '</strong><br><br>' +
+                    '• Visited: [' + s.v.join(' → ') + ']<br>' +
+                    '• Stack: [' + s.s.join(', ') + ']'
+            });
+        });
+
+        return steps;
+    }
+
+    // BFS
+    function generateBFSSteps() {
+        var steps = [];
+
+        steps.push({
+            graph: {A:['B','C'],B:['D'],C:['E'],D:[],E:[]},
+            visited: [],
+            queue: ['A'],
+            vizType: 'graph-bfs',
+            status: 'BFS from A',
+            explanation: '📋 <strong>Breadth First Search</strong><br><br>' +
+                '<strong>Approach:</strong> Level by level (queue)<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(V + E)<br>' +
+                '• Space: O(V)</div>'
+        });
+
+        var bfsOrder = [
+            { v: ['A'], q: ['B','C'], curr: 'A' },
+            { v: ['A','B'], q: ['C','D'], curr: 'B' },
+            { v: ['A','B','C'], q: ['D','E'], curr: 'C' },
+            { v: ['A','B','C','D'], q: ['E'], curr: 'D' },
+            { v: ['A','B','C','D','E'], q: [], curr: 'E' }
+        ];
+
+        bfsOrder.forEach(function(s, i) {
+            steps.push({
+                visited: s.v,
+                queue: s.q,
+                current: s.curr,
+                vizType: 'graph-bfs',
+                status: 'Visit ' + s.curr,
+                explanation: '🔍 <strong>Visit ' + s.curr + '</strong><br><br>' +
+                    '• Visited: [' + s.v.join(' → ') + ']<br>' +
+                    '• Queue: [' + s.q.join(', ') + ']'
+            });
+        });
+
+        return steps;
+    }
+
+    // Fibonacci
+    function generateFibonacciSteps() {
+        var steps = [];
+        var n = 6;
+
+        steps.push({
+            n: n,
+            sequence: [0, 1],
+            vizType: 'fib-sequence',
+            status: 'Calculate Fib(6)',
+            explanation: '📋 <strong>Nth Fibonacci</strong><br><br>' +
+                '<strong>Approach:</strong> Iterative (optimized)<br><br>' +
+                '• F(0) = 0, F(1) = 1<br>' +
+                '• F(n) = F(n-1) + F(n-2)<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        var seq = [0, 1, 1, 2, 3, 5, 8];
+        for (var i = 2; i <= n; i++) {
+            steps.push({
+                n: i,
+                sequence: seq.slice(0, i + 1),
+                prev: seq[i-1],
+                prevPrev: seq[i-2],
+                current: seq[i],
+                vizType: 'fib-sequence',
+                status: 'F(' + i + ') = ' + seq[i-1] + ' + ' + seq[i-2] + ' = ' + seq[i],
+                explanation: '🔢 <strong>F(' + i + ')</strong><br><br>' +
+                    '• F(' + (i-1) + ') + F(' + (i-2) + ') = ' + seq[i-1] + ' + ' + seq[i-2] + '<br>' +
+                    '• = <span style="color:#3fb950;">' + seq[i] + '</span>'
+            });
+        }
+
+        return steps;
+    }
+
+    // Permutations
+    function generatePermutationsSteps() {
+        var arr = [1, 2, 3];
+        var steps = [];
+
+        steps.push({
+            array: arr,
+            perms: [],
+            current: [],
+            vizType: 'permutations',
+            status: 'Generate all permutations',
+            explanation: '📋 <strong>Permutations</strong><br><br>' +
+                '<strong>Problem:</strong> All arrangements of [1, 2, 3]<br>' +
+                '<strong>Approach:</strong> Backtracking<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n! × n)<br>' +
+                '• Space: O(n!)</div>'
+        });
+
+        var perms = [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
+        perms.forEach(function(p, i) {
+            steps.push({
+                array: arr,
+                perms: perms.slice(0, i + 1),
+                current: p,
+                vizType: 'permutations',
+                status: 'Found: [' + p.join(', ') + ']',
+                explanation: '✅ <strong>Permutation ' + (i+1) + '</strong><br><br>' +
+                    '[' + p.join(', ') + ']<br>' +
+                    '• Total found: ' + (i + 1)
+            });
+        });
+
+        return steps;
+    }
+
+    // Tournament Winner
+    function generateTournamentWinnerSteps() {
+        var competitions = [['A','B'],['B','C'],['C','A']];
+        var results = [0, 0, 1]; // 0=home wins, 1=away wins
+        var steps = [];
+
+        steps.push({
+            competitions: competitions,
+            results: results,
+            scores: {},
+            vizType: 'tournament',
+            status: 'Track scores with hash map',
+            explanation: '📋 <strong>Tournament Winner</strong><br><br>' +
+                '<strong>Problem:</strong> Find team with most points<br>' +
+                '<strong>Approach:</strong> Hash map for scores<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n)<br>' +
+                '• Space: O(k) teams</div>'
+        });
+
+        var scoreStates = [
+            { scores: {A:3}, game: 'A vs B → A wins' },
+            { scores: {A:3,B:3}, game: 'B vs C → B wins' },
+            { scores: {A:6,B:3}, game: 'C vs A → A wins' }
+        ];
+
+        scoreStates.forEach(function(s, i) {
+            steps.push({
+                game: i,
+                scores: s.scores,
+                vizType: 'tournament',
+                status: s.game,
+                explanation: '🏆 <strong>Game ' + (i+1) + '</strong><br><br>' +
+                    '• ' + s.game + '<br>' +
+                    '• Scores: ' + JSON.stringify(s.scores)
+            });
+        });
+
+        steps.push({
+            scores: {A:6,B:3},
+            winner: 'A',
+            vizType: 'tournament',
+            status: 'Winner: Team A (6 points)',
+            explanation: '✅ <strong>Winner: Team A</strong><br><br>' +
+                '• A: 6 points<br>• B: 3 points<br>• C: 0 points'
+        });
+
+        return steps;
+    }
+
+    // Non-Constructible Change
+    function generateNonConstructibleChangeSteps() {
+        var coins = [5, 7, 1, 1, 2, 3, 22];
+        var sorted = [1, 1, 2, 3, 5, 7, 22];
+        var steps = [];
+
+        steps.push({
+            coins: coins,
+            sorted: sorted,
+            change: 0,
+            vizType: 'coins-change',
+            status: 'Sort coins first',
+            explanation: '📋 <strong>Non-Constructible Change</strong><br><br>' +
+                '<strong>Problem:</strong> Find min change we cannot create<br>' +
+                '<strong>Approach:</strong> Sort + greedy<br><br>' +
+                '• Sorted: [' + sorted.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>' +
+                '• Time: O(n log n)<br>' +
+                '• Space: O(1)</div>'
+        });
+
+        var changes = [0, 1, 2, 4, 7, 12, 19, 20];
+        for (var i = 0; i < sorted.length; i++) {
+            var canMake = sorted[i] <= changes[i] + 1;
+            steps.push({
+                sorted: sorted,
+                idx: i,
+                coin: sorted[i],
+                change: changes[i],
+                newChange: canMake ? changes[i+1] : changes[i],
+                canMake: canMake,
+                vizType: 'coins-change',
+                status: canMake ? 'Can make 1-' + changes[i+1] : 'Cannot make ' + (changes[i] + 1),
+                explanation: canMake ?
+                    '✅ coin ' + sorted[i] + ' ≤ change+1 (' + (changes[i]+1) + ')<br>' +
+                    '• New change: ' + changes[i+1] :
+                    '❌ <strong>Found gap!</strong><br>' +
+                    '• coin ' + sorted[i] + ' > change+1 (' + (changes[i]+1) + ')<br>' +
+                    '• Cannot make: <span style="color:#3fb950;">' + (changes[i] + 1) + '</span>'
+            });
+            if (!canMake) break;
+        }
+
+        return steps;
     }
 
     function generateArraySteps(problemId) {
