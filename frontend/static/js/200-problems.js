@@ -1165,9 +1165,32 @@
 
     // Change selected example and reinitialize visualization
     window.selectVisualizationExample = function(index) {
+        // Stop any running animation first
+        window.vizPause();
+
         selectedExampleIndex = parseInt(index);
+
+        // Reset visualization state
+        vizState.currentStep = 0;
+        vizState.isPlaying = false;
+
         if (currentProblem) {
+            // Reinitialize with new example
             initializeVisualization(currentProblem.category, currentProblem.id);
+
+            // Update the input/output display
+            var vizContent = document.getElementById('visualization-content');
+            if (vizContent && currentExamples.length > 0 && currentExamples[selectedExampleIndex]) {
+                var ex = currentExamples[selectedExampleIndex];
+                var inputOutputDiv = vizContent.querySelector('[style*="grid-template-columns: 1fr 1fr"]');
+                if (inputOutputDiv && inputOutputDiv.parentElement) {
+                    inputOutputDiv.parentElement.innerHTML =
+                        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">' +
+                        '<div><span style="color:#58a6ff;font-weight:600;">Input:</span> <code style="color:#3fb950;">' + (ex.inputRaw || 'N/A') + '</code></div>' +
+                        '<div><span style="color:#f0883e;font-weight:600;">Expected Output:</span> <code style="color:#3fb950;">' + (ex.outputRaw || 'N/A') + '</code></div>' +
+                        '</div>';
+                }
+            }
         }
     };
 
@@ -1812,6 +1835,39 @@
         if (output) output.innerHTML = '<div class="output-placeholder">Run your code to see output here</div>';
     };
 
+    // Copy solution to code editor
+    window.copyToEditor = function(lang) {
+        var code = fullSolutions[lang];
+        if (!code) {
+            alert('No ' + lang + ' solution available');
+            return;
+        }
+
+        // Switch to the correct language
+        window.setLanguage(lang);
+
+        // Set the code in editor
+        if (editor) {
+            editor.setValue(code);
+            currentCode[lang] = code;
+        } else {
+            var fallback = document.getElementById('code-fallback');
+            if (fallback) {
+                fallback.value = code;
+                currentCode[lang] = code;
+            }
+        }
+
+        // Switch to Problem tab to show the editor
+        window.showDescTab('problem');
+
+        // Show feedback
+        var output = document.getElementById('output-content');
+        if (output) {
+            output.innerHTML = '<div style="color:#3fb950;padding:0.5rem;">✓ ' + (lang === 'python' ? 'Python' : 'Go') + ' solution copied to editor. Press Run to execute!</div>';
+        }
+    };
+
     // Store original description content for filtering
     var originalDescription = '';
 
@@ -2019,7 +2075,12 @@
 
             // Python Solution
             html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-            html += '<h3 style="color:#306998;margin:0 0 1rem 0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
+            html += '<h3 style="color:#306998;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+            if (pythonCode) {
+                html += '<button onclick="window.copyToEditor(\'python\')" style="background:#306998;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+            }
+            html += '</div>';
             if (pythonCode) {
                 html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
             } else {
@@ -2029,7 +2090,12 @@
 
             // Go Solution
             html += '<div style="background:#f0f5f9;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-            html += '<h3 style="color:#00ADD8;margin:0 0 1rem 0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
+            html += '<h3 style="color:#00ADD8;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+            if (goCode) {
+                html += '<button onclick="window.copyToEditor(\'go\')" style="background:#00ADD8;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+            }
+            html += '</div>';
             if (goCode) {
                 html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
             } else {
@@ -2101,35 +2167,53 @@
         var exampleSelectorHtml = '';
         if (currentExamples.length > 0) {
             exampleSelectorHtml = '<select id="viz-example-selector" onchange="window.selectVisualizationExample(this.value)" ' +
-                'style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.6rem;border-radius:4px;font-size:0.85rem;cursor:pointer;">';
+                'style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.6rem;border-radius:4px;font-size:0.85rem;cursor:pointer;max-width:250px;">';
             for (var i = 0; i < currentExamples.length; i++) {
                 var ex = currentExamples[i];
-                var label = 'Example ' + (i + 1);
-                // Try to create a distinctive label using output or key parts of input
-                if (ex.outputRaw) {
-                    var outStr = ex.outputRaw.toString();
-                    if (outStr.length <= 20) {
-                        label += ' → ' + outStr;
+                var label = 'Ex ' + (i + 1);
+
+                // Create distinctive labels showing both key input AND output
+                var inputPart = '';
+                var outputPart = '';
+
+                // Get distinctive input part
+                if (ex.inputRaw) {
+                    var inStr = ex.inputRaw.toString();
+                    // Try to extract the most distinctive part
+                    if (inStr.includes('sequence=')) {
+                        var seqMatch = inStr.match(/sequence=\[([^\]]{0,15})/);
+                        if (seqMatch) inputPart = 'seq=[' + seqMatch[1] + (seqMatch[1].length >= 15 ? '...' : '') + ']';
+                    } else if (inStr.includes('targetSum=')) {
+                        var targetMatch = inStr.match(/targetSum=(\d+)/);
+                        if (targetMatch) inputPart = 'target=' + targetMatch[1];
+                    } else if (inStr.includes('toMove=')) {
+                        var moveMatch = inStr.match(/toMove=(\d+)/);
+                        if (moveMatch) inputPart = 'move=' + moveMatch[1];
                     } else {
-                        label += ' → ' + outStr.substring(0, 18) + '...';
-                    }
-                } else if (ex.inputRaw) {
-                    // Show last part of input (often more distinctive)
-                    var inStr = ex.inputRaw;
-                    // Try to find a distinctive part (after comma or =)
-                    var parts = inStr.split(', ');
-                    if (parts.length > 1) {
-                        // Show last parameter which is often different
-                        var lastPart = parts[parts.length - 1];
-                        if (lastPart.length > 25) lastPart = lastPart.substring(0, 23) + '...';
-                        label += ': ' + lastPart;
-                    } else {
-                        var shortInput = inStr.substring(0, 25);
-                        if (inStr.length > 25) shortInput += '...';
-                        label += ': ' + shortInput;
+                        // Generic: show first 15 chars
+                        inputPart = inStr.length > 15 ? inStr.substring(0, 15) + '...' : inStr;
                     }
                 }
-                exampleSelectorHtml += '<option value="' + i + '"' + (i === selectedExampleIndex ? ' selected' : '') + '>' + label + '</option>';
+
+                // Get output part
+                if (ex.outputRaw !== undefined && ex.outputRaw !== null) {
+                    var outStr = ex.outputRaw.toString();
+                    outputPart = outStr.length > 12 ? outStr.substring(0, 12) + '...' : outStr;
+                } else if (ex.output !== undefined && ex.output !== null) {
+                    var outStr2 = JSON.stringify(ex.output);
+                    outputPart = outStr2.length > 12 ? outStr2.substring(0, 12) + '...' : outStr2;
+                }
+
+                // Build label
+                if (inputPart && outputPart) {
+                    label += ': ' + inputPart + ' → ' + outputPart;
+                } else if (outputPart) {
+                    label += ' → ' + outputPart;
+                } else if (inputPart) {
+                    label += ': ' + inputPart;
+                }
+
+                exampleSelectorHtml += '<option value="' + i + '"' + (i === selectedExampleIndex ? ' selected' : '') + '>' + escapeHtml(label) + '</option>';
             }
             exampleSelectorHtml += '</select>';
         }
