@@ -6,6 +6,9 @@
     <div class="topic-grid">
         {{range .Category.Topics}}
         <a href="/topic/{{$.CategorySlug}}/{{.Slug}}" class="topic-card{{if not .HasContent}} coming-soon{{end}}">
+            {{if .Icon}}
+            <div class="topic-card-icon">{{.Icon}}</div>
+            {{end}}
             <h3>{{.Title}}</h3>
             {{if .Description}}
             <p>{{.Description}}</p>
@@ -33,47 +36,7 @@
 </div>
 
 <style>
-.topic-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.topic-page h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2.5rem;
-    color: var(--text-primary);
-}
-
-.page-description {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-}
-
-.topic-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.topic-card {
-    display: block;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-.topic-card:hover {
-    border-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
+/* Coming Soon Badge */
 .topic-card.coming-soon {
     opacity: 0.7;
 }
@@ -82,56 +45,22 @@
     opacity: 0.9;
 }
 
-.topic-card h3 {
-    margin: 0 0 0.75rem 0;
-    color: var(--text-primary);
-    font-size: 1.25rem;
-}
-
-.topic-card p {
-    margin: 0 0 1rem 0;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-.topic-card .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.topic-card .tag {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
 .coming-soon-badge {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: var(--warning-color, #f59e0b);
+    top: var(--space-3, 0.75rem);
+    right: var(--space-3, 0.75rem);
+    background: var(--color-warning, #f59e0b);
     color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.7rem;
-    font-weight: 600;
+    padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+    border-radius: var(--radius-sm, 4px);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: var(--font-semibold, 600);
     text-transform: uppercase;
 }
 
 .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
-    color: var(--text-secondary);
-}
-
-/* Dark mode adjustments */
-[data-theme="dark"] .topic-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: var(--space-12, 3rem) var(--space-6, 1.5rem);
+    color: var(--color-text-secondary, #64748b);
 }
 </style>
