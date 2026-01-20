@@ -25,11 +25,11 @@ Input:
 
 Target: 5, K: 2
 
-Output: [1, 7, 8]
+Output: [1, 4]
 Explanation:
 - Node 1 is 2 edges away (5 -> 2 -> 1)
-- Node 7 is 2 edges away (5 -> 7)
-- Node 8 is 2 edges away (5 -> 8)
+- Node 4 is 2 edges away (5 -> 2 -> 4)
+- Note: Nodes 7 and 8 are only 1 edge away (direct children of 5)
 ```
 
 **Example 2:**

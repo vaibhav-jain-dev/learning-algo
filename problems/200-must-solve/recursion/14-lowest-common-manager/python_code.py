@@ -8,9 +8,13 @@ from typing import List, Optional, Tuple
 from dataclasses import dataclass, field
 
 
-@dataclass
+@dataclass(eq=False)
 class Employee:
-    """Represents an employee in the organization."""
+    """Represents an employee in the organization.
+
+    Note: eq=False makes this hashable and uses identity comparison,
+    which is appropriate for tree node comparisons.
+    """
     name: str
     direct_reports: List['Employee'] = field(default_factory=list)
 
@@ -68,7 +72,9 @@ def get_lowest_common_manager(
             num_found += child_count
 
         # Check if current employee is one of the targets
-        if current == employee1 or current == employee2:
+        if current is employee1:
+            num_found += 1
+        if current is employee2:
             num_found += 1
 
         # If we've found both employees, current is the LCM

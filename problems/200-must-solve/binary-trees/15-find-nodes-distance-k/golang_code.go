@@ -187,7 +187,7 @@ func main() {
 	result1 := FindNodesDistanceK(root1, 5, 2)
 	sort.Ints(result1)
 	fmt.Printf("Test 1: %v\n", result1)
-	// Expected: [1, 7, 8]
+	// Expected: [1, 4]
 
 	// Test 2: Root as target
 	//         1
@@ -247,7 +247,7 @@ func main() {
 	result7 := FindNodesDistanceKDFS(root1, 5, 2)
 	sort.Ints(result7)
 	fmt.Printf("Test 7 (DFS approach): %v\n", result7)
-	// Expected: [1, 7, 8]
+	// Expected: [1, 4]
 
 	// Test 8: Larger tree
 	//              1

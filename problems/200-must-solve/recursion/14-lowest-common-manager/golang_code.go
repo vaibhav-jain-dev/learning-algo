@@ -56,7 +56,10 @@ func dfs(current, emp1, emp2 *Employee) dfsResult {
 	}
 
 	// Check if current employee is one of the targets
-	if current == emp1 || current == emp2 {
+	if current == emp1 {
+		numFound++
+	}
+	if current == emp2 {
 		numFound++
 	}
 

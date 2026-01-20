@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     result1 = find_nodes_distance_k(root1, 5, 2)
     print(f"Test 1: {sorted(result1)}")
-    # Expected: [1, 7, 8]
+    # Expected: [1, 4]
 
     # Test 2: Root as target
     #         1
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     # Test 7: DFS approach verification
     result7 = find_nodes_distance_k_dfs(root1, 5, 2)
     print(f"Test 7 (DFS approach): {sorted(result7)}")
-    # Expected: [1, 7, 8]
+    # Expected: [1, 4]
 
     # Test 8: Larger tree
     #              1
