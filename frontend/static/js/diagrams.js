@@ -3,6 +3,9 @@
  * Beautiful, animated diagrams for learning concepts
  */
 
+// Prevent duplicate declarations on HTMX navigation
+if (typeof DiagramEngine === 'undefined') {
+
 class DiagramEngine {
     constructor() {
         this.diagrams = new Map();
@@ -39,9 +42,6 @@ class DiagramEngine {
         return element;
     }
 }
-
-// Global engine instance
-const diagramEngine = new DiagramEngine();
 
 /**
  * State Machine Diagram
@@ -637,12 +637,17 @@ class TreeDiagram {
     }
 }
 
+// Global engine instance
+window.diagramEngine = new DiagramEngine();
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    diagramEngine.renderAll();
+    window.diagramEngine.renderAll();
 });
 
 // Re-render diagrams after HTMX swaps
 document.body.addEventListener('htmx:afterSwap', () => {
-    diagramEngine.renderAll();
+    window.diagramEngine.renderAll();
 });
+
+} // End of DiagramEngine undefined check

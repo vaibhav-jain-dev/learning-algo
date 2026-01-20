@@ -1,0 +1,71 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Tests
+*_test.go
+**/*_test.py
+tests/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.docker/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Makefile
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (if any)
+node_modules/
+
+# Python virtual env
+venv/
+.venv/
+env/
+.env
+*.egg-info/
+
+# Go
+vendor/
+
+# Local config
+*.local
+.env.local
+.env.*.local

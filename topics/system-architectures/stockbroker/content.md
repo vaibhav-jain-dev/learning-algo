@@ -195,37 +195,64 @@ Design a real-time stock trading platform that allows users to buy/sell stocks, 
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    MONOLITHIC APPLICATION                    │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
-│  │   Web UI    │ │  REST API   │ │  WebSocket Server   │   │
-│  └──────┬──────┘ └──────┬──────┘ └──────────┬──────────┘   │
-│         └───────────────┴───────────────────┘               │
-│                         │                                    │
-│  ┌──────────────────────┴──────────────────────────┐       │
-│  │              Business Logic Layer                │       │
-│  │  ┌─────────┐ ┌──────────┐ ┌─────────────────┐  │       │
-│  │  │ Orders  │ │ Portfolio │ │ Market Data     │  │       │
-│  │  └─────────┘ └──────────┘ └─────────────────┘  │       │
-│  │  ┌─────────┐ ┌──────────┐ ┌─────────────────┐  │       │
-│  │  │ Users   │ │ Matching │ │ Notifications   │  │       │
-│  │  └─────────┘ └──────────┘ └─────────────────┘  │       │
-│  └─────────────────────────────────────────────────┘       │
-│                         │                                    │
-│  ┌──────────────────────┴──────────────────────────┐       │
-│  │              Data Access Layer                   │       │
-│  └──────────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────────┘
-                          │
-        ┌─────────────────┼─────────────────┐
-        ▼                 ▼                 ▼
-   ┌─────────┐     ┌───────────┐     ┌───────────┐
-   │PostgreSQL│     │   Redis   │     │   S3      │
-   │(Primary) │     │  (Cache)  │     │ (Backups) │
-   └─────────┘     └───────────┘     └───────────┘
-```
+<div style="border: 2px solid #58a6ff; border-radius: 12px; overflow: hidden;">
+<div style="background: #58a6ff; color: #0d1117; padding: 12px; text-align: center; font-weight: 600;">MONOLITHIC APPLICATION</div>
+<div style="padding: 20px;">
+
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600; font-size: 14px;">Web UI</div>
+</div>
+<div style="background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600; font-size: 14px;">REST API</div>
+</div>
+<div style="background: #21262d; border: 1px solid #30363d; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600; font-size: 14px;">WebSocket Server</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 20px; margin: 8px 0;">↓</div>
+
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #a371f7; font-weight: 600; text-align: center; margin-bottom: 12px;">Business Logic Layer</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Orders</div>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Portfolio</div>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Market Data</div>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Users</div>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Matching</div>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; color: #c9d1d9; font-size: 13px;">Notifications</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 20px; margin: 8px 0;">↓</div>
+
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: 600;">Data Access Layer</div>
+</div>
+
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 16px 0;">↓</div>
+
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #238636; border-radius: 8px; padding: 16px; text-align: center; min-width: 100px;">
+<div style="font-size: 24px;">🐘</div>
+<div style="color: #7ee787; font-weight: 600; font-size: 13px;">PostgreSQL</div>
+<div style="color: #8b949e; font-size: 11px;">(Primary)</div>
+</div>
+<div style="background: #21262d; border: 2px solid #f85149; border-radius: 8px; padding: 16px; text-align: center; min-width: 100px;">
+<div style="font-size: 24px;">🔴</div>
+<div style="color: #f85149; font-weight: 600; font-size: 13px;">Redis</div>
+<div style="color: #8b949e; font-size: 11px;">(Cache)</div>
+</div>
+<div style="background: #21262d; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; text-align: center; min-width: 100px;">
+<div style="font-size: 24px;">☁️</div>
+<div style="color: #f0883e; font-weight: 600; font-size: 13px;">S3</div>
+<div style="color: #8b949e; font-size: 11px;">(Backups)</div>
+</div>
+</div>
 
 </div>
 
@@ -285,21 +312,49 @@ class MatchingEngine:
 
 #### If You Must Use Microservices:
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  API Gateway │────▶│ Order Service│────▶│  PostgreSQL  │
-└──────────────┘     └──────────────┘     └──────────────┘
-        │                   │
-        │            ┌──────▼──────┐
-        │            │   Redis     │
-        │            │ (Pub/Sub)   │
-        │            └──────┬──────┘
-        │                   │
-        ▼                   ▼
-┌──────────────┐     ┌──────────────┐
-│Market Service│     │ Notification │
-└──────────────┘     └──────────────┘
-```
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+<div style="background: #238636; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: white; font-weight: 600; font-size: 13px;">API Gateway</div>
+</div>
+<div style="color: #58a6ff; font-size: 20px;">→</div>
+<div style="background: #1f6feb; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: white; font-weight: 600; font-size: 13px;">Order Service</div>
+</div>
+<div style="color: #58a6ff; font-size: 20px;">→</div>
+<div style="background: #21262d; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #7ee787; font-weight: 600; font-size: 13px;">PostgreSQL</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 80px; margin: 16px 0;">
+<div style="text-align: center; color: #58a6ff; font-size: 20px;">↓</div>
+<div style="text-align: center; color: #58a6ff; font-size: 20px;">↓</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #f85149; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #f85149; font-weight: 600; font-size: 13px;">Redis</div>
+<div style="color: #8b949e; font-size: 11px;">(Pub/Sub)</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 80px; margin: 16px 0;">
+<div style="text-align: center; color: #58a6ff; font-size: 20px;">↓</div>
+<div style="text-align: center; color: #58a6ff; font-size: 20px;">↓</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: #8957e5; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: white; font-weight: 600; font-size: 13px;">Market Service</div>
+</div>
+<div style="background: #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: white; font-weight: 600; font-size: 13px;">Notification</div>
+</div>
+</div>
+
+</div>
 
 </div>
 </div>
@@ -321,31 +376,49 @@ class MatchingEngine:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-                    ┌─────────────────────┐
-                    │   Load Balancer     │
-                    │   (AWS ALB/NLB)     │
-                    └──────────┬──────────┘
-                               │
-           ┌───────────────────┼───────────────────┐
-           ▼                   ▼                   ▼
-    ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-    │   App       │     │   App       │     │   App       │
-    │ Instance 1  │     │ Instance 2  │     │ Instance 3  │
-    └──────┬──────┘     └──────┬──────┘     └──────┬──────┘
-           │                   │                   │
-           └───────────────────┼───────────────────┘
-                               │
-    ┌──────────────────────────┼──────────────────────────┐
-    │                          ▼                          │
-    │  ┌─────────────┐  ┌─────────────┐  ┌────────────┐  │
-    │  │ PostgreSQL  │  │   Redis     │  │  Kafka     │  │
-    │  │  Primary    │  │  Cluster    │  │  Cluster   │  │
-    │  │  + Replica  │  │             │  │            │  │
-    │  └─────────────┘  └─────────────┘  └────────────┘  │
-    │                  DATA LAYER                         │
-    └─────────────────────────────────────────────────────┘
-```
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px 32px; text-align: center;">
+<div style="color: white; font-weight: 600;">Load Balancer</div>
+<div style="color: rgba(255,255,255,0.7); font-size: 12px;">(AWS ALB/NLB)</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #7ee787; font-size: 24px; margin: 12px 0;">↓</div>
+
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #58a6ff; border-radius: 8px; padding: 16px 24px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600;">App Instance 1</div>
+</div>
+<div style="background: #21262d; border: 2px solid #58a6ff; border-radius: 8px; padding: 16px 24px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600;">App Instance 2</div>
+</div>
+<div style="background: #21262d; border: 2px solid #58a6ff; border-radius: 8px; padding: 16px 24px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600;">App Instance 3</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 12px 0;">↓</div>
+
+<div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
+<div style="color: #f0883e; font-weight: 600; text-align: center; margin-bottom: 16px;">DATA LAYER</div>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: #21262d; border-radius: 8px; padding: 16px 20px; text-align: center; min-width: 120px;">
+<div style="font-size: 20px;">🐘</div>
+<div style="color: #7ee787; font-weight: 600; font-size: 13px;">PostgreSQL</div>
+<div style="color: #8b949e; font-size: 11px;">Primary + Replica</div>
+</div>
+<div style="background: #21262d; border-radius: 8px; padding: 16px 20px; text-align: center; min-width: 120px;">
+<div style="font-size: 20px;">🔴</div>
+<div style="color: #f85149; font-weight: 600; font-size: 13px;">Redis</div>
+<div style="color: #8b949e; font-size: 11px;">Cluster</div>
+</div>
+<div style="background: #21262d; border-radius: 8px; padding: 16px 20px; text-align: center; min-width: 120px;">
+<div style="font-size: 20px;">📨</div>
+<div style="color: #a371f7; font-weight: 600; font-size: 13px;">Kafka</div>
+<div style="color: #8b949e; font-size: 11px;">Cluster</div>
+</div>
+</div>
+</div>
 
 </div>
 
@@ -360,52 +433,96 @@ class MatchingEngine:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                         ┌────────────────────┐
-                         │    API Gateway     │
-                         │  (Kong/AWS APIGW)  │
-                         └─────────┬──────────┘
-                                   │
-        ┌──────────────────────────┼──────────────────────────┐
-        │                          │                          │
-        ▼                          ▼                          ▼
-┌───────────────┐         ┌───────────────┐         ┌───────────────┐
-│Order Service  │         │Market Data    │         │Portfolio      │
-│               │◀───────▶│  Service      │         │  Service      │
-│ - Placement   │         │               │         │               │
-│ - Validation  │         │ - Price Feed  │         │ - Holdings    │
-│ - History     │         │ - Streaming   │         │ - P&L Calc    │
-└───────┬───────┘         └───────┬───────┘         └───────┬───────┘
-        │                         │                         │
-        ▼                         ▼                         ▼
-   [PostgreSQL]            [TimescaleDB]             [PostgreSQL]
-        │                         │                         │
-        └─────────────────────────┼─────────────────────────┘
-                                  │
-                          ┌───────▼───────┐
-                          │    Kafka      │
-                          │  Event Bus   │
-                          └───────┬───────┘
-                                  │
-        ┌─────────────────────────┼─────────────────────────┐
-        │                         │                         │
-        ▼                         ▼                         ▼
-┌───────────────┐         ┌───────────────┐         ┌───────────────┐
-│Matching Engine│         │Risk Service   │         │Notification   │
-│               │         │               │         │  Service      │
-│ - Order Book  │         │ - Margins     │         │               │
-│ - Trade Exec  │         │ - Limits      │         │ - Email/SMS   │
-└───────────────┘         └───────────────┘         └───────────────┘
-        │                         │
-        ▼                         │
-   [Redis Cluster]                │
-   (Order Books)                  │
-                                  │
-                          ┌───────▼───────┐
-                          │  Settlement   │
-                          │   Service     │
-                          └───────────────┘
-```
+<!-- API Gateway -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px 32px; text-align: center;">
+<div style="color: white; font-weight: 600;">API Gateway</div>
+<div style="color: rgba(255,255,255,0.7); font-size: 12px;">(Kong/AWS APIGW)</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #7ee787; font-size: 24px; margin: 12px 0;">↓</div>
+
+<!-- Top Services Row -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 12px;">
+<div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 10px; padding: 16px;">
+<div style="color: #f0883e; font-weight: 600; text-align: center; margin-bottom: 8px;">Order Service</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Placement</li>
+<li>Validation</li>
+<li>History</li>
+</ul>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; margin-top: 12px;">
+<div style="color: #7ee787; font-size: 11px;">PostgreSQL</div>
+</div>
+</div>
+<div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 10px; padding: 16px;">
+<div style="color: #58a6ff; font-weight: 600; text-align: center; margin-bottom: 8px;">Market Data Service</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Price Feed</li>
+<li>Streaming</li>
+</ul>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; margin-top: 12px;">
+<div style="color: #58a6ff; font-size: 11px;">TimescaleDB</div>
+</div>
+</div>
+<div style="background: rgba(137, 87, 229, 0.1); border: 2px solid #a371f7; border-radius: 10px; padding: 16px;">
+<div style="color: #a371f7; font-weight: 600; text-align: center; margin-bottom: 8px;">Portfolio Service</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Holdings</li>
+<li>P&L Calc</li>
+</ul>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; margin-top: 12px;">
+<div style="color: #7ee787; font-size: 11px;">PostgreSQL</div>
+</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 12px 0;">↓</div>
+
+<!-- Kafka Event Bus -->
+<div style="display: flex; justify-content: center; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 10px; padding: 16px 48px; text-align: center;">
+<div style="color: white; font-weight: 600;">Kafka Event Bus</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #a371f7; font-size: 24px; margin: 12px 0;">↓</div>
+
+<!-- Bottom Services Row -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+<div style="background: rgba(248, 81, 73, 0.1); border: 2px solid #f85149; border-radius: 10px; padding: 16px;">
+<div style="color: #f85149; font-weight: 600; text-align: center; margin-bottom: 8px;">Matching Engine</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Order Book</li>
+<li>Trade Exec</li>
+</ul>
+<div style="background: #21262d; border-radius: 6px; padding: 8px; text-align: center; margin-top: 12px;">
+<div style="color: #f85149; font-size: 11px;">Redis Cluster</div>
+</div>
+</div>
+<div style="background: rgba(126, 231, 135, 0.1); border: 2px solid #7ee787; border-radius: 10px; padding: 16px;">
+<div style="color: #7ee787; font-weight: 600; text-align: center; margin-bottom: 8px;">Risk Service</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Margins</li>
+<li>Limits</li>
+</ul>
+</div>
+<div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 10px; padding: 16px;">
+<div style="color: #58a6ff; font-weight: 600; text-align: center; margin-bottom: 8px;">Notification Service</div>
+<ul style="color: #8b949e; font-size: 12px; margin: 0; padding-left: 16px;">
+<li>Email/SMS</li>
+<li>Push Alerts</li>
+</ul>
+</div>
+</div>
+
+<!-- Settlement Service -->
+<div style="display: flex; justify-content: center;">
+<div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 10px; padding: 16px 32px; text-align: center;">
+<div style="color: #f0883e; font-weight: 600;">Settlement Service</div>
+</div>
+</div>
 
 </div>
 
@@ -475,62 +592,120 @@ class MatchingEngine:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                              GLOBAL INFRASTRUCTURE
-    ┌────────────────────────────────────────────────────────────────┐
-    │                                                                │
-    │   ┌──────────┐     ┌──────────┐     ┌──────────┐              │
-    │   │  Route53 │────▶│CloudFront│────▶│   WAF    │              │
-    │   │  (DNS)   │     │  (CDN)   │     │(Security)│              │
-    │   └──────────┘     └──────────┘     └────┬─────┘              │
-    │                                          │                     │
-    │   ┌──────────────────────────────────────┼───────────────────┐│
-    │   │              REGION: US-EAST-1       │                   ││
-    │   │                                      ▼                   ││
-    │   │  ┌─────────────────────────────────────────────────────┐ ││
-    │   │  │              API GATEWAY CLUSTER                    │ ││
-    │   │  │   ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐      │ ││
-    │   │  │   │APIGW│  │APIGW│  │APIGW│  │APIGW│  │APIGW│      │ ││
-    │   │  │   └──┬──┘  └──┬──┘  └──┬──┘  └──┬──┘  └──┬──┘      │ ││
-    │   │  └──────┼────────┼───────┼────────┼────────┼──────────┘ ││
-    │   │         └────────┴───────┼────────┴────────┘             ││
-    │   │                          ▼                               ││
-    │   │  ┌────────────────────────────────────────────────────┐  ││
-    │   │  │           KUBERNETES CLUSTER (EKS)                 │  ││
-    │   │  │                                                    │  ││
-    │   │  │  ┌──────────────────────────────────────────────┐ │  ││
-    │   │  │  │         TRADING SERVICES NAMESPACE           │ │  ││
-    │   │  │  │  ┌─────────┐ ┌─────────┐ ┌─────────────────┐│ │  ││
-    │   │  │  │  │ Order   │ │Matching │ │  Market Data    ││ │  ││
-    │   │  │  │  │ (x20)   │ │ Engine  │ │    (x10)        ││ │  ││
-    │   │  │  │  │         │ │ (x5)    │ │                 ││ │  ││
-    │   │  │  │  └─────────┘ └─────────┘ └─────────────────┘│ │  ││
-    │   │  │  └──────────────────────────────────────────────┘ │  ││
-    │   │  │                                                    │  ││
-    │   │  │  ┌──────────────────────────────────────────────┐ │  ││
-    │   │  │  │         SUPPORT SERVICES NAMESPACE           │ │  ││
-    │   │  │  │  ┌─────────┐ ┌─────────┐ ┌─────────────────┐│ │  ││
-    │   │  │  │  │ Risk    │ │Portfolio│ │  Settlement     ││ │  ││
-    │   │  │  │  │ (x10)   │ │ (x15)   │ │    (x5)         ││ │  ││
-    │   │  │  │  └─────────┘ └─────────┘ └─────────────────┘│ │  ││
-    │   │  │  └──────────────────────────────────────────────┘ │  ││
-    │   │  └────────────────────────────────────────────────────┘  ││
-    │   │                          │                               ││
-    │   │         ┌────────────────┼────────────────┐              ││
-    │   │         ▼                ▼                ▼              ││
-    │   │  ┌───────────┐    ┌───────────┐    ┌───────────┐        ││
-    │   │  │  Aurora   │    │  Redis    │    │  Kafka    │        ││
-    │   │  │ Cluster   │    │ Cluster   │    │ Cluster   │        ││
-    │   │  │ (Global)  │    │ (128 nodes│    │ (100 nodes│        ││
-    │   │  └───────────┘    └───────────┘    └───────────┘        ││
-    │   └──────────────────────────────────────────────────────────┘│
-    │                                                                │
-    │   ┌──────────────────────────────────────────────────────────┐│
-    │   │              REGION: EU-WEST-1 (DR)                      ││
-    │   │              [Similar architecture - Active/Passive]      ││
-    │   └──────────────────────────────────────────────────────────┘│
-    └────────────────────────────────────────────────────────────────┘
-```
+<div style="border: 2px solid #58a6ff; border-radius: 16px; padding: 24px;">
+<div style="color: #58a6ff; font-weight: 700; text-align: center; font-size: 18px; margin-bottom: 24px;">GLOBAL INFRASTRUCTURE</div>
+
+<!-- Edge Layer -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #7ee787; font-weight: 600; font-size: 13px;">Route53</div>
+<div style="color: #8b949e; font-size: 11px;">(DNS)</div>
+</div>
+<div style="color: #58a6ff; font-size: 20px; display: flex; align-items: center;">→</div>
+<div style="background: #21262d; border: 2px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #f0883e; font-weight: 600; font-size: 13px;">CloudFront</div>
+<div style="color: #8b949e; font-size: 11px;">(CDN)</div>
+</div>
+<div style="color: #58a6ff; font-size: 20px; display: flex; align-items: center;">→</div>
+<div style="background: #21262d; border: 2px solid #f85149; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #f85149; font-weight: 600; font-size: 13px;">WAF</div>
+<div style="color: #8b949e; font-size: 11px;">(Security)</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 16px 0;">↓</div>
+
+<!-- Region US-EAST-1 -->
+<div style="background: rgba(88, 166, 255, 0.05); border: 2px solid #1f6feb; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #58a6ff; font-weight: 600; text-align: center; margin-bottom: 16px;">REGION: US-EAST-1</div>
+
+<!-- API Gateway Cluster -->
+<div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #7ee787; font-weight: 600; text-align: center; margin-bottom: 12px;">API GATEWAY CLUSTER</div>
+<div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+<div style="background: #238636; padding: 8px 12px; border-radius: 6px; color: white; font-size: 11px;">APIGW</div>
+<div style="background: #238636; padding: 8px 12px; border-radius: 6px; color: white; font-size: 11px;">APIGW</div>
+<div style="background: #238636; padding: 8px 12px; border-radius: 6px; color: white; font-size: 11px;">APIGW</div>
+<div style="background: #238636; padding: 8px 12px; border-radius: 6px; color: white; font-size: 11px;">APIGW</div>
+<div style="background: #238636; padding: 8px 12px; border-radius: 6px; color: white; font-size: 11px;">APIGW</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 20px; margin: 12px 0;">↓</div>
+
+<!-- Kubernetes Cluster -->
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #a371f7; font-weight: 600; text-align: center; margin-bottom: 16px;">KUBERNETES CLUSTER (EKS)</div>
+
+<!-- Trading Services Namespace -->
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px dashed #f0883e; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+<div style="color: #f0883e; font-size: 12px; text-align: center; margin-bottom: 10px;">TRADING SERVICES NAMESPACE</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #58a6ff; font-size: 12px; font-weight: 600;">Order</div>
+<div style="color: #8b949e; font-size: 10px;">(x20)</div>
+</div>
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #f85149; font-size: 12px; font-weight: 600;">Matching Engine</div>
+<div style="color: #8b949e; font-size: 10px;">(x5)</div>
+</div>
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #7ee787; font-size: 12px; font-weight: 600;">Market Data</div>
+<div style="color: #8b949e; font-size: 10px;">(x10)</div>
+</div>
+</div>
+</div>
+
+<!-- Support Services Namespace -->
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px dashed #58a6ff; border-radius: 6px; padding: 12px;">
+<div style="color: #58a6ff; font-size: 12px; text-align: center; margin-bottom: 10px;">SUPPORT SERVICES NAMESPACE</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #f85149; font-size: 12px; font-weight: 600;">Risk</div>
+<div style="color: #8b949e; font-size: 10px;">(x10)</div>
+</div>
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #a371f7; font-size: 12px; font-weight: 600;">Portfolio</div>
+<div style="color: #8b949e; font-size: 10px;">(x15)</div>
+</div>
+<div style="background: #21262d; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #f0883e; font-size: 12px; font-weight: 600;">Settlement</div>
+<div style="color: #8b949e; font-size: 10px;">(x5)</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 20px; margin: 12px 0;">↓</div>
+
+<!-- Data Layer -->
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 18px;">🐘</div>
+<div style="color: #7ee787; font-weight: 600; font-size: 12px;">Aurora</div>
+<div style="color: #8b949e; font-size: 10px;">(Global)</div>
+</div>
+<div style="background: #21262d; border: 2px solid #f85149; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 18px;">🔴</div>
+<div style="color: #f85149; font-weight: 600; font-size: 12px;">Redis</div>
+<div style="color: #8b949e; font-size: 10px;">(128 nodes)</div>
+</div>
+<div style="background: #21262d; border: 2px solid #a371f7; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 18px;">📨</div>
+<div style="color: #a371f7; font-weight: 600; font-size: 12px;">Kafka</div>
+<div style="color: #8b949e; font-size: 10px;">(100 nodes)</div>
+</div>
+</div>
+
+</div>
+
+<!-- DR Region -->
+<div style="background: rgba(137, 87, 229, 0.05); border: 1px dashed #a371f7; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #a371f7; font-weight: 600; margin-bottom: 4px;">REGION: EU-WEST-1 (DR)</div>
+<div style="color: #8b949e; font-size: 12px;">[Similar architecture - Active/Passive]</div>
+</div>
+
+</div>
 
 </div>
 
@@ -594,32 +769,93 @@ class MatchingEngine:
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">ORDER BOOK STRUCTURE</h4>
 
-```
-                    AAPL Order Book
-    ┌─────────────────────────────────────────┐
-    │           BIDS (Buy Orders)             │
-    │  ┌───────────────────────────────────┐  │
-    │  │ Price    │ Quantity │ Orders      │  │
-    │  ├──────────┼──────────┼─────────────┤  │
-    │  │ $182.50  │ 15,000   │ [O1,O2,O3]  │  │  ← Best Bid
-    │  │ $182.45  │ 8,000    │ [O4,O5]     │  │
-    │  │ $182.40  │ 25,000   │ [O6,O7,O8]  │  │
-    │  │ $182.35  │ 12,000   │ [O9]        │  │
-    │  └───────────────────────────────────┘  │
-    ├─────────────────────────────────────────┤
-    │          SPREAD: $0.05                  │
-    ├─────────────────────────────────────────┤
-    │           ASKS (Sell Orders)            │
-    │  ┌───────────────────────────────────┐  │
-    │  │ Price    │ Quantity │ Orders      │  │
-    │  ├──────────┼──────────┼─────────────┤  │
-    │  │ $182.55  │ 10,000   │ [O10,O11]   │  │  ← Best Ask
-    │  │ $182.60  │ 20,000   │ [O12,O13]   │  │
-    │  │ $182.65  │ 5,000    │ [O14]       │  │
-    │  │ $182.70  │ 18,000   │ [O15,O16]   │  │
-    │  └───────────────────────────────────┘  │
-    └─────────────────────────────────────────┘
-```
+<div style="max-width: 500px; margin: 0 auto;">
+<div style="background: #21262d; border-radius: 12px; overflow: hidden; border: 2px solid #58a6ff;">
+
+<!-- Header -->
+<div style="background: #58a6ff; color: #0d1117; padding: 12px; text-align: center; font-weight: 700;">
+AAPL Order Book
+</div>
+
+<!-- Bids Section -->
+<div style="padding: 16px;">
+<div style="color: #7ee787; font-weight: 600; text-align: center; margin-bottom: 12px;">BIDS (Buy Orders)</div>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<thead>
+<tr style="border-bottom: 1px solid #30363d;">
+<th style="padding: 8px; text-align: left; color: #8b949e;">Price</th>
+<th style="padding: 8px; text-align: center; color: #8b949e;">Quantity</th>
+<th style="padding: 8px; text-align: right; color: #8b949e;">Orders</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: rgba(126, 231, 135, 0.15);">
+<td style="padding: 8px; color: #7ee787; font-weight: 600;">$182.50</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">15,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O1,O2,O3] <span style="color: #7ee787; font-size: 11px;">Best Bid</span></td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #7ee787;">$182.45</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">8,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O4,O5]</td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #7ee787;">$182.40</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">25,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O6,O7,O8]</td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #7ee787;">$182.35</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">12,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O9]</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Spread -->
+<div style="background: linear-gradient(90deg, #238636 0%, #1f6feb 50%, #f85149 100%); padding: 12px; text-align: center;">
+<span style="color: white; font-weight: 700;">SPREAD: $0.05</span>
+</div>
+
+<!-- Asks Section -->
+<div style="padding: 16px;">
+<div style="color: #f85149; font-weight: 600; text-align: center; margin-bottom: 12px;">ASKS (Sell Orders)</div>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<thead>
+<tr style="border-bottom: 1px solid #30363d;">
+<th style="padding: 8px; text-align: left; color: #8b949e;">Price</th>
+<th style="padding: 8px; text-align: center; color: #8b949e;">Quantity</th>
+<th style="padding: 8px; text-align: right; color: #8b949e;">Orders</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: rgba(248, 81, 73, 0.15);">
+<td style="padding: 8px; color: #f85149; font-weight: 600;">$182.55</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">10,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O10,O11] <span style="color: #f85149; font-size: 11px;">Best Ask</span></td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #f85149;">$182.60</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">20,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O12,O13]</td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #f85149;">$182.65</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">5,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O14]</td>
+</tr>
+<tr>
+<td style="padding: 8px; color: #f85149;">$182.70</td>
+<td style="padding: 8px; text-align: center; color: #c9d1d9;">18,000</td>
+<td style="padding: 8px; text-align: right; color: #8b949e;">[O15,O16]</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
 
 #### Abstract Matching Engine Code
 
@@ -799,23 +1035,51 @@ public class MatchingEngine {
 
 ### 2. Handling Network Partitions
 
-```
-                    PARTITION SCENARIO
-    ┌───────────────────┐         ┌───────────────────┐
-    │   Region A        │    X    │   Region B        │
-    │  ┌─────────────┐  │    X    │  ┌─────────────┐  │
-    │  │ Matching    │  │    X    │  │ Matching    │  │
-    │  │ Engine      │  │ ──X──── │  │ Engine      │  │
-    │  └─────────────┘  │    X    │  └─────────────┘  │
-    │                   │    X    │                   │
-    │  Active           │  SPLIT  │  Standby          │
-    └───────────────────┘         └───────────────────┘
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-    STRATEGY: Prefer Consistency over Availability
-    - Only primary region accepts trades
-    - Standby becomes read-only
-    - Manual failover after partition heals
-```
+<div style="color: #f85149; font-weight: 600; text-align: center; margin-bottom: 20px; font-size: 16px;">PARTITION SCENARIO</div>
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+
+<!-- Region A -->
+<div style="background: rgba(126, 231, 135, 0.1); border: 2px solid #7ee787; border-radius: 12px; padding: 20px; min-width: 180px;">
+<div style="color: #7ee787; font-weight: 600; text-align: center; margin-bottom: 12px;">Region A</div>
+<div style="background: #21262d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Matching Engine</div>
+</div>
+<div style="color: #7ee787; text-align: center; margin-top: 12px; font-weight: 600;">ACTIVE</div>
+</div>
+
+<!-- Partition Indicator -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="color: #f85149; font-size: 24px; font-weight: bold;">X</div>
+<div style="color: #f85149; font-size: 24px; font-weight: bold;">X</div>
+<div style="color: #f85149; font-weight: 600; font-size: 12px;">SPLIT</div>
+<div style="color: #f85149; font-size: 24px; font-weight: bold;">X</div>
+<div style="color: #f85149; font-size: 24px; font-weight: bold;">X</div>
+</div>
+
+<!-- Region B -->
+<div style="background: rgba(248, 81, 73, 0.1); border: 2px solid #f85149; border-radius: 12px; padding: 20px; min-width: 180px;">
+<div style="color: #f85149; font-weight: 600; text-align: center; margin-bottom: 12px;">Region B</div>
+<div style="background: #21262d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #8b949e; font-weight: 600; font-size: 13px;">Matching Engine</div>
+</div>
+<div style="color: #f85149; text-align: center; margin-top: 12px; font-weight: 600;">STANDBY</div>
+</div>
+
+</div>
+
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 8px; padding: 16px;">
+<div style="color: #a371f7; font-weight: 600; margin-bottom: 8px;">STRATEGY: Prefer Consistency over Availability</div>
+<ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 13px;">
+<li>Only primary region accepts trades</li>
+<li>Standby becomes read-only</li>
+<li>Manual failover after partition heals</li>
+</ul>
+</div>
+
+</div>
 
 ### 3. Idempotency
 
@@ -848,46 +1112,91 @@ def place_order(order):
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-```
-Rate Limits:
-┌─────────────────────────────────────────────┐
-│ Order Placement:  100 orders/second/user    │
-│ Market Data:      1000 requests/min/user    │
-│ API Calls:        10000 requests/min/user   │
-└─────────────────────────────────────────────┘
+<div style="color: #f0883e; font-weight: 600; margin-bottom: 16px;">Rate Limits:</div>
 
-Implementation: Token Bucket Algorithm (Redis)
-- Distributed rate limiting across all API gateways
-- Sliding window for smooth rate limiting
-```
+<div style="display: grid; gap: 8px; margin-bottom: 20px;">
+<div style="display: flex; justify-content: space-between; background: #21262d; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #c9d1d9; font-weight: 500;">Order Placement</span>
+<span style="color: #7ee787; font-weight: 600;">100 orders/second/user</span>
+</div>
+<div style="display: flex; justify-content: space-between; background: #21262d; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #c9d1d9; font-weight: 500;">Market Data</span>
+<span style="color: #58a6ff; font-weight: 600;">1000 requests/min/user</span>
+</div>
+<div style="display: flex; justify-content: space-between; background: #21262d; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #c9d1d9; font-weight: 500;">API Calls</span>
+<span style="color: #a371f7; font-weight: 600;">10000 requests/min/user</span>
+</div>
+</div>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="color: #f0883e; font-weight: 600; margin-bottom: 8px;">Implementation: Token Bucket Algorithm (Redis)</div>
+<ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 13px;">
+<li>Distributed rate limiting across all API gateways</li>
+<li>Sliding window for smooth rate limiting</li>
+</ul>
+</div>
 
 </div>
 
 ### 5. Circuit Breaker Pattern
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-             CIRCUIT BREAKER STATES
+<div style="color: #58a6ff; font-weight: 600; text-align: center; margin-bottom: 24px; font-size: 16px;">CIRCUIT BREAKER STATES</div>
 
-    ┌────────┐     failures > threshold    ┌────────┐
-    │ CLOSED │ ──────────────────────────▶ │  OPEN  │
-    │        │                              │        │
-    │ Normal │                              │ Reject │
-    │ Flow   │                              │  All   │
-    └────────┘                              └───┬────┘
-        ▲                                       │
-        │         ┌───────────────┐             │
-        │ success │  HALF-OPEN    │  timeout    │
-        └─────────│               │◀────────────┘
-                  │ Test Request  │
-                  └───────────────┘
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
 
-Applied to:
-- Exchange connectivity
-- Payment gateway
-- External market data feeds
-```
+<!-- CLOSED State -->
+<div style="background: rgba(126, 231, 135, 0.1); border: 2px solid #7ee787; border-radius: 12px; padding: 20px; text-align: center; min-width: 120px;">
+<div style="color: #7ee787; font-weight: 700; font-size: 16px;">CLOSED</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Normal Flow</div>
+</div>
+
+<!-- Arrow to OPEN -->
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #f85149; font-size: 11px; margin-bottom: 4px;">failures > threshold</div>
+<div style="color: #f85149; font-size: 24px;">→</div>
+</div>
+
+<!-- OPEN State -->
+<div style="background: rgba(248, 81, 73, 0.1); border: 2px solid #f85149; border-radius: 12px; padding: 20px; text-align: center; min-width: 120px;">
+<div style="color: #f85149; font-weight: 700; font-size: 16px;">OPEN</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Reject All</div>
+</div>
+
+</div>
+
+<!-- Bottom row with HALF-OPEN -->
+<div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 24px;">
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #7ee787; font-size: 24px;">↑</div>
+<div style="color: #7ee787; font-size: 11px;">success</div>
+</div>
+
+<!-- HALF-OPEN State -->
+<div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center; min-width: 140px;">
+<div style="color: #f0883e; font-weight: 700; font-size: 16px;">HALF-OPEN</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Test Request</div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #f0883e; font-size: 11px;">timeout</div>
+<div style="color: #f0883e; font-size: 24px;">↑</div>
+</div>
+
+</div>
+
+<!-- Applied to section -->
+<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="color: #a371f7; font-weight: 600; margin-bottom: 8px;">Applied to:</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<span style="background: rgba(137, 87, 229, 0.2); color: #a371f7; padding: 6px 12px; border-radius: 6px; font-size: 12px;">Exchange connectivity</span>
+<span style="background: rgba(137, 87, 229, 0.2); color: #a371f7; padding: 6px 12px; border-radius: 6px; font-size: 12px;">Payment gateway</span>
+<span style="background: rgba(137, 87, 229, 0.2); color: #a371f7; padding: 6px 12px; border-radius: 6px; font-size: 12px;">External market data feeds</span>
+</div>
+</div>
 
 </div>
 
@@ -907,13 +1216,31 @@ Applied to:
 <h4 style="color: #f85149; margin: 0 0 12px 0;">🔥 "Why Kafka and not Redis Pub/Sub for order events?"</h4>
 <div style="color: #c9d1d9; font-size: 14px;">
 <p><strong>What they're probing:</strong> Do you understand the difference between message queues and pub/sub? Durability vs speed trade-offs?</p>
-<p><strong>Strong Answer:</strong></p>
-<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
-<li><strong>Kafka:</strong> Durable, ordered, replay capability - if consumer dies, messages aren't lost. Orders MUST be processed exactly once.</li>
-<li><strong>Redis Pub/Sub:</strong> Fire-and-forget - if subscriber is down, message is lost forever. Fine for notifications, NOT for orders.</li>
-<li><strong>Why it matters:</strong> If we lose an order event, someone's trade disappears. Kafka's log-based architecture allows replay from any offset.</li>
-</ul>
-<p style="color: #7ee787;"><strong>When Redis IS enough:</strong> Real-time price updates to UI (if you miss one, next tick arrives in 100ms anyway).</p>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<p style="color: #58a6ff; font-weight: 600; margin: 0 0 12px 0;">Real Scenario - What Actually Happens:</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:00 AM:</strong> User Alice places a buy order for 100 shares of AAPL at $182.50</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:01 AM:</strong> Order Service publishes "OrderPlaced" event</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:02 AM:</strong> Matching Engine crashes due to memory spike</p>
+<p style="color: #f85149; margin: 0 0 8px 0;"><strong>With Redis Pub/Sub:</strong> Message is GONE. Alice's order vanishes. She calls support angry: "I placed an order but nothing happened!" You have no way to recover it.</p>
+<p style="color: #7ee787; margin: 0;"><strong>With Kafka:</strong> Message sits in partition. Matching Engine restarts at 10:30:15 AM, reads from last committed offset, processes Alice's order. Alice gets her trade. She never knew anything went wrong.</p>
+</div>
+
+<p><strong>Step-by-Step Why Kafka Wins for Orders:</strong></p>
+<ol style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li><strong>Durability:</strong> Messages written to disk with configurable replication (typically 3 copies). Even if 2 brokers die, data survives.</li>
+<li><strong>Ordering:</strong> Orders for the same stock go to same partition = guaranteed FIFO. Critical because Order A at $182.50 must be matched before Order B at $182.55.</li>
+<li><strong>Replay:</strong> New consumer can read from offset 0. Useful for: rebuilding order book after crash, auditing, debugging production issues.</li>
+<li><strong>Backpressure:</strong> If Matching Engine is slow, messages queue up safely. Redis would start dropping subscribers or OOMing.</li>
+</ol>
+
+<div style="background: rgba(248, 81, 73, 0.1); border-radius: 8px; padding: 12px; margin: 16px 0;">
+<p style="color: #f85149; margin: 0;"><strong>Concrete Numbers:</strong> Under 50K msg/sec load, Redis Pub/Sub loses ~0.1-0.3% of messages when subscribers lag. That's 50-150 lost orders per day at scale. Unacceptable for a brokerage.</p>
+</div>
+
+<p style="color: #7ee787;"><strong>When Redis Pub/Sub IS enough:</strong> Real-time price ticker updates to 10,000 connected WebSocket clients. If you miss AAPL's price at 10:30:00.100, the next tick at 10:30:00.200 is already more current anyway. No one files a complaint because they saw $182.50 instead of $182.51 for 100ms.</p>
+
+<p style="color: #f0883e; margin-top: 12px;"><strong>Analogy:</strong> Redis Pub/Sub is like shouting in a room - whoever is listening hears you, everyone else misses it. Kafka is like a recorded voicemail - message is saved until you explicitly confirm you received it.</p>
 </div>
 </div>
 
@@ -921,14 +1248,41 @@ Applied to:
 <h4 style="color: #58a6ff; margin: 0 0 12px 0;">🔥 "Why not just use a single PostgreSQL database? Why Redis for order books?"</h4>
 <div style="color: #c9d1d9; font-size: 14px;">
 <p><strong>What they're probing:</strong> Do you understand data access patterns and latency requirements?</p>
-<p><strong>Strong Answer:</strong></p>
-<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
-<li>Order book operations need <strong>< 1ms latency</strong> - PostgreSQL can't guarantee this under load</li>
-<li>Order book is <strong>hot data</strong> accessed 1000s of times/second - disk I/O kills performance</li>
-<li>Redis sorted sets give O(log n) insertion/removal - perfect for price-time priority</li>
-<li>PostgreSQL is still the <strong>source of truth</strong> - Redis is derived state that can be rebuilt</li>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<p style="color: #58a6ff; font-weight: 600; margin: 0 0 12px 0;">Real Scenario - Order Book Operations Per Second:</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;">For AAPL alone during market hours:</p>
+<ul style="color: #8b949e; margin: 0; padding-left: 20px;">
+<li>~500 new orders/second arriving</li>
+<li>~300 cancellations/second</li>
+<li>~200 matches/second (removing orders from both sides)</li>
+<li>~10,000 reads/second (market data subscribers checking best bid/ask)</li>
 </ul>
-<p style="color: #7ee787;"><strong>When PostgreSQL alone IS enough:</strong> < 1000 orders/day, latency tolerance > 100ms, small budget startup.</p>
+<p style="color: #f0883e; margin: 12px 0 0 0;"><strong>Total: ~11,000 operations/second on ONE stock's order book.</strong> Now multiply by 8,000 tradeable symbols.</p>
+</div>
+
+<p><strong>Step-by-Step Why Redis Wins Here:</strong></p>
+<ol style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li><strong>Latency Math:</strong> PostgreSQL SELECT with index = 0.5-5ms. Redis ZRANGEBYSCORE = 0.1-0.3ms. When matching engine processes 10,000 orders/second, saving 2ms per operation = 20 seconds of cumulative delay per second. You'd fall behind instantly.</li>
+<li><strong>Data Structure Fit:</strong> Order book IS a sorted set. Bids sorted DESC by price, then ASC by time. Redis ZADD with composite score (price * 1e9 + timestamp) gives exactly this behavior in O(log n).</li>
+<li><strong>Memory vs Disk:</strong> Order book is 100% hot data. Every single entry is accessed constantly. PostgreSQL would cache it in shared_buffers, but you're still paying for query parsing, planning, and lock acquisition on every operation.</li>
+<li><strong>Atomic Operations:</strong> Redis MULTI/EXEC lets you atomically remove from asks, add to executed trades, update buyer balance, update seller balance - all in one round trip.</li>
+</ol>
+
+<div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin: 16px 0;">
+<p style="color: #7ee787; margin: 0 0 8px 0;"><strong>But PostgreSQL is STILL the source of truth!</strong></p>
+<p style="color: #8b949e; margin: 0;">Every order is written to PostgreSQL FIRST (for durability and audit). Redis order book is derived state - if Redis dies, we replay orders from PostgreSQL and rebuild it in seconds.</p>
+</div>
+
+<p style="color: #7ee787;"><strong>When PostgreSQL alone IS enough:</strong></p>
+<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li>< 1,000 orders/day (that's ~0.02 orders/second during market hours)</li>
+<li>Latency tolerance > 100ms (users won't notice 50ms vs 150ms)</li>
+<li>Budget < $500/month (Redis adds infrastructure cost)</li>
+<li>Team has no Redis expertise (operational simplicity matters!)</li>
+</ul>
+
+<p style="color: #f0883e; margin-top: 12px;"><strong>Analogy:</strong> PostgreSQL is like a filing cabinet - organized, durable, handles everything. Redis is like your desk - only the papers you're actively working on. For high-frequency tasks, you work from your desk and periodically file things away.</p>
 </div>
 </div>
 
@@ -936,44 +1290,223 @@ Applied to:
 <h4 style="color: #7ee787; margin: 0 0 12px 0;">🔥 "What happens if your matching engine crashes mid-trade?"</h4>
 <div style="color: #c9d1d9; font-size: 14px;">
 <p><strong>What they're probing:</strong> Fault tolerance, exactly-once processing, state recovery.</p>
-<p><strong>Strong Answer:</strong></p>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<p style="color: #7ee787; font-weight: 600; margin: 0 0 12px 0;">Real Scenario - The Worst Case:</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:00.000:</strong> Buy order from Alice (100 AAPL @ $182.50) matches with Sell order from Bob (100 AAPL @ $182.50)</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:00.001:</strong> Matching engine removes both orders from order book</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>10:30:00.002:</strong> Matching engine debits Alice's balance: $18,250</p>
+<p style="color: #f85149; margin: 0 0 8px 0;"><strong>10:30:00.003:</strong> CRASH! Server dies before crediting Bob's balance or recording the trade.</p>
+<p style="color: #f0883e; margin: 0;"><strong>Nightmare scenario:</strong> Alice lost money, Bob didn't get paid, no trade record exists. Who owns the shares?</p>
+</div>
+
+<p><strong>Step-by-Step How We Prevent This:</strong></p>
 <ol style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
-<li><strong>Event sourcing:</strong> Every order is an immutable event in Kafka. On restart, replay from last committed offset.</li>
-<li><strong>Checkpointing:</strong> Periodically snapshot order book state to Redis/disk. Replay only events after checkpoint.</li>
-<li><strong>Atomic operations:</strong> Each match is atomic - either both buyer AND seller updated, or neither.</li>
-<li><strong>Idempotency:</strong> Order IDs ensure retrying same order doesn't create duplicates.</li>
+<li><strong>Event Sourcing Architecture:</strong>
+<ul style="margin-top: 4px;">
+<li>Original orders live in Kafka: OrderPlaced(Alice, BUY, 100, $182.50) and OrderPlaced(Bob, SELL, 100, $182.50)</li>
+<li>Matching engine reads these events, but does NOT commit offset until trade is fully persisted</li>
+<li>If crash happens, Kafka offset is still at "before Alice's order" - engine replays both orders on restart</li>
+</ul>
+</li>
+<li><strong>Atomic Trade Execution:</strong>
+<ul style="margin-top: 4px;">
+<li>Trade is ONE database transaction: debit Alice, credit Bob, create trade record, update both positions</li>
+<li>PostgreSQL COMMIT or ROLLBACK - no partial states possible</li>
+<li>Only AFTER commit do we acknowledge Kafka offset</li>
+</ul>
+</li>
+<li><strong>Checkpointing (for faster recovery):</strong>
+<ul style="margin-top: 4px;">
+<li>Every 60 seconds: snapshot entire order book state to disk with Kafka offset</li>
+<li>On restart: load snapshot, then replay only events from that offset forward</li>
+<li>Without checkpointing: restart after 8 hours = replay 8 hours of events (could take 10+ minutes)</li>
+<li>With checkpointing: restart = load snapshot + replay ~60 seconds of events (~5 seconds)</li>
+</ul>
+</li>
+<li><strong>Idempotency Keys:</strong>
+<ul style="margin-top: 4px;">
+<li>Each order has UUID: order_id = "abc-123-def"</li>
+<li>If we replay and try to process "abc-123-def" again, we check: "Does trade for this order_id exist?"</li>
+<li>If yes, skip. If no, process. Replay is safe.</li>
+</ul>
+</li>
 </ol>
-<p style="color: #f0883e;"><strong>Key insight:</strong> We DON'T lose trades because Kafka hasn't acknowledged until consumer commits offset AFTER successful processing.</p>
+
+<div style="background: rgba(240, 136, 62, 0.1); border-radius: 8px; padding: 12px; margin: 16px 0;">
+<p style="color: #f0883e; margin: 0;"><strong>Key Insight:</strong> We use "at-least-once delivery + idempotent processing = exactly-once semantics". The message might be delivered twice, but the second processing is a no-op because we already recorded that order_id.</p>
+</div>
+
+<p style="color: #7ee787;"><strong>Recovery Timeline:</strong></p>
+<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li><strong>10:30:00.003:</strong> Crash</li>
+<li><strong>10:30:05:</strong> Health check fails, Kubernetes restarts pod</li>
+<li><strong>10:30:15:</strong> New instance loads checkpoint from 10:29:00</li>
+<li><strong>10:30:20:</strong> Replayed 75 seconds of events (including Alice and Bob's orders)</li>
+<li><strong>10:30:20:</strong> Trade executes successfully this time, both balances updated</li>
+<li><strong>Total downtime:</strong> ~20 seconds. Zero data loss.</li>
+</ul>
+
+<p style="color: #f0883e; margin-top: 12px;"><strong>Analogy:</strong> It's like a video game with autosave. Crash during a boss fight? You restart from the last checkpoint and replay your actions. You might fight the boss twice, but you only get the reward once (idempotency).</p>
 </div>
 </div>
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px;">
 <h4 style="color: #a371f7; margin: 0 0 12px 0;">🔥 "Why LMAX Disruptor pattern for matching engine? Why not just threads?"</h4>
 <div style="color: #c9d1d9; font-size: 14px;">
-<p><strong>What they're probing:</strong> Deep performance understanding, lock-free data structures.</p>
-<p><strong>Strong Answer:</strong></p>
-<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
-<li><strong>Problem with threads:</strong> Locks cause contention. Context switching costs ~10µs each. Memory barriers for cache coherence.</li>
-<li><strong>Disruptor:</strong> Single-threaded sequential processing, pre-allocated ring buffer, mechanical sympathy (cache-line friendly).</li>
-<li><strong>Result:</strong> LMAX processes 6M orders/second on commodity hardware with <1ms latency.</li>
+<p><strong>What they're probing:</strong> Deep performance understanding, lock-free data structures, mechanical sympathy.</p>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<p style="color: #a371f7; font-weight: 600; margin: 0 0 12px 0;">The Hidden Costs of Traditional Threading:</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;">Imagine a naive multi-threaded matching engine:</p>
+<ul style="color: #8b949e; margin: 0; padding-left: 20px;">
+<li>Thread 1: Processes BUY orders for AAPL</li>
+<li>Thread 2: Processes SELL orders for AAPL</li>
+<li>Both need to access the same order book = LOCK required</li>
 </ul>
-<p style="color: #7ee787;"><strong>When threads are fine:</strong> < 10K orders/second, latency tolerance > 10ms. Disruptor adds complexity.</p>
+<p style="color: #f85149; margin: 12px 0 0 0;"><strong>What happens at 100K orders/second:</strong></p>
+<ul style="color: #8b949e; margin: 0; padding-left: 20px;">
+<li>Lock acquisition: ~100ns when uncontested, but 1-10us when contested</li>
+<li>Context switch when blocking: ~10us per switch</li>
+<li>At 100K/sec with 50% contention = 500,000us = 0.5 seconds wasted PER SECOND</li>
+<li>You're now running at 50% capacity before you've even done useful work!</li>
+</ul>
+</div>
+
+<p><strong>Step-by-Step Why Disruptor Wins:</strong></p>
+<ol style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li><strong>Single Writer Principle:</strong>
+<ul style="margin-top: 4px;">
+<li>ONE thread processes ALL orders for a given symbol - no locks needed</li>
+<li>Multiple matching engines, each handles different partition of symbols</li>
+<li>Symbols A-M go to Engine 1, N-Z go to Engine 2</li>
+</ul>
+</li>
+<li><strong>Pre-allocated Ring Buffer:</strong>
+<ul style="margin-top: 4px;">
+<li>Memory allocated once at startup: 64KB ring with 1024 slots</li>
+<li>No malloc/free during operation = no GC pauses, no memory fragmentation</li>
+<li>Each slot is exactly 64 bytes = one CPU cache line = no "false sharing"</li>
+</ul>
+</li>
+<li><strong>Mechanical Sympathy:</strong>
+<ul style="margin-top: 4px;">
+<li>Sequential memory access: CPU prefetcher loves this, 10x faster than random access</li>
+<li>Data fits in L1 cache: 32KB cache holds 500 orders being processed</li>
+<li>Branch prediction works: processing loop is predictable, CPU doesn't stall</li>
+</ul>
+</li>
+<li><strong>Batching:</strong>
+<ul style="margin-top: 4px;">
+<li>Instead of: read order, process, write result, repeat</li>
+<li>Disruptor: read 100 orders, process 100, write 100 results</li>
+<li>Amortizes system call overhead across batch</li>
+</ul>
+</li>
+</ol>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+<div style="background: rgba(248, 81, 73, 0.1); border-radius: 8px; padding: 12px;">
+<p style="color: #f85149; font-weight: 600; margin: 0 0 8px 0;">Traditional Threads</p>
+<ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 13px;">
+<li>50,000 orders/sec max</li>
+<li>P99 latency: 5-50ms</li>
+<li>CPU: 80% waiting on locks</li>
+</ul>
+</div>
+<div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px;">
+<p style="color: #7ee787; font-weight: 600; margin: 0 0 8px 0;">LMAX Disruptor</p>
+<ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 13px;">
+<li>6,000,000 orders/sec</li>
+<li>P99 latency: < 1ms</li>
+<li>CPU: 95% doing useful work</li>
+</ul>
+</div>
+</div>
+
+<p style="color: #7ee787;"><strong>When threads ARE fine:</strong></p>
+<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li>< 10K orders/second (lock contention is negligible)</li>
+<li>Latency tolerance > 10ms (users won't notice)</li>
+<li>Team lacks low-level performance expertise</li>
+<li>You're using Python/Ruby (GIL means you can't parallelize anyway)</li>
+</ul>
+
+<p style="color: #f0883e; margin-top: 12px;"><strong>Analogy:</strong> Traditional threading is like a restaurant where waiters keep bumping into each other in the kitchen doorway. Disruptor is like a sushi conveyor belt - everything flows in one direction, no collisions, constant throughput.</p>
 </div>
 </div>
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f0883e; margin: 0 0 12px 0;">🔥 "How do you handle a stock split or corporate action?"</h4>
 <div style="color: #c9d1d9; font-size: 14px;">
-<p><strong>What they're probing:</strong> Operational complexity, data migration, backward compatibility.</p>
-<p><strong>Strong Answer:</strong></p>
+<p><strong>What they're probing:</strong> Operational complexity, data migration, backward compatibility, edge case handling.</p>
+
+<div style="background: #21262d; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<p style="color: #f0883e; font-weight: 600; margin: 0 0 12px 0;">Real Scenario - NVDA 10:1 Stock Split (June 2024):</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>Before split:</strong> Alice owns 50 shares @ $1,200/share = $60,000 position</p>
+<p style="color: #8b949e; margin: 0 0 8px 0;"><strong>After split:</strong> Alice owns 500 shares @ $120/share = $60,000 position (same value!)</p>
+<p style="color: #f85149; margin: 0;"><strong>The complexity:</strong> Alice also has a limit order to sell 10 shares @ $1,250. What happens to it?</p>
+</div>
+
+<p><strong>Step-by-Step Corporate Action Processing:</strong></p>
 <ol style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
-<li><strong>Cancel all open orders</strong> for the symbol (they're at old prices)</li>
-<li><strong>Halt trading</strong> for that symbol during processing</li>
-<li><strong>Update positions:</strong> 2:1 split = double quantity, halve cost basis</li>
-<li><strong>Recalculate</strong> historical data (adjusted prices)</li>
-<li><strong>Resume trading</strong> with new price levels</li>
+<li><strong>T-1 Day (Announcement):</strong>
+<ul style="margin-top: 4px;">
+<li>Corporate action received from data provider (Bloomberg, Reuters)</li>
+<li>Ops team reviews and approves in admin panel</li>
+<li>System schedules automated processing for ex-date</li>
+</ul>
+</li>
+<li><strong>Ex-Date 4:00 PM - Market Close:</strong>
+<ul style="margin-top: 4px;">
+<li>HALT trading for NVDA (circuit breaker activated)</li>
+<li>CANCEL all open orders for NVDA - notify users via email/push</li>
+<li>Users see: "Your order was cancelled due to corporate action"</li>
+</ul>
+</li>
+<li><strong>Ex-Date 4:01 PM - Position Adjustment:</strong>
+<ul style="margin-top: 4px;">
+<li>Batch job: UPDATE positions SET quantity = quantity * 10, avg_cost = avg_cost / 10 WHERE symbol = 'NVDA'</li>
+<li>Alice: 50 shares * 10 = 500 shares, $1,200 / 10 = $120 cost basis</li>
+<li>Fractional shares: If someone had 3 shares, they now have 30 (clean). But 10:3 reverse splits create fractions.</li>
+</ul>
+</li>
+<li><strong>Ex-Date 4:02 PM - Historical Data:</strong>
+<ul style="margin-top: 4px;">
+<li>ALL historical prices divided by 10 (adjusted prices)</li>
+<li>Charts look continuous - no cliff on split date</li>
+<li>Unadjusted prices kept separately for regulatory reporting</li>
+</ul>
+</li>
+<li><strong>Ex-Date 4:05 PM - Resume Trading:</strong>
+<ul style="margin-top: 4px;">
+<li>Order book starts fresh at $0</li>
+<li>First trades establish new price (~$120)</li>
+<li>Users can place new orders at post-split prices</li>
+</ul>
+</li>
 </ol>
-<p style="color: #f85149;"><strong>Trap to avoid:</strong> Don't try to update order book in-place - cancel and let users re-enter orders at new prices.</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+<div style="background: rgba(248, 81, 73, 0.1); border-radius: 8px; padding: 12px;">
+<p style="color: #f85149; font-weight: 600; margin: 0 0 8px 0;">Trap to Avoid</p>
+<p style="color: #8b949e; margin: 0; font-size: 13px;">DON'T try to "adjust" open orders (e.g., sell 10 @ $1,250 becomes sell 100 @ $125). Users set specific prices for reasons - their strategy may not scale linearly. Always cancel and let them re-enter.</p>
+</div>
+<div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px;">
+<p style="color: #7ee787; font-weight: 600; margin: 0 0 8px 0;">Edge Case: Fractional Shares</p>
+<p style="color: #8b949e; margin: 0; font-size: 13px;">1:3 reverse split + user has 10 shares = 3.33 shares. Options: (1) Cash out fraction at market price, (2) Round to nearest whole share, (3) Support fractional shares. Most brokers do option 1.</p>
+</div>
+</div>
+
+<p style="color: #7ee787;"><strong>Other Corporate Actions to Handle:</strong></p>
+<ul style="color: #8b949e; margin: 8px 0; padding-left: 20px;">
+<li><strong>Dividend:</strong> Credit cash to account (easy), or DRIP = buy fractional shares</li>
+<li><strong>Merger:</strong> Replace shares of Company A with shares of Company B at exchange ratio</li>
+<li><strong>Spin-off:</strong> Add new position for spun-off company</li>
+<li><strong>Symbol change:</strong> Update symbol everywhere, preserve history</li>
+</ul>
+
+<p style="color: #f0883e; margin-top: 12px;"><strong>Analogy:</strong> It's like a restaurant that needs to change its menu prices. You don't try to modify everyone's in-progress orders - you cancel them, update the menu, and let people re-order. Anything else leads to chaos ("But I ordered at the OLD price!").</p>
 </div>
 </div>
 
@@ -1072,12 +1605,17 @@ Applied to:
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 2px solid #7ee787; border-radius: 12px; padding: 20px;">
 <h4 style="color: #7ee787; margin: 0 0 16px 0;">✅ When PostgreSQL ALONE is Enough</h4>
-<ul style="color: #8b949e; font-size: 14px;">
-<li><strong>< 10K orders/day</strong> - LISTEN/NOTIFY for pub/sub</li>
-<li><strong>< 100 concurrent users</strong></li>
-<li><strong>Latency tolerance > 50ms</strong></li>
-<li><strong>Budget < $1K/month</strong></li>
+
+<div style="background: #21262d; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+<p style="color: #7ee787; font-weight: 600; margin: 0 0 8px 0;">Specific Thresholds:</p>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
+<li><strong>< 10K orders/day</strong> (~0.2 orders/sec during market hours)</li>
+<li><strong>< 100 concurrent users</strong> (100 DB connections is fine)</li>
+<li><strong>Latency tolerance > 50ms</strong> (retail traders won't notice)</li>
+<li><strong>Budget < $1K/month</strong> (single server suffices)</li>
+<li><strong>Team size < 5</strong> (can't operate Kafka anyway)</li>
 </ul>
+</div>
 
 ```sql
 -- PostgreSQL as message queue
@@ -1089,21 +1627,57 @@ NOTIFY order_events, '{"order_id": 123, "action": "placed"}';
 -- Works fine for small scale!
 ```
 
-<p style="color: #7ee787; margin-top: 12px;"><strong>Robinhood started with PostgreSQL!</strong></p>
+<p style="color: #7ee787; margin-top: 12px;"><strong>Fun fact:</strong> Robinhood started with PostgreSQL! They added complexity only when they hit 1M+ users.</p>
 </div>
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 2px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">❌ When You NEED the Full Stack</h4>
-<ul style="color: #8b949e; font-size: 14px;">
-<li><strong>> 100K orders/day</strong> - PostgreSQL LISTEN drops messages</li>
-<li><strong>Sub-10ms latency required</strong></li>
-<li><strong>Regulatory replay requirements</strong></li>
-<li><strong>Multi-region deployment</strong></li>
-</ul>
 
-<p style="color: #f85149; margin-top: 12px;"><strong>Sign you've outgrown PostgreSQL:</strong> VACUUM taking too long, connection pool exhaustion, replication lag > 1s</p>
+<div style="background: #21262d; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+<p style="color: #f85149; font-weight: 600; margin: 0 0 8px 0;">Upgrade Triggers (any ONE of these):</p>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
+<li><strong>> 100K orders/day</strong> - LISTEN/NOTIFY starts dropping</li>
+<li><strong>Sub-10ms latency required</strong> - institutional clients demand it</li>
+<li><strong>Regulatory replay requirements</strong> - SEC/FINRA audit trail</li>
+<li><strong>Multi-region deployment</strong> - can't LISTEN across regions</li>
+<li><strong>> 500 concurrent connections</strong> - connection pooling stress</li>
+</ul>
 </div>
 
+<p style="color: #f85149; font-weight: 600; margin: 0 0 8px 0;">Warning Signs You've Outgrown PostgreSQL:</p>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>VACUUM takes > 1 hour (table bloat)</li>
+<li>Connection pool exhaustion during peaks</li>
+<li>Replication lag > 1 second</li>
+<li>SELECT on order book > 5ms P99</li>
+<li>Disk I/O at 100% during market open</li>
+</ul>
+</div>
+
+</div>
+
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #a371f7; margin: 0 0 16px 0;">Decision Flowchart: What Stack Do You Need?</h4>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #7ee787; font-weight: 600; margin-bottom: 8px;">Phase 1</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">< 1K users, < 10K orders/day</div>
+<div style="color: #c9d1d9; font-size: 12px;">PostgreSQL + Redis<br/>$100-500/mo</div>
+</div>
+<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #f0883e; font-weight: 600; margin-bottom: 8px;">Phase 2</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">10K-100K users, 100K-1M orders/day</div>
+<div style="color: #c9d1d9; font-size: 12px;">+ Kafka + Read Replicas<br/>$5K-20K/mo</div>
+</div>
+<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Phase 3</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">> 100K users, > 1M orders/day</div>
+<div style="color: #c9d1d9; font-size: 12px;">Full microservices<br/>$50K+/mo</div>
+</div>
+</div>
+
+<p style="color: #8b949e; font-size: 13px; margin: 16px 0 0 0;"><strong>Golden Rule:</strong> If you're not sure whether you need Kafka, you don't need Kafka. Add it when PostgreSQL NOTIFY starts dropping messages or you need replay for auditing.</p>
 </div>
 
 ### Simpler Alternatives That Work
@@ -1125,33 +1699,57 @@ NOTIFY order_events, '{"order_id": 123, "action": "placed"}';
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-```
-For a startup with 1,000 users:
+<div style="color: #8b949e; text-align: center; margin-bottom: 20px;">For a startup with 1,000 users:</div>
 
-┌─────────────────────────────────────────────────────────┐
-│                  SIMPLIFIED STACK                        │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│   ┌─────────────────┐      ┌─────────────────┐          │
-│   │  Django/FastAPI │      │   PostgreSQL    │          │
-│   │   Monolith      │─────▶│   (All data)    │          │
-│   │   + Celery      │      │                 │          │
-│   └────────┬────────┘      └─────────────────┘          │
-│            │                                             │
-│            ▼                                             │
-│   ┌─────────────────┐                                   │
-│   │     Redis       │  ← Sessions, cache, Celery broker │
-│   │   (Single)      │                                   │
-│   └─────────────────┘                                   │
-│                                                          │
-│   Cost: ~$100/month on DigitalOcean                     │
-│   Handles: 10K orders/day with <100ms latency           │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
+<div style="border: 2px solid #7ee787; border-radius: 12px; overflow: hidden;">
 
-No Kafka. No Kubernetes. No microservices.
-Start here, evolve when you have the problems.
-```
+<div style="background: #7ee787; color: #0d1117; padding: 12px; text-align: center; font-weight: 700;">
+SIMPLIFIED STACK
+</div>
+
+<div style="padding: 24px;">
+
+<div style="display: flex; justify-content: center; gap: 24px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: #21262d; border: 2px solid #58a6ff; border-radius: 10px; padding: 16px 24px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600;">Django/FastAPI</div>
+<div style="color: #8b949e; font-size: 12px;">Monolith + Celery</div>
+</div>
+<div style="color: #58a6ff; font-size: 24px;">→</div>
+<div style="background: #21262d; border: 2px solid #7ee787; border-radius: 10px; padding: 16px 24px; text-align: center;">
+<div style="font-size: 20px;">🐘</div>
+<div style="color: #7ee787; font-weight: 600;">PostgreSQL</div>
+<div style="color: #8b949e; font-size: 12px;">(All data)</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 12px 0;">↓</div>
+
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: #21262d; border: 2px solid #f85149; border-radius: 10px; padding: 16px 24px; text-align: center;">
+<div style="font-size: 20px;">🔴</div>
+<div style="color: #f85149; font-weight: 600;">Redis (Single)</div>
+<div style="color: #8b949e; font-size: 12px;">Sessions, cache, Celery broker</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px;">
+<div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #7ee787; font-weight: 600;">~$100/month</div>
+<div style="color: #8b949e; font-size: 12px;">on DigitalOcean</div>
+</div>
+<div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #58a6ff; font-weight: 600;">10K orders/day</div>
+<div style="color: #8b949e; font-size: 12px;">with < 100ms latency</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="text-align: center; margin-top: 20px; padding: 16px; background: rgba(248, 81, 73, 0.1); border-radius: 8px;">
+<div style="color: #f85149; font-weight: 600;">No Kafka. No Kubernetes. No microservices.</div>
+<div style="color: #8b949e; font-size: 13px; margin-top: 4px;">Start here, evolve when you have the problems.</div>
+</div>
 
 </div>
 

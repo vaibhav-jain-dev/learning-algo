@@ -1,8 +1,13 @@
 # DSAlgo Learn Platform - Docker Compose
 # Fast Code Runner with persistent kernel pools
 # Memory limit: 2GB total
-
-version: '3.8'
+#
+# FAST BUILD: Uses BuildKit for parallel builds and caching
+# Just run: docker compose up -d --build
+#
+# To enable BuildKit permanently (one-time setup):
+#   echo '{"features":{"buildkit":true}}' | sudo tee /etc/docker/daemon.json
+#   sudo systemctl restart docker
 
 networks:
   dsalgo-learn-network:
@@ -18,10 +23,10 @@ volumes:
     name: dsalgo-learn-postgres-data
   dsalgo-learn-elasticsearch-data:
     name: dsalgo-learn-elasticsearch-data
-  dsalgo-learn-kibana-data:
-    name: dsalgo-learn-kibana-data
   dsalgo-learn-redis-data:
     name: dsalgo-learn-redis-data
+  # dsalgo-learn-kibana-data:
+  #   name: dsalgo-learn-kibana-data
 
 services:
   # PostgreSQL Database for SQL Learning
@@ -56,16 +61,15 @@ services:
           cpus: '0.25'
           memory: 128M
 
-  # Elasticsearch for Search Learning
+  # Elasticsearch for Search Learning (using smaller 7.x OSS version)
   dsalgo-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: dsalgo-elasticsearch
     hostname: dsalgo-elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - xpack.security.enrollment.enabled=false
-      - "ES_JAVA_OPTS=-Xms428m -Xmx428m"
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
       - cluster.name=dsalgo-learn-cluster
       - bootstrap.memory_lock=true
     ulimits:
@@ -93,44 +97,47 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 856M
-        reservations:
-          cpus: '0.25'
-          memory: 428M
-
-  # Kibana for Elasticsearch Visualization
-  dsalgo-kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    container_name: dsalgo-kibana
-    hostname: dsalgo-kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://dsalgo-elasticsearch:9200
-      - SERVER_NAME=dsalgo-kibana
-      - SERVER_HOST=0.0.0.0
-      - XPACK_SECURITY_ENABLED=false
-      - TELEMETRY_ENABLED=false
-    ports:
-      - "5601:5601"
-    networks:
-      - dsalgo-learn-network
-    depends_on:
-      dsalgo-elasticsearch:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available'"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 90s
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
           memory: 512M
         reservations:
           cpus: '0.25'
           memory: 256M
+
+  # ==========================================================================
+  # Kibana for Elasticsearch Visualization (COMMENTED OUT - uncomment if needed)
+  # Saves ~430MB in image pulls
+  # ==========================================================================
+  # dsalgo-kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.17.18
+  #   container_name: dsalgo-kibana
+  #   hostname: dsalgo-kibana
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://dsalgo-elasticsearch:9200
+  #     - SERVER_NAME=dsalgo-kibana
+  #     - SERVER_HOST=0.0.0.0
+  #     - XPACK_SECURITY_ENABLED=false
+  #     - TELEMETRY_ENABLED=false
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - dsalgo-learn-network
+  #   depends_on:
+  #     dsalgo-elasticsearch:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q 'available'"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 90s
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 512M
+  #       reservations:
+  #         cpus: '0.25'
+  #         memory: 256M
 
   # Redis for Caching and Data Structures Learning
   dsalgo-redis:
@@ -184,6 +191,7 @@ services:
       # Mount for live development
       - ./problems:/app/problems:ro
       - ./frontend:/app/frontend:ro
+      - ./topics:/app/topics:ro
       # Go build cache for kernel warmup
       - dsalgo-learn-go-cache:/app/.go-cache
       # State persistence for execution tracking
@@ -209,8 +217,8 @@ services:
       - DB_NAME=${DB_NAME:-order_management}
       # Elasticsearch connection - override via ES_URL env var for external
       - ES_URL=${ES_URL:-http://dsalgo-elasticsearch:9200}
-      # Kibana URL (for reference in app)
-      - KIBANA_URL=${KIBANA_URL:-http://dsalgo-kibana:5601}
+      # Kibana URL (for reference in app) - disabled by default
+      - KIBANA_URL=${KIBANA_URL:-}
       # Redis connection - override via REDIS_URL env var for external
       - REDIS_URL=${REDIS_URL:-redis://dsalgo-redis:6379}
     networks:
@@ -269,6 +277,7 @@ services:
       - ./backend:/app/backend:ro
       - ./frontend:/app/frontend:ro
       - ./problems:/app/problems:ro
+      - ./topics:/app/topics:ro
       - dsalgo-learn-go-cache:/app/.go-cache
       - dsalgo-learn-state:/app/state
     environment:
@@ -286,8 +295,8 @@ services:
       - DB_NAME=${DB_NAME:-order_management}
       # Elasticsearch connection - override via ES_URL env var for external
       - ES_URL=${ES_URL:-http://dsalgo-elasticsearch:9200}
-      # Kibana URL (for reference in app)
-      - KIBANA_URL=${KIBANA_URL:-http://dsalgo-kibana:5601}
+      # Kibana URL (for reference in app) - disabled by default
+      - KIBANA_URL=${KIBANA_URL:-}
       # Redis connection - override via REDIS_URL env var for external
       - REDIS_URL=${REDIS_URL:-redis://dsalgo-redis:6379}
     networks:

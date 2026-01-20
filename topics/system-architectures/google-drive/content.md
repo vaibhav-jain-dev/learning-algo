@@ -23,45 +23,92 @@ Design a cloud file storage and synchronization service that allows users to sto
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">CLOUD STORAGE ARCHITECTURE</h3>
 
-```
-                              ┌─────────────────┐
-                              │   Desktop App   │
-                              │   (Sync Client) │
-                              └────────┬────────┘
-                                       │
-            ┌──────────────────────────┼──────────────────────────┐
-            ▼                          ▼                          ▼
-     ┌───────────┐              ┌───────────┐              ┌───────────┐
-     │  Mobile   │              │  Web App  │              │   API     │
-     │   Apps    │              │           │              │  Clients  │
-     └─────┬─────┘              └─────┬─────┘              └─────┬─────┘
-           │                          │                          │
-           └──────────────────────────┼──────────────────────────┘
-                                      │
-                         ┌────────────▼────────────┐
-                         │       API Gateway       │
-                         │   (Auth, Rate Limit)    │
-                         └────────────┬────────────┘
-                                      │
-         ┌────────────────────────────┼────────────────────────────┐
-         │                            │                            │
-         ▼                            ▼                            ▼
-  ┌─────────────┐            ┌─────────────┐            ┌─────────────┐
-  │   Metadata  │            │    Sync     │            │   Upload/   │
-  │   Service   │            │   Service   │            │  Download   │
-  │             │            │             │            │   Service   │
-  │ - File info │            │ - Conflict  │            │             │
-  │ - Folders   │            │ - Delta     │            │ - Chunking  │
-  │ - Sharing   │            │ - Merge     │            │ - Resume    │
-  └──────┬──────┘            └──────┬──────┘            └──────┬──────┘
-         │                          │                          │
-         │                          │                          │
-         ▼                          ▼                          ▼
-  ┌─────────────┐            ┌─────────────┐            ┌─────────────┐
-  │  PostgreSQL │            │   Redis     │            │     S3      │
-  │  (Metadata) │            │ (Sync State)│            │ (File Blobs)│
-  └─────────────┘            └─────────────┘            └─────────────┘
-```
+<!-- Client Layer -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">Desktop App</div>
+    <div style="font-size: 12px; color: #d1d5db;">(Sync Client)</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">Mobile Apps</div>
+    <div style="font-size: 12px; color: #d1d5db;">iOS / Android</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">Web App</div>
+    <div style="font-size: 12px; color: #d1d5db;">React SPA</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">API Clients</div>
+    <div style="font-size: 12px; color: #d1d5db;">Third-party</div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; font-size: 24px; color: #58a6ff; margin: 16px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- API Gateway -->
+<div style="display: flex; justify-content: center; margin-bottom: 24px;">
+  <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 20px 40px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff; font-size: 18px;">API Gateway</div>
+    <div style="font-size: 12px; color: #ffd1cf;">Auth, Rate Limiting, Routing</div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; font-size: 24px; color: #58a6ff; margin: 16px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Services Layer -->
+<div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
+  <div style="background: #161b22; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+    <div style="font-weight: bold; color: #f0883e; margin-bottom: 8px;">Metadata Service</div>
+    <div style="font-size: 11px; color: #8b949e; text-align: left;">
+      - File info & paths<br>
+      - Folder hierarchy<br>
+      - Sharing & permissions
+    </div>
+  </div>
+  <div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+    <div style="font-weight: bold; color: #58a6ff; margin-bottom: 8px;">Sync Service</div>
+    <div style="font-size: 11px; color: #8b949e; text-align: left;">
+      - Conflict detection<br>
+      - Delta calculation<br>
+      - Merge operations
+    </div>
+  </div>
+  <div style="background: #161b22; border: 2px solid #238636; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+    <div style="font-weight: bold; color: #238636; margin-bottom: 8px;">Upload/Download</div>
+    <div style="font-size: 11px; color: #8b949e; text-align: left;">
+      - Chunking logic<br>
+      - Resume support<br>
+      - Progress tracking
+    </div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; font-size: 24px; color: #58a6ff; margin: 16px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Data Layer -->
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
+    <div style="font-size: 11px; color: #d1d5db;">(Metadata)</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">Redis</div>
+    <div style="font-size: 11px; color: #d1d5db;">(Sync State)</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+    <div style="font-weight: bold; color: #ffffff;">S3</div>
+    <div style="font-size: 11px; color: #d1d5db;">(File Blobs)</div>
+  </div>
+</div>
 
 </div>
 
@@ -72,42 +119,89 @@ Design a cloud file storage and synchronization service that allows users to sto
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">BLOCK-LEVEL DEDUPLICATION</h4>
 
-```
-File: large_video.mp4 (1GB)
-                │
-                ▼
-    ┌─────────────────────────────────────────────────────────────┐
-    │                    CHUNKING PROCESS                          │
-    ├─────────────────────────────────────────────────────────────┤
-    │                                                              │
-    │  1. Split into 4MB chunks                                    │
-    │     ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐ ... ┌────┐           │
-    │     │ C1 │ │ C2 │ │ C3 │ │ C4 │ │ C5 │     │C256│           │
-    │     └────┘ └────┘ └────┘ └────┘ └────┘     └────┘           │
-    │                                                              │
-    │  2. Calculate SHA-256 hash for each chunk                   │
-    │     Hash(C1) = abc123                                        │
-    │     Hash(C2) = def456                                        │
-    │     ...                                                      │
-    │                                                              │
-    │  3. Check if chunk already exists (dedup)                   │
-    │     ┌─────────────────────────────────────────┐             │
-    │     │ abc123 → Already exists, skip upload    │             │
-    │     │ def456 → New chunk, upload to S3        │             │
-    │     └─────────────────────────────────────────┘             │
-    │                                                              │
-    │  4. Store file manifest                                      │
-    │     {                                                        │
-    │       "file_id": "xyz789",                                  │
-    │       "chunks": ["abc123", "def456", "ghi789", ...]         │
-    │     }                                                        │
-    └─────────────────────────────────────────────────────────────┘
+<!-- File Input -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff;">File: large_video.mp4</div>
+    <div style="font-size: 14px; color: #e6dcff;">(1GB)</div>
+  </div>
+</div>
 
-Benefits:
-- Deduplication across all users (save 40%+ storage)
-- Resumable uploads (only upload remaining chunks)
-- Efficient sync (only sync changed chunks)
-```
+<!-- Arrow -->
+<div style="text-align: center; color: #58a6ff; margin: 16px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Chunking Process Box -->
+<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">CHUNKING PROCESS</div>
+
+  <!-- Step 1 -->
+  <div style="margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">1. Split into 4MB chunks</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C1</div>
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C2</div>
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C3</div>
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C4</div>
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C5</div>
+      <div style="color: #8b949e; padding: 8px;">...</div>
+      <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C256</div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div style="margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">2. Calculate SHA-256 hash for each chunk</div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #8b949e;">
+      Hash(C1) = <span style="color: #7ee787;">abc123</span><br>
+      Hash(C2) = <span style="color: #7ee787;">def456</span><br>
+      ...
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div style="margin-bottom: 24px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">3. Check if chunk already exists (dedup)</div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <span style="color: #7ee787; font-family: monospace;">abc123</span>
+        <span style="color: #f0883e;">Already exists, skip upload</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="color: #7ee787; font-family: monospace;">def456</span>
+        <span style="color: #58a6ff;">New chunk, upload to S3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div>
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">4. Store file manifest</div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #e6dcff;">
+      {<br>
+      &nbsp;&nbsp;"file_id": "<span style="color: #7ee787;">xyz789</span>",<br>
+      &nbsp;&nbsp;"chunks": ["<span style="color: #79c0ff;">abc123</span>", "<span style="color: #79c0ff;">def456</span>", "<span style="color: #79c0ff;">ghi789</span>", ...]<br>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Benefits -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px;">
+  <div style="flex: 1; min-width: 200px; background: #161b22; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+    <div style="color: #238636; font-weight: bold;">Deduplication</div>
+    <div style="color: #8b949e; font-size: 13px;">Save 40%+ storage across all users</div>
+  </div>
+  <div style="flex: 1; min-width: 200px; background: #161b22; border-left: 3px solid #58a6ff; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+    <div style="color: #58a6ff; font-weight: bold;">Resumable Uploads</div>
+    <div style="color: #8b949e; font-size: 13px;">Only upload remaining chunks</div>
+  </div>
+  <div style="flex: 1; min-width: 200px; background: #161b22; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+    <div style="color: #f0883e; font-weight: bold;">Efficient Sync</div>
+    <div style="color: #8b949e; font-size: 13px;">Only sync changed chunks</div>
+  </div>
+</div>
 
 </div>
 
@@ -170,28 +264,28 @@ class FileService:
 
 #### Simple Sync Protocol
 
-```
-┌─────────────────────────────────────────┐
-│         POLLING-BASED SYNC              │
-├─────────────────────────────────────────┤
-│                                          │
-│  Client polls every 30 seconds:          │
-│                                          │
-│  GET /api/sync/changes?since=timestamp   │
-│                                          │
-│  Response:                               │
-│  {                                        │
-│    "changes": [                          │
-│      {"path": "/docs/a.txt", "action": "modify"},
-│      {"path": "/images/b.png", "action": "delete"}
-│    ],                                    │
-│    "cursor": "new_timestamp"             │
-│  }                                        │
-│                                          │
-│  Client downloads changed files          │
-│                                          │
-└─────────────────────────────────────────┘
-```
+<div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #58a6ff; margin-bottom: 20px; font-size: 16px;">POLLING-BASED SYNC</div>
+
+  <div style="color: #8b949e; margin-bottom: 16px;">Client polls every 30 seconds:</div>
+
+  <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; margin-bottom: 16px;">
+    <span style="color: #7ee787;">GET</span> <span style="color: #79c0ff;">/api/sync/changes?since=timestamp</span>
+  </div>
+
+  <div style="color: #8b949e; margin-bottom: 8px;">Response:</div>
+  <div style="background: #0d1117; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #e6dcff;">
+    {<br>
+    &nbsp;&nbsp;"changes": [<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #7ee787;">/docs/a.txt</span>", "action": "<span style="color: #f0883e;">modify</span>"},<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #7ee787;">/images/b.png</span>", "action": "<span style="color: #f85149;">delete</span>"}<br>
+    &nbsp;&nbsp;],<br>
+    &nbsp;&nbsp;"cursor": "<span style="color: #79c0ff;">new_timestamp</span>"<br>
+    }
+  </div>
+
+  <div style="color: #58a6ff; margin-top: 16px; font-style: italic;">Client downloads changed files based on response</div>
+</div>
 
 </div>
 </div>
@@ -213,41 +307,72 @@ class FileService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                         ┌────────────────────┐
-                         │    API Gateway     │
-                         └─────────┬──────────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         │                         │                         │
-         ▼                         ▼                         ▼
-  ┌─────────────┐          ┌─────────────┐          ┌─────────────┐
-  │  Metadata   │          │   Upload    │          │   Sync      │
-  │   Service   │          │   Service   │          │  Service    │
-  └──────┬──────┘          └──────┬──────┘          └──────┬──────┘
-         │                        │                        │
-         │                        ▼                        │
-         │                 ┌─────────────┐                 │
-         │                 │   Chunk     │                 │
-         │                 │  Service    │                 │
-         │                 └──────┬──────┘                 │
-         │                        │                        │
-         │                        ▼                        │
-         │                 ┌─────────────────────┐         │
-         │                 │  BLOB STORAGE       │         │
-         │                 │                     │         │
-         │                 │  ┌───┐ ┌───┐ ┌───┐ │         │
-         │                 │  │ S3│ │ S3│ │ S3│ │         │
-         │                 │  │US │ │EU │ │AP │ │         │
-         │                 │  └───┘ └───┘ └───┘ │         │
-         │                 └─────────────────────┘         │
-         │                                                 │
-         ▼                                                 ▼
-  ┌─────────────┐                                   ┌─────────────┐
-  │ PostgreSQL  │                                   │   Kafka     │
-  │  Cluster    │                                   │ (Events)    │
-  └─────────────┘                                   └─────────────┘
-```
+<!-- API Gateway -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+  <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff;">API Gateway</div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; margin: 12px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Services Row -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+  <div style="background: #161b22; border: 2px solid #f0883e; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+    <div style="font-weight: bold; color: #f0883e;">Metadata</div>
+    <div style="font-size: 11px; color: #8b949e;">Service</div>
+  </div>
+  <div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+    <div style="font-weight: bold; color: #58a6ff;">Upload</div>
+    <div style="font-size: 11px; color: #8b949e;">Service</div>
+  </div>
+  <div style="background: #161b22; border: 2px solid #238636; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+    <div style="font-weight: bold; color: #238636;">Sync</div>
+    <div style="font-size: 11px; color: #8b949e;">Service</div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; margin: 12px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Chunk Service -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff;">Chunk Service</div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; margin: 12px 0;">
+  <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Blob Storage -->
+<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center;">
+  <div style="font-weight: bold; color: #f0883e; margin-bottom: 12px;">BLOB STORAGE</div>
+  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+    <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 US</div>
+    <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 EU</div>
+    <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 AP</div>
+  </div>
+</div>
+
+<!-- Bottom Data Stores -->
+<div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 16px;">
+  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
+    <div style="font-size: 11px; color: #d1d5db;">Cluster</div>
+  </div>
+  <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
+    <div style="font-weight: bold; color: #ffffff;">Kafka</div>
+    <div style="font-size: 11px; color: #d1d5db;">Events</div>
+  </div>
+</div>
 
 </div>
 
@@ -310,34 +435,66 @@ class DeltaSyncService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-Conflict Scenario:
+<!-- Three-way diagram -->
+<div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: start; margin-bottom: 24px;">
 
-Device A                    Server                    Device B
-   │                           │                           │
-   │ Edit file.txt             │         Edit file.txt     │
-   │ "Hello World"             │         "Hello Earth"     │
-   │                           │                           │
-   │ Sync ──────────────────▶  │                           │
-   │                           │ Accept (v1 → v2)          │
-   │                           │                           │
-   │                           │  ◀────────────────── Sync │
-   │                           │                           │
-   │                           │  CONFLICT DETECTED!       │
-   │                           │                           │
-   │                           │  Resolution Strategy:     │
-   │                           │  1. Keep both versions    │
-   │                           │     file.txt              │
-   │                           │     file (conflict).txt   │
-   │                           │                           │
-   │                           │  OR                       │
-   │                           │                           │
-   │                           │  2. Last-write-wins       │
-   │                           │     (with warning)        │
-   │                           │                           │
-   │  ◀──── Notify conflict ────┤                           │
-   │                           ├──── Notify conflict ─────▶ │
-```
+  <!-- Device A -->
+  <div style="text-align: center;">
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+      <div style="font-weight: bold; color: #ffffff;">Device A</div>
+    </div>
+    <div style="background: #161b22; border-radius: 8px; padding: 12px; font-size: 12px; color: #8b949e;">
+      Edit file.txt<br>
+      <span style="color: #7ee787;">"Hello World"</span>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="color: #58a6ff; font-size: 24px; padding-top: 40px;">--></div>
+
+  <!-- Server -->
+  <div style="text-align: center;">
+    <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+      <div style="font-weight: bold; color: #ffffff;">Server</div>
+    </div>
+    <div style="background: #161b22; border-radius: 8px; padding: 12px; font-size: 12px;">
+      <div style="color: #7ee787;">Accept A (v1 -> v2)</div>
+      <div style="color: #f85149; margin-top: 8px; font-weight: bold;">CONFLICT!</div>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="color: #58a6ff; font-size: 24px; padding-top: 40px;"><--</div>
+
+  <!-- Device B -->
+  <div style="text-align: center;">
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+      <div style="font-weight: bold; color: #ffffff;">Device B</div>
+    </div>
+    <div style="background: #161b22; border-radius: 8px; padding: 12px; font-size: 12px; color: #8b949e;">
+      Edit file.txt<br>
+      <span style="color: #79c0ff;">"Hello Earth"</span>
+    </div>
+  </div>
+</div>
+
+<!-- Resolution Strategies -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 200px; background: #161b22; border-left: 3px solid #238636; padding: 16px; border-radius: 0 8px 8px 0;">
+    <div style="color: #238636; font-weight: bold; margin-bottom: 8px;">Strategy 1: Keep Both</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      file.txt<br>
+      file (conflict from Device B).txt
+    </div>
+  </div>
+  <div style="flex: 1; min-width: 200px; background: #161b22; border-left: 3px solid #f0883e; padding: 16px; border-radius: 0 8px 8px 0;">
+    <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Strategy 2: Last Write Wins</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      Use timestamp to determine winner<br>
+      (with warning to other user)
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -361,88 +518,140 @@ Device A                    Server                    Device B
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                         GLOBAL FILE STORAGE INFRASTRUCTURE
-    ┌────────────────────────────────────────────────────────────────┐
-    │                                                                │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    EDGE LAYER                             │ │
-    │  │                                                           │ │
-    │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐      │ │
-    │  │  │ Edge    │  │ Edge    │  │ Edge    │  │ Edge    │      │ │
-    │  │  │ US-East │  │ EU-West │  │ AP-South│  │ SA-East │      │ │
-    │  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘      │ │
-    │  │                                                           │ │
-    │  │  - Upload acceleration                                    │ │
-    │  │  - Hot file caching                                       │ │
-    │  │  - Thumbnail serving                                      │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    CONTROL PLANE                          │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │  Metadata   │  │   Quota     │  │   Permission    │   │ │
-    │  │  │  Service    │  │   Service   │  │   Service       │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │   Sync      │  │  Collab     │  │   Search        │   │ │
-    │  │  │  Service    │  │  Service    │  │   Service       │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    DATA PLANE                             │ │
-    │  │                                                           │ │
-    │  │  ┌───────────────────────────────────────────────────┐   │ │
-    │  │  │              DISTRIBUTED BLOB STORE                │   │ │
-    │  │  │                                                    │   │ │
-    │  │  │   ┌────────────┐  ┌────────────┐  ┌────────────┐  │   │ │
-    │  │  │   │   Cold     │  │   Warm     │  │   Hot      │  │   │ │
-    │  │  │   │  Storage   │  │  Storage   │  │  Storage   │  │   │ │
-    │  │  │   │ (Glacier)  │  │   (S3)     │  │  (SSD)     │  │   │ │
-    │  │  │   └────────────┘  └────────────┘  └────────────┘  │   │ │
-    │  │  │                                                    │   │ │
-    │  │  │   Data placement: 3+ replicas across regions      │   │ │
-    │  │  │   Erasure coding: 1.5x storage overhead           │   │ │
-    │  │  │   11 nines durability                             │   │ │
-    │  │  └───────────────────────────────────────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    └────────────────────────────────────────────────────────────────┘
-```
+<div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px;">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
+
+<!-- Edge Layer -->
+<div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+  <div style="text-align: center; font-weight: bold; color: #58a6ff; margin-bottom: 16px;">EDGE LAYER</div>
+  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge US-East</div>
+    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge EU-West</div>
+    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge AP-South</div>
+    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge SA-East</div>
+  </div>
+  <div style="text-align: center; font-size: 12px; color: #8b949e;">
+    Upload acceleration | Hot file caching | Thumbnail serving
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; margin: 12px 0;">
+  <div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Control Plane -->
+<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+  <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 16px;">CONTROL PLANE</div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Metadata</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Quota</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Permission</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Sync</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Collab</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+    <div style="background: #0d1117; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Search</div>
+      <div style="color: #8b949e; font-size: 10px;">Service</div>
+    </div>
+  </div>
+</div>
+
+<!-- Arrow -->
+<div style="text-align: center; margin: 12px 0;">
+  <div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Data Plane -->
+<div style="background: #161b22; border: 2px solid #238636; border-radius: 12px; padding: 20px;">
+  <div style="text-align: center; font-weight: bold; color: #238636; margin-bottom: 16px;">DATA PLANE - DISTRIBUTED BLOB STORE</div>
+
+  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #ffffff; font-weight: bold;">Cold Storage</div>
+      <div style="font-size: 10px; color: #d1d5db;">(Glacier)</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #ffffff; font-weight: bold;">Warm Storage</div>
+      <div style="font-size: 10px; color: #d1d5db;">(S3)</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #ffffff; font-weight: bold;">Hot Storage</div>
+      <div style="font-size: 10px; color: #d1d5db;">(SSD)</div>
+    </div>
+  </div>
+
+  <div style="text-align: center; font-size: 12px; color: #8b949e;">
+    3+ replicas across regions | Erasure coding: 1.5x overhead | 11 nines durability
+  </div>
+</div>
 
 </div>
 
 ### Storage Tiering
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    INTELLIGENT TIERING                       │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  HOT TIER (SSD, Edge Cache)                                 │
-│  └── Recently accessed files (< 7 days)                     │
-│  └── Frequently accessed files                              │
-│  └── Cost: $0.10/GB/month                                   │
-│                                                              │
-│  WARM TIER (Standard S3)                                    │
-│  └── Occasional access (7-90 days)                          │
-│  └── User's active files                                    │
-│  └── Cost: $0.023/GB/month                                  │
-│                                                              │
-│  COLD TIER (S3 Glacier)                                     │
-│  └── Rarely accessed (> 90 days)                            │
-│  └── Archived files                                         │
-│  └── Cost: $0.004/GB/month                                  │
-│                                                              │
-│  ARCHIVE TIER (Glacier Deep Archive)                        │
-│  └── Compliance/legal hold                                  │
-│  └── 12+ hour retrieval time                                │
-│  └── Cost: $0.001/GB/month                                  │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: #161b22; border: 2px solid #8957e5; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #a371f7; margin-bottom: 20px; font-size: 16px;">INTELLIGENT TIERING</div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Hot Tier -->
+    <div style="background: linear-gradient(90deg, #238636 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="color: #7ee787; font-weight: bold;">HOT TIER (SSD, Edge Cache)</div>
+          <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Recently accessed files (< 7 days), frequently accessed files</div>
+        </div>
+        <div style="color: #7ee787; font-weight: bold;">$0.10/GB/mo</div>
+      </div>
+    </div>
+
+    <!-- Warm Tier -->
+    <div style="background: linear-gradient(90deg, #f0883e 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="color: #f0883e; font-weight: bold;">WARM TIER (Standard S3)</div>
+          <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Occasional access (7-90 days), user's active files</div>
+        </div>
+        <div style="color: #f0883e; font-weight: bold;">$0.023/GB/mo</div>
+      </div>
+    </div>
+
+    <!-- Cold Tier -->
+    <div style="background: linear-gradient(90deg, #1f6feb 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="color: #58a6ff; font-weight: bold;">COLD TIER (S3 Glacier)</div>
+          <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Rarely accessed (> 90 days), archived files</div>
+        </div>
+        <div style="color: #58a6ff; font-weight: bold;">$0.004/GB/mo</div>
+      </div>
+    </div>
+
+    <!-- Archive Tier -->
+    <div style="background: linear-gradient(90deg, #8957e5 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="color: #a371f7; font-weight: bold;">ARCHIVE TIER (Glacier Deep Archive)</div>
+          <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Compliance/legal hold, 12+ hour retrieval time</div>
+        </div>
+        <div style="color: #a371f7; font-weight: bold;">$0.001/GB/mo</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
 </div>
@@ -472,25 +681,26 @@ Device A                    Server                    Device B
 
 ### 1. Consistency Model
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│               CONSISTENCY GUARANTEES                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Metadata (PostgreSQL):                                     │
-│  └── Strong consistency                                     │
-│  └── Synchronous replication                                │
-│                                                              │
-│  File Content (S3):                                         │
-│  └── Read-after-write consistency                           │
-│  └── Eventual consistency for listing                       │
-│                                                              │
-│  Sync State (Redis):                                        │
-│  └── Best-effort delivery                                   │
-│  └── Client reconciliation                                  │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #58a6ff; margin-bottom: 20px; font-size: 16px;">CONSISTENCY GUARANTEES</div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="background: #0d1117; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #238636; font-weight: bold;">Metadata (PostgreSQL)</div>
+      <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Strong consistency | Synchronous replication</div>
+    </div>
+
+    <div style="background: #0d1117; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #f0883e; font-weight: bold;">File Content (S3)</div>
+      <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Read-after-write consistency | Eventual consistency for listing</div>
+    </div>
+
+    <div style="background: #0d1117; border-left: 3px solid #da3633; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #f85149; font-weight: bold;">Sync State (Redis)</div>
+      <div style="font-size: 12px; color: #8b949e; margin-top: 4px;">Best-effort delivery | Client reconciliation</div>
+    </div>
+  </div>
+</div>
 
 ### 2. Deduplication at Scale
 
@@ -534,28 +744,34 @@ class GlobalDeduplicationService:
 
 ### 3. Quota Management
 
-```
-Per-user quota enforcement:
+<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">QUOTA SERVICE</div>
 
-┌─────────────────────────────────────────┐
-│            QUOTA SERVICE                 │
-├─────────────────────────────────────────┤
-│                                          │
-│  Pre-upload check:                       │
-│  ┌────────────────────────────────────┐ │
-│  │ current_usage + file_size <= quota │ │
-│  └────────────────────────────────────┘ │
-│                                          │
-│  Async usage calculation:                │
-│  - Background job recalculates usage    │
-│  - Handles dedup credits                 │
-│  - Syncs with billing                   │
-│                                          │
-│  Redis for fast checks:                  │
-│  INCRBY user:quota:123 file_size        │
-│                                          │
-└─────────────────────────────────────────┘
-```
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="background: #0d1117; border-radius: 8px; padding: 16px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Pre-upload check:</div>
+      <div style="font-family: monospace; font-size: 13px; color: #79c0ff; background: #161b22; padding: 8px; border-radius: 4px;">
+        current_usage + file_size <= quota
+      </div>
+    </div>
+
+    <div style="background: #0d1117; border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Async usage calculation:</div>
+      <div style="font-size: 12px; color: #8b949e;">
+        - Background job recalculates usage<br>
+        - Handles dedup credits<br>
+        - Syncs with billing
+      </div>
+    </div>
+
+    <div style="background: #0d1117; border-radius: 8px; padding: 16px;">
+      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Redis for fast checks:</div>
+      <div style="font-family: monospace; font-size: 13px; color: #f85149;">
+        INCRBY user:quota:123 file_size
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -571,15 +787,54 @@ Per-user quota enforcement:
 
 **What They're Probing**: Do you understand the trade-offs of complexity vs. efficiency at scale?
 
-**Strong Answer**:
-- **Resumability**: A 2GB upload that fails at 90% can resume from the last successful chunk, not restart
-- **Deduplication**: Same chunk across users (think shared PDFs, OS files) stored once - saves 40%+ storage
-- **Delta sync**: When a user edits byte 500 of a 1GB file, only that 4MB chunk re-uploads, not 1GB
-- **Bandwidth**: Critical for mobile users on metered connections
-- **Parallelization**: Upload 4 chunks simultaneously, 4x faster for large files
+**Strong Answer - Step by Step Explanation**:
+
+**Step 1: Understanding the Problem with Whole-File Uploads**
+
+When a user uploads a 500MB video file over a typical home connection (50 Mbps), it takes approximately 80 seconds. If the connection drops at 90% (450MB uploaded), the user must restart from zero - wasting both time and bandwidth.
+
+**Step 2: How Chunking Solves Resumability**
+
+With 4MB chunks, that 500MB file becomes 125 chunks. Here's what happens:
+- Chunk 1 uploads successfully -> Server confirms receipt
+- Chunk 2 uploads successfully -> Server confirms receipt
+- ... Connection drops at chunk 113 (452MB transferred)
+- User reconnects -> Client asks "which chunks do you have?"
+- Server responds "chunks 1-112" -> Client resumes from chunk 113
+- Only 48MB remaining instead of restarting 500MB
+
+**Real-world Example**: When a user edits a 10MB PowerPoint document and adds one slide, without chunking we re-upload all 10MB. With 4MB chunks:
+- Original file: 3 chunks [A, B, C]
+- After edit: 3 chunks [A, B', C] - only chunk B changed
+- Delta sync uploads only chunk B' (4MB) instead of 10MB = 60% bandwidth savings
+
+**Step 3: Deduplication Math**
+
+Block size of 4MB means:
+- A 1GB file = 256 chunks
+- SHA-256 hash for each chunk = 32 bytes per chunk identifier
+- Chunk manifest = 256 * 32 = 8KB metadata overhead per file
+
+**Cross-user deduplication scenario**:
+- Company sends 50MB PDF to 1,000 employees via Google Drive share
+- Without dedup: 50GB stored (50MB x 1,000 copies)
+- With dedup: 50MB stored (one copy, 1,000 pointers)
+- Storage savings: 99.9%
+
+**Industry data**: Dropbox reported 75% of uploaded chunks already exist in their storage, reducing storage costs from $23/GB to effectively $5.75/GB.
+
+**Step 4: Parallel Upload Benefits**
+
+With chunking, a 100MB file (25 chunks) can upload 4 chunks simultaneously:
+- Sequential upload at 50 Mbps: 16 seconds
+- 4-parallel upload: 4 seconds
+- This is why Dropbox feels faster than FTP
 
 **When Simpler Works**:
-> "For files under 100MB and < 10K total files, whole-file upload is fine. The complexity of chunking isn't worth it. S3's multipart upload handles resumability for larger files without custom chunking logic."
+> "For files under 100MB and < 10K total files, whole-file upload is fine. The complexity of chunking isn't worth it. S3's multipart upload handles resumability for larger files without custom chunking logic. I'd only implement custom chunking when we have:
+> - Users uploading files > 100MB regularly
+> - Need for cross-user deduplication (saves 40%+ at scale)
+> - Requirement for delta sync (frequently edited files)"
 
 </div>
 </div>
@@ -592,29 +847,89 @@ Per-user quota enforcement:
 
 **What They're Probing**: Understanding of distributed systems, CAP theorem, and user experience trade-offs.
 
-**Strong Answer**:
+**Strong Answer - Real Conflict Scenarios**:
+
+**Scenario 1: The Classic Two-Device Conflict**
+
+Alice has "report.docx" open on her laptop and phone:
+1. **11:00 AM** - Both devices sync, have version v5 (base version)
+2. **11:05 AM** - Alice edits on laptop while on train (offline), saves as v6-laptop
+3. **11:10 AM** - Alice edits on phone (has cell signal), saves as v6-phone -> Server accepts this as v6
+4. **11:30 AM** - Laptop reconnects, tries to push v6-laptop
+
+**Conflict detected!** Server has v6-phone, laptop is pushing v6-laptop, both based on v5.
+
+**Resolution Strategy by File Type**:
+
+<div style="background: #161b22; border-radius: 8px; padding: 16px; margin: 16px 0;">
+  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+    <div style="color: #f0883e; font-weight: bold;">Binary files (images, videos):</div>
+    <div style="color: #8b949e;">
+      Create conflict copy: "report.docx" and "report (conflict from MacBook).docx"<br>
+      Why: Binary diffs are meaningless to users, let them manually choose
+    </div>
+    <div style="color: #58a6ff; font-weight: bold;">Text/documents:</div>
+    <div style="color: #8b949e;">
+      Three-way merge: Compare v5 (base), v6-laptop, v6-phone<br>
+      Auto-merge non-overlapping changes, mark conflicts for overlapping
+    </div>
+    <div style="color: #238636; font-weight: bold;">Real-time docs (Google Docs):</div>
+    <div style="color: #8b949e;">
+      Operational Transform (OT): Every keystroke is an operation with position<br>
+      Operations transform against each other to maintain consistency
+    </div>
+  </div>
+</div>
+
+**Scenario 2: Delete vs Edit Conflict**
+
+1. Bob opens "budget.xlsx" on his laptop
+2. While Bob is editing, Alice deletes the file from web UI
+3. Bob saves his changes
+
+**Resolution options**:
+- **Option A (Dropbox style)**: Bob's edit "resurrects" the file - his version wins
+- **Option B (Google Drive style)**: File stays deleted, Bob sees "File no longer exists" error
+- **Option C (Hybrid)**: Move Bob's version to his trash with message "This file was deleted while you were editing"
+
+**Scenario 3: Folder Rename + File Edit**
+
+1. File is at `/Projects/Q1/report.docx`
+2. Alice renames folder to `/Projects/2024-Q1/`
+3. Meanwhile Bob (offline) edits `/Projects/Q1/report.docx`
+4. Bob reconnects
+
+**The path no longer exists!** Resolution:
+- Track files by unique ID, not path
+- When Bob syncs, server says "file abc123 moved to /Projects/2024-Q1/"
+- Bob's edit applies to new path automatically
+
+**Conflict Resolution Code Example**:
+
+```python
+def resolve_conflict(base_version, version_a, version_b, file_type):
+    if file_type in ['jpg', 'png', 'mp4', 'pdf']:
+        # Binary: create conflict copy
+        return ConflictCopy(version_a, version_b)
+
+    if file_type in ['txt', 'md', 'json']:
+        # Text: attempt three-way merge
+        merged, conflicts = three_way_merge(base_version, version_a, version_b)
+        if conflicts:
+            return MergeWithConflictMarkers(merged, conflicts)
+        return merged
+
+    # Default: last-write-wins with notification
+    winner = version_a if version_a.timestamp > version_b.timestamp else version_b
+    loser = version_b if winner == version_a else version_a
+    notify_user(loser.author, f"Your changes were superseded by {winner.author}")
+    return winner
 ```
-Strategy depends on file type:
 
-Binary files (images, videos):
-└── Last-write-wins OR create conflict copy
-└── "photo.jpg" and "photo (conflict from Device B).jpg"
-└── Let user decide - they know context
-
-Text/documents:
-└── Operational Transform (OT) for real-time collab
-└── Three-way merge for offline edits
-└── Character-level conflict resolution
-
-Code files:
-└── Git-style three-way merge
-└── Mark conflicts, let developer resolve
-```
-
-**Key Insight**: "Google Docs uses Operational Transform because users expect real-time character-by-character sync. Dropbox uses conflict copies because file-level sync is simpler and users don't expect real-time binary file collaboration."
+**Key Insight**: "Google Docs uses Operational Transform because users expect real-time character-by-character sync. Dropbox uses conflict copies because file-level sync is simpler and users don't expect real-time binary file collaboration. The choice depends on user expectations, not technical elegance."
 
 **When Simpler Works**:
-> "For most apps, last-write-wins with a 'version history' feature is enough. Users rarely have true conflicts - most 'conflicts' are the same person on two devices. Version history lets them recover if needed."
+> "For most apps, last-write-wins with a 'version history' feature is enough. Users rarely have true conflicts - most 'conflicts' are the same person on two devices. Version history lets them recover if needed. Only invest in OT/CRDT if real-time collaboration is core to your product."
 
 </div>
 </div>
@@ -627,19 +942,82 @@ Code files:
 
 **What They're Probing**: Do you understand why abstractions exist and when they're necessary?
 
-**Strong Answer**:
-- **S3 limitations**: No built-in file hierarchy (it's flat key-value), expensive listing operations at scale, no native sharing/permissions
-- **Metadata overhead**: Storing file trees, sharing permissions, version history, user quotas in S3 metadata is inefficient
-- **Search**: S3 has no content search - need separate indexing layer
-- **Sync state**: Tracking "what changed since last sync" requires a separate database
+**Strong Answer - S3 Limitations Explained**:
+
+**Limitation 1: No Real File Hierarchy**
+
+S3 is a flat key-value store. When you see "folders" in S3, it's a UI illusion:
+- Key: `users/alice/documents/report.docx`
+- This is ONE key, not a folder structure
+
+**Real-world problem**: "List all files in Alice's documents folder"
+- S3 approach: `LIST Prefix=users/alice/documents/` - scans ALL matching keys
+- Cost: $0.005 per 1,000 LIST requests
+- At 1 million files per user: listing one folder = $5 and 10+ seconds
+
+**With metadata database**:
+```sql
+SELECT * FROM files WHERE user_id = 'alice' AND parent_folder_id = 'doc-folder-123'
+-- Returns in 5ms using index, costs nothing extra
+```
+
+**Limitation 2: No Native Sharing/Permissions**
+
+Scenario: Alice shares a folder with Bob (read-only) and Carol (can edit)
+
+S3 has no concept of this. You'd need to:
+- Store ACLs somewhere (where? Another S3 object? Slow to check)
+- Generate presigned URLs for every access (expires, can be shared)
+- Implement permission checks in every API call
+
+**With proper metadata layer**:
+```sql
+-- One query to check permission
+SELECT permission FROM shares
+WHERE resource_id = 'file-123' AND user_id = 'bob'
+-- Returns 'read' in 2ms
+```
+
+**Limitation 3: No Content Search**
+
+User types "quarterly revenue" in search box:
+- S3: No capability to search file contents
+- You must: Download every file, extract text, build search index elsewhere
+- At scale (1 billion files), this is a separate ElasticSearch cluster anyway
+
+**Limitation 4: Sync State is Impossible in S3**
+
+Client asks: "What changed since my last sync (timestamp: 2024-01-15T10:30:00Z)?"
+
+S3 has no "get objects modified after X" query:
+- You'd LIST all objects and filter by LastModified - extremely slow at scale
+- No way to get deleted objects (they're gone!)
+
+**With metadata database + change log**:
+```sql
+SELECT * FROM file_changes
+WHERE user_id = 'alice' AND changed_at > '2024-01-15T10:30:00Z'
+ORDER BY changed_at
+-- Returns changes in 10ms, includes deletions
+```
 
 **However, S3 is Perfect For**:
-- The actual blob storage (it's incredibly durable and cheap)
-- Serving downloads via signed URLs (offload bandwidth)
-- Backup and archive storage
+
+| Use Case | Why S3 Excels |
+|----------|---------------|
+| Blob storage | 11 nines durability, infinite scale, $0.023/GB |
+| Direct downloads | Signed URLs offload bandwidth from your servers |
+| Archive/backup | Glacier at $0.004/GB is cheapest reliable storage |
+| Static assets | CloudFront + S3 for global distribution |
+
+**Architecture Split**:
+- **S3**: Store the actual file bytes (chunks)
+- **PostgreSQL**: Store metadata (paths, permissions, versions, sync state)
+- **Redis**: Cache hot sync state for real-time updates
+- **ElasticSearch**: Full-text search of file contents
 
 **When S3 Alone Works**:
-> "For a simple file sharing app with < 100K files, you CAN use S3 directly with DynamoDB for metadata. No chunking, no sync service. Just presigned URLs for upload/download. This handles 90% of use cases for $150/month."
+> "For a simple file sharing app with < 100K files, you CAN use S3 directly with DynamoDB for metadata. No chunking, no sync service. Just presigned URLs for upload/download. This handles 90% of use cases for $150/month. I'd only add complexity when we need real sync, dedup, or search."
 
 </div>
 </div>
@@ -652,34 +1030,141 @@ Code files:
 
 **What They're Probing**: Client-side architecture, eventual consistency, and sync complexity.
 
-**Strong Answer**:
-```
-Client-side architecture:
+**Strong Answer - Complete Offline Architecture**:
 
-┌─────────────────────────────────────────┐
-│         LOCAL FILE SYSTEM               │
-├─────────────────────────────────────────┤
-│                                          │
-│  SQLite DB (local metadata):             │
-│  - file_path, local_hash, server_hash   │
-│  - last_sync_time, pending_changes      │
-│                                          │
-│  File Watcher:                           │
-│  - FSEvents (Mac), inotify (Linux)      │
-│  - Queue changes to sync service        │
-│                                          │
-│  Sync Engine:                            │
-│  - Compare local vs server state        │
-│  - Queue uploads/downloads              │
-│  - Handle conflicts on reconnect        │
-│                                          │
-└─────────────────────────────────────────┘
+**The Three Components of Offline Support**:
+
+<div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
+  <div style="flex: 1; min-width: 200px; background: #161b22; border: 2px solid #238636; border-radius: 12px; padding: 16px;">
+    <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">1. Local Metadata Store</div>
+    <div style="font-size: 12px; color: #8b949e;">SQLite database tracking file state</div>
+  </div>
+  <div style="flex: 1; min-width: 200px; background: #161b22; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">2. File System Watcher</div>
+    <div style="font-size: 12px; color: #8b949e;">Detects local changes in real-time</div>
+  </div>
+  <div style="flex: 1; min-width: 200px; background: #161b22; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
+    <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">3. Sync Queue</div>
+    <div style="font-size: 12px; color: #8b949e;">Pending changes to upload on reconnect</div>
+  </div>
+</div>
+
+**Step 1: Local SQLite Database Schema**
+
+```sql
+CREATE TABLE local_files (
+    file_path TEXT PRIMARY KEY,
+    local_hash TEXT,           -- Hash of local file
+    server_hash TEXT,          -- Last known server hash
+    server_version INTEGER,    -- Server version number
+    sync_status TEXT,          -- 'synced', 'pending_upload', 'pending_download', 'conflict'
+    last_modified TIMESTAMP,
+    last_sync TIMESTAMP
+);
+
+CREATE TABLE pending_changes (
+    id INTEGER PRIMARY KEY,
+    file_path TEXT,
+    change_type TEXT,          -- 'create', 'modify', 'delete', 'move'
+    old_path TEXT,             -- For moves/renames
+    queued_at TIMESTAMP,
+    retry_count INTEGER DEFAULT 0
+);
 ```
 
-**Key Insight**: "The hard part isn't the offline editing - it's the reconnection. You need to handle: files edited on both sides, files deleted remotely but edited locally, folder renames that conflict. Dropbox spent years perfecting this."
+**Step 2: File System Watcher Implementation**
+
+```python
+# Using FSEvents (Mac), inotify (Linux), or ReadDirectoryChangesW (Windows)
+
+class FileWatcher:
+    def __init__(self, sync_folder, db):
+        self.sync_folder = sync_folder
+        self.db = db
+
+    def on_file_changed(self, event_path, event_type):
+        # Debounce: wait 500ms for file to stop changing
+        time.sleep(0.5)
+
+        local_hash = calculate_hash(event_path)
+        server_hash = self.db.get_server_hash(event_path)
+
+        if local_hash != server_hash:
+            # File has local changes not on server
+            self.db.execute("""
+                INSERT INTO pending_changes (file_path, change_type, queued_at)
+                VALUES (?, 'modify', datetime('now'))
+            """, event_path)
+
+            self.db.execute("""
+                UPDATE local_files SET sync_status = 'pending_upload'
+                WHERE file_path = ?
+            """, event_path)
+```
+
+**Step 3: Sync Engine on Reconnect**
+
+When network comes back, the sync engine runs this algorithm:
+
+```python
+def sync_on_reconnect(self):
+    # Step 1: Get server changes since last sync
+    last_sync = self.db.get_last_sync_timestamp()
+    server_changes = self.api.get_changes(since=last_sync)
+
+    # Step 2: Get local pending changes
+    local_changes = self.db.query("SELECT * FROM pending_changes ORDER BY queued_at")
+
+    # Step 3: Detect conflicts
+    for server_change in server_changes:
+        local_change = find_matching_local_change(server_change.path, local_changes)
+
+        if local_change:
+            # CONFLICT: Both server and local changed same file
+            if server_change.type == 'delete' and local_change.type == 'modify':
+                # Server deleted, user edited -> User probably wants to keep their edit
+                # Re-upload as new file
+                self.upload_as_new(local_change.path)
+            elif server_change.type == 'modify' and local_change.type == 'modify':
+                # Both modified -> Create conflict copy
+                self.create_conflict_copy(local_change.path, server_change.version)
+            elif server_change.type == 'modify' and local_change.type == 'delete':
+                # Server modified, user deleted -> Restore server version
+                self.download_server_version(server_change)
+
+    # Step 4: Apply non-conflicting changes
+    for server_change in server_changes:
+        if not has_conflict(server_change):
+            if server_change.type == 'modify':
+                self.download_file(server_change)
+            elif server_change.type == 'delete':
+                self.delete_local_file(server_change.path)
+
+    for local_change in local_changes:
+        if not has_conflict(local_change):
+            self.upload_file(local_change)
+```
+
+**Real-World Scenario: 2 Hours Offline on a Flight**
+
+1. User boards plane with laptop, internet disconnects
+2. User edits 5 documents, creates 2 new files, deletes 1 folder
+3. Meanwhile, teammate makes changes to 2 of those same documents
+4. Plane lands, laptop reconnects
+
+**What happens**:
+- Sync engine detects 8 pending local changes
+- Fetches 15 server changes (teammate's edits + other team activity)
+- Finds 2 conflicts (same documents edited)
+- Downloads 13 non-conflicting server changes
+- Uploads 6 non-conflicting local changes
+- Creates 2 conflict copies with clear naming
+- Shows notification: "2 files had conflicts - copies created"
+
+**Key Insight**: "The hard part isn't the offline editing - it's the reconnection. You need to handle: files edited on both sides, files deleted remotely but edited locally, folder renames that conflict, and atomic moves. Dropbox spent years perfecting this and still has edge cases."
 
 **When Simpler Works**:
-> "For web-only apps, skip offline entirely. For mobile apps, cache recently accessed files read-only. Full offline editing with sync is a massive engineering investment - only build it if it's core to your product."
+> "For web-only apps, skip offline entirely. For mobile apps, cache recently accessed files read-only. Full offline editing with sync is a massive engineering investment (6+ months for 2 engineers) - only build it if it's core to your product."
 
 </div>
 </div>
@@ -692,33 +1177,127 @@ Client-side architecture:
 
 **What They're Probing**: Understanding of storage reliability, replication strategies, and failure modes.
 
-**Strong Answer**:
+**Strong Answer - Defense in Depth**:
+
+**Layer 1: S3's Built-in Durability (11 nines)**
+
+What does "11 nines durability" actually mean?
+- 99.999999999% durability = lose 1 file per 10 billion files per year
+- If you store 1 million files, expect to lose 0.0001 files per year
+- In practice: you won't lose data to S3 failure
+
+**How S3 achieves this**:
+- Every object replicated to 3+ availability zones
+- Each AZ is a separate data center with independent power, cooling, networking
+- Checksums on every read/write operation
+- Automatic corruption detection and healing
+
+**Layer 2: Application-Level Protection**
+
+```python
+class DurableUploadService:
+    def upload_chunk(self, chunk_hash, chunk_data):
+        # Step 1: Calculate checksum before upload
+        expected_checksum = md5(chunk_data)
+
+        # Step 2: Upload with checksum verification
+        response = self.s3.put_object(
+            Bucket='chunks',
+            Key=chunk_hash,
+            Body=chunk_data,
+            ContentMD5=base64.b64encode(expected_checksum)
+            # S3 rejects if checksum doesn't match!
+        )
+
+        # Step 3: Verify upload succeeded
+        if response['ResponseMetadata']['HTTPStatusCode'] != 200:
+            raise UploadFailedException()
+
+        # Step 4: Only NOW update metadata
+        # This ensures we never have metadata pointing to non-existent chunk
+        self.db.execute("""
+            UPDATE file_manifests
+            SET chunks = array_append(chunks, %s)
+            WHERE file_id = %s
+        """, chunk_hash, file_id)
+
+        return True
 ```
-Multiple layers of protection:
 
-1. S3 (11 nines durability):
-   └── Automatically replicates across 3+ AZs
-   └── Checksums on every read/write
-   └── Versioning enabled for accidental deletes
+**Layer 3: Write-Ahead Logging for Metadata**
 
-2. Cross-region replication:
-   └── Critical data copied to second region
-   └── Protects against region-wide outages
+PostgreSQL already does this, but here's the concept:
+1. Before any metadata change, write to log
+2. Apply change to database
+3. Mark log entry as applied
 
-3. Application-level:
-   └── Don't confirm upload until S3 confirms
-   └── Idempotent operations (safe to retry)
-   └── Write-ahead logging for metadata
+If crash between steps 1 and 2: replay log on restart
+If crash between steps 2 and 3: log entry replayed (idempotent operation)
 
-4. Soft deletes:
-   └── 30-day trash before permanent deletion
-   └── Version history for recovery
+**Layer 4: Cross-Region Replication**
+
+For critical data (enterprise tier):
+
+```
+Primary Region (us-east-1)          Backup Region (eu-west-1)
+┌──────────────────────┐            ┌──────────────────────┐
+│  S3 Bucket           │───sync───> │  S3 Bucket (replica) │
+│  Aurora PostgreSQL   │───sync───> │  Aurora Read Replica │
+└──────────────────────┘            └──────────────────────┘
+        │                                    │
+        │         If us-east-1 fails         │
+        └──────── Failover to eu-west-1 ─────┘
 ```
 
-**Key Insight**: "Most data loss isn't hardware failure - it's user error or application bugs. Soft deletes and version history prevent more data loss than fancy replication schemes."
+**Cost consideration**: Cross-region replication doubles storage cost. Only enable for:
+- Enterprise customers paying premium
+- Compliance requirements (GDPR, HIPAA)
+- Data that cannot be recreated (user uploads, not cached thumbnails)
+
+**Layer 5: Soft Deletes (Most Important!)**
+
+```sql
+-- Don't do this:
+DELETE FROM files WHERE id = 'abc123';
+
+-- Do this instead:
+UPDATE files SET
+    deleted_at = NOW(),
+    scheduled_purge = NOW() + INTERVAL '30 days'
+WHERE id = 'abc123';
+```
+
+**Why soft deletes prevent more data loss than replication**:
+- Most data loss is user error (accidental delete) or application bugs
+- Cross-region replication faithfully replicates your mistake
+- Soft deletes give 30-day recovery window
+
+**Real Scenario**: Company CFO accidentally deletes "2023 Financials" folder
+- With hard deletes + replication: Data is gone from both regions immediately
+- With soft deletes: IT admin restores folder in 5 minutes
+
+**Layer 6: Version History**
+
+```sql
+CREATE TABLE file_versions (
+    file_id UUID,
+    version_number INTEGER,
+    chunk_manifest JSONB,      -- Which chunks make up this version
+    created_at TIMESTAMP,
+    created_by UUID,
+    change_description TEXT    -- "Edited by John at 3:45 PM"
+);
+```
+
+User can browse version history and restore any previous version. This catches:
+- Accidental overwrites ("I pasted the wrong data")
+- Ransomware (restore pre-encryption versions)
+- Collaborative mistakes ("Who broke the formatting?")
+
+**Key Insight**: "Most data loss isn't hardware failure - it's user error or application bugs. Soft deletes and version history prevent more data loss than fancy replication schemes. S3's durability handles hardware; our job is handling human error."
 
 **When Simpler Works**:
-> "S3's built-in durability is enough for most apps. Cross-region replication is expensive and adds latency. Only add it for compliance requirements or if you're storing irreplaceable data."
+> "S3's built-in durability is enough for most apps. Cross-region replication is expensive and adds latency. Only add it for compliance requirements or if you're storing irreplaceable data worth the 2x cost."
 
 </div>
 </div>
@@ -743,19 +1322,46 @@ Multiple layers of protection:
 
 <div style="background: #161b22; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
-```
-S3                          GCS                         Minio (Self-hosted)
-───────────────────────────────────────────────────────────────────────────
-Durability: 11 nines        Durability: 11 nines        Durability: You manage
-Cost: $0.023/GB             Cost: $0.020/GB             Cost: Hardware + ops
-Ecosystem: Best             Ecosystem: Good              Ecosystem: S3-compatible
-Multi-region: Built-in      Multi-region: Built-in      Multi-region: Manual
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+  <div style="background: #0d1117; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
+    <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">S3</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      Durability: 11 nines<br>
+      Cost: $0.023/GB<br>
+      Ecosystem: Best<br>
+      Multi-region: Built-in
+    </div>
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #7ee787;">
+      CHOOSE WHEN: AWS ecosystem, mature tooling, global reach
+    </div>
+  </div>
 
-CHOOSE S3 WHEN:             CHOOSE GCS WHEN:            CHOOSE MINIO WHEN:
-- AWS ecosystem             - GCP ecosystem             - On-premise required
-- Need mature tooling       - BigQuery integration      - Data sovereignty
-- Global reach              - ML workloads              - Cost at 10PB+ scale
-```
+  <div style="background: #0d1117; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">GCS</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      Durability: 11 nines<br>
+      Cost: $0.020/GB<br>
+      Ecosystem: Good<br>
+      Multi-region: Built-in
+    </div>
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #7ee787;">
+      CHOOSE WHEN: GCP ecosystem, BigQuery integration, ML workloads
+    </div>
+  </div>
+
+  <div style="background: #0d1117; border: 2px solid #8957e5; border-radius: 12px; padding: 16px;">
+    <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Minio (Self-hosted)</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      Durability: You manage<br>
+      Cost: Hardware + ops<br>
+      Ecosystem: S3-compatible<br>
+      Multi-region: Manual
+    </div>
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #7ee787;">
+      CHOOSE WHEN: On-premise required, data sovereignty, cost at 10PB+
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -763,22 +1369,39 @@ CHOOSE S3 WHEN:             CHOOSE GCS WHEN:            CHOOSE MINIO WHEN:
 
 <div style="background: #161b22; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
-```
-PostgreSQL                              DynamoDB
-────────────────────────────────────────────────────────────────────
-Queries: Complex joins, full-text       Queries: Key-value, limited
-Scale: Sharding required at 10TB+       Scale: Unlimited, automatic
-Cost: Predictable                       Cost: Per-request (can spike)
-Transactions: Full ACID                 Transactions: Limited
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+  <div>
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px; font-size: 16px;">PostgreSQL</div>
+    <div style="font-size: 13px; color: #8b949e; line-height: 1.6;">
+      <strong>Queries:</strong> Complex joins, full-text search<br>
+      <strong>Scale:</strong> Sharding required at 10TB+<br>
+      <strong>Cost:</strong> Predictable<br>
+      <strong>Transactions:</strong> Full ACID
+    </div>
+    <div style="margin-top: 16px; padding: 12px; background: #0d1117; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
+      <strong style="color: #7ee787;">CHOOSE WHEN:</strong><br>
+      Complex permission queries, full-text search, team knows SQL, < 10TB metadata
+    </div>
+  </div>
 
-CHOOSE POSTGRES WHEN:                   CHOOSE DYNAMO WHEN:
-- Complex permission queries            - Simple access patterns
-- Full-text search needed               - Extreme scale (1M+ RPS)
-- Team knows SQL                        - Unpredictable traffic
-- < 10TB metadata                       - Global tables needed
-```
+  <div>
+    <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px; font-size: 16px;">DynamoDB</div>
+    <div style="font-size: 13px; color: #8b949e; line-height: 1.6;">
+      <strong>Queries:</strong> Key-value, limited<br>
+      <strong>Scale:</strong> Unlimited, automatic<br>
+      <strong>Cost:</strong> Per-request (can spike)<br>
+      <strong>Transactions:</strong> Limited
+    </div>
+    <div style="margin-top: 16px; padding: 12px; background: #0d1117; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
+      <strong style="color: #7ee787;">CHOOSE WHEN:</strong><br>
+      Simple access patterns, extreme scale (1M+ RPS), unpredictable traffic, global tables needed
+    </div>
+  </div>
+</div>
 
-**Recommendation**: Start with PostgreSQL. It handles 99% of file storage apps. Migrate specific tables to DynamoDB only when you hit scaling limits.
+<div style="margin-top: 16px; padding: 12px; background: #0d1117; border-radius: 8px; font-size: 13px; color: #f0883e;">
+  <strong>Recommendation:</strong> Start with PostgreSQL. It handles 99% of file storage apps. Migrate specific tables to DynamoDB only when you hit scaling limits.
+</div>
 
 </div>
 </div>
@@ -796,33 +1419,70 @@ CHOOSE POSTGRES WHEN:                   CHOOSE DYNAMO WHEN:
 
 **For: < 10K files, < 1TB storage, < 1K users**
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    SIMPLE FILE STORAGE                        │
-├──────────────────────────────────────────────────────────────┤
-│                                                               │
-│   Client                                                      │
-│     │                                                         │
-│     ▼                                                         │
-│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐    │
-│   │   API       │────▶│  Postgres   │     │     S3      │    │
-│   │  (Express)  │     │  (Metadata) │     │   (Files)   │    │
-│   └─────────────┘     └─────────────┘     └─────────────┘    │
-│                                                  ▲            │
-│   Upload flow:                                   │            │
-│   1. API creates presigned S3 URL               │            │
-│   2. Client uploads directly to S3 ─────────────┘            │
-│   3. API stores metadata in Postgres                         │
-│                                                               │
-│   Cost breakdown:                                             │
-│   - S3 (1TB): $23/month                                      │
-│   - RDS Postgres (db.t3.micro): $15/month                    │
-│   - EC2 (t3.small): $15/month                                │
-│   - Data transfer: ~$50/month                                │
-│   - Total: ~$100-150/month                                   │
-│                                                               │
-└──────────────────────────────────────────────────────────────┘
-```
+<!-- Simple Architecture Diagram -->
+<div style="background: #0d1117; border: 2px solid #238636; border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <div style="text-align: center; font-weight: bold; color: #7ee787; margin-bottom: 20px; font-size: 16px;">SIMPLE FILE STORAGE</div>
+
+  <!-- Client -->
+  <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+    <div style="background: #238636; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold;">Client</div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align: center; margin: 8px 0;">
+    <div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto; width: 0;"></div>
+  </div>
+
+  <!-- Services Row -->
+  <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+    <div style="background: #161b22; border: 2px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #58a6ff; font-weight: bold;">API</div>
+      <div style="font-size: 10px; color: #8b949e;">(Express)</div>
+    </div>
+    <div style="background: #161b22; border: 2px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold;">Postgres</div>
+      <div style="font-size: 10px; color: #8b949e;">(Metadata)</div>
+    </div>
+    <div style="background: #161b22; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center;">
+      <div style="color: #7ee787; font-weight: bold;">S3</div>
+      <div style="font-size: 10px; color: #8b949e;">(Files)</div>
+    </div>
+  </div>
+
+  <!-- Upload Flow -->
+  <div style="background: #161b22; border-radius: 8px; padding: 16px; margin-top: 16px;">
+    <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Upload flow:</div>
+    <div style="font-size: 12px; color: #8b949e;">
+      1. API creates presigned S3 URL<br>
+      2. Client uploads directly to S3<br>
+      3. API stores metadata in Postgres
+    </div>
+  </div>
+
+  <!-- Cost Breakdown -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
+    <div style="background: #161b22; padding: 8px 12px; border-radius: 6px; text-align: center;">
+      <div style="color: #7ee787; font-weight: bold;">S3 (1TB)</div>
+      <div style="font-size: 12px; color: #8b949e;">$23/mo</div>
+    </div>
+    <div style="background: #161b22; padding: 8px 12px; border-radius: 6px; text-align: center;">
+      <div style="color: #58a6ff; font-weight: bold;">RDS Postgres</div>
+      <div style="font-size: 12px; color: #8b949e;">$15/mo</div>
+    </div>
+    <div style="background: #161b22; padding: 8px 12px; border-radius: 6px; text-align: center;">
+      <div style="color: #f0883e; font-weight: bold;">EC2</div>
+      <div style="font-size: 12px; color: #8b949e;">$15/mo</div>
+    </div>
+    <div style="background: #161b22; padding: 8px 12px; border-radius: 6px; text-align: center;">
+      <div style="color: #a371f7; font-weight: bold;">Data Transfer</div>
+      <div style="font-size: 12px; color: #8b949e;">~$50/mo</div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 16px; color: #7ee787; font-weight: bold; font-size: 18px;">
+    Total: ~$100-150/month
+  </div>
+</div>
 
 **What You Skip**:
 - No chunking (S3 multipart handles large files)
@@ -870,26 +1530,53 @@ CHOOSE POSTGRES WHEN:                   CHOOSE DYNAMO WHEN:
 
 <div style="background: #161b22; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
-```
-                     Is file storage core to your product?
-                                    │
-                    ┌───────────────┴───────────────┐
-                    │                               │
-                   YES                              NO
-                    │                               │
-                    ▼                               ▼
-        Do you have 6+ months              Use Firebase Storage,
-        and 2+ engineers?                  Cloudinary, or S3 + SDK
-                    │                               │
-         ┌─────────┴─────────┐                     │
-         │                   │                     │
-        YES                  NO                    │
-         │                   │                     │
-         ▼                   ▼                     │
-    Build custom        Use Dropbox API,          │
-    (this design)       Box API, or               │
-                        AWS Amplify Storage        │
-```
+<!-- Decision Tree -->
+<div style="background: #0d1117; border-radius: 12px; padding: 24px;">
+
+  <!-- Question 1 -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <div style="background: #8957e5; color: white; padding: 12px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
+      Is file storage core to your product?
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+    <!-- YES Branch -->
+    <div style="text-align: center;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">YES</div>
+      <div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto 12px; width: 0;"></div>
+
+      <div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 12px;">
+        Do you have 6+ months<br>and 2+ engineers?
+      </div>
+
+      <div style="display: flex; gap: 20px; justify-content: center;">
+        <div style="text-align: center;">
+          <div style="color: #7ee787; font-size: 12px; margin-bottom: 8px;">YES</div>
+          <div style="background: #161b22; border: 2px solid #7ee787; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #7ee787;">
+            Build custom<br>(this design)
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">NO</div>
+          <div style="background: #161b22; border: 2px solid #f0883e; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #f0883e;">
+            Dropbox API,<br>Box API, Amplify
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NO Branch -->
+    <div style="text-align: center;">
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">NO</div>
+      <div style="border-left: 2px solid #f85149; height: 20px; margin: 0 auto 12px; width: 0;"></div>
+
+      <div style="background: #161b22; border: 2px solid #58a6ff; padding: 12px 20px; border-radius: 8px; font-size: 13px; color: #58a6ff;">
+        Use Firebase Storage,<br>Cloudinary, or S3 + SDK
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
 </div>

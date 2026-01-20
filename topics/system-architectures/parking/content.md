@@ -23,47 +23,71 @@ Design a smart parking management system for multi-level parking lots with real-
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">PARKING SYSTEM ARCHITECTURE</h3>
 
-```
-                    ┌─────────────────────────────────────────┐
-                    │              ENTRY/EXIT GATES           │
-                    │                                          │
-                    │  ┌────────────┐      ┌────────────┐     │
-                    │  │  Camera/   │      │   Camera/  │     │
-                    │  │  LPR       │      │   LPR      │     │
-                    │  └─────┬──────┘      └─────┬──────┘     │
-                    │        │                   │            │
-                    │  ┌─────▼──────┐      ┌─────▼──────┐     │
-                    │  │   Entry    │      │   Exit     │     │
-                    │  │   Kiosk    │      │   Kiosk    │     │
-                    │  └─────┬──────┘      └─────┬──────┘     │
-                    └────────┼─────────────────────┼──────────┘
-                             │                     │
-                             └──────────┬──────────┘
-                                        │
-                         ┌──────────────▼──────────────┐
-                         │       PARKING SERVICE       │
-                         │                             │
-                         │  ┌───────────────────────┐  │
-                         │  │    Spot Management    │  │
-                         │  └───────────────────────┘  │
-                         │  ┌───────────────────────┐  │
-                         │  │   Ticket/Session      │  │
-                         │  └───────────────────────┘  │
-                         │  ┌───────────────────────┐  │
-                         │  │     Reservations      │  │
-                         │  └───────────────────────┘  │
-                         │  ┌───────────────────────┐  │
-                         │  │       Payments        │  │
-                         │  └───────────────────────┘  │
-                         └──────────────┬──────────────┘
-                                        │
-                    ┌───────────────────┼───────────────────┐
-                    ▼                   ▼                   ▼
-             ┌───────────┐       ┌───────────┐       ┌───────────┐
-             │ PostgreSQL│       │   Redis   │       │  Display  │
-             │  (Data)   │       │  (Cache)  │       │  Boards   │
-             └───────────┘       └───────────┘       └───────────┘
-```
+<!-- Entry/Exit Gates Layer -->
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 16px; font-size: 14px;">ENTRY/EXIT GATES</div>
+<div style="display: flex; justify-content: space-around; gap: 24px;">
+<div style="flex: 1; text-align: center;">
+<div style="background: #2d333b; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Camera/LPR</div>
+</div>
+<div style="color: #7c3aed; font-size: 20px;">&#8595;</div>
+<div style="background: #2d333b; border: 2px solid #22c55e; border-radius: 8px; padding: 12px;">
+<div style="color: #4ade80; font-weight: bold; font-size: 12px;">Entry Kiosk</div>
+</div>
+</div>
+<div style="flex: 1; text-align: center;">
+<div style="background: #2d333b; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Camera/LPR</div>
+</div>
+<div style="color: #7c3aed; font-size: 20px;">&#8595;</div>
+<div style="background: #2d333b; border: 2px solid #ef4444; border-radius: 8px; padding: 12px;">
+<div style="color: #f87171; font-weight: bold; font-size: 12px;">Exit Kiosk</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Parking Service Layer -->
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #58a6ff; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<span style="color: #8b949e;">Spot Management</span>
+</div>
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<span style="color: #8b949e;">Ticket/Session</span>
+</div>
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<span style="color: #8b949e;">Reservations</span>
+</div>
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<span style="color: #8b949e;">Payments</span>
+</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Data Layer -->
+<div style="display: flex; justify-content: space-between; gap: 16px;">
+<div style="flex: 1; background: linear-gradient(135deg, #1a472a 0%, #0d2818 100%); border: 2px solid #238636; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #3fb950; font-weight: bold; font-size: 13px;">PostgreSQL</div>
+<div style="color: #8b949e; font-size: 11px;">(Data)</div>
+</div>
+<div style="flex: 1; background: linear-gradient(135deg, #4a1d1d 0%, #2d1212 100%); border: 2px solid #da3633; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f85149; font-weight: bold; font-size: 13px;">Redis</div>
+<div style="color: #8b949e; font-size: 11px;">(Cache)</div>
+</div>
+<div style="flex: 1; background: linear-gradient(135deg, #3d2d1a 0%, #2d1f12 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 13px;">Display Boards</div>
+<div style="color: #8b949e; font-size: 11px;">(Real-time)</div>
+</div>
+</div>
 
 </div>
 
@@ -74,48 +98,100 @@ Design a smart parking management system for multi-level parking lots with real-
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">PARKING LOT DATA MODEL</h4>
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    ENTITY RELATIONSHIPS                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ParkingLot (1) ──────< Level (M)                           │
-│       │                    │                                 │
-│       │                    │                                 │
-│       │               Spot (M)                               │
-│       │                    │                                 │
-│       │                    │                                 │
-│       └─────── Ticket ─────┘                                │
-│                    │                                         │
-│                    │                                         │
-│               Vehicle                                        │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+<!-- Entity Relationships Diagram -->
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+<div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 14px;">ENTITY RELATIONSHIPS</div>
 
-Tables:
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 
-parking_lots:
-  - id, name, address, total_spots, lat, lng
+<!-- ParkingLot Entity -->
+<div style="background: linear-gradient(135deg, #238636 0%, #1a5a28 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 14px 28px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">ParkingLot (1)</span>
+</div>
 
-levels:
-  - id, lot_id, floor_number, name
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+<span style="color: #6e7681; font-size: 12px;">has many</span>
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+</div>
 
-spots:
-  - id, level_id, spot_number, spot_type, status
-  - spot_type: COMPACT, REGULAR, LARGE, HANDICAP, EV
-  - status: AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE
+<!-- Level Entity -->
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #1a4d8c 100%); border: 2px solid #58a6ff; border-radius: 10px; padding: 14px 28px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">Level (M)</span>
+</div>
 
-tickets:
-  - id, lot_id, spot_id, vehicle_id
-  - entry_time, exit_time, status
-  - amount_due, amount_paid
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+<span style="color: #6e7681; font-size: 12px;">contains</span>
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+</div>
 
-vehicles:
-  - id, license_plate, vehicle_type, owner_id
+<!-- Spot Entity -->
+<div style="background: linear-gradient(135deg, #8957e5 0%, #6b3dbd 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 14px 28px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">Spot (M)</span>
+</div>
 
-reservations:
-  - id, spot_id, user_id, start_time, end_time, status
-```
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+<span style="color: #6e7681; font-size: 12px;">linked via</span>
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+</div>
+
+<!-- Ticket Entity -->
+<div style="background: linear-gradient(135deg, #f0883e 0%, #c76a2e 100%); border: 2px solid #f9826c; border-radius: 10px; padding: 14px 28px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">Ticket</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+<span style="color: #6e7681; font-size: 12px;">belongs to</span>
+<div style="color: #8b949e; font-size: 18px;">&#8595;</div>
+</div>
+
+<!-- Vehicle Entity -->
+<div style="background: linear-gradient(135deg, #da3633 0%, #a82828 100%); border: 2px solid #f85149; border-radius: 10px; padding: 14px 28px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">Vehicle</span>
+</div>
+
+</div>
+</div>
+
+<!-- Tables Schema -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+
+<div style="background: #161b22; border: 1px solid #238636; border-radius: 8px; padding: 16px;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 8px; font-size: 13px;">parking_lots</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, name, address, total_spots, lat, lng</div>
+</div>
+
+<div style="background: #161b22; border: 1px solid #1f6feb; border-radius: 8px; padding: 16px;">
+<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px; font-size: 13px;">levels</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, lot_id, floor_number, name</div>
+</div>
+
+<div style="background: #161b22; border: 1px solid #8957e5; border-radius: 8px; padding: 16px;">
+<div style="color: #a371f7; font-weight: bold; margin-bottom: 8px; font-size: 13px;">spots</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, level_id, spot_number, spot_type, status</div>
+<div style="color: #6e7681; font-size: 11px; margin-top: 4px;">type: COMPACT, REGULAR, LARGE, HANDICAP, EV</div>
+<div style="color: #6e7681; font-size: 11px;">status: AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE</div>
+</div>
+
+<div style="background: #161b22; border: 1px solid #f0883e; border-radius: 8px; padding: 16px;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px; font-size: 13px;">tickets</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, lot_id, spot_id, vehicle_id, entry_time, exit_time, status, amount_due, amount_paid</div>
+</div>
+
+<div style="background: #161b22; border: 1px solid #da3633; border-radius: 8px; padding: 16px;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 8px; font-size: 13px;">vehicles</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, license_plate, vehicle_type, owner_id</div>
+</div>
+
+<div style="background: #161b22; border: 1px solid #00bcd4; border-radius: 8px; padding: 16px;">
+<div style="color: #00bcd4; font-weight: bold; margin-bottom: 8px; font-size: 13px;">reservations</div>
+<div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, spot_id, user_id, start_time, end_time, status</div>
+</div>
+
+</div>
 
 </div>
 
@@ -256,37 +332,63 @@ class ParkingService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                         ┌────────────────────┐
-                         │    API Gateway     │
-                         └─────────┬──────────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         │                         │                         │
-         ▼                         ▼                         ▼
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│   SPOT SERVICE  │       │ TICKET SERVICE  │       │ PAYMENT SERVICE │
-│                 │       │                 │       │                 │
-│ - Availability  │       │ - Entry/Exit    │       │ - Calculate fee │
-│ - Reservations  │       │ - History       │       │ - Process pay   │
-│ - Display sync  │       │ - Validation    │       │ - Receipts      │
-└────────┬────────┘       └────────┬────────┘       └────────┬────────┘
-         │                         │                         │
-         └─────────────────────────┼─────────────────────────┘
-                                   │
-                           ┌───────▼───────┐
-                           │    Kafka      │
-                           │  Event Bus    │
-                           └───────┬───────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         │                         │                         │
-         ▼                         ▼                         ▼
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│  NOTIFICATION   │       │   ANALYTICS     │       │    DISPLAY      │
-│    SERVICE      │       │    SERVICE      │       │   CONTROLLER    │
-└─────────────────┘       └─────────────────┘       └─────────────────┘
-```
+<!-- API Gateway -->
+<div style="display: flex; justify-content: center; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #1a5a28 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 16px 40px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">API Gateway</span>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #3fb950; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Core Services Layer -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #1a4d8c 100%); border: 2px solid #58a6ff; border-radius: 10px; padding: 16px;">
+<div style="color: #ffffff; font-weight: bold; text-align: center; margin-bottom: 8px;">SPOT SERVICE</div>
+<div style="color: #a5d6ff; font-size: 12px; text-align: center; line-height: 1.5;">
+Availability<br/>Reservations<br/>Display sync
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #6b3dbd 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 16px;">
+<div style="color: #ffffff; font-weight: bold; text-align: center; margin-bottom: 8px;">TICKET SERVICE</div>
+<div style="color: #d4c4f7; font-size: 12px; text-align: center; line-height: 1.5;">
+Entry/Exit<br/>History<br/>Validation
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0883e 0%, #c76a2e 100%); border: 2px solid #f9826c; border-radius: 10px; padding: 16px;">
+<div style="color: #ffffff; font-weight: bold; text-align: center; margin-bottom: 8px;">PAYMENT SERVICE</div>
+<div style="color: #ffd4b8; font-size: 12px; text-align: center; line-height: 1.5;">
+Calculate fee<br/>Process pay<br/>Receipts
+</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #da3633; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Kafka Event Bus -->
+<div style="display: flex; justify-content: center; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #da3633 0%, #a82828 100%); border: 2px solid #f85149; border-radius: 10px; padding: 16px 60px; text-align: center;">
+<div style="color: #ffffff; font-weight: bold;">Kafka Event Bus</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #da3633; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Consumer Services Layer -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #161b22; border: 2px solid #00bcd4; border-radius: 10px; padding: 16px; text-align: center;">
+<div style="color: #00bcd4; font-weight: bold;">NOTIFICATION SERVICE</div>
+</div>
+<div style="background: #161b22; border: 2px solid #22c55e; border-radius: 10px; padding: 16px; text-align: center;">
+<div style="color: #4ade80; font-weight: bold;">ANALYTICS SERVICE</div>
+</div>
+<div style="background: #161b22; border: 2px solid #eab308; border-radius: 10px; padding: 16px; text-align: center;">
+<div style="color: #facc15; font-weight: bold;">DISPLAY CONTROLLER</div>
+</div>
+</div>
 
 </div>
 
@@ -359,36 +461,51 @@ class ReservationService:
 
 ### Real-time Availability Display
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                AVAILABILITY SYNC                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Redis Cache Structure:                                      │
-│                                                              │
-│  lot:{lot_id}:availability                                  │
-│  {                                                           │
-│    "total": 500,                                            │
-│    "available": 234,                                        │
-│    "by_level": {                                            │
-│      "1": {"total": 100, "available": 45},                 │
-│      "2": {"total": 100, "available": 52},                 │
-│      ...                                                     │
-│    },                                                        │
-│    "by_type": {                                             │
-│      "COMPACT": {"total": 150, "available": 78},           │
-│      "REGULAR": {"total": 250, "available": 110},          │
-│      ...                                                     │
-│    }                                                         │
-│  }                                                           │
-│                                                              │
-│  Update Strategy:                                            │
-│  - On spot status change → publish event                    │
-│  - Event consumer → increment/decrement atomically          │
-│  - Display boards poll cache every 5 seconds                │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">AVAILABILITY SYNC</div>
+
+<!-- Redis Cache Structure -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+<div style="background: #0d1117; border: 1px solid #da3633; border-radius: 8px; padding: 16px;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 12px; font-size: 13px;">Redis Cache Structure</div>
+<div style="color: #8b949e; font-size: 12px; font-family: monospace; line-height: 1.8;">
+<div style="color: #a371f7;">lot:{lot_id}:availability</div>
+<div style="margin-left: 12px; color: #8b949e;">{</div>
+<div style="margin-left: 24px;"><span style="color: #7ee787;">"total"</span>: 500,</div>
+<div style="margin-left: 24px;"><span style="color: #7ee787;">"available"</span>: 234,</div>
+<div style="margin-left: 24px;"><span style="color: #7ee787;">"by_level"</span>: {</div>
+<div style="margin-left: 36px;"><span style="color: #79c0ff;">"1"</span>: {total: 100, available: 45},</div>
+<div style="margin-left: 36px;"><span style="color: #79c0ff;">"2"</span>: {total: 100, available: 52}</div>
+<div style="margin-left: 24px;">},</div>
+<div style="margin-left: 24px;"><span style="color: #7ee787;">"by_type"</span>: {</div>
+<div style="margin-left: 36px;"><span style="color: #79c0ff;">"COMPACT"</span>: {total: 150, available: 78},</div>
+<div style="margin-left: 36px;"><span style="color: #79c0ff;">"REGULAR"</span>: {total: 250, available: 110}</div>
+<div style="margin-left: 24px;">}</div>
+<div style="margin-left: 12px;">}</div>
+</div>
+</div>
+
+<div style="background: #0d1117; border: 1px solid #238636; border-radius: 8px; padding: 16px;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 12px; font-size: 13px;">Update Strategy</div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #238636; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">1</div>
+<span style="color: #8b949e; font-size: 12px;">Spot status change triggers publish event</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #1f6feb; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">2</div>
+<span style="color: #8b949e; font-size: 12px;">Event consumer increments/decrements atomically</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="background: #8957e5; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">3</div>
+<span style="color: #8b949e; font-size: 12px;">Display boards poll cache every 5 seconds</span>
+</div>
+</div>
+</div>
+
+</div>
+</div>
 
 </div>
 </div>
@@ -410,54 +527,84 @@ class ReservationService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                    SMART CITY PARKING NETWORK
-    ┌────────────────────────────────────────────────────────────────┐
-    │                                                                │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    USER LAYER                             │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │  Mobile     │  │  In-car     │  │   Google Maps   │   │ │
-    │  │  │  App        │  │  Navigation │  │   Integration   │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    API GATEWAY                            │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │               MICROSERVICES LAYER                         │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │  Discovery  │  │  Booking    │  │    Navigation   │   │ │
-    │  │  │  Service    │  │  Service    │  │    Service      │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │  Pricing    │  │   Fleet     │  │    Analytics    │   │ │
-    │  │  │  Service    │  │   Manager   │  │    Service      │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    LOT CLUSTERS                           │ │
-    │  │                                                           │ │
-    │  │  Each lot has local edge controller                      │ │
-    │  │  Operates independently if cloud disconnected            │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │   Lot A     │  │   Lot B     │  │     Lot N       │   │ │
-    │  │  │  Controller │  │  Controller │  │    Controller   │   │ │
-    │  │  │             │  │             │  │                 │   │ │
-    │  │  │ - Sensors   │  │ - Sensors   │  │  - Sensors      │   │ │
-    │  │  │ - Cameras   │  │ - Cameras   │  │  - Cameras      │   │ │
-    │  │  │ - Gates     │  │ - Gates     │  │  - Gates        │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    └────────────────────────────────────────────────────────────────┘
-```
+<div style="color: #a371f7; font-weight: bold; text-align: center; margin-bottom: 24px; font-size: 18px;">SMART CITY PARKING NETWORK</div>
+
+<!-- User Layer -->
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 16px; font-size: 14px;">USER LAYER</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #0d1117; border: 1px solid #58a6ff; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px;">Mobile App</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #58a6ff; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px;">In-car Navigation</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #58a6ff; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 13px;">Google Maps Integration</div>
+</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #3fb950; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- API Gateway -->
+<div style="background: linear-gradient(135deg, #238636 0%, #1a5a28 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 16px; margin-bottom: 16px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold;">API GATEWAY</span>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #8957e5; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Microservices Layer -->
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #1a1a2e 100%); border: 2px solid #8957e5; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #a371f7; font-weight: bold; text-align: center; margin-bottom: 16px; font-size: 14px;">MICROSERVICES LAYER</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Discovery Service</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Booking Service</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Navigation Service</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Pricing Service</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Fleet Manager</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Analytics Service</div>
+</div>
+</div>
+</div>
+
+<!-- Arrow Down -->
+<div style="text-align: center; color: #f0883e; font-size: 24px; margin: 8px 0;">&#8595;</div>
+
+<!-- Lot Clusters -->
+<div style="background: linear-gradient(135deg, #3d2d1a 0%, #2d1f12 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
+<div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 14px;">LOT CLUSTERS</div>
+<div style="color: #8b949e; text-align: center; font-size: 12px; margin-bottom: 16px;">Each lot has local edge controller - Operates independently if cloud disconnected</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 14px;">
+<div style="color: #f9826c; font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 13px;">Lot A Controller</div>
+<div style="color: #6e7681; font-size: 11px; text-align: center; line-height: 1.6;">Sensors | Cameras | Gates</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 14px;">
+<div style="color: #f9826c; font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 13px;">Lot B Controller</div>
+<div style="color: #6e7681; font-size: 11px; text-align: center; line-height: 1.6;">Sensors | Cameras | Gates</div>
+</div>
+<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 14px;">
+<div style="color: #f9826c; font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 13px;">Lot N Controller</div>
+<div style="color: #6e7681; font-size: 11px; text-align: center; line-height: 1.6;">Sensors | Cameras | Gates</div>
+</div>
+</div>
+</div>
 
 </div>
 
@@ -598,21 +745,45 @@ class DynamicPricingService:
 
 ### When to Use What
 
-```
-PARKING LOT SIZE vs TECHNOLOGY COMPLEXITY
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #8957e5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="color: #a371f7; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">PARKING LOT SIZE vs TECHNOLOGY COMPLEXITY</div>
 
-Small Lot (<50 spots)     : Counter + Pay station + Spreadsheet
-                            Total cost: $2,000-5,000 setup
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-Medium Lot (50-200)       : Entry/exit cameras + Basic software + Card payments
-                            Total cost: $10,000-30,000 setup
+<div style="background: linear-gradient(90deg, #238636 0%, #0d1117 100%); border: 1px solid #3fb950; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #3fb950; font-weight: bold; font-size: 14px;">Small Lot (&lt;50 spots)</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Counter + Pay station + Spreadsheet</div>
+</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 12px;">$2,000-5,000</div>
+</div>
 
-Large Garage (200-1000)   : Per-level counters + LPR + Reservation system
-                            Total cost: $50,000-150,000 setup
+<div style="background: linear-gradient(90deg, #1f6feb 0%, #0d1117 100%); border: 1px solid #58a6ff; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 14px;">Medium Lot (50-200)</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Entry/exit cameras + Basic software + Card payments</div>
+</div>
+<div style="background: #1f6feb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 12px;">$10,000-30,000</div>
+</div>
 
-Enterprise (1000+ multi)  : Full IoT + Mobile app + Dynamic pricing + Analytics
-                            Total cost: $500,000+ setup
-```
+<div style="background: linear-gradient(90deg, #f0883e 0%, #0d1117 100%); border: 1px solid #f9826c; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #f9826c; font-weight: bold; font-size: 14px;">Large Garage (200-1000)</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Per-level counters + LPR + Reservation system</div>
+</div>
+<div style="background: #f0883e; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 12px;">$50,000-150,000</div>
+</div>
+
+<div style="background: linear-gradient(90deg, #da3633 0%, #0d1117 100%); border: 1px solid #f85149; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #f85149; font-weight: bold; font-size: 14px;">Enterprise (1000+ multi)</div>
+<div style="color: #8b949e; font-size: 12px; margin-top: 4px;">Full IoT + Mobile app + Dynamic pricing + Analytics</div>
+</div>
+<div style="background: #da3633; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 12px;">$500,000+</div>
+</div>
+
+</div>
+</div>
 
 </div>
 
@@ -705,32 +876,61 @@ class SimpleParking:
 
 ### Critical Trade-offs
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        TRADE-OFF ANALYSIS                                    │
-├──────────────────┬──────────────────┬──────────────────┬────────────────────┤
-│ TRADE-OFF        │ OPTION A         │ OPTION B         │ MITIGATION         │
-├──────────────────┼──────────────────┼──────────────────┼────────────────────┤
-│ Availability vs  │ Per-spot sensors │ Entry/exit       │ Use counters +     │
-│ Cost             │ ($50-150/spot)   │ counters ($500)  │ cameras for level  │
-│                  │                  │                  │ guidance only      │
-├──────────────────┼──────────────────┼──────────────────┼────────────────────┤
-│ Accuracy vs      │ Pessimistic      │ Optimistic       │ Optimistic with    │
-│ Throughput       │ locking (slow)   │ locking (races)  │ retry + eventual   │
-│                  │                  │                  │ consistency        │
-├──────────────────┼──────────────────┼──────────────────┼────────────────────┤
-│ Offline vs       │ Full edge        │ Cloud-dependent  │ Event sourcing     │
-│ Consistency      │ autonomy         │ real-time        │ with sync on       │
-│                  │                  │                  │ reconnect          │
-├──────────────────┼──────────────────┼──────────────────┼────────────────────┤
-│ UX vs Security   │ Frictionless     │ Verify every     │ Risk-based: verify │
-│                  │ entry            │ transaction      │ only large amounts │
-├──────────────────┼──────────────────┼──────────────────┼────────────────────┤
-│ Features vs      │ Build            │ Use ParkWhiz/    │ Integrate existing │
-│ Time-to-Market   │ everything       │ SpotHero API     │ for payments, build│
-│                  │                  │                  │ for differentiation│
-└──────────────────┴──────────────────┴──────────────────┴────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">TRADE-OFF ANALYSIS</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<!-- Header Row -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">TRADE-OFF</div>
+<div style="color: #3fb950; font-weight: bold; font-size: 12px;">OPTION A</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">OPTION B</div>
+<div style="color: #a371f7; font-weight: bold; font-size: 12px;">MITIGATION</div>
+</div>
+
+<!-- Row 1 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="color: #8b949e; font-size: 12px;"><strong style="color: #f9826c;">Availability vs Cost</strong></div>
+<div style="color: #8b949e; font-size: 12px;">Per-spot sensors ($50-150/spot)</div>
+<div style="color: #8b949e; font-size: 12px;">Entry/exit counters ($500)</div>
+<div style="color: #8b949e; font-size: 12px;">Use counters + cameras for level guidance only</div>
+</div>
+
+<!-- Row 2 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="color: #8b949e; font-size: 12px;"><strong style="color: #f9826c;">Accuracy vs Throughput</strong></div>
+<div style="color: #8b949e; font-size: 12px;">Pessimistic locking (slow)</div>
+<div style="color: #8b949e; font-size: 12px;">Optimistic locking (races)</div>
+<div style="color: #8b949e; font-size: 12px;">Optimistic with retry + eventual consistency</div>
+</div>
+
+<!-- Row 3 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="color: #8b949e; font-size: 12px;"><strong style="color: #f9826c;">Offline vs Consistency</strong></div>
+<div style="color: #8b949e; font-size: 12px;">Full edge autonomy</div>
+<div style="color: #8b949e; font-size: 12px;">Cloud-dependent real-time</div>
+<div style="color: #8b949e; font-size: 12px;">Event sourcing with sync on reconnect</div>
+</div>
+
+<!-- Row 4 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="color: #8b949e; font-size: 12px;"><strong style="color: #f9826c;">UX vs Security</strong></div>
+<div style="color: #8b949e; font-size: 12px;">Frictionless entry</div>
+<div style="color: #8b949e; font-size: 12px;">Verify every transaction</div>
+<div style="color: #8b949e; font-size: 12px;">Risk-based: verify only large amounts</div>
+</div>
+
+<!-- Row 5 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="color: #8b949e; font-size: 12px;"><strong style="color: #f9826c;">Features vs Time-to-Market</strong></div>
+<div style="color: #8b949e; font-size: 12px;">Build everything</div>
+<div style="color: #8b949e; font-size: 12px;">Use ParkWhiz/SpotHero API</div>
+<div style="color: #8b949e; font-size: 12px;">Integrate existing for payments, build for differentiation</div>
+</div>
+
+</div>
+</div>
 
 ### Concurrency vs Complexity Deep Dive
 
@@ -779,30 +979,55 @@ class ResilientSpotTracker:
 
 ### Payment Failure Recovery
 
-```
-PAYMENT FAILURE SCENARIOS & MITIGATIONS
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #da3633; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="color: #f85149; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">PAYMENT FAILURE SCENARIOS & MITIGATIONS</div>
 
-┌────────────────────┬─────────────────────────────────────────────────┐
-│ Scenario           │ Mitigation Strategy                             │
-├────────────────────┼─────────────────────────────────────────────────┤
-│ Card declined      │ Allow exit, flag plate, email invoice           │
-│ at exit            │                                                 │
-├────────────────────┼─────────────────────────────────────────────────┤
-│ Network down       │ Local payment terminal with batch processing    │
-│                    │                                                 │
-├────────────────────┼─────────────────────────────────────────────────┤
-│ Partial payment    │ Accept partial, invoice remainder               │
-│ (e.g., low limit)  │                                                 │
-├────────────────────┼─────────────────────────────────────────────────┤
-│ Reservation no-pay │ Authorization hold at booking, capture at exit  │
-│                    │                                                 │
-├────────────────────┼─────────────────────────────────────────────────┤
-│ Repeat offender    │ LPR blocklist, require cash/prepay              │
-│                    │                                                 │
-└────────────────────┴─────────────────────────────────────────────────┘
+<div style="display: flex; flex-direction: column; gap: 12px;">
 
-Key Principle: NEVER trap a car. Revenue recovery is easier than traffic jams.
-```
+<!-- Header Row -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="color: #f85149; font-weight: bold; font-size: 13px;">Scenario</div>
+<div style="color: #3fb950; font-weight: bold; font-size: 13px;">Mitigation Strategy</div>
+</div>
+
+<!-- Row 1 -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #161b22; border-radius: 8px; padding: 14px; border-left: 3px solid #f85149;">
+<div style="color: #f9826c; font-weight: bold; font-size: 12px;">Card declined at exit</div>
+<div style="color: #8b949e; font-size: 12px;">Allow exit, flag plate, email invoice</div>
+</div>
+
+<!-- Row 2 -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #161b22; border-radius: 8px; padding: 14px; border-left: 3px solid #f0883e;">
+<div style="color: #f9826c; font-weight: bold; font-size: 12px;">Network down</div>
+<div style="color: #8b949e; font-size: 12px;">Local payment terminal with batch processing</div>
+</div>
+
+<!-- Row 3 -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #161b22; border-radius: 8px; padding: 14px; border-left: 3px solid #eab308;">
+<div style="color: #f9826c; font-weight: bold; font-size: 12px;">Partial payment (low limit)</div>
+<div style="color: #8b949e; font-size: 12px;">Accept partial, invoice remainder</div>
+</div>
+
+<!-- Row 4 -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #161b22; border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
+<div style="color: #f9826c; font-weight: bold; font-size: 12px;">Reservation no-pay</div>
+<div style="color: #8b949e; font-size: 12px;">Authorization hold at booking, capture at exit</div>
+</div>
+
+<!-- Row 5 -->
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; background: #161b22; border-radius: 8px; padding: 14px; border-left: 3px solid #8957e5;">
+<div style="color: #f9826c; font-weight: bold; font-size: 12px;">Repeat offender</div>
+<div style="color: #8b949e; font-size: 12px;">LPR blocklist, require cash/prepay</div>
+</div>
+
+</div>
+
+<!-- Key Principle -->
+<div style="background: linear-gradient(90deg, #da3633 0%, #0d1117 100%); border-radius: 8px; padding: 16px; margin-top: 16px; text-align: center;">
+<span style="color: #ffffff; font-weight: bold; font-size: 13px;">Key Principle: NEVER trap a car. Revenue recovery is easier than traffic jams.</span>
+</div>
+
+</div>
 
 </div>
 </div>
