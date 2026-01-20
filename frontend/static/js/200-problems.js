@@ -218,9 +218,11 @@
             case 'kmp':
                 return runFamousAlgorithm(example, config, complexity);
 
+            case 'hash-expansion':
+                return runLargestRange(example, config, complexity);
+
             case 'hash-pair-sum':
             case 'out-of-order-bounds':
-            case 'hash-expansion':
             default:
                 // Generic visualization for algorithms without specific runners
                 return runGenericVisualization(example, config, complexity);
@@ -265,6 +267,147 @@
             explanation: '📤 <strong>Output:</strong><br><pre style="background:#161b22;padding:0.5rem;border-radius:4px;overflow-x:auto;">' +
                 (example.outputRaw || outputStr) + '</pre><br><br>' +
                 '✅ <strong>Complete!</strong>'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Largest Range (Hash Expansion)
+    function runLargestRange(example, config, complexity) {
+        var steps = [];
+        var arr = example.input.array;
+        if (!arr || !Array.isArray(arr) || arr.length < 4) {
+            // For small arrays, create a sample with more elements
+            arr = arr || [1, 11, 3, 0, 15, 5, 2, 4, 10, 7, 12, 6];
+        }
+
+        var expected = example.output || [0, 7];
+
+        // Step 1: Introduction
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: [],
+            currentIndex: -1,
+            status: 'Initialize: ' + config.name,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> [' + expected.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        // Step 2: Build hash set
+        var numSet = {};
+        arr.forEach(function(num) { numSet[num] = true; });
+        var hashKeys = Object.keys(numSet).map(Number).sort(function(a,b){ return a-b; });
+
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: hashKeys.slice(0, 8).map(function(n) { return n; }),
+            currentIndex: -1,
+            status: 'Build hash set',
+            explanation: '🔧 <strong>Step 1: Build Hash Set</strong><br><br>' +
+                '• Add all numbers to a hash set for O(1) lookups<br>' +
+                '• This allows us to quickly check if a number exists<br><br>' +
+                '<code>nums = {' + hashKeys.slice(0, 10).join(', ') + (hashKeys.length > 10 ? '...' : '') + '}</code>'
+        });
+
+        // Step 3: Find a starting number (e.g., the start of expected range)
+        var startNum = expected[0];
+        var startIdx = arr.indexOf(startNum);
+        if (startIdx === -1) startIdx = 0;
+
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: hashKeys.slice(0, 8),
+            currentIndex: startIdx,
+            checking: startNum,
+            status: 'Check: ' + startNum,
+            explanation: '🔍 <strong>Step 2: Find Range Start</strong><br><br>' +
+                '• For each number, check if it\'s the start of a range<br>' +
+                '• A number is a range start if (num - 1) doesn\'t exist in the set<br><br>' +
+                '• Checking <strong>' + startNum + '</strong>: is <strong>' + (startNum - 1) + '</strong> in set? ' +
+                (numSet[startNum - 1] ? 'Yes (not a start)' : '<span style="color:#3fb950;">No - this is a range start!</span>')
+        });
+
+        // Step 4: Expand the range
+        var left = startNum;
+        var right = startNum;
+        while (numSet[left - 1]) left--;
+        while (numSet[right + 1]) right++;
+
+        var rangeNums = [];
+        for (var i = left; i <= right; i++) rangeNums.push(i);
+
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: rangeNums.slice(0, 10),
+            currentIndex: startIdx,
+            checking: startNum,
+            status: 'Expand range: [' + left + ', ' + right + ']',
+            explanation: '🔄 <strong>Step 3: Expand Range</strong><br><br>' +
+                '• Starting from <strong>' + startNum + '</strong>, expand in both directions<br>' +
+                '• Expand left: ' + startNum + ' → ' + left + '<br>' +
+                '• Expand right: ' + startNum + ' → ' + right + '<br><br>' +
+                '• Found range: <strong>[' + left + ', ' + right + ']</strong><br>' +
+                '• Range values: {' + rangeNums.join(', ') + '}<br>' +
+                '• Range length: <strong>' + (right - left + 1) + '</strong>'
+        });
+
+        // Step 5: Mark visited and track best
+        var visitedNums = rangeNums.map(function(n) { return n + '✓'; });
+
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: visitedNums.slice(0, 10),
+            currentIndex: -1,
+            status: 'Mark visited, track best',
+            explanation: '📝 <strong>Step 4: Mark & Track</strong><br><br>' +
+                '• Mark all numbers in range as visited<br>' +
+                '• Update best range if current is longer<br><br>' +
+                '• Visited: {' + rangeNums.join(', ') + '}<br>' +
+                '• Best range so far: <strong>[' + left + ', ' + right + ']</strong> (length ' + (right - left + 1) + ')'
+        });
+
+        // Step 6: Continue checking other numbers (show one more example if there are other ranges)
+        var otherNum = arr.find(function(n) { return n < left || n > right; });
+        if (otherNum !== undefined) {
+            var otherIdx = arr.indexOf(otherNum);
+            steps.push({
+                vizType: 'array-hash',
+                array: arr.slice(),
+                hashTable: visitedNums.slice(0, 10),
+                currentIndex: otherIdx,
+                checking: otherNum,
+                status: 'Check: ' + otherNum,
+                explanation: '🔍 <strong>Step 5: Check Other Numbers</strong><br><br>' +
+                    '• Continue checking unvisited numbers<br>' +
+                    '• Checking <strong>' + otherNum + '</strong><br><br>' +
+                    '• If it forms a smaller range or is already visited, skip it<br>' +
+                    '• Current best range: [' + expected[0] + ', ' + expected[1] + '] (length ' + (expected[1] - expected[0] + 1) + ')'
+            });
+        }
+
+        // Step 7: Final result
+        steps.push({
+            vizType: 'array-hash',
+            array: arr.slice(),
+            hashTable: ['Best: [' + expected[0] + ',' + expected[1] + ']'],
+            currentIndex: -1,
+            status: 'Result: [' + expected[0] + ', ' + expected[1] + ']',
+            explanation: '✅ <strong>Complete!</strong><br><br>' +
+                '• Largest range found: <strong>[' + expected[0] + ', ' + expected[1] + ']</strong><br>' +
+                '• Range length: <strong>' + (expected[1] - expected[0] + 1) + '</strong><br><br>' +
+                '• All numbers in range: {' + (function() {
+                    var r = [];
+                    for (var i = expected[0]; i <= expected[1]; i++) r.push(i);
+                    return r.join(', ');
+                })() + '}'
         });
 
         return steps;
@@ -1479,6 +1622,7 @@
                 nodes: nodes,
                 edges: edges,
                 visited: [],
+                current: null,
                 status: 'Graph: ' + config.name,
                 explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
                     '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
@@ -1488,11 +1632,34 @@
                     '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
             });
 
+            // Add progressive traversal steps
+            var maxSteps = Math.min(nodes.length, 6);
+            for (var i = 0; i < maxSteps; i++) {
+                var visitedSoFar = nodes.slice(0, i + 1).map(function(n) { return n.id; });
+                var currentNode = nodes[i];
+                var nodeLabel = currentNode.label || currentNode.name || currentNode.id;
+                if (typeof nodeLabel === 'object') {
+                    nodeLabel = nodeLabel.name || JSON.stringify(nodeLabel);
+                }
+
+                steps.push({
+                    vizType: 'graph',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: visitedSoFar,
+                    current: currentNode.id,
+                    status: 'Visit: ' + nodeLabel,
+                    explanation: '🔍 <strong>Processing node ' + nodeLabel + '</strong><br><br>' +
+                        '• Visited ' + (i + 1) + ' of ' + nodes.length + ' nodes'
+                });
+            }
+
             steps.push({
                 vizType: 'graph',
                 nodes: nodes,
                 edges: edges,
                 visited: nodes.map(function(n) { return n.id; }),
+                current: null,
                 status: 'Result: ' + JSON.stringify(example.output),
                 explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(example.output)
             });
@@ -1638,10 +1805,20 @@
         var steps = [];
         var list = example.input.list || example.input.head || example.input.linkedList || example.input.initialList;
 
-        if (list && Array.isArray(list)) {
+        // Helper to safely get displayable value
+        function getDisplayValue(val) {
+            if (val === undefined || val === null) return 'null';
+            if (typeof val === 'object') return val.value !== undefined ? val.value : JSON.stringify(val);
+            return val;
+        }
+
+        if (list && Array.isArray(list) && list.length > 0) {
             var nodes = list.map(function(val, idx) {
                 return { value: val, next: idx < list.length - 1 ? idx + 1 : null };
             });
+
+            // Create display string for list
+            var listDisplay = list.map(function(v) { return getDisplayValue(v); }).join(' → ');
 
             steps.push({
                 vizType: 'linked-list',
@@ -1650,21 +1827,23 @@
                 pointers: { head: 0 },
                 status: config.name,
                 explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
-                    '<strong>Input:</strong> ' + (example.inputRaw || list.join(' → ')) + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || listDisplay) + '<br>' +
                     '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
                     '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
                     '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
             });
 
-            // Show traversal
-            for (var i = 0; i < Math.min(nodes.length, 10); i++) {
+            // Show traversal (at least 4 steps for good animation)
+            var maxTraversal = Math.max(4, Math.min(nodes.length, 10));
+            for (var i = 0; i < Math.min(nodes.length, maxTraversal); i++) {
+                var nodeValue = getDisplayValue(nodes[i].value);
                 steps.push({
                     vizType: 'linked-list',
                     nodes: nodes,
                     current: i,
                     pointers: { current: i },
-                    status: 'Process node ' + nodes[i].value,
-                    explanation: '🔍 Processing node with value <strong>' + nodes[i].value + '</strong>'
+                    status: 'Process node ' + nodeValue,
+                    explanation: '🔍 Processing node with value <strong>' + nodeValue + '</strong>'
                 });
             }
 
@@ -1871,11 +2050,13 @@
             var edges = [];
             flattenBinaryTree(tree, nodes, edges, null, null);
 
+            // Step 1: Introduction
             steps.push({
                 vizType: 'tree',
                 nodes: nodes,
                 edges: edges,
                 visited: [],
+                current: null,
                 status: config.name,
                 explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
                     '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
@@ -1885,14 +2066,60 @@
                     '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
             });
 
-            // Show all nodes as visited
+            // Step 2: Start at root
+            if (nodes.length > 0) {
+                steps.push({
+                    vizType: 'tree',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: [],
+                    current: nodes[0].id,
+                    status: 'Start at root',
+                    explanation: '🌳 <strong>Starting traversal</strong><br><br>' +
+                        '• Begin at root node: <strong>' + (nodes[0].label || nodes[0].value || nodes[0].id) + '</strong><br>' +
+                        '• Will traverse the tree according to the algorithm'
+                });
+            }
+
+            // Step 3-N: Show progressive traversal (visit nodes one by one up to 6 nodes)
+            var maxSteps = Math.min(nodes.length, 6);
+            for (var i = 1; i <= maxSteps; i++) {
+                var visitedSoFar = nodes.slice(0, i).map(function(n) { return n.id; });
+                var currentNode = nodes[i - 1];
+                var nodeLabel = currentNode.label || currentNode.value || currentNode.id;
+                if (typeof nodeLabel === 'object') {
+                    nodeLabel = nodeLabel.value || JSON.stringify(nodeLabel);
+                }
+
+                steps.push({
+                    vizType: 'tree',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: visitedSoFar,
+                    current: currentNode.id,
+                    status: 'Visit: ' + nodeLabel,
+                    explanation: '🔍 <strong>Processing node ' + nodeLabel + '</strong><br><br>' +
+                        '• Visited ' + i + ' of ' + nodes.length + ' nodes<br>' +
+                        '• Progress: [' + visitedSoFar.map(function(id) {
+                            var n = nodes.find(function(node) { return node.id === id; });
+                            var label = n ? (n.label || n.value || n.id) : id;
+                            if (typeof label === 'object') label = label.value || '?';
+                            return label;
+                        }).join(', ') + ']'
+                });
+            }
+
+            // Final step: Show all nodes as visited with result
             steps.push({
                 vizType: 'tree',
                 nodes: nodes,
                 edges: edges,
                 visited: nodes.map(function(n) { return n.id; }),
+                current: null,
                 status: 'Result: ' + JSON.stringify(example.output),
-                explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(example.output)
+                explanation: '✅ <strong>Complete!</strong><br><br>' +
+                    '• All nodes processed<br>' +
+                    '• Result: ' + JSON.stringify(example.output)
             });
         } else {
             return runGenericVisualization(example, config, complexity);
@@ -2007,17 +2234,21 @@
     function runRecursionGeneric(example, config, complexity) {
         var steps = [];
 
+        // Safely get output value
+        var outputVal = example.output;
+        var outputStr = (outputVal !== undefined && outputVal !== null) ? JSON.stringify(outputVal) : 'N/A';
+
         steps.push({
             vizType: 'recursion',
-            call: config.name,
+            call: config.name + '()',
             stack: [config.name + '()'],
             memo: {},
             result: null,
             status: 'Recursion: ' + config.name,
             explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
                 '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
-                '<strong>Input:</strong> ' + (example.inputRaw || JSON.stringify(example.input)) + '<br>' +
-                '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                '<strong>Input:</strong> ' + (example.inputRaw || JSON.stringify(example.input || {})) + '<br>' +
+                '<strong>Expected:</strong> ' + (example.outputRaw || outputStr) + '<br><br>' +
                 '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
                 '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
         });
@@ -2025,7 +2256,7 @@
         // Show recursive structure
         steps.push({
             vizType: 'recursion',
-            call: 'Recursive call',
+            call: config.name + '(input)',
             stack: [config.name + '()', '  └─ subproblem()', '      └─ base case'],
             memo: {},
             result: null,
@@ -2036,14 +2267,27 @@
                 '• Combine results'
         });
 
+        // Add intermediate step for better animation
         steps.push({
             vizType: 'recursion',
-            call: 'Result',
+            call: 'Processing...',
+            stack: [config.name + '()', '  └─ processing...'],
+            memo: {},
+            result: null,
+            status: 'Processing subproblems',
+            explanation: '⚙️ <strong>Processing</strong><br>' +
+                '• Solving each subproblem<br>' +
+                '• Building up the solution'
+        });
+
+        steps.push({
+            vizType: 'recursion',
+            call: 'Complete',
             stack: [],
             memo: {},
-            result: example.output,
-            status: 'Result: ' + JSON.stringify(example.output),
-            explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(example.output)
+            result: outputVal !== undefined ? outputVal : 'Complete',
+            status: 'Result: ' + (example.outputRaw || outputStr),
+            explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || outputStr)
         });
 
         return steps;
@@ -5870,6 +6114,11 @@
         var visited = step.visited || [];
         var current = step.current;
 
+        // Handle empty or invalid nodes
+        if (!nodes || nodes.length === 0) {
+            return '<div style="text-align:center;padding:1rem;color:#8b949e;">No graph data available</div>';
+        }
+
         html += '<div style="text-align:center;padding:1rem;">';
 
         // Draw nodes in a grid/tree layout
@@ -5882,8 +6131,16 @@
             var border = isCurrent ? '3px solid #3fb950' :
                         (isVisited ? '2px solid #58a6ff' : '2px solid #30363d');
 
+            // Safely get displayable label - handle objects
+            var nodeLabel = node.label || node.id || node.name;
+            if (nodeLabel === undefined || nodeLabel === null) {
+                nodeLabel = '?';
+            } else if (typeof nodeLabel === 'object') {
+                nodeLabel = nodeLabel.name || nodeLabel.value || JSON.stringify(nodeLabel);
+            }
+
             html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:1.1rem;transition:all 0.3s;">';
-            html += node.label || node.id;
+            html += nodeLabel;
             html += '</div>';
         });
         html += '</div>';
@@ -5928,6 +6185,11 @@
         var current = step.current;
         var pointers = step.pointers || {};
 
+        // Handle empty or invalid nodes
+        if (!nodes || nodes.length === 0) {
+            return '<div style="text-align:center;padding:1rem;color:#8b949e;">No linked list data available</div>';
+        }
+
         html += '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.25rem;padding:1rem;">';
 
         nodes.forEach(function(node, idx) {
@@ -5938,10 +6200,18 @@
             var border = isCurrent ? '2px solid #3fb950' :
                         (isPointed ? '2px solid #58a6ff' : '2px solid #30363d');
 
+            // Safely get displayable value - handle objects, undefined, etc.
+            var displayValue = node.value;
+            if (displayValue === undefined || displayValue === null) {
+                displayValue = 'null';
+            } else if (typeof displayValue === 'object') {
+                displayValue = displayValue.value !== undefined ? displayValue.value : JSON.stringify(displayValue);
+            }
+
             // Node box
             html += '<div style="display:flex;align-items:center;">';
             html += '<div style="background:' + bg + ';border:' + border + ';border-radius:6px;padding:0.5rem 0.75rem;display:flex;align-items:center;transition:all 0.3s;">';
-            html += '<span style="color:#fff;font-weight:bold;font-size:1rem;min-width:30px;text-align:center;">' + node.value + '</span>';
+            html += '<span style="color:#fff;font-weight:bold;font-size:1rem;min-width:30px;text-align:center;">' + displayValue + '</span>';
             html += '<span style="color:#8b949e;margin-left:0.5rem;">•</span>';
             html += '</div>';
 
@@ -5972,9 +6242,17 @@
             html += '<div style="color:#3fb950;font-size:0.8rem;margin-bottom:0.5rem;">Result:</div>';
             html += '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.25rem;">';
             step.resultNodes.forEach(function(node, idx) {
+                // Safely get displayable value
+                var resultValue = node.value;
+                if (resultValue === undefined || resultValue === null) {
+                    resultValue = 'null';
+                } else if (typeof resultValue === 'object') {
+                    resultValue = resultValue.value !== undefined ? resultValue.value : JSON.stringify(resultValue);
+                }
+
                 html += '<div style="display:flex;align-items:center;">';
                 html += '<div style="background:#238636;border:2px solid #3fb950;border-radius:6px;padding:0.4rem 0.6rem;">';
-                html += '<span style="color:#fff;font-weight:bold;">' + node.value + '</span>';
+                html += '<span style="color:#fff;font-weight:bold;">' + resultValue + '</span>';
                 html += '</div>';
                 if (idx < step.resultNodes.length - 1) {
                     html += '<div style="color:#3fb950;margin:0 0.25rem;">→</div>';
@@ -5994,6 +6272,11 @@
         var edges = step.edges || [];
         var visited = step.visited || [];
         var current = step.current;
+
+        // Handle empty or invalid nodes
+        if (!nodes || nodes.length === 0) {
+            return '<div style="text-align:center;padding:1rem;color:#8b949e;">No tree data available</div>';
+        }
 
         html += '<div style="text-align:center;padding:1rem;">';
 
@@ -6029,8 +6312,16 @@
                 var border = isCurrent ? '3px solid #3fb950' :
                             (isVisited ? '2px solid #58a6ff' : '2px solid #30363d');
 
+                // Safely get displayable label - handle objects
+                var nodeLabel = node.label || node.value || node.id;
+                if (nodeLabel === undefined || nodeLabel === null) {
+                    nodeLabel = '?';
+                } else if (typeof nodeLabel === 'object') {
+                    nodeLabel = nodeLabel.value !== undefined ? nodeLabel.value : (nodeLabel.name || JSON.stringify(nodeLabel));
+                }
+
                 html += '<div style="width:45px;height:45px;background:' + bg + ';border:' + border + ';border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;transition:all 0.3s;">';
-                html += node.label || node.value || node.id;
+                html += nodeLabel;
                 html += '</div>';
             });
             html += '</div>';
@@ -6079,8 +6370,14 @@
 
         html += '<div style="text-align:center;padding:1rem;">';
 
-        // Current call
-        html += '<div style="font-size:1.5rem;color:#58a6ff;font-family:monospace;margin-bottom:1rem;">' + (step.call || 'recursion()') + '</div>';
+        // Current call - ensure proper display value
+        var callDisplay = step.call;
+        if (callDisplay === undefined || callDisplay === null) {
+            callDisplay = 'recursion()';
+        } else if (typeof callDisplay === 'object') {
+            callDisplay = JSON.stringify(callDisplay);
+        }
+        html += '<div style="font-size:1.5rem;color:#58a6ff;font-family:monospace;margin-bottom:1rem;">' + callDisplay + '</div>';
 
         // Call stack visualization
         if (stack.length > 0) {
@@ -6091,33 +6388,51 @@
                 var bg = isTop ? '#238636' : '#21262d';
                 var border = isTop ? '#3fb950' : '#30363d';
 
+                // Safely display call
+                var callStr = call;
+                if (callStr === undefined || callStr === null) {
+                    callStr = '?';
+                } else if (typeof callStr === 'object') {
+                    callStr = JSON.stringify(callStr);
+                }
+
                 html += '<div style="display:flex;align-items:center;gap:0.5rem;margin-left:' + indent + 'px;">';
                 if (idx > 0) {
                     html += '<span style="color:#30363d;">↳</span>';
                 }
                 html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:6px;padding:0.5rem 1rem;font-family:monospace;color:#c9d1d9;">';
-                html += call;
+                html += callStr;
                 html += '</div></div>';
             });
             html += '</div>';
         }
 
-        // Return value
+        // Return value - handle all edge cases
         if (result !== null && result !== undefined) {
+            var resultDisplay = result;
+            if (typeof resultDisplay === 'object') {
+                resultDisplay = JSON.stringify(resultDisplay);
+            }
             html += '<div style="margin-top:1.5rem;padding:1rem;background:#1f6feb33;border:1px solid #58a6ff;border-radius:8px;">';
-            html += '<span style="color:#3fb950;font-size:1.2rem;">Return: ' + result + '</span>';
-            if (step.memoHit || step.memo) {
+            html += '<span style="color:#3fb950;font-size:1.2rem;">Return: ' + resultDisplay + '</span>';
+            if (step.memoHit || (step.memo && Object.keys(step.memo).length > 0)) {
                 html += ' <span style="color:#f0883e;background:#f0883e22;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.85rem;">📦 memoized</span>';
             }
             html += '</div>';
         }
 
         // Memo table
-        if (Object.keys(memo).length > 0) {
+        if (memo && Object.keys(memo).length > 0) {
             html += '<div style="margin-top:1rem;background:#21262d;border-radius:6px;padding:0.5rem;">';
             html += '<div style="color:#f0883e;font-size:0.8rem;margin-bottom:0.25rem;">Memo:</div>';
             html += '<div style="color:#c9d1d9;font-family:monospace;font-size:0.85rem;">';
-            html += '{' + Object.keys(memo).map(function(k) { return k + ':' + memo[k]; }).join(', ') + '}';
+            html += '{' + Object.keys(memo).map(function(k) {
+                var val = memo[k];
+                if (val === undefined) val = 'undefined';
+                else if (val === null) val = 'null';
+                else if (typeof val === 'object') val = JSON.stringify(val);
+                return k + ':' + val;
+            }).join(', ') + '}';
             html += '</div></div>';
         }
 
