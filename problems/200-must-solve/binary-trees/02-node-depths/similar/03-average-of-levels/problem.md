@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Average of Levels in Binary Tree","algorithm":"tree-bfs","complexity":{"time":"O(n)","space":"O(w)"},"examples":[{"input":{"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},"output":[3.0,14.5,11.0],"inputRaw":"tree = {3,9,20,#,#,15,7}","outputRaw":"[3.0, 14.5, 11.0]"},{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}}},"output":[1.0,2.5,5.0],"inputRaw":"tree = {1,2,3,4,5,#,6}","outputRaw":"[1.0, 2.5, 5.0]"}]}
+</div>
+
 # Average of Levels in Binary Tree
 
 **Difficulty:** Easy

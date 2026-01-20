@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Swapping Nodes in a Linked List","algorithm":"ll-remove-kth","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,4,5],"k":2},"output":[1,4,3,2,5],"inputRaw":"[1,2,3,4,5], k = 2","outputRaw":"[1,4,3,2,5]"},{"input":{"list":[7,9,6,6,7,8,3,0,9,5],"k":5},"output":[7,9,6,6,8,7,3,0,9,5],"inputRaw":"[7,9,6,6,7,8,3,0,9,5], k = 5","outputRaw":"[7,9,6,6,8,7,3,0,9,5]"},{"input":{"list":[1],"k":1},"output":[1],"inputRaw":"[1], k = 1","outputRaw":"[1]"},{"input":{"list":[1,2],"k":1},"output":[2,1],"inputRaw":"[1,2], k = 1","outputRaw":"[2,1]"}]}
+</div>
+
 # Swapping Nodes in a Linked List
 
 **Difficulty:** Medium

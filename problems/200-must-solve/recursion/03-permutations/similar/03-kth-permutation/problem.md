@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Kth Permutation Sequence","algorithm":"recursion-permutations","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"n":3,"k":3},"output":"213","inputRaw":"n = 3, k = 3","outputRaw":"\"213\""}]}
+</div>
+
 # Kth Permutation Sequence
 
 **Difficulty:** Hard

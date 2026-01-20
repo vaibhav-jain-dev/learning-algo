@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Single Cycle Check","algorithm":"graph-single-cycle","complexity":{"time":"O(N)","space":"O(1)"},"examples":[{"input":{"array":[2,3,1,-4,-4,2]},"output":true,"inputRaw":"[2, 3, 1, -4, -4, 2]","outputRaw":"true"},{"input":{"array":[2,2,-1]},"output":true,"inputRaw":"[2, 2, -1]","outputRaw":"true"},{"input":{"array":[1,1,1,1,2]},"output":false,"inputRaw":"[1, 1, 1, 1, 2]","outputRaw":"false"}]}
+</div>
+
 # Single Cycle Check
 
 **Difficulty:** Medium (Blue)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Parallel Courses","algorithm":"topological-sort","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"n":3,"relations":[[1,3],[2,3]]},"output":2,"inputRaw":"n = 3, relations = [[1,3],[2,3]]","outputRaw":"2"}]}
+</div>
+
 # Parallel Courses
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Nested List Weighted Sum II","algorithm":"recursion-product-sum","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"array":[[1,1],2,[1,1]]},"output":8,"inputRaw":"[[1, 1], 2, [1, 1]]","outputRaw":"8"}]}
+</div>
+
 # Nested List Weighted Sum II
 
 **Difficulty:** Medium

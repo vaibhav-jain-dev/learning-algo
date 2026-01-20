@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Binary Search Trees","algorithm":"recursion-count-bst","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"n":3},"output":5,"inputRaw":"n = 3","outputRaw":"5"}]}
+</div>
+
 # Number of Binary Search Trees
 
 **Difficulty:** Hard

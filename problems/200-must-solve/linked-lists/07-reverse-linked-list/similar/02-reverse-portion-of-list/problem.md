@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reverse Linked List II (Reverse Portion)","algorithm":"ll-reverse","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,4,5],"left":2,"right":4},"output":[1,4,3,2,5],"inputRaw":"[1,2,3,4,5], left = 2, right = 4","outputRaw":"[1,4,3,2,5]"},{"input":{"list":[5],"left":1,"right":1},"output":[5],"inputRaw":"[5], left = 1, right = 1","outputRaw":"[5]"},{"input":{"list":[1,2,3,4,5],"left":1,"right":5},"output":[5,4,3,2,1],"inputRaw":"[1,2,3,4,5], left = 1, right = 5","outputRaw":"[5,4,3,2,1]"},{"input":{"list":[1,2,3,4,5],"left":3,"right":4},"output":[1,2,4,3,5],"inputRaw":"[1,2,3,4,5], left = 3, right = 4","outputRaw":"[1,2,4,3,5]"}]}
+</div>
+
 # Reverse Linked List II (Reverse Portion)
 
 **Difficulty:** Medium

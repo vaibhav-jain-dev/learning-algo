@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Numbers in Pi","algorithm":"dp-pi-numbers","complexity":{"time":"O(n^2 * m)","space":"O(n + k)"},"examples":[{"input":{"pi":"3141592653589793238462643383279","numbers":["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]},"output":2,"inputRaw":"pi = \"3141592653589793238462643383279\", numbers = [\"314159265358979323846\", \"26433\", \"8\", \"3279\", \"314159265\", \"35897932384626433832\", \"79\"]","outputRaw":"2"},{"input":{"pi":"314159","numbers":["314","159","3141","59"]},"output":1,"inputRaw":"pi = \"314159\", numbers = [\"314\", \"159\", \"3141\", \"59\"]","outputRaw":"1"},{"input":{"pi":"123456","numbers":["12","34","56"]},"output":2,"inputRaw":"pi = \"123456\", numbers = [\"12\", \"34\", \"56\"]","outputRaw":"2"}]}
+</div>
+
 # Numbers in Pi
 
 **Difficulty:** Hard (Red)

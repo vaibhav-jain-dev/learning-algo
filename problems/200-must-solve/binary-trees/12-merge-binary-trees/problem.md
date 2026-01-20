@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Merge Binary Trees","algorithm":"tree-merge","complexity":{"time":"O(min(n, m))","space":"O(min(h1, h2))"},"examples":[{"input":{"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},"output":{"value":3,"left":{"value":4,"left":{"value":5},"right":{"value":4}},"right":{"value":5,"right":{"value":7}}},"inputRaw":"tree1 = {1,3,2,5}, tree2 = {2,1,3,#,4,#,7}","outputRaw":"merged = {3,4,5,5,4,#,7}"}]}
+</div>
+
 # Merge Binary Trees
 
 **Difficulty:** Easy (Green)

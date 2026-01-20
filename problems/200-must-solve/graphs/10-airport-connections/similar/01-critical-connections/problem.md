@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Critical Connections in a Network","algorithm":"graph-connections","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"n":4,"connections":[[0,1],[1,2],[2,0],[1,3]]},"output":[[1,3]],"inputRaw":"n=4, connections=[[0,1],[1,2],[2,0],[1,3]]","outputRaw":"[[1,3]]"}]}
+</div>
+
 # Critical Connections in a Network
 
 **Difficulty:** Hard

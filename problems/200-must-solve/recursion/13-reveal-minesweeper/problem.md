@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reveal Minesweeper","algorithm":"recursion-minesweeper","complexity":{"time":"O(m * n)","space":"O(m * n)"},"examples":[{"input":{"board":[["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]],"click":[3,0]},"output":[["B","1","E","1","B"],["B","1","M","1","B"],["B","1","1","1","B"],["B","B","B","B","B"]],"inputRaw":"board with mine at [1,2], click = [3, 0]","outputRaw":"Revealed board with flood fill"}]}
+</div>
+
 # Reveal Minesweeper
 
 **Difficulty:** Hard

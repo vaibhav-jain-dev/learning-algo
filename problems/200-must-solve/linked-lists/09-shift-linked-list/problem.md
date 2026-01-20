@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Shift Linked List","algorithm":"ll-shift","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[0,1,2,3,4,5],"k":2},"output":[4,5,0,1,2,3],"inputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5, k = 2","outputRaw":"4 -> 5 -> 0 -> 1 -> 2 -> 3"},{"input":{"list":[0,1,2,3,4,5],"k":-2},"output":[2,3,4,5,0,1],"inputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5, k = -2","outputRaw":"2 -> 3 -> 4 -> 5 -> 0 -> 1"},{"input":{"list":[1,2,3],"k":4},"output":[3,1,2],"inputRaw":"1 -> 2 -> 3, k = 4","outputRaw":"3 -> 1 -> 2"}]}
+</div>
+
 # Shift Linked List
 
 **Difficulty:** Hard

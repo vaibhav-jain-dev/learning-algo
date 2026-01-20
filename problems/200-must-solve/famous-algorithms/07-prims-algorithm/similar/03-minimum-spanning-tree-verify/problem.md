@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Minimum Spanning Tree Verification","algorithm":"prims-algorithm","complexity":{"time":"O(E log V)","space":"O(V + E)"},"examples":[{"input":{"n":4,"graphEdges":[[0,1,1],[0,2,2],[1,2,3],[1,3,4],[2,3,5]],"proposed":[[0,1,1],[0,2,2],[1,3,4]]},"output":true,"inputRaw":"n = 4, graph edges: [[0,1,1],[0,2,2],[1,2,3],[1,3,4],[2,3,5]], proposed: [[0,1,1],[0,2,2],[1,3,4]]","outputRaw":"true"}]}
+</div>
+
 # Minimum Spanning Tree Verification
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Symmetrical Tree","algorithm":"tree-symmetry","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},"output":true,"inputRaw":"tree = {1,2,2,3,4,4,3}","outputRaw":"true"},{"input":{"tree":{"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}}},"output":false,"inputRaw":"tree = {1,2,2,#,3,#,3}","outputRaw":"false"}]}
+</div>
+
 # Symmetrical Tree
 
 **Difficulty:** Easy (Green)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Product Sum","algorithm":"recursion-product-sum","complexity":{"time":"O(n)","space":"O(d)"},"examples":[{"input":{"array":[5,2,[7,-1],3,[6,[-13,8],4]]},"output":12,"inputRaw":"[5, 2, [7, -1], 3, [6, [-13, 8], 4]]","outputRaw":"12"}]}
+</div>
+
 # Product Sum
 
 **Difficulty:** Easy

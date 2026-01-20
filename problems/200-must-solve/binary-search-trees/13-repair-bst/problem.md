@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Repair BST","algorithm":"bst-repair","complexity":{"time":"O(n)","space":"O(1) with Morris, O(h) otherwise"},"examples":[{"input":{"tree":[1,3,null,null,2]},"output":[3,1,null,null,2],"inputRaw":"tree = [1,3,null,null,2] (3 and 1 swapped)","outputRaw":"[3,1,null,null,2] (repaired)"},{"input":{"tree":[3,1,4,null,null,2]},"output":[2,1,4,null,null,3],"inputRaw":"tree = [3,1,4,null,null,2] (2 and 3 swapped)","outputRaw":"[2,1,4,null,null,3] (repaired)"}]}
+</div>
+
 # Repair BST
 
 **Difficulty:** Hard (Red)

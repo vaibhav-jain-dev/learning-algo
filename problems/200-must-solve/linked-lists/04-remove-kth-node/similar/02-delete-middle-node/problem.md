@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Delete the Middle Node of a Linked List","algorithm":"ll-remove-kth","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,3,4,7,1,2,6]},"output":[1,3,4,1,2,6],"inputRaw":"1 -> 3 -> 4 -> 7 -> 1 -> 2 -> 6","outputRaw":"1 -> 3 -> 4 -> 1 -> 2 -> 6"},{"input":{"list":[1,2,3,4]},"output":[1,2,4],"inputRaw":"1 -> 2 -> 3 -> 4","outputRaw":"1 -> 2 -> 4"},{"input":{"list":[2,1]},"output":[2],"inputRaw":"2 -> 1","outputRaw":"2"},{"input":{"list":[1]},"output":[],"inputRaw":"1","outputRaw":"(empty)"}]}
+</div>
+
 # Delete the Middle Node of a Linked List
 
 **Difficulty:** Medium

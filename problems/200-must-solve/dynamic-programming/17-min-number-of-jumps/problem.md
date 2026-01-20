@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Min Number Of Jumps","algorithm":"dp-jumps","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[3,4,2,1,2,3,7,1,1,1,3]},"output":4,"inputRaw":"array = [3, 4, 2, 1, 2, 3, 7, 1, 1, 1, 3]","outputRaw":"4"},{"input":{"array":[2,1,1]},"output":1,"inputRaw":"array = [2, 1, 1]","outputRaw":"1"},{"input":{"array":[1,1,1,1]},"output":3,"inputRaw":"array = [1, 1, 1, 1]","outputRaw":"3"},{"input":{"array":[1,0,1]},"output":-1,"inputRaw":"array = [1, 0, 1]","outputRaw":"-1"}]}
+</div>
+
 # Min Number Of Jumps
 
 **Difficulty:** Hard (Red)

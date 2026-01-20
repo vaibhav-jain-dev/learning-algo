@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Redundant Connection","algorithm":"union-find","complexity":{"time":"O(n * alpha(n))","space":"O(n)"},"examples":[{"input":{"edges":[[1,2],[1,3],[2,3]]},"output":[2,3],"inputRaw":"edges = [[1,2],[1,3],[2,3]]","outputRaw":"[2,3]"}]}
+</div>
+
 # Redundant Connection
 
 **Difficulty:** Medium

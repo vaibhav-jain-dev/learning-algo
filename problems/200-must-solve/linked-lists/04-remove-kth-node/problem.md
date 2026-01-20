@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Kth Node From End","algorithm":"ll-remove-kth","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[0,1,2,3,4,5,6,7,8,9],"k":4},"output":[0,1,2,3,4,5,7,8,9],"inputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9, k = 4","outputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 7 -> 8 -> 9"},{"input":{"list":[1,2,3],"k":3},"output":[2,3],"inputRaw":"1 -> 2 -> 3, k = 3","outputRaw":"2 -> 3"}]}
+</div>
+
 # Remove Kth Node From End
 
 **Difficulty:** Medium (Yellow)

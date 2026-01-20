@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Largest BST Subtree","algorithm":"bst-validation","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":[10,5,15,1,8,null,7]},"output":3,"inputRaw":"tree = [10,5,15,1,8,null,7]","outputRaw":"3 (subtree [5,1,8] is largest BST)"},{"input":{"tree":[2,1,3]},"output":3,"inputRaw":"tree = [2,1,3]","outputRaw":"3 (entire tree is a BST)"}]}
+</div>
+
 # Largest BST Subtree
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Serialize and Deserialize BST","algorithm":"bst-construction","complexity":{"time":"O(n) for both serialize and deserialize","space":"O(n)"},"examples":[{"input":{"tree":[5,3,7,2,4,6,8]},"output":"5,3,2,4,7,6,8","inputRaw":"tree = [5,3,7,2,4,6,8]","outputRaw":"Serialized: \"5,3,2,4,7,6,8\" (preorder)"},{"input":{"tree":[2,1,3]},"output":"2,1,3","inputRaw":"tree = [2,1,3]","outputRaw":"Serialized: \"2,1,3\""}]}
+</div>
+
 # Serialize and Deserialize BST
 
 **Difficulty:** Hard

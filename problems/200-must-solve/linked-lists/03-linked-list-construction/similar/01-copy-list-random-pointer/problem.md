@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Copy List with Random Pointer","algorithm":"ll-construction","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"nodes":[[7,null],[13,0],[11,4],[10,2],[1,0]]},"output":[[7,null],[13,0],[11,4],[10,2],[1,0]],"inputRaw":"[[7,null],[13,0],[11,4],[10,2],[1,0]]","outputRaw":"[[7,null],[13,0],[11,4],[10,2],[1,0]]"},{"input":{"nodes":[[1,1],[2,1]]},"output":[[1,1],[2,1]],"inputRaw":"[[1,1],[2,1]]","outputRaw":"[[1,1],[2,1]]"},{"input":{"nodes":[[3,null],[3,0],[3,null]]},"output":[[3,null],[3,0],[3,null]],"inputRaw":"[[3,null],[3,0],[3,null]]","outputRaw":"[[3,null],[3,0],[3,null]]"}]}
+</div>
+
 # Copy List with Random Pointer
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Shortest Path to Get All Keys","algorithm":"graph-bfs","complexity":{"time":"O(M * N * 2^K)","space":"O(M * N * 2^K)"},"examples":[{"input":{"grid":["@.a..","###.#","b.A.B"]},"output":8,"inputRaw":"grid = [\"@.a..\",\"###.#\",\"b.A.B\"]","outputRaw":"8"}]}
+</div>
+
 # Shortest Path to Get All Keys
 
 **Difficulty:** Hard

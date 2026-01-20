@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Nth Fibonacci","algorithm":"recursion-fibonacci","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"n":6},"output":5,"inputRaw":"n = 6","outputRaw":"5 (0, 1, 1, 2, 3, 5)"}]}
+</div>
+
 # Nth Fibonacci
 
 **Difficulty:** Easy (Green)

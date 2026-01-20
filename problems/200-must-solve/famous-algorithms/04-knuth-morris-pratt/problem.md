@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"String Pattern Matching","algorithm":"kmp-algorithm","complexity":{"time":"O(n + m)","space":"O(m)"},"examples":[{"input":{"text":"ABABDABACDABABCABAB","pattern":"ABABCABAB"},"output":[10],"inputRaw":"text = \"ABABDABACDABABCABAB\", pattern = \"ABABCABAB\"","outputRaw":"[10]"},{"input":{"text":"AAAAAA","pattern":"AA"},"output":[0,1,2,3,4],"inputRaw":"text = \"AAAAAA\", pattern = \"AA\"","outputRaw":"[0, 1, 2, 3, 4]"}]}
+</div>
+
 # Knuth-Morris-Pratt (KMP) Algorithm - String Pattern Matching
 
 **Difficulty:** Hard

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Nodes With Greater Value on Right","algorithm":"ll-remove-kth","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[5,2,13,3,8]},"output":[13,8],"inputRaw":"5 -> 2 -> 13 -> 3 -> 8","outputRaw":"13 -> 8"},{"input":{"list":[1,1,1,1]},"output":[1,1,1,1],"inputRaw":"1 -> 1 -> 1 -> 1","outputRaw":"1 -> 1 -> 1 -> 1"},{"input":{"list":[5,4,3,2,1]},"output":[5,4,3,2,1],"inputRaw":"5 -> 4 -> 3 -> 2 -> 1","outputRaw":"5 -> 4 -> 3 -> 2 -> 1"},{"input":{"list":[1,2,3,4,5]},"output":[5],"inputRaw":"1 -> 2 -> 3 -> 4 -> 5","outputRaw":"5"}]}
+</div>
+
 # Remove Nodes With Greater Value on Right
 
 **Difficulty:** Medium

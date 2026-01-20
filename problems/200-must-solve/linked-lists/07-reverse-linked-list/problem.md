@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reverse Linked List","algorithm":"ll-reverse","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[0,1,2,3,4,5]},"output":[5,4,3,2,1,0],"inputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5","outputRaw":"5 -> 4 -> 3 -> 2 -> 1 -> 0"},{"input":{"list":[1,2]},"output":[2,1],"inputRaw":"1 -> 2","outputRaw":"2 -> 1"}]}
+</div>
+
 # Reverse Linked List
 
 **Difficulty:** Medium (Blue)

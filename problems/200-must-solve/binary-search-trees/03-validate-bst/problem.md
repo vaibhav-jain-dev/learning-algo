@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Validate BST","algorithm":"bst-validation","complexity":{"time":"O(n)","space":"O(d) where d is depth"},"examples":[{"input":{"tree":[10,5,15,2,5,13,22,1,null,null,null,null,14]},"output":true,"inputRaw":"tree = [10,5,15,2,5,13,22,1,null,null,null,null,14]","outputRaw":"true"},{"input":{"tree":[10,5,15,2,5,10,22]},"output":false,"inputRaw":"tree = [10,5,15,2,5,10,22]","outputRaw":"false (10 in right subtree is not > 10)"}]}
+</div>
+
 # Validate BST
 
 **Difficulty:** Medium (Blue)

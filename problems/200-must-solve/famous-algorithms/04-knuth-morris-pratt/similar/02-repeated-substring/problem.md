@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Repeated Substring Pattern","algorithm":"kmp-algorithm","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"s":"abab"},"output":true,"inputRaw":"s = \"abab\"","outputRaw":"true"},{"input":{"s":"abcabcabcabc"},"output":true,"inputRaw":"s = \"abcabcabcabc\"","outputRaw":"true"}]}
+</div>
+
 # Repeated Substring Pattern
 
 **Difficulty:** Easy

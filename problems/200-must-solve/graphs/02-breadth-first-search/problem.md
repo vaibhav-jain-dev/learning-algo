@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Breadth First Search","algorithm":"graph-bfs","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},"output":["A","B","C","D","E","F","G","H","I","J","K"],"inputRaw":"Tree with root A","outputRaw":"[\"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\"]"}]}
+</div>
+
 # Breadth First Search
 
 **Difficulty:** Easy (Green)

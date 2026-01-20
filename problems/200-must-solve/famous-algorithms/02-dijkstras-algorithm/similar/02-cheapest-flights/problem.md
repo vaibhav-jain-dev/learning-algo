@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Cheapest Flights Within K Stops","algorithm":"dijkstras-algorithm","complexity":{"time":"O(E * K)","space":"O(N * K)"},"examples":[{"input":{"n":4,"flights":[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],"src":0,"dst":3,"k":1},"output":700,"inputRaw":"n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], src = 0, dst = 3, k = 1","outputRaw":"700"}]}
+</div>
+
 # Cheapest Flights Within K Stops
 
 **Difficulty:** Medium

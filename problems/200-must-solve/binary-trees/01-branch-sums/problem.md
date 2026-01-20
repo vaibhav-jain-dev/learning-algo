@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Branch Sums","algorithm":"tree-dfs","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},"output":[15,16,18,10,11],"inputRaw":"tree = {1,2,3,4,5,6,7,8,9,#,10}","outputRaw":"[15, 16, 18, 10, 11]"}]}
+</div>
+
 # Branch Sums
 
 **Difficulty:** Easy (Green)

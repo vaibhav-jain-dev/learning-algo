@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Height Balanced Binary Tree","algorithm":"tree-balanced","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}},"output":true,"inputRaw":"tree = {1,2,3,4,5,#,6,#,#,7,8}","outputRaw":"true"},{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}}},"output":false,"inputRaw":"tree = {1,2,3,4,5,#,#,6}","outputRaw":"false"}]}
+</div>
+
 # Height Balanced Binary Tree
 
 **Difficulty:** Medium (Yellow)

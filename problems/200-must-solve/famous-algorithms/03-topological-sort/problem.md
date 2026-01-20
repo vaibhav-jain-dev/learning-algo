@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"DAG Ordering","algorithm":"topological-sort","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"n":6,"edges":[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]},"output":[5,4,2,3,1,0],"inputRaw":"n = 6, edges = [[5,2], [5,0], [4,0], [4,1], [2,3], [3,1]]","outputRaw":"[5, 4, 2, 3, 1, 0]"},{"input":{"n":2,"edges":[[1,0],[0,1]]},"output":[],"inputRaw":"n = 2, edges = [[1,0], [0,1]]","outputRaw":"[] (cycle detected)"}]}
+</div>
+
 # Topological Sort - DAG Ordering
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Ambiguous Measurements","algorithm":"recursion-measurements","complexity":{"time":"O(target * maxRange * numCups)","space":"O(target * maxRange)"},"examples":[{"input":{"cups":[[200,210],[450,465],[800,850]],"target":2100},"output":true,"inputRaw":"cups = [[200, 210], [450, 465], [800, 850]], target = 2100","outputRaw":"true"}]}
+</div>
+
 # Ambiguous Measurements
 
 **Difficulty:** Hard

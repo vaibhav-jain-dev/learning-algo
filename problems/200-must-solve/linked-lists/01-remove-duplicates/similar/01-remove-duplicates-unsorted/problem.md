@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Duplicates from Unsorted Linked List","algorithm":"ll-remove-duplicates","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"list":[3,2,2,1,3,2,4]},"output":[3,2,1,4],"inputRaw":"3 -> 2 -> 2 -> 1 -> 3 -> 2 -> 4","outputRaw":"3 -> 2 -> 1 -> 4"},{"input":{"list":[1,1,1,1]},"output":[1],"inputRaw":"1 -> 1 -> 1 -> 1","outputRaw":"1"},{"input":{"list":[5,4,3,2,1]},"output":[5,4,3,2,1],"inputRaw":"5 -> 4 -> 3 -> 2 -> 1","outputRaw":"5 -> 4 -> 3 -> 2 -> 1"}]}
+</div>
+
 # Remove Duplicates from Unsorted Linked List
 
 **Difficulty:** Medium

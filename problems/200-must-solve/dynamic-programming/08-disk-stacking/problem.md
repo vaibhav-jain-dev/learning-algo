@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Disk Stacking","algorithm":"dp-disk-stacking","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"disks":[[2,1,2],[3,2,3],[2,2,8],[2,3,4],[1,3,1],[4,4,5]]},"output":[[2,1,2],[3,2,3],[4,4,5]],"inputRaw":"disks = [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [1, 3, 1], [4, 4, 5]]","outputRaw":"[[2, 1, 2], [3, 2, 3], [4, 4, 5]]"},{"input":{"disks":[[2,1,2]]},"output":[[2,1,2]],"inputRaw":"disks = [[2, 1, 2]]","outputRaw":"[[2, 1, 2]]"},{"input":{"disks":[[1,1,1],[2,2,2],[3,3,3]]},"output":[[1,1,1],[2,2,2],[3,3,3]],"inputRaw":"disks = [[1, 1, 1], [2, 2, 2], [3, 3, 3]]","outputRaw":"[[1, 1, 1], [2, 2, 2], [3, 3, 3]]"}]}
+</div>
+
 # Disk Stacking
 
 **Difficulty:** Hard (Red)

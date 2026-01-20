@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Permutations","algorithm":"recursion-permutations","complexity":{"time":"O(n! * n)","space":"O(n)"},"examples":[{"input":{"array":[1,2,3]},"output":[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]],"inputRaw":"[1, 2, 3]","outputRaw":"[[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]"}]}
+</div>
+
 # Permutations
 
 **Difficulty:** Medium

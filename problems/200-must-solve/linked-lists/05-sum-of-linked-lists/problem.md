@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Sum of Linked Lists","algorithm":"ll-sum","complexity":{"time":"O(max(n,m))","space":"O(max(n,m))"},"examples":[{"input":{"list1":[2,4,7,1],"list2":[9,4,5]},"output":[1,9,2,2],"inputRaw":"2 -> 4 -> 7 -> 1 (1742) + 9 -> 4 -> 5 (549)","outputRaw":"1 -> 9 -> 2 -> 2 (2291)"},{"input":{"list1":[9,9,9],"list2":[1]},"output":[0,0,0,1],"inputRaw":"9 -> 9 -> 9 (999) + 1 (1)","outputRaw":"0 -> 0 -> 0 -> 1 (1000)"},{"input":{"list1":[5,6,3],"list2":[8,4,2]},"output":[3,1,6],"inputRaw":"5 -> 6 -> 3 (365) + 8 -> 4 -> 2 (248)","outputRaw":"3 -> 1 -> 6 (613)"}]}
+</div>
+
 # Sum of Linked Lists
 
 **Difficulty:** Medium

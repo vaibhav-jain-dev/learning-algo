@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"N-th Tribonacci Number","algorithm":"recursion-fibonacci","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"n":4},"output":4,"inputRaw":"n = 4","outputRaw":"4"}]}
+</div>
+
 # N-th Tribonacci Number
 
 **Difficulty:** Medium

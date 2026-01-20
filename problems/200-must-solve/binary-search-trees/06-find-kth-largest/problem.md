@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Kth Largest Value in BST","algorithm":"bst-kth-largest","complexity":{"time":"O(h + k)","space":"O(h)"},"examples":[{"input":{"tree":[15,5,20,2,5,17,22,1],"k":3},"output":17,"inputRaw":"tree = [15,5,20,2,5,17,22,1], k = 3","outputRaw":"17 (values in descending order: [22, 20, 17, 15, 5, 5, 2, 1])"},{"input":{"tree":[15,5,20,2,5,17,22,1],"k":1},"output":22,"inputRaw":"tree = [15,5,20,2,5,17,22,1], k = 1","outputRaw":"22 (the largest)"}]}
+</div>
+
 # Find Kth Largest Value in BST
 
 **Difficulty:** Medium (Blue)

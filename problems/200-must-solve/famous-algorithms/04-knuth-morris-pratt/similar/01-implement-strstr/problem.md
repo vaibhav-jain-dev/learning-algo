@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Implement strStr()","algorithm":"kmp-algorithm","complexity":{"time":"O(n + m)","space":"O(m)"},"examples":[{"input":{"haystack":"sadbutsad","needle":"sad"},"output":0,"inputRaw":"haystack = \"sadbutsad\", needle = \"sad\"","outputRaw":"0"},{"input":{"haystack":"leetcode","needle":"leeto"},"output":-1,"inputRaw":"haystack = \"leetcode\", needle = \"leeto\"","outputRaw":"-1"}]}
+</div>
+
 # Implement strStr()
 
 **Difficulty:** Easy

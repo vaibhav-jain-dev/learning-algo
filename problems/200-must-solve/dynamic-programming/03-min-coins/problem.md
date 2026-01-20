@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Min Number Of Coins For Change","algorithm":"dp-coin-change","complexity":{"time":"O(n * d)","space":"O(n)"},"examples":[{"input":{"n":7,"denoms":[1,5,10]},"output":3,"inputRaw":"n = 7, denoms = [1, 5, 10]","outputRaw":"3 (5 + 1 + 1)"},{"input":{"n":6,"denoms":[1,2,4]},"output":2,"inputRaw":"n = 6, denoms = [1, 2, 4]","outputRaw":"2 (4 + 2)"},{"input":{"n":3,"denoms":[2]},"output":-1,"inputRaw":"n = 3, denoms = [2]","outputRaw":"-1 (impossible)"}]}
+</div>
+
 # Min Number Of Coins For Change
 
 **Difficulty:** Medium (Blue)

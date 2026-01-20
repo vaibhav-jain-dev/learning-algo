@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"K Closest Values in BST","algorithm":"bst-search","complexity":{"time":"O(n log k) or O(log n + k)","space":"O(k + h)"},"examples":[{"input":{"tree":[4,2,5,1,3],"target":3.7,"k":2},"output":[4,3],"inputRaw":"tree = [4,2,5,1,3], target = 3.7, k = 2","outputRaw":"[4, 3] (closest to 3.7)"},{"input":{"tree":[8,4,12,2,6,10,14,1,3,5,7],"target":6.5,"k":4},"output":[6,7,5,8],"inputRaw":"tree = [8,4,12,2,6,10,14,1,3,5,7], target = 6.5, k = 4","outputRaw":"[6, 7, 5, 8]"}]}
+</div>
+
 # K Closest Values in BST
 
 **Difficulty:** Medium

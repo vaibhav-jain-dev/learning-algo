@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Cycle Detection in Graph","algorithm":"graph-cycle","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"edges":[[1,3],[2,3,4],[0],[],[2,5],[]]},"output":true,"inputRaw":"edges = [[1,3],[2,3,4],[0],[],[2,5],[]]","outputRaw":"true (cycle: 0 -> 1 -> 2 -> 0)"},{"input":{"edges":[[1,2],[2],[]]},"output":false,"inputRaw":"edges = [[1,2],[2],[]]","outputRaw":"false (DAG)"}]}
+</div>
+
 # Cycle Detection in Graph
 
 **Difficulty:** Medium (Yellow)

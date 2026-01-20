@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Depth First Search","algorithm":"graph-dfs","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},"output":["A","B","E","F","I","J","C","D","G","K","H"],"inputRaw":"Tree with root A","outputRaw":"[\"A\", \"B\", \"E\", \"F\", \"I\", \"J\", \"C\", \"D\", \"G\", \"K\", \"H\"]"}]}
+</div>
+
 # Depth First Search
 
 **Difficulty:** Easy (Green)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Binary Tree Level Order Traversal","algorithm":"graph-bfs","complexity":{"time":"O(N)","space":"O(W)"},"examples":[{"input":{"root":[3,9,20,null,null,15,7]},"output":[[3],[9,20],[15,7]],"inputRaw":"root = [3,9,20,null,null,15,7]","outputRaw":"[[3],[9,20],[15,7]]"},{"input":{"root":[1]},"output":[[1]],"inputRaw":"root = [1]","outputRaw":"[[1]]"}]}
+</div>
+
 # Binary Tree Level Order Traversal
 
 **Difficulty:** Medium

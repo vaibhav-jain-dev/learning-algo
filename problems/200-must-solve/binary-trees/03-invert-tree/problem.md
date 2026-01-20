@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Invert Binary Tree","algorithm":"tree-invert","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},"output":{"value":1,"left":{"value":3,"left":{"value":7},"right":{"value":6}},"right":{"value":2,"left":{"value":5},"right":{"value":4,"left":{"value":9},"right":{"value":8}}}},"inputRaw":"tree = {1,2,3,4,5,6,7,8,9}","outputRaw":"inverted tree = {1,3,2,7,6,5,4,#,#,#,#,#,#,9,8}"}]}
+</div>
+
 # Invert Binary Tree
 
 **Difficulty:** Easy (Green)

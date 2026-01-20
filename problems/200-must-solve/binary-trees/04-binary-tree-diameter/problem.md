@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Binary Tree Diameter","algorithm":"tree-diameter","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}}},"output":6,"inputRaw":"tree = {1,3,2,7,4,#,#,8,#,#,5,#,#,#,6}","outputRaw":"6"}]}
+</div>
+
 # Binary Tree Diameter
 
 **Difficulty:** Medium (Yellow)

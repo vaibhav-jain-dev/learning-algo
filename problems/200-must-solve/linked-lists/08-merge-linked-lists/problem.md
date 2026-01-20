@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Merge Linked Lists","algorithm":"ll-merge","complexity":{"time":"O(n+m)","space":"O(1)"},"examples":[{"input":{"list1":[2,6,7,8],"list2":[1,3,4,5,9,10]},"output":[1,2,3,4,5,6,7,8,9,10],"inputRaw":"2 -> 6 -> 7 -> 8 + 1 -> 3 -> 4 -> 5 -> 9 -> 10","outputRaw":"1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10"},{"input":{"list1":[1,2,3],"list2":[4,5,6]},"output":[1,2,3,4,5,6],"inputRaw":"1 -> 2 -> 3 + 4 -> 5 -> 6","outputRaw":"1 -> 2 -> 3 -> 4 -> 5 -> 6"},{"input":{"list1":[5],"list2":[1,2,3]},"output":[1,2,3,5],"inputRaw":"5 + 1 -> 2 -> 3","outputRaw":"1 -> 2 -> 3 -> 5"}]}
+</div>
+
 # Merge Linked Lists
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Inorder Predecessor and Successor","algorithm":"bst-search","complexity":{"time":"O(h)","space":"O(1) iterative, O(h) recursive"},"examples":[{"input":{"tree":[5,3,7,2,4,6,8],"target":4},"output":{"predecessor":3,"successor":5},"inputRaw":"tree = [5,3,7,2,4,6,8], target = 4","outputRaw":"predecessor = 3, successor = 5"},{"input":{"tree":[5,3,7,2,4,6,8],"target":1},"output":{"predecessor":-1,"successor":2},"inputRaw":"tree = [5,3,7,2,4,6,8], target = 1","outputRaw":"predecessor = -1, successor = 2"}]}
+</div>
+
 # Closest BST Value II (Inorder Predecessor & Successor)
 
 **Difficulty:** Medium

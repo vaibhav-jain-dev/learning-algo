@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Levenshtein Distance","algorithm":"dp-edit-distance","complexity":{"time":"O(m * n)","space":"O(m * n)"},"examples":[{"input":{"str1":"abc","str2":"yabd"},"output":2,"inputRaw":"str1 = \"abc\", str2 = \"yabd\"","outputRaw":"2"},{"input":{"str1":"horse","str2":"ros"},"output":3,"inputRaw":"str1 = \"horse\", str2 = \"ros\"","outputRaw":"3"},{"input":{"str1":"","str2":"abc"},"output":3,"inputRaw":"str1 = \"\", str2 = \"abc\"","outputRaw":"3"}]}
+</div>
+
 # Levenshtein Distance (Edit Distance)
 
 **Difficulty:** Medium (Blue)

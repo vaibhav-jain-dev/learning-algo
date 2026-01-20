@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Min Height BST","algorithm":"bst-construction-balanced","complexity":{"time":"O(n)","space":"O(n) for tree, O(log n) for recursion stack"},"examples":[{"input":{"array":[1,2,5,7,10,13,14,15,22]},"output":[10,2,14,1,5,13,15,null,null,null,7,null,null,null,22],"inputRaw":"array = [1, 2, 5, 7, 10, 13, 14, 15, 22]","outputRaw":"BST with root 10 and height 3"},{"input":{"array":[1,2,3]},"output":[2,1,3],"inputRaw":"array = [1, 2, 3]","outputRaw":"BST with root 2"}]}
+</div>
+
 # Min Height BST
 
 **Difficulty:** Medium (Blue)

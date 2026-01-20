@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"0/1 Knapsack Problem","algorithm":"dp-knapsack","complexity":{"time":"O(n * capacity)","space":"O(n * capacity)"},"examples":[{"input":{"items":[[1,2],[4,3],[5,6],[6,7]],"capacity":10},"output":[10,[1,3]],"inputRaw":"items = [[1, 2], [4, 3], [5, 6], [6, 7]], capacity = 10","outputRaw":"[10, [1, 3]]"},{"input":{"items":[[60,10],[100,20],[120,30]],"capacity":50},"output":[220,[1,2]],"inputRaw":"items = [[60, 10], [100, 20], [120, 30]], capacity = 50","outputRaw":"[220, [1, 2]]"},{"input":{"items":[[10,5],[40,4],[30,6],[50,3]],"capacity":10},"output":[90,[1,3]],"inputRaw":"items = [[10, 5], [40, 4], [30, 6], [50, 3]], capacity = 10","outputRaw":"[90, [1, 3]]"}]}
+</div>
+
 # 0/1 Knapsack Problem
 
 **Difficulty:** Hard (Red)

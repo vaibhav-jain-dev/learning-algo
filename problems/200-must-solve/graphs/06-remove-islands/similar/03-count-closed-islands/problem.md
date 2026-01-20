@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Closed Islands","algorithm":"graph-flood-fill","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid":[[1,1,1,1,1,1,1,0],[1,0,0,0,0,1,1,0],[1,0,1,0,1,1,1,0],[1,0,0,0,0,1,0,1],[1,1,1,1,1,1,1,0]]},"output":2,"inputRaw":"5x8 grid","outputRaw":"2"}]}
+</div>
+
 # Number of Closed Islands
 
 **Difficulty:** Medium

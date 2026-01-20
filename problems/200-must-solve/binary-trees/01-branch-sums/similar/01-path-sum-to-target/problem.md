@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Path Sum to Target","algorithm":"tree-dfs","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}},"target":22},"output":[[5,4,11,2],[5,8,4,5]],"inputRaw":"tree = {5,4,8,11,#,13,4,7,2,#,#,5,1}, target = 22","outputRaw":"[[5, 4, 11, 2], [5, 8, 4, 5]]"},{"input":{"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":4},"output":[[1,3]],"inputRaw":"tree = {1,2,3}, target = 4","outputRaw":"[[1, 3]]"}]}
+</div>
+
 # Path Sum to Target
 
 **Difficulty:** Medium

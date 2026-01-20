@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Accounts Merge","algorithm":"union-find","complexity":{"time":"O(NK log NK)","space":"O(NK)"},"examples":[{"input":{"accounts":[["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]]},"output":[["John","a@m.co","b@m.co","d@m.co"],["John","c@m.co"]],"inputRaw":"accounts = [[\"John\",\"a@m.co\",\"b@m.co\"],[\"John\",\"c@m.co\"],[\"John\",\"a@m.co\",\"d@m.co\"]]","outputRaw":"[[\"John\",\"a@m.co\",\"b@m.co\",\"d@m.co\"],[\"John\",\"c@m.co\"]]"}]}
+</div>
+
 # Accounts Merge
 
 **Difficulty:** Medium

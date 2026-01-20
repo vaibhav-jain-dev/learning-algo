@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Integer Break","algorithm":"dp-coin-change","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"n":2},"output":1,"inputRaw":"n = 2","outputRaw":"1"},{"input":{"n":10},"output":36,"inputRaw":"n = 10","outputRaw":"36"},{"input":{"n":8},"output":18,"inputRaw":"n = 8","outputRaw":"18"}]}
+</div>
+
 # Integer Break
 
 **Difficulty:** Medium

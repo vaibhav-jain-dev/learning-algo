@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Possible Bipartition","algorithm":"graph-coloring","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"n":4,"dislikes":[[1,2],[1,3],[2,4]]},"output":true,"inputRaw":"n=4, dislikes=[[1,2],[1,3],[2,4]]","outputRaw":"true"},{"input":{"n":3,"dislikes":[[1,2],[1,3],[2,3]]},"output":false,"inputRaw":"n=3, dislikes=[[1,2],[1,3],[2,3]]","outputRaw":"false"}]}
+</div>
+
 # Possible Bipartition
 
 **Difficulty:** Medium

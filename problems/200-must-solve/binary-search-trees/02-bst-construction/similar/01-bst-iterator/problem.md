@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"BST Iterator","algorithm":"bst-iterator","complexity":{"time":"O(1) amortized for next(), O(1) for hasNext()","space":"O(h)"},"examples":[{"input":{"tree":[7,3,15,null,null,9,20]},"output":[3,7,9,15,20],"inputRaw":"tree = [7,3,15,null,null,9,20]","outputRaw":"next() returns: 3, 7, 9, 15, 20 in sequence"}]}
+</div>
+
 # BST Iterator
 
 **Difficulty:** Medium

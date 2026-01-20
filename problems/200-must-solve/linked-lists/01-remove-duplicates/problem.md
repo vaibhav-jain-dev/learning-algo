@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Duplicates From Linked List","algorithm":"ll-remove-duplicates","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,1,3,4,4,4,5,6,6]},"output":[1,3,4,5,6],"inputRaw":"1 -> 1 -> 3 -> 4 -> 4 -> 4 -> 5 -> 6 -> 6","outputRaw":"1 -> 3 -> 4 -> 5 -> 6"},{"input":{"list":[1,1,1,1,1]},"output":[1],"inputRaw":"1 -> 1 -> 1 -> 1 -> 1","outputRaw":"1"}]}
+</div>
+
 # Remove Duplicates From Linked List
 
 **Difficulty:** Easy (Green)

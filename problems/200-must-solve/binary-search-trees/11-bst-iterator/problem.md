@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"BST Iterator","algorithm":"bst-iterator","complexity":{"time":"O(1) average for next() and hasNext()","space":"O(h)"},"examples":[{"input":{"tree":[7,3,15,null,null,9,20],"operations":["next","next","hasNext","next","hasNext","next","hasNext","next","hasNext"]},"output":[3,7,true,9,true,15,true,20,false],"inputRaw":"tree = [7,3,15,null,null,9,20]","outputRaw":"next()=3, next()=7, hasNext()=true, next()=9, hasNext()=true, next()=15, hasNext()=true, next()=20, hasNext()=false"}]}
+</div>
+
 # BST Iterator
 
 **Difficulty:** Medium (Blue)

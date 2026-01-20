@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Depth of Binary Tree","algorithm":"tree-dfs","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},"output":3,"inputRaw":"tree = {3,9,20,#,#,15,7}","outputRaw":"3"},{"input":{"tree":{"value":1,"right":{"value":2}}},"output":2,"inputRaw":"tree = {1,#,2}","outputRaw":"2"}]}
+</div>
+
 # Maximum Depth of Binary Tree
 
 **Difficulty:** Easy

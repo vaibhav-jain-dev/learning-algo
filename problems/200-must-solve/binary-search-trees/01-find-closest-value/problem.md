@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Closest Value in BST","algorithm":"bst-search","complexity":{"time":"O(log n) average, O(n) worst","space":"O(1)"},"examples":[{"input":{"tree":[10,5,15,2,5,13,22,1,null,null,null,null,14],"target":12},"output":13,"inputRaw":"tree = [10,5,15,2,5,13,22,1,null,null,null,null,14], target = 12","outputRaw":"13"}]}
+</div>
+
 # Find Closest Value in BST
 
 **Difficulty:** Easy (Green)

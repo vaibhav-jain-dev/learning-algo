@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Interweaving Strings","algorithm":"recursion-interweaving","complexity":{"time":"O(n * m)","space":"O(n * m)"},"examples":[{"input":{"one":"aabcc","two":"dbbca","three":"aadbbcbcac"},"output":true,"inputRaw":"one = \"aabcc\", two = \"dbbca\", three = \"aadbbcbcac\"","outputRaw":"true"}]}
+</div>
+
 # Interweaving Strings
 
 **Difficulty:** Hard

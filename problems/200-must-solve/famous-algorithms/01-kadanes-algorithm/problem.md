@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Subarray Sum","algorithm":"kadanes-algorithm","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"nums":[-2,1,-3,4,-1,2,1,-5,4]},"output":6,"inputRaw":"nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]","outputRaw":"6"}]}
+</div>
+
 # Kadane's Algorithm - Maximum Subarray Sum
 
 **Difficulty:** Medium

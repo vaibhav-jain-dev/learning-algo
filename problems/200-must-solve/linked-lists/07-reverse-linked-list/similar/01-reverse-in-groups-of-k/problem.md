@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reverse Linked List in Groups of K","algorithm":"ll-reverse","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,4,5],"k":2},"output":[2,1,4,3,5],"inputRaw":"[1,2,3,4,5], k = 2","outputRaw":"[2,1,4,3,5]"},{"input":{"list":[1,2,3,4,5],"k":3},"output":[3,2,1,4,5],"inputRaw":"[1,2,3,4,5], k = 3","outputRaw":"[3,2,1,4,5]"},{"input":{"list":[1,2,3,4,5,6,7,8],"k":3},"output":[3,2,1,6,5,4,7,8],"inputRaw":"[1,2,3,4,5,6,7,8], k = 3","outputRaw":"[3,2,1,6,5,4,7,8]"}]}
+</div>
+
 # Reverse Linked List in Groups of K
 
 **Difficulty:** Hard

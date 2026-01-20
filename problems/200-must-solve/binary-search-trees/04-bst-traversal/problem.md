@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"BST Traversal","algorithm":"bst-traversal","complexity":{"time":"O(n)","space":"O(n) for result, O(d) for call stack"},"examples":[{"input":{"tree":[10,5,15,2,5,null,22,1]},"output":{"inorder":[1,2,5,5,10,15,22],"preorder":[10,5,2,1,5,15,22],"postorder":[1,2,5,5,22,15,10]},"inputRaw":"tree = [10,5,15,2,5,null,22,1]","outputRaw":"In-order: [1,2,5,5,10,15,22], Pre-order: [10,5,2,1,5,15,22], Post-order: [1,2,5,5,22,15,10]"}]}
+</div>
+
 # BST Traversal
 
 **Difficulty:** Medium (Blue)

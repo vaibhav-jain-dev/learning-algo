@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Evaluate Expression Tree","algorithm":"tree-expression","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},"output":19,"inputRaw":"tree = {-1(+),-2(-),-3(*),2,3,4,5}","outputRaw":"19 (explanation: (2-3) + (4*5) = -1 + 20 = 19)"},{"input":{"tree":{"value":-1,"left":{"value":5},"right":{"value":7}}},"output":12,"inputRaw":"tree = {-1(+),5,7}","outputRaw":"12 (explanation: 5 + 7 = 12)"}]}
+</div>
+
 # Evaluate Expression Tree
 
 **Difficulty:** Easy (Green)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove All Nodes with Duplicate Values","algorithm":"ll-remove-duplicates","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,3,4,4,5]},"output":[1,2,5],"inputRaw":"1 -> 2 -> 3 -> 3 -> 4 -> 4 -> 5","outputRaw":"1 -> 2 -> 5"},{"input":{"list":[1,1,1,2,3]},"output":[2,3],"inputRaw":"1 -> 1 -> 1 -> 2 -> 3","outputRaw":"2 -> 3"},{"input":{"list":[1,1,2,2]},"output":[],"inputRaw":"1 -> 1 -> 2 -> 2","outputRaw":"empty"}]}
+</div>
+
 # Remove All Nodes with Duplicate Values
 
 **Difficulty:** Medium

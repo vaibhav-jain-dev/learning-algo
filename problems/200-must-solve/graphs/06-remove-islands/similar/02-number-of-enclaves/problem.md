@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Enclaves","algorithm":"graph-flood-fill","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid":[[0,0,0,0],[1,0,1,0],[0,1,1,0],[0,0,0,0]]},"output":3,"inputRaw":"4x4 grid","outputRaw":"3"}]}
+</div>
+
 # Number of Enclaves
 
 **Difficulty:** Medium

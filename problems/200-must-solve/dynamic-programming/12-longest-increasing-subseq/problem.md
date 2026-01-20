@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Longest Increasing Subsequence","algorithm":"dp-increasing-subseq","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"array":[5,7,-24,12,10,2,3,12,5,6,35]},"output":[-24,2,3,5,6,35],"inputRaw":"array = [5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35]","outputRaw":"[-24, 2, 3, 5, 6, 35]"},{"input":{"array":[10,9,2,5,3,7,101,18]},"output":[2,3,7,18],"inputRaw":"array = [10, 9, 2, 5, 3, 7, 101, 18]","outputRaw":"[2, 3, 7, 18]"},{"input":{"array":[0,1,0,3,2,3]},"output":[0,1,2,3],"inputRaw":"array = [0, 1, 0, 3, 2, 3]","outputRaw":"[0, 1, 2, 3]"}]}
+</div>
+
 # Longest Increasing Subsequence
 
 **Difficulty:** Hard (Red)

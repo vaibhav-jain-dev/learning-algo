@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Minimum Depth of Binary Tree","algorithm":"tree-bfs","complexity":{"time":"O(n)","space":"O(w)"},"examples":[{"input":{"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},"output":2,"inputRaw":"tree = {3,9,20,#,#,15,7}","outputRaw":"2 (path: 3 -> 9)"},{"input":{"tree":{"value":2,"right":{"value":3,"right":{"value":4,"right":{"value":5,"right":{"value":6}}}}}},"output":5,"inputRaw":"tree = {2,#,3,#,4,#,5,#,6}","outputRaw":"5"}]}
+</div>
+
 # Minimum Depth of Binary Tree
 
 **Difficulty:** Easy

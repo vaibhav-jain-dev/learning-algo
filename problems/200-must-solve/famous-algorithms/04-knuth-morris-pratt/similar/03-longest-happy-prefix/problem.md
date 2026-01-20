@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Longest Happy Prefix","algorithm":"kmp-algorithm","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"s":"level"},"output":"l","inputRaw":"s = \"level\"","outputRaw":"\"l\""},{"input":{"s":"ababab"},"output":"abab","inputRaw":"s = \"ababab\"","outputRaw":"\"abab\""}]}
+</div>
+
 # Longest Happy Prefix
 
 **Difficulty:** Hard

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Morris Traversal","algorithm":"bst-traversal","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"tree":[4,2,6,1,3,5,7]},"output":[1,2,3,4,5,6,7],"inputRaw":"tree = [4,2,6,1,3,5,7]","outputRaw":"Morris Inorder: [1, 2, 3, 4, 5, 6, 7]"},{"input":{"tree":[1,2,3,4,5,null,6]},"output":[4,2,5,1,3,6],"inputRaw":"tree = [1,2,3,4,5,null,6]","outputRaw":"Morris Inorder: [4, 2, 5, 1, 3, 6]"}]}
+</div>
+
 # Morris Traversal
 
 **Difficulty:** Hard

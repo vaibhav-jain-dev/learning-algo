@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Sum Circular Subarray","algorithm":"kadanes-algorithm","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"nums":[1,-2,3,-2]},"output":3,"inputRaw":"nums = [1, -2, 3, -2]","outputRaw":"3"},{"input":{"nums":[5,-3,5]},"output":10,"inputRaw":"nums = [5, -3, 5]","outputRaw":"10"}]}
+</div>
+
 # Maximum Sum Circular Subarray
 
 **Difficulty:** Medium

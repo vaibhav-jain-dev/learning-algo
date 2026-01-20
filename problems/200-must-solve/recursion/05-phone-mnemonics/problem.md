@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Phone Number Mnemonics","algorithm":"recursion-phone","complexity":{"time":"O(4^n * n)","space":"O(n)"},"examples":[{"input":{"phoneNumber":"23"},"output":["ad","ae","af","bd","be","bf","cd","ce","cf"],"inputRaw":"\"23\"","outputRaw":"[\"ad\", \"ae\", \"af\", \"bd\", \"be\", \"bf\", \"cd\", \"ce\", \"cf\"]"}]}
+</div>
+
 # Phone Number Mnemonics
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Single Source Shortest Path","algorithm":"dijkstras-algorithm","complexity":{"time":"O((V + E) log V)","space":"O(V + E)"},"examples":[{"input":{"vertices":5,"edges":[[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]],"source":0},"output":[0,3,1,4,7],"inputRaw":"Graph: 5 vertices, Edges: [(0,1,4), (0,2,1), (1,3,1), (2,1,2), (2,3,5), (3,4,3)], Source: 0","outputRaw":"Distances: [0, 3, 1, 4, 7]"}]}
+</div>
+
 # Dijkstra's Algorithm - Single Source Shortest Path
 
 **Difficulty:** Medium

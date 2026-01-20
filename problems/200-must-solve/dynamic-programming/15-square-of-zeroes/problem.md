@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Square of Zeroes","algorithm":"dp-square-zeroes","complexity":{"time":"O(n^3)","space":"O(n^2)"},"examples":[{"input":{"matrix":[[1,1,1,0,1,0],[0,0,0,0,0,1],[0,1,1,1,0,1],[0,0,0,1,0,1],[0,1,1,1,0,1],[0,0,0,0,0,1]]},"output":true,"inputRaw":"matrix = [[1,1,1,0,1,0],[0,0,0,0,0,1],[0,1,1,1,0,1],[0,0,0,1,0,1],[0,1,1,1,0,1],[0,0,0,0,0,1]]","outputRaw":"true"},{"input":{"matrix":[[1,1,1],[1,0,1],[1,1,1]]},"output":true,"inputRaw":"matrix = [[1,1,1],[1,0,1],[1,1,1]]","outputRaw":"true"},{"input":{"matrix":[[1,1,1],[1,1,1],[1,1,1]]},"output":false,"inputRaw":"matrix = [[1,1,1],[1,1,1],[1,1,1]]","outputRaw":"false"}]}
+</div>
+
 # Square of Zeroes
 
 **Difficulty:** Very Hard (Black)

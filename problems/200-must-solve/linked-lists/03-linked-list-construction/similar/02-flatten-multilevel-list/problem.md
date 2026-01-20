@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Flatten a Multilevel Doubly Linked List","algorithm":"ll-construction","complexity":{"time":"O(n)","space":"O(depth)"},"examples":[{"input":{"list":"1-2-3-4-5-6 with 3->7-8-9-10 and 8->11-12"},"output":[1,2,3,7,8,11,12,9,10,4,5,6],"inputRaw":"1---2---3---4---5---6 | 7---8---9---10 | 11--12","outputRaw":"1-2-3-7-8-11-12-9-10-4-5-6"},{"input":{"list":"1-2 with 1->3"},"output":[1,3,2],"inputRaw":"1---2 | 3","outputRaw":"1-3-2"}]}
+</div>
+
 # Flatten a Multilevel Doubly Linked List
 
 **Difficulty:** Medium

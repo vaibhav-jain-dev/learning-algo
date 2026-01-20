@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Two Sum Closest in BST","algorithm":"bst-search","complexity":{"time":"O(n)","space":"O(n) or O(h) with iterators"},"examples":[{"input":{"tree":[10,5,15,2,7,12,20],"target":22},"output":[7,15],"inputRaw":"tree = [10,5,15,2,7,12,20], target = 22","outputRaw":"[7, 15] (sum = 22)"},{"input":{"tree":[5,3,7,1,4,6,8],"target":10},"output":[3,7],"inputRaw":"tree = [5,3,7,1,4,6,8], target = 10","outputRaw":"[3, 7] (sum = 10)"}]}
+</div>
+
 # Two Sum Closest in BST
 
 **Difficulty:** Medium-Hard

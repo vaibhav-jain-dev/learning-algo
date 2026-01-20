@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Iterative Tree Traversal","algorithm":"bst-traversal","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":[1,2,3,4,5,null,6]},"output":{"inorder":[4,2,5,1,3,6],"preorder":[1,2,4,5,3,6],"postorder":[4,5,2,6,3,1]},"inputRaw":"tree = [1,2,3,4,5,null,6]","outputRaw":"Inorder: [4,2,5,1,3,6], Preorder: [1,2,4,5,3,6], Postorder: [4,5,2,6,3,1]"}]}
+</div>
+
 # Iterative Tree Traversal
 
 **Difficulty:** Medium

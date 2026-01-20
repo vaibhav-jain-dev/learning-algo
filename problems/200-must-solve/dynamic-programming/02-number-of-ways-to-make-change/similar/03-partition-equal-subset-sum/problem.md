@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Partition Equal Subset Sum","algorithm":"dp-coin-change","complexity":{"time":"O(n * sum)","space":"O(sum)"},"examples":[{"input":{"nums":[1,5,11,5]},"output":true,"inputRaw":"nums = [1, 5, 11, 5]","outputRaw":"true"},{"input":{"nums":[1,2,3,5]},"output":false,"inputRaw":"nums = [1, 2, 3, 5]","outputRaw":"false"}]}
+</div>
+
 # Partition Equal Subset Sum
 
 **Difficulty:** Medium

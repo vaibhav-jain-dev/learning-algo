@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Depth of Nested Arrays","algorithm":"recursion-product-sum","complexity":{"time":"O(n)","space":"O(d)"},"examples":[{"input":{"array":[1,[2,[3,4]]]},"output":3,"inputRaw":"[1, [2, [3, 4]]]","outputRaw":"3"}]}
+</div>
+
 # Maximum Depth of Nested Arrays
 
 **Difficulty:** Easy

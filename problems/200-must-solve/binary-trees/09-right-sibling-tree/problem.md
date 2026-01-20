@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Right Sibling Tree","algorithm":"tree-sibling","complexity":{"time":"O(n)","space":"O(w)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}}},"output":"siblings connected at each level","inputRaw":"tree = {1,2,3,4,5,6,7,8,9,#,10,11,12}","outputRaw":"right pointers connect siblings: 2->3, 4->5->6->7, 8->9->10->11->12"}]}
+</div>
+
 # Right Sibling Tree
 
 **Difficulty:** Medium (Yellow)

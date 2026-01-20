@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Ways To Traverse Graph","algorithm":"dp-graph-traversal","complexity":{"time":"O(width * height)","space":"O(width * height)"},"examples":[{"input":{"width":4,"height":3},"output":10,"inputRaw":"width = 4, height = 3","outputRaw":"10"},{"input":{"width":2,"height":2},"output":2,"inputRaw":"width = 2, height = 2","outputRaw":"2"},{"input":{"width":3,"height":3},"output":6,"inputRaw":"width = 3, height = 3","outputRaw":"6"},{"input":{"width":1,"height":5},"output":1,"inputRaw":"width = 1, height = 5","outputRaw":"1"}]}
+</div>
+
 # Ways To Traverse Graph
 
 **Difficulty:** Medium (Blue)

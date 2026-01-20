@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"LRU Cache","algorithm":"ll-lru-cache","complexity":{"time":"O(1) for get and put","space":"O(capacity)"},"examples":[{"input":{"capacity":3,"operations":[["put","a",1],["put","b",2],["put","c",3],["get","a"],["put","d",4],["get","b"],["get","c"],["put","e",5]]},"output":{"get_a":1,"get_b":-1,"get_c":3,"finalCache":["d","c","e"]},"inputRaw":"LRUCache(3), put(a,1), put(b,2), put(c,3), get(a), put(d,4), get(b), get(c), put(e,5)","outputRaw":"get(a)=1, get(b)=-1, get(c)=3, cache={d,c,e}"}]}
+</div>
+
 # LRU Cache
 
 **Difficulty:** Hard

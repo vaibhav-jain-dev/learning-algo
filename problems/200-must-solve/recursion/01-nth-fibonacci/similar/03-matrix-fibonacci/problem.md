@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Fibonacci with Matrix Exponentiation","algorithm":"recursion-fibonacci","complexity":{"time":"O(log n)","space":"O(1)"},"examples":[{"input":{"n":10},"output":55,"inputRaw":"n = 10","outputRaw":"55"}]}
+</div>
+
 # Fibonacci with Matrix Exponentiation
 
 **Difficulty:** Hard

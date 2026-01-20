@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Generate Div Tags","algorithm":"recursion-divtags","complexity":{"time":"O(4^n / sqrt(n))","space":"O(n)"},"examples":[{"input":{"numberOfTags":2},"output":["<div><div></div></div>","<div></div><div></div>"],"inputRaw":"numberOfTags = 2","outputRaw":"[\"<div><div></div></div>\", \"<div></div><div></div>\"]"}]}
+</div>
+
 # Generate Div Tags
 
 **Difficulty:** Medium

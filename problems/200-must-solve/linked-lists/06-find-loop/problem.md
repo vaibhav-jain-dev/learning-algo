@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Loop","algorithm":"ll-find-loop","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[0,1,2,3,4,5,6],"loopStart":3},"output":3,"inputRaw":"0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> (back to 3)","outputRaw":"Node with value 3"},{"input":{"list":[1,2,3,4],"loopStart":1},"output":1,"inputRaw":"1 -> 2 -> 3 -> 4 -> (back to 1)","outputRaw":"Node with value 1"},{"input":{"list":[5,6,7],"loopStart":6},"output":6,"inputRaw":"5 -> 6 -> 7 -> (back to 6)","outputRaw":"Node with value 6"}]}
+</div>
+
 # Find Loop
 
 **Difficulty:** Hard

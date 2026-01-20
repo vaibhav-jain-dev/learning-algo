@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Coin Change II - Exact Coins","algorithm":"dp-coin-change","complexity":{"time":"O(amount * k * len(coins))","space":"O(amount * k)"},"examples":[{"input":{"amount":11,"coins":[1,2,5],"k":3},"output":true,"inputRaw":"amount = 11, coins = [1, 2, 5], k = 3","outputRaw":"true"},{"input":{"amount":10,"coins":[2,5],"k":2},"output":true,"inputRaw":"amount = 10, coins = [2, 5], k = 2","outputRaw":"true"},{"input":{"amount":7,"coins":[2,4],"k":3},"output":false,"inputRaw":"amount = 7, coins = [2, 4], k = 3","outputRaw":"false"}]}
+</div>
+
 # Coin Change II - Exact Coins
 
 **Difficulty:** Medium-Hard

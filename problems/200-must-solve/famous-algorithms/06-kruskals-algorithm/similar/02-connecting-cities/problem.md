@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Connecting Cities With Minimum Cost","algorithm":"kruskals-algorithm","complexity":{"time":"O(E log E)","space":"O(n)"},"examples":[{"input":{"n":3,"connections":[[1,2,5],[1,3,6],[2,3,1]]},"output":6,"inputRaw":"n = 3, connections = [[1,2,5],[1,3,6],[2,3,1]]","outputRaw":"6"}]}
+</div>
+
 # Connecting Cities With Minimum Cost
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"River Sizes","algorithm":"graph-flood-fill","complexity":{"time":"O(N * M)","space":"O(N * M)"},"examples":[{"input":{"matrix":[[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1],[1,0,1,0,1],[1,0,1,1,0]]},"output":[1,2,2,2,5],"inputRaw":"5x5 matrix with rivers","outputRaw":"[1, 2, 2, 2, 5]"},{"input":{"matrix":[[1,1,1],[1,1,1],[1,1,1]]},"output":[9],"inputRaw":"3x3 matrix all 1s","outputRaw":"[9]"}]}
+</div>
+
 # River Sizes
 
 **Difficulty:** Medium (Yellow)

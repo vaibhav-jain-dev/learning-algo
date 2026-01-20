@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Shortest Path in Binary Matrix","algorithm":"graph-bfs","complexity":{"time":"O(N^2)","space":"O(N^2)"},"examples":[{"input":{"grid":[[0,1],[1,0]]},"output":2,"inputRaw":"grid = [[0,1],[1,0]]","outputRaw":"2"},{"input":{"grid":[[0,0,0],[1,1,0],[1,1,0]]},"output":4,"inputRaw":"grid = [[0,0,0],[1,1,0],[1,1,0]]","outputRaw":"4"},{"input":{"grid":[[1,0,0],[1,1,0],[1,1,0]]},"output":-1,"inputRaw":"grid = [[1,0,0],[1,1,0],[1,1,0]]","outputRaw":"-1"}]}
+</div>
+
 # Shortest Path in Binary Matrix
 
 **Difficulty:** Medium

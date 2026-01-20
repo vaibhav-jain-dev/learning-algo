@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Provinces","algorithm":"union-find","complexity":{"time":"O(n^2 * alpha(n))","space":"O(n)"},"examples":[{"input":{"isConnected":[[1,1,0],[1,1,0],[0,0,1]]},"output":2,"inputRaw":"isConnected = [[1,1,0],[1,1,0],[0,0,1]]","outputRaw":"2"}]}
+</div>
+
 # Number of Provinces
 
 **Difficulty:** Medium

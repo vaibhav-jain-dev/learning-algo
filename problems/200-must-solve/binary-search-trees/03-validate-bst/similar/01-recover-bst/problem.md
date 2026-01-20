@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Recover Binary Search Tree","algorithm":"bst-repair","complexity":{"time":"O(n)","space":"O(h) with recursion, O(1) with Morris"},"examples":[{"input":{"tree":[1,3,null,null,2]},"output":[3,1,null,null,2],"inputRaw":"tree = [1,3,null,null,2] (1 and 3 swapped)","outputRaw":"[3,1,null,null,2] (recovered)"},{"input":{"tree":[3,1,4,null,null,2]},"output":[2,1,4,null,null,3],"inputRaw":"tree = [3,1,4,null,null,2] (2 and 3 swapped)","outputRaw":"[2,1,4,null,null,3] (recovered)"}]}
+</div>
+
 # Recover Binary Search Tree
 
 **Difficulty:** Medium

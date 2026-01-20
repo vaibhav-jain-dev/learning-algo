@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reconstruct BST","algorithm":"bst-reconstruction","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"preorderTraversalValues":[10,4,2,1,5,17,19,18]},"output":[10,4,17,2,5,null,19,1,null,null,null,18],"inputRaw":"preorderTraversalValues = [10, 4, 2, 1, 5, 17, 19, 18]","outputRaw":"BST with root 10"},{"input":{"preorderTraversalValues":[5,3,1,4,7,6,8]},"output":[5,3,7,1,4,6,8],"inputRaw":"preorderTraversalValues = [5, 3, 1, 4, 7, 6, 8]","outputRaw":"BST with root 5"}]}
+</div>
+
 # Reconstruct BST
 
 **Difficulty:** Medium (Blue)

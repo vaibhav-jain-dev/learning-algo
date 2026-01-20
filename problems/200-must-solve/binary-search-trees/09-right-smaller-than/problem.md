@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Right Smaller Than","algorithm":"bst-augmented","complexity":{"time":"O(n log n) average, O(n^2) worst","space":"O(n)"},"examples":[{"input":{"array":[8,5,11,-1,3,4,2]},"output":[5,4,4,0,1,1,0],"inputRaw":"array = [8, 5, 11, -1, 3, 4, 2]","outputRaw":"[5, 4, 4, 0, 1, 1, 0]"},{"input":{"array":[1,2,3,4,5]},"output":[0,0,0,0,0],"inputRaw":"array = [1, 2, 3, 4, 5]","outputRaw":"[0, 0, 0, 0, 0] (sorted ascending, no smaller elements to right)"}]}
+</div>
+
 # Right Smaller Than
 
 **Difficulty:** Very Hard (Purple)

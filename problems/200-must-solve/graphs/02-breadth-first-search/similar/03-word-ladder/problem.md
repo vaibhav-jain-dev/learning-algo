@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Word Ladder","algorithm":"graph-bfs","complexity":{"time":"O(M^2 * N)","space":"O(M^2 * N)"},"examples":[{"input":{"beginWord":"hit","endWord":"cog","wordList":["hot","dot","dog","lot","log","cog"]},"output":5,"inputRaw":"hit -> cog","outputRaw":"5"},{"input":{"beginWord":"hit","endWord":"cog","wordList":["hot","dot","dog","lot","log"]},"output":0,"inputRaw":"hit -> cog (cog not in list)","outputRaw":"0"}]}
+</div>
+
 # Word Ladder
 
 **Difficulty:** Hard

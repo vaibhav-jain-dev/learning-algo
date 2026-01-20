@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Sum BSTs","algorithm":"bst-sum","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":[1,4,3,2,4,null,5,null,null,null,null,4,6]},"output":49,"inputRaw":"tree = [1,4,3,2,4,null,5,null,null,null,null,4,6]","outputRaw":"49 (sum of all BST subtree sums)"},{"input":{"tree":[5,4,8,3,null,6,3]},"output":7,"inputRaw":"tree = [5,4,8,3,null,6,3]","outputRaw":"7 (largest BST subtree sum)"}]}
+</div>
+
 # Sum BSTs
 
 **Difficulty:** Hard (Red)

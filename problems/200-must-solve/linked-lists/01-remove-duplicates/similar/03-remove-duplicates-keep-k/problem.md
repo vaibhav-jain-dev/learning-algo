@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Duplicates Keeping At Most K Occurrences","algorithm":"ll-remove-duplicates","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,1,1,2,2,3],"k":2},"output":[1,1,2,2,3],"inputRaw":"1 -> 1 -> 1 -> 2 -> 2 -> 3, k = 2","outputRaw":"1 -> 1 -> 2 -> 2 -> 3"},{"input":{"list":[1,1,1,1,2,2,2],"k":1},"output":[1,2],"inputRaw":"1 -> 1 -> 1 -> 1 -> 2 -> 2 -> 2, k = 1","outputRaw":"1 -> 2"},{"input":{"list":[1,2,3,3,3,3,4],"k":3},"output":[1,2,3,3,3,4],"inputRaw":"1 -> 2 -> 3 -> 3 -> 3 -> 3 -> 4, k = 3","outputRaw":"1 -> 2 -> 3 -> 3 -> 3 -> 4"}]}
+</div>
+
 # Remove Duplicates Keeping At Most K Occurrences
 
 **Difficulty:** Hard

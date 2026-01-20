@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Lowest Common Ancestor of a Binary Tree","algorithm":"graph-ancestor","complexity":{"time":"O(N)","space":"O(H)"},"examples":[{"input":{"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":1},"output":3,"inputRaw":"root=[3,5,1,6,2,0,8,null,null,7,4], p=5, q=1","outputRaw":"3"},{"input":{"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":4},"output":5,"inputRaw":"root=[3,5,1,6,2,0,8,null,null,7,4], p=5, q=4","outputRaw":"5"}]}
+</div>
+
 # Lowest Common Ancestor of a Binary Tree
 
 **Difficulty:** Medium

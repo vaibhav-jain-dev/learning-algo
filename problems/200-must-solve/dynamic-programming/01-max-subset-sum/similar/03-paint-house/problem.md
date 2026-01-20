@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Paint House","algorithm":"dp-max-subset","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"costs":[[17,2,17],[16,16,5],[14,3,19]]},"output":10,"inputRaw":"costs = [[17,2,17],[16,16,5],[14,3,19]]","outputRaw":"10"},{"input":{"costs":[[7,6,2]]},"output":2,"inputRaw":"costs = [[7,6,2]]","outputRaw":"2"}]}
+</div>
+
 # Paint House
 
 **Difficulty:** Medium

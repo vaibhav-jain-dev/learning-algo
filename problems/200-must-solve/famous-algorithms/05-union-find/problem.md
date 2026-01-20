@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Disjoint Set Union","algorithm":"union-find","complexity":{"time":"O(alpha(n))","space":"O(n)"},"examples":[{"input":{"n":5,"operations":["union(0,1)","union(2,3)","union(1,3)","find(0)==find(3)?","find(0)==find(4)?"]},"output":{"disjointSets":2,"find03":true,"find04":false},"inputRaw":"n = 5, union(0,1), union(2,3), union(1,3)","outputRaw":"2 disjoint sets: {0,1,2,3} and {4}"}]}
+</div>
+
 # Union-Find (Disjoint Set Union)
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Surrounded Regions","algorithm":"graph-flood-fill","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"board":[["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]},"output":[["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]],"inputRaw":"4x4 board with O's","outputRaw":"Board with surrounded O's captured"}]}
+</div>
+
 # Surrounded Regions
 
 **Difficulty:** Medium

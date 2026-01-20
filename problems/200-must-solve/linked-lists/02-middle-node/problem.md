@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Middle Node of Linked List","algorithm":"ll-middle","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,4,5]},"output":3,"inputRaw":"1 -> 2 -> 3 -> 4 -> 5","outputRaw":"Node with value 3"},{"input":{"list":[1,2,3,4,5,6]},"output":4,"inputRaw":"1 -> 2 -> 3 -> 4 -> 5 -> 6","outputRaw":"Node with value 4"},{"input":{"list":[1]},"output":1,"inputRaw":"1","outputRaw":"Node with value 1"}]}
+</div>
+
 # Middle Node of Linked List
 
 **Difficulty:** Easy (Green)

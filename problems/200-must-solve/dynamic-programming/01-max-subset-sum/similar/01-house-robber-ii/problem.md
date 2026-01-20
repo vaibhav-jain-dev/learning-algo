@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"House Robber II","algorithm":"dp-max-subset","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"nums":[2,3,2]},"output":3,"inputRaw":"nums = [2, 3, 2]","outputRaw":"3"},{"input":{"nums":[1,2,3,1]},"output":4,"inputRaw":"nums = [1, 2, 3, 1]","outputRaw":"4"},{"input":{"nums":[1,2,3]},"output":3,"inputRaw":"nums = [1, 2, 3]","outputRaw":"3"}]}
+</div>
+
 # House Robber II (Circular Array)
 
 **Difficulty:** Medium

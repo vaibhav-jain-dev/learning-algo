@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Lowest Common Manager","algorithm":"recursion-manager","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"topManager":"A","employee1":"E","employee2":"G"},"output":"A","inputRaw":"topManager = A, employee1 = E, employee2 = G","outputRaw":"A"}]}
+</div>
+
 # Lowest Common Manager
 
 **Difficulty:** Hard

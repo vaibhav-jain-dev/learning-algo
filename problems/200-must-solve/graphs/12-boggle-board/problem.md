@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Boggle Board","algorithm":"graph-word-search","complexity":{"time":"O(N * M * 8^L + W * L)","space":"O(W * L + N * M)"},"examples":[{"input":{"board":[["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]],"words":["this","two","fat","that"]},"output":["this","two","fat","that"],"inputRaw":"4x4 board, 4 words","outputRaw":"[\"this\", \"two\", \"fat\", \"that\"]"},{"input":{"board":[["a","b"],["c","d"]],"words":["abcd","abdc","abca"]},"output":["abcd","abdc"],"inputRaw":"2x2 board, 3 words","outputRaw":"[\"abcd\", \"abdc\"]"}]}
+</div>
+
 # Boggle Board
 
 **Difficulty:** Hard (Red)

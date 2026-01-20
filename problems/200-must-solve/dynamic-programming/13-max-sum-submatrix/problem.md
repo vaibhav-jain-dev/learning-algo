@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Sum Submatrix","algorithm":"dp-matrix","complexity":{"time":"O(rows * cols)","space":"O(rows * cols)"},"examples":[{"input":{"matrix":[[5,3,-1,5],[-7,3,7,4],[12,8,0,0],[1,-8,-8,2]],"size":2},"output":18,"inputRaw":"matrix = [[5, 3, -1, 5], [-7, 3, 7, 4], [12, 8, 0, 0], [1, -8, -8, 2]], size = 2","outputRaw":"18"},{"input":{"matrix":[[1,2],[3,4]],"size":1},"output":4,"inputRaw":"matrix = [[1, 2], [3, 4]], size = 1","outputRaw":"4"},{"input":{"matrix":[[1,2,3],[4,5,6],[7,8,9]],"size":2},"output":28,"inputRaw":"matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]], size = 2","outputRaw":"28"}]}
+</div>
+
 # Maximum Sum Submatrix
 
 **Difficulty:** Very Hard (Black)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Iterative In-Order Traversal","algorithm":"tree-iterative","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"tree":{"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}}},"output":[1,2,3,4,5,6,7],"inputRaw":"tree = {4,2,6,1,3,5,7}","outputRaw":"[1, 2, 3, 4, 5, 6, 7]"},{"input":{"tree":{"value":1,"right":{"value":2,"left":{"value":3}}}},"output":[1,3,2],"inputRaw":"tree = {1,#,2,3}","outputRaw":"[1, 3, 2]"}]}
+</div>
+
 # Iterative In-Order Traversal (Morris Traversal)
 
 **Difficulty:** Very Hard (Black)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Rotting Oranges","algorithm":"graph-min-passes","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid":[[2,1,1],[1,1,0],[0,1,1]]},"output":4,"inputRaw":"grid = [[2,1,1],[1,1,0],[0,1,1]]","outputRaw":"4"}]}
+</div>
+
 # Rotting Oranges
 
 **Difficulty:** Medium

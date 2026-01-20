@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Walls and Gates","algorithm":"graph-min-passes","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"rooms":[[2147483647,-1,0,2147483647],[2147483647,2147483647,2147483647,-1],[2147483647,-1,2147483647,-1],[0,-1,2147483647,2147483647]]},"output":[[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]],"inputRaw":"4x4 grid with INF, -1, and 0","outputRaw":"Grid with distances filled"}]}
+</div>
+
 # Walls and Gates
 
 **Difficulty:** Medium

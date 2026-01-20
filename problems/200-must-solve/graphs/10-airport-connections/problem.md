@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Airport Connections","algorithm":"graph-connections","complexity":{"time":"O(A * (A + R))","space":"O(A + R)"},"examples":[{"input":{"airports":["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"],"routes":[["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]],"startingAirport":"LGA"},"output":3,"inputRaw":"18 airports, 19 routes, starting from LGA","outputRaw":"3"}]}
+</div>
+
 # Airport Connections
 
 **Difficulty:** Very Hard (Red)

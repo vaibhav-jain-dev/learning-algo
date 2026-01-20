@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Palindrome Partitioning Min Cuts","algorithm":"dp-palindrome","complexity":{"time":"O(n^2)","space":"O(n^2)"},"examples":[{"input":{"string":"noonabbad"},"output":2,"inputRaw":"string = \"noonabbad\"","outputRaw":"2"},{"input":{"string":"aab"},"output":1,"inputRaw":"string = \"aab\"","outputRaw":"1"},{"input":{"string":"aba"},"output":0,"inputRaw":"string = \"aba\"","outputRaw":"0"},{"input":{"string":"abcde"},"output":4,"inputRaw":"string = \"abcde\"","outputRaw":"4"}]}
+</div>
+
 # Palindrome Partitioning Min Cuts
 
 **Difficulty:** Very Hard (Black)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Longest String Chain","algorithm":"dp-string-chain","complexity":{"time":"O(n * L^2)","space":"O(n * L)"},"examples":[{"input":{"words":["a","b","ba","bca","bda","bdca"]},"output":4,"inputRaw":"words = [\"a\", \"b\", \"ba\", \"bca\", \"bda\", \"bdca\"]","outputRaw":"4"},{"input":{"words":["xbc","pcxbcf","xb","cxbc","pcxbc"]},"output":5,"inputRaw":"words = [\"xbc\", \"pcxbcf\", \"xb\", \"cxbc\", \"pcxbc\"]","outputRaw":"5"},{"input":{"words":["abcd","dbqca"]},"output":1,"inputRaw":"words = [\"abcd\", \"dbqca\"]","outputRaw":"1"}]}
+</div>
+
 # Longest String Chain
 
 **Difficulty:** Hard (Red)

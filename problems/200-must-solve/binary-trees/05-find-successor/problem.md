@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Successor","algorithm":"tree-successor","complexity":{"time":"O(h)","space":"O(1)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}},"target":5},"output":1,"inputRaw":"tree = {1,2,3,4,5,#,#,6}, target = 5","outputRaw":"1"}]}
+</div>
+
 # Find Successor
 
 **Difficulty:** Medium (Yellow)

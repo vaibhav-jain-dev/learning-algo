@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Flatten Nested List","algorithm":"recursion-product-sum","complexity":{"time":"O(n)","space":"O(d)"},"examples":[{"input":{"array":[[1,2],[3,[4,5]],6]},"output":[1,2,3,4,5,6],"inputRaw":"[[1, 2], [3, [4, 5]], 6]","outputRaw":"[1, 2, 3, 4, 5, 6]"}]}
+</div>
+
 # Flatten Nested List
 
 **Difficulty:** Medium

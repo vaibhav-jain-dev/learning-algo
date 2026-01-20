@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Course Schedule","algorithm":"topological-sort","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"numCourses":2,"prerequisites":[[1,0]]},"output":true,"inputRaw":"numCourses = 2, prerequisites = [[1,0]]","outputRaw":"true"},{"input":{"numCourses":2,"prerequisites":[[1,0],[0,1]]},"output":false,"inputRaw":"numCourses = 2, prerequisites = [[1,0],[0,1]]","outputRaw":"false"}]}
+</div>
+
 # Course Schedule
 
 **Difficulty:** Medium

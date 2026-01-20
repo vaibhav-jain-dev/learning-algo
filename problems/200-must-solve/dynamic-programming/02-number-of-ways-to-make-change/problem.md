@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Ways to Make Change","algorithm":"dp-coin-change","complexity":{"time":"O(n * d)","space":"O(n)"},"examples":[{"input":{"n":6,"denoms":[1,5]},"output":2,"inputRaw":"n = 6, denoms = [1, 5]","outputRaw":"2"},{"input":{"n":10,"denoms":[1,5,10,25]},"output":4,"inputRaw":"n = 10, denoms = [1, 5, 10, 25]","outputRaw":"4"},{"input":{"n":0,"denoms":[1,2]},"output":1,"inputRaw":"n = 0, denoms = [1, 2]","outputRaw":"1"}]}
+</div>
+
 # Number of Ways to Make Change
 
 **Difficulty:** Medium (Blue)

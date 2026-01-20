@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Same BSTs","algorithm":"bst-comparison","complexity":{"time":"O(n^2)","space":"O(n^2) for subarrays, or O(d) with index approach"},"examples":[{"input":{"arrayOne":[10,15,8,12,94,81,5,2,11],"arrayTwo":[10,8,5,15,2,12,11,94,81]},"output":true,"inputRaw":"arrayOne = [10,15,8,12,94,81,5,2,11], arrayTwo = [10,8,5,15,2,12,11,94,81]","outputRaw":"true (both produce same BST)"},{"input":{"arrayOne":[10,15,8,12,94,81,5,2,11],"arrayTwo":[10,8,5,15,2,12,94,81,11]},"output":false,"inputRaw":"arrayOne = [10,15,8,12,94,81,5,2,11], arrayTwo = [10,8,5,15,2,12,94,81,11]","outputRaw":"false (different BST structure)"}]}
+</div>
+
 # Same BSTs
 
 **Difficulty:** Hard (Red)

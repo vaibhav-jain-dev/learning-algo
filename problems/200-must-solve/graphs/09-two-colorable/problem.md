@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Two-Colorable","algorithm":"graph-coloring","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"edges":[[1,2],[0,2],[0,1]]},"output":false,"inputRaw":"Triangle graph (3 nodes)","outputRaw":"false"},{"input":{"edges":[[1,3],[0,2],[1,3],[0,2]]},"output":true,"inputRaw":"Square graph (4 nodes)","outputRaw":"true"}]}
+</div>
+
 # Two-Colorable (Bipartite Graph Check)
 
 **Difficulty:** Medium (Yellow)

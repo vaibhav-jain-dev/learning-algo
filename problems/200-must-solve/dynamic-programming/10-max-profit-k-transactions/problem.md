@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Max Profit With K Transactions","algorithm":"dp-transactions","complexity":{"time":"O(n * k)","space":"O(n * k)"},"examples":[{"input":{"prices":[5,11,3,50,60,90],"k":2},"output":93,"inputRaw":"prices = [5, 11, 3, 50, 60, 90], k = 2","outputRaw":"93"},{"input":{"prices":[3,2,5,7,1,3],"k":1},"output":5,"inputRaw":"prices = [3, 2, 5, 7, 1, 3], k = 1","outputRaw":"5"},{"input":{"prices":[1,2,3,4,5],"k":2},"output":4,"inputRaw":"prices = [1, 2, 3, 4, 5], k = 2","outputRaw":"4"}]}
+</div>
+
 # Max Profit With K Transactions
 
 **Difficulty:** Very Hard (Black)

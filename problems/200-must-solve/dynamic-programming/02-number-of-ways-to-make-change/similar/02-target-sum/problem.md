@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Target Sum","algorithm":"dp-coin-change","complexity":{"time":"O(n * sum)","space":"O(sum)"},"examples":[{"input":{"nums":[1,1,1,1,1],"target":3},"output":5,"inputRaw":"nums = [1, 1, 1, 1, 1], target = 3","outputRaw":"5"},{"input":{"nums":[1],"target":1},"output":1,"inputRaw":"nums = [1], target = 1","outputRaw":"1"}]}
+</div>
+
 # Target Sum
 
 **Difficulty:** Medium

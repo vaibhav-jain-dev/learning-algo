@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Reverse Alternating K Nodes","algorithm":"ll-reverse","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[1,2,3,4,5,6,7,8],"k":2},"output":[2,1,3,4,6,5,7,8],"inputRaw":"[1,2,3,4,5,6,7,8], k = 2","outputRaw":"[2,1,3,4,6,5,7,8]"},{"input":{"list":[1,2,3,4,5,6,7,8,9,10],"k":3},"output":[3,2,1,4,5,6,9,8,7,10],"inputRaw":"[1,2,3,4,5,6,7,8,9,10], k = 3","outputRaw":"[3,2,1,4,5,6,9,8,7,10]"},{"input":{"list":[1,2,3,4,5],"k":3},"output":[3,2,1,4,5],"inputRaw":"[1,2,3,4,5], k = 3","outputRaw":"[3,2,1,4,5]"}]}
+</div>
+
 # Reverse Alternating K Nodes
 
 **Difficulty:** Hard

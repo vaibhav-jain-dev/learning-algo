@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Minimum Spanning Tree (Prim's)","algorithm":"prims-algorithm","complexity":{"time":"O((V + E) log V)","space":"O(V + E)"},"examples":[{"input":{"V":5,"edges":[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]]},"output":{"mstWeight":16,"mstEdges":[[0,1,2],[1,2,3],[1,4,5],[0,3,6]]},"inputRaw":"V = 5, Edges: [(0,1,2), (0,3,6), (1,2,3), (1,3,8), (1,4,5), (2,4,7), (3,4,9)]","outputRaw":"MST weight: 16, MST edges: [(0,1,2), (1,2,3), (1,4,5), (0,3,6)]"}]}
+</div>
+
 # Prim's Algorithm - Minimum Spanning Tree (Alternative)
 
 **Difficulty:** Medium

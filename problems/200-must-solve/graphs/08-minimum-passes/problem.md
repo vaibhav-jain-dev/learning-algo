@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Minimum Passes of Matrix","algorithm":"graph-min-passes","complexity":{"time":"O(N * M)","space":"O(N * M)"},"examples":[{"input":{"matrix":[[0,-1,-3,2,0],[1,-2,-5,-1,-3],[3,0,0,-4,-1]]},"output":3,"inputRaw":"3x5 matrix with negatives","outputRaw":"3"},{"input":{"matrix":[[1,0,0,-2,-3],[-4,-5,-6,-2,-1],[0,0,0,0,-1],[1,2,3,0,-2]]},"output":-1,"inputRaw":"4x5 matrix with unreachable negatives","outputRaw":"-1"}]}
+</div>
+
 # Minimum Passes of Matrix
 
 **Difficulty:** Medium (Yellow)

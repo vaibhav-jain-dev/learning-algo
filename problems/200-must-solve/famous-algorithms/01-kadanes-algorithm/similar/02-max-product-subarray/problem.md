@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Maximum Product Subarray","algorithm":"kadanes-algorithm","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"nums":[2,3,-2,4]},"output":6,"inputRaw":"nums = [2, 3, -2, 4]","outputRaw":"6"},{"input":{"nums":[-2,0,-1]},"output":0,"inputRaw":"nums = [-2, 0, -1]","outputRaw":"0"}]}
+</div>
+
 # Maximum Product Subarray
 
 **Difficulty:** Medium

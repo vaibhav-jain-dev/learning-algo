@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Sum Root to Leaf Numbers","algorithm":"tree-dfs","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2},"right":{"value":3}}},"output":25,"inputRaw":"tree = {1,2,3}","outputRaw":"25 (12 + 13 = 25)"},{"input":{"tree":{"value":4,"left":{"value":9,"left":{"value":5},"right":{"value":1}},"right":{"value":0}}},"output":1026,"inputRaw":"tree = {4,9,0,5,1}","outputRaw":"1026 (495 + 491 + 40 = 1026)"}]}
+</div>
+
 # Sum Root to Leaf Numbers
 
 **Difficulty:** Medium

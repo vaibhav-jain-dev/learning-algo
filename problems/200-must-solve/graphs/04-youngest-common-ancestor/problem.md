@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Youngest Common Ancestor","algorithm":"graph-ancestor","complexity":{"time":"O(D)","space":"O(1)"},"examples":[{"input":{"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"E","descendant2":"I"},"output":"B","inputRaw":"topAncestor=A, descendant1=E, descendant2=I","outputRaw":"B"},{"input":{"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"H","descendant2":"G"},"output":"A","inputRaw":"topAncestor=A, descendant1=H, descendant2=G","outputRaw":"A"}]}
+</div>
+
 # Youngest Common Ancestor
 
 **Difficulty:** Medium (Yellow)

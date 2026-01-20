@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Network Delay via MST","algorithm":"prims-algorithm","complexity":{"time":"O(E log V)","space":"O(V + E)"},"examples":[{"input":{"n":4,"connections":[[0,1,1],[0,2,2],[1,2,3],[1,3,4],[2,3,5]]},"output":{"mstCost":7,"maxDepth":2},"inputRaw":"n = 4, connections = [[0,1,1],[0,2,2],[1,2,3],[1,3,4],[2,3,5]]","outputRaw":"MST cost = 7, Max depth = 2"}]}
+</div>
+
 # Network Delay via MST
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Perfect Squares","algorithm":"dp-coin-change","complexity":{"time":"O(n * sqrt(n))","space":"O(n)"},"examples":[{"input":{"n":12},"output":3,"inputRaw":"n = 12","outputRaw":"3"},{"input":{"n":13},"output":2,"inputRaw":"n = 13","outputRaw":"2"}]}
+</div>
+
 # Perfect Squares
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Detect Arbitrage","algorithm":"graph-arbitrage","complexity":{"time":"O(N^3)","space":"O(N^2)"},"examples":[{"input":{"exchangeRates":[[1.0,0.8631,0.5903],[1.1586,1.0,0.6849],[1.6939,1.46,1.0]]},"output":true,"inputRaw":"3x3 exchange rates (USD, EUR, GBP)","outputRaw":"true"},{"input":{"exchangeRates":[[1.0,0.5,0.25],[2.0,1.0,0.5],[4.0,2.0,1.0]]},"output":false,"inputRaw":"3x3 consistent exchange rates","outputRaw":"false"}]}
+</div>
+
 # Detect Arbitrage
 
 **Difficulty:** Very Hard (Red)

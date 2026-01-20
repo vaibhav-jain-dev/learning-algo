@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Longest Common Subsequence","algorithm":"dp-lcs","complexity":{"time":"O(m * n)","space":"O(m * n)"},"examples":[{"input":{"str1":"ZXVVYZW","str2":"XKYKZPW"},"output":["X","Y","Z","W"],"inputRaw":"str1 = \"ZXVVYZW\", str2 = \"XKYKZPW\"","outputRaw":"[\"X\", \"Y\", \"Z\", \"W\"] (length 4)"},{"input":{"str1":"ABCDGH","str2":"AEDFHR"},"output":["A","D","H"],"inputRaw":"str1 = \"ABCDGH\", str2 = \"AEDFHR\"","outputRaw":"[\"A\", \"D\", \"H\"] (length 3)"},{"input":{"str1":"ABC","str2":"DEF"},"output":[],"inputRaw":"str1 = \"ABC\", str2 = \"DEF\"","outputRaw":"[] (length 0)"}]}
+</div>
+
 # Longest Common Subsequence
 
 **Difficulty:** Medium (Blue)

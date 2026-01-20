@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Nodes Distance K","algorithm":"tree-distance","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"target":5,"k":2},"output":[1,4],"inputRaw":"tree = {1,2,3,4,5,#,6,#,#,7,8}, target = 5, k = 2","outputRaw":"[1, 4]"},{"input":{"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":1,"k":1},"output":[2,3],"inputRaw":"tree = {1,2,3}, target = 1, k = 1","outputRaw":"[2, 3]"}]}
+</div>
+
 # Find Nodes Distance K
 
 **Difficulty:** Hard (Red)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Number of Islands","algorithm":"graph-dfs","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid":[["1","1","1","1","0"],["1","1","0","1","0"],["1","1","0","0","0"],["0","0","0","0","0"]]},"output":1,"inputRaw":"4x5 grid","outputRaw":"1"},{"input":{"grid":[["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]},"output":3,"inputRaw":"4x5 grid with 3 islands","outputRaw":"3"}]}
+</div>
+
 # Number of Islands
 
 **Difficulty:** Medium

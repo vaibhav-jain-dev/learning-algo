@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Kth Ancestor of a Tree Node","algorithm":"graph-ancestor","complexity":{"time":"O(N log N) preprocessing, O(log K) query","space":"O(N log N)"},"examples":[{"input":{"n":7,"parent":[-1,0,0,1,1,2,2],"queries":[[3,1],[5,2],[6,3]]},"output":[1,0,-1],"inputRaw":"n=7, parent=[-1,0,0,1,1,2,2]","outputRaw":"[1, 0, -1]"}]}
+</div>
+
 # Kth Ancestor of a Tree Node
 
 **Difficulty:** Hard

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Making A Large Island","algorithm":"graph-largest-island","complexity":{"time":"O(N^2)","space":"O(N^2)"},"examples":[{"input":{"grid":[[1,0],[0,1]]},"output":3,"inputRaw":"[[1,0],[0,1]]","outputRaw":"3"},{"input":{"grid":[[1,1],[1,0]]},"output":4,"inputRaw":"[[1,1],[1,0]]","outputRaw":"4"},{"input":{"grid":[[1,1],[1,1]]},"output":4,"inputRaw":"[[1,1],[1,1]]","outputRaw":"4"}]}
+</div>
+
 # Making A Large Island
 
 **Difficulty:** Hard

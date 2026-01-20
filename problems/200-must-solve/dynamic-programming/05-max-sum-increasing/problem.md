@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Max Sum Increasing Subsequence","algorithm":"dp-increasing-subseq","complexity":{"time":"O(n^2)","space":"O(n)"},"examples":[{"input":{"array":[10,70,20,30,50,11,30]},"output":[110,[0,2,3,4]],"inputRaw":"array = [10, 70, 20, 30, 50, 11, 30]","outputRaw":"[110, [0, 2, 3, 4]]"},{"input":{"array":[8,12,2,3,15,5,7]},"output":[35,[0,1,4]],"inputRaw":"array = [8, 12, 2, 3, 15, 5, 7]","outputRaw":"[35, [0, 1, 4]]"},{"input":{"array":[1,2,3,4,5]},"output":[15,[0,1,2,3,4]],"inputRaw":"array = [1, 2, 3, 4, 5]","outputRaw":"[15, [0, 1, 2, 3, 4]]"}]}
+</div>
+
 # Max Sum Increasing Subsequence
 
 **Difficulty:** Hard (Red)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Staircase Traversal","algorithm":"recursion-staircase","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"height":4,"maxSteps":2},"output":5,"inputRaw":"height = 4, maxSteps = 2","outputRaw":"5"}]}
+</div>
+
 # Staircase Traversal
 
 **Difficulty:** Medium

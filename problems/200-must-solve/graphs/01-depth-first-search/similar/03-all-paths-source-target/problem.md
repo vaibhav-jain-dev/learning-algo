@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"All Paths From Source to Target","algorithm":"graph-dfs","complexity":{"time":"O(2^N * N)","space":"O(N)"},"examples":[{"input":{"graph":[[1,2],[3],[3],[]]},"output":[[0,1,3],[0,2,3]],"inputRaw":"graph = [[1,2],[3],[3],[]]","outputRaw":"[[0,1,3],[0,2,3]]"},{"input":{"graph":[[4,3,1],[3,2,4],[3],[4],[]]},"output":[[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]],"inputRaw":"graph = [[4,3,1],[3,2,4],[3],[4],[]]","outputRaw":"[[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]"}]}
+</div>
+
 # All Paths From Source to Target
 
 **Difficulty:** Medium

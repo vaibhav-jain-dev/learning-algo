@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Clone Graph","algorithm":"ll-construction","complexity":{"time":"O(N+E)","space":"O(N)"},"examples":[{"input":{"adjList":[[2,4],[1,3],[2,4],[1,3]]},"output":[[2,4],[1,3],[2,4],[1,3]],"inputRaw":"[[2,4],[1,3],[2,4],[1,3]]","outputRaw":"[[2,4],[1,3],[2,4],[1,3]]"},{"input":{"adjList":[[]]},"output":[[]],"inputRaw":"[[]]","outputRaw":"[[]]"},{"input":{"adjList":[]},"output":[],"inputRaw":"[]","outputRaw":"[]"}]}
+</div>
+
 # Clone Graph (Using Linked Node Traversal)
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Permutations with Duplicates","algorithm":"recursion-permutations","complexity":{"time":"O(n! * n)","space":"O(n)"},"examples":[{"input":{"nums":[1,1,2]},"output":[[1,1,2],[1,2,1],[2,1,1]],"inputRaw":"nums = [1, 1, 2]","outputRaw":"[[1, 1, 2], [1, 2, 1], [2, 1, 1]]"}]}
+</div>
+
 # Permutations with Duplicates
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Max Area of Island","algorithm":"graph-flood-fill","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid":[[0,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,1,1,0,1,0,0,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1,0,0],[0,1,0,0,1,1,0,0,1,1,1,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,0,0,0,0,0,0,1,1,0,0,0,0]]},"output":6,"inputRaw":"8x13 grid","outputRaw":"6"},{"input":{"grid":[[0,0,0,0,0,0,0,0]]},"output":0,"inputRaw":"1x8 grid all zeros","outputRaw":"0"}]}
+</div>
+
 # Max Area of Island
 
 **Difficulty:** Medium

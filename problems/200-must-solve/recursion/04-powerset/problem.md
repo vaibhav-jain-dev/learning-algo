@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Powerset","algorithm":"recursion-powerset","complexity":{"time":"O(n * 2^n)","space":"O(n)"},"examples":[{"input":{"array":[1,2,3]},"output":[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]],"inputRaw":"[1, 2, 3]","outputRaw":"[[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]"}]}
+</div>
+
 # Powerset
 
 **Difficulty:** Medium

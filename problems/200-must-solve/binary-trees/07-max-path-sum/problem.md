@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Max Path Sum in Binary Tree","algorithm":"tree-max-path","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},"output":18,"inputRaw":"tree = {1,2,3,4,5,6,7}","outputRaw":"18"},{"input":{"tree":{"value":-10,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},"output":42,"inputRaw":"tree = {-10,9,20,#,#,15,7}","outputRaw":"42"}]}
+</div>
+
 # Max Path Sum in Binary Tree
 
 **Difficulty:** Hard (Red)

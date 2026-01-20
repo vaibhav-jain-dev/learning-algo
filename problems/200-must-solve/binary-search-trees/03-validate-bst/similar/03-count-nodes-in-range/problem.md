@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Count Nodes in Range","algorithm":"bst-range","complexity":{"time":"O(n) worst, O(log n + k) average","space":"O(h)"},"examples":[{"input":{"tree":[10,5,15,3,7,null,18],"low":7,"high":15},"output":{"count":3,"sum":32},"inputRaw":"tree = [10,5,15,3,7,null,18], low = 7, high = 15","outputRaw":"Count = 3, Sum = 32 (nodes 7, 10, 15)"},{"input":{"tree":[10,5,15,3,7,13,18,1,null,6],"low":6,"high":10},"output":{"count":3,"sum":23},"inputRaw":"tree = [10,5,15,3,7,13,18,1,null,6], low = 6, high = 10","outputRaw":"Count = 3, Sum = 23 (nodes 6, 7, 10)"}]}
+</div>
+
 # Count Nodes in Range (Range Sum BST Variant)
 
 **Difficulty:** Easy-Medium

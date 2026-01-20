@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Alien Dictionary","algorithm":"topological-sort","complexity":{"time":"O(C)","space":"O(1)"},"examples":[{"input":{"words":["wrt","wrf","er","ett","rftt"]},"output":"wertf","inputRaw":"words = [\"wrt\",\"wrf\",\"er\",\"ett\",\"rftt\"]","outputRaw":"\"wertf\""},{"input":{"words":["z","x"]},"output":"zx","inputRaw":"words = [\"z\",\"x\"]","outputRaw":"\"zx\""}]}
+</div>
+
 # Alien Dictionary
 
 **Difficulty:** Hard

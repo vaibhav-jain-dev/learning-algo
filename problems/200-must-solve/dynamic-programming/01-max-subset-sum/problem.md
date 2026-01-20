@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Max Subset Sum No Adjacent","algorithm":"dp-max-subset","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[75,105,120,75,90,135]},"output":330,"inputRaw":"array = [75, 105, 120, 75, 90, 135]","outputRaw":"330 (75 + 120 + 135)"},{"input":{"array":[7,10,12,7,9,14]},"output":33,"inputRaw":"array = [7, 10, 12, 7, 9, 14]","outputRaw":"33 (7 + 12 + 14)"}]}
+</div>
+
 # Max Subset Sum No Adjacent
 
 **Difficulty:** Medium (Blue)

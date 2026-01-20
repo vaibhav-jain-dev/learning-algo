@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Clone Graph","algorithm":"graph-dfs","complexity":{"time":"O(N + E)","space":"O(N)"},"examples":[{"input":{"adjList":[[2,4],[1,3],[2,4],[1,3]]},"output":[[2,4],[1,3],[2,4],[1,3]],"inputRaw":"4-node graph","outputRaw":"[[2,4],[1,3],[2,4],[1,3]]"},{"input":{"adjList":[[]]},"output":[[]],"inputRaw":"Single node","outputRaw":"[[]]"}]}
+</div>
+
 # Clone Graph
 
 **Difficulty:** Medium

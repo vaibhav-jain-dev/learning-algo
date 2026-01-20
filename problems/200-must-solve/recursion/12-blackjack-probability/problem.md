@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Blackjack Probability","algorithm":"recursion-probability","complexity":{"time":"O(target - startingHand)","space":"O(target - startingHand)"},"examples":[{"input":{"target":21,"startingHand":15},"output":0.45,"inputRaw":"target = 21, startingHand = 15","outputRaw":"0.4500 (approximately)"}]}
+</div>
+
 # Blackjack Probability
 
 **Difficulty:** Medium

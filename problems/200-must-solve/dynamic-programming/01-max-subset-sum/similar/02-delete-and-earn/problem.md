@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Delete and Earn","algorithm":"dp-max-subset","complexity":{"time":"O(n + max_val)","space":"O(max_val)"},"examples":[{"input":{"nums":[3,4,2]},"output":6,"inputRaw":"nums = [3, 4, 2]","outputRaw":"6"},{"input":{"nums":[2,2,3,3,3,4]},"output":9,"inputRaw":"nums = [2, 2, 3, 3, 3, 4]","outputRaw":"9"}]}
+</div>
+
 # Delete and Earn
 
 **Difficulty:** Medium

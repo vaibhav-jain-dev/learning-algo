@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Is Graph Bipartite","algorithm":"graph-coloring","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"graph":[[1,2,3],[0,2],[0,1,3],[0,2]]},"output":false,"inputRaw":"graph = [[1,2,3],[0,2],[0,1,3],[0,2]]","outputRaw":"false"},{"input":{"graph":[[1,3],[0,2],[1,3],[0,2]]},"output":true,"inputRaw":"graph = [[1,3],[0,2],[1,3],[0,2]]","outputRaw":"true"}]}
+</div>
+
 # Is Graph Bipartite?
 
 **Difficulty:** Medium

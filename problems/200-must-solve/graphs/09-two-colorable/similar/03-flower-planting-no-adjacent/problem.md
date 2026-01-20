@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Flower Planting With No Adjacent","algorithm":"graph-coloring","complexity":{"time":"O(V + E)","space":"O(V + E)"},"examples":[{"input":{"n":3,"paths":[[1,2],[2,3],[3,1]]},"output":[1,2,3],"inputRaw":"n=3, paths=[[1,2],[2,3],[3,1]]","outputRaw":"[1,2,3]"},{"input":{"n":4,"paths":[[1,2],[3,4]]},"output":[1,2,1,2],"inputRaw":"n=4, paths=[[1,2],[3,4]]","outputRaw":"[1,2,1,2]"}]}
+</div>
+
 # Flower Planting With No Adjacent
 
 **Difficulty:** Medium

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Combination Sum IV","algorithm":"dp-coin-change","complexity":{"time":"O(target * n)","space":"O(target)"},"examples":[{"input":{"nums":[1,2,3],"target":4},"output":7,"inputRaw":"nums = [1, 2, 3], target = 4","outputRaw":"7"},{"input":{"nums":[9],"target":3},"output":0,"inputRaw":"nums = [9], target = 3","outputRaw":"0"}]}
+</div>
+
 # Combination Sum IV
 
 **Difficulty:** Medium

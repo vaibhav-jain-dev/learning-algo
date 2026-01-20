@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Remove Islands","algorithm":"graph-flood-fill","complexity":{"time":"O(N * M)","space":"O(N * M)"},"examples":[{"input":{"matrix":[[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0],[1,1,0,0,1,0],[1,0,1,1,0,0],[1,0,0,0,0,1]]},"output":[[1,0,0,0,0,0],[0,0,0,1,1,1],[0,0,0,0,1,0],[1,1,0,0,1,0],[1,0,0,0,0,0],[1,0,0,0,0,1]],"inputRaw":"6x6 matrix with islands","outputRaw":"Matrix with islands removed"},{"input":{"matrix":[[1,1,1],[1,0,1],[1,1,1]]},"output":[[1,1,1],[1,0,1],[1,1,1]],"inputRaw":"3x3 matrix all border-connected","outputRaw":"Same matrix (no islands)"}]}
+</div>
+
 # Remove Islands
 
 **Difficulty:** Medium (Yellow)

@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Validate Three Nodes","algorithm":"bst-validation-nodes","complexity":{"time":"O(h)","space":"O(1)"},"examples":[{"input":{"tree":[5,2,7,1,4,6,8,0,null,3],"nodeOne":5,"nodeTwo":2,"nodeThree":3},"output":true,"inputRaw":"tree = [5,2,7,1,4,6,8,0,null,3], nodeOne = 5, nodeTwo = 2, nodeThree = 3","outputRaw":"true (5 is ancestor of 2, 3 is descendant of 2)"},{"input":{"tree":[5,2,7,1,4,6,8,0,null,3],"nodeOne":5,"nodeTwo":3,"nodeThree":2},"output":false,"inputRaw":"tree = [5,2,7,1,4,6,8,0,null,3], nodeOne = 5, nodeTwo = 3, nodeThree = 2","outputRaw":"false (2 is not a descendant of 3)"}]}
+</div>
+
 # Validate Three Nodes
 
 **Difficulty:** Hard (Red)

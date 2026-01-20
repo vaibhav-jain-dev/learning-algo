@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Find Eventual Safe States","algorithm":"graph-cycle","complexity":{"time":"O(V + E)","space":"O(V)"},"examples":[{"input":{"graph":[[1,2],[2,3],[5],[0],[5],[],[]]},"output":[2,4,5,6],"inputRaw":"graph = [[1,2],[2,3],[5],[0],[5],[],[]]","outputRaw":"[2,4,5,6]"},{"input":{"graph":[[1,2,3,4],[1,2],[3,4],[0,4],[]]},"output":[4],"inputRaw":"graph = [[1,2,3,4],[1,2],[3,4],[0,4],[]]","outputRaw":"[4]"}]}
+</div>
+
 # Find Eventual Safe States
 
 **Difficulty:** Medium

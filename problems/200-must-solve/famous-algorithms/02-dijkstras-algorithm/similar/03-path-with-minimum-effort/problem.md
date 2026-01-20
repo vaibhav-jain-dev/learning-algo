@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Path With Minimum Effort","algorithm":"dijkstras-algorithm","complexity":{"time":"O(M * N * log(M * N))","space":"O(M * N)"},"examples":[{"input":{"heights":[[1,2,2],[3,8,2],[5,3,5]]},"output":2,"inputRaw":"heights = [[1,2,2],[3,8,2],[5,3,5]]","outputRaw":"2"}]}
+</div>
+
 # Path With Minimum Effort
 
 **Difficulty:** Medium

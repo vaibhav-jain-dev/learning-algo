@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Next Permutation","algorithm":"recursion-permutations","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"nums":[1,2,3]},"output":[1,3,2],"inputRaw":"nums = [1, 2, 3]","outputRaw":"[1, 3, 2]"}]}
+</div>
+
 # Next Permutation
 
 **Difficulty:** Medium

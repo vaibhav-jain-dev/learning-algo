@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Count Sub Islands","algorithm":"graph-flood-fill","complexity":{"time":"O(M * N)","space":"O(M * N)"},"examples":[{"input":{"grid1":[[1,1,1,0,0],[0,1,1,1,1],[0,0,0,0,0],[1,0,0,0,0],[1,1,0,1,1]],"grid2":[[1,1,1,0,0],[0,0,1,1,1],[0,1,0,0,0],[1,0,1,1,0],[0,1,0,1,0]]},"output":3,"inputRaw":"Two 5x5 grids","outputRaw":"3"}]}
+</div>
+
 # Count Sub Islands
 
 **Difficulty:** Medium

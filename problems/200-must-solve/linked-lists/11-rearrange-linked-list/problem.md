@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Rearrange Linked List","algorithm":"ll-rearrange","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"list":[3,0,5,2,1,4],"k":3},"output":[0,2,1,3,5,4],"inputRaw":"3 -> 0 -> 5 -> 2 -> 1 -> 4, k = 3","outputRaw":"0 -> 2 -> 1 -> 3 -> 5 -> 4"},{"input":{"list":[1,4,3,2,5,2],"k":3},"output":[1,2,2,3,4,5],"inputRaw":"1 -> 4 -> 3 -> 2 -> 5 -> 2, k = 3","outputRaw":"1 -> 2 -> 2 -> 3 -> 4 -> 5"},{"input":{"list":[5,1,8,0,3],"k":3},"output":[1,0,3,5,8],"inputRaw":"5 -> 1 -> 8 -> 0 -> 3, k = 3","outputRaw":"1 -> 0 -> 3 -> 5 -> 8"}]}
+</div>
+
 # Rearrange Linked List
 
 **Difficulty:** Hard

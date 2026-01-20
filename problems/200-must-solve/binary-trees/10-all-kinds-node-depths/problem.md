@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"All Kinds of Node Depths","algorithm":"tree-dfs","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},"output":26,"inputRaw":"tree = {1,2,3,4,5,6,7,8,9}","outputRaw":"26"}]}
+</div>
+
 # All Kinds of Node Depths
 
 **Difficulty:** Hard (Red)

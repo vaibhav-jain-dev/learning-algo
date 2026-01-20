@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Network Delay Time","algorithm":"dijkstras-algorithm","complexity":{"time":"O((V + E) log V)","space":"O(V + E)"},"examples":[{"input":{"times":[[2,1,1],[2,3,1],[3,4,1]],"n":4,"k":2},"output":2,"inputRaw":"times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2","outputRaw":"2"}]}
+</div>
+
 # Network Delay Time
 
 **Difficulty:** Medium

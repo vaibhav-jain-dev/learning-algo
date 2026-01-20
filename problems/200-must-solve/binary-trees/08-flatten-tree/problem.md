@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Flatten Binary Tree","algorithm":"tree-flatten","complexity":{"time":"O(n)","space":"O(h)"},"examples":[{"input":{"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},"output":"4 <-> 2 <-> 5 <-> 1 <-> 6 <-> 3","inputRaw":"tree = {1,2,3,4,5,6}","outputRaw":"4 <-> 2 <-> 5 <-> 1 <-> 6 <-> 3"}]}
+</div>
+
 # Flatten Binary Tree
 
 **Difficulty:** Medium (Yellow)

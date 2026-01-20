@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"BST Construction","algorithm":"bst-construction","complexity":{"time":"O(log n) average, O(n) worst","space":"O(1)"},"examples":[{"input":{"tree":[10,5,15,2,5,null,22,1],"operations":["insert(12)","remove(10)","contains(15)"]},"output":[true,true,true],"inputRaw":"Initial tree with operations: insert(12), remove(10), contains(15)","outputRaw":"Modified tree, contains(15) = true"}]}
+</div>
+
 # BST Construction
 
 **Difficulty:** Medium (Blue)

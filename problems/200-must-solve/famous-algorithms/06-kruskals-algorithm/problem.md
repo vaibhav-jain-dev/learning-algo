@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Minimum Spanning Tree","algorithm":"kruskals-algorithm","complexity":{"time":"O(E log E)","space":"O(V)"},"examples":[{"input":{"V":4,"E":5,"edges":[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]},"output":{"mstEdges":[[2,3,4],[0,3,5],[0,1,10]],"totalWeight":19},"inputRaw":"V = 4, E = 5, Edges: [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]","outputRaw":"MST edges: [(2,3,4), (0,3,5), (0,1,10)], Total weight: 19"}]}
+</div>
+
 # Kruskal's Algorithm - Minimum Spanning Tree
 
 **Difficulty:** Medium

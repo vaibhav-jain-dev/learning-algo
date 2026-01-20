@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Linked List Construction","algorithm":"ll-construction","complexity":{"time":"O(1) for most operations","space":"O(1)"},"examples":[{"input":{"initialList":[1,2,3,4,5],"operations":["setHead(4)","setTail(6)","insertBefore(6,3)","insertAfter(6,3)","insertAtPosition(1,3)","removeNodesWithValue(3)","remove(2)","containsNodeWithValue(5)"]},"output":[4,1,5,6],"inputRaw":"Initial: 1 <-> 2 <-> 3 <-> 4 <-> 5","outputRaw":"4 <-> 1 <-> 5 <-> 6"}]}
+</div>
+
 # Linked List Construction
 
 **Difficulty:** Medium (Yellow)

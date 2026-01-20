@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Compare Leaf Traversal","algorithm":"tree-dfs","complexity":{"time":"O(n + m)","space":"O(h1 + h2)"},"examples":[{"input":{"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},"output":true,"inputRaw":"tree1 = {1,2,3,4,5,#,6,#,#,7,8}, tree2 = {1,2,3,4,7,8,#,#,#,#,5,#,#,#,6}","outputRaw":"true (both have leaf traversal [4, 7, 8, 6])"}]}
+</div>
+
 # Compare Leaf Traversal
 
 **Difficulty:** Medium (Yellow)

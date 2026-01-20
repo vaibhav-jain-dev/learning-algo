@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Climbing Stairs with K Steps","algorithm":"recursion-staircase","complexity":{"time":"O(n)","space":"O(k)"},"examples":[{"input":{"n":4,"k":2},"output":5,"inputRaw":"n = 4, k = 2","outputRaw":"5"}]}
+</div>
+
 # Climbing Stairs with K Steps
 
 **Difficulty:** Medium

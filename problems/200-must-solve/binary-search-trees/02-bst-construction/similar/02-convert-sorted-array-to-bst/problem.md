@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Convert Sorted Array to BST","algorithm":"bst-construction-balanced","complexity":{"time":"O(n)","space":"O(log n) recursion stack"},"examples":[{"input":{"nums":[-10,-3,0,5,9]},"output":[0,-3,9,-10,null,5],"inputRaw":"nums = [-10, -3, 0, 5, 9]","outputRaw":"Height-balanced BST with root 0"},{"input":{"nums":[1,2,3,4,5,6,7]},"output":[4,2,6,1,3,5,7],"inputRaw":"nums = [1, 2, 3, 4, 5, 6, 7]","outputRaw":"Balanced BST with root 4"}]}
+</div>
+
 # Convert Sorted Array to BST
 
 **Difficulty:** Medium

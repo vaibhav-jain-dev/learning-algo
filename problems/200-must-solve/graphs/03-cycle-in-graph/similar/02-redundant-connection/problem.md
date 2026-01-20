@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Redundant Connection","algorithm":"graph-cycle","complexity":{"time":"O(N * alpha(N))","space":"O(N)"},"examples":[{"input":{"edges":[[1,2],[1,3],[2,3]]},"output":[2,3],"inputRaw":"edges = [[1,2],[1,3],[2,3]]","outputRaw":"[2,3]"},{"input":{"edges":[[1,2],[2,3],[3,4],[1,4],[1,5]]},"output":[1,4],"inputRaw":"edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]","outputRaw":"[1,4]"}]}
+</div>
+
 # Redundant Connection
 
 **Difficulty:** Medium

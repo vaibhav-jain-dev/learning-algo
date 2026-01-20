@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Optimize Water Distribution in a Village","algorithm":"kruskals-algorithm","complexity":{"time":"O((n + E) log(n + E))","space":"O(n + E)"},"examples":[{"input":{"n":3,"wells":[1,2,2],"pipes":[[1,2,1],[2,3,1]]},"output":3,"inputRaw":"n = 3, wells = [1,2,2], pipes = [[1,2,1],[2,3,1]]","outputRaw":"3"}]}
+</div>
+
 # Optimize Water Distribution in a Village
 
 **Difficulty:** Hard

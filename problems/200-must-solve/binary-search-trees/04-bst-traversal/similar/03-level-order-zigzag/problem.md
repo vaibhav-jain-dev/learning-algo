@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Binary Tree Zigzag Level Order Traversal","algorithm":"bst-traversal","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"tree":[3,9,20,null,null,15,7]},"output":[[3],[20,9],[15,7]],"inputRaw":"tree = [3,9,20,null,null,15,7]","outputRaw":"[[3], [20, 9], [15, 7]]"},{"input":{"tree":[1,2,3,4,5,6,7]},"output":[[1],[3,2],[4,5,6,7]],"inputRaw":"tree = [1,2,3,4,5,6,7]","outputRaw":"[[1], [3, 2], [4, 5, 6, 7]]"}]}
+</div>
+
 # Binary Tree Zigzag Level Order Traversal
 
 **Difficulty:** Medium
