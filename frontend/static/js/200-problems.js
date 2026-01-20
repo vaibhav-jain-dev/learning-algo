@@ -147,6 +147,21 @@
             case 'cycle-detection':
             case 'graph-cycle':
             case 'graph-coloring':
+            case 'graph-flood-fill':
+            case 'graph-ancestor':
+            case 'graph-arbitrage':
+            case 'graph-min-passes':
+            case 'graph-boggle':
+            case 'graph-word-search':
+            case 'graph-largest-island':
+            case 'graph-single-cycle':
+            case 'bellman-ford':
+            case 'bellman-ford-dijkstra':
+            case 'floyd-cycle-detection':
+            case 'fast-slow-pointer':
+            case 'dijkstra-modified':
+            case 'minimum-spanning-tree':
+            case 'graph-connections':
                 return runGraphGeneric(example, config, complexity);
 
             // Linked List algorithms
@@ -159,6 +174,11 @@
             case 'll-remove':
             case 'll-middle':
             case 'll-construction':
+            case 'll-remove-kth':
+            case 'll-sum':
+            case 'll-shift':
+            case 'll-lru-cache':
+            case 'll-rearrange':
                 return runLinkedListGeneric(example, config, complexity);
 
             // Binary Tree algorithms
@@ -167,10 +187,25 @@
             case 'tree-bfs':
                 return runTreeBFS(example, config, complexity);
             case 'tree-balance':
+            case 'tree-balanced':
             case 'tree-invert':
             case 'tree-diameter':
             case 'tree-successor':
             case 'tree-flatten':
+            case 'tree-height-balanced':
+            case 'tree-symmetrical':
+            case 'tree-symmetry':
+            case 'tree-merge':
+            case 'tree-evaluate':
+            case 'tree-expression':
+            case 'tree-compare-leaves':
+            case 'tree-right-sibling':
+            case 'tree-sibling':
+            case 'tree-max-path':
+            case 'tree-distance-k':
+            case 'tree-distance':
+            case 'tree-inorder-iterative':
+            case 'tree-iterative':
                 return runTreeGeneric(example, config, complexity);
 
             // Recursion algorithms
@@ -181,6 +216,15 @@
             case 'recursion-sudoku':
             case 'recursion-backtrack':
             case 'recursion-divide':
+            case 'recursion-product-sum':
+            case 'recursion-phone':
+            case 'recursion-staircase':
+            case 'recursion-divtags':
+            case 'recursion-measurements':
+            case 'recursion-interweaving':
+            case 'recursion-count-bst':
+            case 'recursion-probability':
+            case 'recursion-manager':
                 return runRecursionGeneric(example, config, complexity);
             case 'recursion-minesweeper':
                 return runMinesweeperVisualization(example, config, complexity);
@@ -191,31 +235,59 @@
             case 'dp-lcs':
                 return runDPLCS(example, config, complexity);
             case 'dp-edit':
+            case 'dp-edit-distance':
             case 'dp-knapsack':
             case 'dp-max-sum':
+            case 'dp-max-subset':
             case 'dp-lis':
+            case 'dp-increasing-subseq':
             case 'dp-matrix':
+            case 'dp-disk-stacking':
+            case 'dp-pi-numbers':
+            case 'dp-transactions':
+            case 'dp-palindrome':
+            case 'dp-string-chain':
+            case 'dp-square-zeroes':
+            case 'dp-graph-traversal':
+            case 'dp-jumps':
                 return runDPGeneric(example, config, complexity);
 
             // BST algorithms
             case 'bst-search':
                 return runBSTSearch(example, config, complexity);
             case 'bst-construction':
+            case 'bst-construction-balanced':
             case 'bst-validate':
+            case 'bst-validation':
+            case 'bst-validation-nodes':
             case 'bst-traversal':
             case 'bst-min-height':
+            case 'bst-kth-largest':
+            case 'bst-reconstruction':
+            case 'bst-comparison':
+            case 'bst-augmented':
+            case 'bst-range':
+            case 'bst-iterator':
+            case 'bst-repair':
+            case 'bst-sum':
                 return runBSTGeneric(example, config, complexity);
 
             // Famous algorithms
             case 'dijkstra':
+            case 'dijkstras-algorithm':
             case 'kruskal':
             case 'kruskals-algorithm':
             case 'prim':
+            case 'prims-algorithm':
             case 'a-star':
+            case 'bfs-astar':
+            case 'a-star-bfs':
             case 'topological-sort':
             case 'union-find':
             case 'kadane':
+            case 'kadanes-algorithm':
             case 'kmp':
+            case 'kmp-algorithm':
                 return runFamousAlgorithm(example, config, complexity);
 
             case 'hash-expansion':
@@ -223,6 +295,8 @@
 
             case 'hash-pair-sum':
             case 'out-of-order-bounds':
+            case 'hash-set':
+            case 'sorting':
             default:
                 // Generic visualization for algorithms without specific runners
                 return runGenericVisualization(example, config, complexity);
@@ -1543,8 +1617,100 @@
     // Generic Graph Visualization
     function runGraphGeneric(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree || example.input.graph || example.input.matrix;
-        var adjList = example.input.edges; // Adjacency list format
+        var tree = example.input.tree || example.input.graph || example.input.root;
+        var grid = example.input.grid || example.input.matrix || example.input.board || example.input.rooms;
+        var adjList = example.input.edges || example.input.adjList; // Adjacency list format
+        var arr = example.input.array || example.input.nums; // Array format for cycle detection
+        var linkedList = example.input.head || example.input.list; // Linked list format
+
+        // Handle linked list format (e.g., floyd cycle detection on linked lists)
+        if (linkedList && Array.isArray(linkedList)) {
+            var nodes = linkedList.map(function(val, idx) {
+                return { value: val, next: idx < linkedList.length - 1 ? idx + 1 : null };
+            });
+
+            steps.push({
+                vizType: 'linked-list',
+                nodes: nodes,
+                current: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || linkedList.join(' → ')) + '<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show traversal
+            for (var i = 0; i < Math.min(nodes.length, 6); i++) {
+                steps.push({
+                    vizType: 'linked-list',
+                    nodes: nodes,
+                    current: i,
+                    status: 'Check node ' + linkedList[i],
+                    explanation: '🔍 <strong>Processing node ' + linkedList[i] + '</strong>'
+                });
+            }
+
+            steps.push({
+                vizType: 'linked-list',
+                nodes: nodes,
+                current: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
+
+        // Handle 2D grid format (e.g., Number of Islands, Flood Fill)
+        if (grid && Array.isArray(grid) && Array.isArray(grid[0])) {
+            var rows = grid.length;
+            var cols = grid[0].length;
+
+            steps.push({
+                vizType: 'matrix',
+                matrix: grid,
+                currentRow: -1,
+                currentCol: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Grid Size:</strong> ' + rows + ' x ' + cols + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || rows + 'x' + cols + ' grid') + '<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show traversal animation (visit some cells)
+            var maxCells = Math.min(rows * cols, 6);
+            for (var i = 0; i < maxCells; i++) {
+                var r = Math.floor(i / cols) % rows;
+                var c = i % cols;
+                var cellVal = grid[r] && grid[r][c] !== undefined ? grid[r][c] : '?';
+                steps.push({
+                    vizType: 'matrix',
+                    matrix: grid,
+                    currentRow: r,
+                    currentCol: c,
+                    status: 'Checking cell (' + r + ',' + c + ')',
+                    explanation: '🔍 <strong>Processing cell (' + r + ',' + c + ')</strong><br>Value: ' + cellVal
+                });
+            }
+
+            steps.push({
+                vizType: 'matrix',
+                matrix: example.output && Array.isArray(example.output) && Array.isArray(example.output[0]) ? example.output : grid,
+                currentRow: -1,
+                currentCol: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
 
         // Handle adjacency list format (e.g., edges = [[1,3],[2,3,4],[0],[],[2,5],[]])
         if (adjList && Array.isArray(adjList) && Array.isArray(adjList[0])) {
@@ -1662,6 +1828,40 @@
                 current: null,
                 status: 'Result: ' + JSON.stringify(example.output),
                 explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(example.output)
+            });
+        } else if (arr && Array.isArray(arr)) {
+            // Handle array format (e.g., single-cycle-check, find-duplicate)
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Input:</strong> [' + arr.join(', ') + ']<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show traversal animation
+            var maxSteps = Math.min(arr.length, 8);
+            for (var i = 0; i < maxSteps; i++) {
+                steps.push({
+                    vizType: 'array',
+                    array: arr,
+                    current: i,
+                    status: 'Index ' + i + ': ' + arr[i],
+                    explanation: '🔍 <strong>Processing index ' + i + '</strong><br>Value: ' + arr[i]
+                });
+            }
+
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
             });
         } else {
             return runGenericVisualization(example, config, complexity);
@@ -1803,7 +2003,7 @@
     // Generic Linked List Visualization
     function runLinkedListGeneric(example, config, complexity) {
         var steps = [];
-        var list = example.input.list || example.input.head || example.input.linkedList || example.input.initialList;
+        var list = example.input.list || example.input.head || example.input.linkedList || example.input.initialList || example.input.list1;
 
         // Helper to safely get displayable value
         function getDisplayValue(val) {
@@ -2043,7 +2243,7 @@
     // Generic Tree Visualization
     function runTreeGeneric(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree;
+        var tree = example.input.tree || example.input.tree1 || example.input.root;
 
         if (tree) {
             var nodes = [];
@@ -2675,6 +2875,33 @@
     function runBSTGeneric(example, config, complexity) {
         var steps = [];
         var tree = example.input.tree;
+        var arr = example.input.array || example.input.nums || example.input.preorderTraversalValues;
+
+        // If we have an array, show array visualization for array-based BST problems
+        if (!tree && arr && Array.isArray(arr)) {
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Input:</strong> [' + arr.slice(0, 10).join(', ') + (arr.length > 10 ? '...' : '') + ']<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            steps.push({
+                vizType: 'array',
+                array: arr,
+                current: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
 
         if (tree) {
             var nodes = [];
