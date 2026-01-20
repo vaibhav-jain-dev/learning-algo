@@ -147,6 +147,20 @@
             case 'cycle-detection':
             case 'graph-cycle':
             case 'graph-coloring':
+            case 'graph-flood-fill':
+            case 'graph-ancestor':
+            case 'graph-arbitrage':
+            case 'graph-min-passes':
+            case 'graph-boggle':
+            case 'graph-largest-island':
+            case 'graph-single-cycle':
+            case 'bellman-ford':
+            case 'bellman-ford-dijkstra':
+            case 'floyd-cycle-detection':
+            case 'fast-slow-pointer':
+            case 'dijkstra-modified':
+            case 'minimum-spanning-tree':
+            case 'graph-connections':
                 return runGraphGeneric(example, config, complexity);
 
             // Linked List algorithms
@@ -159,6 +173,11 @@
             case 'll-remove':
             case 'll-middle':
             case 'll-construction':
+            case 'll-remove-kth':
+            case 'll-sum':
+            case 'll-shift':
+            case 'll-lru-cache':
+            case 'll-rearrange':
                 return runLinkedListGeneric(example, config, complexity);
 
             // Binary Tree algorithms
@@ -171,6 +190,15 @@
             case 'tree-diameter':
             case 'tree-successor':
             case 'tree-flatten':
+            case 'tree-height-balanced':
+            case 'tree-symmetrical':
+            case 'tree-merge':
+            case 'tree-evaluate':
+            case 'tree-compare-leaves':
+            case 'tree-right-sibling':
+            case 'tree-max-path':
+            case 'tree-distance-k':
+            case 'tree-inorder-iterative':
                 return runTreeGeneric(example, config, complexity);
 
             // Recursion algorithms
@@ -181,6 +209,15 @@
             case 'recursion-sudoku':
             case 'recursion-backtrack':
             case 'recursion-divide':
+            case 'recursion-product-sum':
+            case 'recursion-phone':
+            case 'recursion-staircase':
+            case 'recursion-divtags':
+            case 'recursion-measurements':
+            case 'recursion-interweaving':
+            case 'recursion-count-bst':
+            case 'recursion-probability':
+            case 'recursion-manager':
                 return runRecursionGeneric(example, config, complexity);
             case 'recursion-minesweeper':
                 return runMinesweeperVisualization(example, config, complexity);
@@ -1543,8 +1580,57 @@
     // Generic Graph Visualization
     function runGraphGeneric(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree || example.input.graph || example.input.matrix;
+        var tree = example.input.tree || example.input.graph;
+        var grid = example.input.grid || example.input.matrix;
         var adjList = example.input.edges; // Adjacency list format
+
+        // Handle 2D grid format (e.g., Number of Islands, Flood Fill)
+        if (grid && Array.isArray(grid) && Array.isArray(grid[0])) {
+            var rows = grid.length;
+            var cols = grid[0].length;
+
+            steps.push({
+                vizType: 'matrix',
+                matrix: grid,
+                currentRow: -1,
+                currentCol: -1,
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Grid Size:</strong> ' + rows + ' x ' + cols + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || rows + 'x' + cols + ' grid') + '<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show traversal animation (visit some cells)
+            var maxCells = Math.min(rows * cols, 6);
+            for (var i = 0; i < maxCells; i++) {
+                var r = Math.floor(i / cols) % rows;
+                var c = i % cols;
+                var cellVal = grid[r] && grid[r][c] !== undefined ? grid[r][c] : '?';
+                steps.push({
+                    vizType: 'matrix',
+                    matrix: grid,
+                    currentRow: r,
+                    currentCol: c,
+                    status: 'Checking cell (' + r + ',' + c + ')',
+                    explanation: '🔍 <strong>Processing cell (' + r + ',' + c + ')</strong><br>Value: ' + cellVal
+                });
+            }
+
+            steps.push({
+                vizType: 'matrix',
+                matrix: example.output && Array.isArray(example.output) && Array.isArray(example.output[0]) ? example.output : grid,
+                currentRow: -1,
+                currentCol: -1,
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
 
         // Handle adjacency list format (e.g., edges = [[1,3],[2,3,4],[0],[],[2,5],[]])
         if (adjList && Array.isArray(adjList) && Array.isArray(adjList[0])) {
