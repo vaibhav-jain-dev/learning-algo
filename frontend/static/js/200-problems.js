@@ -16,19 +16,24 @@
     const problemsData = {
         'arrays': [
             { id: '01-validate-subsequence', name: 'Validate Subsequence', difficulty: 'easy', tags: ['Two Pointers'] },
-            { id: '02-sorted-squared-array', name: 'Sorted Squared Array', difficulty: 'easy', tags: ['Two Pointers'] },
-            { id: '03-tournament-winner', name: 'Tournament Winner', difficulty: 'easy', tags: ['Hash Map'] },
-            { id: '04-non-constructible-change', name: 'Non-Constructible Change', difficulty: 'easy', tags: ['Sorting'] },
-            { id: '05-transpose-matrix', name: 'Transpose Matrix', difficulty: 'easy', tags: ['Matrix'] },
-            { id: '06-three-number-sum', name: 'Three Number Sum', difficulty: 'medium', tags: ['Two Pointers', 'Sorting'] },
-            { id: '07-smallest-difference', name: 'Smallest Difference', difficulty: 'medium', tags: ['Two Pointers', 'Sorting'] },
-            { id: '08-move-element-to-end', name: 'Move Element To End', difficulty: 'medium', tags: ['Two Pointers'] },
-            { id: '09-monotonic-array', name: 'Monotonic Array', difficulty: 'medium', tags: ['Array'] },
-            { id: '10-spiral-traverse', name: 'Spiral Traverse', difficulty: 'medium', tags: ['Matrix'] },
-            { id: '11-longest-peak', name: 'Longest Peak', difficulty: 'medium', tags: ['Array'] },
-            { id: '12-four-number-sum', name: 'Four Number Sum', difficulty: 'hard', tags: ['Hash Map'] },
-            { id: '13-subarray-sort', name: 'Subarray Sort', difficulty: 'hard', tags: ['Array'] },
-            { id: '14-largest-range', name: 'Largest Range', difficulty: 'hard', tags: ['Hash Map'] }
+            { id: '02-two-number-sum', name: 'Two Number Sum', difficulty: 'easy', tags: ['Hash Map'] },
+            { id: '03-sorted-squared-array', name: 'Sorted Squared Array', difficulty: 'easy', tags: ['Two Pointers'] },
+            { id: '04-tournament-winner', name: 'Tournament Winner', difficulty: 'easy', tags: ['Hash Map'] },
+            { id: '05-non-constructible-change', name: 'Non-Constructible Change', difficulty: 'easy', tags: ['Sorting'] },
+            { id: '06-transpose-matrix', name: 'Transpose Matrix', difficulty: 'easy', tags: ['Matrix'] },
+            { id: '07-three-number-sum', name: 'Three Number Sum', difficulty: 'medium', tags: ['Two Pointers', 'Sorting'] },
+            { id: '08-smallest-difference', name: 'Smallest Difference', difficulty: 'medium', tags: ['Two Pointers', 'Sorting'] },
+            { id: '09-move-element-to-end', name: 'Move Element To End', difficulty: 'medium', tags: ['Two Pointers'] },
+            { id: '10-monotonic-array', name: 'Monotonic Array', difficulty: 'medium', tags: ['Array'] },
+            { id: '11-spiral-traverse', name: 'Spiral Traverse', difficulty: 'medium', tags: ['Matrix'] },
+            { id: '12-array-of-products', name: 'Array Of Products', difficulty: 'medium', tags: ['Array'] },
+            { id: '13-first-duplicate-value', name: 'First Duplicate Value', difficulty: 'medium', tags: ['Array'] },
+            { id: '14-merge-overlapping-intervals', name: 'Merge Overlapping Intervals', difficulty: 'medium', tags: ['Sorting'] },
+            { id: '15-zero-sum-subarray', name: 'Zero Sum Subarray', difficulty: 'medium', tags: ['Hash Map'] },
+            { id: '16-longest-peak', name: 'Longest Peak', difficulty: 'medium', tags: ['Array'] },
+            { id: '17-four-number-sum', name: 'Four Number Sum', difficulty: 'hard', tags: ['Hash Map'] },
+            { id: '18-subarray-sort', name: 'Subarray Sort', difficulty: 'hard', tags: ['Array'] },
+            { id: '19-largest-range', name: 'Largest Range', difficulty: 'hard', tags: ['Hash Map'] }
         ],
         'binary-search-trees': [
             { id: '01-find-closest-value', name: 'Find Closest Value in BST', difficulty: 'easy', tags: ['BST'] },
@@ -41,7 +46,10 @@
             { id: '08-same-bsts', name: 'Same BSTs', difficulty: 'hard', tags: ['BST'] },
             { id: '09-right-smaller-than', name: 'Right Smaller Than', difficulty: 'hard', tags: ['BST'] },
             { id: '10-range-sum-bst', name: 'Range Sum of BST', difficulty: 'medium', tags: ['BST', 'DFS'] },
-            { id: '11-bst-iterator', name: 'BST Iterator', difficulty: 'medium', tags: ['BST', 'Stack'] }
+            { id: '11-bst-iterator', name: 'BST Iterator', difficulty: 'medium', tags: ['BST', 'Stack'] },
+            { id: '12-validate-three-nodes', name: 'Validate Three Nodes', difficulty: 'hard', tags: ['BST'] },
+            { id: '13-repair-bst', name: 'Repair BST', difficulty: 'hard', tags: ['BST'] },
+            { id: '14-sum-bsts', name: 'Sum BSTs', difficulty: 'very-hard', tags: ['BST', 'DP'] }
         ],
         'binary-trees': [
             { id: '01-branch-sums', name: 'Branch Sums', difficulty: 'easy', tags: ['DFS'] },
@@ -56,7 +64,10 @@
             { id: '10-all-kinds-node-depths', name: 'All Kinds of Node Depths', difficulty: 'very-hard', tags: ['DFS'] },
             { id: '11-compare-leaf-traversal', name: 'Compare Leaf Traversal', difficulty: 'very-hard', tags: ['DFS'] },
             { id: '12-merge-binary-trees', name: 'Merge Binary Trees', difficulty: 'medium', tags: ['DFS'] },
-            { id: '13-symmetrical-tree', name: 'Symmetrical Tree', difficulty: 'medium', tags: ['DFS'] }
+            { id: '13-symmetrical-tree', name: 'Symmetrical Tree', difficulty: 'medium', tags: ['DFS'] },
+            { id: '14-evaluate-expression-tree', name: 'Evaluate Expression Tree', difficulty: 'easy', tags: ['DFS'] },
+            { id: '15-find-nodes-distance-k', name: 'Find Nodes Distance K', difficulty: 'hard', tags: ['DFS', 'BFS'] },
+            { id: '16-iterative-inorder-traversal', name: 'Iterative In-Order Traversal', difficulty: 'very-hard', tags: ['DFS', 'Morris'] }
         ],
         'dynamic-programming': [
             { id: '01-max-subset-sum', name: 'Max Subset Sum No Adjacent', difficulty: 'medium', tags: ['DP'] },
@@ -73,7 +84,9 @@
             { id: '12-longest-increasing-subseq', name: 'Longest Increasing Subsequence', difficulty: 'hard', tags: ['DP'] },
             { id: '13-max-sum-submatrix', name: 'Max Sum Submatrix', difficulty: 'very-hard', tags: ['DP'] },
             { id: '14-longest-string-chain', name: 'Longest String Chain', difficulty: 'hard', tags: ['DP', 'Hash Map'] },
-            { id: '15-square-of-zeroes', name: 'Square of Zeroes', difficulty: 'very-hard', tags: ['DP'] }
+            { id: '15-square-of-zeroes', name: 'Square of Zeroes', difficulty: 'very-hard', tags: ['DP'] },
+            { id: '16-ways-to-traverse-graph', name: 'Ways To Traverse Graph', difficulty: 'medium', tags: ['DP'] },
+            { id: '17-min-number-of-jumps', name: 'Min Number Of Jumps', difficulty: 'hard', tags: ['DP'] }
         ],
         'graphs': [
             { id: '01-depth-first-search', name: 'Depth First Search', difficulty: 'easy', tags: ['DFS'] },
@@ -86,19 +99,22 @@
             { id: '08-minimum-passes', name: 'Minimum Passes of Matrix', difficulty: 'medium', tags: ['BFS'] },
             { id: '09-two-colorable', name: 'Two-Colorable', difficulty: 'medium', tags: ['DFS'] },
             { id: '10-airport-connections', name: 'Airport Connections', difficulty: 'very-hard', tags: ['Graph', 'DFS'] },
-            { id: '11-boggle-board', name: 'Boggle Board', difficulty: 'hard', tags: ['DFS', 'Trie'] }
+            { id: '11-detect-arbitrage', name: 'Detect Arbitrage', difficulty: 'hard', tags: ['Graph'] },
+            { id: '12-boggle-board', name: 'Boggle Board', difficulty: 'hard', tags: ['DFS', 'Trie'] },
+            { id: '13-largest-island', name: 'Largest Island', difficulty: 'hard', tags: ['DFS', 'Union Find'] }
         ],
         'linked-lists': [
             { id: '01-remove-duplicates', name: 'Remove Duplicates', difficulty: 'easy', tags: ['Linked List'] },
-            { id: '02-linked-list-construction', name: 'Linked List Construction', difficulty: 'easy', tags: ['Linked List'] },
-            { id: '03-remove-kth-node', name: 'Remove Kth Node From End', difficulty: 'medium', tags: ['Two Pointers'] },
-            { id: '04-sum-of-linked-lists', name: 'Sum of Linked Lists', difficulty: 'medium', tags: ['Linked List'] },
-            { id: '05-find-loop', name: 'Find Loop', difficulty: 'hard', tags: ['Two Pointers'] },
-            { id: '06-reverse-linked-list', name: 'Reverse Linked List', difficulty: 'medium', tags: ['Linked List'] },
-            { id: '07-merge-linked-lists', name: 'Merge Linked Lists', difficulty: 'medium', tags: ['Linked List'] },
-            { id: '08-shift-linked-list', name: 'Shift Linked List', difficulty: 'hard', tags: ['Linked List'] },
-            { id: '09-lru-cache', name: 'LRU Cache', difficulty: 'hard', tags: ['Linked List', 'Hash Map'] },
-            { id: '10-rearrange-linked-list', name: 'Rearrange Linked List', difficulty: 'hard', tags: ['Linked List'] }
+            { id: '02-middle-node', name: 'Middle Node', difficulty: 'easy', tags: ['Two Pointers'] },
+            { id: '03-linked-list-construction', name: 'Linked List Construction', difficulty: 'medium', tags: ['Linked List'] },
+            { id: '04-remove-kth-node', name: 'Remove Kth Node From End', difficulty: 'medium', tags: ['Two Pointers'] },
+            { id: '05-sum-of-linked-lists', name: 'Sum of Linked Lists', difficulty: 'medium', tags: ['Linked List'] },
+            { id: '06-find-loop', name: 'Find Loop', difficulty: 'hard', tags: ['Two Pointers'] },
+            { id: '07-reverse-linked-list', name: 'Reverse Linked List', difficulty: 'medium', tags: ['Linked List'] },
+            { id: '08-merge-linked-lists', name: 'Merge Linked Lists', difficulty: 'medium', tags: ['Linked List'] },
+            { id: '09-shift-linked-list', name: 'Shift Linked List', difficulty: 'hard', tags: ['Linked List'] },
+            { id: '10-lru-cache', name: 'LRU Cache', difficulty: 'hard', tags: ['Linked List', 'Hash Map'] },
+            { id: '11-rearrange-linked-list', name: 'Rearrange Linked List', difficulty: 'hard', tags: ['Linked List'] }
         ],
         'recursion': [
             { id: '01-nth-fibonacci', name: 'Nth Fibonacci', difficulty: 'easy', tags: ['Recursion', 'DP'] },
@@ -111,7 +127,10 @@
             { id: '08-solve-sudoku', name: 'Solve Sudoku', difficulty: 'hard', tags: ['Backtracking'] },
             { id: '09-ambiguous-measurements', name: 'Ambiguous Measurements', difficulty: 'hard', tags: ['Recursion'] },
             { id: '10-interweaving-strings', name: 'Interweaving Strings', difficulty: 'hard', tags: ['Recursion', 'DP'] },
-            { id: '11-number-of-bst', name: 'Number of Binary Search Trees', difficulty: 'hard', tags: ['Recursion', 'DP'] }
+            { id: '11-number-of-bst', name: 'Number of Binary Search Trees', difficulty: 'hard', tags: ['Recursion', 'DP'] },
+            { id: '12-blackjack-probability', name: 'Blackjack Probability', difficulty: 'medium', tags: ['Recursion', 'DP'] },
+            { id: '13-reveal-minesweeper', name: 'Reveal Minesweeper', difficulty: 'hard', tags: ['Recursion', 'BFS'] },
+            { id: '14-lowest-common-manager', name: 'Lowest Common Manager', difficulty: 'hard', tags: ['Recursion', 'DFS'] }
         ],
         'famous-algorithms': [
             { id: '01-kadanes-algorithm', name: "Kadane's Algorithm", difficulty: 'medium', tags: ['DP'] },
@@ -385,29 +404,159 @@
         }
     }
 
+    // Register autocomplete hints for Python
+    function registerPythonHints() {
+        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+
+        var pythonKeywords = [
+            'def', 'return', 'if', 'elif', 'else', 'for', 'while', 'in', 'not', 'and', 'or',
+            'True', 'False', 'None', 'class', 'import', 'from', 'as', 'try', 'except', 'finally',
+            'raise', 'with', 'pass', 'break', 'continue', 'lambda', 'yield', 'global', 'nonlocal',
+            'assert', 'del', 'is', 'async', 'await'
+        ];
+        var pythonBuiltins = [
+            'print', 'len', 'range', 'list', 'dict', 'set', 'tuple', 'str', 'int', 'float', 'bool',
+            'max', 'min', 'sum', 'abs', 'sorted', 'reversed', 'enumerate', 'zip', 'map', 'filter',
+            'any', 'all', 'isinstance', 'type', 'input', 'open', 'append', 'extend', 'pop', 'remove',
+            'insert', 'index', 'count', 'sort', 'reverse', 'copy', 'clear', 'keys', 'values', 'items',
+            'get', 'update', 'add', 'discard', 'union', 'intersection', 'difference'
+        ];
+        var allPython = pythonKeywords.concat(pythonBuiltins);
+
+        CodeMirror.registerHelper('hint', 'python', function(editor) {
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var start = token.start;
+            var end = cur.ch;
+            var word = token.string.slice(0, end - start);
+
+            var matches = allPython.filter(function(w) {
+                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
+            });
+
+            return {
+                list: matches.length > 0 ? matches : allPython,
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+            };
+        });
+    }
+
+    // Register autocomplete hints for Go
+    function registerGoHints() {
+        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+
+        var goKeywords = [
+            'package', 'import', 'func', 'return', 'if', 'else', 'for', 'range', 'switch', 'case',
+            'default', 'break', 'continue', 'var', 'const', 'type', 'struct', 'interface', 'map',
+            'chan', 'go', 'defer', 'select', 'fallthrough', 'goto', 'nil', 'true', 'false', 'make',
+            'new', 'append', 'copy', 'delete', 'len', 'cap', 'close', 'panic', 'recover'
+        ];
+        var goTypes = [
+            'int', 'int8', 'int16', 'int32', 'int64', 'uint', 'uint8', 'uint16', 'uint32', 'uint64',
+            'float32', 'float64', 'complex64', 'complex128', 'byte', 'rune', 'string', 'bool', 'error'
+        ];
+        var goBuiltins = [
+            'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'fmt.Errorf',
+            'sort.Ints', 'sort.Strings', 'sort.Slice', 'sort.Search',
+            'math.Max', 'math.Min', 'math.Abs', 'math.Sqrt',
+            'strings.Contains', 'strings.Split', 'strings.Join', 'strings.Replace',
+            'strconv.Itoa', 'strconv.Atoi'
+        ];
+        var allGo = goKeywords.concat(goTypes).concat(goBuiltins);
+
+        CodeMirror.registerHelper('hint', 'go', function(editor) {
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var start = token.start;
+            var end = cur.ch;
+            var word = token.string.slice(0, end - start);
+
+            var matches = allGo.filter(function(w) {
+                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
+            });
+
+            return {
+                list: matches.length > 0 ? matches : allGo.slice(0, 20),
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+            };
+        });
+    }
+
     function createCodeMirrorEditor(wrapper) {
         if (editorInitialized || !wrapper) return;
 
         try {
+            // Register hint helpers first
+            registerPythonHints();
+            registerGoHints();
+
             editor = CodeMirror(wrapper, {
                 value: currentCode[currentLanguage] || getDefaultCode(currentLanguage),
                 mode: currentLanguage === 'go' ? 'text/x-go' : 'python',
-                theme: 'default',
+                theme: 'eclipse',
                 lineNumbers: true,
                 indentUnit: 4,
                 tabSize: 4,
+                indentWithTabs: false,
+                smartIndent: true,
+                electricChars: true,
                 matchBrackets: true,
                 autoCloseBrackets: true,
                 lineWrapping: false,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                styleActiveLine: true,
+                highlightSelectionMatches: { showToken: true },
                 extraKeys: {
                     'Ctrl-Enter': function() { window.runCode(); },
-                    'Cmd-Enter': function() { window.runCode(); }
+                    'Cmd-Enter': function() { window.runCode(); },
+                    'Ctrl-Space': function(cm) {
+                        var mode = cm.getOption('mode');
+                        var hintType = mode === 'text/x-go' ? 'go' : 'python';
+                        cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                    },
+                    'Tab': function(cm) {
+                        if (cm.somethingSelected()) {
+                            cm.indentSelection('add');
+                        } else {
+                            cm.replaceSelection('    ', 'end');
+                        }
+                    },
+                    'Shift-Tab': function(cm) {
+                        cm.indentSelection('subtract');
+                    },
+                    'Ctrl-/': function(cm) {
+                        cm.toggleComment();
+                    },
+                    'Cmd-/': function(cm) {
+                        cm.toggleComment();
+                    },
+                    'Ctrl-D': function(cm) {
+                        var cursor = cm.getCursor();
+                        var line = cm.getLine(cursor.line);
+                        cm.replaceRange(line + '\n', {line: cursor.line, ch: 0});
+                    }
                 }
             });
 
             editor.setSize('100%', '100%');
             editor.on('change', function() {
                 currentCode[currentLanguage] = editor.getValue();
+            });
+
+            // Auto-show hints on typing
+            editor.on('inputRead', function(cm, change) {
+                if (change.text[0].match(/[a-zA-Z_]/)) {
+                    var mode = cm.getOption('mode');
+                    var hintType = mode === 'text/x-go' ? 'go' : 'python';
+                    if (CodeMirror.hint && CodeMirror.hint[hintType]) {
+                        setTimeout(function() {
+                            cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                        }, 100);
+                    }
+                }
             });
 
             window.editor = editor;
