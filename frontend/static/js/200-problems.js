@@ -203,10 +203,6 @@
         vizState.totalSteps = 0;
         vizState.currentProblemKey = null;  // Clear the problem key to force re-init
 
-        // Clear visualization content immediately
-        var vizContent = document.getElementById('visualization-content');
-        if (vizContent) vizContent.innerHTML = '<p style="color:#888;padding:1rem;">Loading visualization...</p>';
-
         currentProblem = { category: category, id: problemId, similarIdx: similarIdx || null };
         var editorView = document.getElementById('editor-view');
 
@@ -264,10 +260,9 @@
         if (editorView) editorView.classList.add('active');
         initEditor();
 
-        // If section specified, switch to that tab
-        if (section) {
-            window.showDescTab(section);
-        }
+        // Always switch to the specified tab (default to 'problem' if none specified)
+        // This ensures proper content loading for each tab
+        window.showDescTab(section || 'problem');
     };
 
     window.hideEditor = function() {
@@ -440,7 +435,6 @@
         document.querySelectorAll('.desc-tab').forEach(function(t) { t.classList.remove('active'); });
         var clickedTab = document.querySelector('.desc-tab[data-tab="' + tab + '"]');
         if (clickedTab) clickedTab.classList.add('active');
-        if (event && event.target) event.target.classList.add('active');
 
         var descContent = document.getElementById('description-content');
         var solContent = document.getElementById('solutions-content');
@@ -492,24 +486,52 @@
 
         solContent.innerHTML = '<div style="color:#888;padding:1rem;">Loading solutions...</div>';
 
-        // Try to load Python solution
-        fetch('/problems/200-must-solve/' + currentProblem.category + '/' + currentProblem.id + '/python_code.py')
-            .then(function(r) { return r.ok ? r.text() : null; })
-            .then(function(pythonCode) {
-                var html = '<h3 style="color:white;margin-bottom:1rem;">Python Solution</h3>';
-                if (pythonCode) {
-                    html += '<pre style="background:#1e1e1e;padding:1rem;border-radius:8px;overflow-x:auto;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
-                } else {
-                    html += '<p>No Python solution available.</p>';
-                }
-                solContent.innerHTML = html;
+        var basePath = '/problems/200-must-solve/' + currentProblem.category + '/' + currentProblem.id;
+        if (currentProblem.similarIdx) {
+            basePath += '/similar/' + currentProblem.similarIdx;
+        }
 
-                if (typeof hljs !== 'undefined') {
-                    solContent.querySelectorAll('pre code').forEach(function(block) {
-                        hljs.highlightElement(block);
-                    });
-                }
-            });
+        // Load both Python and Go solutions
+        Promise.all([
+            fetch(basePath + '/python_code.py').then(function(r) { return r.ok ? r.text() : null; }),
+            fetch(basePath + '/golang_code.go').then(function(r) { return r.ok ? r.text() : null; })
+        ]).then(function(results) {
+            var pythonCode = results[0];
+            var goCode = results[1];
+
+            var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">';
+
+            // Python Solution
+            html += '<div>';
+            html += '<h3 style="color:#3fb950;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+            if (pythonCode) {
+                html += '<pre style="background:#1e1e1e;padding:1rem;border-radius:8px;overflow-x:auto;max-height:500px;overflow-y:auto;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+            } else {
+                html += '<p style="color:#8b949e;">No Python solution available.</p>';
+            }
+            html += '</div>';
+
+            // Go Solution
+            html += '<div>';
+            html += '<h3 style="color:#00ADD8;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+            if (goCode) {
+                html += '<pre style="background:#1e1e1e;padding:1rem;border-radius:8px;overflow-x:auto;max-height:500px;overflow-y:auto;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+            } else {
+                html += '<p style="color:#8b949e;">No Go solution available.</p>';
+            }
+            html += '</div>';
+
+            html += '</div>';
+            solContent.innerHTML = html;
+
+            if (typeof hljs !== 'undefined') {
+                solContent.querySelectorAll('pre code').forEach(function(block) {
+                    hljs.highlightElement(block);
+                });
+            }
+        }).catch(function(err) {
+            solContent.innerHTML = '<p style="color:#da3633;">Error loading solutions: ' + err.message + '</p>';
+        });
     }
 
     // ============================================
@@ -558,53 +580,51 @@
     function buildVisualizationContainer(category, problemId) {
         var animType = getAnimationType(category, problemId);
 
-        return '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;">' +
-            // Header
-            '<h3 style="color:#58a6ff;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
-            '<span style="font-size:1.2rem;">🎯</span> Algorithm Visualization</h3>' +
-
-            // Animation Type Badge
-            '<div style="background:#161b22;border-left:3px solid #f0883e;padding:0.75rem 1rem;margin-bottom:1rem;border-radius:0 8px 8px 0;">' +
-            '<span style="color:#8b949e;">Animation Type:</span> <span style="color:#f0883e;font-weight:600;">' + animType + '</span></div>' +
-
+        return '<div style="background:#0d1117;border-radius:12px;padding:1rem;color:#c9d1d9;">' +
+            // Header with controls on same row
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">' +
+            '<div style="display:flex;align-items:center;gap:0.5rem;">' +
+            '<span style="color:#58a6ff;font-weight:600;">🎯 ' + animType + '</span>' +
+            '<span id="viz-step-counter" style="color:#8b949e;font-size:0.9rem;">Step 0 / 0</span>' +
+            '</div>' +
             // Controls
-            '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">' +
-            '<button onclick="window.vizPlay()" id="viz-play-btn" style="background:#238636;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>▶</span> Play</button>' +
-            '<button onclick="window.vizPause()" id="viz-pause-btn" style="background:#6e7681;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>⏸</span> Pause</button>' +
-            '<button onclick="window.vizReset()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>↻</span> Reset</button>' +
-            '<button onclick="window.vizStepBack()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;">◀ Prev</button>' +
-            '<button onclick="window.vizStepForward()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;">Next ▶</button>' +
-            '<div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;">' +
-            '<span style="color:#8b949e;">Speed:</span>' +
-            '<input type="range" id="viz-speed" min="100" max="2000" value="1000" style="width:120px;accent-color:#58a6ff;" onchange="window.vizSetSpeed(this.value)">' +
+            '<div style="display:flex;align-items:center;gap:0.5rem;">' +
+            '<button onclick="window.vizStepBack()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">◀</button>' +
+            '<button onclick="window.vizPlay()" id="viz-play-btn" style="background:#238636;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">▶ Play</button>' +
+            '<button onclick="window.vizPause()" id="viz-pause-btn" style="background:#6e7681;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">⏸</button>' +
+            '<button onclick="window.vizStepForward()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">▶</button>' +
+            '<button onclick="window.vizReset()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">↻</button>' +
+            '<input type="range" id="viz-speed" min="100" max="2000" value="1000" style="width:80px;accent-color:#58a6ff;" onchange="window.vizSetSpeed(this.value)">' +
             '</div></div>' +
 
-            // Visualization Area (scrollable)
-            '<div id="viz-main-area" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:1rem;"></div>' +
-
-            // Status Line
-            '<div id="viz-status" style="color:#8b949e;margin-bottom:1rem;font-family:monospace;"></div>' +
-
             // Progress Bar
-            '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">' +
-            '<div style="flex:1;background:#21262d;border-radius:4px;height:8px;overflow:hidden;">' +
+            '<div style="background:#21262d;border-radius:4px;height:4px;overflow:hidden;margin-bottom:1rem;">' +
             '<div id="viz-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#238636,#58a6ff);transition:width 0.3s;"></div></div>' +
-            '<span id="viz-step-counter" style="color:#58a6ff;font-weight:600;min-width:80px;text-align:right;">Step 0 / 0</span></div>' +
 
+            // Main content: 2-column layout (Visualization Left, Call Stack Right)
+            '<div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem;">' +
+
+            // LEFT: Visualization Area
+            '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;min-height:250px;">' +
+            '<div style="color:#58a6ff;font-size:0.8rem;margin-bottom:0.5rem;font-weight:600;">VISUALIZATION</div>' +
+            '<div id="viz-main-area"></div>' +
+            '<div id="viz-status" style="color:#8b949e;margin-top:0.5rem;font-family:monospace;font-size:0.85rem;"></div>' +
             '</div>' +
 
-            // Step-by-Step Explanation Section
-            '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;margin-top:1.5rem;">' +
-            '<h3 style="color:#3fb950;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
-            '<span style="font-size:1.2rem;">📝</span> Step-by-Step Explanation</h3>' +
-            '<div id="viz-explanation" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;max-height:300px;overflow-y:auto;"></div>' +
-            '</div>' +
-
-            // Call Stack Section
-            '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;margin-top:1.5rem;">' +
-            '<h3 style="color:#f0883e;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
-            '<span style="font-size:1.2rem;">📚</span> Call Stack</h3>' +
+            // RIGHT: Call Stack
+            '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;min-height:250px;">' +
+            '<div style="color:#f0883e;font-size:0.8rem;margin-bottom:0.5rem;font-weight:600;">📚 CALL STACK / STATE</div>' +
             '<div id="viz-call-stack" style="display:flex;flex-direction:column;gap:0.5rem;"></div>' +
+            '</div>' +
+
+            '</div>' +
+
+            // BOTTOM: Full-width Explanation
+            '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;">' +
+            '<div style="color:#3fb950;font-size:0.8rem;margin-bottom:0.5rem;font-weight:600;">📝 STEP EXPLANATION</div>' +
+            '<div id="viz-explanation" style="color:#c9d1d9;line-height:1.6;"></div>' +
+            '</div>' +
+
             '</div>';
     }
 

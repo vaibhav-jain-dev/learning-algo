@@ -181,6 +181,7 @@ func main() {
 	// Static files
 	app.Static("/static", "./frontend/static")
 	app.Static("/assets", "./frontend/assets")
+	app.Static("/problems", "./problems") // Serve problem files (solutions, etc.)
 
 	// Page routes (HTMX) - Unified routes with tab navigation
 	app.Get("/", h.Home)
