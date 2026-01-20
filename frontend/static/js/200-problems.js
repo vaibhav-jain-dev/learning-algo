@@ -1425,63 +1425,142 @@
 
         var step = vizState.steps[vizState.currentStep];
         var category = currentProblem ? currentProblem.category : 'recursion';
-
         var html = '';
 
+        // Build stack history from step 0 to current step
+        var historySteps = [];
+        for (var i = 0; i <= vizState.currentStep; i++) {
+            historySteps.push(vizState.steps[i]);
+        }
+
         if (category === 'recursion' && step.stack) {
-            step.stack.forEach(function(call, idx) {
-                var isTop = idx === step.stack.length - 1;
+            // Show stack frames with newest on top
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">STACK (top → bottom)</div>';
+
+            // Reverse to show newest on top
+            var reversedStack = step.stack.slice().reverse();
+            reversedStack.forEach(function(call, idx) {
+                var actualIdx = step.stack.length - 1 - idx;
+                var isTop = idx === 0;
                 var bg = isTop ? '#238636' : '#21262d';
                 var border = isTop ? '#3fb950' : '#30363d';
-                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:6px;padding:0.75rem 1rem;">';
-                html += '<span style="color:#f0883e;">Depth ' + idx + ':</span> <span style="color:#58a6ff;font-family:monospace;">' + call + '</span>';
+                var opacity = isTop ? '1' : (0.7 - idx * 0.1);
+
+                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:4px;padding:0.5rem;margin-bottom:0.25rem;opacity:' + Math.max(0.4, opacity) + ';">';
+                html += '<div style="color:#58a6ff;font-family:monospace;font-size:0.85rem;">' + call + '</div>';
+                html += '<div style="color:#8b949e;font-size:0.7rem;">depth: ' + actualIdx + '</div>';
+                html += '</div>';
+
+                if (idx < reversedStack.length - 1) {
+                    html += '<div style="text-align:center;color:#30363d;font-size:0.7rem;">↑</div>';
+                }
+            });
+
+            // Show return value if available
+            if (step.result !== null && step.result !== undefined) {
+                html += '<div style="margin-top:0.5rem;background:#1f6feb33;border:1px solid #58a6ff;border-radius:4px;padding:0.5rem;">';
+                html += '<div style="color:#3fb950;font-size:0.85rem;">⬆ Return: <span style="font-family:monospace;">' + step.result + '</span></div>';
+                if (step.memo) html += '<div style="color:#f0883e;font-size:0.7rem;">📦 memoized</div>';
+                html += '</div>';
+            }
+
+        } else if (step.table !== undefined) {
+            // DP Table - show current cell being computed and recent history
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">DP STATE</div>';
+
+            // Current state
+            html += '<div style="background:#238636;border:1px solid #3fb950;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
+            html += '<div style="color:white;font-size:0.8rem;font-weight:600;">Current: dp[' + step.row + '][' + step.col + ']</div>';
+            if (step.char1 && step.char2) {
+                html += '<div style="color:#c9d1d9;font-size:0.75rem;">Comparing: "' + step.char1 + '" vs "' + step.char2 + '"</div>';
+            }
+            html += '<div style="color:' + (step.match ? '#3fb950' : '#f0883e') + ';font-size:0.75rem;">' + (step.match ? '✓ Match!' : '✗ No match') + '</div>';
+            html += '</div>';
+
+            // Recent steps history (last 5)
+            html += '<div style="font-size:0.7rem;color:#8b949e;margin:0.5rem 0 0.25rem 0;">Recent Steps:</div>';
+            var recentSteps = historySteps.slice(-5);
+            recentSteps.forEach(function(s, idx) {
+                var isLast = idx === recentSteps.length - 1;
+                var opacity = 0.4 + (idx / recentSteps.length) * 0.6;
+                html += '<div style="background:#21262d;border-radius:3px;padding:0.3rem 0.5rem;margin-bottom:0.2rem;font-size:0.7rem;opacity:' + opacity + ';">';
+                html += '<span style="color:#8b949e;">dp[' + s.row + '][' + s.col + ']=' + (s.table ? s.table[s.row][s.col] : '?') + '</span>';
                 html += '</div>';
             });
 
-            if (step.result !== null && step.result !== undefined) {
-                html += '<div style="background:#1f6feb33;border:1px solid #58a6ff;border-radius:6px;padding:0.75rem 1rem;margin-top:0.5rem;">';
-                html += '<span style="color:#3fb950;">Result:</span> <span style="color:#c9d1d9;font-family:monospace;">' + step.call + '</span>';
-                if (step.memo) html += ' <span style="color:#f0883e;">(memoized)</span>';
+        } else if (step.queue !== undefined && step.result !== undefined) {
+            // Graph algorithms - show queue and visited state
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">ALGORITHM STATE</div>';
+
+            // Current processing
+            if (step.current) {
+                html += '<div style="background:#238636;border:1px solid #3fb950;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
+                html += '<div style="color:white;font-size:0.85rem;">Processing: <span style="font-family:monospace;">' + step.current + '</span></div>';
                 html += '</div>';
             }
-        } else if (step.queue !== undefined && step.result !== undefined) {
-            // Graph algorithms (BFS, Topological Sort, etc.)
-            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#f0883e;">Algorithm State</span>';
+
+            // Queue visualization (horizontal)
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
+            html += '<div style="color:#f0883e;font-size:0.7rem;margin-bottom:0.25rem;">Queue (FIFO →):</div>';
+            html += '<div style="display:flex;gap:0.25rem;flex-wrap:wrap;">';
+            (step.queue || []).forEach(function(item, idx) {
+                html += '<span style="background:#f0883e33;color:#f0883e;padding:0.15rem 0.4rem;border-radius:3px;font-family:monospace;font-size:0.8rem;">' + item + '</span>';
+            });
+            if (!step.queue || step.queue.length === 0) {
+                html += '<span style="color:#8b949e;font-size:0.75rem;">empty</span>';
+            }
+            html += '</div></div>';
+
+            // Result so far
+            html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.5rem;">';
+            html += '<div style="color:#58a6ff;font-size:0.7rem;margin-bottom:0.25rem;">Result:</div>';
+            html += '<div style="color:#c9d1d9;font-family:monospace;font-size:0.8rem;">[' + (step.result || []).join(' → ') + ']</div>';
             html += '</div>';
 
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#8b949e;">Queue:</span> <span style="color:#f0883e;font-family:monospace;">[' + (step.queue || []).join(', ') + ']</span>';
-            html += '</div>';
-
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#8b949e;">Processing:</span> <span style="color:#3fb950;font-family:monospace;">' + (step.current || 'None') + '</span>';
-            html += '</div>';
-
-            html += '<div style="background:#1f6feb33;border:1px solid #58a6ff;border-radius:6px;padding:0.75rem 1rem;">';
-            html += '<span style="color:#58a6ff;">Result:</span> <span style="color:#c9d1d9;font-family:monospace;">[' + (step.result || []).join(' → ') + ']</span>';
-            html += '</div>';
         } else if (step.hashTable !== undefined) {
-            // Array with hash table (Two Sum, etc.)
-            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#f0883e;">Hash Table Lookup</span>';
+            // Hash table operations
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">HASH TABLE STATE</div>';
+
+            // Current operation
+            html += '<div style="background:#238636;border:1px solid #3fb950;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
+            html += '<div style="color:white;font-size:0.85rem;">Checking: <span style="font-family:monospace;">' + step.checking + '</span></div>';
+            html += '<div style="color:#f0883e;font-size:0.75rem;">Need: ' + step.need + ' (target - current)</div>';
+            html += '<div style="color:' + (step.found ? '#3fb950' : '#da3633') + ';font-size:0.75rem;">' + (step.found ? '✓ Found in hash!' : '✗ Not in hash') + '</div>';
             html += '</div>';
 
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#8b949e;">Current:</span> <span style="color:#3fb950;font-family:monospace;">' + step.checking + '</span>';
-            html += '</div>';
+            // Hash table contents
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.5rem;">';
+            html += '<div style="color:#3fb950;font-size:0.7rem;margin-bottom:0.25rem;">Hash Table:</div>';
+            html += '<div style="display:flex;gap:0.25rem;flex-wrap:wrap;">';
+            (step.hashTable || []).forEach(function(item) {
+                html += '<span style="background:#3fb95033;color:#3fb950;padding:0.15rem 0.4rem;border-radius:3px;font-family:monospace;font-size:0.8rem;">' + item + '</span>';
+            });
+            if (!step.hashTable || step.hashTable.length === 0) {
+                html += '<span style="color:#8b949e;font-size:0.75rem;">{ }</span>';
+            }
+            html += '</div></div>';
 
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
-            html += '<span style="color:#8b949e;">Need:</span> <span style="color:#f0883e;font-family:monospace;">' + step.need + '</span>';
-            html += '</div>';
+        } else if (step.pointers !== undefined) {
+            // Linked list operations
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">POINTER STATE</div>';
 
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;">';
-            html += '<span style="color:#8b949e;">In Hash?</span> <span style="color:' + (step.found ? '#3fb950' : '#da3633') + ';font-family:monospace;">' + (step.found ? 'YES ✓' : 'NO') + '</span>';
-            html += '</div>';
+            Object.keys(step.pointers).forEach(function(ptrName) {
+                var ptrVal = step.pointers[ptrName];
+                var color = ptrName === 'current' ? '#3fb950' : (ptrName === 'head' ? '#58a6ff' : '#f0883e');
+                html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+                html += '<span style="color:' + color + ';font-size:0.8rem;">' + ptrName + ':</span> ';
+                html += '<span style="color:#c9d1d9;font-family:monospace;">→ node[' + ptrVal + ']</span>';
+                if (step.nodes && step.nodes[ptrVal] !== undefined) {
+                    html += ' <span style="color:#8b949e;">= ' + step.nodes[ptrVal] + '</span>';
+                }
+                html += '</div>';
+            });
+
         } else {
-            // Generic display with action
-            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;">';
-            html += '<span style="color:#f0883e;">Step ' + (vizState.currentStep + 1) + ':</span> <span style="color:#c9d1d9;">' + (step.action || 'Processing...') + '</span>';
+            // Generic display
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">STEP ' + (vizState.currentStep + 1) + ' / ' + vizState.totalSteps + '</div>';
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:4px;padding:0.5rem;">';
+            html += '<span style="color:#c9d1d9;font-size:0.85rem;">' + (step.action || 'Processing...') + '</span>';
             html += '</div>';
         }
 
