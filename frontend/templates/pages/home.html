@@ -112,11 +112,20 @@
         <div class="pdf-modal-overlay" onclick="closePdfModal()"></div>
         <div class="pdf-modal-content">
             <div class="pdf-modal-header">
-                <h2>Export to PDF</h2>
+                <h2>Export / Print</h2>
                 <button class="pdf-modal-close" onclick="closePdfModal()">&times;</button>
             </div>
             <div class="pdf-modal-body">
-                <p>Select content to export as PDF:</p>
+                <p>Select content to export:</p>
+
+                <!-- Select All Option -->
+                <div class="pdf-select-all">
+                    <label class="pdf-topic-item select-all-item">
+                        <input type="checkbox" id="select-all-topics" checked>
+                        <span><strong>Select All Topics</strong></span>
+                    </label>
+                </div>
+
                 <div class="pdf-category-list">
                     <!-- Categories populated dynamically from /api/topics -->
                     <p class="loading">Loading topics...</p>
@@ -124,8 +133,11 @@
             </div>
             <div class="pdf-modal-footer">
                 <button class="btn btn-secondary" onclick="closePdfModal()">Cancel</button>
-                <button class="btn btn-primary" id="generate-pdf-btn" disabled>
-                    <span id="pdf-btn-text">Select a topic</span>
+                <button class="btn btn-secondary" id="browser-print-btn" onclick="triggerBrowserPrint()">
+                    <span>&#128424;</span> Print
+                </button>
+                <button class="btn btn-primary" id="generate-pdf-btn">
+                    <span id="pdf-btn-text">Export PDF</span>
                     <span id="pdf-loading" class="hidden">Generating...</span>
                 </button>
             </div>

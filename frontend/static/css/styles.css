@@ -1851,14 +1851,36 @@ a:hover {
     background: var(--color-bg-secondary);
 }
 
-.pdf-topic-item input[type="radio"] {
+.pdf-topic-item input[type="radio"],
+.pdf-topic-item input[type="checkbox"] {
     accent-color: var(--color-brand-primary);
     margin: 0;
+    width: 16px;
+    height: 16px;
 }
 
-.pdf-topic-item input[type="radio"]:checked + span {
+.pdf-topic-item input[type="radio"]:checked + span,
+.pdf-topic-item input[type="checkbox"]:checked + span {
     color: var(--color-brand-primary);
     font-weight: var(--font-medium);
+}
+
+/* Select All Section */
+.pdf-select-all {
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: linear-gradient(135deg, var(--color-info-bg) 0%, var(--color-bg-secondary) 100%);
+    border: 2px solid var(--color-brand-primary);
+    border-radius: var(--radius-lg);
+}
+
+.pdf-select-all .select-all-item {
+    padding: 0;
+    font-size: var(--text-base);
+}
+
+.pdf-select-all .select-all-item:hover {
+    background: transparent;
 }
 
 .pdf-modal-footer {
