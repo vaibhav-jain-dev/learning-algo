@@ -1,3 +1,37 @@
+<script type="application/json" id="viz-config">
+{
+  "name": "Two Number Sum",
+  "algorithm": "hash-table-two-sum",
+  "complexity": { "time": "O(n)", "space": "O(n)" },
+  "examples": [
+    {
+      "input": { "array": [3, 5, -4, 8, 11, 1, -1, 6], "targetSum": 10 },
+      "output": [-1, 11],
+      "inputRaw": "array = [3, 5, -4, 8, 11, 1, -1, 6], targetSum = 10",
+      "outputRaw": "[-1, 11]"
+    },
+    {
+      "input": { "array": [1, 2, 3, 4, 5], "targetSum": 10 },
+      "output": [],
+      "inputRaw": "array = [1, 2, 3, 4, 5], targetSum = 10",
+      "outputRaw": "[]"
+    },
+    {
+      "input": { "array": [4, 6], "targetSum": 10 },
+      "output": [4, 6],
+      "inputRaw": "array = [4, 6], targetSum = 10",
+      "outputRaw": "[4, 6]"
+    },
+    {
+      "input": { "array": [4, 6, 1, -3], "targetSum": 3 },
+      "output": [6, -3],
+      "inputRaw": "array = [4, 6, 1, -3], targetSum = 3",
+      "outputRaw": "[6, -3]"
+    }
+  ]
+}
+</script>
+
 # Two Number Sum
 
 **Difficulty:** Easy

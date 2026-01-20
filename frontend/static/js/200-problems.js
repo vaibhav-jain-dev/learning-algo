@@ -16,6 +16,249 @@
     let currentExamples = [];
     let selectedExampleIndex = 0;
 
+    // Store embedded visualization config from problem.md script tag
+    let vizConfig = null;
+
+    // Read embedded visualization config from loaded problem content
+    function extractVizConfig(htmlContent) {
+        // Look for <script type="application/json" id="viz-config">
+        var match = htmlContent.match(/<script[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/script>/i);
+        if (match) {
+            try {
+                return JSON.parse(match[1]);
+            } catch (e) {
+                console.error('Failed to parse viz-config:', e);
+            }
+        }
+        return null;
+    }
+
+    // Generate visualization steps from embedded config
+    function generateStepsFromConfig(config, exampleIndex) {
+        if (!config || !config.examples || !config.examples[exampleIndex]) {
+            return null;
+        }
+
+        var example = config.examples[exampleIndex];
+        var algorithm = config.algorithm || 'generic';
+        var complexity = config.complexity || { time: 'O(n)', space: 'O(1)' };
+
+        // Run the appropriate algorithm based on config
+        switch (algorithm) {
+            case 'two-pointer-subsequence':
+                return runValidateSubsequence(example, config, complexity);
+            case 'hash-table-two-sum':
+                return runTwoNumberSum(example, config, complexity);
+            case 'two-pointer-move':
+                return runMoveElementToEnd(example, config, complexity);
+            case 'two-pointer-sorted-squared':
+                return runSortedSquaredArray(example, config, complexity);
+            default:
+                return null;
+        }
+    }
+
+    // Algorithm: Validate Subsequence (Two Pointer)
+    function runValidateSubsequence(example, config, complexity) {
+        var arr = example.input.array;
+        var seq = example.input.sequence;
+        var expected = example.output;
+        var steps = [];
+        var seqIdx = 0;
+
+        steps.push({
+            array: arr.slice(),
+            sequence: seq.slice(),
+            arrIdx: -1,
+            seqIdx: 0,
+            vizType: 'two-arrays',
+            status: 'Initialize: Check if sequence is subsequence',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> array=[' + arr.join(', ') + '], sequence=[' + seq.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < arr.length && seqIdx < seq.length; i++) {
+            var match = arr[i] === seq[seqIdx];
+            steps.push({
+                array: arr.slice(),
+                sequence: seq.slice(),
+                arrIdx: i,
+                seqIdx: seqIdx,
+                match: match,
+                vizType: 'two-arrays',
+                status: match ? '✓ Match: ' + arr[i] : '✗ arr[' + i + ']=' + arr[i] + ' ≠ seq[' + seqIdx + ']=' + seq[seqIdx],
+                explanation: match ?
+                    '✅ <strong>Match!</strong> arr[' + i + ']=' + arr[i] + ' == seq[' + seqIdx + ']=' + seq[seqIdx] + '<br>Move seqIdx: ' + seqIdx + ' → ' + (seqIdx + 1) :
+                    '❌ No match. arr[' + i + ']=' + arr[i] + ' ≠ seq[' + seqIdx + ']=' + seq[seqIdx] + '<br>Continue scanning...'
+            });
+            if (match) seqIdx++;
+        }
+
+        var result = seqIdx === seq.length;
+        steps.push({
+            array: arr.slice(),
+            sequence: seq.slice(),
+            arrIdx: arr.length,
+            seqIdx: seqIdx,
+            vizType: 'two-arrays',
+            status: result ? '✓ Valid Subsequence!' : '✗ Invalid',
+            explanation: result ?
+                '✅ <strong>Result: true</strong><br>All ' + seq.length + ' elements matched in order!' :
+                '❌ <strong>Result: false</strong><br>Only matched ' + seqIdx + '/' + seq.length + ' elements'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Two Number Sum (Hash Table)
+    function runTwoNumberSum(example, config, complexity) {
+        var arr = example.input.array;
+        var target = example.input.targetSum;
+        var expected = example.output;
+        var steps = [];
+        var hashSet = [];
+
+        steps.push({
+            array: arr.slice(),
+            currentIndex: -1,
+            hashTable: [],
+            vizType: 'array-hash',
+            status: 'Initialize: target = ' + target,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> array=[' + arr.join(', ') + '], target=' + target + '<br>' +
+                '<strong>Expected:</strong> [' + (Array.isArray(expected) ? expected.join(', ') : expected) + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < arr.length; i++) {
+            var need = target - arr[i];
+            var found = hashSet.indexOf(need) !== -1;
+
+            steps.push({
+                array: arr.slice(),
+                currentIndex: i,
+                hashTable: hashSet.slice(),
+                checking: arr[i],
+                need: need,
+                found: found,
+                vizType: 'array-hash',
+                status: found ? '✓ Found! ' + arr[i] + '+' + need + '=' + target : 'Check ' + arr[i] + ', need ' + need,
+                explanation: found ?
+                    '✅ <strong>Found pair!</strong><br>' + arr[i] + ' + ' + need + ' = ' + target + '<br>Result: [' + need + ', ' + arr[i] + ']' :
+                    '🔍 <strong>Step ' + (i+1) + '</strong><br>Current: ' + arr[i] + ', Need: ' + need + '<br>' + need + ' not in hash. Add ' + arr[i] + '<br>Hash: {' + hashSet.concat([arr[i]]).join(', ') + '}'
+            });
+
+            if (found) break;
+            hashSet.push(arr[i]);
+        }
+
+        return steps;
+    }
+
+    // Algorithm: Move Element To End (Two Pointers)
+    function runMoveElementToEnd(example, config, complexity) {
+        var arr = example.input.array.slice();
+        var toMove = example.input.toMove;
+        var expected = example.output;
+        var steps = [];
+        var left = 0;
+        var right = arr.length - 1;
+
+        steps.push({
+            array: arr.slice(),
+            left: left,
+            right: right,
+            toMove: toMove,
+            vizType: 'two-pointer',
+            status: 'Move all ' + toMove + 's to end',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> array=[' + arr.join(', ') + '], toMove=' + toMove + '<br>' +
+                '<strong>Expected:</strong> [' + expected.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        while (left < right) {
+            while (left < right && arr[right] === toMove) right--;
+            if (arr[left] === toMove) {
+                var temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+                steps.push({
+                    array: arr.slice(),
+                    left: left,
+                    right: right,
+                    toMove: toMove,
+                    vizType: 'two-pointer',
+                    status: 'Swap: positions ' + left + ' ↔ ' + right,
+                    explanation: '🔄 <strong>Swap!</strong><br>arr[' + left + '] ↔ arr[' + right + ']<br>Array: [' + arr.join(', ') + ']'
+                });
+            }
+            left++;
+        }
+
+        steps.push({
+            array: arr.slice(),
+            left: left,
+            right: right,
+            toMove: toMove,
+            vizType: 'two-pointer',
+            status: 'Complete!',
+            explanation: '✅ <strong>Done!</strong><br>All ' + toMove + 's moved to end<br>Result: [' + arr.join(', ') + ']'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Sorted Squared Array
+    function runSortedSquaredArray(example, config, complexity) {
+        var arr = example.input.array;
+        var expected = example.output;
+        var result = new Array(arr.length);
+        var left = 0, right = arr.length - 1;
+        var steps = [];
+
+        steps.push({
+            array: arr.slice(),
+            result: [],
+            left: left,
+            right: right,
+            vizType: 'two-pointer-result',
+            status: 'Two pointers from ends',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> [' + expected.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = arr.length - 1; i >= 0; i--) {
+            var leftSq = arr[left] * arr[left];
+            var rightSq = arr[right] * arr[right];
+            var useLeft = leftSq > rightSq;
+            result[i] = useLeft ? leftSq : rightSq;
+
+            steps.push({
+                array: arr.slice(),
+                result: result.slice(),
+                left: left,
+                right: right,
+                insertIdx: i,
+                vizType: 'two-pointer-result',
+                status: arr[useLeft ? left : right] + '² = ' + result[i] + ' → result[' + i + ']',
+                explanation: '🔄 left²=' + leftSq + ', right²=' + rightSq + '<br>Place ' + result[i] + ' at index ' + i
+            });
+
+            if (useLeft) left++; else right--;
+        }
+
+        return steps;
+    }
+
     // Parse examples from problem.md content
     function parseExamplesFromContent(htmlContent) {
         var examples = [];
@@ -402,8 +645,24 @@
                     }
                 }
 
-                // Parse examples from content for visualization
-                currentExamples = parseExamplesFromContent(html);
+                // Extract embedded visualization config from script tag
+                vizConfig = extractVizConfig(html);
+                console.log('Viz config:', vizConfig);
+
+                // Parse examples from content for visualization (fallback)
+                if (vizConfig && vizConfig.examples) {
+                    currentExamples = vizConfig.examples.map(function(ex, i) {
+                        return {
+                            number: i + 1,
+                            inputRaw: ex.inputRaw || JSON.stringify(ex.input),
+                            outputRaw: ex.outputRaw || JSON.stringify(ex.output),
+                            input: ex.input,
+                            output: ex.output
+                        };
+                    });
+                } else {
+                    currentExamples = parseExamplesFromContent(html);
+                }
                 selectedExampleIndex = 0;
                 console.log('Parsed examples:', currentExamples);
             })
@@ -411,6 +670,7 @@
                 var descContent = document.getElementById('description-content');
                 if (descContent) descContent.innerHTML = '<p>Error loading problem content.</p>';
                 currentExamples = [];
+                vizConfig = null;
             });
 
         // Load code files (with similar problem support)
@@ -1181,7 +1441,20 @@
         vizState.currentStep = 0;
         vizState.totalSteps = 0;
 
-        // Generate steps based on problem type (use problemId for specificity)
+        // Try to generate steps from embedded viz-config first
+        if (vizConfig) {
+            var configSteps = generateStepsFromConfig(vizConfig, selectedExampleIndex);
+            if (configSteps && configSteps.length > 0) {
+                vizState.steps = configSteps;
+                vizState.totalSteps = configSteps.length;
+                vizState.currentStep = 0;
+                updateVisualization();
+                updateCallStack();
+                return;
+            }
+        }
+
+        // Fallback to hardcoded step generators
         vizState.steps = generateSteps(category, problemId);
         vizState.totalSteps = vizState.steps.length;
         vizState.currentStep = 0;
