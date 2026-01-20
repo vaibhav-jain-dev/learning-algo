@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="description" content="Learn Data Structures and Algorithms with interactive visualizations and hands-on practice">
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/static/css/styles.css" as="style">
+    <!-- Preconnect to external domains for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/static/css/styles.css" as="style">
 
     <!-- Critical CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
@@ -23,13 +29,20 @@
         window.addEventListener('load', function() {
             if (typeof tailwind !== 'undefined') {
                 tailwind.config = {
-                    darkMode: 'class',
                     theme: {
                         extend: {
                             colors: {
-                                gray: {
-                                    950: '#0a0a0f'
+                                brand: {
+                                    50: '#eff6ff',
+                                    100: '#dbeafe',
+                                    500: '#3b82f6',
+                                    600: '#2563eb',
+                                    700: '#1d4ed8'
                                 }
+                            },
+                            fontFamily: {
+                                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                                mono: ['JetBrains Mono', 'SF Mono', 'Monaco', 'monospace']
                             }
                         }
                     }
