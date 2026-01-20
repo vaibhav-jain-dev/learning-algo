@@ -5,10 +5,12 @@
 if (typeof window._pdfExportLoaded === 'undefined') {
 window._pdfExportLoaded = true;
 
-// Currently selected topic
-var selectedTopic = null;
+// Currently selected topics (can be multiple or all)
+var selectedTopics = [];
+var selectAllChecked = true;
 var topicsLoaded = false;
 var html2pdfLoaded = false;
+var allTopics = [];
 
 // Load html2pdf via lazy loader
 function loadHtml2PdfLib() {
@@ -70,6 +72,7 @@ async function fetchTopics() {
         if (!categoryList) return;
 
         categoryList.innerHTML = '';
+        allTopics = [];
 
         categories.forEach(category => {
             const categoryDiv = document.createElement('div');
@@ -80,29 +83,45 @@ async function fetchTopics() {
             `;
             categoryList.appendChild(categoryDiv);
 
-            // Populate topics
+            // Populate topics with checkboxes
             const topicsContainer = categoryDiv.querySelector('.pdf-topics');
             category.topics.forEach(topic => {
+                const topicData = {
+                    path: `${category.slug}/${topic.slug}`,
+                    name: topic.title
+                };
+                allTopics.push(topicData);
+
                 const label = document.createElement('label');
                 label.className = 'pdf-topic-item';
                 label.innerHTML = `
-                    <input type="radio" name="pdf-topic" value="${category.slug}/${topic.slug}" data-name="${topic.title}">
+                    <input type="checkbox" name="pdf-topic" value="${topicData.path}" data-name="${topic.title}" checked>
                     <span>${topic.title}</span>
                 `;
                 topicsContainer.appendChild(label);
 
                 // Add change listener
                 label.querySelector('input').addEventListener('change', function() {
-                    selectedTopic = {
-                        path: this.value,
-                        name: this.dataset.name
-                    };
-                    updateGenerateButton();
+                    updateSelectedTopics();
+                    updateSelectAllCheckbox();
                 });
             });
         });
 
+        // Setup select all checkbox handler
+        const selectAllCheckbox = document.getElementById('select-all-topics');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                selectAllChecked = this.checked;
+                document.querySelectorAll('input[name="pdf-topic"]').forEach(cb => {
+                    cb.checked = selectAllChecked;
+                });
+                updateSelectedTopics();
+            });
+        }
+
         topicsLoaded = true;
+        updateSelectedTopics();
     } catch (error) {
         console.error('Failed to fetch topics:', error);
         // Show error in modal
@@ -113,21 +132,67 @@ async function fetchTopics() {
     }
 }
 
+// Update selected topics array from checkboxes
+function updateSelectedTopics() {
+    selectedTopics = [];
+    document.querySelectorAll('input[name="pdf-topic"]:checked').forEach(cb => {
+        selectedTopics.push({
+            path: cb.value,
+            name: cb.dataset.name
+        });
+    });
+    updateGenerateButton();
+}
+
+// Update select all checkbox state based on individual selections
+function updateSelectAllCheckbox() {
+    const selectAllCheckbox = document.getElementById('select-all-topics');
+    const allCheckboxes = document.querySelectorAll('input[name="pdf-topic"]');
+    const checkedCheckboxes = document.querySelectorAll('input[name="pdf-topic"]:checked');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = allCheckboxes.length === checkedCheckboxes.length;
+        selectAllCheckbox.indeterminate = checkedCheckboxes.length > 0 && checkedCheckboxes.length < allCheckboxes.length;
+    }
+}
+
 // Update generate button state
 function updateGenerateButton() {
     const generateBtn = document.getElementById('generate-pdf-btn');
     const btnText = document.getElementById('pdf-btn-text');
+    const printBtn = document.getElementById('browser-print-btn');
 
     if (generateBtn && btnText) {
-        if (selectedTopic) {
+        if (selectedTopics.length > 0) {
             generateBtn.disabled = false;
-            btnText.textContent = `Export "${selectedTopic.name}"`;
+            if (selectedTopics.length === allTopics.length) {
+                btnText.textContent = 'Export All Topics';
+            } else if (selectedTopics.length === 1) {
+                btnText.textContent = `Export "${selectedTopics[0].name}"`;
+            } else {
+                btnText.textContent = `Export ${selectedTopics.length} Topics`;
+            }
         } else {
             generateBtn.disabled = true;
-            btnText.textContent = 'Select a topic';
+            btnText.textContent = 'Select topics';
         }
     }
+
+    if (printBtn) {
+        printBtn.disabled = selectedTopics.length === 0;
+    }
 }
+
+// Trigger browser print dialog
+function triggerBrowserPrint() {
+    closePdfModal();
+    setTimeout(() => {
+        window.print();
+    }, 100);
+}
+
+// Make triggerBrowserPrint globally accessible
+window.triggerBrowserPrint = triggerBrowserPrint;
 
 // Open PDF modal
 async function openPdfModal() {
@@ -148,15 +213,17 @@ function closePdfModal() {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
     }
-    // Reset selection
-    selectedTopic = null;
-    document.querySelectorAll('input[name="pdf-topic"]').forEach(r => r.checked = false);
-    updateGenerateButton();
 }
 
 // Generate PDF
 async function generatePdf() {
-    if (!selectedTopic) return;
+    if (selectedTopics.length === 0) return;
+
+    // For single topic, use the original flow
+    const selectedTopic = selectedTopics.length === 1 ? selectedTopics[0] : {
+        path: 'all',
+        name: selectedTopics.length === allTopics.length ? 'All Topics' : `${selectedTopics.length} Topics`
+    };
 
     const generateBtn = document.getElementById('generate-pdf-btn');
     const btnText = document.getElementById('pdf-btn-text');
