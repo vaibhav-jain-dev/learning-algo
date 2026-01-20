@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Merge Overlapping Intervals","algorithm":"sort-merge","complexity":{"time":"O(n log n)","space":"O(n)"},"examples":[{"input":{"intervals":[[1,2],[3,5],[4,7],[6,8],[9,10]]},"output":[[1,2],[3,8],[9,10]],"inputRaw":"[[1,2],[3,5],[4,7],[6,8],[9,10]]","outputRaw":"[[1,2],[3,8],[9,10]]"},{"input":{"intervals":[[1,3],[2,8],[9,10]]},"output":[[1,8],[9,10]],"inputRaw":"[[1,3],[2,8],[9,10]]","outputRaw":"[[1,8],[9,10]]"},{"input":{"intervals":[[1,10],[2,3],[4,5],[6,7]]},"output":[[1,10]],"inputRaw":"[[1,10],[2,3],[4,5],[6,7]]","outputRaw":"[[1,10]]"}]}
+</div>
+
 # Merge Overlapping Intervals
 
 **Difficulty:** Medium

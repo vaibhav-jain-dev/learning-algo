@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Subarray Sort","algorithm":"out-of-order-bounds","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[1,2,4,7,10,11,7,12,6,7,16,18,19]},"output":[3,9],"inputRaw":"array=[1,2,4,7,10,11,7,12,6,7,16,18,19]","outputRaw":"[3, 9]"},{"input":{"array":[1,2,3,4,5]},"output":[-1,-1],"inputRaw":"array=[1,2,3,4,5]","outputRaw":"[-1, -1] (sorted)"},{"input":{"array":[2,1]},"output":[0,1],"inputRaw":"array=[2,1]","outputRaw":"[0, 1]"}]}
+</div>
+
 # Subarray Sort
 
 **Difficulty:** Hard (Red)

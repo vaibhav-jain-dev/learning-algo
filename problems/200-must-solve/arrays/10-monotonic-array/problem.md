@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Monotonic Array","algorithm":"linear-scan","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[-1,-5,-10,-1100,-1100,-1101,-1102,-9001]},"output":true,"inputRaw":"array=[-1,-5,-10,-1100,-1100,-1101,-1102,-9001]","outputRaw":"true (non-increasing)"},{"input":{"array":[1,2,3,3,4,5]},"output":true,"inputRaw":"array=[1,2,3,3,4,5]","outputRaw":"true (non-decreasing)"},{"input":{"array":[1,2,1]},"output":false,"inputRaw":"array=[1,2,1]","outputRaw":"false"}]}
+</div>
+
 # Monotonic Array
 
 **Difficulty:** Medium (Blue)

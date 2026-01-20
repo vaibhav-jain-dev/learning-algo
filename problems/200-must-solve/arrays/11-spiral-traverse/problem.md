@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Spiral Traverse","algorithm":"spiral-matrix","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"matrix":[[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]]},"output":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],"inputRaw":"4x4 matrix","outputRaw":"[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]"},{"input":{"matrix":[[1,2,3],[8,9,4],[7,6,5]]},"output":[1,2,3,4,5,6,7,8,9],"inputRaw":"3x3 matrix","outputRaw":"[1,2,3,4,5,6,7,8,9]"}]}
+</div>
+
 # Spiral Traverse
 
 **Difficulty:** Medium (Blue)

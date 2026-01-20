@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Largest Range","algorithm":"hash-expansion","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"array":[1,11,3,0,15,5,2,4,10,7,12,6]},"output":[0,7],"inputRaw":"array=[1,11,3,0,15,5,2,4,10,7,12,6]","outputRaw":"[0, 7] (range length 8)"},{"input":{"array":[4,2,1,3]},"output":[1,4],"inputRaw":"array=[4,2,1,3]","outputRaw":"[1, 4]"},{"input":{"array":[8,4,2,10,3,6,7,9,1]},"output":[6,10],"inputRaw":"array=[8,4,2,10,3,6,7,9,1]","outputRaw":"[6, 10]"}]}
+</div>
+
 # Largest Range
 
 **Difficulty:** Hard (Red)

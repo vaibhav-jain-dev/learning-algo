@@ -22,66 +22,86 @@
     // Read embedded visualization config from loaded problem content
     function extractVizConfig(htmlContent) {
         // Try multiple approaches to find viz-config
+        console.log('[VizConfig] Searching for config in HTML content (length=' + htmlContent.length + ')');
 
-        // Approach 1: Look for <script type="application/json" id="viz-config">
-        var scriptMatch = htmlContent.match(/<script[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/script>/i);
-        if (scriptMatch) {
-            try {
-                return JSON.parse(scriptMatch[1]);
-            } catch (e) {
-                console.error('Failed to parse viz-config from script:', e);
-            }
-        }
-
-        // Approach 2: Look for <div id="viz-config" style="display:none">
+        // Approach 1: Look for <div id="viz-config" style="display:none"> (primary - most reliable)
         var divMatch = htmlContent.match(/<div[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/div>/i);
         if (divMatch) {
+            console.log('[VizConfig] Found div match, raw content:', divMatch[1].substring(0, 100) + '...');
             try {
                 // The content might be HTML encoded, decode it
-                var decoded = divMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
-                return JSON.parse(decoded);
+                var decoded = divMatch[1]
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&amp;/g, '&')
+                    .replace(/&quot;/g, '"')
+                    .replace(/&#34;/g, '"')
+                    .replace(/&#39;/g, "'")
+                    .trim();
+                var config = JSON.parse(decoded);
+                console.log('[VizConfig] Successfully parsed config:', config.name, '| Algorithm:', config.algorithm);
+                return config;
             } catch (e) {
-                console.error('Failed to parse viz-config from div:', e);
+                console.error('[VizConfig] Failed to parse viz-config from div:', e, 'Content:', divMatch[1].substring(0, 200));
             }
         }
 
-        // Approach 3: Look for code block with viz-config language
-        var codeMatch = htmlContent.match(/<code[^>]*class=["'][^"]*language-viz-config[^"]*["'][^>]*>([\s\S]*?)<\/code>/i);
-        if (codeMatch) {
+        // Approach 2: Look for <script type="application/json" id="viz-config">
+        var scriptMatch = htmlContent.match(/<script[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/script>/i);
+        if (scriptMatch) {
+            console.log('[VizConfig] Found script match');
             try {
-                var decoded = codeMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
-                return JSON.parse(decoded);
+                var config = JSON.parse(scriptMatch[1]);
+                console.log('[VizConfig] Successfully parsed config from script:', config.name);
+                return config;
             } catch (e) {
-                console.error('Failed to parse viz-config from code:', e);
+                console.error('[VizConfig] Failed to parse viz-config from script:', e);
             }
         }
 
-        // Approach 4: Look for pre block with viz-config class (most reliable for markdown)
-        var preMatch = htmlContent.match(/<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>/);
-        if (preMatch) {
-            // Check if first code block looks like JSON config
-            var content = preMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').trim();
-            if (content.startsWith('{') && content.includes('"algorithm"')) {
+        // Approach 3: Look for JSON object at the very start of the HTML (raw JSON)
+        var jsonStart = htmlContent.trim();
+        if (jsonStart.startsWith('{') && jsonStart.indexOf('"algorithm"') !== -1) {
+            // Find end of first JSON object
+            var braceCount = 0;
+            var jsonEnd = -1;
+            for (var i = 0; i < jsonStart.length && i < 5000; i++) {
+                if (jsonStart[i] === '{') braceCount++;
+                if (jsonStart[i] === '}') {
+                    braceCount--;
+                    if (braceCount === 0) {
+                        jsonEnd = i + 1;
+                        break;
+                    }
+                }
+            }
+            if (jsonEnd > 0) {
                 try {
-                    return JSON.parse(content);
+                    var config = JSON.parse(jsonStart.substring(0, jsonEnd));
+                    console.log('[VizConfig] Successfully parsed raw JSON config:', config.name);
+                    return config;
                 } catch (e) {
                     // Not valid JSON, continue
                 }
             }
         }
 
+        console.log('[VizConfig] No config found in HTML');
         return null;
     }
 
     // Generate visualization steps from embedded config
     function generateStepsFromConfig(config, exampleIndex) {
         if (!config || !config.examples || !config.examples[exampleIndex]) {
+            console.log('[VizConfig] No config or example found');
             return null;
         }
 
         var example = config.examples[exampleIndex];
         var algorithm = config.algorithm || 'generic';
         var complexity = config.complexity || { time: 'O(n)', space: 'O(1)' };
+
+        console.log('[VizConfig] Running algorithm:', algorithm, 'with example:', example);
 
         // Run the appropriate algorithm based on config
         switch (algorithm) {
@@ -93,9 +113,78 @@
                 return runMoveElementToEnd(example, config, complexity);
             case 'two-pointer-sorted-squared':
                 return runSortedSquaredArray(example, config, complexity);
+            case 'sort-three-sum':
+                return runThreeNumberSum(example, config, complexity);
+            case 'spiral-matrix':
+                return runSpiralTraverse(example, config, complexity);
+            case 'hash-counting':
+                return runTournamentWinner(example, config, complexity);
+            case 'greedy-change':
+                return runNonConstructibleChange(example, config, complexity);
+            case 'matrix-transpose':
+                return runMatrixTranspose(example, config, complexity);
+            case 'two-pointer-diff':
+                return runSmallestDifference(example, config, complexity);
+            case 'linear-scan':
+                return runMonotonicArray(example, config, complexity);
+            case 'prefix-suffix':
+                return runArrayOfProducts(example, config, complexity);
+            case 'index-marking':
+                return runFirstDuplicateValue(example, config, complexity);
+            case 'sort-merge':
+                return runMergeIntervals(example, config, complexity);
+            case 'peak-expansion':
+                return runLongestPeak(example, config, complexity);
+            case 'hash-pair-sum':
+            case 'out-of-order-bounds':
+            case 'hash-expansion':
             default:
-                return null;
+                // Generic visualization for algorithms without specific runners
+                return runGenericVisualization(example, config, complexity);
         }
+    }
+
+    // Generic visualization that shows input/output/complexity
+    function runGenericVisualization(example, config, complexity) {
+        var steps = [];
+        var inputStr = JSON.stringify(example.input, null, 2);
+        var outputStr = JSON.stringify(example.output);
+
+        steps.push({
+            vizType: 'generic',
+            status: 'Problem: ' + config.name,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Algorithm:</strong> ' + config.algorithm + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong><br>Time: <code>' + complexity.time + '</code><br>Space: <code>' + complexity.space + '</code></div>'
+        });
+
+        steps.push({
+            vizType: 'generic',
+            input: example.input,
+            status: 'Input',
+            explanation: '📥 <strong>Input:</strong><br><pre style="background:#161b22;padding:0.5rem;border-radius:4px;overflow-x:auto;">' +
+                (example.inputRaw || inputStr) + '</pre>'
+        });
+
+        steps.push({
+            vizType: 'generic',
+            output: example.output,
+            status: 'Processing...',
+            explanation: '⚙️ <strong>Algorithm executing...</strong><br><br>' +
+                'The algorithm processes the input according to the ' + config.algorithm + ' pattern.'
+        });
+
+        steps.push({
+            vizType: 'generic',
+            output: example.output,
+            status: 'Output: ' + (example.outputRaw || outputStr),
+            explanation: '📤 <strong>Output:</strong><br><pre style="background:#161b22;padding:0.5rem;border-radius:4px;overflow-x:auto;">' +
+                (example.outputRaw || outputStr) + '</pre><br><br>' +
+                '✅ <strong>Complete!</strong>'
+        });
+
+        return steps;
     }
 
     // Algorithm: Validate Subsequence (Two Pointer)
@@ -295,6 +384,646 @@
 
             if (useLeft) left++; else right--;
         }
+
+        return steps;
+    }
+
+    // Algorithm: Three Number Sum (Sort + Two Pointers)
+    function runThreeNumberSum(example, config, complexity) {
+        var arr = example.input.array.slice().sort(function(a, b) { return a - b; });
+        var target = example.input.targetSum;
+        var expected = example.output;
+        var steps = [];
+        var triplets = [];
+
+        steps.push({
+            array: arr,
+            triplets: [],
+            vizType: 'three-pointer',
+            status: 'Sort array, then fix i, use two pointers',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Sorted:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Target:</strong> ' + target + '<br>' +
+                '<strong>Expected:</strong> ' + JSON.stringify(expected) + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < arr.length - 2; i++) {
+            var left = i + 1;
+            var right = arr.length - 1;
+
+            while (left < right) {
+                var sum = arr[i] + arr[left] + arr[right];
+                var found = sum === target;
+
+                if (found) {
+                    triplets.push([arr[i], arr[left], arr[right]]);
+                }
+
+                steps.push({
+                    array: arr,
+                    i: i,
+                    left: left,
+                    right: right,
+                    sum: sum,
+                    triplets: triplets.slice(),
+                    vizType: 'three-pointer',
+                    status: found ? '✓ Found: [' + arr[i] + ',' + arr[left] + ',' + arr[right] + ']' : 'Sum=' + sum + (sum < target ? ' < ' : ' > ') + target,
+                    explanation: found ?
+                        '✅ <strong>Triplet Found!</strong><br>' + arr[i] + ' + ' + arr[left] + ' + ' + arr[right] + ' = ' + target :
+                        '🔍 i=' + i + ' (' + arr[i] + '), L=' + left + ' (' + arr[left] + '), R=' + right + ' (' + arr[right] + ')<br>Sum=' + sum + (sum < target ? ' → move L right' : ' → move R left')
+                });
+
+                if (sum === target) { left++; right--; }
+                else if (sum < target) { left++; }
+                else { right--; }
+
+                if (steps.length > 20) break; // Limit steps for large arrays
+            }
+            if (steps.length > 20) break;
+        }
+
+        steps.push({
+            array: arr,
+            triplets: triplets,
+            vizType: 'three-pointer',
+            status: 'Result: ' + triplets.length + ' triplets',
+            explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(triplets)
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Spiral Traverse
+    function runSpiralTraverse(example, config, complexity) {
+        var matrix = example.input.matrix;
+        var expected = example.output;
+        var steps = [];
+        var result = [];
+
+        var startRow = 0, endRow = matrix.length - 1;
+        var startCol = 0, endCol = matrix[0].length - 1;
+
+        steps.push({
+            matrix: matrix,
+            result: [],
+            vizType: 'spiral-matrix',
+            status: 'Spiral from outside to inside',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Matrix:</strong> ' + matrix.length + 'x' + matrix[0].length + '<br>' +
+                '<strong>Expected:</strong> [' + expected.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        while (startRow <= endRow && startCol <= endCol) {
+            // Right
+            for (var col = startCol; col <= endCol; col++) {
+                result.push(matrix[startRow][col]);
+            }
+            startRow++;
+
+            // Down
+            for (var row = startRow; row <= endRow; row++) {
+                result.push(matrix[row][endCol]);
+            }
+            endCol--;
+
+            if (startRow <= endRow) {
+                // Left
+                for (var col = endCol; col >= startCol; col--) {
+                    result.push(matrix[endRow][col]);
+                }
+                endRow--;
+            }
+
+            if (startCol <= endCol) {
+                // Up
+                for (var row = endRow; row >= startRow; row--) {
+                    result.push(matrix[row][startCol]);
+                }
+                startCol++;
+            }
+
+            steps.push({
+                matrix: matrix,
+                result: result.slice(),
+                bounds: { startRow: startRow, endRow: endRow, startCol: startCol, endCol: endCol },
+                vizType: 'spiral-matrix',
+                status: 'Layer complete: ' + result.length + ' elements',
+                explanation: '🔄 <strong>Layer Done</strong><br>Result so far: [' + result.slice(-8).join(', ') + (result.length > 8 ? '...' : '') + ']'
+            });
+
+            if (steps.length > 10) break;
+        }
+
+        steps.push({
+            matrix: matrix,
+            result: result,
+            vizType: 'spiral-matrix',
+            status: 'Complete!',
+            explanation: '✅ <strong>Result:</strong> [' + result.join(', ') + ']'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Tournament Winner (Hash Counting)
+    function runTournamentWinner(example, config, complexity) {
+        var competitions = example.input.competitions;
+        var results = example.input.results;
+        var expected = example.output;
+        var steps = [];
+        var scores = {};
+        var currentBest = '';
+
+        steps.push({
+            vizType: 'hash-table',
+            scores: {},
+            status: 'Initialize tournament scoring',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Competitions:</strong> ' + competitions.length + ' matches<br>' +
+                '<strong>Expected Winner:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < competitions.length; i++) {
+            var home = competitions[i][0];
+            var away = competitions[i][1];
+            var winner = results[i] === 1 ? home : away;
+
+            scores[winner] = (scores[winner] || 0) + 3;
+            if (!currentBest || scores[winner] > scores[currentBest]) {
+                currentBest = winner;
+            }
+
+            steps.push({
+                vizType: 'hash-table',
+                scores: Object.assign({}, scores),
+                currentBest: currentBest,
+                match: { home: home, away: away, winner: winner },
+                status: 'Match ' + (i + 1) + ': ' + winner + ' wins!',
+                explanation: '🏆 <strong>Match ' + (i + 1) + ':</strong> ' + home + ' vs ' + away + '<br>' +
+                    'Winner: <strong>' + winner + '</strong> (+3 points)<br>' +
+                    'Current scores: ' + JSON.stringify(scores) + '<br>' +
+                    'Current leader: <strong>' + currentBest + '</strong>'
+            });
+        }
+
+        steps.push({
+            vizType: 'hash-table',
+            scores: scores,
+            currentBest: currentBest,
+            status: 'Winner: ' + currentBest,
+            explanation: '🏆 <strong>Tournament Complete!</strong><br><br>Final scores: ' + JSON.stringify(scores) + '<br><br>Winner: <strong>' + currentBest + '</strong>'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Non-Constructible Change (Greedy)
+    function runNonConstructibleChange(example, config, complexity) {
+        var coins = example.input.coins.slice().sort(function(a, b) { return a - b; });
+        var expected = example.output;
+        var steps = [];
+        var currentChange = 0;
+
+        steps.push({
+            vizType: 'array-scan',
+            array: coins,
+            currentChange: 0,
+            status: 'Sort coins: [' + coins.join(', ') + ']',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Sorted coins:</strong> [' + coins.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < coins.length; i++) {
+            if (coins[i] > currentChange + 1) {
+                steps.push({
+                    vizType: 'array-scan',
+                    array: coins,
+                    currentIdx: i,
+                    currentChange: currentChange,
+                    status: 'Found! Cannot make ' + (currentChange + 1),
+                    explanation: '❌ <strong>Gap found!</strong><br>Coin ' + coins[i] + ' > ' + (currentChange + 1) + '<br>Cannot make: <strong>' + (currentChange + 1) + '</strong>'
+                });
+                return steps;
+            }
+            currentChange += coins[i];
+            steps.push({
+                vizType: 'array-scan',
+                array: coins,
+                currentIdx: i,
+                currentChange: currentChange,
+                status: 'Can make 1 to ' + currentChange,
+                explanation: '✅ Added coin ' + coins[i] + '<br>Can now make: 1 to ' + currentChange
+            });
+        }
+
+        steps.push({
+            vizType: 'array-scan',
+            array: coins,
+            currentChange: currentChange,
+            status: 'Result: ' + (currentChange + 1),
+            explanation: '✅ <strong>Complete!</strong><br>Cannot make: <strong>' + (currentChange + 1) + '</strong>'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Matrix Transpose
+    function runMatrixTranspose(example, config, complexity) {
+        var matrix = example.input.matrix;
+        var expected = example.output;
+        var steps = [];
+        var rows = matrix.length;
+        var cols = matrix[0].length;
+        var result = [];
+
+        for (var i = 0; i < cols; i++) {
+            result.push(new Array(rows));
+        }
+
+        steps.push({
+            vizType: 'matrix',
+            matrix: matrix,
+            result: result,
+            status: 'Transpose ' + rows + 'x' + cols + ' → ' + cols + 'x' + rows,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Original:</strong> ' + rows + 'x' + cols + '<br>' +
+                '<strong>Transposed:</strong> ' + cols + 'x' + rows + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < cols; j++) {
+                result[j][i] = matrix[i][j];
+            }
+            steps.push({
+                vizType: 'matrix',
+                matrix: matrix,
+                result: result.map(function(r) { return r.slice(); }),
+                currentRow: i,
+                status: 'Row ' + i + ' → Column ' + i,
+                explanation: '🔄 Copying row ' + i + ' to column ' + i + '<br>result[j][' + i + '] = matrix[' + i + '][j]'
+            });
+        }
+
+        steps.push({
+            vizType: 'matrix',
+            matrix: matrix,
+            result: result,
+            status: 'Complete!',
+            explanation: '✅ <strong>Transposed!</strong><br>' + JSON.stringify(result)
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Smallest Difference (Two Pointer)
+    function runSmallestDifference(example, config, complexity) {
+        var arr1 = example.input.arrayOne.slice().sort(function(a, b) { return a - b; });
+        var arr2 = example.input.arrayTwo.slice().sort(function(a, b) { return a - b; });
+        var expected = example.output;
+        var steps = [];
+        var i = 0, j = 0;
+        var smallest = Infinity;
+        var pair = [];
+
+        steps.push({
+            vizType: 'two-arrays',
+            arr1: arr1,
+            arr2: arr2,
+            status: 'Sort both arrays',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Sorted arr1:</strong> [' + arr1.join(', ') + ']<br>' +
+                '<strong>Sorted arr2:</strong> [' + arr2.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        while (i < arr1.length && j < arr2.length) {
+            var diff = Math.abs(arr1[i] - arr2[j]);
+            if (diff < smallest) {
+                smallest = diff;
+                pair = [arr1[i], arr2[j]];
+            }
+
+            steps.push({
+                vizType: 'two-arrays',
+                arr1: arr1,
+                arr2: arr2,
+                idx1: i,
+                idx2: j,
+                smallest: smallest,
+                pair: pair.slice(),
+                status: '|' + arr1[i] + ' - ' + arr2[j] + '| = ' + diff,
+                explanation: '🔍 Comparing arr1[' + i + ']=' + arr1[i] + ' and arr2[' + j + ']=' + arr2[j] + '<br>Difference: ' + diff + '<br>Best so far: ' + smallest + ' → [' + pair.join(', ') + ']'
+            });
+
+            if (arr1[i] < arr2[j]) i++;
+            else if (arr1[i] > arr2[j]) j++;
+            else break;
+
+            if (steps.length > 15) break;
+        }
+
+        steps.push({
+            vizType: 'two-arrays',
+            arr1: arr1,
+            arr2: arr2,
+            pair: pair,
+            smallest: smallest,
+            status: 'Result: [' + pair.join(', ') + ']',
+            explanation: '✅ <strong>Complete!</strong><br>Smallest difference: ' + smallest + '<br>Pair: [' + pair.join(', ') + ']'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Monotonic Array (Linear Scan)
+    function runMonotonicArray(example, config, complexity) {
+        var arr = example.input.array;
+        var expected = example.output;
+        var steps = [];
+        var isIncreasing = true;
+        var isDecreasing = true;
+
+        steps.push({
+            vizType: 'array-scan',
+            array: arr,
+            status: 'Check if monotonic',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Array:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] > arr[i-1]) isDecreasing = false;
+            if (arr[i] < arr[i-1]) isIncreasing = false;
+
+            steps.push({
+                vizType: 'array-scan',
+                array: arr,
+                currentIdx: i,
+                isIncreasing: isIncreasing,
+                isDecreasing: isDecreasing,
+                status: arr[i-1] + (arr[i] > arr[i-1] ? ' < ' : arr[i] < arr[i-1] ? ' > ' : ' = ') + arr[i],
+                explanation: '🔍 Compare arr[' + (i-1) + ']=' + arr[i-1] + ' and arr[' + i + ']=' + arr[i] + '<br>' +
+                    'Still increasing: ' + isIncreasing + '<br>Still decreasing: ' + isDecreasing
+            });
+
+            if (!isIncreasing && !isDecreasing) break;
+        }
+
+        var result = isIncreasing || isDecreasing;
+        steps.push({
+            vizType: 'array-scan',
+            array: arr,
+            isIncreasing: isIncreasing,
+            isDecreasing: isDecreasing,
+            status: result ? 'Yes! Monotonic' : 'No! Not monotonic',
+            explanation: result ?
+                '✅ <strong>Monotonic!</strong><br>' + (isIncreasing ? 'Non-decreasing' : 'Non-increasing') :
+                '❌ <strong>Not monotonic</strong><br>Array goes both up and down'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Array of Products (Prefix-Suffix)
+    function runArrayOfProducts(example, config, complexity) {
+        var arr = example.input.array;
+        var expected = example.output;
+        var steps = [];
+        var n = arr.length;
+        var result = new Array(n).fill(1);
+        var prefix = 1;
+
+        steps.push({
+            vizType: 'array-products',
+            array: arr,
+            result: result.slice(),
+            status: 'Calculate prefix products',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Array:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> [' + expected.join(', ') + ']<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        // Left pass
+        for (var i = 0; i < n; i++) {
+            result[i] = prefix;
+            prefix *= arr[i];
+            steps.push({
+                vizType: 'array-products',
+                array: arr,
+                result: result.slice(),
+                currentIdx: i,
+                status: 'Left pass: result[' + i + '] = ' + result[i],
+                explanation: '→ <strong>Left pass</strong><br>result[' + i + '] = ' + result[i] + ' (product of left elements)'
+            });
+        }
+
+        // Right pass
+        var suffix = 1;
+        for (var i = n - 1; i >= 0; i--) {
+            result[i] *= suffix;
+            suffix *= arr[i];
+            steps.push({
+                vizType: 'array-products',
+                array: arr,
+                result: result.slice(),
+                currentIdx: i,
+                status: 'Right pass: result[' + i + '] = ' + result[i],
+                explanation: '← <strong>Right pass</strong><br>result[' + i + '] = ' + result[i] + ' (multiplied by right products)'
+            });
+        }
+
+        steps.push({
+            vizType: 'array-products',
+            array: arr,
+            result: result,
+            status: 'Complete!',
+            explanation: '✅ <strong>Result:</strong> [' + result.join(', ') + ']'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: First Duplicate Value (Index Marking)
+    function runFirstDuplicateValue(example, config, complexity) {
+        var arr = example.input.array.slice();
+        var expected = example.output;
+        var steps = [];
+
+        steps.push({
+            vizType: 'array-marking',
+            array: arr.slice(),
+            status: 'Find first duplicate',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Array:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < arr.length; i++) {
+            var absVal = Math.abs(arr[i]);
+            var idx = absVal - 1;
+
+            if (arr[idx] < 0) {
+                steps.push({
+                    vizType: 'array-marking',
+                    array: arr.slice(),
+                    currentIdx: i,
+                    found: absVal,
+                    status: 'Found duplicate: ' + absVal,
+                    explanation: '✅ <strong>Found!</strong><br>Value ' + absVal + ' seen before (arr[' + idx + '] is negative)'
+                });
+                return steps;
+            }
+
+            arr[idx] = -arr[idx];
+            steps.push({
+                vizType: 'array-marking',
+                array: arr.slice(),
+                currentIdx: i,
+                marked: idx,
+                status: 'Mark index ' + idx + ' (value ' + absVal + ')',
+                explanation: '🔖 Marking index ' + idx + ' as seen (negating arr[' + idx + '])'
+            });
+        }
+
+        steps.push({
+            vizType: 'array-marking',
+            array: arr,
+            status: 'No duplicates: -1',
+            explanation: '❌ <strong>No duplicates found</strong><br>Result: -1'
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Merge Intervals (Sort and Merge)
+    function runMergeIntervals(example, config, complexity) {
+        var intervals = example.input.intervals.slice().sort(function(a, b) { return a[0] - b[0]; });
+        var expected = example.output;
+        var steps = [];
+        var merged = [intervals[0].slice()];
+
+        steps.push({
+            vizType: 'intervals',
+            intervals: intervals,
+            merged: merged.slice(),
+            status: 'Sort by start time',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Sorted intervals:</strong> ' + JSON.stringify(intervals) + '<br>' +
+                '<strong>Expected:</strong> ' + JSON.stringify(expected) + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 1; i < intervals.length; i++) {
+            var last = merged[merged.length - 1];
+            var curr = intervals[i];
+
+            if (curr[0] <= last[1]) {
+                last[1] = Math.max(last[1], curr[1]);
+                steps.push({
+                    vizType: 'intervals',
+                    intervals: intervals,
+                    merged: merged.map(function(m) { return m.slice(); }),
+                    currentIdx: i,
+                    status: 'Merge: [' + last[0] + ',' + last[1] + ']',
+                    explanation: '🔗 <strong>Merge!</strong><br>[' + curr[0] + ',' + curr[1] + '] overlaps with [' + last[0] + ',' + last[1] + ']'
+                });
+            } else {
+                merged.push(curr.slice());
+                steps.push({
+                    vizType: 'intervals',
+                    intervals: intervals,
+                    merged: merged.map(function(m) { return m.slice(); }),
+                    currentIdx: i,
+                    status: 'Add: [' + curr[0] + ',' + curr[1] + ']',
+                    explanation: '➕ <strong>No overlap</strong><br>Add [' + curr[0] + ',' + curr[1] + '] as new interval'
+                });
+            }
+        }
+
+        steps.push({
+            vizType: 'intervals',
+            merged: merged,
+            status: 'Result: ' + merged.length + ' intervals',
+            explanation: '✅ <strong>Complete!</strong><br>Merged: ' + JSON.stringify(merged)
+        });
+
+        return steps;
+    }
+
+    // Algorithm: Longest Peak
+    function runLongestPeak(example, config, complexity) {
+        var arr = example.input.array;
+        var expected = example.output;
+        var steps = [];
+        var longestPeak = 0;
+
+        steps.push({
+            vizType: 'array-peak',
+            array: arr,
+            status: 'Find longest peak',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Array:</strong> [' + arr.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 1; i < arr.length - 1; i++) {
+            if (arr[i] > arr[i - 1] && arr[i] > arr[i + 1]) {
+                // Found a peak tip
+                var left = i - 1;
+                var right = i + 1;
+
+                while (left > 0 && arr[left] > arr[left - 1]) left--;
+                while (right < arr.length - 1 && arr[right] > arr[right + 1]) right++;
+
+                var peakLen = right - left + 1;
+                if (peakLen > longestPeak) {
+                    longestPeak = peakLen;
+                }
+
+                steps.push({
+                    vizType: 'array-peak',
+                    array: arr,
+                    peakTip: i,
+                    peakStart: left,
+                    peakEnd: right,
+                    longestPeak: longestPeak,
+                    status: 'Peak at ' + i + ', length ' + peakLen,
+                    explanation: '⛰️ <strong>Peak found!</strong><br>Tip at index ' + i + ' (value ' + arr[i] + ')<br>Range: [' + left + ',' + right + '], Length: ' + peakLen + '<br>Longest so far: ' + longestPeak
+                });
+
+                i = right;
+            }
+        }
+
+        steps.push({
+            vizType: 'array-peak',
+            array: arr,
+            longestPeak: longestPeak,
+            status: 'Result: ' + longestPeak,
+            explanation: '✅ <strong>Complete!</strong><br>Longest peak length: ' + longestPeak
+        });
 
         return steps;
     }
@@ -1368,7 +2097,7 @@
     function buildVisualizationContainer(category, problemId) {
         var animType = getAnimationType(category, problemId);
 
-        // Build example selector dropdown
+        // Build example selector dropdown with distinct labels
         var exampleSelectorHtml = '';
         if (currentExamples.length > 0) {
             exampleSelectorHtml = '<select id="viz-example-selector" onchange="window.selectVisualizationExample(this.value)" ' +
@@ -1376,11 +2105,29 @@
             for (var i = 0; i < currentExamples.length; i++) {
                 var ex = currentExamples[i];
                 var label = 'Example ' + (i + 1);
-                if (ex.inputRaw) {
-                    // Show abbreviated input
-                    var shortInput = ex.inputRaw.substring(0, 30);
-                    if (ex.inputRaw.length > 30) shortInput += '...';
-                    label += ': ' + shortInput;
+                // Try to create a distinctive label using output or key parts of input
+                if (ex.outputRaw) {
+                    var outStr = ex.outputRaw.toString();
+                    if (outStr.length <= 20) {
+                        label += ' → ' + outStr;
+                    } else {
+                        label += ' → ' + outStr.substring(0, 18) + '...';
+                    }
+                } else if (ex.inputRaw) {
+                    // Show last part of input (often more distinctive)
+                    var inStr = ex.inputRaw;
+                    // Try to find a distinctive part (after comma or =)
+                    var parts = inStr.split(', ');
+                    if (parts.length > 1) {
+                        // Show last parameter which is often different
+                        var lastPart = parts[parts.length - 1];
+                        if (lastPart.length > 25) lastPart = lastPart.substring(0, 23) + '...';
+                        label += ': ' + lastPart;
+                    } else {
+                        var shortInput = inStr.substring(0, 25);
+                        if (inStr.length > 25) shortInput += '...';
+                        label += ': ' + shortInput;
+                    }
                 }
                 exampleSelectorHtml += '<option value="' + i + '"' + (i === selectedExampleIndex ? ' selected' : '') + '>' + label + '</option>';
             }

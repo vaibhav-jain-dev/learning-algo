@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Three Number Sum","algorithm":"sort-three-sum","complexity":{"time":"O(n²)","space":"O(n)"},"examples":[{"input":{"array":[12,3,1,2,-6,5,-8,6],"targetSum":0},"output":[[-8,2,6],[-8,3,5],[-6,1,5]],"inputRaw":"array=[12,3,1,2,-6,5,-8,6], targetSum=0","outputRaw":"[[-8,2,6],[-8,3,5],[-6,1,5]]"},{"input":{"array":[1,2,3],"targetSum":6},"output":[[1,2,3]],"inputRaw":"array=[1,2,3], targetSum=6","outputRaw":"[[1,2,3]]"},{"input":{"array":[1,2,3,4,5],"targetSum":100},"output":[],"inputRaw":"array=[1,2,3,4,5], targetSum=100","outputRaw":"[]"}]}
+</div>
+
 # Three Number Sum
 
 **Difficulty:** Medium (Blue)

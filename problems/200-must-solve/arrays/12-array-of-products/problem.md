@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Array of Products","algorithm":"prefix-suffix","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"array":[5,1,4,2]},"output":[8,40,10,20],"inputRaw":"array=[5,1,4,2]","outputRaw":"[8,40,10,20]"},{"input":{"array":[1,2,3,4,5]},"output":[120,60,40,30,24],"inputRaw":"array=[1,2,3,4,5]","outputRaw":"[120,60,40,30,24]"},{"input":{"array":[-5,2,-4,14,-6]},"output":[672,-1680,840,-240,560],"inputRaw":"array=[-5,2,-4,14,-6]","outputRaw":"[672,-1680,840,-240,560]"}]}
+</div>
+
 # Array of Products
 
 **Difficulty:** Medium

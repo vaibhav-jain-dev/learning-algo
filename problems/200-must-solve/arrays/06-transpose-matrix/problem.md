@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Transpose Matrix","algorithm":"matrix-transpose","complexity":{"time":"O(m*n)","space":"O(m*n)"},"examples":[{"input":{"matrix":[[1,2],[3,4],[5,6]]},"output":[[1,3,5],[2,4,6]],"inputRaw":"3x2 matrix","outputRaw":"2x3 matrix"},{"input":{"matrix":[[1,2,3],[4,5,6],[7,8,9]]},"output":[[1,4,7],[2,5,8],[3,6,9]],"inputRaw":"3x3 matrix","outputRaw":"3x3 matrix"}]}
+</div>
+
 # Transpose Matrix
 
 **Difficulty:** Easy (Green)

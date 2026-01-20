@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Smallest Difference","algorithm":"two-pointer-diff","complexity":{"time":"O(n log n + m log m)","space":"O(1)"},"examples":[{"input":{"arrayOne":[-1,5,10,20,28,3],"arrayTwo":[26,134,135,15,17]},"output":[28,26],"inputRaw":"arr1=[-1,5,10,20,28,3], arr2=[26,134,135,15,17]","outputRaw":"[28, 26]"},{"input":{"arrayOne":[10,1000],"arrayTwo":[1001,11]},"output":[1000,1001],"inputRaw":"arr1=[10,1000], arr2=[1001,11]","outputRaw":"[1000, 1001]"}]}
+</div>
+
 # Smallest Difference
 
 **Difficulty:** Medium (Blue)

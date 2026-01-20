@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"First Duplicate Value","algorithm":"index-marking","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[2,1,5,2,3,3,4]},"output":2,"inputRaw":"array=[2,1,5,2,3,3,4]","outputRaw":"2"},{"input":{"array":[2,1,5,3,3,2,4]},"output":3,"inputRaw":"array=[2,1,5,3,3,2,4]","outputRaw":"3"},{"input":{"array":[1,2,3,4,5]},"output":-1,"inputRaw":"array=[1,2,3,4,5]","outputRaw":"-1 (no duplicates)"},{"input":{"array":[1,1,2,3,3,2,2]},"output":1,"inputRaw":"array=[1,1,2,3,3,2,2]","outputRaw":"1"}]}
+</div>
+
 # First Duplicate Value
 
 **Difficulty:** Medium

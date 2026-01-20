@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Four Number Sum","algorithm":"hash-pair-sum","complexity":{"time":"O(n²)","space":"O(n²)"},"examples":[{"input":{"array":[7,6,4,-1,1,2],"targetSum":16},"output":[[7,6,4,-1],[7,6,1,2]],"inputRaw":"array=[7,6,4,-1,1,2], target=16","outputRaw":"[[7,6,4,-1],[7,6,1,2]]"},{"input":{"array":[1,2,3,4,5,6,7],"targetSum":10},"output":[[1,2,3,4]],"inputRaw":"array=[1,2,3,4,5,6,7], target=10","outputRaw":"[[1,2,3,4]]"}]}
+</div>
+
 # Four Number Sum
 
 **Difficulty:** Hard (Red)

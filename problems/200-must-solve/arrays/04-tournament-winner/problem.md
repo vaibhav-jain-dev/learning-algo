@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Tournament Winner","algorithm":"hash-counting","complexity":{"time":"O(n)","space":"O(k)"},"examples":[{"input":{"competitions":[["HTML","C#"],["C#","Python"],["Python","HTML"]],"results":[0,0,1]},"output":"Python","inputRaw":"competitions=[['HTML','C#'],['C#','Python'],['Python','HTML']], results=[0,0,1]","outputRaw":"Python"},{"input":{"competitions":[["A","B"],["B","C"],["C","A"]],"results":[1,1,1]},"output":"A","inputRaw":"competitions=[['A','B'],['B','C'],['C','A']], results=[1,1,1]","outputRaw":"A"}]}
+</div>
+
 # Tournament Winner
 
 **Difficulty:** Easy (Green)

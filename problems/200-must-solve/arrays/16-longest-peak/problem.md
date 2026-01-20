@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Longest Peak","algorithm":"peak-expansion","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[1,2,3,3,4,0,10,6,5,-1,-3,2,3]},"output":6,"inputRaw":"array=[1,2,3,3,4,0,10,6,5,-1,-3,2,3]","outputRaw":"6 (peak: [0,10,6,5,-1,-3])"},{"input":{"array":[1,3,2]},"output":3,"inputRaw":"array=[1,3,2]","outputRaw":"3"},{"input":{"array":[1,2,3,4,5]},"output":0,"inputRaw":"array=[1,2,3,4,5]","outputRaw":"0 (no peak)"}]}
+</div>
+
 # Longest Peak
 
 **Difficulty:** Medium (Blue)

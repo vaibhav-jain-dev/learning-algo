@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Sorted Squared Array","algorithm":"two-pointer-sorted-squared","complexity":{"time":"O(n)","space":"O(n)"},"examples":[{"input":{"array":[1,2,3,5,6,8,9]},"output":[1,4,9,25,36,64,81],"inputRaw":"array=[1,2,3,5,6,8,9]","outputRaw":"[1,4,9,25,36,64,81]"},{"input":{"array":[-5,-4,-3,-2,-1]},"output":[1,4,9,16,25],"inputRaw":"array=[-5,-4,-3,-2,-1]","outputRaw":"[1,4,9,16,25]"},{"input":{"array":[-7,-3,1,9,22,30]},"output":[1,9,49,81,484,900],"inputRaw":"array=[-7,-3,1,9,22,30]","outputRaw":"[1,9,49,81,484,900]"}]}
+</div>
+
 # Sorted Squared Array
 
 **Difficulty:** Easy (Green)

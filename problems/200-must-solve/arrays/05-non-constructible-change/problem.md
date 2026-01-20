@@ -1,3 +1,7 @@
+<div id="viz-config" style="display:none">
+{"name":"Non-Constructible Change","algorithm":"greedy-change","complexity":{"time":"O(n log n)","space":"O(1)"},"examples":[{"input":{"coins":[5,7,1,1,2,3,22]},"output":20,"inputRaw":"coins=[5,7,1,1,2,3,22]","outputRaw":"20"},{"input":{"coins":[1,1,1,1,1]},"output":6,"inputRaw":"coins=[1,1,1,1,1]","outputRaw":"6"},{"input":{"coins":[1,5,1,1,1,10,15,20,100]},"output":55,"inputRaw":"coins=[1,5,1,1,1,10,15,20,100]","outputRaw":"55"}]}
+</div>
+
 # Non-Constructible Change
 
 **Difficulty:** Easy (Green)
