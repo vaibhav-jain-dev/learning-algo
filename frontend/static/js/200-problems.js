@@ -145,6 +145,7 @@
                 return runGraphBFS(example, config, complexity);
             case 'flood-fill':
             case 'cycle-detection':
+            case 'graph-cycle':
             case 'graph-coloring':
                 return runGraphGeneric(example, config, complexity);
 
@@ -181,6 +182,8 @@
             case 'recursion-backtrack':
             case 'recursion-divide':
                 return runRecursionGeneric(example, config, complexity);
+            case 'recursion-minesweeper':
+                return runMinesweeperVisualization(example, config, complexity);
 
             // Dynamic Programming algorithms
             case 'dp-coin-change':
@@ -206,6 +209,7 @@
             // Famous algorithms
             case 'dijkstra':
             case 'kruskal':
+            case 'kruskals-algorithm':
             case 'prim':
             case 'a-star':
             case 'topological-sort':
@@ -1397,6 +1401,73 @@
     function runGraphGeneric(example, config, complexity) {
         var steps = [];
         var tree = example.input.tree || example.input.graph || example.input.matrix;
+        var adjList = example.input.edges; // Adjacency list format
+
+        // Handle adjacency list format (e.g., edges = [[1,3],[2,3,4],[0],[],[2,5],[]])
+        if (adjList && Array.isArray(adjList) && Array.isArray(adjList[0])) {
+            var nodes = [];
+            var edges = [];
+
+            // Create nodes for each index in adjacency list
+            for (var i = 0; i < adjList.length; i++) {
+                nodes.push({ id: 'node_' + i, label: String(i), value: i });
+            }
+
+            // Create edges from adjacency list
+            for (var i = 0; i < adjList.length; i++) {
+                var neighbors = adjList[i];
+                for (var j = 0; j < neighbors.length; j++) {
+                    edges.push({ from: 'node_' + i, to: 'node_' + neighbors[j] });
+                }
+            }
+
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: [],
+                queue: [],
+                status: 'Graph: ' + config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
+                    '<strong>Nodes:</strong> ' + nodes.length + '<br>' +
+                    '<strong>Edges:</strong> ' + edges.length + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || JSON.stringify(example.input)) + '<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Show traversal animation
+            for (var i = 0; i < Math.min(nodes.length, 8); i++) {
+                var visitedSoFar = [];
+                for (var k = 0; k <= i; k++) {
+                    visitedSoFar.push('node_' + k);
+                }
+                steps.push({
+                    vizType: 'graph',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: visitedSoFar,
+                    current: 'node_' + i,
+                    queue: [],
+                    status: 'Visiting node ' + i,
+                    explanation: '🔍 <strong>Processing node ' + i + '</strong><br>Checking neighbors: [' + adjList[i].join(', ') + ']'
+                });
+            }
+
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: nodes.map(function(n) { return n.id; }),
+                queue: [],
+                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
 
         if (tree && typeof tree === 'object') {
             var nodes = [];
@@ -1565,7 +1636,7 @@
     // Generic Linked List Visualization
     function runLinkedListGeneric(example, config, complexity) {
         var steps = [];
-        var list = example.input.list || example.input.head || example.input.linkedList;
+        var list = example.input.list || example.input.head || example.input.linkedList || example.input.initialList;
 
         if (list && Array.isArray(list)) {
             var nodes = list.map(function(val, idx) {
@@ -1978,6 +2049,80 @@
         return steps;
     }
 
+    // Minesweeper Board Visualization
+    function runMinesweeperVisualization(example, config, complexity) {
+        var steps = [];
+        var board = example.input.board;
+        var click = example.input.click;
+        var output = example.output;
+
+        if (!board || !Array.isArray(board)) {
+            return runGenericVisualization(example, config, complexity);
+        }
+
+        // Initial board state
+        steps.push({
+            vizType: 'matrix',
+            matrix: board,
+            currentRow: click ? click[0] : -1,
+            currentCol: click ? click[1] : -1,
+            status: config.name,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Board Size:</strong> ' + board.length + ' x ' + board[0].length + '<br>' +
+                '<strong>Click Position:</strong> [' + (click ? click.join(', ') : 'none') + ']<br>' +
+                '<strong>Expected:</strong> ' + (example.outputRaw || 'Revealed board') + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        // Show click position
+        if (click) {
+            steps.push({
+                vizType: 'matrix',
+                matrix: board,
+                currentRow: click[0],
+                currentCol: click[1],
+                status: 'Click at [' + click[0] + ', ' + click[1] + ']',
+                explanation: '🖱️ <strong>Processing click at [' + click[0] + ', ' + click[1] + ']</strong><br>' +
+                    'Cell value: <code>' + board[click[0]][click[1]] + '</code><br>' +
+                    (board[click[0]][click[1]] === 'M' ? '💥 Mine clicked! Game over.' : 'Starting flood fill reveal...')
+            });
+        }
+
+        // Show flood fill progress (simulated)
+        steps.push({
+            vizType: 'matrix',
+            matrix: board,
+            currentRow: -1,
+            currentCol: -1,
+            status: 'Revealing cells...',
+            explanation: '🔄 <strong>Flood Fill in Progress</strong><br>' +
+                '• Recursively reveal adjacent empty cells<br>' +
+                '• Stop at cells with adjacent mines<br>' +
+                '• Count adjacent mines for border cells'
+        });
+
+        // Show result
+        if (output && Array.isArray(output)) {
+            steps.push({
+                vizType: 'matrix',
+                matrix: output,
+                result: output,
+                currentRow: -1,
+                currentCol: -1,
+                status: 'Board Revealed',
+                explanation: '✅ <strong>Result: ' + (example.outputRaw || 'Revealed board') + '</strong><br><br>' +
+                    'Legend:<br>' +
+                    '• <code>B</code> - Blank (no adjacent mines)<br>' +
+                    '• <code>1-8</code> - Number of adjacent mines<br>' +
+                    '• <code>M</code> - Unrevealed mine<br>' +
+                    '• <code>X</code> - Revealed mine (game over)'
+            });
+        }
+
+        return steps;
+    }
+
     // =========================================================================
     // DYNAMIC PROGRAMMING ALGORITHMS
     // =========================================================================
@@ -2350,6 +2495,90 @@
         var steps = [];
         var algName = config.algorithm;
 
+        // Handle Kruskal's/Prim's algorithm with weighted edges
+        if ((algName.indexOf('kruskal') !== -1 || algName.indexOf('prim') !== -1) && example.input.V && example.input.edges) {
+            var V = example.input.V;
+            var weightedEdges = example.input.edges;
+            var nodes = [];
+            var edges = [];
+
+            // Create nodes
+            for (var i = 0; i < V; i++) {
+                nodes.push({ id: 'node_' + i, label: String(i), value: i });
+            }
+
+            // Create edges with weights
+            for (var i = 0; i < weightedEdges.length; i++) {
+                var e = weightedEdges[i];
+                edges.push({ from: 'node_' + e[0], to: 'node_' + e[1], weight: e[2] });
+            }
+
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: [],
+                queue: [],
+                status: config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Algorithm:</strong> ' + algName + '<br>' +
+                    '<strong>Vertices:</strong> ' + V + ', <strong>Edges:</strong> ' + weightedEdges.length + '<br>' +
+                    '<strong>Input:</strong> ' + (example.inputRaw || JSON.stringify(example.input)) + '<br>' +
+                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Sort edges by weight for Kruskal's
+            var sortedEdges = weightedEdges.slice().sort(function(a, b) { return a[2] - b[2]; });
+
+            // Show sorting step
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: [],
+                queue: sortedEdges.map(function(e) { return '(' + e[0] + ',' + e[1] + ')=' + e[2]; }),
+                status: 'Sorting edges by weight',
+                explanation: '🔄 <strong>Step 1: Sort edges by weight</strong><br>' +
+                    'Sorted: ' + sortedEdges.map(function(e) { return '(' + e[0] + '-' + e[1] + ': ' + e[2] + ')'; }).join(', ')
+            });
+
+            // Show MST construction (simplified)
+            var mstEdges = example.output.mstEdges || [];
+            var visitedNodes = [];
+            for (var i = 0; i < Math.min(mstEdges.length, 5); i++) {
+                var e = mstEdges[i];
+                if (visitedNodes.indexOf('node_' + e[0]) === -1) visitedNodes.push('node_' + e[0]);
+                if (visitedNodes.indexOf('node_' + e[1]) === -1) visitedNodes.push('node_' + e[1]);
+
+                steps.push({
+                    vizType: 'graph',
+                    nodes: nodes,
+                    edges: edges,
+                    visited: visitedNodes.slice(),
+                    queue: ['Adding edge (' + e[0] + ',' + e[1] + ') weight=' + e[2]],
+                    status: 'Adding edge to MST',
+                    explanation: '🔗 <strong>Adding edge (' + e[0] + ' - ' + e[1] + ') with weight ' + e[2] + '</strong><br>' +
+                        'This edge connects components without forming a cycle.'
+                });
+            }
+
+            steps.push({
+                vizType: 'graph',
+                nodes: nodes,
+                edges: edges,
+                visited: nodes.map(function(n) { return n.id; }),
+                queue: [],
+                status: 'MST Complete - Total weight: ' + (example.output.totalWeight || ''),
+                explanation: '✅ <strong>MST Complete!</strong><br>' +
+                    'Edges: ' + mstEdges.map(function(e) { return '(' + e[0] + '-' + e[1] + ': ' + e[2] + ')'; }).join(', ') + '<br>' +
+                    '<strong>Total weight:</strong> ' + (example.output.totalWeight || JSON.stringify(example.output))
+            });
+
+            return steps;
+        }
+
         steps.push({
             vizType: 'famous-algorithm',
             algorithm: algName,
@@ -2363,7 +2592,7 @@
         });
 
         // Add algorithm-specific visualization based on type
-        if (algName.indexOf('dijkstra') !== -1 || algName.indexOf('prim') !== -1 || algName.indexOf('kruskal') !== -1) {
+        if (algName.indexOf('dijkstra') !== -1) {
             steps.push({
                 vizType: 'famous-algorithm',
                 algorithm: algName,
@@ -2399,8 +2628,8 @@
             vizType: 'famous-algorithm',
             algorithm: algName,
             result: example.output,
-            status: 'Result: ' + JSON.stringify(example.output),
-            explanation: '✅ <strong>Result:</strong> ' + JSON.stringify(example.output)
+            status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
+            explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
         });
 
         return steps;
