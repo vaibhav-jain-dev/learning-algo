@@ -1,10 +1,14 @@
 // PDF Export functionality for DSAlgo Learning Platform
 // Topics are fetched dynamically from the server
 
+// Prevent duplicate declarations on HTMX navigation
+if (typeof window._pdfExportLoaded === 'undefined') {
+window._pdfExportLoaded = true;
+
 // Currently selected topic
-let selectedTopic = null;
-let topicsLoaded = false;
-let html2pdfLoaded = false;
+var selectedTopic = null;
+var topicsLoaded = false;
+var html2pdfLoaded = false;
 
 // Load html2pdf via lazy loader
 function loadHtml2PdfLib() {
@@ -591,3 +595,5 @@ document.body.addEventListener('htmx:afterSwap', function() {
 
 // Make closePdfModal globally accessible
 window.closePdfModal = closePdfModal;
+
+} // End of _pdfExportLoaded check
