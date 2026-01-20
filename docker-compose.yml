@@ -1,6 +1,13 @@
 # DSAlgo Learn Platform - Docker Compose
 # Fast Code Runner with persistent kernel pools
 # Memory limit: 2GB total
+#
+# FAST BUILD: Uses BuildKit for parallel builds and caching
+# Just run: docker compose up -d --build
+#
+# To enable BuildKit permanently (one-time setup):
+#   echo '{"features":{"buildkit":true}}' | sudo tee /etc/docker/daemon.json
+#   sudo systemctl restart docker
 
 networks:
   dsalgo-learn-network:

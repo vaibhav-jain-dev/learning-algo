@@ -11,11 +11,12 @@ A GitHub Action workflow for automated deployment of Docker Compose applications
 - [Prerequisites](#prerequisites)
 - [Setup Guide](#setup-guide)
   - [Step 1: Server Preparation](#step-1-server-preparation)
-  - [Step 2: SSH Key Generation](#step-2-ssh-key-generation) | [**Detailed SSH Guide**](./SSH-SETUP-GUIDE.md)
-  - [Step 3: GitHub Configuration](#step-3-github-configuration)
-- [Workflow Features](#workflow-features)
+  - [Step 2: SSH Key Generation](#step-2-ssh-key-generation)
+  - [Step 3: GitHub SSH Setup (For Private Repos)](#step-3-github-ssh-setup-for-private-repos)
+  - [Step 4: GitHub Actions Configuration](#step-4-github-actions-configuration)
+- [Cloudflare Tunnel Setup](#cloudflare-tunnel-setup)
+- [Service Management](#service-management)
 - [Usage](#usage)
-- [Cloudflare Integration](#cloudflare-integration)
 - [External Services Configuration](#external-services-configuration)
 - [Troubleshooting](#troubleshooting)
 
@@ -27,51 +28,60 @@ A GitHub Action workflow for automated deployment of Docker Compose applications
 
 This workflow automates the deployment process from GitHub to your server:
 
-```mermaid
-flowchart LR
-    A[📝 Push Code] --> B[🔍 Validate Config]
-    B --> C[🔐 Test SSH]
-    C --> D[📦 Deploy]
-    D --> E[🐳 Docker Compose Up]
-    E --> F[✅ Health Check]
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Push Code   │───▶│   Validate   │───▶│   Test SSH   │───▶│    Deploy    │───▶│ Health Check │
+│              │    │    Config    │    │  Connection  │    │   to Server  │    │              │
+└──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
 ```
 
 ---
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph GitHub["☁️ GitHub"]
-        GH_REPO[("📂 Repository")]
-        GH_SECRETS["🔐 Secrets<br/>SSH_PRIVATE_KEY<br/>ENV_FILE"]
-        GH_VARS["📋 Variables<br/>SSH_HOST<br/>SSH_USERNAME<br/>SSH_PORT"]
-        GH_ACTION["⚙️ GitHub Action"]
-    end
-
-    subgraph Server["🖥️ Remote Server"]
-        SSH_DAEMON["🔑 SSH Daemon"]
-        AUTH_KEYS["📜 authorized_keys"]
-        GIT["📥 Git"]
-        DOCKER["🐳 Docker Engine"]
-        PROJECT["📁 /projects/repo"]
-    end
-
-    GH_REPO --> GH_ACTION
-    GH_SECRETS --> GH_ACTION
-    GH_VARS --> GH_ACTION
-    GH_ACTION -->|"SSH Connection"| SSH_DAEMON
-    SSH_DAEMON --> AUTH_KEYS
-    AUTH_KEYS -->|"✓ Authenticated"| GIT
-    GIT -->|"Clone/Pull"| PROJECT
-    PROJECT --> DOCKER
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              GITHUB                                          │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │   Repository    │  │     Secrets     │  │    Variables    │              │
+│  │                 │  │ SSH_PRIVATE_KEY │  │    SSH_HOST     │              │
+│  │                 │  │    ENV_FILE     │  │  SSH_USERNAME   │              │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘              │
+│           └────────────────────┼────────────────────┘                        │
+│                                ▼                                             │
+│                    ┌─────────────────────┐                                   │
+│                    │   GitHub Actions    │                                   │
+│                    └──────────┬──────────┘                                   │
+└───────────────────────────────┼──────────────────────────────────────────────┘
+                                │ SSH Connection
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           REMOTE SERVER                                      │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │   SSH Daemon    │  │  authorized_keys │  │    Git Clone   │              │
+│  │   (Port 22)     │  │    (pub key)     │  │  /projects/    │              │
+│  └────────┬────────┘  └─────────────────┘  └────────┬────────┘              │
+│           │                                          │                       │
+│           ▼                                          ▼                       │
+│  ┌─────────────────────────────────────────────────────────────┐            │
+│  │                    Docker Compose                            │            │
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────────────┐│            │
+│  │  │ App     │  │ Postgres│  │  Redis  │  │  Elasticsearch  ││            │
+│  │  │ :8080   │  │ :5432   │  │  :6379  │  │     :9200       ││            │
+│  │  └─────────┘  └─────────┘  └─────────┘  └─────────────────┘│            │
+│  └─────────────────────────────────────────────────────────────┘            │
+│                                │                                             │
+│                                ▼                                             │
+│  ┌─────────────────────────────────────────────────────────────┐            │
+│  │              Cloudflare Tunnel (cloudflared)                 │            │
+│  │         learn.arvaibhav.cloud ──▶ localhost:8080             │            │
+│  └─────────────────────────────────────────────────────────────┘            │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Prerequisites
-
-Before setting up the workflow, ensure your server meets these requirements:
 
 ### Server Requirements Checklist
 
@@ -79,21 +89,9 @@ Before setting up the workflow, ensure your server meets these requirements:
 |------------|-------------------|--------------|
 | **SSH Server** | `systemctl status sshd` | Pre-installed on most servers |
 | **Git** | `git --version` | `sudo apt install git` |
-| **Docker** | `docker --version` | [Install Docker](https://docs.docker.com/engine/install/) |
-| **Docker Compose** | `docker compose version` | Included with Docker Desktop / `sudo apt install docker-compose-plugin` |
-
-### Git Global Configuration
-
-The server must have Git configured for the deployment user:
-
-```bash
-# Set git user identity (required for git operations)
-git config --global user.name "Deploy Bot"
-git config --global user.email "deploy@yourdomain.com"
-
-# Verify configuration
-git config --global --list
-```
+| **Docker** | `docker --version` | [Install Docker](#install-docker) |
+| **Docker Compose** | `docker compose version` | Included with Docker |
+| **Cloudflared** | `cloudflared --version` | [Install Cloudflared](#install-cloudflared) |
 
 ---
 
@@ -101,239 +99,438 @@ git config --global --list
 
 ### Step 1: Server Preparation
 
-#### 1.1 Create Deployment User (Optional but Recommended)
+#### 1.1 Create Deployment User with Full Access
 
 ```bash
-# On your server - create a dedicated deployment user
+# ============================================================
+# Run these commands as root or with sudo on your server
+# ============================================================
+
+# Create deployment user
 sudo useradd -m -s /bin/bash deployer
-sudo usermod -aG docker deployer  # Allow docker access without sudo
+
+# Set password (you'll be prompted)
+sudo passwd deployer
+
+# Add to required groups
+sudo usermod -aG docker deployer      # Docker access (no sudo needed)
+sudo usermod -aG sudo deployer        # Sudo access (optional but useful)
+
+# Create projects directory
+sudo mkdir -p /projects
+sudo chown deployer:deployer /projects
+
+# Verify user creation
+id deployer
+# Output: uid=1001(deployer) gid=1001(deployer) groups=1001(deployer),998(docker),27(sudo)
 ```
 
-#### 1.2 Configure Git on Server
+#### 1.2 Install Docker and Docker Compose
 
 ```bash
-# Login as deployment user
+# ============================================================
+# Install Docker (Ubuntu/Debian)
+# ============================================================
+
+# Remove old versions
+sudo apt-get remove docker docker-engine docker.io containerd runc 2>/dev/null
+
+# Install prerequisites
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+
+# Add Docker GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add Docker repository
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start and enable Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Verify installation
+docker --version
+docker compose version
+```
+
+#### 1.3 Enable BuildKit for Fast Builds (IMPORTANT)
+
+BuildKit provides **parallel builds**, **better caching**, and **50%+ faster** build times.
+
+```bash
+# ============================================================
+# Enable BuildKit permanently (one-time setup)
+# ============================================================
+
+# Create Docker daemon config
+echo '{"features":{"buildkit":true}}' | sudo tee /etc/docker/daemon.json
+
+# Restart Docker to apply
+sudo systemctl restart docker
+
+# Verify BuildKit is enabled
+docker buildx version
+```
+
+**Why BuildKit?**
+| Feature | Without BuildKit | With BuildKit |
+|---------|-----------------|---------------|
+| Build speed | Sequential layers | Parallel layer builds |
+| Caching | Basic | Advanced multi-stage caching |
+| Build output | Verbose | Clean, progressive output |
+| Build context | Full transfer | Only changed files |
+
+#### 1.4 Configure Git on Server
+
+```bash
+# Switch to deployment user
 sudo su - deployer
 
-# Configure git identity
+# Configure git identity (REQUIRED)
 git config --global user.name "GitHub Deploy"
 git config --global user.email "deploy@example.com"
 
-# Configure git to use HTTPS for GitHub (avoids SSH key for repo cloning)
-git config --global url."https://github.com/".insteadOf "git@github.com:"
-```
-
-#### 1.3 Create Project Directory
-
-```bash
-# Create the projects directory
-sudo mkdir -p /projects
-sudo chown deployer:deployer /projects
+# Verify
+git config --global --list
 ```
 
 ---
 
 ### Step 2: SSH Key Generation
 
-> **Detailed Guide Available:** For comprehensive instructions with troubleshooting, see the [**Complete SSH Key Setup Guide**](./SSH-SETUP-GUIDE.md)
+Generate SSH keys for GitHub Actions to connect to your server.
 
-```mermaid
-sequenceDiagram
-    participant L as 💻 Your Local Machine
-    participant G as ☁️ GitHub Secrets
-    participant S as 🖥️ Remote Server
-
-    L->>L: Generate SSH Key Pair
-    Note over L: ssh-keygen creates<br/>private + public key
-    L->>G: Copy Private Key
-    Note over G: Store as SSH_PRIVATE_KEY
-    L->>S: Copy Public Key
-    Note over S: Add to authorized_keys
-    G->>S: GitHub Action connects
-    Note over G,S: Private key authenticates<br/>against public key
+```
+┌────────────────────┐         ┌────────────────────┐         ┌────────────────────┐
+│   LOCAL MACHINE    │         │      GITHUB        │         │   REMOTE SERVER    │
+│                    │         │                    │         │                    │
+│  Generate Key Pair │         │                    │         │                    │
+│  ┌──────────────┐  │         │                    │         │                    │
+│  │ Private Key  │──┼────────▶│  SSH_PRIVATE_KEY   │         │                    │
+│  │ Public Key   │──┼─────────┼───────────────────▶│  authorized_keys    │
+│  └──────────────┘  │         │                    │         │                    │
+└────────────────────┘         └────────────────────┘         └────────────────────┘
 ```
 
-#### Quick Start Commands
+#### Generate and Deploy SSH Keys
 
 ```bash
-# 1. Generate key pair (on your local machine)
-ssh-keygen -t ed25519 -C "deploy-key" -f ~/.ssh/deploy_key
-# Press Enter for no passphrase (required for automation)
+# ============================================================
+# On your LOCAL machine (not the server!)
+# ============================================================
+
+# 1. Generate SSH key pair for deployment
+ssh-keygen -t ed25519 -C "github-deploy-key" -f ~/.ssh/github_deploy_key
+# Press Enter twice for no passphrase (required for automation)
 
 # 2. Copy public key to server
-ssh-copy-id -i ~/.ssh/deploy_key.pub username@your-server-ip
+ssh-copy-id -i ~/.ssh/github_deploy_key.pub deployer@YOUR_SERVER_IP
 
-# 3. Test connection
-ssh -i ~/.ssh/deploy_key username@your-server-ip "echo 'Success!'"
+# 3. Test SSH connection
+ssh -i ~/.ssh/github_deploy_key deployer@YOUR_SERVER_IP "echo 'SSH Connection Successful!'"
 
-# 4. View private key (for GitHub Secrets)
-cat ~/.ssh/deploy_key
+# 4. Display private key (copy this to GitHub Secrets)
+echo "=== COPY EVERYTHING BELOW TO GITHUB SSH_PRIVATE_KEY SECRET ==="
+cat ~/.ssh/github_deploy_key
+echo "=== END OF PRIVATE KEY ==="
 ```
-
-#### Key Files Created
-
-| File | Location | Purpose | Goes To |
-|------|----------|---------|---------|
-| Private Key | `~/.ssh/deploy_key` | Authentication | GitHub Secrets / `.env.deploy` |
-| Public Key | `~/.ssh/deploy_key.pub` | Authorization | Server `~/.ssh/authorized_keys` |
-
-> **Need help?** See [SSH-SETUP-GUIDE.md](./SSH-SETUP-GUIDE.md) for detailed troubleshooting, permission fixes, and best practices.
 
 ---
 
-### Step 3: GitHub Configuration
+### Step 3: GitHub SSH Setup (For Private Repos)
 
-#### 3.1 Navigate to Repository Settings
+If your repository is **private**, the server needs SSH access to GitHub to clone/pull.
+
+```
+┌────────────────────┐         ┌────────────────────┐         ┌────────────────────┐
+│   REMOTE SERVER    │         │      GITHUB        │         │    PRIVATE REPO    │
+│                    │         │                    │         │                    │
+│  Generate Key Pair │         │                    │         │                    │
+│  ┌──────────────┐  │         │                    │         │                    │
+│  │ Private Key  │──┼────────▶│  (stays on server) │         │                    │
+│  │ Public Key   │──┼────────▶│  Deploy Keys       │────────▶│  Read Access       │
+│  └──────────────┘  │         │  (repo settings)   │         │                    │
+└────────────────────┘         └────────────────────┘         └────────────────────┘
+```
+
+#### 3.1 Generate GitHub Deploy Key on Server
+
+```bash
+# ============================================================
+# Run these commands ON THE SERVER as deployer user
+# ============================================================
+
+# Switch to deployer user
+sudo su - deployer
+
+# Generate SSH key for GitHub access
+ssh-keygen -t ed25519 -C "server-github-deploy" -f ~/.ssh/github_key
+# Press Enter twice for no passphrase
+
+# Display the public key (copy this)
+echo "=== ADD THIS PUBLIC KEY TO GITHUB DEPLOY KEYS ==="
+cat ~/.ssh/github_key.pub
+echo "=== END OF PUBLIC KEY ==="
+```
+
+#### 3.2 Add Deploy Key to GitHub Repository
+
+1. Go to your GitHub repository
+2. Navigate to **Settings** → **Deploy keys**
+3. Click **Add deploy key**
+4. Title: `Server Deploy Key`
+5. Key: Paste the public key from above
+6. Check ✅ **Allow write access** (if you need push capability)
+7. Click **Add key**
+
+#### 3.3 Configure SSH to Use the Key for GitHub
+
+```bash
+# ============================================================
+# ON THE SERVER - Configure SSH for GitHub
+# ============================================================
+
+# Create/edit SSH config
+cat >> ~/.ssh/config << 'EOF'
+# GitHub SSH Configuration
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_key
+    IdentitiesOnly yes
+EOF
+
+# Set correct permissions
+chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/github_key
+chmod 644 ~/.ssh/github_key.pub
+
+# Add GitHub to known_hosts (prevents "authenticity" prompt)
+ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+
+# Test GitHub SSH connection
+ssh -T git@github.com
+# Expected output: "Hi username! You've successfully authenticated..."
+```
+
+#### 3.4 Test Git Clone
+
+```bash
+# Test cloning your private repo
+cd /projects
+git clone git@github.com:YOUR_USERNAME/YOUR_REPO.git test-clone
+ls test-clone/
+rm -rf test-clone  # Clean up test
+```
+
+---
+
+### Step 4: GitHub Actions Configuration
+
+#### 4.1 Navigate to Repository Settings
 
 ```
 Repository → Settings → Secrets and variables → Actions
 ```
 
-```mermaid
-flowchart LR
-    A[Repository] --> B[Settings]
-    B --> C[Secrets and variables]
-    C --> D[Actions]
-    D --> E[New repository secret]
-    D --> F[New repository variable]
-```
-
-#### 3.2 Add Required Secrets
+#### 4.2 Add Required Secrets
 
 Go to **Secrets** tab and add:
 
 | Secret Name | Value | How to Get |
 |-------------|-------|------------|
-| `SSH_PRIVATE_KEY` | Full private key content | `cat ~/.ssh/github_deploy_key` |
-| `ENV_FILE` | Your `.env` file content | `cat /path/to/your/.env` |
+| `SSH_PRIVATE_KEY` | Full private key content | `cat ~/.ssh/github_deploy_key` (from local machine) |
+| `ENV_FILE` | Your `.env` file content | Optional - application environment variables |
 
-##### Adding SSH_PRIVATE_KEY
-
-1. Click **"New repository secret"**
-2. Name: `SSH_PRIVATE_KEY`
-3. Value: Paste the **entire** private key including headers:
-
+**Important:** Include the entire key with headers:
 ```
 -----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz
-c2gtZWQyNTUxOQAAACBmMGk3bXhYcGRUMHVWM0ZGZE1kVGpCOE5EMklYdGpIbUFB
-...
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAAB...
 -----END OPENSSH PRIVATE KEY-----
 ```
 
-> **⚠️ Critical**: Include the `-----BEGIN` and `-----END` lines. Copy the entire output without modifications.
-
-##### Adding ENV_FILE (Optional)
-
-1. Click **"New repository secret"**
-2. Name: `ENV_FILE`
-3. Value: Your application's environment variables:
-
-```env
-DATABASE_URL=postgres://user:pass@localhost:5432/db
-API_KEY=your-secret-api-key
-NODE_ENV=production
-```
-
-#### 3.3 Add Variables
+#### 4.3 Add Variables
 
 Go to **Variables** tab and add:
 
 | Variable Name | Value | Example |
 |---------------|-------|---------|
-| `SSH_HOST` | Server IP or hostname | `192.168.1.100` or `deploy.example.com` |
-| `SSH_USERNAME` | SSH username | `deployer` or `ubuntu` |
-| `SSH_PORT` | SSH port (optional) | `22` or `2222` |
+| `SSH_HOST` | Server IP or hostname | `192.168.1.100` |
+| `SSH_USERNAME` | SSH username | `deployer` |
+| `SSH_PORT` | SSH port (optional) | `22` |
 
-```mermaid
-flowchart TB
-    subgraph Secrets["🔐 Secrets (Sensitive)"]
-        S1["SSH_PRIVATE_KEY<br/><i>Required</i>"]
-        S2["ENV_FILE<br/><i>Optional</i>"]
-    end
-
-    subgraph Variables["📋 Variables (Non-Sensitive)"]
-        V1["SSH_HOST<br/><i>Required</i>"]
-        V2["SSH_USERNAME<br/><i>Required</i>"]
-        V3["SSH_PORT<br/><i>Optional, default: 22</i>"]
-    end
-```
-
-#### 3.4 Complete Configuration Checklist
+#### 4.4 Configuration Checklist
 
 ```
-✅ Server has Git installed and configured
-✅ Server has Docker and Docker Compose installed
-✅ SSH key pair generated
-✅ Public key added to server's ~/.ssh/authorized_keys
-✅ SSH connection tested successfully
-✅ GitHub Secret: SSH_PRIVATE_KEY added
-✅ GitHub Variable: SSH_HOST added
-✅ GitHub Variable: SSH_USERNAME added
-✅ (Optional) GitHub Secret: ENV_FILE added
-✅ (Optional) GitHub Variable: SSH_PORT added
+✅ Server: deployer user created with docker group access
+✅ Server: Docker and Docker Compose installed
+✅ Server: Git installed and configured
+✅ Server: GitHub SSH key generated and added to repo Deploy Keys
+✅ Server: SSH config points to GitHub key
+✅ Server: GitHub SSH connection tested successfully
+✅ Local: SSH key pair generated for GitHub Actions
+✅ Local: Public key copied to server's authorized_keys
+✅ GitHub: SSH_PRIVATE_KEY secret added
+✅ GitHub: SSH_HOST variable added
+✅ GitHub: SSH_USERNAME variable added
 ```
 
 ---
 
-## Workflow Features
+## Cloudflare Tunnel Setup
 
-### Deployment Flow
+### Install Cloudflared
 
-```mermaid
-flowchart TB
-    subgraph Validate["🔍 Job 1: Validate"]
-        V1[Check SSH_HOST] --> V2[Check SSH_USERNAME]
-        V2 --> V3[Check SSH_PRIVATE_KEY]
-        V3 --> V4[Check Key Format]
-        V4 --> V5{All Valid?}
-    end
+```bash
+# ============================================================
+# ON THE SERVER - Install Cloudflared
+# ============================================================
 
-    subgraph Test["🔐 Job 2: Test Connection"]
-        T1[Setup SSH Key] --> T2[Add to known_hosts]
-        T2 --> T3[Verbose SSH Test]
-        T3 --> T4{Connected?}
-    end
+# Download and install
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+rm cloudflared.deb
 
-    subgraph Deploy["📦 Job 3: Deploy"]
-        D1[Setup Directory] --> D2{Repo Exists?}
-        D2 -->|No| D3[Git Clone]
-        D2 -->|Yes| D4[Git Pull]
-        D3 --> D5[Create .env]
-        D4 --> D5
-        D5 --> D6{Force Restart?}
-        D6 -->|Yes| D7[Docker Compose Down]
-        D6 -->|No| D8[Docker Compose Up]
-        D7 --> D8
-        D8 --> D9[Health Check]
-    end
-
-    V5 -->|Yes| Test
-    V5 -->|No| FAIL1[❌ Fail]
-    T4 -->|Yes| Deploy
-    T4 -->|No| FAIL2[❌ Fail]
-    D9 --> SUCCESS[✅ Success]
+# Verify installation
+cloudflared --version
 ```
 
-### Feature Summary
+### Configure Tunnel
 
-| Feature | Description |
-|---------|-------------|
-| **Validation** | Checks all required config before deployment |
-| **SSH Testing** | Verbose connection test with debugging |
-| **Auto Clone/Pull** | Clones new repos or updates existing |
-| **Environment Management** | Deploys `.env` from GitHub Secrets |
-| **Force Restart** | Optional full teardown and rebuild |
-| **Health Checks** | Post-deployment container verification |
-| **Cloudflare Integration** | Auto-configure tunnel routes |
+```bash
+# Login to Cloudflare (opens browser for authentication)
+cloudflared tunnel login
+
+# Create tunnel
+cloudflared tunnel create dsalgo-learn
+
+# Note the Tunnel ID from output (e.g., a1b2c3d4-...)
+
+# Create config file
+sudo mkdir -p /etc/cloudflared
+sudo nano /etc/cloudflared/config.yml
+```
+
+**Tunnel Config (`/etc/cloudflared/config.yml`):**
+
+```yaml
+tunnel: YOUR_TUNNEL_ID
+credentials-file: /root/.cloudflared/YOUR_TUNNEL_ID.json
+
+ingress:
+  # Main application
+  - hostname: learn.arvaibhav.cloud
+    service: http://localhost:8080
+
+  # API endpoint (same service, different subdomain)
+  - hostname: learn-api.arvaibhav.cloud
+    service: http://localhost:8080
+
+  # Catch-all (required)
+  - service: http_status:404
+```
+
+### Install as System Service
+
+```bash
+# Install service
+sudo cloudflared service install
+
+# Start and enable
+sudo systemctl start cloudflared
+sudo systemctl enable cloudflared
+
+# Check status
+sudo systemctl status cloudflared
+```
+
+### Add DNS Records
+
+In Cloudflare Dashboard:
+1. Go to your domain's DNS settings
+2. Add CNAME records:
+   - `learn` → `YOUR_TUNNEL_ID.cfargotunnel.com`
+   - `learn-api` → `YOUR_TUNNEL_ID.cfargotunnel.com`
+
+---
+
+## Service Management
+
+### Restart Services After Changes
+
+```bash
+# ============================================================
+# ON THE SERVER - Service restart commands
+# ============================================================
+
+# Restart Docker Compose services (preserves data)
+cd /projects/learning-algo
+docker compose restart
+
+# Full restart (recreates containers)
+docker compose down && docker compose up -d
+
+# Rebuild and restart (after code changes)
+docker compose up -d --build
+
+# Force recreate all containers
+docker compose up -d --force-recreate
+```
+
+### Restart Cloudflare Tunnel (After Config Changes)
+
+```bash
+# Restart cloudflared after editing /etc/cloudflared/config.yml
+sudo systemctl restart cloudflared
+
+# Check logs for errors
+sudo journalctl -u cloudflared -f --no-pager -n 50
+
+# Validate config before restart
+cloudflared tunnel ingress validate
+```
+
+### Update Ingress Rules
+
+```bash
+# 1. Edit tunnel config
+sudo nano /etc/cloudflared/config.yml
+
+# 2. Validate the config
+cloudflared tunnel ingress validate
+
+# 3. Restart tunnel to apply changes
+sudo systemctl restart cloudflared
+
+# 4. Verify new routes
+cloudflared tunnel info YOUR_TUNNEL_ID
+```
+
+### Common Service Commands
+
+| Action | Command |
+|--------|---------|
+| View running containers | `docker compose ps` |
+| View container logs | `docker compose logs -f` |
+| View specific service logs | `docker compose logs -f dsalgo-learn-app` |
+| Stop all services | `docker compose down` |
+| Stop and remove volumes | `docker compose down -v` |
+| Pull latest images | `docker compose pull` |
+| Check cloudflared status | `sudo systemctl status cloudflared` |
+| View cloudflared logs | `sudo journalctl -u cloudflared -f` |
 
 ---
 
 ## Usage
 
 ### Local Deployment (Recommended for Testing)
-
-Use the local deployment script to test deployments without triggering GitHub Actions:
 
 ```bash
 # 1. Copy the example config
@@ -355,47 +552,10 @@ nano .env.deploy
 #### Quick One-liner
 
 ```bash
-SSH_HOST=your-server SSH_USERNAME=ubuntu ./scripts/deploy.sh
-```
-
-#### Required Environment Variables
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `SSH_HOST` | Server IP or hostname | `192.168.1.100` |
-| `SSH_USERNAME` | SSH user | `ubuntu` |
-| `SSH_PRIVATE_KEY` | Path to private key | `~/.ssh/id_rsa` (default) |
-| `SSH_PORT` | SSH port | `22` (default) |
-
-#### Optional Variables
-
-| Variable | Description |
-|----------|-------------|
-| `PROJECT_PATH` | Custom deployment path |
-| `ENV_FILE` | Path to .env file to deploy |
-
-```mermaid
-flowchart LR
-    subgraph Local["💻 Local Machine"]
-        SCRIPT["./scripts/deploy.sh"]
-        ENV[".env.deploy"]
-        KEY["SSH Private Key"]
-    end
-
-    subgraph Server["🖥️ Remote Server"]
-        SSH["SSH Daemon"]
-        DEPLOY["Deployment"]
-    end
-
-    ENV --> SCRIPT
-    KEY --> SCRIPT
-    SCRIPT -->|"SSH"| SSH
-    SSH --> DEPLOY
+SSH_HOST=your-server SSH_USERNAME=deployer ./scripts/deploy.sh
 ```
 
 ### GitHub Actions (Manual Trigger)
-
-> **Note:** Automatic deployment on push is disabled. Use manual trigger or local script.
 
 1. Go to **Actions** tab in your repository
 2. Select **"Deploy Docker Compose"** workflow
@@ -404,76 +564,9 @@ flowchart LR
    - **Force restart**: Check to perform full container teardown
    - **Custom project path**: Override default `/projects/<repo-name>`
 
-```mermaid
-flowchart LR
-    A[Actions Tab] --> B[Deploy Docker Compose]
-    B --> C[Run workflow]
-    C --> D{Options}
-    D --> E[Force restart: false]
-    D --> F[Project path: default]
-    E --> G[🚀 Run]
-    F --> G
-```
-
----
-
-## Cloudflare Integration
-
-### Auto-Configuration
-
-The workflow automatically configures Cloudflare Tunnel routes by scanning your `docker-compose.yml` for special labels.
-
-**Domain Pattern:** `{subdomain}.arvaibhav.cloud`
-
-### Adding Cloudflare Labels
-
-```yaml
-services:
-  webapp:
-    image: nginx
-    labels:
-      - "cloudflare:learn.arvaibhav.cloud:8080"
-    ports:
-      - "8080:8080"
-
-  api:
-    image: node:18
-    labels:
-      - "cloudflare:learn-api.arvaibhav.cloud:8080"
-    ports:
-      - "8080:8080"
-```
-
-### Label Format
-
-```
-cloudflare:<subdomain>.arvaibhav.cloud:<port>
-```
-
-| Component | Description | Example |
-|-----------|-------------|---------|
-| `subdomain` | Your subdomain | `learn`, `learn-api` |
-| `domain` | Base domain | `arvaibhav.cloud` |
-| `port` | Container's internal port | `8080` |
-
-### Current Configured Routes
-
-| Subdomain | URL | Port |
-|-----------|-----|------|
-| Frontend | `https://learn.arvaibhav.cloud` | 8080 |
-| API | `https://learn-api.arvaibhav.cloud` | 8080 |
-
-### Requirements
-
-- `cloudflared` installed on server
-- Tunnel configured at `/etc/cloudflared/config.yml`
-- Tunnel service running
-
 ---
 
 ## External Services Configuration
-
-The application supports external Redis, PostgreSQL, and Elasticsearch services via environment variables. By default, it uses the local Docker services.
 
 ### Environment Variables
 
@@ -493,104 +586,85 @@ ES_URL=https://your-elasticsearch-host.com:9200
 # Redis - External Service
 REDIS_URL=redis://your-redis-host.com:6379
 
-# Kibana (optional)
-KIBANA_URL=https://your-kibana-host.com:5601
-
-# CORS Origins (optional - customize allowed domains)
-ALLOWED_ORIGINS=https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud
+# CORS Origins (customize allowed domains)
+ALLOWED_ORIGINS=https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud
 ```
 
 ### Using External Services Only
-
-If using only external services, you can start without local dependencies:
 
 ```bash
 # Start app without local Redis/Postgres/Elasticsearch
 docker compose up dsalgo-learn-app --no-deps
 ```
 
-Or modify `docker-compose.yml` to remove `depends_on` for external services.
-
-```mermaid
-flowchart TB
-    subgraph Docker["🐳 Docker Compose"]
-        APP["📱 App Container"]
-    end
-
-    subgraph External["☁️ External Services"]
-        PG["🐘 PostgreSQL"]
-        ES["🔍 Elasticsearch"]
-        REDIS["📦 Redis"]
-    end
-
-    subgraph EnvVars["📋 Environment Variables"]
-        DB_URL["DB_HOST, DB_PORT, etc."]
-        ES_URL_VAR["ES_URL"]
-        REDIS_URL_VAR["REDIS_URL"]
-    end
-
-    EnvVars --> APP
-    APP -->|"DB_HOST"| PG
-    APP -->|"ES_URL"| ES
-    APP -->|"REDIS_URL"| REDIS
-```
-
 ---
 
 ## Troubleshooting
 
-### Common Issues
+### SSH Connection Failed
 
-#### SSH Connection Failed
+```bash
+# Test SSH connection with verbose output
+ssh -vvv -i ~/.ssh/github_deploy_key deployer@YOUR_SERVER_IP
 
-```mermaid
-flowchart TB
-    A[SSH Failed] --> B{Check Host}
-    B -->|Invalid| B1[Verify SSH_HOST value]
-    B -->|Valid| C{Check Port}
-    C -->|Blocked| C1[Check firewall rules]
-    C -->|Open| D{Check Key}
-    D -->|Invalid| D1[Regenerate SSH key pair]
-    D -->|Valid| E{Check authorized_keys}
-    E -->|Missing| E1[Add public key to server]
-    E -->|Present| F[Check key permissions]
-    F --> F1[chmod 600 authorized_keys]
+# Check if SSH service is running on server
+sudo systemctl status sshd
+
+# Check firewall
+sudo ufw status
+sudo ufw allow 22/tcp
 ```
 
-#### Permission Denied
+### Permission Denied
 
 ```bash
 # On server - fix SSH directory permissions
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
-chmod 644 ~/.ssh/known_hosts  # if exists
-
-# Fix ownership
+chmod 600 ~/.ssh/github_key
+chmod 600 ~/.ssh/config
 chown -R $USER:$USER ~/.ssh
 ```
 
-#### Git Pull Fails
+### Git Clone Fails (Private Repo)
 
 ```bash
-# On server - ensure git is configured
-git config --global user.name "Deploy"
-git config --global user.email "deploy@example.com"
+# Test GitHub SSH connection
+ssh -T git@github.com
 
-# If using private repo, configure credentials
-git config --global credential.helper store
+# If it fails, check:
+# 1. Deploy key added to repo settings
+# 2. ~/.ssh/config has correct GitHub config
+# 3. ~/.ssh/github_key permissions are 600
 ```
 
-#### Docker Permission Denied
+### Docker Permission Denied
 
 ```bash
 # Add user to docker group
 sudo usermod -aG docker $USER
 
-# Apply changes (or logout/login)
+# Apply changes (logout/login or run)
 newgrp docker
 
 # Verify
 docker ps
+```
+
+### Cloudflare Tunnel Not Working
+
+```bash
+# Check tunnel status
+sudo systemctl status cloudflared
+
+# View logs
+sudo journalctl -u cloudflared -f
+
+# Validate config
+cloudflared tunnel ingress validate
+
+# Test local service
+curl http://localhost:8080
 ```
 
 ### Debug Checklist
@@ -601,15 +675,10 @@ docker ps
 | Key Permissions | `ls -la ~/.ssh/` | 600 for keys, 700 for dir |
 | Public Key Added | `cat ~/.ssh/authorized_keys` | Contains your public key |
 | Git Installed | `git --version` | git version x.x.x |
+| GitHub SSH | `ssh -T git@github.com` | "Hi username! You've..." |
 | Docker Running | `docker ps` | No permission errors |
 | Docker Compose | `docker compose version` | Docker Compose version x.x.x |
-
-### Viewing Workflow Logs
-
-1. Go to **Actions** tab
-2. Click on the failed workflow run
-3. Expand each job to see detailed logs
-4. Look for error messages in red
+| Cloudflared | `sudo systemctl status cloudflared` | active (running) |
 
 ---
 
@@ -620,11 +689,59 @@ docker ps
 3. **Rotate keys regularly** - Update SSH keys periodically
 4. **Use secrets for sensitive data** - Never commit credentials to the repository
 5. **Restrict branch triggers** - Only deploy from protected branches
+6. **Use read-only deploy keys** - Unless push access is required
 
 ---
 
-## Support
+## Quick Reference
 
-- **Workflow Issues**: Check the [GitHub Actions logs](../../actions)
-- **SSH Problems**: Review the [Troubleshooting](#troubleshooting) section
-- **Feature Requests**: Open an issue in this repository
+### Complete Server Setup (Copy-Paste)
+
+```bash
+# ============================================================
+# COMPLETE SERVER SETUP - Run as root or with sudo
+# ============================================================
+
+# 1. Create user and install dependencies
+sudo useradd -m -s /bin/bash deployer
+sudo passwd deployer
+sudo usermod -aG docker,sudo deployer
+sudo mkdir -p /projects
+sudo chown deployer:deployer /projects
+
+# 2. Install Docker (if not installed)
+curl -fsSL https://get.docker.com | sudo sh
+sudo systemctl enable docker
+
+# 3. Enable BuildKit for fast builds (IMPORTANT!)
+echo '{"features":{"buildkit":true}}' | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
+
+# 4. Switch to deployer and configure
+sudo su - deployer
+
+# 5. Configure Git
+git config --global user.name "GitHub Deploy"
+git config --global user.email "deploy@example.com"
+
+# 6. Generate GitHub SSH key
+ssh-keygen -t ed25519 -C "server-github" -f ~/.ssh/github_key -N ""
+
+# 7. Configure SSH for GitHub
+cat >> ~/.ssh/config << 'EOF'
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_key
+    IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config ~/.ssh/github_key
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# 8. Display public key (add to GitHub Deploy Keys)
+echo "Add this to GitHub repo → Settings → Deploy keys:"
+cat ~/.ssh/github_key.pub
+
+# 9. Test (after adding deploy key to GitHub)
+ssh -T git@github.com
+```
