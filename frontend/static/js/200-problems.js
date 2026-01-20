@@ -135,6 +135,8 @@
                 return runMergeIntervals(example, config, complexity);
             case 'peak-expansion':
                 return runLongestPeak(example, config, complexity);
+            case 'hash-prefix-sum':
+                return runZeroSumSubarray(example, config, complexity);
             case 'hash-pair-sum':
             case 'out-of-order-bounds':
             case 'hash-expansion':
@@ -1048,6 +1050,85 @@
             status: 'Result: ' + longestPeak,
             explanation: '✅ <strong>Complete!</strong><br>Longest peak length: ' + longestPeak
         });
+
+        return steps;
+    }
+
+    // Algorithm: Zero Sum Subarray (Hash + Prefix Sum)
+    function runZeroSumSubarray(example, config, complexity) {
+        if (!example || !example.input || !example.input.nums) return null;
+        var nums = example.input.nums;
+        var expected = example.output;
+        var steps = [];
+        var prefixSum = 0;
+        var seen = [0]; // Start with 0 to handle subarray from index 0
+        var found = false;
+
+        steps.push({
+            array: nums.slice(),
+            currentIdx: -1,
+            prefixSum: 0,
+            seen: seen.slice(),
+            vizType: 'array-scan',
+            status: 'Initialize: seen = {0}',
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Input:</strong> nums=[' + nums.join(', ') + ']<br>' +
+                '<strong>Expected:</strong> ' + expected + '<br><br>' +
+                '<strong>Key Insight:</strong> If prefix sum repeats, the subarray between equals 0!<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        for (var i = 0; i < nums.length && !found; i++) {
+            prefixSum += nums[i];
+
+            if (seen.indexOf(prefixSum) !== -1) {
+                found = true;
+                steps.push({
+                    array: nums.slice(),
+                    currentIdx: i,
+                    prefixSum: prefixSum,
+                    seen: seen.slice(),
+                    vizType: 'array-scan',
+                    status: '✓ Found! prefixSum=' + prefixSum + ' already in seen',
+                    explanation: '✅ <strong>Zero Sum Subarray Found!</strong><br><br>' +
+                        '• Current index: ' + i + ', value: ' + nums[i] + '<br>' +
+                        '• Prefix sum: ' + prefixSum + '<br>' +
+                        '• <span style="color:#3fb950;">' + prefixSum + ' is already in seen!</span><br>' +
+                        '• This means a subarray sums to 0'
+                });
+            } else {
+                seen.push(prefixSum);
+                steps.push({
+                    array: nums.slice(),
+                    currentIdx: i,
+                    prefixSum: prefixSum,
+                    seen: seen.slice(),
+                    vizType: 'array-scan',
+                    status: 'idx=' + i + ': prefixSum=' + prefixSum,
+                    explanation: '🔍 <strong>Step ' + (i + 1) + ':</strong><br><br>' +
+                        '• nums[' + i + '] = ' + nums[i] + '<br>' +
+                        '• Prefix sum: ' + prefixSum + '<br>' +
+                        '• Not in seen, adding to set<br>' +
+                        '• seen = {' + seen.join(', ') + '}'
+                });
+            }
+        }
+
+        if (!found) {
+            steps.push({
+                array: nums.slice(),
+                currentIdx: nums.length,
+                prefixSum: prefixSum,
+                seen: seen.slice(),
+                vizType: 'array-scan',
+                status: '✗ No zero sum subarray found',
+                explanation: '❌ <strong>Result: false</strong><br><br>' +
+                    '• Scanned entire array<br>' +
+                    '• No repeated prefix sums<br>' +
+                    '• No zero sum subarray exists'
+            });
+        }
 
         return steps;
     }
