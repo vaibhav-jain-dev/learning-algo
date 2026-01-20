@@ -23,52 +23,87 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY ARCHITECTURE</h3>
 
-```
-                              ┌─────────────────┐
-                              │    Customers    │
-                              │   Mobile App    │
-                              └────────┬────────┘
-                                       │
-            ┌──────────────────────────┼──────────────────────────┐
-            ▼                          ▼                          ▼
-     ┌───────────┐              ┌───────────┐              ┌───────────┐
-     │ Customer  │              │  Partner  │              │ Merchant  │
-     │   App     │              │   App     │              │   App     │
-     └─────┬─────┘              └─────┬─────┘              └─────┬─────┘
-           │                          │                          │
-           └──────────────────────────┼──────────────────────────┘
-                                      │
-                       ┌──────────────▼──────────────┐
-                       │        API GATEWAY          │
-                       └──────────────┬──────────────┘
-                                      │
-    ┌─────────────────────────────────┼─────────────────────────────────┐
-    │                                 │                                 │
-    ▼                                 ▼                                 ▼
-┌─────────────┐              ┌─────────────────┐              ┌─────────────────┐
-│   ORDER     │              │    DISPATCH     │              │   TRACKING      │
-│  SERVICE    │              │    SERVICE      │              │   SERVICE       │
-│             │              │                 │              │                 │
-│ - Create    │──────────────│ - Matching      │──────────────│ - Location      │
-│ - Pricing   │              │ - Assignment    │              │ - ETA           │
-│ - Status    │              │ - Batching      │              │ - History       │
-└──────┬──────┘              └────────┬────────┘              └────────┬────────┘
-       │                              │                               │
-       │                     ┌────────▼────────┐                      │
-       │                     │     ROUTING     │                      │
-       │                     │    SERVICE      │                      │
-       │                     │                 │                      │
-       │                     │ - Optimization  │                      │
-       │                     │ - Multi-stop    │                      │
-       │                     │ - Traffic       │                      │
-       │                     └────────┬────────┘                      │
-       │                              │                               │
-       └──────────────────────────────┼───────────────────────────────┘
-                                      │
-                              ┌───────▼───────┐
-                              │    KAFKA      │
-                              └───────────────┘
-```
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+
+<!-- Customer Layer -->
+<div style="background: linear-gradient(135deg, #2d5a27 0%, #3d7a37 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #4ade80; text-align: center;">
+<div style="color: #4ade80; font-weight: bold; font-size: 14px;">CUSTOMERS</div>
+<div style="color: #d1fae5; font-size: 12px;">Mobile App</div>
+</div>
+
+<div style="color: #6b7280; font-size: 24px;">|</div>
+
+<!-- Three Apps Row -->
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #60a5fa; text-align: center; min-width: 100px;">
+<div style="color: #60a5fa; font-weight: bold; font-size: 13px;">Customer App</div>
+</div>
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #6b3d24 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #f97316; text-align: center; min-width: 100px;">
+<div style="color: #f97316; font-weight: bold; font-size: 13px;">Partner App</div>
+</div>
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #5a2d8a 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #a855f7; text-align: center; min-width: 100px;">
+<div style="color: #a855f7; font-weight: bold; font-size: 13px;">Merchant App</div>
+</div>
+</div>
+
+<div style="color: #6b7280; font-size: 24px;">|</div>
+
+<!-- API Gateway -->
+<div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); border-radius: 12px; padding: 16px 48px; border: 2px solid #9ca3af; text-align: center;">
+<div style="color: #e5e7eb; font-weight: bold; font-size: 14px;">API GATEWAY</div>
+</div>
+
+<div style="color: #6b7280; font-size: 24px;">|</div>
+
+<!-- Core Services Row -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; min-width: 140px;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">ORDER SERVICE</div>
+<div style="color: #93c5fd; font-size: 11px; line-height: 1.6;">
+- Create orders<br/>
+- Calculate pricing<br/>
+- Manage status
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 12px; padding: 16px; border: 2px solid #f97316; min-width: 140px;">
+<div style="color: #f97316; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">DISPATCH SERVICE</div>
+<div style="color: #fed7aa; font-size: 11px; line-height: 1.6;">
+- Partner matching<br/>
+- Assignment logic<br/>
+- Order batching
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1a3d2d 0%, #2a5a3d 100%); border-radius: 12px; padding: 16px; border: 2px solid #22c55e; min-width: 140px;">
+<div style="color: #22c55e; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">TRACKING SERVICE</div>
+<div style="color: #bbf7d0; font-size: 11px; line-height: 1.6;">
+- Live location<br/>
+- ETA calculation<br/>
+- Trip history
+</div>
+</div>
+
+</div>
+
+<div style="color: #6b7280; font-size: 24px;">|</div>
+
+<!-- Routing Service -->
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 12px; padding: 16px 24px; border: 2px solid #a855f7; text-align: center;">
+<div style="color: #a855f7; font-weight: bold; font-size: 13px; margin-bottom: 6px;">ROUTING SERVICE</div>
+<div style="color: #e9d5ff; font-size: 11px;">Route Optimization | Multi-stop | Traffic Analysis</div>
+</div>
+
+<div style="color: #6b7280; font-size: 24px;">|</div>
+
+<!-- Kafka -->
+<div style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); border-radius: 12px; padding: 14px 40px; border: 2px solid #fbbf24; text-align: center;">
+<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">KAFKA</div>
+<div style="color: #fef3c7; font-size: 11px;">Event Streaming</div>
+</div>
+
+</div>
 
 </div>
 
@@ -79,65 +114,77 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY FLOW</h4>
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    ORDER LIFECYCLE                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Customer places order                                       │
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ ORDER CREATION                                           ││
-│  │                                                          ││
-│  │ - Validate addresses (pickup + drops)                   ││
-│  │ - Calculate distance and route                          ││
-│  │ - Apply dynamic pricing                                  ││
-│  │ - Reserve payment                                        ││
-│  └─────────────────────────────────────────────────────────┘│
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ PARTNER MATCHING                                         ││
-│  │                                                          ││
-│  │ Find best partner based on:                             ││
-│  │ - Distance to pickup                                    ││
-│  │ - Current load (active orders)                          ││
-│  │ - Partner rating/performance                            ││
-│  │ - Vehicle type requirements                             ││
-│  │                                                          ││
-│  │ Matching radius: 3km → 5km → 7km (expanding circles)   ││
-│  └─────────────────────────────────────────────────────────┘│
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ PICKUP PHASE                                             ││
-│  │                                                          ││
-│  │ - Partner accepts/rejects                               ││
-│  │ - Navigate to pickup                                    ││
-│  │ - Confirm pickup with OTP/photo                         ││
-│  └─────────────────────────────────────────────────────────┘│
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ DELIVERY PHASE                                           ││
-│  │                                                          ││
-│  │ - Optimized route to drop(s)                            ││
-│  │ - Real-time tracking shared with customer               ││
-│  │ - Confirm delivery with OTP/photo                       ││
-│  └─────────────────────────────────────────────────────────┘│
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ COMPLETION                                               ││
-│  │                                                          ││
-│  │ - Process payment                                        ││
-│  │ - Update partner earnings                               ││
-│  │ - Request ratings                                        ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 24px; border: 2px solid #6b7280;">
+
+<div style="color: #e5e7eb; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #374151;">ORDER LIFECYCLE</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<!-- Step 1: Order Creation -->
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 8px;">1. ORDER CREATION</div>
+<div style="color: #bfdbfe; font-size: 12px; line-height: 1.8;">
+- Validate addresses (pickup + drops)<br/>
+- Calculate distance and route<br/>
+- Apply dynamic pricing (surge multiplier)<br/>
+- Reserve payment authorization
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+
+<!-- Step 2: Partner Matching -->
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #f97316;">
+<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">2. PARTNER MATCHING</div>
+<div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
+Find best partner based on:<br/>
+- Distance to pickup location<br/>
+- Current load (active orders)<br/>
+- Partner rating/performance score<br/>
+- Vehicle type requirements<br/><br/>
+<span style="color: #fbbf24;">Matching radius: 3km -> 5km -> 7km (expanding circles)</span>
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+
+<!-- Step 3: Pickup Phase -->
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">3. PICKUP PHASE</div>
+<div style="color: #e9d5ff; font-size: 12px; line-height: 1.8;">
+- Partner accepts/rejects offer (30s timeout)<br/>
+- Navigate to pickup location<br/>
+- Confirm pickup with OTP/photo verification
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+
+<!-- Step 4: Delivery Phase -->
+<div style="background: linear-gradient(135deg, #1a3d2d 0%, #2a5a3d 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">4. DELIVERY PHASE</div>
+<div style="color: #bbf7d0; font-size: 12px; line-height: 1.8;">
+- Optimized route to drop location(s)<br/>
+- Real-time tracking shared with customer<br/>
+- Confirm delivery with OTP/photo
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+
+<!-- Step 5: Completion -->
+<div style="background: linear-gradient(135deg, #3d3d1f 0%, #5a5a2d 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #eab308;">
+<div style="color: #eab308; font-weight: bold; font-size: 13px; margin-bottom: 8px;">5. COMPLETION</div>
+<div style="color: #fef9c3; font-size: 12px; line-height: 1.8;">
+- Process final payment<br/>
+- Update partner earnings<br/>
+- Request ratings from both parties
+</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -261,37 +308,55 @@ class DispatchService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-MULTI-STOP ROUTE OPTIMIZATION
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">MULTI-STOP ROUTE OPTIMIZATION</div>
 
-┌─────────────────────────────────────────────────────────────┐
-│                                                              │
-│  Problem: Partner has multiple orders to deliver            │
-│                                                              │
-│  Example:                                                    │
-│  - Order A: Pickup P1 → Drop D1                            │
-│  - Order B: Pickup P2 → Drop D2                            │
-│  - Order C: Pickup P3 → Drop D3                            │
-│                                                              │
-│  Naive Route:                                                │
-│  P1 → D1 → P2 → D2 → P3 → D3                               │
-│  Total: 15 km                                               │
-│                                                              │
-│  Optimized Route (TSP-like):                                │
-│  P1 → P2 → P3 → D2 → D1 → D3                               │
-│  Total: 10 km                                               │
-│                                                              │
-│  Constraints:                                                │
-│  - Pickup must happen before drop for same order           │
-│  - Consider time windows                                    │
-│  - Capacity limits                                          │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280; margin-bottom: 20px;">
 
-Algorithm: Modified TSP with precedence constraints
-- Use Google OR-Tools / OSRM for routing
+<div style="color: #e5e7eb; font-weight: bold; margin-bottom: 12px;">Problem: Partner has multiple orders to deliver</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #ef4444;">
+<div style="color: #ef4444; font-weight: bold; font-size: 12px; margin-bottom: 8px;">NAIVE ROUTE</div>
+<div style="color: #fecaca; font-size: 11px; line-height: 1.8;">
+Order A: Pickup P1 -> Drop D1<br/>
+Order B: Pickup P2 -> Drop D2<br/>
+Order C: Pickup P3 -> Drop D3<br/><br/>
+Route: P1 -> D1 -> P2 -> D2 -> P3 -> D3<br/>
+<span style="color: #f87171; font-weight: bold;">Total: 15 km</span>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border: 1px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">OPTIMIZED ROUTE (TSP-like)</div>
+<div style="color: #bbf7d0; font-size: 11px; line-height: 1.8;">
+Batch pickups, then optimize drops<br/><br/>
+Route: P1 -> P2 -> P3 -> D2 -> D1 -> D3<br/><br/>
+<span style="color: #4ade80; font-weight: bold;">Total: 10 km (33% savings)</span>
+</div>
+</div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #eab308; margin-top: 16px;">
+<div style="color: #eab308; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CONSTRAINTS</div>
+<div style="color: #fef9c3; font-size: 11px; line-height: 1.8;">
+- Pickup must happen before drop for same order (precedence)<br/>
+- Consider time windows (food freshness, customer availability)<br/>
+- Capacity limits (weight, size, vehicle type)
+</div>
+</div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border: 1px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">ALGORITHM</div>
+<div style="color: #bfdbfe; font-size: 11px; line-height: 1.8;">
+Modified TSP with precedence constraints<br/>
+- Use Google OR-Tools / OSRM for routing<br/>
 - Heuristic: Nearest neighbor with 2-opt improvement
-```
+</div>
+</div>
 
 </div>
 
@@ -362,48 +427,52 @@ class BatchingService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                LOCATION TRACKING PIPELINE                    │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Partner App                                                 │
-│       │                                                      │
-│       │ GPS update every 5 seconds (when active)            │
-│       │                                                      │
-│       ▼                                                      │
-│  ┌─────────────────┐                                        │
-│  │ Location Service│                                        │
-│  │ (WebSocket)     │                                        │
-│  └────────┬────────┘                                        │
-│           │                                                  │
-│           │ Batch updates every 3 seconds                   │
-│           │                                                  │
-│           ▼                                                  │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                    REDIS                                 ││
-│  │                                                          ││
-│  │  GEOADD partners:active lng lat partner_id              ││
-│  │  HSET partner:{id}:location lat lng timestamp speed     ││
-│  │                                                          ││
-│  │  TTL: 60 seconds (consider offline if no update)        ││
-│  └─────────────────────────────────────────────────────────┘│
-│           │                                                  │
-│           │ Publish location changes                        │
-│           │                                                  │
-│           ▼                                                  │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                   KAFKA                                  ││
-│  │  Topic: partner.locations                                ││
-│  │                                                          ││
-│  │  Consumers:                                              ││
-│  │  - ETA Calculator                                       ││
-│  │  - Customer Tracker                                      ││
-│  │  - Analytics                                             ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
+
+<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">LOCATION TRACKING PIPELINE</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<!-- Partner App -->
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 12px; border: 1px solid #f97316; text-align: center;">
+<div style="color: #f97316; font-weight: bold; font-size: 12px;">Partner App</div>
+<div style="color: #fed7aa; font-size: 10px;">GPS update every 5 seconds (when active)</div>
+</div>
+
+<div style="text-align: center; color: #6b7280;">v</div>
+
+<!-- Location Service -->
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; text-align: center;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 12px;">Location Service (WebSocket)</div>
+<div style="color: #bfdbfe; font-size: 10px;">Batch updates every 3 seconds</div>
+</div>
+
+<div style="text-align: center; color: #6b7280;">v</div>
+
+<!-- Redis -->
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #ef4444;">
+<div style="color: #ef4444; font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center;">REDIS</div>
+<div style="color: #fecaca; font-size: 10px; font-family: monospace; line-height: 1.8;">
+GEOADD partners:active lng lat partner_id<br/>
+HSET partner:{id}:location lat lng timestamp speed<br/>
+<span style="color: #fbbf24;">TTL: 60 seconds (offline if no update)</span>
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280;">v (Publish location changes)</div>
+
+<!-- Kafka -->
+<div style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #fbbf24;">
+<div style="color: #fbbf24; font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center;">KAFKA</div>
+<div style="color: #fef3c7; font-size: 10px;">
+Topic: partner.locations<br/><br/>
+<span style="font-weight: bold;">Consumers:</span> ETA Calculator | Customer Tracker | Analytics
+</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -427,42 +496,64 @@ class BatchingService:
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-```
-                    DUNZO MULTI-CITY ARCHITECTURE
-    ┌────────────────────────────────────────────────────────────────┐
-    │                                                                │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                    GLOBAL LAYER                           │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │   User      │  │   Payment   │  │    Marketing    │   │ │
-    │  │  │  Service    │  │   Service   │  │    Service      │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │ │
-    │  │  │  Merchant   │  │   Partner   │  │    Analytics    │   │ │
-    │  │  │  Platform   │  │  Platform   │  │    Platform     │   │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────────┘   │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    │                              │                                 │
-    │  ┌──────────────────────────────────────────────────────────┐ │
-    │  │                   CITY CLUSTERS                           │ │
-    │  │                                                           │ │
-    │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │ │
-    │  │  │  BANGALORE  │  │   MUMBAI    │  │    DELHI    │       │ │
-    │  │  │             │  │             │  │             │       │ │
-    │  │  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │       │ │
-    │  │  │ │ Order   │ │  │ │ Order   │ │  │ │ Order   │ │       │ │
-    │  │  │ │Dispatch │ │  │ │Dispatch │ │  │ │Dispatch │ │       │ │
-    │  │  │ │ Track   │ │  │ │ Track   │ │  │ │ Track   │ │       │ │
-    │  │  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │       │ │
-    │  │  │             │  │             │  │             │       │ │
-    │  │  │ 15K partners│  │ 12K partners│  │ 10K partners│       │ │
-    │  │  └─────────────┘  └─────────────┘  └─────────────┘       │ │
-    │  │                                                           │ │
-    │  └──────────────────────────────────────────────────────────┘ │
-    └────────────────────────────────────────────────────────────────┘
-```
+<div style="color: #a855f7; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">DUNZO MULTI-CITY ARCHITECTURE</div>
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
+
+<!-- Global Layer -->
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 10px; padding: 16px; border: 2px solid #3b82f6; margin-bottom: 16px;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">GLOBAL LAYER</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #60a5fa;">
+<div style="color: #60a5fa; font-size: 11px; font-weight: bold;">User Service</div>
+</div>
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #22c55e;">
+<div style="color: #22c55e; font-size: 11px; font-weight: bold;">Payment Service</div>
+</div>
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #f97316;">
+<div style="color: #f97316; font-size: 11px; font-weight: bold;">Marketing Service</div>
+</div>
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #ec4899;">
+<div style="color: #ec4899; font-size: 11px; font-weight: bold;">Merchant Platform</div>
+</div>
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #eab308;">
+<div style="color: #eab308; font-size: 11px; font-weight: bold;">Partner Platform</div>
+</div>
+<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #a855f7;">
+<div style="color: #a855f7; font-size: 11px; font-weight: bold;">Analytics Platform</div>
+</div>
+</div>
+</div>
+
+<div style="text-align: center; color: #6b7280; margin: 12px 0;">|</div>
+
+<!-- City Clusters -->
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #3d2f4d 100%); border-radius: 10px; padding: 16px; border: 2px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">CITY CLUSTERS</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #22c55e; min-width: 120px; text-align: center;">
+<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 6px;">BANGALORE</div>
+<div style="color: #bbf7d0; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
+<div style="color: #4ade80; font-size: 10px; margin-top: 6px; font-weight: bold;">15K partners</div>
+</div>
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #f97316; min-width: 120px; text-align: center;">
+<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 6px;">MUMBAI</div>
+<div style="color: #fed7aa; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
+<div style="color: #fb923c; font-size: 10px; margin-top: 6px; font-weight: bold;">12K partners</div>
+</div>
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; min-width: 120px; text-align: center;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 6px;">DELHI</div>
+<div style="color: #bfdbfe; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
+<div style="color: #60a5fa; font-size: 10px; margin-top: 6px; font-weight: bold;">10K partners</div>
+</div>
+
+</div>
+</div>
+
+</div>
 
 </div>
 
@@ -545,45 +636,70 @@ class ETAService:
 
 ### 1. Order Assignment Consistency
 
-```
-Challenge: Multiple dispatchers trying to assign same partner
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
-Solution: Distributed lock on partner
+<div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">Challenge: Multiple dispatchers trying to assign same partner</div>
+<div style="color: #22c55e; font-weight: bold; margin-bottom: 16px;">Solution: Distributed lock on partner</div>
 
-┌─────────────────────────────────────────────────────────────┐
-│  PARTNER ASSIGNMENT FLOW                                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. Acquire lock: SETNX partner_lock:{id} order_id EX 30   │
-│                                                              │
-│  2. If lock acquired:                                        │
-│     - Check partner still available                         │
-│     - Send offer to partner app                             │
-│     - Wait for response (30s timeout)                       │
-│                                                              │
-│  3. If partner accepts:                                      │
-│     - Create assignment                                      │
-│     - Update partner status                                  │
-│     - Release lock                                           │
-│                                                              │
-│  4. If partner rejects or timeout:                          │
-│     - Release lock                                           │
-│     - Try next partner                                       │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="color: #e5e7eb; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #374151;">PARTNER ASSIGNMENT FLOW</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">STEP 1: Acquire Lock</div>
+<div style="color: #bfdbfe; font-size: 11px; font-family: monospace;">SETNX partner_lock:{id} order_id EX 30</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #eab308;">
+<div style="color: #eab308; font-weight: bold; font-size: 11px;">STEP 2: If Lock Acquired</div>
+<div style="color: #fef9c3; font-size: 11px;">- Check partner still available<br/>- Send offer to partner app<br/>- Wait for response (30s timeout)</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 11px;">STEP 3: If Partner Accepts</div>
+<div style="color: #bbf7d0; font-size: 11px;">- Create assignment<br/>- Update partner status<br/>- Release lock</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #ef4444;">
+<div style="color: #ef4444; font-weight: bold; font-size: 11px;">STEP 4: If Partner Rejects/Timeout</div>
+<div style="color: #fecaca; font-size: 11px;">- Release lock<br/>- Try next partner in scored list</div>
+</div>
+
+</div>
+
+</div>
 
 ### 2. Location Update at Scale
 
-```
-50K partners × 1 update/5s = 10K updates/second
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
-Strategy:
-- Use Redis Streams for ingestion
-- Batch writes to PostgreSQL every minute
-- Real-time served from Redis only
-- Historical from time-series database (TimescaleDB)
-```
+<div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">50K partners x 1 update/5s = 10K updates/second</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Ingestion</div>
+<div style="color: #bfdbfe; font-size: 10px;">Redis Streams for high-throughput writes</div>
+</div>
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Persistence</div>
+<div style="color: #bbf7d0; font-size: 10px;">Batch writes to PostgreSQL every minute</div>
+</div>
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #f97316;">
+<div style="color: #f97316; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Real-time</div>
+<div style="color: #fed7aa; font-size: 10px;">Served from Redis only (hot data)</div>
+</div>
+
+<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Historical</div>
+<div style="color: #e9d5ff; font-size: 10px;">TimescaleDB for time-series analytics</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -598,10 +714,38 @@ Strategy:
 **What They're Probing**: Understanding of TSP variants, real-world constraints, computational complexity trade-offs
 
 **Strong Answer**:
-> "Multi-stop routing in logistics is a Precedence-Constrained TSP - pickups must happen before their corresponding drops. At scale, exact solutions are NP-hard, so we use heuristics: Nearest Neighbor for initial route, then 2-opt/3-opt improvements. We integrate with OSRM or Google OR-Tools for road-network-aware routing. For real-time recalculation when new orders come in, we use insertion heuristics rather than full re-optimization. Key insight: we pre-compute travel time matrices between frequent pickup points during off-peak hours."
+
+> "Multi-stop routing in hyperlocal logistics is fundamentally a **Precedence-Constrained Traveling Salesman Problem (PC-TSP)** - one of the most computationally challenging problems in operations research. Let me walk you through our approach with a concrete scenario.
+>
+> **Real-World Scenario**: Imagine a partner has accepted 3 orders simultaneously:
+> - **Order A**: Pick up medicines from Apollo Pharmacy (P1) and deliver to Mrs. Sharma (D1) - 2.3 km away
+> - **Order B**: Pick up groceries from BigBasket hub (P2) and deliver to Mr. Patel (D2) - 1.8 km away
+> - **Order C**: Pick up documents from a law firm (P3) and deliver to a bank (D3) - 3.1 km away
+>
+> **The Naive Approach** would be sequential: P1->D1->P2->D2->P3->D3, covering approximately 15.2 km and taking 48 minutes.
+>
+> **Our Optimized Approach** considers **50+ variables** including:
+> - **Geographic clustering**: P1 and P3 are only 400m apart, so batch those pickups
+> - **Traffic patterns**: The route from D2 to D3 passes through a high-congestion zone at 6pm - avoid during peak
+> - **Time sensitivity**: Medicines have higher priority than documents
+> - **Road network topology**: One-way streets, no-entry zones, construction areas
+> - **Partner vehicle type**: Two-wheeler can take shortcuts a car cannot
+>
+> **Step-by-step optimization**:
+> 1. **Build a distance matrix**: Pre-compute travel times between all 6 points (P1, P2, P3, D1, D2, D3) = 30 pairs
+> 2. **Apply precedence constraints**: P1 must come before D1, P2 before D2, P3 before D3
+> 3. **Generate initial solution**: Use Nearest Neighbor heuristic - start at partner location, go to closest unvisited point respecting precedence
+> 4. **Improve with 2-opt/3-opt**: Iteratively swap edges to reduce total distance
+> 5. **Apply Or-opt moves**: Relocate single stops or pairs to better positions
+>
+> **Optimized route**: Partner Location -> P1 -> P3 -> P2 -> D2 -> D1 -> D3, covering only 10.1 km (33% reduction) and 32 minutes.
+>
+> **Technical implementation**: We use Google OR-Tools for the constraint solver, with OSRM providing the road-network-aware distance matrix. The entire optimization runs in under 200ms for up to 8 stops. For real-time recalculation when new orders arrive mid-route, we use **insertion heuristics** rather than full re-optimization - finding the best position to insert the new pickup-drop pair takes only 15ms.
+>
+> **Key insight for interviews**: We pre-compute travel time matrices between the top 500 pickup points (stores, restaurants, hubs) during off-peak hours. This cached matrix handles 70% of routes instantly without calling the routing API."
 
 **When Simpler Works**:
-> "For < 3 stops per partner, simple point-to-point routing works fine. Instacart's early days used basic A-to-B navigation. Only batch when you have predictable high-density areas."
+> "For partners with fewer than 3 stops, optimization provides marginal benefit - maybe 500m savings. We use simple point-to-point Google Maps directions. Instacart operated this way until 2016. The complexity is only justified when you have high-density areas with consistent multi-stop routes."
 
 ---
 
@@ -610,10 +754,42 @@ Strategy:
 **What They're Probing**: Cost awareness, understanding of API limitations, ability to build vs. buy
 
 **Strong Answer**:
-> "Google Maps charges $5-10 per 1000 route requests. At 100K orders/day with re-routing, that's $15K-30K/month just for routing. Plus, Google's API doesn't handle multi-stop optimization with precedence constraints. We use OSRM (Open Source Routing Machine) for base routing - it's free and we can customize for two-wheeler traffic patterns. Google Maps is used for geocoding and customer-facing ETA display where accuracy perception matters more."
+
+> "This is a classic build-vs-buy decision where the answer changes dramatically with scale. Let me break down the economics and technical limitations.
+>
+> **Cost Analysis at Scale**:
+> - Google Maps Directions API: $5 per 1,000 requests (after free tier)
+> - Routes API with optimization: $10 per 1,000 requests
+>
+> **Concrete calculation for Dunzo-scale (100K orders/day)**:
+> - Initial route calculation: 100K requests/day
+> - Real-time re-routing (average 3x per order due to traffic/delays): 300K requests/day
+> - ETA updates every 2 minutes for 30-minute average delivery: 1.5M requests/day
+> - **Total**: ~2M API calls/day = 60M/month = **$300K-600K/year just for routing**
+>
+> **Technical Limitations of Google Maps API**:
+> 1. **No precedence constraints**: Google's optimization assumes you can visit waypoints in any order. It doesn't understand that pickup P1 MUST happen before drop D1. We'd need to post-process and potentially invalidate their optimization.
+>
+> 2. **Limited waypoints**: The API caps at 25 waypoints per request. For batched orders with 8+ stops, we need multiple calls and manual stitching.
+>
+> 3. **No vehicle-specific routing for two-wheelers**: Google optimizes for cars. In Indian cities, two-wheelers can use service roads, narrow lanes, and shortcuts that cut 20% off car routes.
+>
+> 4. **Rate limits**: 50 requests/second default limit causes queueing during surge periods.
+>
+> **Our Hybrid Approach**:
+> - **OSRM (Open Source Routing Machine)** self-hosted for base routing: Handles 500+ requests/second on a $200/month server, unlimited usage
+> - **Custom two-wheeler profile**: We trained OSRM with GPS traces from 10,000 actual delivery trips to learn rider shortcuts
+> - **Google Maps only for**: Customer-facing ETA display (trust factor), geocoding (address to coordinates), and new city launches before we have local data
+>
+> **When to switch**:
+> - **< 1,000 orders/day**: Google Maps is fine. $300-500/month is cheaper than DevOps overhead for OSRM
+> - **1,000-10,000 orders/day**: Hybrid approach - OSRM for internal routing, Google for customer display
+> - **> 10,000 orders/day**: Full OSRM with Google only for geocoding
+>
+> **DoorDash case study**: They used pure Google Maps until 2017 (~5K orders/day in SF), then built their own routing engine. Their routing costs dropped 85% while accuracy improved because they incorporated restaurant preparation time and driver wait patterns that Google couldn't model."
 
 **When Simpler Works**:
-> "For < 1000 orders/day, Google Maps API is fine. The $300-500/month cost is cheaper than engineering time to set up OSRM. DoorDash used Google Maps until they hit 10K+ daily orders."
+> "For a startup doing 500 orders/day, the $200/month Google Maps bill is nothing compared to the 2 engineering weeks to set up OSRM correctly. Premature optimization here is a real trap - I've seen startups spend 3 months building custom routing before product-market fit."
 
 ---
 
@@ -622,10 +798,67 @@ Strategy:
 **What They're Probing**: Distributed systems knowledge, consistency vs. availability trade-offs, real-world matching systems
 
 **Strong Answer**:
-> "The core challenge is preventing double-assignment - two orders grabbing the same rider. We use Redis-based distributed locks with short TTLs (30s). The matching algorithm runs in city-sharded services - Bangalore dispatchers never compete with Mumbai dispatchers. Within a city, we partition by zones. For the actual matching, we use a scoring function: distance (40%), partner rating (20%), acceptance rate (25%), current load (15%). At peak times, we switch from 'best match' to 'good enough match' - first partner within 2km who can accept."
+
+> "Rider assignment is the heart of any delivery platform - it's essentially a **real-time distributed auction system** where orders compete for riders and riders compete for orders. The core challenge is preventing **double-assignment** while maintaining sub-second response times.
+>
+> **The Double-Assignment Problem in Detail**:
+> Imagine at 7:15 PM, Order #A and Order #B are both created within 50ms of each other. Both orders identify Rider #123 as the best match (he's equidistant from both pickups). Without coordination:
+> - Dispatcher process 1 checks: 'Is Rider #123 available?' -> Yes
+> - Dispatcher process 2 checks: 'Is Rider #123 available?' -> Yes (race condition!)
+> - Both send assignment offers to Rider #123
+> - Rider accepts Order #A
+> - Order #B thinks it's assigned but rider never shows -> customer waiting 15+ minutes
+>
+> **Our Multi-Layer Solution**:
+>
+> **Layer 1: Geographic Sharding**
+> - India is divided into 25 city clusters
+> - Bangalore dispatchers NEVER compete with Mumbai dispatchers (different Redis instances, different Kafka partitions)
+> - Within Bangalore, we further partition into 12 zones (~50 sq km each)
+> - **Benefit**: 90% of matching happens within a single zone with no cross-zone coordination
+>
+> **Layer 2: Distributed Locking**
+> ```
+> SETNX rider_lock:123 order_id_A EX 30
+> ```
+> - Lock TTL: 30 seconds (covers offer + acceptance window)
+> - If lock fails, immediately try next-best rider (pre-computed list of top 5)
+> - Lock is released on: acceptance, rejection, or timeout
+>
+> **Layer 3: Scoring Algorithm (50+ features)**
+> The scoring function weights:
+> - **Distance to pickup (40%)**: Closer riders provide faster pickup, better customer experience
+> - **Acceptance rate (25%)**: Riders who frequently reject waste matching cycles
+> - **Current load (15%)**: Riders with 1 active order can take a second; riders with 2 are at capacity
+> - **Rating (10%)**: Higher-rated riders for premium customers or high-value orders
+> - **Earnings balance (10%)**: If a rider has had a slow hour, boost their score to maintain fair earnings distribution
+>
+> **Concrete Example**:
+> Order: Pickup from Koramangala, drop to Indiranagar (4 km)
+> Available riders within 3km radius: 8 riders
+>
+> | Rider | Distance | Accept Rate | Current Orders | Rating | Score |
+> |-------|----------|-------------|----------------|--------|-------|
+> | R1 | 0.8 km | 92% | 0 | 4.8 | 87.2 |
+> | R2 | 1.2 km | 88% | 1 | 4.9 | 71.5 |
+> | R3 | 0.5 km | 65% | 0 | 4.2 | 68.3 |
+>
+> R1 wins despite R3 being closer because R3's low acceptance rate (65%) suggests they might reject this order too.
+>
+> **Layer 4: Graceful Degradation**
+> During surge (Friday 8 PM dinner rush):
+> - Switch from 'best match' to 'good enough match'
+> - Accept first rider within 2 km with >70% acceptance rate
+> - Skip scoring computation entirely
+> - **Result**: Matching time drops from 400ms to 50ms, throughput increases 8x
+>
+> **Failure Scenarios**:
+> 1. **Redis lock server down**: Fall back to PostgreSQL advisory locks (slower but consistent)
+> 2. **Rider app loses connectivity during assignment**: Order goes to 'pending_confirmation' state, auto-reassign after 60 seconds
+> 3. **Zone server overload**: Spill to adjacent zone's rider pool (riders near zone boundaries can serve both)"
 
 **When Simpler Works**:
-> "For < 50 orders/hour, manual dispatcher assignment works fine. Many local courier services use WhatsApp groups where a human dispatcher posts orders and riders claim them. FIFO assignment (first available rider gets next order) works until you hit 200+ concurrent orders."
+> "For < 50 orders/hour, a human dispatcher with a WhatsApp group is more reliable than any algorithm. I've seen local courier services where the dispatcher literally calls the nearest rider. FIFO assignment (first available rider gets next order) works fine until you hit 200+ concurrent orders - that's when utilization variance becomes a problem worth solving."
 
 ---
 
@@ -634,10 +867,74 @@ Strategy:
 **What They're Probing**: Understanding of gig economy dynamics, incentive design, operational sustainability
 
 **Strong Answer**:
-> "Partner earnings directly affect supply reliability. We guarantee minimum hourly earnings during peak slots if they maintain 80%+ acceptance rate. The earnings model combines: base fare + distance pay + time pay + tips + surge bonus. We show partners estimated earnings before accepting. Key insight: partners optimize for earnings-per-hour, not per-order. We batch orders to increase their efficiency rather than having them wait. Weekly earning summaries and gamified milestones (complete 50 orders for bonus) improve retention."
+
+> "Partner earnings directly drive **supply reliability** - if riders can't make predictable income, they churn to competitors or quit gig work entirely. This is the #1 operational challenge for any delivery platform. Let me walk through our comprehensive earnings framework.
+>
+> **The Core Insight**: Partners optimize for **earnings-per-hour**, not earnings-per-delivery. A $5 delivery that takes 45 minutes is worse than a $3 delivery that takes 15 minutes.
+>
+> **Multi-Component Earnings Model**:
+>
+> **1. Base Fare**: Fixed amount per delivery category
+> - Documents: Rs 25 ($0.30)
+> - Groceries: Rs 35 ($0.42)
+> - Food: Rs 40 ($0.48) - higher because of wait times at restaurants
+>
+> **2. Distance Pay**: Rs 8/km ($0.10/km) for distance beyond first 2 km
+> - Example: 6 km delivery = Rs 8 * 4 = Rs 32 extra
+>
+> **3. Time Pay**: Rs 2/minute ($0.024/min) for wait time > 5 minutes
+> - Compensates for slow restaurant prep, customer not answering door
+>
+> **4. Surge Bonus**: 1.2x - 2.5x multiplier during high demand
+> - Friday 7-9 PM: 1.5x
+> - Rain: 2.0x
+> - Cricket match ending: 1.8x
+>
+> **5. Tips**: 100% go to partner (platform takes no cut)
+>
+> **6. Incentives**: Gamified bonuses
+> - Complete 10 orders before 2 PM: Rs 100 bonus
+> - 50 orders in a week: Rs 500 bonus
+> - Perfect 5-star week: Rs 200 bonus
+>
+> **Concrete Earnings Example**:
+> Rahul works 8 hours on a Friday:
+> - Completes 12 deliveries
+> - Base fares: Rs 420
+> - Distance pay: Rs 180
+> - Wait time pay: Rs 45
+> - Surge bonuses: Rs 95
+> - Tips: Rs 120
+> - Daily incentive (12 orders): Rs 150
+> - **Total: Rs 1,010 (~$12) for 8 hours = Rs 126/hour**
+>
+> **Minimum Guarantee System**:
+> - During peak slots (12-2 PM, 7-10 PM), we guarantee Rs 150/hour if rider maintains:
+>   - 80%+ acceptance rate
+>   - < 5% cancellation rate
+>   - Online for full slot duration
+> - If Rahul only earned Rs 800 organically in 8 peak hours (Rs 100/hour), we top up Rs 400 to reach Rs 150/hour guaranteed minimum
+>
+> **Batching for Efficiency**:
+> When user orders from 3 different stores in same area (common for party prep), we batch them:
+> - Single partner picks up from all 3 stores
+> - Partner earns 3x base fare but only 1x distance (since drops are close)
+> - Partner completes 3 orders in 40 minutes instead of 3 separate trips taking 90 minutes
+> - **Earnings jump from Rs 20/order to Rs 35/order equivalent**
+>
+> **Transparency Features**:
+> - Before accepting, partner sees: estimated earnings, pickup/drop locations, expected time
+> - Weekly earnings summary email with breakdown
+> - 'Earnings estimator' in app: 'If you work 6 PM - 10 PM today, you'll likely earn Rs 500-650'
+>
+> **Anti-Gaming Measures**:
+> - GPS verification at pickup/drop (prevents fake deliveries)
+> - Photo proof of delivery
+> - Customer confirmation codes
+> - AI detection of anomalous patterns (same rider, same customer, repeated orders)"
 
 **When Simpler Works**:
-> "Fixed per-delivery rate works for low-volume operations. Many local delivery services pay flat $3-5 per delivery regardless of distance. Complexity is only needed when you have variable distances and want to optimize partner utilization."
+> "For low-volume local delivery services, a flat Rs 50 per delivery regardless of distance works fine. The complexity of variable pricing only matters when you have partners choosing between orders and you need to incentivize less desirable deliveries (long distance, bad weather, difficult parking areas)."
 
 ---
 
@@ -646,10 +943,89 @@ Strategy:
 **What They're Probing**: Failure handling, customer experience protection, operational resilience
 
 **Strong Answer**:
-> "This is a critical failure mode. First, we detect it through GPS anomalies (stationary too long, moving away from destination) before explicit cancellation. When detected: (1) immediately notify customer with honest ETA, (2) find replacement partner with priority boost, (3) if package picked up, new partner must go to current partner's last known location. We maintain 'rescue rider' pool in high-demand areas - partners who specifically handle reassignments with bonus pay. The order stays in a special 'in-transit-reassigning' state with extra monitoring."
+
+> "Mid-delivery cancellation is our most critical failure mode - the customer has already been charged, they're expecting delivery, and their package is literally in transit with someone who's abandoning it. This scenario occurs in 0.3% of orders but generates 15% of customer complaints. Here's our comprehensive playbook.
+>
+> **Detection Before Explicit Cancellation** (catching issues early):
+>
+> 1. **GPS Anomaly Detection**:
+>    - Partner stationary > 8 minutes not at a stop location -> Alert
+>    - Partner moving away from destination -> Alert
+>    - Partner's heading consistently opposite to route -> Alert
+>    - GPS signal lost > 3 minutes -> Alert
+>
+> 2. **Behavioral Signals**:
+>    - Partner opens 'Cancel' screen but doesn't confirm (hesitation)
+>    - Partner calls support -> Route to 'save the delivery' team
+>    - Partner's speed suddenly drops to 0 in non-traffic area
+>
+> **The Rescue Protocol** (step-by-step):
+>
+> **T+0 (Cancellation detected)**:
+> - Order enters 'IN_TRANSIT_REASSIGNING' state
+> - Customer notification: 'Your delivery partner had an emergency. We're assigning a new partner immediately. Your order is safe.'
+> - Do NOT show 'cancelled' status - customer sees 'Finding new partner...'
+>
+> **T+30 seconds**:
+> - Query for rescue partners within 1 km of last known package location
+> - Rescue partners are specially flagged riders who:
+>   - Get 1.5x pay for rescue missions
+>   - Have 95%+ acceptance rate
+>   - Are pre-positioned in high-incident areas
+>
+> **T+60 seconds**:
+> - If no rescue partner, expand to 2 km radius
+> - Parallel: Customer gets callback from support with personal update
+>
+> **T+2 minutes**:
+> - If still unassigned, escalate to 'Critical' queue
+> - Operations team manually calls nearby partners
+>
+> **Package Handoff Scenarios**:
+>
+> **Scenario A: Package still with original partner (most common - 70% of cases)**
+> - Original partner is contacted and asked to wait at current location
+> - Rescue partner navigates to meet original partner
+> - Handoff verified via OTP exchange
+> - Original partner gets partial payment (for work completed) minus penalty
+>
+> **Scenario B: Original partner unreachable (25% of cases)**
+> - Track last known location from GPS history
+> - Rescue partner goes to that location
+> - If package not found, escalate to 'Lost Package' protocol
+>
+> **Scenario C: High-value or sensitive package (5% of cases)**
+> - Medicines, legal documents, electronics > Rs 5000
+> - Operations manager personally calls original partner
+> - If unrecoverable within 10 minutes, initiate refund + replacement order
+> - Insurance claim process begins
+>
+> **Real Example**:
+> Order #45231: Customer ordered birthday cake for delivery at 7 PM party
+> - 6:42 PM: Partner picks up cake from bakery
+> - 6:51 PM: Partner's phone dies (common in summer heat)
+> - 6:54 PM: GPS lost alert triggers
+> - 6:55 PM: System detects partner was heading correct direction, likely phone issue not abandonment
+> - 6:56 PM: Rescue partner Priya assigned, estimated at last location in 8 minutes
+> - 6:58 PM: Customer called proactively, told 7:15 PM new ETA
+> - 7:02 PM: Original partner's phone comes back online (was charging at a tea stall)
+> - 7:03 PM: System detects original partner moving again, cancels rescue assignment
+> - 7:11 PM: Original partner delivers cake, only 11 minutes late
+> - 7:12 PM: Customer gets Rs 50 credit for inconvenience
+>
+> **Post-Incident Analysis**:
+> - Every mid-delivery cancellation is reviewed
+> - Partner gets 'incident' flag on profile (3 incidents = suspension)
+> - If cancellation was due to accident/emergency, partner is not penalized and gets wellness check
+>
+> **Metrics We Track**:
+> - Average reassignment time: 4.2 minutes
+> - Successful rescue rate: 94%
+> - Customer churn after mid-delivery incident: 12% (vs 3% baseline)
+> - NPS for rescued orders: 42 (vs 67 normal) - so we proactively offer credits"
 
 **When Simpler Works**:
-> "For valuable packages, some services just have the partner return to pickup point and restart. For food delivery, cancellation often means refund + reorder rather than complex reassignment - sometimes simpler for customer experience."
+> "For valuable items (jewelry, electronics, documents), some services just have the partner return to the pickup point and restart fresh. For food delivery specifically, cancellation usually means refund + reorder rather than complex mid-route reassignment - by the time you rescue the food, it's cold anyway. Sometimes simpler is better for customer experience."
 
 </div>
 
@@ -672,29 +1048,55 @@ Strategy:
 
 ### When to Upgrade Technology
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  TECHNOLOGY EVOLUTION TRIGGERS                               │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  PostgreSQL Location Queries → Redis GEO                    │
-│  Trigger: > 100 location queries/second                     │
-│  Sign: Database CPU > 70% during peak                       │
-│                                                              │
-│  Simple Distance Matching → ML-based Scoring                │
-│  Trigger: > 500 partners in single city                     │
-│  Sign: Partner utilization variance > 40%                   │
-│                                                              │
-│  Google Maps API → Self-hosted OSRM                         │
-│  Trigger: > $5000/month in Maps API costs                   │
-│  Sign: Route API calls > 500K/month                         │
-│                                                              │
-│  Monolithic Dispatch → City-sharded Services                │
-│  Trigger: > 3 cities with different peak patterns           │
-│  Sign: One city's surge affecting another's performance     │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+
+<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">TECHNOLOGY EVOLUTION TRIGGERS</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #3b82f6;">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 12px;">PostgreSQL Location Queries -> Redis GEO</div>
+</div>
+<div style="color: #bfdbfe; font-size: 11px; margin-top: 6px;">
+<strong>Trigger:</strong> > 100 location queries/second<br/>
+<strong>Sign:</strong> Database CPU > 70% during peak
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+<div style="color: #22c55e; font-weight: bold; font-size: 12px;">Simple Distance Matching -> ML-based Scoring</div>
+</div>
+<div style="color: #bbf7d0; font-size: 11px; margin-top: 6px;">
+<strong>Trigger:</strong> > 500 partners in single city<br/>
+<strong>Sign:</strong> Partner utilization variance > 40%
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+<div style="color: #f97316; font-weight: bold; font-size: 12px;">Google Maps API -> Self-hosted OSRM</div>
+</div>
+<div style="color: #fed7aa; font-size: 11px; margin-top: 6px;">
+<strong>Trigger:</strong> > $5000/month in Maps API costs<br/>
+<strong>Sign:</strong> Route API calls > 500K/month
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+<div style="color: #a855f7; font-weight: bold; font-size: 12px;">Monolithic Dispatch -> City-sharded Services</div>
+</div>
+<div style="color: #e9d5ff; font-size: 11px; margin-top: 6px;">
+<strong>Trigger:</strong> > 3 cities with different peak patterns<br/>
+<strong>Sign:</strong> One city's surge affecting another's performance
+</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -731,33 +1133,53 @@ Strategy:
 | Scenario | Simple Alternative | Why It Works |
 |----------|-------------------|--------------|
 | Single pickup, single drop | Google Maps directions | No optimization needed |
-| < 3 stops per route | Fixed order (P1→D1→P2→D2) | Marginal improvement not worth compute |
-| Predictable routes | Pre-computed route templates | Same store → same areas daily |
+| < 3 stops per route | Fixed order (P1->D1->P2->D2) | Marginal improvement not worth compute |
+| Predictable routes | Pre-computed route templates | Same store -> same areas daily |
 | Low-density areas | Nearest neighbor heuristic | Optimal isn't much better |
 
 ### The "$300/Month Delivery Platform" Stack
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  STARTUP STACK (Works up to 500 orders/day)                  │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Frontend: React/Flutter app                   $0           │
-│  Backend: Single Node.js/Django server         $50/mo       │
-│  Database: Managed PostgreSQL (basic)          $50/mo       │
-│  Maps: Google Maps API (free tier + basic)     $100/mo      │
-│  SMS/Notifications: Twilio                     $50/mo       │
-│  Hosting: Single VPS or basic cloud            $50/mo       │
-│                                                              │
-│  Total: ~$300/month                                          │
-│                                                              │
-│  Assignment: Manual or simple FIFO queue                    │
-│  Routing: Google Maps Directions API                        │
-│  Tracking: Store lat/lng in PostgreSQL, poll every 30s     │
-│  Batching: Manual by dispatcher                             │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+
+<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">STARTUP STACK (Works up to 500 orders/day)</div>
+
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 16px;">
+
+<div style="color: #60a5fa; font-size: 12px;">Frontend: React/Flutter app</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$0</div>
+
+<div style="color: #60a5fa; font-size: 12px;">Backend: Single Node.js/Django server</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
+
+<div style="color: #60a5fa; font-size: 12px;">Database: Managed PostgreSQL (basic)</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
+
+<div style="color: #60a5fa; font-size: 12px;">Maps: Google Maps API (free tier + basic)</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$100/mo</div>
+
+<div style="color: #60a5fa; font-size: 12px;">SMS/Notifications: Twilio</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
+
+<div style="color: #60a5fa; font-size: 12px;">Hosting: Single VPS or basic cloud</div>
+<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
+
+</div>
+
+<div style="border-top: 1px solid #374151; padding-top: 12px; display: flex; justify-content: space-between;">
+<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">Total:</div>
+<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">~$300/month</div>
+</div>
+
+<div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #374151;">
+<div style="color: #9ca3af; font-size: 11px; line-height: 1.8;">
+<strong>Assignment:</strong> Manual or simple FIFO queue<br/>
+<strong>Routing:</strong> Google Maps Directions API<br/>
+<strong>Tracking:</strong> Store lat/lng in PostgreSQL, poll every 30s<br/>
+<strong>Batching:</strong> Manual by dispatcher
+</div>
+</div>
+
+</div>
 
 ### Real-World Examples of Simpler Approaches
 
@@ -778,27 +1200,49 @@ Strategy:
 
 ### Questions to Ask Before Building Complexity
 
-```
-Before building ML-based dispatch:
-□ Do we have > 500 concurrent active partners?
-□ Is partner utilization variance > 30%?
-□ Do we have 3+ months of historical data?
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
-Before building real-time route optimization:
-□ Do partners regularly have 3+ stops?
-□ Are we losing > 5% revenue to inefficient routing?
-□ Do we have traffic data integration?
+<div style="display: grid; gap: 16px;">
 
-Before sharding by city:
-□ Do we have > 3 cities?
-□ Are cities in different timezones with different peaks?
-□ Is single database CPU > 60% at peak?
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building ML-based dispatch:</div>
+<div style="color: #e9d5ff; font-size: 11px; line-height: 1.8;">
+- Do we have > 500 concurrent active partners?<br/>
+- Is partner utilization variance > 30%?<br/>
+- Do we have 3+ months of historical data?
+</div>
+</div>
 
-Before building custom routing engine:
-□ Are Maps API costs > $5000/month?
-□ Do we need vehicle-specific routing (bikes vs cars)?
-□ Is Google's routing inadequate for our geography?
-```
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building real-time route optimization:</div>
+<div style="color: #bfdbfe; font-size: 11px; line-height: 1.8;">
+- Do partners regularly have 3+ stops?<br/>
+- Are we losing > 5% revenue to inefficient routing?<br/>
+- Do we have traffic data integration?
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before sharding by city:</div>
+<div style="color: #bbf7d0; font-size: 11px; line-height: 1.8;">
+- Do we have > 3 cities?<br/>
+- Are cities in different timezones with different peaks?<br/>
+- Is single database CPU > 60% at peak?
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
+<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building custom routing engine:</div>
+<div style="color: #fed7aa; font-size: 11px; line-height: 1.8;">
+- Are Maps API costs > $5000/month?<br/>
+- Do we need vehicle-specific routing (bikes vs cars)?<br/>
+- Is Google's routing inadequate for our geography?
+</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 </div>
@@ -821,38 +1265,60 @@ Before building custom routing engine:
 
 ### Failure Mode Analysis
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  FAILURE MODES AND MITIGATIONS                               │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  FAILURE: Redis location cache goes down                    │
-│  Impact: Can't find nearby partners                         │
-│  Mitigation: Fallback to PostgreSQL with last known         │
-│  RTO: 30 seconds with automatic failover                    │
-│                                                              │
-│  FAILURE: Partner app loses connectivity                    │
-│  Impact: Stale location, missed assignments                 │
-│  Mitigation: Offline queue, SMS fallback for critical       │
-│  RTO: Partner reconnects or manual reassignment             │
-│                                                              │
-│  FAILURE: Kafka consumer lag                                │
-│  Impact: Delayed order processing                           │
-│  Mitigation: Auto-scaling consumers, priority queue bypass  │
-│  RTO: < 2 minutes with lag alerting at 1000 messages        │
-│                                                              │
-│  FAILURE: ML ETA model returns outliers                     │
-│  Impact: Unrealistic customer expectations                  │
-│  Mitigation: Rule-based bounds checking, fallback to avg    │
-│  RTO: Immediate with outlier detection                      │
-│                                                              │
-│  FAILURE: Payment gateway timeout                           │
-│  Impact: Order stuck in pending                             │
-│  Mitigation: Async payment, proceed with delivery           │
-│  RTO: Retry queue with 3x attempts over 5 minutes           │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+
+<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">FAILURE MODES AND MITIGATIONS</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #ef4444;">
+<div style="color: #ef4444; font-weight: bold; font-size: 12px;">FAILURE: Redis location cache goes down</div>
+<div style="color: #fecaca; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<strong>Impact:</strong> Can't find nearby partners<br/>
+<strong>Mitigation:</strong> Fallback to PostgreSQL with last known locations<br/>
+<strong>RTO:</strong> 30 seconds with automatic failover
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
+<div style="color: #f97316; font-weight: bold; font-size: 12px;">FAILURE: Partner app loses connectivity</div>
+<div style="color: #fed7aa; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<strong>Impact:</strong> Stale location, missed assignments<br/>
+<strong>Mitigation:</strong> Offline queue, SMS fallback for critical orders<br/>
+<strong>RTO:</strong> Partner reconnects or manual reassignment
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #eab308;">
+<div style="color: #eab308; font-weight: bold; font-size: 12px;">FAILURE: Kafka consumer lag</div>
+<div style="color: #fef9c3; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<strong>Impact:</strong> Delayed order processing<br/>
+<strong>Mitigation:</strong> Auto-scaling consumers, priority queue bypass<br/>
+<strong>RTO:</strong> < 2 minutes with lag alerting at 1000 messages
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 12px;">FAILURE: ML ETA model returns outliers</div>
+<div style="color: #e9d5ff; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<strong>Impact:</strong> Unrealistic customer expectations<br/>
+<strong>Mitigation:</strong> Rule-based bounds checking, fallback to historical avg<br/>
+<strong>RTO:</strong> Immediate with outlier detection
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 12px;">FAILURE: Payment gateway timeout</div>
+<div style="color: #bbf7d0; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<strong>Impact:</strong> Order stuck in pending<br/>
+<strong>Mitigation:</strong> Async payment, proceed with delivery on credit<br/>
+<strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
+</div>
+</div>
+
+</div>
+
+</div>
 
 ### Scaling Bottlenecks and Solutions
 
@@ -936,31 +1402,43 @@ Before building custom routing engine:
 
 ### The "10x Engineer" Answer Pattern
 
-```
-1. ACKNOWLEDGE COMPLEXITY
-   "This is essentially a real-time matching marketplace with
-    geographical constraints..."
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
-2. START SIMPLE
-   "For MVP, FIFO assignment with basic distance filtering
-    handles 80% of cases..."
+<div style="display: flex; flex-direction: column; gap: 12px;">
 
-3. IDENTIFY TRIGGERS
-   "When we hit 500+ concurrent partners, simple matching
-    creates utilization variance..."
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">1. ACKNOWLEDGE COMPLEXITY</div>
+<div style="color: #bfdbfe; font-size: 11px; margin-top: 4px;">"This is essentially a real-time matching marketplace with geographical constraints..."</div>
+</div>
 
-4. PROPOSE EVOLUTION
-   "Then we introduce scored matching, but keep FIFO as
-    fallback during system stress..."
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
+<div style="color: #22c55e; font-weight: bold; font-size: 11px;">2. START SIMPLE</div>
+<div style="color: #bbf7d0; font-size: 11px; margin-top: 4px;">"For MVP, FIFO assignment with basic distance filtering handles 80% of cases..."</div>
+</div>
 
-5. QUANTIFY TRADE-OFFS
-   "ML routing saves ~15% distance but adds 200ms latency
-    and requires 3 months of training data..."
+<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #f97316;">
+<div style="color: #f97316; font-weight: bold; font-size: 11px;">3. IDENTIFY TRIGGERS</div>
+<div style="color: #fed7aa; font-size: 11px; margin-top: 4px;">"When we hit 500+ concurrent partners, simple matching creates utilization variance..."</div>
+</div>
 
-6. SHOW INDUSTRY AWARENESS
-   "This is similar to how Uber evolved from simple dispatch
-    to their Marketplace team's algorithms..."
-```
+<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #a855f7;">
+<div style="color: #a855f7; font-weight: bold; font-size: 11px;">4. PROPOSE EVOLUTION</div>
+<div style="color: #e9d5ff; font-size: 11px; margin-top: 4px;">"Then we introduce scored matching, but keep FIFO as fallback during system stress..."</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #eab308;">
+<div style="color: #eab308; font-weight: bold; font-size: 11px;">5. QUANTIFY TRADE-OFFS</div>
+<div style="color: #fef9c3; font-size: 11px; margin-top: 4px;">"ML routing saves ~15% distance but adds 200ms latency and requires 3 months of training data..."</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1f3d 0%, #4d2f4d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #ec4899;">
+<div style="color: #ec4899; font-weight: bold; font-size: 11px;">6. SHOW INDUSTRY AWARENESS</div>
+<div style="color: #fbcfe8; font-size: 11px; margin-top: 4px;">"This is similar to how Uber evolved from simple dispatch to their Marketplace team's algorithms..."</div>
+</div>
+
+</div>
+
+</div>
 
 </div>
 

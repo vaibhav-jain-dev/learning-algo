@@ -1,13 +1,18 @@
 # DSAlgo Learn Platform - Dockerfile
-# Fast Code Runner with Go/Fiber backend and HTMX frontend
-# Memory target: < 2GB total
+# Optimized multi-stage build for minimal image size
+# Target: < 200MB compressed
 
-# Build stage for Go backend
-FROM golang:1.21-alpine AS builder
+# =============================================================================
+# Stage 1: Build Go backend
+# =============================================================================
+FROM golang:1.21-alpine AS go-builder
 
 WORKDIR /build
 
-# Copy go.mod first
+# Install build dependencies
+RUN apk add --no-cache git
+
+# Copy go.mod first for better layer caching
 COPY backend/go.mod ./
 
 # Copy backend source
@@ -17,47 +22,51 @@ COPY backend/internal ./internal
 # Download dependencies and generate go.sum
 RUN go mod tidy
 
-# Build the binary
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server
+# Build the binary with maximum optimizations
+# -ldflags="-w -s" strips debug info
+# CGO_ENABLED=0 creates static binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-w -s -extldflags '-static'" \
+    -o server ./cmd/server
 
-# Runtime stage
-FROM python:3.11-slim
+# =============================================================================
+# Stage 2: Minimal Python runtime with Go for code execution
+# =============================================================================
+FROM python:3.12-alpine AS runtime
 
 # Labels
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 LABEL app.description="Fast Code Runner with Go/Fiber and HTMX"
 
-# Install Go runtime for code execution
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget \
+# Install minimal dependencies
+# - Go for code execution (using pre-built alpine package - much smaller)
+# - ca-certificates for HTTPS
+# - wget for healthcheck
+RUN apk add --no-cache \
+    go~=1.21 \
     ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Go 1.21
-RUN wget -q https://go.dev/dl/go1.21.5.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go1.21.5.linux-amd64.tar.gz \
-    && rm go1.21.5.linux-amd64.tar.gz
+    wget \
+    && rm -rf /var/cache/apk/*
 
 # Set Go environment
-ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
-ENV PATH="${GOPATH}/bin:${PATH}"
 ENV GOCACHE="/app/.go-cache"
+ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
 
 # Set working directory
 WORKDIR /app
 
 # Copy built binary from builder
-COPY --from=builder /build/server ./server
+COPY --from=go-builder /build/server ./server
 
 # Copy frontend, problems, and topics
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 COPY topics/ ./topics/
 
-# Create non-root user, state directory, Go cache, and kernel work directory
-RUN useradd -m -s /bin/bash dsalgo && \
+# Create non-root user and necessary directories
+RUN adduser -D -s /bin/sh dsalgo && \
     mkdir -p /go /app/state /app/.go-cache /app/go-kernels /home/dsalgo/.go-kernels && \
     chown -R dsalgo:dsalgo /app /tmp /go /home/dsalgo
 
