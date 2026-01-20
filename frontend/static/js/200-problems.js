@@ -422,6 +422,9 @@
         var descContent = document.getElementById('description-content');
         var solContent = document.getElementById('solutions-content');
         var vizContent = document.getElementById('visualization-content');
+        var codePanel = document.querySelector('.code-panel');
+        var descPanel = document.querySelector('.description-panel');
+        var editorLayout = document.querySelector('.editor-layout');
 
         if (descContent) descContent.style.display = 'none';
         if (solContent) solContent.style.display = 'none';
@@ -429,14 +432,26 @@
 
         if (tab === 'problem' && descContent) {
             descContent.style.display = 'block';
+            // Show code panel, restore split layout
+            if (codePanel) codePanel.style.display = 'flex';
+            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
         } else if (tab === 'solutions' && solContent) {
             solContent.style.display = 'block';
             loadSolutions();
+            // Show code panel, restore split layout
+            if (codePanel) codePanel.style.display = 'flex';
+            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
         } else if (tab === 'visualize' && vizContent) {
             vizContent.style.display = 'block';
             loadVisualization();
+            // Hide code panel, make visualization full width
+            if (codePanel) codePanel.style.display = 'none';
+            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr';
         } else if (tab === 'hints' && descContent) {
             descContent.style.display = 'block';
+            // Show code panel, restore split layout
+            if (codePanel) codePanel.style.display = 'flex';
+            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
         }
     };
 
@@ -554,6 +569,16 @@
     }
 
     function getAnimationType(category, problemId) {
+        // Problem-specific types (check these first before generic category)
+        if (problemId) {
+            if (problemId.includes('topological')) return 'topological-sort';
+            if (problemId.includes('dijkstra')) return 'shortest-path';
+            if (problemId.includes('bfs') || problemId.includes('breadth')) return 'bfs';
+            if (problemId.includes('dfs') || problemId.includes('depth')) return 'dfs';
+            if (problemId.includes('fibonacci')) return 'memoization';
+            if (problemId.includes('binary-search') && !problemId.includes('tree')) return 'binary-search';
+        }
+
         var types = {
             'arrays': 'array-traversal',
             'binary-search-trees': 'tree-traversal',
@@ -565,17 +590,16 @@
             'famous-algorithms': 'algorithm-specific'
         };
 
-        // Problem-specific types
-        if (problemId && problemId.includes('two-sum')) return 'hash-table';
-        if (problemId && problemId.includes('sort')) return 'sorting';
-        if (problemId && problemId.includes('search')) return 'binary-search';
-        if (problemId && problemId.includes('fibonacci')) return 'memoization';
-
         return types[category] || 'step-by-step';
     }
 
     function initializeVisualization(category, problemId) {
-        // Generate steps based on problem type
+        // Clear any existing state completely
+        vizState.steps = [];
+        vizState.currentStep = 0;
+        vizState.totalSteps = 0;
+
+        // Generate steps based on problem type (use problemId for specificity)
         vizState.steps = generateSteps(category, problemId);
         vizState.totalSteps = vizState.steps.length;
         vizState.currentStep = 0;
@@ -585,8 +609,16 @@
     }
 
     function generateSteps(category, problemId) {
-        // Generate problem-specific animation steps
-        if (category === 'arrays') {
+        // Check problemId first for specific algorithm visualizations
+        if (problemId) {
+            if (problemId.includes('topological')) return generateTopologicalSortSteps();
+            if (problemId.includes('dijkstra')) return generateDijkstraSteps();
+        }
+
+        // Fall back to category-based generation
+        if (category === 'graphs' || category === 'famous-algorithms') {
+            return generateGraphSteps(problemId);
+        } else if (category === 'arrays') {
             return generateArraySteps(problemId);
         } else if (category === 'binary-trees' || category === 'binary-search-trees') {
             return generateTreeSteps(problemId);
@@ -596,10 +628,104 @@
             return generateLinkedListSteps(problemId);
         } else if (category === 'recursion') {
             return generateRecursionSteps(problemId);
-        } else if (category === 'graphs') {
-            return generateGraphSteps(problemId);
         }
         return generateGenericSteps();
+    }
+
+    function generateTopologicalSortSteps() {
+        // Topological Sort using Kahn's Algorithm (BFS-based)
+        return [
+            {
+                nodes: {A:0, B:0, C:1, D:2, E:1},
+                edges: [['A','C'],['B','C'],['B','D'],['C','E'],['D','E']],
+                queue: ['A', 'B'],
+                result: [],
+                current: null,
+                action: 'Calculate in-degrees, find nodes with 0 in-degree',
+                explanation: '📊 <strong>Step 1: Initialize</strong><br><br>' +
+                    '• Calculate in-degree for each node<br>' +
+                    '• A: 0 (no incoming edges)<br>' +
+                    '• B: 0 (no incoming edges)<br>' +
+                    '• C: 2 (from A, B)<br>' +
+                    '• D: 1 (from B)<br>' +
+                    '• E: 2 (from C, D)<br>' +
+                    '• <span style="color:#3fb950;">Queue nodes with in-degree 0: [A, B]</span>'
+            },
+            {
+                nodes: {A:0, B:0, C:0, D:2, E:1},
+                edges: [['B','C'],['B','D'],['C','E'],['D','E']],
+                queue: ['B', 'C'],
+                result: ['A'],
+                current: 'A',
+                action: 'Process A, reduce in-degrees of neighbors',
+                explanation: '➡️ <strong>Step 2: Process A</strong><br><br>' +
+                    '• Dequeue <span style="color:#3fb950;">A</span><br>' +
+                    '• Add A to result: [A]<br>' +
+                    '• Reduce in-degree of C (A→C edge)<br>' +
+                    '• C in-degree: 2→1<br>' +
+                    '• Queue: [B, C]'
+            },
+            {
+                nodes: {A:0, B:0, C:0, D:1, E:1},
+                edges: [['C','E'],['D','E']],
+                queue: ['C', 'D'],
+                result: ['A', 'B'],
+                current: 'B',
+                action: 'Process B, reduce in-degrees of C and D',
+                explanation: '➡️ <strong>Step 3: Process B</strong><br><br>' +
+                    '• Dequeue <span style="color:#3fb950;">B</span><br>' +
+                    '• Add B to result: [A, B]<br>' +
+                    '• Reduce in-degree of C (B→C): 1→0 ✓<br>' +
+                    '• Reduce in-degree of D (B→D): 2→1<br>' +
+                    '• C now has in-degree 0, add to queue<br>' +
+                    '• Queue: [C, D]'
+            },
+            {
+                nodes: {A:0, B:0, C:0, D:1, E:0},
+                edges: [['D','E']],
+                queue: ['D', 'E'],
+                result: ['A', 'B', 'C'],
+                current: 'C',
+                action: 'Process C, reduce in-degree of E',
+                explanation: '➡️ <strong>Step 4: Process C</strong><br><br>' +
+                    '• Dequeue <span style="color:#3fb950;">C</span><br>' +
+                    '• Add C to result: [A, B, C]<br>' +
+                    '• Reduce in-degree of E (C→E): 2→1<br>' +
+                    '• Queue: [D]'
+            },
+            {
+                nodes: {A:0, B:0, C:0, D:0, E:0},
+                edges: [],
+                queue: ['E'],
+                result: ['A', 'B', 'C', 'D'],
+                current: 'D',
+                action: 'Process D, reduce in-degree of E',
+                explanation: '➡️ <strong>Step 5: Process D</strong><br><br>' +
+                    '• Dequeue <span style="color:#3fb950;">D</span><br>' +
+                    '• Add D to result: [A, B, C, D]<br>' +
+                    '• Reduce in-degree of E (D→E): 1→0 ✓<br>' +
+                    '• E now has in-degree 0, add to queue<br>' +
+                    '• Queue: [E]'
+            },
+            {
+                nodes: {A:0, B:0, C:0, D:0, E:0},
+                edges: [],
+                queue: [],
+                result: ['A', 'B', 'C', 'D', 'E'],
+                current: 'E',
+                action: 'Process E - Complete!',
+                explanation: '✅ <strong>Step 6: Complete!</strong><br><br>' +
+                    '• Dequeue <span style="color:#3fb950;">E</span><br>' +
+                    '• Add E to result: [A, B, C, D, E]<br>' +
+                    '• Queue empty - done!<br><br>' +
+                    '• <strong>Topological Order: A → B → C → D → E</strong><br>' +
+                    '• All dependencies satisfied!'
+            }
+        ];
+    }
+
+    function generateDijkstraSteps() {
+        return generateGraphSteps('dijkstra');
     }
 
     function generateArraySteps(problemId) {
@@ -873,9 +999,14 @@
 
         var step = vizState.steps[vizState.currentStep];
         var category = currentProblem ? currentProblem.category : 'arrays';
+        var problemId = currentProblem ? currentProblem.id : '';
 
-        // Render based on category
-        if (category === 'arrays') {
+        // Render based on problem type (check problemId first for specific algorithms)
+        if (problemId && problemId.includes('topological')) {
+            mainArea.innerHTML = renderTopologicalSortVisualization(step);
+        } else if (category === 'graphs' || category === 'famous-algorithms') {
+            mainArea.innerHTML = renderGraphVisualization(step);
+        } else if (category === 'arrays') {
             mainArea.innerHTML = renderArrayVisualization(step);
         } else if (category === 'binary-trees' || category === 'binary-search-trees') {
             mainArea.innerHTML = renderTreeVisualization(step);
@@ -883,8 +1014,6 @@
             mainArea.innerHTML = renderDPVisualization(step);
         } else if (category === 'linked-lists') {
             mainArea.innerHTML = renderLinkedListVisualization(step);
-        } else if (category === 'graphs') {
-            mainArea.innerHTML = renderGraphVisualization(step);
         } else if (category === 'recursion') {
             mainArea.innerHTML = renderRecursionVisualization(step);
         } else {
@@ -1040,6 +1169,70 @@
         return html;
     }
 
+    function renderTopologicalSortVisualization(step) {
+        if (!step) return '<p>No data</p>';
+
+        var positions = { A: [60,40], B: [180,40], C: [120,110], D: [240,110], E: [180,180] };
+
+        var html = '<svg viewBox="0 0 300 220" style="width:100%;max-width:400px;">';
+
+        // Draw edges (directed arrows)
+        var allEdges = [['A','C'],['B','C'],['B','D'],['C','E'],['D','E']];
+        allEdges.forEach(function(e) {
+            var p1 = positions[e[0]];
+            var p2 = positions[e[1]];
+            if (p1 && p2) {
+                var isActive = step.edges && step.edges.some(function(se) {
+                    return se[0] === e[0] && se[1] === e[1];
+                });
+                var color = isActive ? '#30363d' : '#1a1e24';
+                // Draw arrow
+                html += '<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="'+color+'" stroke-width="2" marker-end="url(#arrowhead)"/>';
+            }
+        });
+
+        // Arrow marker definition
+        html += '<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#30363d"/></marker></defs>';
+
+        // Draw nodes
+        ['A','B','C','D','E'].forEach(function(n) {
+            var pos = positions[n];
+            var inDegree = step.nodes ? step.nodes[n] : 0;
+            var isInResult = (step.result || []).indexOf(n) !== -1;
+            var isCurrent = step.current === n;
+            var isInQueue = (step.queue || []).indexOf(n) !== -1;
+
+            var fill = isCurrent ? '#238636' : (isInResult ? '#58a6ff' : (isInQueue ? '#f0883e' : '#21262d'));
+            var stroke = isCurrent ? '#3fb950' : (isInResult ? '#58a6ff' : (isInQueue ? '#f0883e' : '#30363d'));
+
+            html += '<circle cx="'+pos[0]+'" cy="'+pos[1]+'" r="24" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+            html += '<text x="'+pos[0]+'" y="'+(pos[1]+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+n+'</text>';
+            // Show in-degree
+            html += '<text x="'+(pos[0]+20)+'" y="'+(pos[1]-20)+'" fill="#8b949e" font-size="10">in:'+inDegree+'</text>';
+        });
+
+        html += '</svg>';
+
+        // Legend
+        html += '<div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;">';
+        html += '<div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:16px;height:16px;background:#f0883e;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.85rem;">In Queue</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:16px;height:16px;background:#238636;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.85rem;">Processing</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:16px;height:16px;background:#58a6ff;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.85rem;">Completed</span></div>';
+        html += '</div>';
+
+        // Queue display
+        html += '<div style="margin-top:1rem;">';
+        html += '<span style="color:#8b949e;">Queue: </span><span style="color:#f0883e;font-family:monospace;">[' + (step.queue || []).join(', ') + ']</span>';
+        html += '</div>';
+
+        // Result display
+        html += '<div style="margin-top:0.5rem;">';
+        html += '<span style="color:#8b949e;">Result: </span><span style="color:#3fb950;font-family:monospace;">[' + (step.result || []).join(' → ') + ']</span>';
+        html += '</div>';
+
+        return html;
+    }
+
     function renderGraphVisualization(step) {
         if (!step) return '<p>No data</p>';
 
@@ -1103,8 +1296,42 @@
                 if (step.memo) html += ' <span style="color:#f0883e;">(memoized)</span>';
                 html += '</div>';
             }
+        } else if (step.queue !== undefined && step.result !== undefined) {
+            // Graph algorithms (BFS, Topological Sort, etc.)
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#f0883e;">Algorithm State</span>';
+            html += '</div>';
+
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#8b949e;">Queue:</span> <span style="color:#f0883e;font-family:monospace;">[' + (step.queue || []).join(', ') + ']</span>';
+            html += '</div>';
+
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#8b949e;">Processing:</span> <span style="color:#3fb950;font-family:monospace;">' + (step.current || 'None') + '</span>';
+            html += '</div>';
+
+            html += '<div style="background:#1f6feb33;border:1px solid #58a6ff;border-radius:6px;padding:0.75rem 1rem;">';
+            html += '<span style="color:#58a6ff;">Result:</span> <span style="color:#c9d1d9;font-family:monospace;">[' + (step.result || []).join(' → ') + ']</span>';
+            html += '</div>';
+        } else if (step.hashTable !== undefined) {
+            // Array with hash table (Two Sum, etc.)
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#f0883e;">Hash Table Lookup</span>';
+            html += '</div>';
+
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#8b949e;">Current:</span> <span style="color:#3fb950;font-family:monospace;">' + step.checking + '</span>';
+            html += '</div>';
+
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;">';
+            html += '<span style="color:#8b949e;">Need:</span> <span style="color:#f0883e;font-family:monospace;">' + step.need + '</span>';
+            html += '</div>';
+
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;">';
+            html += '<span style="color:#8b949e;">In Hash?</span> <span style="color:' + (step.found ? '#3fb950' : '#da3633') + ';font-family:monospace;">' + (step.found ? 'YES ✓' : 'NO') + '</span>';
+            html += '</div>';
         } else {
-            // Generic call stack for other categories
+            // Generic display with action
             html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;">';
             html += '<span style="color:#f0883e;">Step ' + (vizState.currentStep + 1) + ':</span> <span style="color:#c9d1d9;">' + (step.action || 'Processing...') + '</span>';
             html += '</div>';
