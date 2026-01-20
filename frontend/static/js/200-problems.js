@@ -12,6 +12,153 @@
     let originalCode = { python: '', go: '' };
     let currentCode = { python: '', go: '' };
 
+    // Store parsed examples from problem.md
+    let currentExamples = [];
+    let selectedExampleIndex = 0;
+
+    // Parse examples from problem.md content
+    function parseExamplesFromContent(htmlContent) {
+        var examples = [];
+        // Match Example blocks with Input/Output
+        var exampleRegex = /\*\*Example\s*(\d+):\*\*[\s\S]*?```[\s\S]*?Input:\s*([\s\S]*?)Output:\s*([\s\S]*?)(?:Explanation:\s*([\s\S]*?))?```/gi;
+        var match;
+
+        // Try to find examples in the HTML content
+        var textContent = htmlContent.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ');
+
+        while ((match = exampleRegex.exec(textContent)) !== null) {
+            var inputStr = match[2].trim();
+            var outputStr = match[3].trim();
+            var explanation = match[4] ? match[4].trim() : '';
+
+            // Parse input parameters
+            var parsedInput = parseInputString(inputStr);
+            var parsedOutput = parseOutputString(outputStr);
+
+            examples.push({
+                number: parseInt(match[1]),
+                inputRaw: inputStr,
+                outputRaw: outputStr,
+                explanation: explanation,
+                input: parsedInput,
+                output: parsedOutput
+            });
+        }
+
+        // If no examples found, try alternate parsing
+        if (examples.length === 0) {
+            examples = parseExamplesAlternate(textContent);
+        }
+
+        return examples;
+    }
+
+    function parseInputString(inputStr) {
+        var result = {};
+        // Parse array = [...], targetSum = N format
+        var arrayMatch = inputStr.match(/array\s*=\s*\[([\d\s,\-]+)\]/i);
+        if (arrayMatch) {
+            result.array = arrayMatch[1].split(',').map(function(s) { return parseInt(s.trim()); });
+        }
+
+        var targetMatch = inputStr.match(/targetSum\s*=\s*(-?\d+)/i);
+        if (targetMatch) {
+            result.targetSum = parseInt(targetMatch[1]);
+        }
+
+        // Parse sequence for validate subsequence
+        var seqMatch = inputStr.match(/sequence\s*=\s*\[([\d\s,\-]+)\]/i);
+        if (seqMatch) {
+            result.sequence = seqMatch[1].split(',').map(function(s) { return parseInt(s.trim()); });
+        }
+
+        // Parse intervals
+        var intervalsMatch = inputStr.match(/intervals\s*=\s*(\[\[[\d\s,\[\]]+\]\])/i);
+        if (intervalsMatch) {
+            try {
+                result.intervals = JSON.parse(intervalsMatch[1]);
+            } catch(e) {}
+        }
+
+        // Parse coins and amount for coin change
+        var coinsMatch = inputStr.match(/coins\s*=\s*\[([\d\s,]+)\]/i);
+        if (coinsMatch) {
+            result.coins = coinsMatch[1].split(',').map(function(s) { return parseInt(s.trim()); });
+        }
+
+        var amountMatch = inputStr.match(/amount\s*=\s*(\d+)/i);
+        if (amountMatch) {
+            result.amount = parseInt(amountMatch[1]);
+        }
+
+        // Parse n for fibonacci
+        var nMatch = inputStr.match(/n\s*=\s*(\d+)/i);
+        if (nMatch) {
+            result.n = parseInt(nMatch[1]);
+        }
+
+        return result;
+    }
+
+    function parseOutputString(outputStr) {
+        // Try to parse as array
+        var arrMatch = outputStr.match(/\[([\d\s,\-]*)\]/);
+        if (arrMatch) {
+            if (arrMatch[1].trim() === '') return [];
+            return arrMatch[1].split(',').map(function(s) { return parseInt(s.trim()); });
+        }
+        // Try to parse as number
+        var numMatch = outputStr.match(/^(-?\d+)$/);
+        if (numMatch) {
+            return parseInt(numMatch[1]);
+        }
+        // Try boolean
+        if (outputStr.toLowerCase().includes('true')) return true;
+        if (outputStr.toLowerCase().includes('false')) return false;
+        return outputStr;
+    }
+
+    function parseExamplesAlternate(content) {
+        var examples = [];
+        // Look for code blocks with Input/Output
+        var lines = content.split('\n');
+        var currentExample = null;
+        var inExample = false;
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line.match(/Example\s*\d+/i)) {
+                if (currentExample) examples.push(currentExample);
+                currentExample = { number: examples.length + 1, input: {}, output: null, inputRaw: '', outputRaw: '' };
+                inExample = true;
+            } else if (inExample && line.startsWith('Input:')) {
+                currentExample.inputRaw = line.replace('Input:', '').trim();
+                currentExample.input = parseInputString(currentExample.inputRaw);
+            } else if (inExample && line.startsWith('Output:')) {
+                currentExample.outputRaw = line.replace('Output:', '').trim();
+                currentExample.output = parseOutputString(currentExample.outputRaw);
+            }
+        }
+        if (currentExample) examples.push(currentExample);
+        return examples;
+    }
+
+    // Get selected example input for visualization
+    function getSelectedExampleInput() {
+        if (currentExamples.length > 0 && currentExamples[selectedExampleIndex]) {
+            return currentExamples[selectedExampleIndex].input;
+        }
+        return null;
+    }
+
+    // Change selected example and reinitialize visualization
+    window.selectVisualizationExample = function(index) {
+        selectedExampleIndex = parseInt(index);
+        if (currentProblem) {
+            initializeVisualization(currentProblem.category, currentProblem.id);
+        }
+    };
+
     // Actual problem data matching the filesystem
     const problemsData = {
         'arrays': [
@@ -254,10 +401,16 @@
                         });
                     }
                 }
+
+                // Parse examples from content for visualization
+                currentExamples = parseExamplesFromContent(html);
+                selectedExampleIndex = 0;
+                console.log('Parsed examples:', currentExamples);
             })
             .catch(function() {
                 var descContent = document.getElementById('description-content');
                 if (descContent) descContent.innerHTML = '<p>Error loading problem content.</p>';
+                currentExamples = [];
             });
 
         // Load code files (with similar problem support)
@@ -915,11 +1068,42 @@
     function buildVisualizationContainer(category, problemId) {
         var animType = getAnimationType(category, problemId);
 
+        // Build example selector dropdown
+        var exampleSelectorHtml = '';
+        if (currentExamples.length > 0) {
+            exampleSelectorHtml = '<select id="viz-example-selector" onchange="window.selectVisualizationExample(this.value)" ' +
+                'style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.6rem;border-radius:4px;font-size:0.85rem;cursor:pointer;">';
+            for (var i = 0; i < currentExamples.length; i++) {
+                var ex = currentExamples[i];
+                var label = 'Example ' + (i + 1);
+                if (ex.inputRaw) {
+                    // Show abbreviated input
+                    var shortInput = ex.inputRaw.substring(0, 30);
+                    if (ex.inputRaw.length > 30) shortInput += '...';
+                    label += ': ' + shortInput;
+                }
+                exampleSelectorHtml += '<option value="' + i + '"' + (i === selectedExampleIndex ? ' selected' : '') + '>' + label + '</option>';
+            }
+            exampleSelectorHtml += '</select>';
+        }
+
+        // Show current input/output info
+        var inputOutputHtml = '';
+        if (currentExamples.length > 0 && currentExamples[selectedExampleIndex]) {
+            var ex = currentExamples[selectedExampleIndex];
+            inputOutputHtml = '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">' +
+                '<div><span style="color:#58a6ff;font-weight:600;">Input:</span> <code style="color:#3fb950;">' + (ex.inputRaw || 'N/A') + '</code></div>' +
+                '<div><span style="color:#f0883e;font-weight:600;">Expected Output:</span> <code style="color:#3fb950;">' + (ex.outputRaw || 'N/A') + '</code></div>' +
+                '</div></div>';
+        }
+
         return '<div style="background:#0d1117;border-radius:12px;padding:1rem;color:#c9d1d9;">' +
             // Header with controls on same row
             '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">' +
             '<div style="display:flex;align-items:center;gap:0.5rem;">' +
             '<span style="color:#58a6ff;font-weight:600;">🎯 ' + animType + '</span>' +
+            exampleSelectorHtml +
             '<span id="viz-step-counter" style="color:#8b949e;font-size:0.9rem;">Step 0 / 0</span>' +
             '</div>' +
             // Controls
@@ -931,6 +1115,9 @@
             '<button onclick="window.vizReset()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.85rem;">↻</button>' +
             '<input type="range" id="viz-speed" min="100" max="2000" value="1000" style="width:80px;accent-color:#58a6ff;" onchange="window.vizSetSpeed(this.value)">' +
             '</div></div>' +
+
+            // Input/Output display
+            inputOutputHtml +
 
             // Progress Bar
             '<div style="background:#21262d;border-radius:4px;height:4px;overflow:hidden;margin-bottom:1rem;">' +
@@ -1316,12 +1503,17 @@
 
     // ===== PROBLEM-SPECIFIC STEP GENERATORS =====
 
-    // Two Number Sum - Hash Table approach
+    // Two Number Sum - Hash Table approach (uses selected example)
     function generateTwoNumberSumSteps() {
-        var arr = [3, 5, -4, 8, 11, 1, -1, 6];
-        var target = 10;
+        // Get input from selected example or use default
+        var exampleInput = getSelectedExampleInput();
+        var arr = (exampleInput && exampleInput.array) ? exampleInput.array : [3, 5, -4, 8, 11, 1, -1, 6];
+        var target = (exampleInput && exampleInput.targetSum !== undefined) ? exampleInput.targetSum : 10;
         var steps = [];
         var hashSet = [];
+
+        // Get expected output
+        var expectedOutput = currentExamples[selectedExampleIndex] ? currentExamples[selectedExampleIndex].output : null;
 
         steps.push({
             array: arr.slice(),
@@ -1334,7 +1526,8 @@
                 '<strong>Problem:</strong> Find two numbers that sum to target<br>' +
                 '<strong>Approach:</strong> Hash Table (one-pass)<br><br>' +
                 '• Array: [' + arr.join(', ') + ']<br>' +
-                '• Target: ' + target + '<br><br>' +
+                '• Target: ' + target + '<br>' +
+                (expectedOutput ? '• Expected: [' + (Array.isArray(expectedOutput) ? expectedOutput.join(', ') : expectedOutput) + ']<br>' : '') + '<br>' +
                 '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
                 '<strong>Complexity:</strong><br>' +
                 '• Time: O(n) - single pass<br>' +
@@ -1373,12 +1566,17 @@
         return steps;
     }
 
-    // Validate Subsequence - Two Pointers
+    // Validate Subsequence - Two Pointers (uses selected example)
     function generateValidateSubsequenceSteps() {
-        var arr = [5, 1, 22, 25, 6, -1, 8, 10];
-        var seq = [1, 6, -1, 10];
+        // Get input from selected example or use default
+        var exampleInput = getSelectedExampleInput();
+        var arr = (exampleInput && exampleInput.array) ? exampleInput.array : [5, 1, 22, 25, 6, -1, 8, 10];
+        var seq = (exampleInput && exampleInput.sequence) ? exampleInput.sequence : [1, 6, -1, 10];
         var steps = [];
         var seqIdx = 0;
+
+        // Get expected output
+        var expectedOutput = currentExamples[selectedExampleIndex] ? currentExamples[selectedExampleIndex].output : null;
 
         steps.push({
             array: arr.slice(),
@@ -1391,7 +1589,8 @@
                 '<strong>Problem:</strong> Check if sequence is subsequence of array<br>' +
                 '<strong>Approach:</strong> Two Pointers<br><br>' +
                 '• Array: [' + arr.join(', ') + ']<br>' +
-                '• Sequence: [' + seq.join(', ') + ']<br><br>' +
+                '• Sequence: [' + seq.join(', ') + ']<br>' +
+                (expectedOutput !== null ? '• Expected: ' + expectedOutput + '<br>' : '') + '<br>' +
                 '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
                 '<strong>Complexity:</strong><br>' +
                 '• Time: O(n)<br>' +
