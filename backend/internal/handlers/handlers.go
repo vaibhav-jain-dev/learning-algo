@@ -221,31 +221,22 @@ func (h *Handlers) buildProblemTreeFromRecursive(dir, baseDir string) []*models.
 
 // SystemDesign renders the system design page
 func (h *Handlers) SystemDesign(c *fiber.Ctx) error {
-	category := h.topicIndexer.GetCategory("system-design")
-	return c.Render("pages/topic-list", fiber.Map{
-		"Title":        "System Design",
-		"Category":     category,
-		"CategorySlug": "system-design",
+	return c.Render("pages/system-design", fiber.Map{
+		"Title": "System Design",
 	})
 }
 
 // DesignPatterns renders the design patterns page
 func (h *Handlers) DesignPatterns(c *fiber.Ctx) error {
-	category := h.topicIndexer.GetCategory("design-patterns")
-	return c.Render("pages/topic-list", fiber.Map{
-		"Title":        "Design Patterns",
-		"Category":     category,
-		"CategorySlug": "design-patterns",
+	return c.Render("pages/design-patterns", fiber.Map{
+		"Title": "Design Patterns",
 	})
 }
 
 // MachineCoding renders the machine coding page
 func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
-	category := h.topicIndexer.GetCategory("machine-coding")
-	return c.Render("pages/topic-list", fiber.Map{
-		"Title":        "Machine Coding",
-		"Category":     category,
-		"CategorySlug": "machine-coding",
+	return c.Render("pages/machine-coding", fiber.Map{
+		"Title": "Machine Coding",
 	})
 }
 
@@ -663,21 +654,15 @@ func formatName(name string) string {
 
 // Microservices renders the microservices architecture page
 func (h *Handlers) Microservices(c *fiber.Ctx) error {
-	category := h.topicIndexer.GetCategory("microservices")
-	return c.Render("pages/topic-list", fiber.Map{
-		"Title":        "Microservices",
-		"Category":     category,
-		"CategorySlug": "microservices",
+	return c.Render("pages/microservices", fiber.Map{
+		"Title": "Microservices",
 	})
 }
 
 // SystemArchitectures renders the system architectures page
 func (h *Handlers) SystemArchitectures(c *fiber.Ctx) error {
-	category := h.topicIndexer.GetCategory("system-architectures")
-	return c.Render("pages/topic-list", fiber.Map{
-		"Title":        "System Architectures",
-		"Category":     category,
-		"CategorySlug": "system-architectures",
+	return c.Render("pages/system-architectures", fiber.Map{
+		"Title": "System Architectures",
 	})
 }
 
