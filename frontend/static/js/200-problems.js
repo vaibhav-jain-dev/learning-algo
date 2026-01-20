@@ -191,12 +191,24 @@
         currentCategory = null;
     };
 
-    window.openProblem = function(category, problemId) {
-        currentProblem = { category: category, id: problemId };
+    window.openProblem = function(category, problemId, similarIdx) {
+        // Reset visualization state when opening a new problem
+        if (vizState.intervalId) clearInterval(vizState.intervalId);
+        vizState.isPlaying = false;
+        vizState.currentStep = 0;
+        vizState.steps = [];
+
+        currentProblem = { category: category, id: problemId, similarIdx: similarIdx || null };
         var editorView = document.getElementById('editor-view');
 
+        // Build the correct path for the problem
+        var basePath = '/htmx/200-problem-content/' + category + '/' + problemId;
+        if (similarIdx) {
+            basePath += '/similar/' + similarIdx;
+        }
+
         // Load problem content from backend
-        fetch('/htmx/200-problem-content/' + category + '/' + problemId)
+        fetch(basePath)
             .then(function(r) { return r.ok ? r.text() : '<p>Problem content loading...</p>'; })
             .then(function(html) {
                 var descContent = document.getElementById('description-content');
@@ -215,8 +227,8 @@
                 if (descContent) descContent.innerHTML = '<p>Error loading problem content.</p>';
             });
 
-        // Load code files
-        loadProblemCode(category, problemId);
+        // Load code files (with similar problem support)
+        loadProblemCode(category, problemId, similarIdx);
 
         // Find problem info
         var problems = problemsData[category] || [];
@@ -241,9 +253,15 @@
         currentProblem = null;
     };
 
-    function loadProblemCode(category, problemId) {
+    function loadProblemCode(category, problemId, similarIdx) {
+        // Build base path (supports similar problems)
+        var basePath = '/problems/200-must-solve/' + category + '/' + problemId;
+        if (similarIdx) {
+            basePath += '/similar/' + similarIdx;
+        }
+
         // Load Python code
-        fetch('/problems/200-must-solve/' + category + '/' + problemId + '/python_code.py')
+        fetch(basePath + '/python_code.py')
             .then(function(r) { return r.ok ? r.text() : getDefaultCode('python'); })
             .then(function(code) {
                 originalCode.python = code;
@@ -258,7 +276,7 @@
             });
 
         // Load Go code
-        fetch('/problems/200-must-solve/' + category + '/' + problemId + '/golang_code.go')
+        fetch(basePath + '/golang_code.go')
             .then(function(r) { return r.ok ? r.text() : getDefaultCode('go'); })
             .then(function(code) {
                 originalCode.go = code;
@@ -499,23 +517,32 @@
             '<button onclick="window.vizPlay()" id="viz-play-btn" style="background:#238636;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>▶</span> Play</button>' +
             '<button onclick="window.vizPause()" id="viz-pause-btn" style="background:#6e7681;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>⏸</span> Pause</button>' +
             '<button onclick="window.vizReset()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>↻</span> Reset</button>' +
+            '<button onclick="window.vizStepBack()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;">◀ Prev</button>' +
+            '<button onclick="window.vizStepForward()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;">Next ▶</button>' +
             '<div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;">' +
             '<span style="color:#8b949e;">Speed:</span>' +
             '<input type="range" id="viz-speed" min="100" max="2000" value="1000" style="width:120px;accent-color:#58a6ff;" onchange="window.vizSetSpeed(this.value)">' +
             '</div></div>' +
 
-            // Visualization Area
-            '<div id="viz-main-area" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem;min-height:200px;margin-bottom:1rem;"></div>' +
+            // Visualization Area (scrollable)
+            '<div id="viz-main-area" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem;min-height:200px;max-height:400px;overflow-y:auto;margin-bottom:1rem;"></div>' +
 
             // Status Line
             '<div id="viz-status" style="color:#8b949e;margin-bottom:1rem;font-family:monospace;"></div>' +
 
             // Progress Bar
-            '<div style="display:flex;align-items:center;gap:1rem;">' +
+            '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">' +
             '<div style="flex:1;background:#21262d;border-radius:4px;height:8px;overflow:hidden;">' +
             '<div id="viz-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#238636,#58a6ff);transition:width 0.3s;"></div></div>' +
             '<span id="viz-step-counter" style="color:#58a6ff;font-weight:600;min-width:80px;text-align:right;">Step 0 / 0</span></div>' +
 
+            '</div>' +
+
+            // Step-by-Step Explanation Section
+            '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;margin-top:1.5rem;">' +
+            '<h3 style="color:#3fb950;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
+            '<span style="font-size:1.2rem;">📝</span> Step-by-Step Explanation</h3>' +
+            '<div id="viz-explanation" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;max-height:300px;overflow-y:auto;"></div>' +
             '</div>' +
 
             // Call Stack Section
@@ -591,7 +618,20 @@
                 checking: arr[i],
                 need: need,
                 found: found,
-                status: found ? 'Found pair: ' + arr[i] + ' + ' + need + ' = ' + target : 'Need: ' + need + '. Found: NO'
+                status: found ? 'Found pair: ' + arr[i] + ' + ' + need + ' = ' + target : 'Need: ' + need + '. Found: NO',
+                explanation: found ?
+                    '✅ <strong>SUCCESS!</strong> We found the complement!<br><br>' +
+                    '• Current element: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
+                    '• We need: <span style="color:#f0883e;">' + need + '</span> to reach target ' + target + '<br>' +
+                    '• Hash table contains ' + need + '!<br>' +
+                    '• <strong>Pair found:</strong> ' + arr[i] + ' + ' + need + ' = ' + target :
+                    '🔍 <strong>Step ' + (i + 1) + ':</strong> Checking element at index ' + i + '<br><br>' +
+                    '• Current element: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
+                    '• Target sum: ' + target + '<br>' +
+                    '• Complement needed: ' + target + ' - ' + arr[i] + ' = <span style="color:#f0883e;">' + need + '</span><br>' +
+                    '• Is ' + need + ' in hash table? <span style="color:#da3633;">NO</span><br>' +
+                    '• Action: Add ' + arr[i] + ' to hash table<br>' +
+                    '• Hash table now: {' + hashSet.concat([arr[i]]).join(', ') + '}'
             });
             if (found) break;
             hashSet.push(arr[i]);
@@ -601,13 +641,49 @@
 
     function generateTreeSteps(problemId) {
         return [
-            { nodes: [{id:1,val:10,x:200,y:30,active:true}], visited: [10], action: 'Visit root: 10' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100,active:true}], visited: [10,5], action: 'Visit left: 5' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170,active:true}], visited: [10,5,2], action: 'Visit left: 2' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170},{id:4,val:7,x:170,y:170,active:true}], visited: [10,5,2,7], action: 'Backtrack, visit right: 7' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:5,val:15,x:280,y:100,active:true}], visited: [10,5,2,7,15], action: 'Backtrack to root, visit right: 15' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:6,val:13,x:230,y:170,active:true}], visited: [10,5,2,7,15,13], action: 'Visit left: 13' },
-            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:7,val:20,x:330,y:170,active:true}], visited: [10,5,2,7,15,13,20], action: 'Backtrack, visit right: 20' }
+            { nodes: [{id:1,val:10,x:200,y:30,active:true}], visited: [10], action: 'Visit root: 10',
+              explanation: '🌳 <strong>Step 1: Start at Root</strong><br><br>' +
+                '• Begin DFS traversal at root node<br>' +
+                '• Current node: <span style="color:#3fb950;">10</span><br>' +
+                '• In BST, root is the entry point for all operations<br>' +
+                '• Visited: [10]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100,active:true}], visited: [10,5], action: 'Visit left: 5',
+              explanation: '⬅️ <strong>Step 2: Go Left</strong><br><br>' +
+                '• From node 10, move to left child<br>' +
+                '• Current node: <span style="color:#3fb950;">5</span><br>' +
+                '• Left subtree contains smaller values (BST property)<br>' +
+                '• Visited: [10, 5]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170,active:true}], visited: [10,5,2], action: 'Visit left: 2',
+              explanation: '⬅️ <strong>Step 3: Continue Left</strong><br><br>' +
+                '• From node 5, move to left child<br>' +
+                '• Current node: <span style="color:#3fb950;">2</span><br>' +
+                '• This is a leaf node (no children)<br>' +
+                '• Visited: [10, 5, 2]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170},{id:4,val:7,x:170,y:170,active:true}], visited: [10,5,2,7], action: 'Backtrack, visit right: 7',
+              explanation: '↩️ <strong>Step 4: Backtrack & Go Right</strong><br><br>' +
+                '• Node 2 is complete, backtrack to node 5<br>' +
+                '• Visit right child of node 5<br>' +
+                '• Current node: <span style="color:#3fb950;">7</span><br>' +
+                '• Visited: [10, 5, 2, 7]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:5,val:15,x:280,y:100,active:true}], visited: [10,5,2,7,15], action: 'Backtrack to root, visit right: 15',
+              explanation: '↩️ <strong>Step 5: Back to Root, Go Right</strong><br><br>' +
+                '• Left subtree complete, backtrack to root<br>' +
+                '• Now explore right subtree<br>' +
+                '• Current node: <span style="color:#3fb950;">15</span><br>' +
+                '• Right subtree contains larger values<br>' +
+                '• Visited: [10, 5, 2, 7, 15]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:6,val:13,x:230,y:170,active:true}], visited: [10,5,2,7,15,13], action: 'Visit left: 13',
+              explanation: '⬅️ <strong>Step 6: Go Left from 15</strong><br><br>' +
+                '• From node 15, visit left child<br>' +
+                '• Current node: <span style="color:#3fb950;">13</span><br>' +
+                '• 13 < 15, so it is correctly placed as left child<br>' +
+                '• Visited: [10, 5, 2, 7, 15, 13]' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:7,val:20,x:330,y:170,active:true}], visited: [10,5,2,7,15,13,20], action: 'Backtrack, visit right: 20',
+              explanation: '✅ <strong>Step 7: Complete Traversal</strong><br><br>' +
+                '• Backtrack and visit right child of 15<br>' +
+                '• Current node: <span style="color:#3fb950;">20</span><br>' +
+                '• This completes the DFS traversal<br>' +
+                '• <strong>Final order:</strong> [10, 5, 2, 7, 15, 13, 20]' }
         ];
     }
 
@@ -655,44 +731,134 @@
 
     function generateLinkedListSteps(problemId) {
         return [
-            { nodes: [1,2,3,4,5], pointers: {head:0,current:0}, action: 'Initialize: head at node 1' },
-            { nodes: [1,2,3,4,5], pointers: {head:0,current:1,prev:0}, action: 'Move to node 2, save prev' },
-            { nodes: [1,2,3,4,5], pointers: {head:0,current:2,prev:1}, action: 'Move to node 3' },
-            { nodes: [1,2,3,4,5], pointers: {head:0,current:3,prev:2}, action: 'Move to node 4' },
-            { nodes: [1,2,3,4,5], pointers: {head:0,current:4,prev:3}, action: 'Reached node 5 (target)' },
-            { nodes: [1,2,3,5], pointers: {head:0}, action: 'Remove node 4, link 3→5' }
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:0}, action: 'Initialize: head at node 1',
+              explanation: '🔗 <strong>Step 1: Initialize</strong><br><br>' +
+                '• Set up head pointer at first node<br>' +
+                '• Current: <span style="color:#3fb950;">1</span><br>' +
+                '• We will traverse to find node to remove' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:1,prev:0}, action: 'Move to node 2, save prev',
+              explanation: '➡️ <strong>Step 2: Move Forward</strong><br><br>' +
+                '• Move current pointer to next node<br>' +
+                '• Current: <span style="color:#3fb950;">2</span><br>' +
+                '• Previous: <span style="color:#f0883e;">1</span><br>' +
+                '• We track prev to reconnect nodes later' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:2,prev:1}, action: 'Move to node 3',
+              explanation: '➡️ <strong>Step 3: Continue Traversal</strong><br><br>' +
+                '• Continue moving through list<br>' +
+                '• Current: <span style="color:#3fb950;">3</span><br>' +
+                '• Previous: <span style="color:#f0883e;">2</span>' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:3,prev:2}, action: 'Move to node 4',
+              explanation: '➡️ <strong>Step 4: Found Target</strong><br><br>' +
+                '• Current: <span style="color:#3fb950;">4</span> (target to remove)<br>' +
+                '• Previous: <span style="color:#f0883e;">3</span><br>' +
+                '• Next step: reconnect prev.next to current.next' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:4,prev:3}, action: 'Reached node 5 (target)',
+              explanation: '🎯 <strong>Step 5: At End</strong><br><br>' +
+                '• Reached end of list<br>' +
+                '• Current: <span style="color:#3fb950;">5</span><br>' +
+                '• Now perform the removal operation' },
+            { nodes: [1,2,3,5], pointers: {head:0}, action: 'Remove node 4, link 3→5',
+              explanation: '✅ <strong>Step 6: Removal Complete</strong><br><br>' +
+                '• Node 4 removed from list<br>' +
+                '• Set node 3.next = node 5<br>' +
+                '• Final list: <span style="color:#3fb950;">1 → 2 → 3 → 5 → NULL</span>' }
         ];
     }
 
     function generateRecursionSteps(problemId) {
         return [
-            { depth: 0, call: 'fib(5)', stack: ['fib(5)'], result: null },
-            { depth: 1, call: 'fib(4) + fib(3)', stack: ['fib(5)', 'fib(4)'], result: null },
-            { depth: 2, call: 'fib(3) + fib(2)', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: null },
-            { depth: 3, call: 'fib(2) + fib(1)', stack: ['fib(5)', 'fib(4)', 'fib(3)', 'fib(2)'], result: null },
-            { depth: 3, call: 'fib(2) = 1', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: 1 },
-            { depth: 2, call: 'fib(3) = 2', stack: ['fib(5)', 'fib(4)'], result: 2, memo: true },
-            { depth: 1, call: 'fib(4) = 3', stack: ['fib(5)'], result: 3, memo: true },
-            { depth: 0, call: 'fib(5) = 5', stack: [], result: 5, memo: true }
+            { depth: 0, call: 'fib(5)', stack: ['fib(5)'], result: null,
+              explanation: '📥 <strong>Step 1: Initial Call</strong><br><br>' +
+                '• Call fib(5) - we want the 5th Fibonacci number<br>' +
+                '• fib(n) = fib(n-1) + fib(n-2)<br>' +
+                '• Stack depth: 0<br>' +
+                '• This will recursively call fib(4) and fib(3)' },
+            { depth: 1, call: 'fib(4) + fib(3)', stack: ['fib(5)', 'fib(4)'], result: null,
+              explanation: '📥 <strong>Step 2: Recurse on fib(4)</strong><br><br>' +
+                '• fib(5) calls fib(4)<br>' +
+                '• Stack depth: 1<br>' +
+                '• fib(4) = fib(3) + fib(2)<br>' +
+                '• Continue recursing...' },
+            { depth: 2, call: 'fib(3) + fib(2)', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: null,
+              explanation: '📥 <strong>Step 3: Recurse on fib(3)</strong><br><br>' +
+                '• fib(4) calls fib(3)<br>' +
+                '• Stack depth: 2<br>' +
+                '• fib(3) = fib(2) + fib(1)<br>' +
+                '• Getting closer to base cases...' },
+            { depth: 3, call: 'fib(2) + fib(1)', stack: ['fib(5)', 'fib(4)', 'fib(3)', 'fib(2)'], result: null,
+              explanation: '📥 <strong>Step 4: Recurse on fib(2)</strong><br><br>' +
+                '• fib(3) calls fib(2)<br>' +
+                '• Stack depth: 3 (deepest)<br>' +
+                '• fib(2) = fib(1) + fib(0) = 1 + 0 = 1<br>' +
+                '• We hit base cases!' },
+            { depth: 3, call: 'fib(2) = 1', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: 1,
+              explanation: '📤 <strong>Step 5: Return fib(2) = 1</strong><br><br>' +
+                '• Base case reached!<br>' +
+                '• fib(2) returns <span style="color:#3fb950;">1</span><br>' +
+                '• Pop from stack, return to fib(3)<br>' +
+                '• Stack depth: 2' },
+            { depth: 2, call: 'fib(3) = 2', stack: ['fib(5)', 'fib(4)'], result: 2, memo: true,
+              explanation: '📤 <strong>Step 6: Return fib(3) = 2</strong><br><br>' +
+                '• fib(3) = fib(2) + fib(1) = 1 + 1 = <span style="color:#3fb950;">2</span><br>' +
+                '• <span style="color:#f0883e;">Memoized!</span> Store result for reuse<br>' +
+                '• Return to fib(4)<br>' +
+                '• Stack depth: 1' },
+            { depth: 1, call: 'fib(4) = 3', stack: ['fib(5)'], result: 3, memo: true,
+              explanation: '📤 <strong>Step 7: Return fib(4) = 3</strong><br><br>' +
+                '• fib(4) = fib(3) + fib(2) = 2 + 1 = <span style="color:#3fb950;">3</span><br>' +
+                '• <span style="color:#f0883e;">Memoized!</span> Store result<br>' +
+                '• Return to fib(5)<br>' +
+                '• Stack depth: 0' },
+            { depth: 0, call: 'fib(5) = 5', stack: [], result: 5, memo: true,
+              explanation: '✅ <strong>Step 8: Final Result</strong><br><br>' +
+                '• fib(5) = fib(4) + fib(3) = 3 + 2 = <span style="color:#3fb950;">5</span><br>' +
+                '• All recursive calls complete<br>' +
+                '• Stack empty<br>' +
+                '• <strong>Answer: fib(5) = 5</strong>' }
         ];
     }
 
     function generateGraphSteps(problemId) {
         return [
-            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A'], current: 'A', queue: ['B','C'], action: 'Start BFS from A' },
-            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B'], current: 'B', queue: ['C','D'], action: 'Visit B, add D to queue' },
-            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C'], current: 'C', queue: ['D'], action: 'Visit C (D already in queue)' },
-            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D'], current: 'D', queue: ['E'], action: 'Visit D, add E to queue' },
-            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D','E'], current: 'E', queue: [], action: 'Visit E. BFS complete!' }
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A'], current: 'A', queue: ['B','C'], action: 'Start BFS from A',
+              explanation: '🚀 <strong>Step 1: Start BFS</strong><br><br>' +
+                '• Begin at source node <span style="color:#3fb950;">A</span><br>' +
+                '• Mark A as visited<br>' +
+                '• Add neighbors to queue: [B, C]<br>' +
+                '• BFS explores level by level' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B'], current: 'B', queue: ['C','D'], action: 'Visit B, add D to queue',
+              explanation: '➡️ <strong>Step 2: Visit B</strong><br><br>' +
+                '• Dequeue <span style="color:#3fb950;">B</span> (first in queue)<br>' +
+                '• Mark B as visited<br>' +
+                '• B\'s neighbor D added to queue<br>' +
+                '• Queue: [C, D]' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C'], current: 'C', queue: ['D'], action: 'Visit C (D already in queue)',
+              explanation: '➡️ <strong>Step 3: Visit C</strong><br><br>' +
+                '• Dequeue <span style="color:#3fb950;">C</span><br>' +
+                '• Mark C as visited<br>' +
+                '• C\'s neighbor D already in queue (skip)<br>' +
+                '• Queue: [D]' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D'], current: 'D', queue: ['E'], action: 'Visit D, add E to queue',
+              explanation: '➡️ <strong>Step 4: Visit D</strong><br><br>' +
+                '• Dequeue <span style="color:#3fb950;">D</span><br>' +
+                '• Mark D as visited<br>' +
+                '• Add neighbor E to queue<br>' +
+                '• Queue: [E]' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D','E'], current: 'E', queue: [], action: 'Visit E. BFS complete!',
+              explanation: '✅ <strong>Step 5: BFS Complete!</strong><br><br>' +
+                '• Dequeue <span style="color:#3fb950;">E</span><br>' +
+                '• Mark E as visited<br>' +
+                '• Queue empty - traversal done<br>' +
+                '• <strong>Visit order: A → B → C → D → E</strong>' }
         ];
     }
 
     function generateGenericSteps() {
         return [
-            { action: 'Step 1: Initialize variables' },
-            { action: 'Step 2: Process input' },
-            { action: 'Step 3: Apply algorithm' },
-            { action: 'Step 4: Return result' }
+            { action: 'Step 1: Initialize variables', explanation: '🔧 <strong>Initialization</strong><br><br>Set up required variables and data structures.' },
+            { action: 'Step 2: Process input', explanation: '📥 <strong>Process Input</strong><br><br>Parse and validate the input data.' },
+            { action: 'Step 3: Apply algorithm', explanation: '⚙️ <strong>Apply Algorithm</strong><br><br>Execute the main algorithm logic.' },
+            { action: 'Step 4: Return result', explanation: '📤 <strong>Return Result</strong><br><br>Format and return the final output.' }
         ];
     }
 
@@ -701,6 +867,7 @@
         var statusEl = document.getElementById('viz-status');
         var progressBar = document.getElementById('viz-progress-bar');
         var stepCounter = document.getElementById('viz-step-counter');
+        var explanationEl = document.getElementById('viz-explanation');
 
         if (!mainArea || vizState.steps.length === 0) return;
 
@@ -718,12 +885,19 @@
             mainArea.innerHTML = renderLinkedListVisualization(step);
         } else if (category === 'graphs') {
             mainArea.innerHTML = renderGraphVisualization(step);
+        } else if (category === 'recursion') {
+            mainArea.innerHTML = renderRecursionVisualization(step);
         } else {
             mainArea.innerHTML = '<p style="color:#8b949e;">' + (step.action || 'Processing...') + '</p>';
         }
 
         // Update status
         if (statusEl) statusEl.textContent = step.status || step.action || '';
+
+        // Update step-by-step explanation
+        if (explanationEl) {
+            explanationEl.innerHTML = step.explanation || '<p style="color:#8b949e;">No explanation available for this step.</p>';
+        }
 
         // Update progress
         var progress = ((vizState.currentStep + 1) / vizState.totalSteps) * 100;
@@ -987,6 +1161,60 @@
             window.vizPlay();
         }
     };
+
+    window.vizStepForward = function() {
+        window.vizPause();
+        if (vizState.currentStep < vizState.totalSteps - 1) {
+            vizState.currentStep++;
+            updateVisualization();
+            updateCallStack();
+        }
+    };
+
+    window.vizStepBack = function() {
+        window.vizPause();
+        if (vizState.currentStep > 0) {
+            vizState.currentStep--;
+            updateVisualization();
+            updateCallStack();
+        }
+    };
+
+    function renderRecursionVisualization(step) {
+        if (!step) return '<p>No data</p>';
+
+        var html = '<div style="text-align:center;margin-bottom:1rem;">';
+        html += '<div style="font-size:1.5rem;color:#58a6ff;font-family:monospace;margin-bottom:1rem;">' + step.call + '</div>';
+
+        // Recursion tree visualization
+        html += '<div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">';
+
+        if (step.stack && step.stack.length > 0) {
+            step.stack.forEach(function(call, idx) {
+                var isTop = idx === step.stack.length - 1;
+                var indent = idx * 30;
+                html += '<div style="display:flex;align-items:center;gap:0.5rem;margin-left:' + indent + 'px;">';
+                if (idx > 0) {
+                    html += '<div style="color:#30363d;">↳</div>';
+                }
+                html += '<div style="background:' + (isTop ? '#238636' : '#21262d') + ';border:1px solid ' + (isTop ? '#3fb950' : '#30363d') + ';border-radius:6px;padding:0.5rem 1rem;font-family:monospace;color:#c9d1d9;">';
+                html += call;
+                html += '</div></div>';
+            });
+        }
+
+        html += '</div>';
+
+        if (step.result !== null && step.result !== undefined) {
+            html += '<div style="margin-top:1.5rem;padding:1rem;background:#1f6feb33;border:1px solid #58a6ff;border-radius:8px;">';
+            html += '<span style="color:#3fb950;font-size:1.2rem;">Return: ' + step.result + '</span>';
+            if (step.memo) html += ' <span style="color:#f0883e;background:#f0883e22;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.85rem;">memoized</span>';
+            html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
 
     function escapeHtml(text) {
         var div = document.createElement('div');
