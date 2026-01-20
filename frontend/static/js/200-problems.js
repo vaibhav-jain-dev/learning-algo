@@ -21,15 +21,55 @@
 
     // Read embedded visualization config from loaded problem content
     function extractVizConfig(htmlContent) {
-        // Look for <script type="application/json" id="viz-config">
-        var match = htmlContent.match(/<script[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/script>/i);
-        if (match) {
+        // Try multiple approaches to find viz-config
+
+        // Approach 1: Look for <script type="application/json" id="viz-config">
+        var scriptMatch = htmlContent.match(/<script[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/script>/i);
+        if (scriptMatch) {
             try {
-                return JSON.parse(match[1]);
+                return JSON.parse(scriptMatch[1]);
             } catch (e) {
-                console.error('Failed to parse viz-config:', e);
+                console.error('Failed to parse viz-config from script:', e);
             }
         }
+
+        // Approach 2: Look for <div id="viz-config" style="display:none">
+        var divMatch = htmlContent.match(/<div[^>]*id=["']viz-config["'][^>]*>([\s\S]*?)<\/div>/i);
+        if (divMatch) {
+            try {
+                // The content might be HTML encoded, decode it
+                var decoded = divMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error('Failed to parse viz-config from div:', e);
+            }
+        }
+
+        // Approach 3: Look for code block with viz-config language
+        var codeMatch = htmlContent.match(/<code[^>]*class=["'][^"]*language-viz-config[^"]*["'][^>]*>([\s\S]*?)<\/code>/i);
+        if (codeMatch) {
+            try {
+                var decoded = codeMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error('Failed to parse viz-config from code:', e);
+            }
+        }
+
+        // Approach 4: Look for pre block with viz-config class (most reliable for markdown)
+        var preMatch = htmlContent.match(/<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>/);
+        if (preMatch) {
+            // Check if first code block looks like JSON config
+            var content = preMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').trim();
+            if (content.startsWith('{') && content.includes('"algorithm"')) {
+                try {
+                    return JSON.parse(content);
+                } catch (e) {
+                    // Not valid JSON, continue
+                }
+            }
+        }
+
         return null;
     }
 

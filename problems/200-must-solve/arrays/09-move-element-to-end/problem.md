@@ -1,24 +1,6 @@
-<script type="application/json" id="viz-config">
-{
-  "name": "Move Element To End",
-  "algorithm": "two-pointer-move",
-  "complexity": { "time": "O(n)", "space": "O(1)" },
-  "examples": [
-    {
-      "input": { "array": [2, 1, 2, 2, 2, 3, 4, 2], "toMove": 2 },
-      "output": [4, 1, 3, 2, 2, 2, 2, 2],
-      "inputRaw": "array = [2, 1, 2, 2, 2, 3, 4, 2], toMove = 2",
-      "outputRaw": "[4, 1, 3, 2, 2, 2, 2, 2]"
-    },
-    {
-      "input": { "array": [1, 2, 3, 4, 5], "toMove": 3 },
-      "output": [1, 2, 5, 4, 3],
-      "inputRaw": "array = [1, 2, 3, 4, 5], toMove = 3",
-      "outputRaw": "[1, 2, 5, 4, 3]"
-    }
-  ]
-}
-</script>
+<div id="viz-config" style="display:none">
+{"name":"Move Element To End","algorithm":"two-pointer-move","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[2,1,2,2,2,3,4,2],"toMove":2},"output":[4,1,3,2,2,2,2,2],"inputRaw":"array=[2,1,2,2,2,3,4,2], toMove=2","outputRaw":"[4,1,3,2,2,2,2,2]"},{"input":{"array":[1,2,3,4,5],"toMove":3},"output":[1,2,5,4,3],"inputRaw":"array=[1,2,3,4,5], toMove=3","outputRaw":"[1,2,5,4,3]"}]}
+</div>
 
 # Move Element To End
 

@@ -1,30 +1,6 @@
-<script type="application/json" id="viz-config">
-{
-  "name": "Validate Subsequence",
-  "algorithm": "two-pointer-subsequence",
-  "complexity": { "time": "O(n)", "space": "O(1)" },
-  "examples": [
-    {
-      "input": { "array": [5, 1, 22, 25, 6, -1, 8, 10], "sequence": [1, 6, -1, 10] },
-      "output": true,
-      "inputRaw": "array = [5, 1, 22, 25, 6, -1, 8, 10], sequence = [1, 6, -1, 10]",
-      "outputRaw": "true"
-    },
-    {
-      "input": { "array": [5, 1, 22, 25, 6, -1, 8, 10], "sequence": [5, 1, 22, 25, 6, -1, 8, 10] },
-      "output": true,
-      "inputRaw": "array = [5, 1, 22, 25, 6, -1, 8, 10], sequence = [5, 1, 22, 25, 6, -1, 8, 10]",
-      "outputRaw": "true"
-    },
-    {
-      "input": { "array": [5, 1, 22, 25, 6, -1, 8, 10], "sequence": [1, 6, 10, -1] },
-      "output": false,
-      "inputRaw": "array = [5, 1, 22, 25, 6, -1, 8, 10], sequence = [1, 6, 10, -1]",
-      "outputRaw": "false (order matters!)"
-    }
-  ]
-}
-</script>
+<div id="viz-config" style="display:none">
+{"name":"Validate Subsequence","algorithm":"two-pointer-subsequence","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},"output":true,"inputRaw":"array=[5,1,22,25,6,-1,8,10], sequence=[1,6,-1,10]","outputRaw":"true"},{"input":{"array":[5,1,22,25,6,-1,8,10],"sequence":[5,1,22,25,6,-1,8,10]},"output":true,"inputRaw":"array=[5,1,22,25,6,-1,8,10], sequence=[5,1,22,25,6,-1,8,10]","outputRaw":"true"},{"input":{"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,10,-1]},"output":false,"inputRaw":"array=[5,1,22,25,6,-1,8,10], sequence=[1,6,10,-1]","outputRaw":"false (order matters!)"}]}
+</div>
 
 # Validate Subsequence
 
