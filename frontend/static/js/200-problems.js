@@ -189,6 +189,11 @@
 
     // Algorithm: Validate Subsequence (Two Pointer)
     function runValidateSubsequence(example, config, complexity) {
+        // Defensive checks for required properties
+        if (!example || !example.input || !example.input.array || !example.input.sequence) {
+            console.error('[runValidateSubsequence] Missing required input properties');
+            return null;
+        }
         var arr = example.input.array;
         var seq = example.input.sequence;
         var expected = example.output;
@@ -244,6 +249,10 @@
 
     // Algorithm: Two Number Sum (Hash Table)
     function runTwoNumberSum(example, config, complexity) {
+        if (!example || !example.input || !example.input.array || example.input.targetSum === undefined) {
+            console.error('[runTwoNumberSum] Missing required input properties');
+            return null;
+        }
         var arr = example.input.array;
         var target = example.input.targetSum;
         var expected = example.output;
@@ -290,6 +299,9 @@
 
     // Algorithm: Move Element To End (Two Pointers)
     function runMoveElementToEnd(example, config, complexity) {
+        if (!example || !example.input || !example.input.array || example.input.toMove === undefined) {
+            return null;
+        }
         var arr = example.input.array.slice();
         var toMove = example.input.toMove;
         var expected = example.output;
@@ -345,6 +357,7 @@
 
     // Algorithm: Sorted Squared Array
     function runSortedSquaredArray(example, config, complexity) {
+        if (!example || !example.input || !example.input.array) return null;
         var arr = example.input.array;
         var expected = example.output;
         var result = new Array(arr.length);
@@ -390,6 +403,7 @@
 
     // Algorithm: Three Number Sum (Sort + Two Pointers)
     function runThreeNumberSum(example, config, complexity) {
+        if (!example || !example.input || !example.input.array || example.input.targetSum === undefined) return null;
         var arr = example.input.array.slice().sort(function(a, b) { return a - b; });
         var target = example.input.targetSum;
         var expected = example.output;
@@ -457,6 +471,7 @@
 
     // Algorithm: Spiral Traverse
     function runSpiralTraverse(example, config, complexity) {
+        if (!example || !example.input || !example.input.matrix) return null;
         var matrix = example.input.matrix;
         var expected = example.output;
         var steps = [];
@@ -531,6 +546,7 @@
 
     // Algorithm: Tournament Winner (Hash Counting)
     function runTournamentWinner(example, config, complexity) {
+        if (!example || !example.input || !example.input.competitions || !example.input.results) return null;
         var competitions = example.input.competitions;
         var results = example.input.results;
         var expected = example.output;
@@ -585,6 +601,7 @@
 
     // Algorithm: Non-Constructible Change (Greedy)
     function runNonConstructibleChange(example, config, complexity) {
+        if (!example || !example.input || !example.input.coins) return null;
         var coins = example.input.coins.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
         var steps = [];
@@ -638,6 +655,7 @@
 
     // Algorithm: Matrix Transpose
     function runMatrixTranspose(example, config, complexity) {
+        if (!example || !example.input || !example.input.matrix) return null;
         var matrix = example.input.matrix;
         var expected = example.output;
         var steps = [];
@@ -688,6 +706,7 @@
 
     // Algorithm: Smallest Difference (Two Pointer)
     function runSmallestDifference(example, config, complexity) {
+        if (!example || !example.input || !example.input.arrayOne || !example.input.arrayTwo) return null;
         var arr1 = example.input.arrayOne.slice().sort(function(a, b) { return a - b; });
         var arr2 = example.input.arrayTwo.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
@@ -749,6 +768,7 @@
 
     // Algorithm: Monotonic Array (Linear Scan)
     function runMonotonicArray(example, config, complexity) {
+        if (!example || !example.input || !example.input.array) return null;
         var arr = example.input.array;
         var expected = example.output;
         var steps = [];
@@ -801,6 +821,7 @@
 
     // Algorithm: Array of Products (Prefix-Suffix)
     function runArrayOfProducts(example, config, complexity) {
+        if (!example || !example.input || !example.input.array) return null;
         var arr = example.input.array;
         var expected = example.output;
         var steps = [];
@@ -862,6 +883,7 @@
 
     // Algorithm: First Duplicate Value (Index Marking)
     function runFirstDuplicateValue(example, config, complexity) {
+        if (!example || !example.input || !example.input.array) return null;
         var arr = example.input.array.slice();
         var expected = example.output;
         var steps = [];
@@ -916,6 +938,7 @@
 
     // Algorithm: Merge Intervals (Sort and Merge)
     function runMergeIntervals(example, config, complexity) {
+        if (!example || !example.input || !example.input.intervals) return null;
         var intervals = example.input.intervals.slice().sort(function(a, b) { return a[0] - b[0]; });
         var expected = example.output;
         var steps = [];
@@ -972,6 +995,7 @@
 
     // Algorithm: Longest Peak
     function runLongestPeak(example, config, complexity) {
+        if (!example || !example.input || !example.input.array) return null;
         var arr = example.input.array;
         var expected = example.output;
         var steps = [];
@@ -2314,19 +2338,38 @@
 
         // Try to generate steps from embedded viz-config first
         if (vizConfig) {
-            var configSteps = generateStepsFromConfig(vizConfig, selectedExampleIndex);
-            if (configSteps && configSteps.length > 0) {
-                vizState.steps = configSteps;
-                vizState.totalSteps = configSteps.length;
-                vizState.currentStep = 0;
-                updateVisualization();
-                updateCallStack();
-                return;
+            try {
+                var configSteps = generateStepsFromConfig(vizConfig, selectedExampleIndex);
+                if (configSteps && configSteps.length > 0) {
+                    vizState.steps = configSteps;
+                    vizState.totalSteps = configSteps.length;
+                    vizState.currentStep = 0;
+                    updateVisualization();
+                    updateCallStack();
+                    return;
+                }
+            } catch (e) {
+                console.error('[VizConfig] Error generating steps from config:', e);
             }
         }
 
         // Fallback to hardcoded step generators
-        vizState.steps = generateSteps(category, problemId);
+        try {
+            vizState.steps = generateSteps(category, problemId);
+        } catch (e) {
+            console.error('[Viz] Error generating steps:', e);
+            vizState.steps = [];
+        }
+
+        // Ensure we always have at least one step
+        if (vizState.steps.length === 0) {
+            vizState.steps = [{
+                vizType: 'generic',
+                status: 'Visualization loading...',
+                explanation: '<p style="color:#8b949e;">Select an example and click Play to start the visualization.</p>'
+            }];
+        }
+
         vizState.totalSteps = vizState.steps.length;
         vizState.currentStep = 0;
 
