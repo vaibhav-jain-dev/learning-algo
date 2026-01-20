@@ -1,10 +1,110 @@
 <div class="home">
-    <section class="hero">
-        <h1>DSAlgo Learning Platform</h1>
-        <p>Master Data Structures, Algorithms, and System Design with interactive code execution</p>
-        <button id="print-pdf-btn" class="btn btn-primary" style="margin-top: 1rem;">
-            <span>📄</span> Print as PDF
-        </button>
+    <section class="cards">
+        <a href="/practice" class="card">
+            <div class="card-icon">&#9654;</div>
+            <div class="card-text">
+                <h2>Practice</h2>
+                <p>Interactive code runner with 84+ DS/Algo problems in Python and Go</p>
+            </div>
+        </a>
+
+        <a href="/200-problems" class="card featured">
+            <div class="card-icon">&#127942;</div>
+            <div class="card-text">
+                <h2>200 Must Solve Problems</h2>
+                <p>Master DSA with 200 curated problems, visual explanations, and 600+ similar problems</p>
+            </div>
+        </a>
+
+        <a href="/sql" class="card">
+            <div class="card-icon">&#128451;</div>
+            <div class="card-text">
+                <h2>SQL</h2>
+                <p>Interactive SQL editor with lessons, Order Management schema, and query execution</p>
+            </div>
+        </a>
+
+        <a href="/elasticsearch" class="card">
+            <div class="card-icon">&#128269;</div>
+            <div class="card-text">
+                <h2>Elasticsearch</h2>
+                <p>Learn full-text search: query DSL, mappings, analyzers, and aggregations with healthcare data</p>
+            </div>
+        </a>
+
+        <a href="/redis" class="card">
+            <div class="card-icon">&#9889;</div>
+            <div class="card-text">
+                <h2>Redis</h2>
+                <p>Master Redis: strings, lists, sets, hashes, sorted sets, and caching patterns</p>
+            </div>
+        </a>
+
+        <a href="/golang" class="card">
+            <div class="card-icon">&#128025;</div>
+            <div class="card-text">
+                <h2>Golang</h2>
+                <p>Go API development guide: pointers, structs, goroutines, and concurrency patterns</p>
+            </div>
+        </a>
+
+        <a href="/python-asyncio" class="card">
+            <div class="card-icon">&#128013;</div>
+            <div class="card-text">
+                <h2>Python Asyncio</h2>
+                <p>Master asyncio: GIL explained, coroutines, event loops, and production patterns</p>
+            </div>
+        </a>
+
+        <a href="/system-design" class="card">
+            <div class="card-icon">&#127959;</div>
+            <div class="card-text">
+                <h2>System Design</h2>
+                <p>25+ topics with real-world examples and trade-off analysis</p>
+            </div>
+        </a>
+
+        <a href="/system-architectures" class="card">
+            <div class="card-icon">&#128203;</div>
+            <div class="card-text">
+                <h2>System Architectures</h2>
+                <p>Learn common architectural patterns and real-world system blueprints</p>
+            </div>
+        </a>
+
+        <a href="/design-patterns" class="card">
+            <div class="card-icon">&#129513;</div>
+            <div class="card-text">
+                <h2>Design Patterns</h2>
+                <p>23 Gang of Four patterns with practical implementations</p>
+            </div>
+        </a>
+
+        <a href="/machine-coding" class="card">
+            <div class="card-icon">&#9881;</div>
+            <div class="card-text">
+                <h2>Machine Coding</h2>
+                <p>Build real systems: LRU Cache, Rate Limiter, Parking Lot</p>
+            </div>
+        </a>
+
+        <a href="/microservices" class="card">
+            <div class="card-icon">&#128230;</div>
+            <div class="card-text">
+                <h2>Microservices</h2>
+                <p>Microservices architecture, service mesh, and distributed systems patterns</p>
+            </div>
+        </a>
+    </section>
+
+    <!-- Footer section with branding and PDF export -->
+    <section class="home-footer">
+        <div class="footer-content">
+            <p class="footer-tagline">DSAlgo Learning Platform - Master Data Structures, Algorithms, and System Design</p>
+            <button id="print-pdf-btn" class="btn btn-secondary btn-sm">
+                <span>&#128196;</span> Export PDF
+            </button>
+        </div>
     </section>
 
     <!-- PDF Print Modal -->
@@ -31,84 +131,4 @@
             </div>
         </div>
     </div>
-
-    <section class="cards">
-        <a href="/practice" class="card">
-            <div class="card-icon">🎯</div>
-            <h2>Practice</h2>
-            <p>Interactive code runner with 84+ DS/Algo problems in Python and Go</p>
-        </a>
-
-        <a href="/200-problems" class="card featured">
-            <div class="card-icon">🏆</div>
-            <h2>200 Must Solve Problems</h2>
-            <p>Master DSA with 200 curated problems, visual explanations, and 600+ similar problems</p>
-        </a>
-
-        <a href="/sql" class="card">
-            <div class="card-icon">🗄️</div>
-            <h2>SQL Dashboard</h2>
-            <p>Interactive SQL editor with Order Management schema, query execution, and reset</p>
-        </a>
-
-        <a href="/sql-lessons" class="card">
-            <div class="card-icon">📚</div>
-            <h2>SQL Lessons</h2>
-            <p>Comprehensive SQL curriculum: fundamentals, joins, window functions, indexing</p>
-        </a>
-
-        <a href="/elasticsearch" class="card">
-            <div class="card-icon">🔍</div>
-            <h2>Elasticsearch Dashboard</h2>
-            <p>Interactive Elasticsearch query editor with healthcare test data and aggregations</p>
-        </a>
-
-        <a href="/elasticsearch-lessons" class="card">
-            <div class="card-icon">📖</div>
-            <h2>Elasticsearch Lessons</h2>
-            <p>Learn full-text search: query DSL, mappings, analyzers, and aggregations</p>
-        </a>
-
-        <a href="/redis" class="card">
-            <div class="card-icon">⚡</div>
-            <h2>Redis Dashboard</h2>
-            <p>Interactive Redis command runner with sample data for caching and data structures</p>
-        </a>
-
-        <a href="/redis-lessons" class="card">
-            <div class="card-icon">📕</div>
-            <h2>Redis Lessons</h2>
-            <p>Master Redis: strings, lists, sets, hashes, sorted sets, and common patterns</p>
-        </a>
-
-        <a href="/golang" class="card">
-            <div class="card-icon">🐹</div>
-            <h2>Golang</h2>
-            <p>Go API development guide: pointers, structs, goroutines, and concurrency patterns</p>
-        </a>
-
-        <a href="/python-asyncio" class="card">
-            <div class="card-icon">🐍</div>
-            <h2>Python Asyncio</h2>
-            <p>Master asyncio: GIL explained, coroutines, event loops, and production patterns</p>
-        </a>
-
-        <a href="/system-design" class="card">
-            <div class="card-icon">🏗️</div>
-            <h2>System Design</h2>
-            <p>25+ topics with real-world examples and trade-off analysis</p>
-        </a>
-
-        <a href="/design-patterns" class="card">
-            <div class="card-icon">🧩</div>
-            <h2>Design Patterns</h2>
-            <p>23 Gang of Four patterns with practical implementations</p>
-        </a>
-
-        <a href="/machine-coding" class="card">
-            <div class="card-icon">⚙️</div>
-            <h2>Machine Coding</h2>
-            <p>Build real systems: LRU Cache, Rate Limiter, Parking Lot</p>
-        </a>
-    </section>
 </div>

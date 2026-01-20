@@ -51,22 +51,72 @@
 </head>
 <body hx-boost="true">
     <header class="header">
-        <a href="/" class="logo">DSAlgo Learn</a>
+        <a href="/" class="logo">
+            <span class="logo-icon">&lt;/&gt;</span>
+            <span class="logo-text">DSAlgo</span>
+        </a>
         <nav class="nav">
-            <a href="/practice" class="nav-link">Practice</a>
-            <a href="/200-problems" class="nav-link">200 Problems</a>
-            <a href="/sql" class="nav-link">SQL</a>
-            <a href="/elasticsearch" class="nav-link">Elasticsearch</a>
-            <a href="/redis" class="nav-link">Redis</a>
-            <a href="/golang" class="nav-link">Golang</a>
-            <a href="/python-asyncio" class="nav-link">Python Asyncio</a>
-            <a href="/system-design" class="nav-link">System Design</a>
-            <a href="/system-architectures" class="nav-link">System Architectures</a>
-            <a href="/design-patterns" class="nav-link">Design Patterns</a>
-            <a href="/machine-coding" class="nav-link">Machine Coding</a>
-            <a href="/microservices" class="nav-link">Microservices</a>
+            <a href="/practice" class="nav-pill" data-path="/practice">
+                <span class="nav-icon">&#9654;</span>
+                <span>Practice</span>
+            </a>
+            <a href="/200-problems" class="nav-pill" data-path="/200-problems">
+                <span class="nav-icon">&#127942;</span>
+                <span>200 Problems</span>
+            </a>
+            <a href="/sql" class="nav-pill" data-path="/sql">
+                <span class="nav-icon">&#128451;</span>
+                <span>SQL</span>
+            </a>
+            <a href="/elasticsearch" class="nav-pill" data-path="/elasticsearch">
+                <span class="nav-icon">&#128269;</span>
+                <span>Elasticsearch</span>
+            </a>
+            <a href="/redis" class="nav-pill" data-path="/redis">
+                <span class="nav-icon">&#9889;</span>
+                <span>Redis</span>
+            </a>
+            <a href="/golang" class="nav-pill" data-path="/golang">
+                <span class="nav-icon">&#128025;</span>
+                <span>Go</span>
+            </a>
+            <a href="/python-asyncio" class="nav-pill" data-path="/python-asyncio">
+                <span class="nav-icon">&#128013;</span>
+                <span>Asyncio</span>
+            </a>
+            <a href="/system-design" class="nav-pill" data-path="/system-design">
+                <span class="nav-icon">&#127959;</span>
+                <span>System Design</span>
+            </a>
+            <a href="/system-architectures" class="nav-pill" data-path="/system-architectures">
+                <span class="nav-icon">&#128203;</span>
+                <span>Architectures</span>
+            </a>
+            <a href="/design-patterns" class="nav-pill" data-path="/design-patterns">
+                <span class="nav-icon">&#129513;</span>
+                <span>Patterns</span>
+            </a>
+            <a href="/machine-coding" class="nav-pill" data-path="/machine-coding">
+                <span class="nav-icon">&#9881;</span>
+                <span>Machine Coding</span>
+            </a>
+            <a href="/microservices" class="nav-pill" data-path="/microservices">
+                <span class="nav-icon">&#128230;</span>
+                <span>Microservices</span>
+            </a>
         </nav>
     </header>
+    <script>
+        // Highlight active nav item
+        (function() {
+            var path = window.location.pathname;
+            document.querySelectorAll('.nav-pill').forEach(function(pill) {
+                if (pill.getAttribute('data-path') === path) {
+                    pill.classList.add('active');
+                }
+            });
+        })();
+    </script>
     <main class="main">
         {{embed}}
     </main>
