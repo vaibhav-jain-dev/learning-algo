@@ -271,6 +271,9 @@
         currentProblem = null;
     };
 
+    // Store full solutions separately for Solutions tab
+    var fullSolutions = { python: '', go: '' };
+
     function loadProblemCode(category, problemId, similarIdx) {
         // Build base path (supports similar problems)
         var basePath = '/problems/200-must-solve/' + category + '/' + problemId;
@@ -278,42 +281,88 @@
             basePath += '/similar/' + similarIdx;
         }
 
-        // Load Python code
+        // Load Python code (for Solutions tab reference only)
         fetch(basePath + '/python_code.py')
-            .then(function(r) { return r.ok ? r.text() : getDefaultCode('python'); })
+            .then(function(r) { return r.ok ? r.text() : null; })
             .then(function(code) {
-                originalCode.python = code;
-                currentCode.python = code;
+                if (code) {
+                    fullSolutions.python = code;
+                    // Extract template from solution
+                    var template = extractTemplate(code, 'python', problemId);
+                    originalCode.python = template;
+                    currentCode.python = template;
+                } else {
+                    originalCode.python = getDefaultCode('python', problemId);
+                    currentCode.python = originalCode.python;
+                }
                 if (currentLanguage === 'python' && editor) {
-                    editor.setValue(code);
+                    editor.setValue(currentCode.python);
                 }
             })
             .catch(function() {
-                originalCode.python = getDefaultCode('python');
+                originalCode.python = getDefaultCode('python', problemId);
                 currentCode.python = originalCode.python;
             });
 
-        // Load Go code
+        // Load Go code (for Solutions tab reference only)
         fetch(basePath + '/golang_code.go')
-            .then(function(r) { return r.ok ? r.text() : getDefaultCode('go'); })
+            .then(function(r) { return r.ok ? r.text() : null; })
             .then(function(code) {
-                originalCode.go = code;
-                currentCode.go = code;
+                if (code) {
+                    fullSolutions.go = code;
+                    // Extract template from solution
+                    var template = extractTemplate(code, 'go', problemId);
+                    originalCode.go = template;
+                    currentCode.go = template;
+                } else {
+                    originalCode.go = getDefaultCode('go', problemId);
+                    currentCode.go = originalCode.go;
+                }
                 if (currentLanguage === 'go' && editor) {
-                    editor.setValue(code);
+                    editor.setValue(currentCode.go);
                 }
             })
             .catch(function() {
-                originalCode.go = getDefaultCode('go');
+                originalCode.go = getDefaultCode('go', problemId);
                 currentCode.go = originalCode.go;
             });
     }
 
-    function getDefaultCode(lang) {
+    // Extract function template from solution code (keeps signature, removes implementation)
+    function extractTemplate(code, lang, problemId) {
+        if (!code) return getDefaultCode(lang, problemId);
+
         if (lang === 'python') {
-            return 'def solution():\n    # Write your solution here\n    pass\n\nif __name__ == "__main__":\n    result = solution()\n    print(result)';
+            // Find the main function definition
+            var funcMatch = code.match(/^(def\s+\w+\s*\([^)]*\)(?:\s*->\s*[^:]+)?:)/m);
+            if (funcMatch) {
+                var funcName = funcMatch[1];
+                // Get docstring if present
+                var docMatch = code.match(/^def\s+\w+[^:]+:\s*\n(\s+"""[\s\S]*?"""|\s+'''[\s\S]*?''')/m);
+                var docstring = docMatch ? '\n' + docMatch[1] : '';
+                return funcName + docstring + '\n    # Write your solution here\n    pass\n\nif __name__ == "__main__":\n    # Test your solution\n    pass';
+            }
+        } else if (lang === 'go') {
+            // Find the main exported function (capitalized)
+            var funcMatch = code.match(/^(func\s+[A-Z]\w*\s*\([^)]*\)\s*(?:\([^)]*\)|[^{]+)?)\s*\{/m);
+            if (funcMatch) {
+                var funcSignature = funcMatch[1].trim();
+                return 'package main\n\nimport "fmt"\n\n// ' + funcSignature.replace(/^func\s+/, '') + '\n' + funcSignature + ' {\n\t// Write your solution here\n\treturn nil\n}\n\nfunc main() {\n\t// Test your solution\n\tfmt.Println("Test")\n}';
+            }
+        }
+
+        return getDefaultCode(lang, problemId);
+    }
+
+    function getDefaultCode(lang, problemId) {
+        var funcName = problemId ? problemId.replace(/^\d+-/, '').replace(/-/g, '_') : 'solution';
+        // Convert to appropriate case
+        if (lang === 'python') {
+            return 'def ' + funcName + '():\n    """\n    Write your solution here.\n    """\n    pass\n\nif __name__ == "__main__":\n    result = ' + funcName + '()\n    print(result)';
         } else {
-            return 'package main\n\nimport "fmt"\n\nfunc solution() interface{} {\n    // Write your solution here\n    return nil\n}\n\nfunc main() {\n    result := solution()\n    fmt.Println(result)\n}';
+            // Go uses PascalCase
+            var goFuncName = funcName.split('_').map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join('');
+            return 'package main\n\nimport "fmt"\n\nfunc ' + goFuncName + '() interface{} {\n\t// Write your solution here\n\treturn nil\n}\n\nfunc main() {\n\tresult := ' + goFuncName + '()\n\tfmt.Println(result)\n}';
         }
     }
 
@@ -431,12 +480,16 @@
         if (output) output.innerHTML = '<div class="output-placeholder">Run your code to see output here</div>';
     };
 
+    // Store original description content for filtering
+    var originalDescription = '';
+
     window.showDescTab = function(tab) {
         document.querySelectorAll('.desc-tab').forEach(function(t) { t.classList.remove('active'); });
         var clickedTab = document.querySelector('.desc-tab[data-tab="' + tab + '"]');
         if (clickedTab) clickedTab.classList.add('active');
 
         var descContent = document.getElementById('description-content');
+        var hintsContent = document.getElementById('hints-content');
         var solContent = document.getElementById('solutions-content');
         var vizContent = document.getElementById('visualization-content');
         var codePanel = document.querySelector('.code-panel');
@@ -444,6 +497,7 @@
         var editorLayout = document.querySelector('.editor-layout');
 
         if (descContent) descContent.style.display = 'none';
+        if (hintsContent) hintsContent.style.display = 'none';
         if (solContent) solContent.style.display = 'none';
         if (vizContent) vizContent.style.display = 'none';
 
@@ -456,6 +510,15 @@
 
         if (tab === 'problem' && descContent) {
             descContent.style.display = 'block';
+            // Filter out hints section from description
+            filterDescriptionContent(descContent, false);
+            // Show code panel, restore split layout
+            if (codePanel) codePanel.style.display = 'flex';
+            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
+        } else if (tab === 'hints' && hintsContent) {
+            hintsContent.style.display = 'block';
+            // Load hints content
+            loadHintsContent(hintsContent);
             // Show code panel, restore split layout
             if (codePanel) codePanel.style.display = 'flex';
             if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
@@ -471,13 +534,92 @@
             // Hide code panel, make visualization full width
             if (codePanel) codePanel.style.display = 'none';
             if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr';
-        } else if (tab === 'hints' && descContent) {
-            descContent.style.display = 'block';
-            // Show code panel, restore split layout
-            if (codePanel) codePanel.style.display = 'flex';
-            if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
         }
     };
+
+    // Filter hints out of description content when showing Problem tab
+    function filterDescriptionContent(descContent, showHints) {
+        if (!descContent) return;
+
+        // Hide any elements containing hints
+        var allDetails = descContent.querySelectorAll('details');
+        allDetails.forEach(function(detail) {
+            var summary = detail.querySelector('summary');
+            if (summary) {
+                var summaryText = summary.textContent.toLowerCase();
+                if (summaryText.includes('hint')) {
+                    detail.style.display = showHints ? 'block' : 'none';
+                }
+            }
+        });
+
+        // Hide the Hints header and following content
+        var allHeaders = descContent.querySelectorAll('h2, h3');
+        allHeaders.forEach(function(header) {
+            if (header.textContent.toLowerCase().trim() === 'hints') {
+                header.style.display = 'none';
+                // Hide siblings until next header
+                var sibling = header.nextElementSibling;
+                while (sibling && !sibling.matches('h2, h3, hr')) {
+                    if (sibling.tagName === 'DETAILS') {
+                        var summary = sibling.querySelector('summary');
+                        if (summary && summary.textContent.toLowerCase().includes('hint')) {
+                            sibling.style.display = 'none';
+                        }
+                    }
+                    sibling = sibling.nextElementSibling;
+                }
+            }
+        });
+    }
+
+    // Load hints content from the description
+    function loadHintsContent(hintsContent) {
+        if (!hintsContent) return;
+
+        var descContent = document.getElementById('description-content');
+        if (!descContent) {
+            hintsContent.innerHTML = '<p style="color:#8b949e;padding:1rem;">No hints available.</p>';
+            return;
+        }
+
+        // Extract hints from description
+        var hints = [];
+        var allDetails = descContent.querySelectorAll('details');
+        allDetails.forEach(function(detail) {
+            var summary = detail.querySelector('summary');
+            if (summary) {
+                var summaryText = summary.textContent.toLowerCase();
+                if (summaryText.includes('hint')) {
+                    hints.push(detail.cloneNode(true));
+                }
+            }
+        });
+
+        if (hints.length === 0) {
+            hintsContent.innerHTML = '<div style="padding:1.5rem;"><h3 style="color:#58a6ff;margin-bottom:1rem;">💡 Hints</h3><p style="color:#8b949e;">No hints available for this problem.</p></div>';
+            return;
+        }
+
+        var html = '<div style="padding:1.5rem;">';
+        html += '<h3 style="color:#58a6ff;margin-bottom:1.5rem;">💡 Hints</h3>';
+        html += '<div style="display:flex;flex-direction:column;gap:1rem;">';
+
+        hints.forEach(function(hint, idx) {
+            var summary = hint.querySelector('summary');
+            var content = hint.innerHTML.replace(/<summary>[\s\S]*?<\/summary>/, '');
+            html += '<div style="background:#21262d;border-radius:8px;padding:1rem;border:1px solid #30363d;">';
+            html += '<div style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;color:#c9d1d9;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === \'none\' ? \'block\' : \'none\'; this.querySelector(\'.hint-arrow\').textContent = this.nextElementSibling.style.display === \'none\' ? \'▶\' : \'▼\';">';
+            html += '<span class="hint-arrow" style="color:#58a6ff;">▶</span>';
+            html += '<span style="font-weight:600;">Hint ' + (idx + 1) + '</span>';
+            html += '</div>';
+            html += '<div style="display:none;margin-top:1rem;color:#c9d1d9;line-height:1.6;">' + content + '</div>';
+            html += '</div>';
+        });
+
+        html += '</div></div>';
+        hintsContent.innerHTML = html;
+    }
 
     function loadSolutions() {
         if (!currentProblem) return;
