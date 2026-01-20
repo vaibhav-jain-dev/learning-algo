@@ -385,29 +385,159 @@
         }
     }
 
+    // Register autocomplete hints for Python
+    function registerPythonHints() {
+        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+
+        var pythonKeywords = [
+            'def', 'return', 'if', 'elif', 'else', 'for', 'while', 'in', 'not', 'and', 'or',
+            'True', 'False', 'None', 'class', 'import', 'from', 'as', 'try', 'except', 'finally',
+            'raise', 'with', 'pass', 'break', 'continue', 'lambda', 'yield', 'global', 'nonlocal',
+            'assert', 'del', 'is', 'async', 'await'
+        ];
+        var pythonBuiltins = [
+            'print', 'len', 'range', 'list', 'dict', 'set', 'tuple', 'str', 'int', 'float', 'bool',
+            'max', 'min', 'sum', 'abs', 'sorted', 'reversed', 'enumerate', 'zip', 'map', 'filter',
+            'any', 'all', 'isinstance', 'type', 'input', 'open', 'append', 'extend', 'pop', 'remove',
+            'insert', 'index', 'count', 'sort', 'reverse', 'copy', 'clear', 'keys', 'values', 'items',
+            'get', 'update', 'add', 'discard', 'union', 'intersection', 'difference'
+        ];
+        var allPython = pythonKeywords.concat(pythonBuiltins);
+
+        CodeMirror.registerHelper('hint', 'python', function(editor) {
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var start = token.start;
+            var end = cur.ch;
+            var word = token.string.slice(0, end - start);
+
+            var matches = allPython.filter(function(w) {
+                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
+            });
+
+            return {
+                list: matches.length > 0 ? matches : allPython,
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+            };
+        });
+    }
+
+    // Register autocomplete hints for Go
+    function registerGoHints() {
+        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+
+        var goKeywords = [
+            'package', 'import', 'func', 'return', 'if', 'else', 'for', 'range', 'switch', 'case',
+            'default', 'break', 'continue', 'var', 'const', 'type', 'struct', 'interface', 'map',
+            'chan', 'go', 'defer', 'select', 'fallthrough', 'goto', 'nil', 'true', 'false', 'make',
+            'new', 'append', 'copy', 'delete', 'len', 'cap', 'close', 'panic', 'recover'
+        ];
+        var goTypes = [
+            'int', 'int8', 'int16', 'int32', 'int64', 'uint', 'uint8', 'uint16', 'uint32', 'uint64',
+            'float32', 'float64', 'complex64', 'complex128', 'byte', 'rune', 'string', 'bool', 'error'
+        ];
+        var goBuiltins = [
+            'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'fmt.Errorf',
+            'sort.Ints', 'sort.Strings', 'sort.Slice', 'sort.Search',
+            'math.Max', 'math.Min', 'math.Abs', 'math.Sqrt',
+            'strings.Contains', 'strings.Split', 'strings.Join', 'strings.Replace',
+            'strconv.Itoa', 'strconv.Atoi'
+        ];
+        var allGo = goKeywords.concat(goTypes).concat(goBuiltins);
+
+        CodeMirror.registerHelper('hint', 'go', function(editor) {
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var start = token.start;
+            var end = cur.ch;
+            var word = token.string.slice(0, end - start);
+
+            var matches = allGo.filter(function(w) {
+                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
+            });
+
+            return {
+                list: matches.length > 0 ? matches : allGo.slice(0, 20),
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+            };
+        });
+    }
+
     function createCodeMirrorEditor(wrapper) {
         if (editorInitialized || !wrapper) return;
 
         try {
+            // Register hint helpers first
+            registerPythonHints();
+            registerGoHints();
+
             editor = CodeMirror(wrapper, {
                 value: currentCode[currentLanguage] || getDefaultCode(currentLanguage),
                 mode: currentLanguage === 'go' ? 'text/x-go' : 'python',
-                theme: 'default',
+                theme: 'eclipse',
                 lineNumbers: true,
                 indentUnit: 4,
                 tabSize: 4,
+                indentWithTabs: false,
+                smartIndent: true,
+                electricChars: true,
                 matchBrackets: true,
                 autoCloseBrackets: true,
                 lineWrapping: false,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                styleActiveLine: true,
+                highlightSelectionMatches: { showToken: true },
                 extraKeys: {
                     'Ctrl-Enter': function() { window.runCode(); },
-                    'Cmd-Enter': function() { window.runCode(); }
+                    'Cmd-Enter': function() { window.runCode(); },
+                    'Ctrl-Space': function(cm) {
+                        var mode = cm.getOption('mode');
+                        var hintType = mode === 'text/x-go' ? 'go' : 'python';
+                        cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                    },
+                    'Tab': function(cm) {
+                        if (cm.somethingSelected()) {
+                            cm.indentSelection('add');
+                        } else {
+                            cm.replaceSelection('    ', 'end');
+                        }
+                    },
+                    'Shift-Tab': function(cm) {
+                        cm.indentSelection('subtract');
+                    },
+                    'Ctrl-/': function(cm) {
+                        cm.toggleComment();
+                    },
+                    'Cmd-/': function(cm) {
+                        cm.toggleComment();
+                    },
+                    'Ctrl-D': function(cm) {
+                        var cursor = cm.getCursor();
+                        var line = cm.getLine(cursor.line);
+                        cm.replaceRange(line + '\n', {line: cursor.line, ch: 0});
+                    }
                 }
             });
 
             editor.setSize('100%', '100%');
             editor.on('change', function() {
                 currentCode[currentLanguage] = editor.getValue();
+            });
+
+            // Auto-show hints on typing
+            editor.on('inputRead', function(cm, change) {
+                if (change.text[0].match(/[a-zA-Z_]/)) {
+                    var mode = cm.getOption('mode');
+                    var hintType = mode === 'text/x-go' ? 'go' : 'python';
+                    if (CodeMirror.hint && CodeMirror.hint[hintType]) {
+                        setTimeout(function() {
+                            cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
+                        }, 100);
+                    }
+                }
             });
 
             window.editor = editor;
