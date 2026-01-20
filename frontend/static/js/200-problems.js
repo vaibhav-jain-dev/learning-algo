@@ -4182,12 +4182,53 @@
     }
 
     function renderArrayVisualization(step) {
-        if (!step || !step.array) return '<p>No data</p>';
+        if (!step) return '<p>No data</p>';
 
-        var html = '<div style="margin-bottom:1rem;">' +
-            '<span style="color:#f0883e;font-weight:600;">Checking: ' + step.checking + '</span></div>';
+        var vizType = step.vizType || 'generic';
+        var html = '';
 
-        // Array
+        // Handle different visualization types
+        switch (vizType) {
+            case 'array-hash':
+                return renderArrayHashViz(step);
+            case 'two-arrays':
+                return renderTwoArraysViz(step);
+            case 'two-pointer':
+                return renderTwoPointerViz(step);
+            case 'two-pointer-result':
+                return renderTwoPointerResultViz(step);
+            case 'three-pointer':
+                return renderThreePointerViz(step);
+            case 'spiral-matrix':
+                return renderSpiralMatrixViz(step);
+            case 'hash-table':
+                return renderHashTableViz(step);
+            case 'array-scan':
+                return renderArrayScanViz(step);
+            case 'matrix':
+                return renderMatrixViz(step);
+            case 'array-products':
+                return renderArrayProductsViz(step);
+            case 'array-marking':
+                return renderArrayMarkingViz(step);
+            case 'intervals':
+                return renderIntervalsViz(step);
+            case 'generic':
+            default:
+                return renderGenericArrayViz(step);
+        }
+    }
+
+    // Array + Hash Table visualization (Two Sum style)
+    function renderArrayHashViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        if (step.checking !== undefined) {
+            html += '<div style="margin-bottom:1rem;">' +
+                '<span style="color:#f0883e;font-weight:600;">Checking: ' + step.checking + '</span></div>';
+        }
+
         html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Array:</div>';
         html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;">';
         step.array.forEach(function(val, idx) {
@@ -4198,11 +4239,421 @@
         });
         html += '</div>';
 
-        // Hash Table
-        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Hash Table:</div>';
-        html += '<div style="display:inline-block;background:#21262d;border:2px solid #238636;border-radius:6px;padding:0.75rem 1rem;color:#3fb950;font-family:monospace;">';
-        html += '{ ' + step.hashTable.join(', ') + ' }';
+        if (step.hashTable) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Hash Table:</div>';
+            html += '<div style="display:inline-block;background:#21262d;border:2px solid #238636;border-radius:6px;padding:0.75rem 1rem;color:#3fb950;font-family:monospace;">';
+            html += '{ ' + step.hashTable.join(', ') + ' }';
+            html += '</div>';
+        }
+
+        return html;
+    }
+
+    // Two arrays visualization (Validate Subsequence style)
+    function renderTwoArraysViz(step) {
+        var html = '';
+
+        // First array
+        if (step.arr1 || step.array) {
+            var arr = step.arr1 || step.array;
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Array:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+            arr.forEach(function(val, idx) {
+                var isActive = idx === step.arrIdx || idx === step.idx1;
+                var bg = isActive ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+                var border = isActive ? '2px solid #3fb950' : '2px solid #30363d';
+                html += '<div style="width:50px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1rem;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        // Second array (sequence)
+        if (step.arr2 || step.sequence) {
+            var seq = step.arr2 || step.sequence;
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Sequence:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+            seq.forEach(function(val, idx) {
+                var isActive = idx === step.seqIdx || idx === step.idx2;
+                var isMatched = idx < (step.seqIdx || 0);
+                var bg = isActive ? 'linear-gradient(135deg,#1f6feb,#388bfd)' : (isMatched ? '#238636' : '#21262d');
+                var border = isActive ? '2px solid #58a6ff' : (isMatched ? '2px solid #3fb950' : '2px solid #30363d');
+                html += '<div style="width:50px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1rem;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        // Result array if present
+        if (step.result && Array.isArray(step.result)) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Result:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+            step.result.forEach(function(val) {
+                html += '<div style="width:50px;height:45px;background:#238636;border:2px solid #3fb950;color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1rem;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        if (step.match !== undefined) {
+            html += '<div style="margin-top:1rem;color:' + (step.match ? '#3fb950' : '#f0883e') + ';font-weight:600;">' + (step.match ? '✓ Match!' : '✗ No match') + '</div>';
+        }
+
+        return html;
+    }
+
+    // Two pointer visualization (Move Element to End style)
+    function renderTwoPointerViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isLeft = idx === step.left;
+            var isRight = idx === step.right;
+            var isToMove = val === step.toMove;
+            var bg = isLeft ? 'linear-gradient(135deg,#238636,#2ea043)' : (isRight ? 'linear-gradient(135deg,#1f6feb,#388bfd)' : (isToMove ? '#da363633' : '#21262d'));
+            var border = isLeft ? '2px solid #3fb950' : (isRight ? '2px solid #58a6ff' : (isToMove ? '2px solid #da3633' : '2px solid #30363d'));
+            html += '<div style="position:relative;width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1.1rem;">';
+            html += val;
+            if (isLeft) html += '<div style="position:absolute;top:-20px;color:#3fb950;font-size:0.7rem;">L</div>';
+            if (isRight) html += '<div style="position:absolute;top:-20px;color:#58a6ff;font-size:0.7rem;">R</div>';
+            html += '</div>';
+        });
         html += '</div>';
+
+        html += '<div style="display:flex;gap:1.5rem;margin-top:0.5rem;">';
+        html += '<span style="color:#3fb950;">● Left pointer</span>';
+        html += '<span style="color:#58a6ff;">● Right pointer</span>';
+        html += '<span style="color:#da3633;">● To move: ' + step.toMove + '</span>';
+        html += '</div>';
+
+        return html;
+    }
+
+    // Two pointer with result visualization (Sorted Squared Array style)
+    function renderTwoPointerResultViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Input Array:</div>';
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isLeft = idx === step.left;
+            var isRight = idx === step.right;
+            var bg = isLeft ? 'linear-gradient(135deg,#238636,#2ea043)' : (isRight ? 'linear-gradient(135deg,#1f6feb,#388bfd)' : '#21262d');
+            var border = isLeft ? '2px solid #3fb950' : (isRight ? '2px solid #58a6ff' : '2px solid #30363d');
+            html += '<div style="position:relative;width:50px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;">';
+            html += val;
+            if (isLeft) html += '<div style="position:absolute;top:-18px;color:#3fb950;font-size:0.65rem;">L</div>';
+            if (isRight) html += '<div style="position:absolute;top:-18px;color:#58a6ff;font-size:0.65rem;">R</div>';
+            html += '</div>';
+        });
+        html += '</div>';
+
+        if (step.result) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Result Array:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+            step.result.forEach(function(val, idx) {
+                var isInsert = idx === step.insertIdx;
+                var bg = isInsert ? 'linear-gradient(135deg,#f0883e,#d29922)' : (val !== 0 ? '#238636' : '#21262d');
+                var border = isInsert ? '2px solid #f0883e' : (val !== 0 ? '2px solid #3fb950' : '2px solid #30363d');
+                html += '<div style="width:50px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        return html;
+    }
+
+    // Three pointer visualization (Three Number Sum style)
+    function renderThreePointerViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isI = idx === step.i;
+            var isLeft = idx === step.left;
+            var isRight = idx === step.right;
+            var bg = isI ? 'linear-gradient(135deg,#f0883e,#d29922)' : (isLeft ? 'linear-gradient(135deg,#238636,#2ea043)' : (isRight ? 'linear-gradient(135deg,#1f6feb,#388bfd)' : '#21262d'));
+            var border = isI ? '2px solid #f0883e' : (isLeft ? '2px solid #3fb950' : (isRight ? '2px solid #58a6ff' : '2px solid #30363d'));
+            html += '<div style="position:relative;width:45px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;">';
+            html += val;
+            if (isI) html += '<div style="position:absolute;top:-18px;color:#f0883e;font-size:0.65rem;">i</div>';
+            if (isLeft) html += '<div style="position:absolute;top:-18px;color:#3fb950;font-size:0.65rem;">L</div>';
+            if (isRight) html += '<div style="position:absolute;top:-18px;color:#58a6ff;font-size:0.65rem;">R</div>';
+            html += '</div>';
+        });
+        html += '</div>';
+
+        if (step.sum !== undefined) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Sum: <span style="color:#c9d1d9;">' + step.sum + '</span></div>';
+        }
+
+        if (step.triplets && step.triplets.length > 0) {
+            html += '<div style="margin-top:0.5rem;color:#8b949e;">Found triplets:</div>';
+            html += '<div style="color:#3fb950;font-family:monospace;">' + JSON.stringify(step.triplets) + '</div>';
+        }
+
+        return html;
+    }
+
+    // Spiral matrix visualization
+    function renderSpiralMatrixViz(step) {
+        if (!step.matrix) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="overflow-x:auto;margin-bottom:1rem;">';
+        html += '<table style="border-collapse:collapse;">';
+        step.matrix.forEach(function(row, rowIdx) {
+            html += '<tr>';
+            row.forEach(function(val, colIdx) {
+                var isVisited = step.result && step.result.indexOf(val) !== -1;
+                var isCurrent = step.currentCell && step.currentCell[0] === rowIdx && step.currentCell[1] === colIdx;
+                var bg = isCurrent ? '#238636' : (isVisited ? '#1f6feb33' : '#21262d');
+                var border = isCurrent ? '2px solid #3fb950' : '1px solid #30363d';
+                html += '<td style="width:45px;height:45px;text-align:center;background:' + bg + ';border:' + border + ';color:#c9d1d9;font-weight:bold;">' + val + '</td>';
+            });
+            html += '</tr>';
+        });
+        html += '</table></div>';
+
+        if (step.result) {
+            html += '<div style="color:#8b949e;">Result: <span style="color:#3fb950;font-family:monospace;">[' + step.result.join(', ') + ']</span></div>';
+        }
+
+        return html;
+    }
+
+    // Hash table only visualization (Tournament Winner style)
+    function renderHashTableViz(step) {
+        var html = '';
+
+        if (step.scores) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Scores:</div>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">';
+            Object.keys(step.scores).forEach(function(team) {
+                var isWinner = team === step.currentBest;
+                var bg = isWinner ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+                var border = isWinner ? '2px solid #3fb950' : '2px solid #30363d';
+                html += '<div style="background:' + bg + ';border:' + border + ';border-radius:6px;padding:0.5rem 1rem;">';
+                html += '<div style="color:#c9d1d9;font-weight:600;">' + team + '</div>';
+                html += '<div style="color:#8b949e;font-size:0.85rem;">' + step.scores[team] + ' pts</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+
+        if (step.currentBest) {
+            html += '<div style="color:#3fb950;font-weight:600;">Leader: ' + step.currentBest + '</div>';
+        }
+
+        return html;
+    }
+
+    // Array scan visualization (Non-Constructible Change, Monotonic Array style)
+    function renderArrayScanViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isCurrent = idx === step.currentIdx;
+            var isProcessed = idx < (step.currentIdx || 0);
+            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : (isProcessed ? '#1f6feb33' : '#21262d');
+            var border = isCurrent ? '2px solid #3fb950' : (isProcessed ? '2px solid #58a6ff' : '2px solid #30363d');
+            html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1.1rem;">' + val + '</div>';
+        });
+        html += '</div>';
+
+        if (step.currentChange !== undefined) {
+            html += '<div style="color:#8b949e;">Current change possible: <span style="color:#f0883e;font-weight:600;">' + step.currentChange + '</span></div>';
+        }
+
+        if (step.isIncreasing !== undefined || step.isDecreasing !== undefined) {
+            html += '<div style="display:flex;gap:1rem;margin-top:0.5rem;">';
+            if (step.isIncreasing !== undefined) {
+                html += '<span style="color:' + (step.isIncreasing ? '#3fb950' : '#da3633') + ';">' + (step.isIncreasing ? '✓' : '✗') + ' Increasing</span>';
+            }
+            if (step.isDecreasing !== undefined) {
+                html += '<span style="color:' + (step.isDecreasing ? '#3fb950' : '#da3633') + ';">' + (step.isDecreasing ? '✓' : '✗') + ' Decreasing</span>';
+            }
+            html += '</div>';
+        }
+
+        return html;
+    }
+
+    // Matrix visualization (Transpose Matrix style)
+    function renderMatrixViz(step) {
+        var html = '';
+
+        if (step.matrix) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Matrix:</div>';
+            html += '<div style="overflow-x:auto;margin-bottom:1rem;">';
+            html += '<table style="border-collapse:collapse;">';
+            step.matrix.forEach(function(row, rowIdx) {
+                html += '<tr>';
+                row.forEach(function(val, colIdx) {
+                    var isCurrent = step.currentRow === rowIdx && step.currentCol === colIdx;
+                    var bg = isCurrent ? '#238636' : '#21262d';
+                    var border = isCurrent ? '2px solid #3fb950' : '1px solid #30363d';
+                    html += '<td style="width:45px;height:45px;text-align:center;background:' + bg + ';border:' + border + ';color:#c9d1d9;font-weight:bold;">' + val + '</td>';
+                });
+                html += '</tr>';
+            });
+            html += '</table></div>';
+        }
+
+        if (step.result) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Result:</div>';
+            html += '<div style="overflow-x:auto;">';
+            html += '<table style="border-collapse:collapse;">';
+            step.result.forEach(function(row) {
+                html += '<tr>';
+                row.forEach(function(val) {
+                    html += '<td style="width:45px;height:45px;text-align:center;background:#238636;border:1px solid #3fb950;color:#c9d1d9;font-weight:bold;">' + val + '</td>';
+                });
+                html += '</tr>';
+            });
+            html += '</table></div>';
+        }
+
+        return html;
+    }
+
+    // Array products visualization
+    function renderArrayProductsViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Input Array:</div>';
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isCurrent = idx === step.currentIdx;
+            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+            var border = isCurrent ? '2px solid #3fb950' : '2px solid #30363d';
+            html += '<div style="width:50px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;">' + val + '</div>';
+        });
+        html += '</div>';
+
+        if (step.result) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Products Array:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+            step.result.forEach(function(val, idx) {
+                var isCurrent = idx === step.currentIdx;
+                var bg = isCurrent ? 'linear-gradient(135deg,#1f6feb,#388bfd)' : (val !== 1 ? '#238636' : '#21262d');
+                var border = isCurrent ? '2px solid #58a6ff' : (val !== 1 ? '2px solid #3fb950' : '2px solid #30363d');
+                html += '<div style="width:60px;height:45px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:0.9rem;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        if (step.prefix !== undefined) {
+            html += '<div style="margin-top:0.5rem;color:#8b949e;">Prefix: <span style="color:#f0883e;">' + step.prefix + '</span></div>';
+        }
+        if (step.suffix !== undefined) {
+            html += '<div style="color:#8b949e;">Suffix: <span style="color:#58a6ff;">' + step.suffix + '</span></div>';
+        }
+
+        return html;
+    }
+
+    // Array marking visualization (First Duplicate Value style)
+    function renderArrayMarkingViz(step) {
+        if (!step.array) return '<p>No data</p>';
+        var html = '';
+
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+        step.array.forEach(function(val, idx) {
+            var isCurrent = idx === step.currentIdx;
+            var isNegative = val < 0;
+            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : (isNegative ? '#da363633' : '#21262d');
+            var border = isCurrent ? '2px solid #3fb950' : (isNegative ? '2px solid #da3633' : '2px solid #30363d');
+            html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1rem;">' + val + '</div>';
+        });
+        html += '</div>';
+
+        html += '<div style="display:flex;gap:1rem;">';
+        html += '<span style="color:#3fb950;">● Current</span>';
+        html += '<span style="color:#da3633;">● Marked (seen)</span>';
+        html += '</div>';
+
+        if (step.duplicateFound !== undefined) {
+            html += '<div style="margin-top:0.5rem;color:' + (step.duplicateFound ? '#3fb950' : '#8b949e') + ';font-weight:600;">' + (step.duplicateFound ? '✓ Duplicate found: ' + step.duplicateFound : 'Searching...') + '</div>';
+        }
+
+        return html;
+    }
+
+    // Intervals visualization (Merge Overlapping Intervals style)
+    function renderIntervalsViz(step) {
+        if (!step.intervals) return '<p>No data</p>';
+        var html = '';
+
+        // Find min/max for scale
+        var min = Infinity, max = -Infinity;
+        step.intervals.forEach(function(interval) {
+            min = Math.min(min, interval[0]);
+            max = Math.max(max, interval[1]);
+        });
+        var range = max - min || 1;
+
+        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Intervals:</div>';
+        html += '<div style="position:relative;padding:0.5rem 0;">';
+        step.intervals.forEach(function(interval, idx) {
+            var isCurrent = idx === step.currentIdx;
+            var left = ((interval[0] - min) / range) * 80;
+            var width = ((interval[1] - interval[0]) / range) * 80;
+            var bg = isCurrent ? '#238636' : '#1f6feb';
+            html += '<div style="position:relative;height:28px;margin-bottom:4px;">';
+            html += '<div style="position:absolute;left:' + left + '%;width:' + Math.max(width, 5) + '%;height:100%;background:' + bg + ';border-radius:4px;display:flex;align-items:center;justify-content:center;">';
+            html += '<span style="color:white;font-size:0.75rem;font-weight:600;">[' + interval[0] + ',' + interval[1] + ']</span>';
+            html += '</div></div>';
+        });
+        html += '</div>';
+
+        if (step.merged && step.merged.length > 0) {
+            html += '<div style="margin-top:1rem;margin-bottom:0.5rem;color:#8b949e;">Merged:</div>';
+            html += '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">';
+            step.merged.forEach(function(interval) {
+                html += '<span style="background:#238636;color:white;padding:0.25rem 0.75rem;border-radius:4px;font-weight:600;">[' + interval[0] + ',' + interval[1] + ']</span>';
+            });
+            html += '</div>';
+        }
+
+        return html;
+    }
+
+    // Generic array visualization (fallback)
+    function renderGenericArrayViz(step) {
+        var html = '';
+
+        // Handle input/output display for generic steps
+        if (step.input !== undefined) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Input:</div>';
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem;margin-bottom:1rem;color:#c9d1d9;font-family:monospace;">' + (typeof step.input === 'object' ? JSON.stringify(step.input) : step.input) + '</div>';
+        }
+
+        if (step.output !== undefined) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Output:</div>';
+            html += '<div style="background:#238636;border:1px solid #3fb950;border-radius:6px;padding:0.75rem;color:#c9d1d9;font-family:monospace;">' + (typeof step.output === 'object' ? JSON.stringify(step.output) : step.output) + '</div>';
+        }
+
+        // If there's an array, still show it
+        if (step.array) {
+            html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Array:</div>';
+            html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+            step.array.forEach(function(val, idx) {
+                var isActive = idx === step.currentIndex || idx === step.currentIdx;
+                var bg = isActive ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+                var border = isActive ? '2px solid #3fb950' : '2px solid #30363d';
+                html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1.1rem;">' + val + '</div>';
+            });
+            html += '</div>';
+        }
+
+        if (!step.input && !step.output && !step.array) {
+            html += '<div style="color:#8b949e;text-align:center;padding:2rem;">' + (step.action || step.status || 'Processing...') + '</div>';
+        }
 
         return html;
     }
@@ -4424,6 +4875,7 @@
 
         var step = vizState.steps[vizState.currentStep];
         var category = currentProblem ? currentProblem.category : 'recursion';
+        var vizType = step.vizType || '';
         var html = '';
 
         // Build stack history from step 0 to current step
@@ -4432,7 +4884,237 @@
             historySteps.push(vizState.steps[i]);
         }
 
-        if (category === 'recursion' && step.stack) {
+        // Handle array algorithm states based on vizType first
+        if (vizType === 'two-pointer' || vizType === 'two-pointer-result') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">POINTER STATE</div>';
+
+            // Left pointer
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Left:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">index ' + (step.left !== undefined ? step.left : '-') + '</span>';
+            if (step.array && step.left !== undefined && step.array[step.left] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.left] + '</span>';
+            }
+            html += '</div>';
+
+            // Right pointer
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#58a6ff;font-size:0.8rem;">Right:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">index ' + (step.right !== undefined ? step.right : '-') + '</span>';
+            if (step.array && step.right !== undefined && step.array[step.right] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.right] + '</span>';
+            }
+            html += '</div>';
+
+            if (step.toMove !== undefined) {
+                html += '<div style="background:#da363622;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:#da3633;font-size:0.8rem;">Moving: ' + step.toMove + '</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'three-pointer') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">THREE POINTERS</div>';
+
+            // i pointer (fixed)
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#f0883e;font-size:0.8rem;">i (fixed):</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">index ' + (step.i !== undefined ? step.i : '-') + '</span>';
+            if (step.array && step.i !== undefined && step.array[step.i] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.i] + '</span>';
+            }
+            html += '</div>';
+
+            // Left pointer
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Left:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">index ' + (step.left !== undefined ? step.left : '-') + '</span>';
+            if (step.array && step.left !== undefined && step.array[step.left] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.left] + '</span>';
+            }
+            html += '</div>';
+
+            // Right pointer
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#58a6ff;font-size:0.8rem;">Right:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">index ' + (step.right !== undefined ? step.right : '-') + '</span>';
+            if (step.array && step.right !== undefined && step.array[step.right] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.right] + '</span>';
+            }
+            html += '</div>';
+
+            if (step.sum !== undefined) {
+                html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:#58a6ff;font-size:0.8rem;">Sum: ' + step.sum + '</span>';
+                html += '</div>';
+            }
+
+            if (step.triplets && step.triplets.length > 0) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.25rem;">';
+                html += '<span style="color:#3fb950;font-size:0.75rem;">Found: ' + step.triplets.length + ' triplets</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'two-arrays') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">INDEX STATE</div>';
+
+            // Array index
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Array idx:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">' + (step.arrIdx !== undefined ? step.arrIdx : (step.idx1 !== undefined ? step.idx1 : '-')) + '</span>';
+            html += '</div>';
+
+            // Sequence index
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#58a6ff;font-size:0.8rem;">Seq idx:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">' + (step.seqIdx !== undefined ? step.seqIdx : (step.idx2 !== undefined ? step.idx2 : '-')) + '</span>';
+            html += '</div>';
+
+            if (step.match !== undefined) {
+                html += '<div style="background:' + (step.match ? '#23863622' : '#f0883e22') + ';border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:' + (step.match ? '#3fb950' : '#f0883e') + ';font-size:0.8rem;">' + (step.match ? '✓ Match!' : '✗ No match') + '</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'array-scan') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">SCAN STATE</div>';
+
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Current idx:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">' + (step.currentIdx !== undefined ? step.currentIdx : '-') + '</span>';
+            if (step.array && step.currentIdx !== undefined && step.array[step.currentIdx] !== undefined) {
+                html += ' <span style="color:#8b949e;">= ' + step.array[step.currentIdx] + '</span>';
+            }
+            html += '</div>';
+
+            if (step.currentChange !== undefined) {
+                html += '<div style="background:#f0883e22;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:#f0883e;font-size:0.8rem;">Can make: 1 to ' + step.currentChange + '</span>';
+                html += '</div>';
+            }
+
+            if (step.isIncreasing !== undefined || step.isDecreasing !== undefined) {
+                html += '<div style="display:flex;flex-direction:column;gap:0.25rem;margin-top:0.5rem;">';
+                if (step.isIncreasing !== undefined) {
+                    html += '<div style="background:' + (step.isIncreasing ? '#23863622' : '#da363622') + ';border-radius:4px;padding:0.3rem 0.5rem;">';
+                    html += '<span style="color:' + (step.isIncreasing ? '#3fb950' : '#da3633') + ';font-size:0.75rem;">' + (step.isIncreasing ? '✓' : '✗') + ' Increasing</span>';
+                    html += '</div>';
+                }
+                if (step.isDecreasing !== undefined) {
+                    html += '<div style="background:' + (step.isDecreasing ? '#23863622' : '#da363622') + ';border-radius:4px;padding:0.3rem 0.5rem;">';
+                    html += '<span style="color:' + (step.isDecreasing ? '#3fb950' : '#da3633') + ';font-size:0.75rem;">' + (step.isDecreasing ? '✓' : '✗') + ' Decreasing</span>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+
+        } else if (vizType === 'array-products') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">PRODUCTS STATE</div>';
+
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Index:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">' + (step.currentIdx !== undefined ? step.currentIdx : '-') + '</span>';
+            html += '</div>';
+
+            if (step.prefix !== undefined) {
+                html += '<div style="background:#f0883e22;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+                html += '<span style="color:#f0883e;font-size:0.8rem;">Prefix: ' + step.prefix + '</span>';
+                html += '</div>';
+            }
+
+            if (step.suffix !== undefined) {
+                html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.4rem 0.5rem;">';
+                html += '<span style="color:#58a6ff;font-size:0.8rem;">Suffix: ' + step.suffix + '</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'array-marking') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">MARKING STATE</div>';
+
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Checking idx:</span> ';
+            html += '<span style="color:#c9d1d9;font-family:monospace;">' + (step.currentIdx !== undefined ? step.currentIdx : '-') + '</span>';
+            html += '</div>';
+
+            if (step.targetIdx !== undefined) {
+                html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+                html += '<span style="color:#58a6ff;font-size:0.8rem;">Target idx: ' + step.targetIdx + '</span>';
+                html += '</div>';
+            }
+
+            if (step.duplicateFound) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:#3fb950;font-size:0.8rem;">✓ Found: ' + step.duplicateFound + '</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'intervals') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">MERGE STATE</div>';
+
+            html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+            html += '<span style="color:#3fb950;font-size:0.8rem;">Current:</span> ';
+            if (step.intervals && step.currentIdx !== undefined && step.intervals[step.currentIdx]) {
+                html += '<span style="color:#c9d1d9;font-family:monospace;">[' + step.intervals[step.currentIdx].join(',') + ']</span>';
+            } else {
+                html += '<span style="color:#c9d1d9;font-family:monospace;">-</span>';
+            }
+            html += '</div>';
+
+            if (step.merged && step.merged.length > 0) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.4rem 0.5rem;">';
+                html += '<span style="color:#3fb950;font-size:0.75rem;">Merged: ' + step.merged.length + ' intervals</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'spiral-matrix' || vizType === 'matrix') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">MATRIX STATE</div>';
+
+            if (step.currentRow !== undefined && step.currentCol !== undefined) {
+                html += '<div style="background:#21262d;border-radius:4px;padding:0.4rem 0.5rem;margin-bottom:0.25rem;">';
+                html += '<span style="color:#3fb950;font-size:0.8rem;">Cell:</span> ';
+                html += '<span style="color:#c9d1d9;font-family:monospace;">[' + step.currentRow + '][' + step.currentCol + ']</span>';
+                html += '</div>';
+            }
+
+            if (step.bounds) {
+                html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.4rem 0.5rem;font-size:0.7rem;">';
+                html += '<div style="color:#58a6ff;">Bounds:</div>';
+                html += '<div style="color:#8b949e;">rows: ' + step.bounds.startRow + '-' + step.bounds.endRow + '</div>';
+                html += '<div style="color:#8b949e;">cols: ' + step.bounds.startCol + '-' + step.bounds.endCol + '</div>';
+                html += '</div>';
+            }
+
+            if (step.result && Array.isArray(step.result)) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.4rem 0.5rem;margin-top:0.5rem;">';
+                html += '<span style="color:#3fb950;font-size:0.75rem;">Collected: ' + step.result.length + ' elements</span>';
+                html += '</div>';
+            }
+
+        } else if (vizType === 'hash-table') {
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">SCORES STATE</div>';
+
+            if (step.scores) {
+                var scoreKeys = Object.keys(step.scores);
+                scoreKeys.slice(0, 4).forEach(function(team) {
+                    var isLeader = team === step.currentBest;
+                    var bg = isLeader ? '#23863622' : '#21262d';
+                    html += '<div style="background:' + bg + ';border-radius:4px;padding:0.3rem 0.5rem;margin-bottom:0.2rem;">';
+                    html += '<span style="color:' + (isLeader ? '#3fb950' : '#c9d1d9') + ';font-size:0.8rem;">' + team + ': ' + step.scores[team] + '</span>';
+                    if (isLeader) html += ' <span style="color:#3fb950;font-size:0.7rem;">★</span>';
+                    html += '</div>';
+                });
+                if (scoreKeys.length > 4) {
+                    html += '<div style="color:#8b949e;font-size:0.7rem;margin-top:0.25rem;">+' + (scoreKeys.length - 4) + ' more...</div>';
+                }
+            }
+
+        } else if (vizType === 'generic') {
+            // Generic array viz fallback
+            html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">STEP ' + (vizState.currentStep + 1) + ' / ' + vizState.totalSteps + '</div>';
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:4px;padding:0.5rem;">';
+            html += '<span style="color:#c9d1d9;font-size:0.85rem;">' + (step.status || step.action || 'Processing...') + '</span>';
+            html += '</div>';
+
+        } else if (category === 'recursion' && step.stack) {
             // Show stack frames with newest on top
             html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">STACK (top → bottom)</div>';
 
@@ -4517,7 +5199,7 @@
             html += '</div>';
 
         } else if (step.hashTable !== undefined) {
-            // Hash table operations
+            // Hash table operations (array-hash vizType)
             html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">HASH TABLE STATE</div>';
 
             // Current operation
