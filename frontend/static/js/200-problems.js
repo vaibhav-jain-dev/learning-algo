@@ -449,113 +449,544 @@
             });
     }
 
+    // ============================================
+    // VISUALIZATION SYSTEM
+    // ============================================
+    var vizState = {
+        isPlaying: false,
+        currentStep: 0,
+        totalSteps: 10,
+        speed: 1000,
+        intervalId: null,
+        steps: []
+    };
+
     function loadVisualization() {
         if (!currentProblem) return;
         var vizContent = document.getElementById('visualization-content');
         if (!vizContent) return;
 
-        // Generate visualization based on problem type
         var category = currentProblem.category;
-        var html = '<div style="padding:1rem;">';
+        var problemId = currentProblem.id;
 
-        if (category === 'arrays') {
-            html += generateArrayVisualization();
-        } else if (category === 'binary-trees' || category === 'binary-search-trees') {
-            html += generateTreeVisualization();
-        } else if (category === 'graphs') {
-            html += generateGraphVisualization();
-        } else if (category === 'dynamic-programming') {
-            html += generateDPVisualization();
-        } else if (category === 'linked-lists') {
-            html += generateLinkedListVisualization();
-        } else {
-            html += '<p style="color:#888;">Visualization for this problem type coming soon...</p>';
-        }
+        // Reset visualization state
+        vizState.isPlaying = false;
+        vizState.currentStep = 0;
+        if (vizState.intervalId) clearInterval(vizState.intervalId);
 
-        html += '</div>';
+        // Build the visualization container
+        var html = buildVisualizationContainer(category, problemId);
         vizContent.innerHTML = html;
+
+        // Initialize the visualization
+        initializeVisualization(category, problemId);
     }
 
-    function generateArrayVisualization() {
-        return '<h3 style="color:white;margin-bottom:1rem;">Array Visualization</h3>' +
-            '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">' +
-            [5, 2, 8, 1, 9, 3, 7, 4, 6].map(function(n, i) {
-                return '<div style="width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold;animation:fadeIn 0.3s ease ' + (i * 0.1) + 's both;">' + n + '</div>';
-            }).join('') +
+    function buildVisualizationContainer(category, problemId) {
+        var animType = getAnimationType(category, problemId);
+
+        return '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;">' +
+            // Header
+            '<h3 style="color:#58a6ff;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
+            '<span style="font-size:1.2rem;">🎯</span> Algorithm Visualization</h3>' +
+
+            // Animation Type Badge
+            '<div style="background:#161b22;border-left:3px solid #f0883e;padding:0.75rem 1rem;margin-bottom:1rem;border-radius:0 8px 8px 0;">' +
+            '<span style="color:#8b949e;">Animation Type:</span> <span style="color:#f0883e;font-weight:600;">' + animType + '</span></div>' +
+
+            // Controls
+            '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">' +
+            '<button onclick="window.vizPlay()" id="viz-play-btn" style="background:#238636;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>▶</span> Play</button>' +
+            '<button onclick="window.vizPause()" id="viz-pause-btn" style="background:#6e7681;color:white;border:none;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>⏸</span> Pause</button>' +
+            '<button onclick="window.vizReset()" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:0.5rem;"><span>↻</span> Reset</button>' +
+            '<div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;">' +
+            '<span style="color:#8b949e;">Speed:</span>' +
+            '<input type="range" id="viz-speed" min="100" max="2000" value="1000" style="width:120px;accent-color:#58a6ff;" onchange="window.vizSetSpeed(this.value)">' +
+            '</div></div>' +
+
+            // Visualization Area
+            '<div id="viz-main-area" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1.5rem;min-height:200px;margin-bottom:1rem;"></div>' +
+
+            // Status Line
+            '<div id="viz-status" style="color:#8b949e;margin-bottom:1rem;font-family:monospace;"></div>' +
+
+            // Progress Bar
+            '<div style="display:flex;align-items:center;gap:1rem;">' +
+            '<div style="flex:1;background:#21262d;border-radius:4px;height:8px;overflow:hidden;">' +
+            '<div id="viz-progress-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#238636,#58a6ff);transition:width 0.3s;"></div></div>' +
+            '<span id="viz-step-counter" style="color:#58a6ff;font-weight:600;min-width:80px;text-align:right;">Step 0 / 0</span></div>' +
+
             '</div>' +
-            '<p style="color:#d4d4d4;">Click elements to see sorting/searching animations.</p>' +
-            '<style>@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}</style>';
-    }
 
-    function generateTreeVisualization() {
-        return '<h3 style="color:white;margin-bottom:1rem;">Binary Tree Visualization</h3>' +
-            '<svg viewBox="0 0 400 200" style="width:100%;max-width:400px;">' +
-            '<circle cx="200" cy="30" r="20" fill="#667eea"/><text x="200" y="35" fill="white" text-anchor="middle" font-weight="bold">8</text>' +
-            '<line x1="200" y1="50" x2="120" y2="80" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="200" y1="50" x2="280" y2="80" stroke="#667eea" stroke-width="2"/>' +
-            '<circle cx="120" cy="100" r="20" fill="#764ba2"/><text x="120" y="105" fill="white" text-anchor="middle" font-weight="bold">4</text>' +
-            '<circle cx="280" cy="100" r="20" fill="#764ba2"/><text x="280" y="105" fill="white" text-anchor="middle" font-weight="bold">12</text>' +
-            '<line x1="120" y1="120" x2="80" y2="150" stroke="#764ba2" stroke-width="2"/>' +
-            '<line x1="120" y1="120" x2="160" y2="150" stroke="#764ba2" stroke-width="2"/>' +
-            '<circle cx="80" cy="170" r="20" fill="#28a745"/><text x="80" y="175" fill="white" text-anchor="middle" font-weight="bold">2</text>' +
-            '<circle cx="160" cy="170" r="20" fill="#28a745"/><text x="160" y="175" fill="white" text-anchor="middle" font-weight="bold">6</text>' +
-            '</svg>';
-    }
-
-    function generateGraphVisualization() {
-        return '<h3 style="color:white;margin-bottom:1rem;">Graph Visualization</h3>' +
-            '<svg viewBox="0 0 400 300" style="width:100%;max-width:400px;">' +
-            '<line x1="100" y1="50" x2="200" y2="100" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="200" y1="100" x2="300" y2="50" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="100" y1="50" x2="50" y2="150" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="200" y1="100" x2="200" y2="200" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="300" y1="50" x2="350" y2="150" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="50" y1="150" x2="150" y2="250" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="200" y1="200" x2="150" y2="250" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="200" y1="200" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>' +
-            '<line x1="350" y1="150" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>' +
-            '<circle cx="100" cy="50" r="20" fill="#667eea"/><text x="100" y="55" fill="white" text-anchor="middle" font-weight="bold">A</text>' +
-            '<circle cx="200" cy="100" r="20" fill="#667eea"/><text x="200" y="105" fill="white" text-anchor="middle" font-weight="bold">B</text>' +
-            '<circle cx="300" cy="50" r="20" fill="#667eea"/><text x="300" y="55" fill="white" text-anchor="middle" font-weight="bold">C</text>' +
-            '<circle cx="50" cy="150" r="20" fill="#764ba2"/><text x="50" y="155" fill="white" text-anchor="middle" font-weight="bold">D</text>' +
-            '<circle cx="200" cy="200" r="20" fill="#764ba2"/><text x="200" y="205" fill="white" text-anchor="middle" font-weight="bold">E</text>' +
-            '<circle cx="350" cy="150" r="20" fill="#764ba2"/><text x="350" y="155" fill="white" text-anchor="middle" font-weight="bold">F</text>' +
-            '<circle cx="150" cy="250" r="20" fill="#28a745"/><text x="150" y="255" fill="white" text-anchor="middle" font-weight="bold">G</text>' +
-            '<circle cx="250" cy="250" r="20" fill="#28a745"/><text x="250" y="255" fill="white" text-anchor="middle" font-weight="bold">H</text>' +
-            '</svg>';
-    }
-
-    function generateDPVisualization() {
-        return '<h3 style="color:white;margin-bottom:1rem;">DP Table Visualization</h3>' +
-            '<table style="border-collapse:collapse;margin:15px 0;">' +
-            '<tr><th style="border:1px solid #555;padding:12px;background:#333;color:#fff;">i\\j</th>' +
-            [0,1,2,3,4].map(function(j) { return '<th style="border:1px solid #555;padding:12px;background:#333;color:#fff;">' + j + '</th>'; }).join('') +
-            '</tr>' +
-            [0,1,2,3].map(function(i) {
-                return '<tr><td style="border:1px solid #555;padding:12px;background:#333;color:#fff;font-weight:bold;">' + i + '</td>' +
-                    [0,1,2,3,4].map(function(j) {
-                        var val = Math.min(i, j);
-                        var bg = val === 0 ? '#d4edda' : (val === i ? '#cce5ff' : '#f8f9fa');
-                        return '<td style="border:1px solid #555;padding:12px;background:' + bg + ';color:#333;text-align:center;">' + val + '</td>';
-                    }).join('') +
-                '</tr>';
-            }).join('') +
-            '</table>' +
-            '<p style="color:#d4d4d4;">Green = Base case, Blue = Current cell being computed</p>';
-    }
-
-    function generateLinkedListVisualization() {
-        return '<h3 style="color:white;margin-bottom:1rem;">Linked List Visualization</h3>' +
-            '<div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding:1rem 0;">' +
-            [1, 2, 3, 4, 5].map(function(n, i) {
-                return '<div style="display:flex;align-items:center;">' +
-                    '<div style="width:60px;height:40px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold;">' + n + '</div>' +
-                    (i < 4 ? '<div style="width:30px;height:2px;background:#667eea;position:relative;"><div style="position:absolute;right:-5px;top:-4px;border:5px solid transparent;border-left:8px solid #667eea;"></div></div>' : '') +
-                '</div>';
-            }).join('') +
-            '<div style="padding:0 10px;color:#28a745;font-weight:bold;">NULL</div>' +
+            // Call Stack Section
+            '<div style="background:#0d1117;border-radius:12px;padding:1.5rem;color:#c9d1d9;margin-top:1.5rem;">' +
+            '<h3 style="color:#f0883e;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.5rem;">' +
+            '<span style="font-size:1.2rem;">📚</span> Call Stack</h3>' +
+            '<div id="viz-call-stack" style="display:flex;flex-direction:column;gap:0.5rem;"></div>' +
             '</div>';
     }
+
+    function getAnimationType(category, problemId) {
+        var types = {
+            'arrays': 'array-traversal',
+            'binary-search-trees': 'tree-traversal',
+            'binary-trees': 'tree-traversal',
+            'graphs': 'graph-search',
+            'dynamic-programming': 'dp-table',
+            'linked-lists': 'pointer-manipulation',
+            'recursion': 'recursion-tree',
+            'famous-algorithms': 'algorithm-specific'
+        };
+
+        // Problem-specific types
+        if (problemId && problemId.includes('two-sum')) return 'hash-table';
+        if (problemId && problemId.includes('sort')) return 'sorting';
+        if (problemId && problemId.includes('search')) return 'binary-search';
+        if (problemId && problemId.includes('fibonacci')) return 'memoization';
+
+        return types[category] || 'step-by-step';
+    }
+
+    function initializeVisualization(category, problemId) {
+        // Generate steps based on problem type
+        vizState.steps = generateSteps(category, problemId);
+        vizState.totalSteps = vizState.steps.length;
+        vizState.currentStep = 0;
+
+        updateVisualization();
+        updateCallStack();
+    }
+
+    function generateSteps(category, problemId) {
+        // Generate problem-specific animation steps
+        if (category === 'arrays') {
+            return generateArraySteps(problemId);
+        } else if (category === 'binary-trees' || category === 'binary-search-trees') {
+            return generateTreeSteps(problemId);
+        } else if (category === 'dynamic-programming') {
+            return generateDPSteps(problemId);
+        } else if (category === 'linked-lists') {
+            return generateLinkedListSteps(problemId);
+        } else if (category === 'recursion') {
+            return generateRecursionSteps(problemId);
+        } else if (category === 'graphs') {
+            return generateGraphSteps(problemId);
+        }
+        return generateGenericSteps();
+    }
+
+    function generateArraySteps(problemId) {
+        var arr = [3, 5, -4, 8, 11, 1, -1, 6];
+        var target = 10;
+        var steps = [];
+        var hashSet = [];
+
+        for (var i = 0; i < arr.length; i++) {
+            var need = target - arr[i];
+            var found = hashSet.indexOf(need) !== -1;
+            steps.push({
+                array: arr.slice(),
+                currentIndex: i,
+                hashTable: hashSet.slice(),
+                checking: arr[i],
+                need: need,
+                found: found,
+                status: found ? 'Found pair: ' + arr[i] + ' + ' + need + ' = ' + target : 'Need: ' + need + '. Found: NO'
+            });
+            if (found) break;
+            hashSet.push(arr[i]);
+        }
+        return steps;
+    }
+
+    function generateTreeSteps(problemId) {
+        return [
+            { nodes: [{id:1,val:10,x:200,y:30,active:true}], visited: [10], action: 'Visit root: 10' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100,active:true}], visited: [10,5], action: 'Visit left: 5' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170,active:true}], visited: [10,5,2], action: 'Visit left: 2' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:3,val:2,x:70,y:170},{id:4,val:7,x:170,y:170,active:true}], visited: [10,5,2,7], action: 'Backtrack, visit right: 7' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:2,val:5,x:120,y:100},{id:5,val:15,x:280,y:100,active:true}], visited: [10,5,2,7,15], action: 'Backtrack to root, visit right: 15' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:6,val:13,x:230,y:170,active:true}], visited: [10,5,2,7,15,13], action: 'Visit left: 13' },
+            { nodes: [{id:1,val:10,x:200,y:30},{id:5,val:15,x:280,y:100},{id:7,val:20,x:330,y:170,active:true}], visited: [10,5,2,7,15,13,20], action: 'Backtrack, visit right: 20' }
+        ];
+    }
+
+    function generateDPSteps(problemId) {
+        // LCS or similar DP problem
+        var str1 = 'ABCD';
+        var str2 = 'AEBD';
+        var m = str1.length;
+        var n = str2.length;
+        var steps = [];
+        var dp = [];
+
+        // Initialize DP table
+        for (var i = 0; i <= m; i++) {
+            dp[i] = [];
+            for (var j = 0; j <= n; j++) {
+                dp[i][j] = 0;
+            }
+        }
+
+        steps.push({ table: JSON.parse(JSON.stringify(dp)), row: 0, col: 0, action: 'Initialize DP table with zeros' });
+
+        for (var i = 1; i <= m; i++) {
+            for (var j = 1; j <= n; j++) {
+                if (str1[i-1] === str2[j-1]) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+                steps.push({
+                    table: JSON.parse(JSON.stringify(dp)),
+                    row: i,
+                    col: j,
+                    char1: str1[i-1],
+                    char2: str2[j-1],
+                    match: str1[i-1] === str2[j-1],
+                    action: str1[i-1] === str2[j-1] ?
+                        'Match! dp[' + i + '][' + j + '] = dp[' + (i-1) + '][' + (j-1) + '] + 1 = ' + dp[i][j] :
+                        'No match. dp[' + i + '][' + j + '] = max(' + dp[i-1][j] + ', ' + dp[i][j-1] + ') = ' + dp[i][j]
+                });
+            }
+        }
+        return steps;
+    }
+
+    function generateLinkedListSteps(problemId) {
+        return [
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:0}, action: 'Initialize: head at node 1' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:1,prev:0}, action: 'Move to node 2, save prev' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:2,prev:1}, action: 'Move to node 3' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:3,prev:2}, action: 'Move to node 4' },
+            { nodes: [1,2,3,4,5], pointers: {head:0,current:4,prev:3}, action: 'Reached node 5 (target)' },
+            { nodes: [1,2,3,5], pointers: {head:0}, action: 'Remove node 4, link 3→5' }
+        ];
+    }
+
+    function generateRecursionSteps(problemId) {
+        return [
+            { depth: 0, call: 'fib(5)', stack: ['fib(5)'], result: null },
+            { depth: 1, call: 'fib(4) + fib(3)', stack: ['fib(5)', 'fib(4)'], result: null },
+            { depth: 2, call: 'fib(3) + fib(2)', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: null },
+            { depth: 3, call: 'fib(2) + fib(1)', stack: ['fib(5)', 'fib(4)', 'fib(3)', 'fib(2)'], result: null },
+            { depth: 3, call: 'fib(2) = 1', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: 1 },
+            { depth: 2, call: 'fib(3) = 2', stack: ['fib(5)', 'fib(4)'], result: 2, memo: true },
+            { depth: 1, call: 'fib(4) = 3', stack: ['fib(5)'], result: 3, memo: true },
+            { depth: 0, call: 'fib(5) = 5', stack: [], result: 5, memo: true }
+        ];
+    }
+
+    function generateGraphSteps(problemId) {
+        return [
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A'], current: 'A', queue: ['B','C'], action: 'Start BFS from A' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B'], current: 'B', queue: ['C','D'], action: 'Visit B, add D to queue' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C'], current: 'C', queue: ['D'], action: 'Visit C (D already in queue)' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D'], current: 'D', queue: ['E'], action: 'Visit D, add E to queue' },
+            { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B','C','D','E'], current: 'E', queue: [], action: 'Visit E. BFS complete!' }
+        ];
+    }
+
+    function generateGenericSteps() {
+        return [
+            { action: 'Step 1: Initialize variables' },
+            { action: 'Step 2: Process input' },
+            { action: 'Step 3: Apply algorithm' },
+            { action: 'Step 4: Return result' }
+        ];
+    }
+
+    function updateVisualization() {
+        var mainArea = document.getElementById('viz-main-area');
+        var statusEl = document.getElementById('viz-status');
+        var progressBar = document.getElementById('viz-progress-bar');
+        var stepCounter = document.getElementById('viz-step-counter');
+
+        if (!mainArea || vizState.steps.length === 0) return;
+
+        var step = vizState.steps[vizState.currentStep];
+        var category = currentProblem ? currentProblem.category : 'arrays';
+
+        // Render based on category
+        if (category === 'arrays') {
+            mainArea.innerHTML = renderArrayVisualization(step);
+        } else if (category === 'binary-trees' || category === 'binary-search-trees') {
+            mainArea.innerHTML = renderTreeVisualization(step);
+        } else if (category === 'dynamic-programming') {
+            mainArea.innerHTML = renderDPVisualization(step);
+        } else if (category === 'linked-lists') {
+            mainArea.innerHTML = renderLinkedListVisualization(step);
+        } else if (category === 'graphs') {
+            mainArea.innerHTML = renderGraphVisualization(step);
+        } else {
+            mainArea.innerHTML = '<p style="color:#8b949e;">' + (step.action || 'Processing...') + '</p>';
+        }
+
+        // Update status
+        if (statusEl) statusEl.textContent = step.status || step.action || '';
+
+        // Update progress
+        var progress = ((vizState.currentStep + 1) / vizState.totalSteps) * 100;
+        if (progressBar) progressBar.style.width = progress + '%';
+        if (stepCounter) stepCounter.textContent = 'Step ' + (vizState.currentStep + 1) + ' / ' + vizState.totalSteps;
+    }
+
+    function renderArrayVisualization(step) {
+        if (!step || !step.array) return '<p>No data</p>';
+
+        var html = '<div style="margin-bottom:1rem;">' +
+            '<span style="color:#f0883e;font-weight:600;">Checking: ' + step.checking + '</span></div>';
+
+        // Array
+        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Array:</div>';
+        html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;">';
+        step.array.forEach(function(val, idx) {
+            var isActive = idx === step.currentIndex;
+            var bg = isActive ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+            var border = isActive ? '2px solid #3fb950' : '2px solid #30363d';
+            html += '<div style="width:70px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1.1rem;transition:all 0.3s;">' + val + '</div>';
+        });
+        html += '</div>';
+
+        // Hash Table
+        html += '<div style="margin-bottom:0.5rem;color:#8b949e;">Hash Table:</div>';
+        html += '<div style="display:inline-block;background:#21262d;border:2px solid #238636;border-radius:6px;padding:0.75rem 1rem;color:#3fb950;font-family:monospace;">';
+        html += '{ ' + step.hashTable.join(', ') + ' }';
+        html += '</div>';
+
+        return html;
+    }
+
+    function renderTreeVisualization(step) {
+        var html = '<svg viewBox="0 0 400 220" style="width:100%;max-width:450px;">';
+
+        // Draw edges
+        var edges = [
+            [200,50,120,110], [200,50,280,110],
+            [120,130,70,180], [120,130,170,180],
+            [280,130,230,180], [280,130,330,180]
+        ];
+        edges.forEach(function(e) {
+            html += '<line x1="'+e[0]+'" y1="'+e[1]+'" x2="'+e[2]+'" y2="'+e[3]+'" stroke="#30363d" stroke-width="2"/>';
+        });
+
+        // Draw nodes
+        var nodes = [
+            {x:200,y:30,val:10}, {x:120,y:100,val:5}, {x:280,y:100,val:15},
+            {x:70,y:170,val:2}, {x:170,y:170,val:7}, {x:230,y:170,val:13}, {x:330,y:170,val:20}
+        ];
+
+        var visited = step.visited || [];
+        nodes.forEach(function(n) {
+            var isVisited = visited.indexOf(n.val) !== -1;
+            var isActive = step.nodes && step.nodes.some(function(sn) { return sn.active && sn.val === n.val; });
+            var fill = isActive ? '#238636' : (isVisited ? '#58a6ff' : '#21262d');
+            var stroke = isActive ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d');
+            html += '<circle cx="'+n.x+'" cy="'+n.y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+            html += '<text x="'+n.x+'" y="'+(n.y+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+n.val+'</text>';
+        });
+
+        html += '</svg>';
+        html += '<div style="margin-top:1rem;color:#8b949e;">' + (step.action || '') + '</div>';
+        html += '<div style="margin-top:0.5rem;color:#58a6ff;">Visited: [' + (step.visited || []).join(' → ') + ']</div>';
+
+        return html;
+    }
+
+    function renderDPVisualization(step) {
+        if (!step || !step.table) return '<p>No data</p>';
+
+        var str1 = 'ABCD';
+        var str2 = 'AEBD';
+
+        var html = '<div style="overflow-x:auto;">';
+        html += '<table style="border-collapse:collapse;font-family:monospace;">';
+
+        // Header row
+        html += '<tr><th style="border:1px solid #30363d;padding:10px;background:#21262d;color:#8b949e;"></th>';
+        html += '<th style="border:1px solid #30363d;padding:10px;background:#21262d;color:#8b949e;">""</th>';
+        for (var j = 0; j < str2.length; j++) {
+            html += '<th style="border:1px solid #30363d;padding:10px;background:#21262d;color:#f0883e;">' + str2[j] + '</th>';
+        }
+        html += '</tr>';
+
+        // Data rows
+        for (var i = 0; i <= str1.length; i++) {
+            html += '<tr>';
+            html += '<th style="border:1px solid #30363d;padding:10px;background:#21262d;color:#f0883e;">' + (i === 0 ? '""' : str1[i-1]) + '</th>';
+            for (var j = 0; j <= str2.length; j++) {
+                var isActive = step.row === i && step.col === j;
+                var bg = isActive ? '#238636' : (step.table[i][j] > 0 ? '#1f6feb33' : '#0d1117');
+                var border = isActive ? '2px solid #3fb950' : '1px solid #30363d';
+                html += '<td style="border:' + border + ';padding:10px;background:' + bg + ';color:#c9d1d9;text-align:center;min-width:40px;">' + step.table[i][j] + '</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</table></div>';
+
+        html += '<div style="margin-top:1rem;color:#8b949e;">' + (step.action || '') + '</div>';
+
+        return html;
+    }
+
+    function renderLinkedListVisualization(step) {
+        if (!step || !step.nodes) return '<p>No data</p>';
+
+        var html = '<div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding:1rem 0;">';
+
+        step.nodes.forEach(function(val, idx) {
+            var isCurrent = step.pointers && step.pointers.current === idx;
+            var isHead = step.pointers && step.pointers.head === idx;
+            var isPrev = step.pointers && step.pointers.prev === idx;
+
+            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
+            var border = isCurrent ? '2px solid #3fb950' : '2px solid #30363d';
+
+            html += '<div style="display:flex;flex-direction:column;align-items:center;">';
+            if (isHead) html += '<div style="color:#58a6ff;font-size:0.75rem;margin-bottom:4px;">HEAD</div>';
+            else if (isPrev) html += '<div style="color:#f0883e;font-size:0.75rem;margin-bottom:4px;">PREV</div>';
+            else if (isCurrent) html += '<div style="color:#3fb950;font-size:0.75rem;margin-bottom:4px;">CURR</div>';
+            else html += '<div style="height:18px;"></div>';
+
+            html += '<div style="display:flex;align-items:center;">';
+            html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold;font-size:1.2rem;">' + val + '</div>';
+
+            if (idx < step.nodes.length - 1) {
+                html += '<div style="width:40px;height:3px;background:#30363d;position:relative;">' +
+                    '<div style="position:absolute;right:-6px;top:-5px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid #30363d;"></div></div>';
+            }
+            html += '</div></div>';
+        });
+
+        html += '<div style="margin-left:8px;color:#3fb950;font-weight:bold;font-size:0.9rem;">NULL</div>';
+        html += '</div>';
+
+        html += '<div style="margin-top:1rem;color:#8b949e;">' + (step.action || '') + '</div>';
+
+        return html;
+    }
+
+    function renderGraphVisualization(step) {
+        if (!step) return '<p>No data</p>';
+
+        var positions = { A: [100,50], B: [50,120], C: [150,120], D: [100,190], E: [200,190] };
+
+        var html = '<svg viewBox="0 0 300 250" style="width:100%;max-width:350px;">';
+
+        // Draw edges
+        (step.edges || []).forEach(function(e) {
+            var p1 = positions[e[0]];
+            var p2 = positions[e[1]];
+            if (p1 && p2) {
+                html += '<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="#30363d" stroke-width="2"/>';
+            }
+        });
+
+        // Draw nodes
+        (step.nodes || []).forEach(function(n) {
+            var pos = positions[n];
+            if (!pos) return;
+            var isVisited = (step.visited || []).indexOf(n) !== -1;
+            var isCurrent = step.current === n;
+            var fill = isCurrent ? '#238636' : (isVisited ? '#58a6ff' : '#21262d');
+            var stroke = isCurrent ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d');
+            html += '<circle cx="'+pos[0]+'" cy="'+pos[1]+'" r="24" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+            html += '<text x="'+pos[0]+'" y="'+(pos[1]+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+n+'</text>';
+        });
+
+        html += '</svg>';
+
+        html += '<div style="margin-top:1rem;">';
+        html += '<span style="color:#8b949e;">Queue: </span><span style="color:#f0883e;">[' + (step.queue || []).join(', ') + ']</span>';
+        html += '</div>';
+        html += '<div style="color:#8b949e;margin-top:0.5rem;">' + (step.action || '') + '</div>';
+
+        return html;
+    }
+
+    function updateCallStack() {
+        var callStackEl = document.getElementById('viz-call-stack');
+        if (!callStackEl || vizState.steps.length === 0) return;
+
+        var step = vizState.steps[vizState.currentStep];
+        var category = currentProblem ? currentProblem.category : 'recursion';
+
+        var html = '';
+
+        if (category === 'recursion' && step.stack) {
+            step.stack.forEach(function(call, idx) {
+                var isTop = idx === step.stack.length - 1;
+                var bg = isTop ? '#238636' : '#21262d';
+                var border = isTop ? '#3fb950' : '#30363d';
+                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:6px;padding:0.75rem 1rem;">';
+                html += '<span style="color:#f0883e;">Depth ' + idx + ':</span> <span style="color:#58a6ff;font-family:monospace;">' + call + '</span>';
+                html += '</div>';
+            });
+
+            if (step.result !== null && step.result !== undefined) {
+                html += '<div style="background:#1f6feb33;border:1px solid #58a6ff;border-radius:6px;padding:0.75rem 1rem;margin-top:0.5rem;">';
+                html += '<span style="color:#3fb950;">Result:</span> <span style="color:#c9d1d9;font-family:monospace;">' + step.call + '</span>';
+                if (step.memo) html += ' <span style="color:#f0883e;">(memoized)</span>';
+                html += '</div>';
+            }
+        } else {
+            // Generic call stack for other categories
+            html += '<div style="background:#21262d;border:1px solid #30363d;border-radius:6px;padding:0.75rem 1rem;">';
+            html += '<span style="color:#f0883e;">Step ' + (vizState.currentStep + 1) + ':</span> <span style="color:#c9d1d9;">' + (step.action || 'Processing...') + '</span>';
+            html += '</div>';
+        }
+
+        callStackEl.innerHTML = html;
+    }
+
+    // Visualization controls
+    window.vizPlay = function() {
+        if (vizState.isPlaying) return;
+        vizState.isPlaying = true;
+
+        var playBtn = document.getElementById('viz-play-btn');
+        var pauseBtn = document.getElementById('viz-pause-btn');
+        if (playBtn) playBtn.style.background = '#6e7681';
+        if (pauseBtn) pauseBtn.style.background = '#da3633';
+
+        vizState.intervalId = setInterval(function() {
+            if (vizState.currentStep < vizState.totalSteps - 1) {
+                vizState.currentStep++;
+                updateVisualization();
+                updateCallStack();
+            } else {
+                window.vizPause();
+            }
+        }, vizState.speed);
+    };
+
+    window.vizPause = function() {
+        vizState.isPlaying = false;
+        if (vizState.intervalId) {
+            clearInterval(vizState.intervalId);
+            vizState.intervalId = null;
+        }
+
+        var playBtn = document.getElementById('viz-play-btn');
+        var pauseBtn = document.getElementById('viz-pause-btn');
+        if (playBtn) playBtn.style.background = '#238636';
+        if (pauseBtn) pauseBtn.style.background = '#6e7681';
+    };
+
+    window.vizReset = function() {
+        window.vizPause();
+        vizState.currentStep = 0;
+        updateVisualization();
+        updateCallStack();
+    };
+
+    window.vizSetSpeed = function(val) {
+        vizState.speed = 2100 - parseInt(val); // Invert so higher = faster
+        if (vizState.isPlaying) {
+            window.vizPause();
+            window.vizPlay();
+        }
+    };
 
     function escapeHtml(text) {
         var div = document.createElement('div');
