@@ -191,15 +191,33 @@
         currentCategory = null;
     };
 
-    window.openProblem = function(category, problemId, similarIdx) {
-        // Reset visualization state when opening a new problem
-        if (vizState.intervalId) clearInterval(vizState.intervalId);
+    window.openProblem = function(category, problemId, similarIdx, section) {
+        // Reset visualization state completely when opening a new problem
+        if (vizState.intervalId) {
+            clearInterval(vizState.intervalId);
+            vizState.intervalId = null;
+        }
         vizState.isPlaying = false;
         vizState.currentStep = 0;
         vizState.steps = [];
+        vizState.totalSteps = 0;
+        vizState.currentProblemKey = null;  // Clear the problem key to force re-init
+
+        // Clear visualization content immediately
+        var vizContent = document.getElementById('visualization-content');
+        if (vizContent) vizContent.innerHTML = '<p style="color:#888;padding:1rem;">Loading visualization...</p>';
 
         currentProblem = { category: category, id: problemId, similarIdx: similarIdx || null };
         var editorView = document.getElementById('editor-view');
+
+        // Update URL with history API
+        var urlPath = '/200-problems/' + problemId;
+        var urlParams = new URLSearchParams();
+        urlParams.set('category', category);
+        if (similarIdx) urlParams.set('similar', similarIdx);
+        if (section) urlParams.set('section', section);
+        var newUrl = urlPath + '?' + urlParams.toString();
+        history.pushState({ category: category, problemId: problemId, similarIdx: similarIdx }, '', newUrl);
 
         // Build the correct path for the problem
         var basePath = '/htmx/200-problem-content/' + category + '/' + problemId;
@@ -245,6 +263,11 @@
 
         if (editorView) editorView.classList.add('active');
         initEditor();
+
+        // If section specified, switch to that tab
+        if (section) {
+            window.showDescTab(section);
+        }
     };
 
     window.hideEditor = function() {
@@ -430,6 +453,13 @@
         if (solContent) solContent.style.display = 'none';
         if (vizContent) vizContent.style.display = 'none';
 
+        // Update URL with section parameter
+        if (currentProblem) {
+            var url = new URL(window.location);
+            url.searchParams.set('section', tab);
+            history.replaceState(history.state, '', url.toString());
+        }
+
         if (tab === 'problem' && descContent) {
             descContent.style.display = 'block';
             // Show code panel, restore split layout
@@ -491,7 +521,8 @@
         totalSteps: 10,
         speed: 1000,
         intervalId: null,
-        steps: []
+        steps: [],
+        currentProblemKey: null  // Track which problem visualization is loaded for
     };
 
     function loadVisualization() {
@@ -501,17 +532,26 @@
 
         var category = currentProblem.category;
         var problemId = currentProblem.id;
+        var problemKey = category + '/' + problemId + (currentProblem.similarIdx || '');
 
-        // Reset visualization state
+        // Always stop any running animation
+        if (vizState.intervalId) {
+            clearInterval(vizState.intervalId);
+            vizState.intervalId = null;
+        }
+
+        // Force complete reset of visualization state
         vizState.isPlaying = false;
         vizState.currentStep = 0;
-        if (vizState.intervalId) clearInterval(vizState.intervalId);
+        vizState.steps = [];
+        vizState.totalSteps = 0;
+        vizState.currentProblemKey = problemKey;
 
         // Build the visualization container
         var html = buildVisualizationContainer(category, problemId);
         vizContent.innerHTML = html;
 
-        // Initialize the visualization
+        // Initialize the visualization with fresh data
         initializeVisualization(category, problemId);
     }
 
@@ -649,7 +689,17 @@
                     '• C: 2 (from A, B)<br>' +
                     '• D: 1 (from B)<br>' +
                     '• E: 2 (from C, D)<br>' +
-                    '• <span style="color:#3fb950;">Queue nodes with in-degree 0: [A, B]</span>'
+                    '• <span style="color:#3fb950;">Queue nodes with in-degree 0: [A, B]</span><br><br>' +
+                    '<strong style="color:#58a6ff;">Python (Kahn\'s Algorithm):</strong><br>' +
+                    '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                    'from collections import deque, defaultdict<br><br>' +
+                    'def topological_sort(graph):<br>' +
+                    '&nbsp;&nbsp;in_degree = defaultdict(int)<br>' +
+                    '&nbsp;&nbsp;for node in graph:<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;for neighbor in graph[node]:<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_degree[neighbor] += 1<br>' +
+                    '&nbsp;&nbsp;# Start with nodes having 0 in-degree<br>' +
+                    '&nbsp;&nbsp;queue = deque([n for n in graph if in_degree[n] == 0])</code>'
             },
             {
                 nodes: {A:0, B:0, C:0, D:2, E:1},
@@ -719,7 +769,24 @@
                     '• Add E to result: [A, B, C, D, E]<br>' +
                     '• Queue empty - done!<br><br>' +
                     '• <strong>Topological Order: A → B → C → D → E</strong><br>' +
-                    '• All dependencies satisfied!'
+                    '• All dependencies satisfied!<br><br>' +
+                    '<strong style="color:#f0883e;">Go (Kahn\'s Algorithm):</strong><br>' +
+                    '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                    'func topoSort(graph map[string][]string) []string {<br>' +
+                    '&nbsp;&nbsp;inDegree := make(map[string]int)<br>' +
+                    '&nbsp;&nbsp;for _, neighbors := range graph {<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;for _, n := range neighbors {<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inDegree[n]++<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;}<br>' +
+                    '&nbsp;&nbsp;}<br>' +
+                    '&nbsp;&nbsp;var queue, result []string<br>' +
+                    '&nbsp;&nbsp;for node := range graph {<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;if inDegree[node] == 0 {<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue = append(queue, node)<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;}<br>' +
+                    '&nbsp;&nbsp;}<br>' +
+                    '&nbsp;&nbsp;// Process queue...<br>' +
+                    '}</code>'
             }
         ];
     }
@@ -750,14 +817,23 @@
                     '• Current element: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
                     '• We need: <span style="color:#f0883e;">' + need + '</span> to reach target ' + target + '<br>' +
                     '• Hash table contains ' + need + '!<br>' +
-                    '• <strong>Pair found:</strong> ' + arr[i] + ' + ' + need + ' = ' + target :
+                    '• <strong>Pair found:</strong> ' + arr[i] + ' + ' + need + ' = ' + target + '<br><br>' +
+                    '<strong style="color:#58a6ff;">Python (idiomatic):</strong><br>' +
+                    '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                    'for i, num in enumerate(arr):<br>' +
+                    '&nbsp;&nbsp;complement = target - num<br>' +
+                    '&nbsp;&nbsp;if complement in seen:  # O(1) lookup<br>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;return [complement, num]<br>' +
+                    '&nbsp;&nbsp;seen.add(num)</code>' :
                     '🔍 <strong>Step ' + (i + 1) + ':</strong> Checking element at index ' + i + '<br><br>' +
                     '• Current element: <span style="color:#3fb950;">' + arr[i] + '</span><br>' +
                     '• Target sum: ' + target + '<br>' +
                     '• Complement needed: ' + target + ' - ' + arr[i] + ' = <span style="color:#f0883e;">' + need + '</span><br>' +
                     '• Is ' + need + ' in hash table? <span style="color:#da3633;">NO</span><br>' +
                     '• Action: Add ' + arr[i] + ' to hash table<br>' +
-                    '• Hash table now: {' + hashSet.concat([arr[i]]).join(', ') + '}'
+                    '• Hash table now: {' + hashSet.concat([arr[i]]).join(', ') + '}<br><br>' +
+                    '<strong style="color:#58a6ff;">Python:</strong> <code style="color:#3fb950;">for i, num in enumerate(arr):</code><br>' +
+                    '<strong style="color:#f0883e;">Go:</strong> <code style="color:#3fb950;">for i, num := range arr</code>'
             });
             if (found) break;
             hashSet.push(arr[i]);
@@ -861,7 +937,16 @@
               explanation: '🔗 <strong>Step 1: Initialize</strong><br><br>' +
                 '• Set up head pointer at first node<br>' +
                 '• Current: <span style="color:#3fb950;">1</span><br>' +
-                '• We will traverse to find node to remove' },
+                '• We will traverse to find node to remove<br><br>' +
+                '<strong style="color:#58a6ff;">Python (Node class):</strong><br>' +
+                '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                'class ListNode:<br>' +
+                '&nbsp;&nbsp;def __init__(self, val=0, next=None):<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;self.val = val<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;self.next = next<br><br>' +
+                '# Traverse: use while loop<br>' +
+                'curr = head<br>' +
+                'while curr:</code>' },
             { nodes: [1,2,3,4,5], pointers: {head:0,current:1,prev:0}, action: 'Move to node 2, save prev',
               explanation: '➡️ <strong>Step 2: Move Forward</strong><br><br>' +
                 '• Move current pointer to next node<br>' +
@@ -887,7 +972,16 @@
               explanation: '✅ <strong>Step 6: Removal Complete</strong><br><br>' +
                 '• Node 4 removed from list<br>' +
                 '• Set node 3.next = node 5<br>' +
-                '• Final list: <span style="color:#3fb950;">1 → 2 → 3 → 5 → NULL</span>' }
+                '• Final list: <span style="color:#3fb950;">1 → 2 → 3 → 5 → NULL</span><br><br>' +
+                '<strong style="color:#58a6ff;">Python:</strong> <code style="color:#3fb950;">prev.next = curr.next</code><br>' +
+                '<strong style="color:#f0883e;">Go:</strong><br>' +
+                '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                'type ListNode struct {<br>' +
+                '&nbsp;&nbsp;Val  int<br>' +
+                '&nbsp;&nbsp;Next *ListNode<br>' +
+                '}<br><br>' +
+                '// Remove: prev.Next = curr.Next<br>' +
+                'prev.Next = curr.Next</code>' }
         ];
     }
 
@@ -898,13 +992,31 @@
                 '• Call fib(5) - we want the 5th Fibonacci number<br>' +
                 '• fib(n) = fib(n-1) + fib(n-2)<br>' +
                 '• Stack depth: 0<br>' +
-                '• This will recursively call fib(4) and fib(3)' },
+                '• This will recursively call fib(4) and fib(3)<br><br>' +
+                '<strong style="color:#58a6ff;">Python (with memoization):</strong><br>' +
+                '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                'from functools import lru_cache<br><br>' +
+                '@lru_cache(maxsize=None)<br>' +
+                'def fib(n: int) -> int:<br>' +
+                '&nbsp;&nbsp;if n <= 1:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;return n<br>' +
+                '&nbsp;&nbsp;return fib(n-1) + fib(n-2)</code>' },
             { depth: 1, call: 'fib(4) + fib(3)', stack: ['fib(5)', 'fib(4)'], result: null,
               explanation: '📥 <strong>Step 2: Recurse on fib(4)</strong><br><br>' +
                 '• fib(5) calls fib(4)<br>' +
                 '• Stack depth: 1<br>' +
                 '• fib(4) = fib(3) + fib(2)<br>' +
-                '• Continue recursing...' },
+                '• Continue recursing...<br><br>' +
+                '<strong style="color:#f0883e;">Go (with memo map):</strong><br>' +
+                '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                'memo := make(map[int]int)<br>' +
+                'var fib func(n int) int<br>' +
+                'fib = func(n int) int {<br>' +
+                '&nbsp;&nbsp;if n <= 1 { return n }<br>' +
+                '&nbsp;&nbsp;if v, ok := memo[n]; ok { return v }<br>' +
+                '&nbsp;&nbsp;memo[n] = fib(n-1) + fib(n-2)<br>' +
+                '&nbsp;&nbsp;return memo[n]<br>' +
+                '}</code>' },
             { depth: 2, call: 'fib(3) + fib(2)', stack: ['fib(5)', 'fib(4)', 'fib(3)'], result: null,
               explanation: '📥 <strong>Step 3: Recurse on fib(3)</strong><br><br>' +
                 '• fib(4) calls fib(3)<br>' +
@@ -928,7 +1040,9 @@
                 '• fib(3) = fib(2) + fib(1) = 1 + 1 = <span style="color:#3fb950;">2</span><br>' +
                 '• <span style="color:#f0883e;">Memoized!</span> Store result for reuse<br>' +
                 '• Return to fib(4)<br>' +
-                '• Stack depth: 1' },
+                '• Stack depth: 1<br><br>' +
+                '<strong style="color:#58a6ff;">Python:</strong> <code style="color:#3fb950;">memo[3] = 2</code> (auto via @lru_cache)<br>' +
+                '<strong style="color:#f0883e;">Go:</strong> <code style="color:#3fb950;">memo[3] = 2</code>' },
             { depth: 1, call: 'fib(4) = 3', stack: ['fib(5)'], result: 3, memo: true,
               explanation: '📤 <strong>Step 7: Return fib(4) = 3</strong><br><br>' +
                 '• fib(4) = fib(3) + fib(2) = 2 + 1 = <span style="color:#3fb950;">3</span><br>' +
@@ -940,7 +1054,9 @@
                 '• fib(5) = fib(4) + fib(3) = 3 + 2 = <span style="color:#3fb950;">5</span><br>' +
                 '• All recursive calls complete<br>' +
                 '• Stack empty<br>' +
-                '• <strong>Answer: fib(5) = 5</strong>' }
+                '• <strong>Answer: fib(5) = 5</strong><br><br>' +
+                '<strong style="color:#58a6ff;">Time Complexity:</strong> O(n) with memoization<br>' +
+                '<strong style="color:#f0883e;">Space Complexity:</strong> O(n) for call stack + memo' }
         ];
     }
 
@@ -951,7 +1067,19 @@
                 '• Begin at source node <span style="color:#3fb950;">A</span><br>' +
                 '• Mark A as visited<br>' +
                 '• Add neighbors to queue: [B, C]<br>' +
-                '• BFS explores level by level' },
+                '• BFS explores level by level<br><br>' +
+                '<strong style="color:#58a6ff;">Python (using collections.deque):</strong><br>' +
+                '<code style="color:#c9d1d9;background:#21262d;padding:0.5rem;display:block;border-radius:4px;margin-top:0.5rem;">' +
+                'from collections import deque<br><br>' +
+                'def bfs(graph, start):<br>' +
+                '&nbsp;&nbsp;visited = set([start])<br>' +
+                '&nbsp;&nbsp;queue = deque([start])<br>' +
+                '&nbsp;&nbsp;while queue:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;node = queue.popleft()  # O(1)<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;for neighbor in graph[node]:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if neighbor not in visited:<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;visited.add(neighbor)<br>' +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue.append(neighbor)</code>' },
             { nodes: ['A','B','C','D','E'], edges: [['A','B'],['A','C'],['B','D'],['C','D'],['D','E']], visited: ['A','B'], current: 'B', queue: ['C','D'], action: 'Visit B, add D to queue',
               explanation: '➡️ <strong>Step 2: Visit B</strong><br><br>' +
                 '• Dequeue <span style="color:#3fb950;">B</span> (first in queue)<br>' +
@@ -1449,8 +1577,52 @@
         return div.innerHTML;
     }
 
+    // Parse URL and open problem if specified
+    function parseUrlAndOpenProblem() {
+        var path = window.location.pathname;
+        var params = new URLSearchParams(window.location.search);
+
+        // Check if URL is like /200-problems/problem-id
+        var match = path.match(/\/200-problems\/([^\/]+)/);
+        if (match && match[1]) {
+            var problemId = match[1];
+            var category = params.get('category');
+            var similar = params.get('similar');
+            var section = params.get('section') || 'problem';
+
+            // If no category specified, find it from problemsData
+            if (!category) {
+                Object.keys(problemsData).forEach(function(cat) {
+                    var found = problemsData[cat].find(function(p) { return p.id === problemId; });
+                    if (found) category = cat;
+                });
+            }
+
+            if (category) {
+                window.openProblem(category, problemId, similar, section);
+            }
+        }
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.problemId) {
+            window.openProblem(
+                event.state.category,
+                event.state.problemId,
+                event.state.similarIdx,
+                new URLSearchParams(window.location.search).get('section')
+            );
+        } else {
+            // Close problem view, go back to category list
+            window.hideEditor();
+        }
+    });
+
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         console.log('200 Problems UI initialized with ' + Object.keys(problemsData).length + ' categories');
+        // Check URL for direct problem link
+        parseUrlAndOpenProblem();
     });
 })();
