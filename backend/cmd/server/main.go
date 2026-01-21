@@ -7,12 +7,10 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
@@ -195,33 +193,41 @@ func main() {
 		}()
 	}
 
-	// Static files with aggressive caching (1 year for immutable assets)
-	staticConfig := fiber.Static{
-		Compress:      true,
-		ByteRange:     true,
-		Browse:        false,
-		CacheDuration: 365 * 24 * time.Hour, // 1 year cache for static assets
-		MaxAge:        31536000,              // 1 year in seconds
-	}
-	app.Static("/static", "./frontend/static", staticConfig)
-	app.Static("/assets", "./frontend/assets", staticConfig)
-	app.Static("/problems", "./problems", staticConfig) // Serve problem files (solutions, etc.)
+	// Static files with caching headers for browser caching
+	app.Static("/static", "./frontend/static", fiber.Static{
+		Compress:  true,
+		ByteRange: true,
+		Browse:    false,
+		MaxAge:    86400, // 1 day cache in browser
+	})
+	app.Static("/assets", "./frontend/assets", fiber.Static{
+		Compress:  true,
+		ByteRange: true,
+		Browse:    false,
+		MaxAge:    86400,
+	})
+	app.Static("/problems", "./problems", fiber.Static{
+		Compress:  true,
+		ByteRange: true,
+		Browse:    false,
+		MaxAge:    3600, // 1 hour for problem files
+	})
 
-	// Cache index pages for faster subsequent loads (5 minutes)
-	app.Use(cache.New(cache.Config{
-		Next: func(c *fiber.Ctx) bool {
-			// Skip caching for API routes, WebSocket, and POST requests
-			path := c.Path()
-			return c.Method() != "GET" ||
-				strings.HasPrefix(path, "/api/") ||
-				strings.HasPrefix(path, "/ws/") ||
-				strings.HasPrefix(path, "/htmx/") ||
-				strings.HasPrefix(path, "/static/") ||
-				strings.HasPrefix(path, "/assets/")
-		},
-		Expiration:   5 * time.Minute,
-		CacheControl: true,
-	}))
+	// Note: Page-level caching can be enabled for production by uncommenting below
+	// For development, it's disabled to allow live changes
+	// app.Use(cache.New(cache.Config{
+	// 	Next: func(c *fiber.Ctx) bool {
+	// 		path := c.Path()
+	// 		return c.Method() != "GET" ||
+	// 			strings.HasPrefix(path, "/api/") ||
+	// 			strings.HasPrefix(path, "/ws/") ||
+	// 			strings.HasPrefix(path, "/htmx/") ||
+	// 			strings.HasPrefix(path, "/static/") ||
+	// 			strings.HasPrefix(path, "/assets/")
+	// 	},
+	// 	Expiration:   5 * time.Minute,
+	// 	CacheControl: true,
+	// }))
 
 	// Page routes (HTMX) - Unified routes with tab navigation
 	app.Get("/", h.Home)
