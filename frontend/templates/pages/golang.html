@@ -1,30 +1,507 @@
 <div class="guide-page">
     <nav class="breadcrumb">
-        <a href="/">Home</a>
+        <a href="/">Home</a> <span class="breadcrumb-sep">/</span> <span>Go Development</span>
     </nav>
 
     <div class="guide-header">
-        <span class="guide-badge">Go API Development</span>
-        <h1>Go API Development Guide</h1>
-        <p class="guide-description">Master Go for API development - from basics to advanced concurrency patterns</p>
+        <div class="guide-header-content">
+            <span class="guide-badge go-badge">Go 1.21+</span>
+            <h1>Go API Development Guide</h1>
+            <p class="guide-description">Master Go for building high-performance APIs - from language basics to advanced concurrency patterns</p>
+            <div class="guide-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">&#128218;</span>
+                    <span class="stat-text">4 Sections</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#9889;</span>
+                    <span class="stat-text">Interactive Code</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#128200;</span>
+                    <span class="stat-text">Beginner to Advanced</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="guide-nav">
-        <a href="#basic" class="guide-nav-link active" data-section="basic">Basic</a>
-        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">Intermediate</a>
-        <a href="#advanced" class="guide-nav-link" data-section="advanced">Advanced</a>
+        <a href="#go-basics" class="guide-nav-link active" data-section="go-basics">
+            <span class="nav-icon">&#128029;</span> Go Basics
+        </a>
+        <a href="#basic" class="guide-nav-link" data-section="basic">
+            <span class="nav-icon">&#9881;</span> Foundations
+        </a>
+        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">
+            <span class="nav-icon">&#128295;</span> Intermediate
+        </a>
+        <a href="#advanced" class="guide-nav-link" data-section="advanced">
+            <span class="nav-icon">&#128640;</span> Advanced
+        </a>
     </div>
+
+    <!-- GO BASICS SECTION -->
+    <section id="go-basics" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128029;</span> Go Language Fundamentals</h2>
+            <p class="section-description">Essential Go concepts to get you started quickly</p>
+        </div>
+
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>Why Go for APIs?</h3>
+            </div>
+            <p>Go was designed at Google to handle large-scale systems. It combines the simplicity of Python with the performance of C, making it ideal for building APIs, microservices, and concurrent applications.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <span class="concept-icon">&#9889;</span>
+                    <h4>Fast Compilation</h4>
+                    <p>Compile in seconds, not minutes</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128640;</span>
+                    <h4>High Performance</h4>
+                    <p>Near C-level speed with GC</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128101;</span>
+                    <h4>Built-in Concurrency</h4>
+                    <p>Goroutines and channels</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128230;</span>
+                    <h4>Simple Deployment</h4>
+                    <p>Single static binary</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#127968;</span>
+                <h3>Hello World and Program Structure</h3>
+            </div>
+            <p>Every Go program starts with a <code>package</code> declaration. The <code>main</code> package is special - it defines an executable program.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "time"
+)
+
+// main is the entry point of the program
+func main() {
+    // Print to console
+    fmt.Println("Hello, Go!")
+
+    // Variables
+    name := "Gopher"  // Short declaration (type inferred)
+    var age int = 10  // Explicit type
+
+    fmt.Printf("Name: %s, Age: %d\n", name, age)
+
+    // Current time
+    fmt.Println("Current time:", time.Now().Format("2006-01-02 15:04:05"))
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128221;</span>
+                <h3>Variables and Data Types</h3>
+            </div>
+            <p>Go is statically typed but has type inference. Understanding types is essential for building robust APIs.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    // Basic types
+    var name string = "Alice"
+    var age int = 30
+    var price float64 = 19.99
+    var isActive bool = true
+
+    // Short declaration (most common)
+    email := "alice@example.com"
+    count := 42
+
+    fmt.Println("=== Basic Types ===")
+    fmt.Printf("name: %s (type: %T)\n", name, name)
+    fmt.Printf("age: %d (type: %T)\n", age, age)
+    fmt.Printf("price: %.2f (type: %T)\n", price, price)
+    fmt.Printf("isActive: %v (type: %T)\n", isActive, isActive)
+    fmt.Printf("email: %s\n", email)
+
+    // Zero values (default values)
+    var defaultInt int
+    var defaultString string
+    var defaultBool bool
+    var defaultFloat float64
+
+    fmt.Println("\n=== Zero Values ===")
+    fmt.Printf("int: %d, string: %q, bool: %v, float: %f\n",
+        defaultInt, defaultString, defaultBool, defaultFloat)
+
+    // Constants
+    const MaxUsers = 1000
+    const ApiVersion = "v1"
+
+    fmt.Println("\n=== Constants ===")
+    fmt.Printf("MaxUsers: %d, API: %s\n", MaxUsers, ApiVersion)
+
+    // Multiple assignment
+    x, y := 10, 20
+    x, y = y, x  // Swap values
+    fmt.Printf("\n=== After swap: x=%d, y=%d ===\n", x, y)
+
+    // Type conversion (explicit)
+    var numInt int = 42
+    var numFloat float64 = float64(numInt)
+    var numStr string = fmt.Sprintf("%d", numInt)
+
+    fmt.Printf("\nConverted: int=%d, float=%.1f, string=%q\n",
+        numInt, numFloat, numStr)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Control Structures</h3>
+            </div>
+            <p>Go has simplified control structures - no parentheses needed, and braces are always required.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    // If-else (no parentheses needed)
+    score := 85
+
+    fmt.Println("=== If-Else ===")
+    if score >= 90 {
+        fmt.Println("Grade: A")
+    } else if score >= 80 {
+        fmt.Println("Grade: B")
+    } else {
+        fmt.Println("Grade: C")
+    }
+
+    // If with initialization statement
+    if length := len("hello"); length > 3 {
+        fmt.Printf("String length %d is greater than 3\n", length)
+    }
+
+    // Switch (no break needed - implicit)
+    fmt.Println("\n=== Switch ===")
+    day := "Monday"
+    switch day {
+    case "Monday", "Tuesday", "Wednesday", "Thursday", "Friday":
+        fmt.Println("Weekday")
+    case "Saturday", "Sunday":
+        fmt.Println("Weekend")
+    default:
+        fmt.Println("Unknown day")
+    }
+
+    // Switch without expression (like if-else chain)
+    hour := 14
+    switch {
+    case hour < 12:
+        fmt.Println("Good morning!")
+    case hour < 17:
+        fmt.Println("Good afternoon!")
+    default:
+        fmt.Println("Good evening!")
+    }
+
+    // For loop (Go's only loop construct)
+    fmt.Println("\n=== For Loop ===")
+
+    // Traditional for
+    for i := 0; i < 3; i++ {
+        fmt.Printf("i = %d\n", i)
+    }
+
+    // While-style
+    count := 0
+    for count < 3 {
+        fmt.Printf("count = %d\n", count)
+        count++
+    }
+
+    // Range over slice
+    fmt.Println("\n=== Range ===")
+    colors := []string{"red", "green", "blue"}
+    for index, color := range colors {
+        fmt.Printf("Index %d: %s\n", index, color)
+    }
+
+    // Range over map
+    ages := map[string]int{"Alice": 30, "Bob": 25}
+    for name, age := range ages {
+        fmt.Printf("%s is %d years old\n", name, age)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9881;</span>
+                <h3>Functions</h3>
+            </div>
+            <p>Functions in Go can return multiple values - commonly used for returning results and errors.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// Basic function
+func greet(name string) string {
+    return "Hello, " + name + "!"
+}
+
+// Multiple return values (common pattern: result + error)
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("cannot divide by zero")
+    }
+    return a / b, nil
+}
+
+// Named return values
+func calculate(x, y int) (sum, product int) {
+    sum = x + y
+    product = x * y
+    return  // "naked" return - returns named values
+}
+
+// Variadic function (variable number of arguments)
+func sumAll(numbers ...int) int {
+    total := 0
+    for _, n := range numbers {
+        total += n
+    }
+    return total
+}
+
+// Function as parameter (higher-order function)
+func apply(nums []int, fn func(int) int) []int {
+    result := make([]int, len(nums))
+    for i, n := range nums {
+        result[i] = fn(n)
+    }
+    return result
+}
+
+func main() {
+    // Basic function call
+    fmt.Println("=== Basic Function ===")
+    fmt.Println(greet("Gopher"))
+
+    // Multiple return values
+    fmt.Println("\n=== Multiple Returns ===")
+    result, err := divide(10, 3)
+    if err != nil {
+        fmt.Println("Error:", err)
+    } else {
+        fmt.Printf("10 / 3 = %.2f\n", result)
+    }
+
+    // Error case
+    _, err = divide(10, 0)
+    if err != nil {
+        fmt.Println("Error:", err)
+    }
+
+    // Named returns
+    fmt.Println("\n=== Named Returns ===")
+    s, p := calculate(5, 3)
+    fmt.Printf("Sum: %d, Product: %d\n", s, p)
+
+    // Variadic function
+    fmt.Println("\n=== Variadic Function ===")
+    fmt.Println("Sum of 1,2,3:", sumAll(1, 2, 3))
+    fmt.Println("Sum of 1-5:", sumAll(1, 2, 3, 4, 5))
+
+    // Slice expansion
+    nums := []int{10, 20, 30}
+    fmt.Println("Sum of slice:", sumAll(nums...))
+
+    // Function as value
+    fmt.Println("\n=== Higher-Order Function ===")
+    double := func(x int) int { return x * 2 }
+    numbers := []int{1, 2, 3, 4}
+    doubled := apply(numbers, double)
+    fmt.Println("Original:", numbers)
+    fmt.Println("Doubled:", doubled)
+
+    // Closure (function that captures variables)
+    fmt.Println("\n=== Closure ===")
+    counter := func() func() int {
+        count := 0
+        return func() int {
+            count++
+            return count
+        }
+    }()
+
+    fmt.Println("Count:", counter())
+    fmt.Println("Count:", counter())
+    fmt.Println("Count:", counter())
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Collections: Slices and Maps</h3>
+            </div>
+            <p>Slices and maps are Go's primary collection types. Understanding them is essential for API development.</p>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    // === SLICES ===
+    fmt.Println("=== Slices ===")
+
+    // Creating slices
+    numbers := []int{1, 2, 3, 4, 5}
+    fmt.Println("Numbers:", numbers)
+
+    // Make with length and capacity
+    scores := make([]int, 3, 10)  // len=3, cap=10
+    scores[0], scores[1], scores[2] = 100, 95, 87
+    fmt.Printf("Scores: %v (len=%d, cap=%d)\n", scores, len(scores), cap(scores))
+
+    // Append
+    scores = append(scores, 92, 88)
+    fmt.Println("After append:", scores)
+
+    // Slicing (creates a view, not a copy!)
+    firstThree := numbers[:3]
+    lastThree := numbers[2:]
+    fmt.Println("First 3:", firstThree)
+    fmt.Println("Last 3:", lastThree)
+
+    // Copy (to avoid shared backing array)
+    copied := make([]int, len(numbers))
+    copy(copied, numbers)
+    fmt.Println("Copied:", copied)
+
+    // === MAPS ===
+    fmt.Println("\n=== Maps ===")
+
+    // Creating maps
+    ages := map[string]int{
+        "Alice": 30,
+        "Bob":   25,
+        "Carol": 35,
+    }
+    fmt.Println("Ages:", ages)
+
+    // Make empty map
+    users := make(map[string]string)
+    users["admin"] = "admin@example.com"
+    users["user1"] = "user1@example.com"
+    fmt.Println("Users:", users)
+
+    // Access and check existence
+    age, exists := ages["Alice"]
+    if exists {
+        fmt.Printf("Alice is %d years old\n", age)
+    }
+
+    _, exists = ages["Dave"]
+    fmt.Printf("Dave exists: %v\n", exists)
+
+    // Delete
+    delete(ages, "Bob")
+    fmt.Println("After delete:", ages)
+
+    // Iterate
+    fmt.Println("\nIterating:")
+    for name, age := range ages {
+        fmt.Printf("  %s: %d\n", name, age)
+    }
+
+    // === STRUCTS AS MAP VALUES ===
+    fmt.Println("\n=== Struct in Map ===")
+
+    type User struct {
+        Name  string
+        Email string
+        Age   int
+    }
+
+    userDB := map[int]User{
+        1: {Name: "Alice", Email: "alice@example.com", Age: 30},
+        2: {Name: "Bob", Email: "bob@example.com", Age: 25},
+    }
+
+    for id, user := range userDB {
+        fmt.Printf("  ID %d: %s (%s)\n", id, user.Name, user.Email)
+    }
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+    </section>
 
     <!-- BASIC SECTION -->
     <section id="basic" class="guide-section">
-        <h2>Basic - Foundations for Go API Development</h2>
+        <div class="section-header">
+            <h2><span class="section-icon">&#9881;</span> Foundations for Go API Development</h2>
+            <p class="section-description">Core concepts for building robust APIs</p>
+        </div>
 
         <div class="topic-block">
-            <h3>Understanding Pointers in Go</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128204;</span>
+                <h3>Understanding Pointers in Go</h3>
+            </div>
             <p>Pointers are fundamental in Go. A pointer holds the memory address of a value. Understanding pointers is crucial for API development because they affect how data is passed, modified, and shared.</p>
 
-            <h4>What is a Pointer?</h4>
-            <p>A pointer stores the memory address of another variable. The <code>*</code> operator is used to declare a pointer type and to dereference (access the value at the address). The <code>&</code> operator gets the address of a variable.</p>
+            <div class="diagram-container">
+                <div class="diagram-title">Pointer vs Value in Memory</div>
+                <div class="mermaid">
+flowchart LR
+    subgraph "Pass by Value"
+        A[x = 42] -->|copy| B[func receives copy]
+        B -->|modify| C[copy = 100]
+        A -->|unchanged| D[x still 42]
+    end
+
+    subgraph "Pass by Pointer"
+        E[x = 42] -->|address| F["func receives &x"]
+        F -->|modify *ptr| G[x = 100]
+    end
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -51,11 +528,29 @@ func main() {
             </div>
 
             <h4>Why Use Pointers in APIs?</h4>
-            <ul>
-                <li><strong>Efficiency:</strong> Pass large structs by reference instead of copying</li>
-                <li><strong>Mutability:</strong> Allow functions to modify caller's data</li>
-                <li><strong>Optional values:</strong> nil pointers represent "no value"</li>
-            </ul>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">&#128640;</span>
+                    <div>
+                        <strong>Efficiency</strong>
+                        <p>Pass large structs by reference instead of copying</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">&#9999;</span>
+                    <div>
+                        <strong>Mutability</strong>
+                        <p>Allow functions to modify caller's data</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">&#10067;</span>
+                    <div>
+                        <strong>Optional Values</strong>
+                        <p>nil pointers represent "no value"</p>
+                    </div>
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -109,115 +604,14 @@ func main() {
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
-
-            <h4>Different Ways to Create Pointers</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import "fmt"
-
-type Config struct {
-    Host string
-    Port int
-}
-
-func main() {
-    // Method 1: Using & operator
-    config1 := Config{Host: "localhost", Port: 8080}
-    ptr1 := &config1
-
-    // Method 2: Using new() - returns pointer to zero value
-    ptr2 := new(Config) // *Config pointing to zero-valued Config
-    ptr2.Host = "localhost"
-    ptr2.Port = 8080
-
-    // Method 3: Composite literal with &
-    ptr3 := &Config{Host: "localhost", Port: 8080}
-
-    fmt.Printf("ptr1: %+v\n", *ptr1)
-    fmt.Printf("ptr2: %+v\n", *ptr2)
-    fmt.Printf("ptr3: %+v\n", *ptr3)
-
-    // Pointer to primitive types
-    intPtr := new(int)
-    *intPtr = 42
-    fmt.Println("int pointer value:", *intPtr)
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
         </div>
 
         <div class="topic-block">
-            <h3>Structs and Methods</h3>
-            <p>Structs are Go's way to define custom types. Methods allow you to attach behavior to structs - essential for building clean API handlers and services.</p>
-
-            <h4>Defining Structs</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "time"
-)
-
-// Basic struct for API response
-type APIResponse struct {
-    Status  int
-    Message string
-    Data    interface{}
-}
-
-// Nested structs for complex data
-type Address struct {
-    Street  string
-    City    string
-    Country string
-}
-
-type User struct {
-    ID        int
-    Name      string
-    Email     string
-    Address   Address   // Embedded struct
-    CreatedAt time.Time
-    UpdatedAt *time.Time // Pointer for optional field
-}
-
-func main() {
-    // Creating struct instances
-    response := APIResponse{
-        Status:  200,
-        Message: "Success",
-        Data:    map[string]string{"key": "value"},
-    }
-
-    user := User{
-        ID:    1,
-        Name:  "Alice",
-        Email: "alice@example.com",
-        Address: Address{
-            Street:  "123 Main St",
-            City:    "New York",
-            Country: "USA",
-        },
-        CreatedAt: time.Now(),
-        UpdatedAt: nil, // Not yet updated
-    }
-
-    fmt.Printf("Response: %+v\n", response)
-    fmt.Printf("User: %+v\n", user)
-    fmt.Printf("User's City: %s\n", user.Address.City)
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Structs and Methods</h3>
             </div>
-
-            <h4>Methods on Structs</h4>
-            <p>Methods can have value receivers or pointer receivers. Use pointer receivers when:</p>
-            <ul>
-                <li>The method needs to modify the receiver</li>
-                <li>The struct is large (avoids copying)</li>
-                <li>Consistency - if one method needs a pointer, use pointers for all</li>
-            </ul>
+            <p>Structs are Go's way to define custom types. Methods allow you to attach behavior to structs - essential for building clean API handlers and services.</p>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -292,77 +686,22 @@ func main() {
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
-
-            <h4>Struct Embedding (Composition)</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "time"
-)
-
-// Base model with common fields
-type BaseModel struct {
-    ID        int
-    CreatedAt time.Time
-    UpdatedAt time.Time
-}
-
-// Methods on BaseModel
-func (b *BaseModel) SetTimestamps() {
-    now := time.Now()
-    if b.CreatedAt.IsZero() {
-        b.CreatedAt = now
-    }
-    b.UpdatedAt = now
-}
-
-// User embeds BaseModel - inherits its fields and methods
-type User struct {
-    BaseModel        // Embedded (anonymous field)
-    Name      string
-    Email     string
-}
-
-// Product also embeds BaseModel
-type Product struct {
-    BaseModel
-    Name  string
-    Price float64
-}
-
-func main() {
-    user := User{
-        Name:  "Alice",
-        Email: "alice@example.com",
-    }
-
-    // Access embedded fields directly
-    user.ID = 1
-    user.SetTimestamps() // Method from BaseModel
-
-    fmt.Printf("User ID: %d\n", user.ID)
-    fmt.Printf("User Name: %s\n", user.Name)
-    fmt.Printf("Created: %v\n", user.CreatedAt.Format(time.RFC3339))
-
-    product := Product{
-        Name:  "Laptop",
-        Price: 999.99,
-    }
-    product.ID = 100
-    product.SetTimestamps()
-
-    fmt.Printf("Product: %s ($%.2f), Created: %v\n",
-        product.Name, product.Price, product.CreatedAt.Format(time.RFC3339))
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
         </div>
 
         <div class="topic-block">
-            <h3>Interfaces for API Design</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128268;</span>
+                <h3>Interfaces for API Design</h3>
+            </div>
             <p>Interfaces define behavior contracts. They enable loose coupling and are essential for testable API code.</p>
+
+            <div class="info-box">
+                <div class="info-header">
+                    <span class="info-icon">&#128161;</span>
+                    <span>Key Insight</span>
+                </div>
+                <p><strong>Go interfaces are implicit!</strong> A type implements an interface simply by implementing its methods - no explicit declaration needed. This makes Go's interfaces very flexible.</p>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -436,7 +775,10 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Error Handling in Go</h3>
+            <div class="block-header">
+                <span class="block-icon">&#9888;</span>
+                <h3>Error Handling in Go</h3>
+            </div>
             <p>Go uses explicit error handling. Functions return errors as values - no exceptions.</p>
 
             <div class="code-example">
@@ -503,583 +845,95 @@ func main() {
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
         </div>
-
-        <div class="topic-block">
-            <h3>Slices and Maps</h3>
-            <p>Essential data structures for API development - handling collections and key-value data.</p>
-
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import "fmt"
-
-type User struct {
-    ID   int
-    Name string
-}
-
-func main() {
-    // Slices - dynamic arrays
-    users := []User{
-        {ID: 1, Name: "Alice"},
-        {ID: 2, Name: "Bob"},
-    }
-
-    // Append to slice
-    users = append(users, User{ID: 3, Name: "Charlie"})
-
-    // Iterate
-    fmt.Println("All users:")
-    for i, u := range users {
-        fmt.Printf("  %d: %+v\n", i, u)
-    }
-
-    // Slice with capacity (performance optimization)
-    moreUsers := make([]User, 0, 100) // len=0, cap=100
-    moreUsers = append(moreUsers, User{ID: 4, Name: "David"})
-    fmt.Printf("Length: %d, Capacity: %d\n", len(moreUsers), cap(moreUsers))
-
-    // Maps - key-value store
-    userMap := make(map[int]User)
-    userMap[1] = User{ID: 1, Name: "Alice"}
-    userMap[2] = User{ID: 2, Name: "Bob"}
-
-    // Check if key exists
-    if user, exists := userMap[1]; exists {
-        fmt.Printf("Found: %+v\n", user)
-    }
-
-    if _, exists := userMap[99]; !exists {
-        fmt.Println("User 99 not found")
-    }
-
-    // Delete from map
-    delete(userMap, 2)
-    fmt.Printf("After delete, map size: %d\n", len(userMap))
-
-    // Map literal
-    statusCodes := map[string]int{
-        "OK":        200,
-        "Created":   201,
-        "NotFound":  404,
-        "ServerErr": 500,
-    }
-    fmt.Println("OK status:", statusCodes["OK"])
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-        </div>
     </section>
 
     <!-- INTERMEDIATE SECTION -->
     <section id="intermediate" class="guide-section">
-        <h2>Intermediate - Essential API Development Skills</h2>
+        <div class="section-header">
+            <h2><span class="section-icon">&#128295;</span> Intermediate - Concurrency and Patterns</h2>
+            <p class="section-description">Master Go's powerful concurrency model</p>
+        </div>
 
-        <div class="topic-block">
-            <h3>Goroutines - Concurrent Execution</h3>
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128101;</span>
+                <h3>Goroutines - Concurrent Execution</h3>
+            </div>
+            <p>Goroutines are lightweight, user-space threads managed by the Go runtime scheduler. They are Go's fundamental concurrency primitive.</p>
 
-            <h4>What are Goroutines?</h4>
-            <p>Goroutines are lightweight, user-space threads managed by the Go runtime scheduler. They are Go's fundamental concurrency primitive - a function that executes concurrently with other goroutines in the same address space.</p>
-            <ul>
-                <li><strong>Lightweight:</strong> A goroutine starts with only ~2KB of stack space (compared to OS threads which typically need 1-8MB)</li>
-                <li><strong>Multiplexed:</strong> Many goroutines are multiplexed onto a smaller number of OS threads (M:N scheduling)</li>
-                <li><strong>Managed by runtime:</strong> The Go scheduler handles all the complexity of thread management, context switching, and load balancing</li>
-            </ul>
+            <div class="diagram-container">
+                <div class="diagram-title">Go's M:N Scheduling Model</div>
+                <div class="mermaid">
+flowchart TB
+    subgraph "Goroutines (G)"
+        G1[G1]
+        G2[G2]
+        G3[G3]
+        G4[G4]
+        G5[G5]
+    end
 
-            <h4>What Problem Does It Solve?</h4>
-            <p>Traditional concurrency approaches have significant limitations:</p>
-            <ul>
-                <li><strong>OS Threads are expensive:</strong> Creating thousands of threads consumes significant memory (each thread needs its own stack, typically 1MB+) and causes high context-switching overhead</li>
-                <li><strong>Thread pools have complexity:</strong> You need to manually manage pool size, task queuing, and handle thread lifecycle</li>
-                <li><strong>Callbacks lead to "callback hell":</strong> Asynchronous code becomes difficult to read, debug, and maintain</li>
-                <li><strong>Async/await has colored functions:</strong> You need to mark functions as async, which "infects" the entire call chain</li>
-            </ul>
-            <p><strong>Goroutines solve this</strong> by letting you write sequential-looking code that runs concurrently, with minimal memory overhead and excellent performance.</p>
+    subgraph "Processors (P)"
+        P1[P1 Local Queue]
+        P2[P2 Local Queue]
+    end
 
-            <h4>How Do Goroutines Work Internally?</h4>
-            <p>Go uses an M:N scheduling model with three key components:</p>
-            <ul>
-                <li><strong>G (Goroutine):</strong> The actual goroutine with its stack and instruction pointer</li>
-                <li><strong>M (Machine):</strong> An OS thread that executes goroutines</li>
-                <li><strong>P (Processor):</strong> A logical processor that holds a run queue of goroutines (default: GOMAXPROCS = number of CPU cores)</li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
+    subgraph "OS Threads (M)"
+        M1[Thread 1]
+        M2[Thread 2]
+    end
 
-import (
-    "fmt"
-    "runtime"
-)
+    G1 --> P1
+    G2 --> P1
+    G3 --> P2
+    G4 --> P2
+    G5 --> P1
 
-func main() {
-    // See how many OS threads can run goroutines in parallel
-    fmt.Printf("GOMAXPROCS: %d\n", runtime.GOMAXPROCS(0))
-    fmt.Printf("NumCPU: %d\n", runtime.NumCPU())
+    P1 --> M1
+    P2 --> M2
 
-    // Initially just the main goroutine
-    fmt.Printf("NumGoroutine (start): %d\n", runtime.NumGoroutine())
-
-    // Create 100 goroutines
-    done := make(chan bool)
-    for i := 0; i < 100; i++ {
-        go func() {
-            <-done // Wait for signal
-        }()
-    }
-
-    fmt.Printf("NumGoroutine (after spawn): %d\n", runtime.NumGoroutine())
-
-    // Release all goroutines
-    close(done)
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
+    M1 --> CPU1[CPU Core]
+    M2 --> CPU2[CPU Core]
+                </div>
             </div>
 
-            <h4>Why Not Use These Alternatives?</h4>
-
-            <p><strong>1. OS Threads (pthreads, Java Threads)</strong></p>
-            <ul>
-                <li>Memory: Each thread needs 1-8MB stack vs goroutine's 2KB</li>
-                <li>Creation cost: Creating a thread takes ~10,000x longer than spawning a goroutine</li>
-                <li>Context switch: OS thread switches are expensive kernel operations</li>
-                <li>Scalability: Practical limit of thousands of threads vs millions of goroutines</li>
-            </ul>
-
-            <p><strong>2. Event Loops (Node.js, Python asyncio)</strong></p>
-            <ul>
-                <li>Single-threaded: Can't utilize multiple CPU cores without worker processes</li>
-                <li>Colored functions: async/await "infects" the entire call chain</li>
-                <li>Callback complexity: Error handling and control flow become difficult</li>
-                <li>Blocking operations: One blocking call can freeze the entire event loop</li>
-            </ul>
-
-            <p><strong>3. Thread Pools (Java ExecutorService)</strong></p>
-            <ul>
-                <li>Fixed size: Need to tune pool size for your workload</li>
-                <li>Queue management: Tasks can pile up causing memory issues</li>
-                <li>No dynamic scaling: Can't easily adjust based on current load</li>
-            </ul>
-
-            <h4>Different Ways to Create Goroutines</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "sync"
-    "time"
-)
-
-func namedFunction() {
-    fmt.Println("1. Named function as goroutine")
-}
-
-func main() {
-    var wg sync.WaitGroup
-
-    // Method 1: Named function
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        namedFunction()
-    }()
-
-    // Method 2: Anonymous function (closure)
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        fmt.Println("2. Anonymous function (closure)")
-    }()
-
-    // Method 3: Anonymous function with parameters
-    message := "3. Passing parameters to goroutine"
-    wg.Add(1)
-    go func(msg string) {
-        defer wg.Done()
-        fmt.Println(msg)
-    }(message)
-
-    // Method 4: Method on a struct
-    worker := &Worker{id: 1}
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        worker.Process()
-    }()
-
-    // Method 5: Function variable
-    fn := func() {
-        fmt.Println("5. Function variable as goroutine")
-    }
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        fn()
-    }()
-
-    // Method 6: Immediately invoked
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        fmt.Println("6. Immediately invoked goroutine")
-    }()
-
-    wg.Wait()
-    time.Sleep(10 * time.Millisecond)
-}
-
-type Worker struct {
-    id int
-}
-
-func (w *Worker) Process() {
-    fmt.Printf("4. Method goroutine - Worker %d processing\n", w.id)
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
+            <div class="comparison-table">
+                <div class="comparison-header">
+                    <div class="comparison-title">Goroutines vs OS Threads</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>OS Threads</th>
+                            <th>Goroutines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Stack Size</td>
+                            <td>~1-8MB fixed</td>
+                            <td>~2KB (grows dynamically)</td>
+                        </tr>
+                        <tr>
+                            <td>Creation Time</td>
+                            <td>~10,000 CPU cycles</td>
+                            <td>~300 CPU cycles</td>
+                        </tr>
+                        <tr>
+                            <td>Context Switch</td>
+                            <td>Kernel mode (slow)</td>
+                            <td>User mode (fast)</td>
+                        </tr>
+                        <tr>
+                            <td>Scalability</td>
+                            <td>Thousands</td>
+                            <td>Millions</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <h4>Advantages of Goroutines</h4>
-
-            <p><strong>1. Extremely Lightweight</strong></p>
-            <ul>
-                <li>Start with just 2KB stack (grows/shrinks as needed up to 1GB)</li>
-                <li>Can run millions of goroutines on a single machine</li>
-                <li><em>Caveat:</em> Each goroutine still has overhead - don't create one per tiny operation</li>
-            </ul>
-
-            <p><strong>2. Fast Creation and Destruction</strong></p>
-            <ul>
-                <li>Spawning a goroutine takes ~300 nanoseconds</li>
-                <li>No system calls needed (unlike OS thread creation)</li>
-                <li><em>Caveat:</em> Still not free - batch small operations rather than one goroutine per item</li>
-            </ul>
-
-            <p><strong>3. Efficient Context Switching</strong></p>
-            <ul>
-                <li>Cooperative scheduling at known safe points (function calls, channel operations)</li>
-                <li>No kernel involvement for most switches</li>
-                <li><em>Caveat:</em> Long-running computations without function calls can block other goroutines on the same P</li>
-            </ul>
-
-            <p><strong>4. Simple Mental Model</strong></p>
-            <ul>
-                <li>Write sequential code that runs concurrently</li>
-                <li>No callbacks, promises, or async/await</li>
-                <li><em>Caveat:</em> Simplicity can hide race conditions - always think about shared state</li>
-            </ul>
-
-            <p><strong>5. Built-in Communication</strong></p>
-            <ul>
-                <li>Channels provide safe communication between goroutines</li>
-                <li>Select statement for multiplexing multiple channels</li>
-                <li><em>Caveat:</em> Channels have overhead - for simple counters, use atomic operations or mutexes</li>
-            </ul>
-
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "sync"
-    "time"
-)
-
-func main() {
-    // Demonstrate goroutine spawning (reduced for demo)
-    start := time.Now()
-    var wg sync.WaitGroup
-
-    numGoroutines := 100 // Keep small for demo
-    wg.Add(numGoroutines)
-
-    for i := 0; i < numGoroutines; i++ {
-        go func(id int) {
-            defer wg.Done()
-            // Quick work - no sleep needed for demo
-            _ = id * id
-        }(i)
-    }
-
-    wg.Wait()
-    elapsed := time.Since(start)
-
-    fmt.Printf("Spawned and completed %d goroutines in %v\n", numGoroutines, elapsed)
-    // Note: In production, Go can handle millions of goroutines!
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <h4>Limitations and How to Manage Them</h4>
-
-            <p><strong>Limitation 1: Goroutine Leaks</strong></p>
-            <p>Goroutines that block forever consume memory and never get garbage collected.</p>
-            <ul>
-                <li><em>Cause:</em> Waiting on a channel that never receives data, or never closes</li>
-                <li><em>Solution:</em> Always use context for cancellation, use buffered channels, ensure channels are closed</li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "context"
-    "fmt"
-    "time"
-)
-
-// BAD: This goroutine leaks if no one reads from ch
-func leakyGoroutine() chan int {
-    ch := make(chan int)
-    go func() {
-        result := 42
-        ch <- result // Blocks forever if no receiver!
-        fmt.Println("This never prints if leaked")
-    }()
-    return ch
-}
-
-// GOOD: Use context for cancellation
-func safeGoroutine(ctx context.Context) chan int {
-    ch := make(chan int, 1) // Buffered - won't block
-    go func() {
-        select {
-        case ch <- 42:
-            fmt.Println("Sent successfully")
-        case <-ctx.Done():
-            fmt.Println("Context cancelled, cleaning up")
-            return
-        }
-    }()
-    return ch
-}
-
-func main() {
-    // Using context with timeout to prevent leaks
-    ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-    defer cancel()
-
-    ch := safeGoroutine(ctx)
-
-    select {
-    case result := <-ch:
-        fmt.Println("Got result:", result)
-    case <-ctx.Done():
-        fmt.Println("Timed out")
-    }
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <p><strong>Limitation 2: Race Conditions</strong></p>
-            <p>Multiple goroutines accessing shared memory without synchronization leads to data races.</p>
-            <ul>
-                <li><em>Cause:</em> Concurrent read/write to shared variables</li>
-                <li><em>Solution:</em> Use channels to share data, or sync.Mutex/sync.RWMutex, or sync/atomic for simple counters</li>
-                <li><em>Detection:</em> Run with <code>go run -race</code> or <code>go test -race</code></li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "sync"
-    "sync/atomic"
-)
-
-func main() {
-    // BAD: Race condition
-    var badCounter int
-    var wg sync.WaitGroup
-
-    for i := 0; i < 1000; i++ {
-        wg.Add(1)
-        go func() {
-            defer wg.Done()
-            badCounter++ // RACE! Multiple goroutines read-modify-write
-        }()
-    }
-    wg.Wait()
-    fmt.Println("Bad counter (race):", badCounter, "(should be 1000, but unpredictable)")
-
-    // GOOD: Using atomic operations
-    var atomicCounter int64
-    for i := 0; i < 1000; i++ {
-        wg.Add(1)
-        go func() {
-            defer wg.Done()
-            atomic.AddInt64(&atomicCounter, 1)
-        }()
-    }
-    wg.Wait()
-    fmt.Println("Atomic counter:", atomicCounter)
-
-    // GOOD: Using mutex
-    var mutexCounter int
-    var mu sync.Mutex
-    for i := 0; i < 1000; i++ {
-        wg.Add(1)
-        go func() {
-            defer wg.Done()
-            mu.Lock()
-            mutexCounter++
-            mu.Unlock()
-        }()
-    }
-    wg.Wait()
-    fmt.Println("Mutex counter:", mutexCounter)
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <p><strong>Limitation 3: No Direct Return Values</strong></p>
-            <p>Goroutines cannot return values directly - you must use channels or shared memory.</p>
-            <ul>
-                <li><em>Solution:</em> Use channels to communicate results back</li>
-                <li><em>Pattern:</em> Create a result channel, pass it to the goroutine, read from it after</li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "time"
-)
-
-type Result struct {
-    Value int
-    Err   error
-}
-
-func compute(n int, results chan<- Result) {
-    // Simulate computation
-    time.Sleep(5 * time.Millisecond)
-    results <- Result{Value: n * n, Err: nil}
-}
-
-func main() {
-    results := make(chan Result, 3)
-
-    // Launch multiple computations
-    for _, n := range []int{2, 3, 4} {
-        go compute(n, results)
-    }
-
-    // Collect results
-    for i := 0; i < 3; i++ {
-        result := <-results
-        if result.Err != nil {
-            fmt.Println("Error:", result.Err)
-        } else {
-            fmt.Println("Result:", result.Value)
-        }
-    }
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <p><strong>Limitation 4: Panic in One Goroutine Kills the Process</strong></p>
-            <p>An unrecovered panic in any goroutine will crash the entire program.</p>
-            <ul>
-                <li><em>Solution:</em> Use <code>recover()</code> in a deferred function at the top of each goroutine</li>
-                <li><em>Best Practice:</em> Create a wrapper function for goroutines that handles panics</li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "sync"
-)
-
-// SafeGo wraps a function to recover from panics
-func SafeGo(fn func()) {
-    go func() {
-        defer func() {
-            if r := recover(); r != nil {
-                fmt.Printf("Recovered from panic: %v\n", r)
-            }
-        }()
-        fn()
-    }()
-}
-
-func riskyOperation(id int) {
-    if id == 2 {
-        panic(fmt.Sprintf("something went wrong in goroutine %d", id))
-    }
-    fmt.Printf("Goroutine %d completed successfully\n", id)
-}
-
-func main() {
-    var wg sync.WaitGroup
-
-    for i := 1; i <= 3; i++ {
-        wg.Add(1)
-        id := i
-        SafeGo(func() {
-            defer wg.Done()
-            riskyOperation(id)
-        })
-    }
-
-    wg.Wait()
-    fmt.Println("Main function completed - program didn't crash!")
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <p><strong>Limitation 5: Loop Variable Capture Bug</strong></p>
-            <p>Goroutines capturing loop variables get the final value, not the expected iteration value.</p>
-            <ul>
-                <li><em>Cause:</em> Closure captures variable by reference, loop modifies it before goroutine runs</li>
-                <li><em>Solution:</em> Pass the value as a parameter to the goroutine function</li>
-                <li><em>Note:</em> Go 1.22+ fixes this for <code>for</code> loops, but explicit passing is still clearer</li>
-            </ul>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "fmt"
-    "sync"
-    "time"
-)
-
-func main() {
-    var wg sync.WaitGroup
-
-    fmt.Println("BAD - Loop variable capture:")
-    for i := 1; i <= 3; i++ {
-        wg.Add(1)
-        go func() {
-            defer wg.Done()
-            // i is captured by reference - will likely print 4,4,4
-            fmt.Printf("  Got: %d\n", i)
-        }()
-    }
-    wg.Wait()
-    time.Sleep(10 * time.Millisecond)
-
-    fmt.Println("\nGOOD - Pass as parameter:")
-    for i := 1; i <= 3; i++ {
-        wg.Add(1)
-        go func(n int) {
-            defer wg.Done()
-            // n is a copy - prints 1,2,3 (order may vary)
-            fmt.Printf("  Got: %d\n", n)
-        }(i)
-    }
-    wg.Wait()
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <p><strong>Limitation 6: No Priority or Preemption Control</strong></p>
-            <p>You cannot assign priorities to goroutines or force preemption.</p>
-            <ul>
-                <li><em>Cause:</em> Go runtime manages scheduling; developers have limited control</li>
-                <li><em>Solution:</em> For priority queues, implement your own work-stealing queue pattern or use separate worker pools for different priority levels</li>
-            </ul>
-
-            <h4>Basic Goroutine Patterns</h4>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1114,13 +968,32 @@ func main() {
     wg.Wait()
 
     fmt.Printf("Fetched %d users in %v\n", len(userIDs), time.Since(start))
-    // Note: Sequential would take 500ms, concurrent takes ~100ms
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
+        </div>
 
-            <h4>Channels - Goroutine Communication</h4>
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128232;</span>
+                <h3>Channels - Goroutine Communication</h3>
+            </div>
             <p>Channels are Go's way to communicate between goroutines safely. "Don't communicate by sharing memory; share memory by communicating."</p>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Channel Communication</div>
+                <div class="mermaid">
+sequenceDiagram
+    participant G1 as Goroutine 1
+    participant CH as Channel
+    participant G2 as Goroutine 2
+
+    G1->>CH: Send data
+    Note over CH: Buffered or<br/>blocks until received
+    CH->>G2: Receive data
+    G2->>G2: Process data
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -1173,8 +1046,13 @@ func main() {
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
+        </div>
 
-            <h4>Select Statement - Handling Multiple Channels</h4>
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Select Statement - Handling Multiple Channels</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1226,7 +1104,10 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Common Mistakes and How to Avoid Them</h3>
+            <div class="block-header warning-header">
+                <span class="block-icon">&#9888;</span>
+                <h3>Common Concurrency Mistakes</h3>
+            </div>
 
             <h4>Mistake 1: Goroutine Leak</h4>
             <div class="code-example">
@@ -1238,43 +1119,36 @@ import (
     "time"
 )
 
-// BAD: Goroutine leaks if channel is never read
-func leakyGoroutine() {
-    ch := make(chan int)
-    go func() {
-        // This goroutine will block forever if no one reads from ch
-        ch <- 42
-        fmt.Println("This may never print")
-    }()
-    // If we return here without reading from ch, goroutine leaks!
-}
-
 // GOOD: Use context for cancellation
-func properGoroutine(ctx context.Context) {
-    ch := make(chan int, 1) // Buffered channel won't block
+func safeGoroutine(ctx context.Context) chan int {
+    ch := make(chan int, 1) // Buffered - won't block
 
     go func() {
         select {
         case ch <- 42:
-            fmt.Println("Sent value")
+            fmt.Println("Sent successfully")
         case <-ctx.Done():
-            fmt.Println("Cancelled, cleaning up")
+            fmt.Println("Context cancelled, cleaning up")
             return
         }
     }()
 
-    // Wait briefly then cancel
-    time.Sleep(10 * time.Millisecond)
+    return ch
 }
 
 func main() {
+    // Using context with timeout to prevent leaks
     ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
     defer cancel()
 
-    properGoroutine(ctx)
+    ch := safeGoroutine(ctx)
 
-    fmt.Println("Main function completed")
-    time.Sleep(5 * time.Millisecond)
+    select {
+    case result := <-ch:
+        fmt.Println("Got result:", result)
+    case <-ctx.Done():
+        fmt.Println("Timed out")
+    }
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
@@ -1286,99 +1160,43 @@ func main() {
 import (
     "fmt"
     "sync"
+    "sync/atomic"
 )
 
-// BAD: Race condition - multiple goroutines accessing shared state
-type BadCounter struct {
-    count int
-}
-
-// GOOD: Use mutex to protect shared state
-type SafeCounter struct {
-    mu    sync.Mutex
-    count int
-}
-
-func (c *SafeCounter) Increment() {
-    c.mu.Lock()
-    defer c.mu.Unlock()
-    c.count++
-}
-
-func (c *SafeCounter) Value() int {
-    c.mu.Lock()
-    defer c.mu.Unlock()
-    return c.count
-}
-
-// BETTER: Use atomic operations for simple counters
-// import "sync/atomic"
-// var counter int64
-// atomic.AddInt64(&counter, 1)
-
 func main() {
-    counter := &SafeCounter{}
     var wg sync.WaitGroup
 
-    // 1000 goroutines incrementing safely
+    // GOOD: Using atomic operations
+    var atomicCounter int64
     for i := 0; i < 1000; i++ {
         wg.Add(1)
         go func() {
             defer wg.Done()
-            counter.Increment()
+            atomic.AddInt64(&atomicCounter, 1)
         }()
     }
-
     wg.Wait()
-    fmt.Printf("Final count: %d (expected 1000)\n", counter.Value())
+    fmt.Println("Atomic counter:", atomicCounter)
+
+    // GOOD: Using mutex
+    var mutexCounter int
+    var mu sync.Mutex
+    for i := 0; i < 1000; i++ {
+        wg.Add(1)
+        go func() {
+            defer wg.Done()
+            mu.Lock()
+            mutexCounter++
+            mu.Unlock()
+        }()
+    }
+    wg.Wait()
+    fmt.Println("Mutex counter:", mutexCounter)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
 
-            <h4>Mistake 3: Nil Pointer Dereference</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import "fmt"
-
-type User struct {
-    Name string
-    Profile *Profile
-}
-
-type Profile struct {
-    Bio string
-}
-
-func main() {
-    // User without profile
-    user := User{Name: "Alice", Profile: nil}
-
-    // BAD: This would panic
-    // fmt.Println(user.Profile.Bio) // panic: nil pointer dereference
-
-    // GOOD: Always check for nil
-    if user.Profile != nil {
-        fmt.Println("Bio:", user.Profile.Bio)
-    } else {
-        fmt.Println("No profile set")
-    }
-
-    // GOOD: Using safe accessor method
-    fmt.Println("Bio:", user.GetBio())
-}
-
-// Safe accessor that handles nil
-func (u *User) GetBio() string {
-    if u.Profile == nil {
-        return ""
-    }
-    return u.Profile.Bio
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <h4>Mistake 4: Loop Variable Capture in Goroutines</h4>
+            <h4>Mistake 3: Loop Variable Capture</h4>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1390,75 +1208,26 @@ import (
 func main() {
     var wg sync.WaitGroup
 
-    ids := []int{1, 2, 3, 4, 5}
-
-    fmt.Println("BAD - capturing loop variable:")
-    for _, id := range ids {
+    fmt.Println("GOOD - Pass as parameter:")
+    for i := 1; i <= 3; i++ {
         wg.Add(1)
-        go func() {
+        go func(n int) {
             defer wg.Done()
-            // BAD: id is shared, will likely print same value
-            fmt.Printf("  Processing %d\n", id)
-        }()
+            // n is a copy - prints 1,2,3 (order may vary)
+            fmt.Printf("  Got: %d\n", n)
+        }(i)
     }
     wg.Wait()
-
-    fmt.Println("\nGOOD - passing as parameter:")
-    for _, id := range ids {
-        wg.Add(1)
-        go func(userID int) {
-            defer wg.Done()
-            // GOOD: userID is a copy, correct value
-            fmt.Printf("  Processing %d\n", userID)
-        }(id) // Pass id as argument
-    }
-    wg.Wait()
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
-            </div>
-
-            <h4>Mistake 5: Ignoring Errors</h4>
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "encoding/json"
-    "fmt"
-)
-
-type User struct {
-    ID   int    `json:"id"`
-    Name string `json:"name"`
-}
-
-func main() {
-    jsonData := []byte(`{"id": 1, "name": "Alice"}`)
-
-    // BAD: Ignoring error
-    var user1 User
-    json.Unmarshal(jsonData, &user1) // Error ignored!
-
-    // GOOD: Always handle errors
-    var user2 User
-    if err := json.Unmarshal(jsonData, &user2); err != nil {
-        fmt.Println("Failed to parse JSON:", err)
-        return
-    }
-    fmt.Printf("Parsed user: %+v\n", user2)
-
-    // Invalid JSON example
-    badJSON := []byte(`{"id": "not a number"}`)
-    var user3 User
-    if err := json.Unmarshal(badJSON, &user3); err != nil {
-        fmt.Println("Error parsing bad JSON:", err)
-    }
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
         </div>
 
         <div class="topic-block">
-            <h3>Context for Request Handling</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128268;</span>
+                <h3>Context for Request Handling</h3>
+            </div>
             <p>Context carries deadlines, cancellation signals, and request-scoped values across API boundaries.</p>
 
             <div class="code-example">
@@ -1514,25 +1283,16 @@ func main() {
 
     fmt.Println("Request with 100ms timeout (DB takes 20ms - will succeed):")
     handleRequest(ctx)
-
-    // Different query
-    fmt.Println("\nAnother request:")
-    ctx2, cancel := context.WithTimeout(ctx, 50*time.Millisecond)
-    defer cancel()
-
-    result, err := fetchFromDB(ctx2, "SELECT * FROM products")
-    if err != nil {
-        fmt.Println("Error:", err)
-    } else {
-        fmt.Println("Success:", result)
-    }
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
         </div>
 
         <div class="topic-block">
-            <h3>JSON Handling for APIs</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>JSON Handling for APIs</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1547,7 +1307,6 @@ type User struct {
     Email     string `json:"email,omitempty"`    // Omit if empty
     Password  string `json:"-"`                   // Never include in JSON
     IsAdmin   bool   `json:"is_admin"`
-    CreatedAt string `json:"created_at,omitempty"`
 }
 
 type APIResponse struct {
@@ -1585,12 +1344,6 @@ func main() {
     var newUser User
     json.Unmarshal(input, &newUser)
     fmt.Printf("\nParsed User: %+v\n", newUser)
-
-    // Handling unknown fields with map
-    rawJSON := []byte(`{"id": 3, "name": "Charlie", "extra_field": "value"}`)
-    var data map[string]interface{}
-    json.Unmarshal(rawJSON, &data)
-    fmt.Printf("Raw data: %v\n", data)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
@@ -1599,11 +1352,31 @@ func main() {
 
     <!-- ADVANCED SECTION -->
     <section id="advanced" class="guide-section">
-        <h2>Advanced - High-Performance API Patterns</h2>
+        <div class="section-header">
+            <h2><span class="section-icon">&#128640;</span> Advanced - Production Patterns</h2>
+            <p class="section-description">Battle-tested patterns for high-performance APIs</p>
+        </div>
 
         <div class="topic-block">
-            <h3>Worker Pool Pattern</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128101;</span>
+                <h3>Worker Pool Pattern</h3>
+            </div>
             <p>Process multiple tasks concurrently with a fixed number of workers - essential for rate limiting and resource management.</p>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Worker Pool Architecture</div>
+                <div class="mermaid">
+flowchart LR
+    J[Jobs Channel] --> W1[Worker 1]
+    J --> W2[Worker 2]
+    J --> W3[Worker 3]
+    W1 --> R[Results Channel]
+    W2 --> R
+    W3 --> R
+    R --> C[Collector]
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -1629,7 +1402,7 @@ func worker(id int, jobs <-chan Job, results chan<- Result, wg *sync.WaitGroup) 
     defer wg.Done()
 
     for job := range jobs {
-        // Simulate processing (minimal for demo)
+        // Simulate processing
         time.Sleep(5 * time.Millisecond)
 
         results <- Result{
@@ -1661,7 +1434,7 @@ func main() {
     for j := 1; j <= numJobs; j++ {
         jobs <- Job{ID: j, Payload: fmt.Sprintf("Task %d data", j)}
     }
-    close(jobs) // No more jobs
+    close(jobs)
 
     // Wait for workers in separate goroutine
     go func() {
@@ -1675,16 +1448,16 @@ func main() {
     }
 
     fmt.Printf("\nProcessed %d jobs in %v\n", numJobs, time.Since(start))
-    fmt.Printf("Sequential would take: %v\n", time.Duration(numJobs)*50*time.Millisecond)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
         </div>
 
         <div class="topic-block">
-            <h3>Rate Limiter Implementation</h3>
-            <p>Control request rates using Go's time.Ticker and channels.</p>
-
+            <div class="block-header">
+                <span class="block-icon">&#128295;</span>
+                <h3>Rate Limiter Implementation</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1733,15 +1506,6 @@ func NewRateLimiter(ratePerSecond int) *RateLimiter {
     return rl
 }
 
-func (rl *RateLimiter) Allow() bool {
-    select {
-    case <-rl.tokens:
-        return true
-    default:
-        return false
-    }
-}
-
 func (rl *RateLimiter) Wait() {
     <-rl.tokens
 }
@@ -1756,7 +1520,6 @@ func main() {
     defer limiter.Stop()
 
     var wg sync.WaitGroup
-
     start := time.Now()
 
     // Try to make 10 requests quickly
@@ -1779,8 +1542,22 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Circuit Breaker Pattern</h3>
-            <p>Prevent cascading failures by stopping requests to failing services.</p>
+            <div class="block-header">
+                <span class="block-icon">&#9889;</span>
+                <h3>Circuit Breaker Pattern</h3>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Circuit Breaker State Machine</div>
+                <div class="mermaid">
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open : Failures >= Threshold
+    Open --> HalfOpen : Timeout Elapsed
+    HalfOpen --> Closed : Success
+    HalfOpen --> Open : Failure
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-go">package main
@@ -1804,7 +1581,6 @@ type CircuitBreaker struct {
     mu            sync.Mutex
     state         State
     failures      int
-    successes     int
     threshold     int
     resetTimeout  time.Duration
     lastFailure   time.Time
@@ -1821,7 +1597,6 @@ func NewCircuitBreaker(threshold int, resetTimeout time.Duration) *CircuitBreake
 func (cb *CircuitBreaker) Execute(fn func() error) error {
     cb.mu.Lock()
 
-    // Check if circuit should transition from Open to HalfOpen
     if cb.state == StateOpen {
         if time.Since(cb.lastFailure) > cb.resetTimeout {
             cb.state = StateHalfOpen
@@ -1834,7 +1609,6 @@ func (cb *CircuitBreaker) Execute(fn func() error) error {
     }
     cb.mu.Unlock()
 
-    // Execute the function
     err := fn()
 
     cb.mu.Lock()
@@ -1851,31 +1625,24 @@ func (cb *CircuitBreaker) Execute(fn func() error) error {
         return err
     }
 
-    // Success
     if cb.state == StateHalfOpen {
-        cb.successes++
-        if cb.successes >= 2 {
-            cb.state = StateClosed
-            cb.successes = 0
-            fmt.Println("Circuit: HalfOpen -> Closed")
-        }
+        cb.state = StateClosed
+        fmt.Println("Circuit: HalfOpen -> Closed")
     }
     cb.failures = 0
     return nil
 }
 
 func main() {
-    cb := NewCircuitBreaker(3, 50*time.Millisecond) // Short timeout for demo
+    cb := NewCircuitBreaker(3, 50*time.Millisecond)
 
     callCount := 0
-
-    // Simulated external service
     callService := func() error {
         callCount++
-        if callCount <= 4 || callCount > 7 {
+        if callCount <= 4 {
             return errors.New("service unavailable")
         }
-        return nil // Success for calls 5, 6, 7
+        return nil
     }
 
     // Make 10 calls
@@ -1886,17 +1653,14 @@ func main() {
         } else {
             fmt.Printf("Call %d: Success\n", i)
         }
-
-        // Minimal delay for demo
         time.Sleep(5 * time.Millisecond)
     }
 
-    // Wait for reset timeout
+    // Wait for reset
     fmt.Println("\nWaiting for circuit to reset...")
     time.Sleep(60 * time.Millisecond)
 
-    // Try again after reset
-    callCount = 5 // Force success
+    callCount = 5
     err := cb.Execute(callService)
     if err != nil {
         fmt.Printf("After reset: Failed - %v\n", err)
@@ -1909,9 +1673,10 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Graceful Shutdown</h3>
-            <p>Handle shutdown signals properly to complete in-flight requests.</p>
-
+            <div class="block-header">
+                <span class="block-icon">&#128721;</span>
+                <h3>Graceful Shutdown</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1942,7 +1707,6 @@ func (s *Server) HandleRequest(ctx context.Context, reqID int) {
 
     fmt.Printf("Request %d: Started\n", reqID)
 
-    // Simulate work with context awareness
     select {
     case <-time.After(50 * time.Millisecond):
         fmt.Printf("Request %d: Completed\n", reqID)
@@ -1965,7 +1729,6 @@ func (s *Server) Shutdown(timeout time.Duration) {
     s.running = false
     s.mu.Unlock()
 
-    // Wait for in-flight requests with timeout
     done := make(chan struct{})
     go func() {
         s.wg.Wait()
@@ -1992,12 +1755,7 @@ func main() {
         time.Sleep(5 * time.Millisecond)
     }
 
-    // Wait a bit then initiate shutdown
     time.Sleep(10 * time.Millisecond)
-
-    // Try to send more requests during shutdown
-    go server.HandleRequest(ctx, 99)
-
     server.Shutdown(500 * time.Millisecond)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
@@ -2005,9 +1763,10 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Concurrent Map with sync.Map</h3>
-            <p>Thread-safe map for concurrent access patterns common in caching.</p>
-
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Concurrent Map with sync.Map</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -2031,14 +1790,6 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 func (c *Cache) GetOrSet(key string, defaultValue interface{}) interface{} {
     actual, _ := c.data.LoadOrStore(key, defaultValue)
     return actual
-}
-
-func (c *Cache) Delete(key string) {
-    c.data.Delete(key)
-}
-
-func (c *Cache) Range(fn func(key, value interface{}) bool) {
-    c.data.Range(fn)
 }
 
 func main() {
@@ -2072,9 +1823,9 @@ func main() {
 
     // Iterate all entries
     fmt.Println("\nAll cache entries:")
-    cache.Range(func(key, value interface{}) bool {
+    cache.data.Range(func(key, value interface{}) bool {
         fmt.Printf("  %s: %s\n", key, value)
-        return true // Continue iteration
+        return true
     })
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
@@ -2082,84 +1833,10 @@ func main() {
         </div>
 
         <div class="topic-block">
-            <h3>Semaphore for Concurrency Limiting</h3>
-            <p>Limit concurrent operations using a weighted semaphore pattern.</p>
-
-            <div class="code-example">
-                <pre><code class="language-go">package main
-
-import (
-    "context"
-    "fmt"
-    "sync"
-    "time"
-)
-
-type Semaphore struct {
-    sem chan struct{}
-}
-
-func NewSemaphore(maxConcurrent int) *Semaphore {
-    return &Semaphore{
-        sem: make(chan struct{}, maxConcurrent),
-    }
-}
-
-func (s *Semaphore) Acquire(ctx context.Context) error {
-    select {
-    case s.sem <- struct{}{}:
-        return nil
-    case <-ctx.Done():
-        return ctx.Err()
-    }
-}
-
-func (s *Semaphore) Release() {
-    <-s.sem
-}
-
-func main() {
-    // Allow max 3 concurrent operations
-    sem := NewSemaphore(3)
-    var wg sync.WaitGroup
-
-    ctx := context.Background()
-    start := time.Now()
-
-    // Try to run 10 operations concurrently
-    for i := 1; i <= 10; i++ {
-        wg.Add(1)
-        go func(id int) {
-            defer wg.Done()
-
-            // Acquire semaphore
-            if err := sem.Acquire(ctx); err != nil {
-                fmt.Printf("Op %d: Failed to acquire\n", id)
-                return
-            }
-            defer sem.Release()
-
-            // Do work
-            elapsed := time.Since(start).Round(time.Millisecond)
-            fmt.Printf("Op %d: Started at %v\n", id, elapsed)
-            time.Sleep(10 * time.Millisecond)
-
-            elapsed = time.Since(start).Round(time.Millisecond)
-            fmt.Printf("Op %d: Completed at %v\n", id, elapsed)
-        }(i)
-    }
-
-    wg.Wait()
-    fmt.Printf("\nAll operations completed in %v\n", time.Since(start).Round(time.Millisecond))
-}</code></pre>
-                <button class="run-code-btn" data-language="go">Run Code</button>
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Fan-Out/Fan-In Pattern</h3>
             </div>
-        </div>
-
-        <div class="topic-block">
-            <h3>Fan-Out/Fan-In Pattern</h3>
-            <p>Distribute work across multiple goroutines and collect results.</p>
-
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -2168,9 +1845,6 @@ import (
     "sync"
     "time"
 )
-
-// Fan-out: One channel to many workers
-// Fan-in: Many channels to one channel
 
 func producer(nums ...int) <-chan int {
     out := make(chan int)
@@ -2187,7 +1861,7 @@ func square(in <-chan int) <-chan int {
     out := make(chan int)
     go func() {
         for n := range in {
-            time.Sleep(5 * time.Millisecond) // Simulate work
+            time.Sleep(5 * time.Millisecond)
             out <- n * n
         }
         close(out)
@@ -2195,12 +1869,10 @@ func square(in <-chan int) <-chan int {
     return out
 }
 
-// Fan-in: merge multiple channels into one
 func merge(channels ...<-chan int) <-chan int {
     var wg sync.WaitGroup
     out := make(chan int)
 
-    // Start a goroutine for each input channel
     output := func(c <-chan int) {
         defer wg.Done()
         for n := range c {
@@ -2213,7 +1885,6 @@ func merge(channels ...<-chan int) <-chan int {
         go output(c)
     }
 
-    // Close out after all inputs are done
     go func() {
         wg.Wait()
         close(out)
@@ -2246,7 +1917,7 @@ func main() {
     }
 
     fmt.Printf("\nProcessed %d items, sum: %d\n", count, sum)
-    fmt.Printf("Time: %v (sequential would be ~400ms)\n", time.Since(start).Round(time.Millisecond))
+    fmt.Printf("Time: %v\n", time.Since(start).Round(time.Millisecond))
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
@@ -2255,18 +1926,21 @@ func main() {
 </div>
 
 <style>
+/* Enhanced Guide Page Styles - Go Theme */
 .guide-page {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem;
 }
 
+/* Breadcrumb */
 .breadcrumb {
     margin-bottom: 1.5rem;
+    font-size: 0.9rem;
 }
 
 .breadcrumb a {
-    color: var(--accent-color);
+    color: #00ADD8;
     text-decoration: none;
 }
 
@@ -2274,99 +1948,186 @@ func main() {
     text-decoration: underline;
 }
 
+.breadcrumb-sep {
+    margin: 0 0.5rem;
+    color: var(--color-text-muted, #94a3b8);
+}
+
+/* Guide Header */
 .guide-header {
-    margin-bottom: 2rem;
     text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, #00ADD810 0%, #5DC9E210 100%);
+    border-radius: 1rem;
+    border: 1px solid #00ADD830;
 }
 
 .guide-badge {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: #00ADD8;
+    padding: 0.35rem 1rem;
+    background: linear-gradient(135deg, #00ADD8 0%, #5DC9E2 100%);
     color: white;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
 }
 
 .guide-header h1 {
     margin: 0.5rem 0;
     font-size: 2.5rem;
+    background: linear-gradient(135deg, #00ADD8 0%, #007d9c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .guide-description {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+}
+
+.guide-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary, #475569);
+    font-size: 0.9rem;
+}
+
+.stat-icon {
     font-size: 1.1rem;
 }
 
+/* Navigation */
 .guide-nav {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-bottom: 2rem;
-    padding: 1rem;
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    background: var(--color-bg-primary, #ffffff);
+    border-radius: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
     position: sticky;
     top: 70px;
     z-index: 50;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
 }
 
 .guide-nav-link {
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s;
 }
 
 .guide-nav-link:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: var(--color-bg-secondary, #f8fafc);
+    color: var(--color-text-primary, #0f172a);
 }
 
 .guide-nav-link.active {
-    background: #00ADD8;
+    background: linear-gradient(135deg, #00ADD8 0%, #007d9c 100%);
     color: white;
 }
 
+.nav-icon {
+    font-size: 1rem;
+}
+
+/* Section Headers */
+.section-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #00ADD8;
+}
+
+.section-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+}
+
+.section-description {
+    color: var(--color-text-secondary, #475569);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+/* Guide Section */
 .guide-section {
     margin-bottom: 3rem;
     padding-top: 1rem;
 }
 
-.guide-section > h2 {
-    font-size: 1.75rem;
+/* Topic Block */
+.topic-block {
+    background: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 1rem;
+    padding: 1.75rem;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 3px solid #00ADD8;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.topic-block {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+.topic-block.highlight-block {
+    background: linear-gradient(135deg, #00ADD808 0%, #ffffff 100%);
+    border-color: #00ADD840;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.block-header.warning-header {
+    color: #f59e0b;
+}
+
+.block-icon {
+    font-size: 1.5rem;
 }
 
 .topic-block h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--color-text-primary, #0f172a);
 }
 
 .topic-block h4 {
     font-size: 1.1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     margin-bottom: 0.75rem;
     color: #00ADD8;
 }
 
 .topic-block p {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
     margin-bottom: 1rem;
     line-height: 1.7;
 }
@@ -2374,84 +2135,311 @@ func main() {
 .topic-block ul, .topic-block ol {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
 }
 
 .topic-block li {
     margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 
 .topic-block code {
-    background: var(--bg-secondary);
-    padding: 0.2rem 0.4rem;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
+    background: #00ADD815;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: #00ADD8;
+}
+
+/* Concept Grid */
+.concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.concept-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.concept-card:hover {
+    border-color: #00ADD8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.15);
+}
+
+.concept-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.concept-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text-primary, #0f172a);
+    font-size: 1rem;
+}
+
+.concept-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted, #94a3b8);
+}
+
+/* Feature List */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.feature-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    border-radius: 0.75rem;
+    border-left: 4px solid #00ADD8;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.feature-item strong {
+    color: var(--color-text-primary, #0f172a);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.feature-item p {
+    margin: 0;
     font-size: 0.9rem;
 }
 
+/* Info Box */
+.info-box {
+    background: linear-gradient(135deg, #00ADD810 0%, #5DC9E210 100%);
+    border: 1px solid #00ADD840;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #00ADD8;
+}
+
+.info-icon {
+    font-size: 1.25rem;
+}
+
+.info-box p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Diagram Container */
+.diagram-container {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.diagram-title {
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Comparison Table */
+.comparison-table {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.comparison-header {
+    background: linear-gradient(135deg, #00ADD8 0%, #007d9c 100%);
+    padding: 0.75rem 1rem;
+}
+
+.comparison-title {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.comparison-table th {
+    background: var(--color-bg-secondary, #f8fafc);
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.comparison-table td {
+    color: var(--color-text-secondary, #475569);
+    font-size: 0.9rem;
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Code Example */
 .code-example {
     position: relative;
-    margin: 1rem 0;
+    margin: 1.25rem 0;
 }
 
 .code-example pre {
-    background: #e8e8e8;
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    padding-top: 2.5rem;
+    background: #1e293b;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    padding-top: 3rem;
     overflow-x: auto;
     margin: 0;
-    border: 1px solid #d0d0d0;
+    border: 1px solid #334155;
 }
 
 .code-example pre code {
     background: none;
     padding: 0;
-    color: #333333;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     line-height: 1.6;
 }
 
 .run-code-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: #00ADD8;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(135deg, #00ADD8 0%, #007d9c 100%);
     color: white;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 0.5rem;
     cursor: pointer;
     font-size: 0.8rem;
-    font-weight: 500;
-    transition: background 0.2s;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .run-code-btn:hover {
-    background: #0095b8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.4);
 }
 
 .run-code-btn:disabled {
-    background: #666;
+    background: #64748b;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
+/* Code Output */
+.code-output {
+    margin-top: 0.5rem;
+}
+
+.code-output pre {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.success-output {
+    background: #0f172a;
+    border: 1px solid #10b98140;
+    color: #4ade80;
+}
+
+.error-output {
+    background: #1e0a0a;
+    border: 1px solid #ef444440;
+    color: #f87171;
+}
+
+/* Mermaid diagrams */
+.mermaid {
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .guide-page {
         padding: 1rem;
+    }
+
+    .guide-header {
+        padding: 1.5rem;
     }
 
     .guide-header h1 {
         font-size: 1.75rem;
     }
 
+    .guide-stats {
+        gap: 1rem;
+    }
+
     .guide-nav {
-        flex-direction: column;
         position: static;
+        flex-direction: column;
     }
 
     .guide-nav-link {
-        text-align: center;
+        justify-content: center;
+    }
+
+    .concept-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-table {
+        font-size: 0.85rem;
+    }
+
+    .code-example pre {
+        padding-top: 3.5rem;
     }
 }
 </style>
@@ -2497,7 +2485,6 @@ func main() {
             this.disabled = true;
             this.textContent = 'Running...';
 
-            // Send to execution API
             fetch('/api/run', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -2506,7 +2493,6 @@ func main() {
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    // Poll for result with max attempts (60 seconds timeout)
                     let pollCount = 0;
                     const maxPolls = 120;
                     const checkResult = () => {
@@ -2514,12 +2500,10 @@ func main() {
                         fetch('/api/execution/' + data.id)
                         .then(r => r.json())
                         .then(result => {
-                            console.log('Execution state:', result.state, 'poll:', pollCount);
                             if (result.state === 'complete' || result.state === 'error' || result.state === 'stopped') {
                                 this.disabled = false;
                                 this.textContent = 'Run Code';
 
-                                // Show output
                                 let outputDiv = this.parentElement.querySelector('.code-output');
                                 if (!outputDiv) {
                                     outputDiv = document.createElement('div');
@@ -2541,7 +2525,7 @@ func main() {
                                     outputDiv.className = 'code-output';
                                     this.parentElement.appendChild(outputDiv);
                                 }
-                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out (state: ' + result.state + ')</pre>';
+                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out</pre>';
                             } else {
                                 setTimeout(checkResult, 500);
                             }
@@ -2564,7 +2548,12 @@ func main() {
         return div.innerHTML;
     }
 
-    // Highlight code
+    // Initialize Mermaid if available
+    if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    }
+
+    // Highlight code if hljs available
     if (typeof hljs !== 'undefined') {
         document.querySelectorAll('.code-example pre code').forEach(block => {
             hljs.highlightElement(block);
