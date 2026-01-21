@@ -4707,23 +4707,53 @@
             history.replaceState(history.state, '', url.toString());
         }
 
+        // Handle tab-content divs from ProblemRenderer (for JS-based problems)
+        if (descContent) {
+            var tabProblem = descContent.querySelector('.tab-content-problem');
+            var tabHints = descContent.querySelector('.tab-content-hints');
+            var tabSolutions = descContent.querySelector('.tab-content-solutions');
+
+            if (tabProblem) tabProblem.style.display = 'none';
+            if (tabHints) tabHints.style.display = 'none';
+            if (tabSolutions) tabSolutions.style.display = 'none';
+        }
+
         if (tab === 'problem' && descContent) {
             descContent.style.display = 'block';
-            // Filter out hints section from description
-            filterDescriptionContent(descContent, false);
+            // Show problem tab content if it exists
+            var tabProblem = descContent.querySelector('.tab-content-problem');
+            if (tabProblem) {
+                tabProblem.style.display = 'block';
+            } else {
+                // Filter out hints section from description (legacy)
+                filterDescriptionContent(descContent, false);
+            }
             // Show code panel, restore split layout
             if (codePanel) codePanel.style.display = 'flex';
             if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
-        } else if (tab === 'hints' && hintsContent) {
-            hintsContent.style.display = 'block';
-            // Load hints content
-            loadHintsContent(hintsContent);
+        } else if (tab === 'hints') {
+            // Check for tab-content-hints in descContent first (JS-based problems)
+            var tabHints = descContent ? descContent.querySelector('.tab-content-hints') : null;
+            if (tabHints) {
+                descContent.style.display = 'block';
+                tabHints.style.display = 'block';
+            } else if (hintsContent) {
+                hintsContent.style.display = 'block';
+                loadHintsContent(hintsContent);
+            }
             // Show code panel, restore split layout
             if (codePanel) codePanel.style.display = 'flex';
             if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';
-        } else if (tab === 'solutions' && solContent) {
-            solContent.style.display = 'block';
-            loadSolutions();
+        } else if (tab === 'solutions') {
+            // Check for tab-content-solutions in descContent first (JS-based problems)
+            var tabSolutions = descContent ? descContent.querySelector('.tab-content-solutions') : null;
+            if (tabSolutions) {
+                descContent.style.display = 'block';
+                tabSolutions.style.display = 'block';
+            } else if (solContent) {
+                solContent.style.display = 'block';
+                loadSolutions();
+            }
             // Show code panel, restore split layout
             if (codePanel) codePanel.style.display = 'flex';
             if (editorLayout) editorLayout.style.gridTemplateColumns = '1fr 1fr';

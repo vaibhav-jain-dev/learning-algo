@@ -146,8 +146,11 @@
         html += JSON.stringify(vizConfig);
         html += '</div>\n\n';
 
+        // ========== PROBLEM TAB CONTENT ==========
+        html += '<div class="tab-content-problem">\n';
+
         // Problem title and difficulty
-        html += '<h1 style="color:#ffffff;margin-bottom:0.5rem;font-weight:700;">' + problem.name + '</h1>\n\n';
+        html += '<h1 style="color:#e6edf3;margin-bottom:0.5rem;font-weight:700;">' + problem.name + '</h1>\n\n';
 
         // Difficulty badge
         const diffColors = {
@@ -161,98 +164,49 @@
 
         // Problem description
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;font-weight:700;">Problem Statement</h2>\n';
-        html += '<p style="color:#ffffff;line-height:1.8;margin-bottom:1.5rem;font-size:1rem;font-weight:500;">' + problem.description + '</p>\n\n';
+        html += '<p style="color:#e6edf3;line-height:1.8;margin-bottom:1.5rem;font-size:1rem;">' + problem.description + '</p>\n\n';
 
         // Examples section
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Examples</h2>\n';
         problem.examples.forEach((ex, i) => {
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;">\n';
+            html += '<div style="background:#2d333b;border:1px solid #444c56;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;">\n';
             html += '<p style="color:#58a6ff;font-weight:600;margin-bottom:0.75rem;font-size:1rem;">Example ' + (i + 1) + ':</p>\n';
 
             // Input/Output in a code-like box
-            html += '<div style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:0.875rem 1rem;font-family:\'SF Mono\',\'Fira Code\',\'Consolas\',monospace;font-size:0.9rem;margin-bottom:0.75rem;">\n';
-            html += '<div style="margin-bottom:0.5rem;"><span style="color:#7ee787;font-weight:500;">Input:</span> <span style="color:#c9d1d9;">' + formatInput(ex.input) + '</span></div>\n';
-            html += '<div><span style="color:#ff7b72;font-weight:500;">Output:</span> <span style="color:#c9d1d9;">' + formatOutput(ex.output) + '</span></div>\n';
+            html += '<div style="background:#22272e;border:1px solid #444c56;border-radius:6px;padding:0.875rem 1rem;font-family:\'SF Mono\',\'Fira Code\',\'Consolas\',monospace;font-size:0.9rem;margin-bottom:0.75rem;">\n';
+            html += '<div style="margin-bottom:0.5rem;"><span style="color:#7ee787;font-weight:500;">Input:</span> <span style="color:#adbac7;">' + formatInput(ex.input) + '</span></div>\n';
+            html += '<div><span style="color:#ff7b72;font-weight:500;">Output:</span> <span style="color:#adbac7;">' + formatOutput(ex.output) + '</span></div>\n';
             html += '</div>\n';
 
             // Input to Output explanation
             if (ex.explanation) {
-                html += '<p style="color:#ffffff;font-weight:500;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
+                html += '<p style="color:#adbac7;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
             }
             html += '</div>\n\n';
         });
 
-        // Hints section (collapsible)
-        if (problem.hints && problem.hints.length > 0) {
-            html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Hints</h2>\n';
-            html += '<div class="hints-container">\n';
-            problem.hints.forEach((hint, i) => {
-                html += '<details class="hint" style="background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:0.5rem;padding:0.75rem 1rem;">\n';
-                html += '<summary style="color:#ffffff;font-weight:500;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
-                html += '<p style="color:#ffffff;font-weight:500;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
-                html += '</details>\n';
-            });
-            html += '</div>\n\n';
-        }
-
-        // Problem approach/solution insights
-        if (problem.problem) {
-            html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Approach</h2>\n';
-            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;">\n';
-            html += '<p style="color:#ffffff;font-weight:500;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
-            html += '</div>\n\n';
-        }
-
-        // Complexity
+        // Complexity (on Problem tab)
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Complexity</h2>\n';
         html += '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\n';
-        html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Time:</span> <span style="color:#7ee787;font-family:monospace;font-weight:600;">' + problem.complexity.time + '</span></div>\n';
-        html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Space:</span> <span style="color:#ff7b72;font-family:monospace;font-weight:600;">' + problem.complexity.space + '</span></div>\n';
+        html += '<div style="background:#2d333b;border:1px solid #444c56;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Time:</span> <span style="color:#7ee787;font-family:monospace;font-weight:600;">' + problem.complexity.time + '</span></div>\n';
+        html += '<div style="background:#2d333b;border:1px solid #444c56;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Space:</span> <span style="color:#ff7b72;font-family:monospace;font-weight:600;">' + problem.complexity.space + '</span></div>\n';
         html += '</div>\n\n';
 
-        // Solutions section (Python and Go)
-        if (problem.solutions) {
-            html += '<h2 style="color:#58a6ff;margin-top:2rem;margin-bottom:1rem;font-size:1.25rem;">Solutions</h2>\n';
-
-            // Tab buttons
-            html += '<div style="display:flex;gap:0.5rem;margin-bottom:1rem;">\n';
-            if (problem.solutions.python) {
-                html += '<button id="sol-tab-python" onclick="showSolutionTab(\'python\')" style="background:#238636;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Python</button>\n';
-            }
-            if (problem.solutions.go) {
-                html += '<button id="sol-tab-go" onclick="showSolutionTab(\'go\')" style="background:#30363d;color:#8b949e;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Go</button>\n';
-            }
-            html += '</div>\n';
-
-            // Solution content
-            if (problem.solutions.python) {
-                html += '<div id="sol-content-python" style="display:block;">\n';
-                html += '<pre style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-python">' + escapeHtml(problem.solutions.python) + '</code></pre>\n';
-                html += '</div>\n';
-            }
-            if (problem.solutions.go) {
-                html += '<div id="sol-content-go" style="display:none;">\n';
-                html += '<pre style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-go">' + escapeHtml(problem.solutions.go) + '</code></pre>\n';
-                html += '</div>\n';
-            }
-            html += '\n';
-        }
-
-        // Back to parent problem link (for sub-problems)
+        // Back to parent problem link (for sub-problems) - on Problem tab
         if (problem.parent) {
             const category = problem.category || 'arrays';
-            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #30363d;">\n';
+            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #444c56;">\n';
             html += '<button onclick="window.openProblem(\'' + category + '\', \'' + problem.parent + '\')" style="background:linear-gradient(135deg,#6e40c9,#8957e5);color:#ffffff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(110,64,201,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'none\'">\n';
             html += '<span>←</span> Back to Parent Problem\n';
             html += '</button>\n';
             html += '</div>\n\n';
         }
 
-        // Similar/Related Problems Button and Section (if any)
+        // Similar/Related Problems Button (on Problem tab)
         if (problem.similar && problem.similar.length > 0) {
             const category = problem.category || 'arrays';
 
-            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #30363d;">\n';
+            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #444c56;">\n';
             html += '<button onclick="toggleSimilarProblems(this)" style="background:linear-gradient(135deg,#238636,#2ea043);color:#ffffff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(35,134,54,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'none\'">\n';
             html += '<span>🔗</span> Show ' + problem.similar.length + ' Related Problems\n';
             html += '</button>\n';
@@ -264,10 +218,10 @@
 
             problem.similar.forEach((sim, idx) => {
                 const simDiff = diffColors[sim.difficulty] || { bg: '#6e7681', text: '#ffffff' };
-                html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#1c2128\'" onmouseout="this.style.borderColor=\'#30363d\';this.style.background=\'#161b22\'">';
+                html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="background:#2d333b;border:1px solid #444c56;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#373e47\'" onmouseout="this.style.borderColor=\'#444c56\';this.style.background=\'#2d333b\'">';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
-                html += '<span style="color:#6e7681;font-size:0.9rem;font-weight:500;">' + (idx + 1) + '.</span>';
-                html += '<span style="color:#ffffff;font-weight:500;font-weight:500;">' + sim.name + '</span>';
+                html += '<span style="color:#768390;font-size:0.9rem;font-weight:500;">' + (idx + 1) + '.</span>';
+                html += '<span style="color:#adbac7;font-weight:500;">' + sim.name + '</span>';
                 html += '</div>';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
                 html += '<span style="background:' + simDiff.bg + ';color:' + simDiff.text + ';padding:0.25rem 0.625rem;border-radius:0.75rem;font-size:0.75rem;font-weight:600;">' + sim.difficulty + '</span>';
@@ -278,7 +232,61 @@
             html += '</div>\n';
             html += '</div>\n';
             html += '</div>\n';
-            // toggleSimilarProblems is now a global function defined in ProblemRenderer
+        }
+
+        html += '</div>\n'; // End .tab-content-problem
+
+        // ========== HINTS TAB CONTENT (hidden by default) ==========
+        if (problem.hints && problem.hints.length > 0) {
+            html += '<div class="tab-content-hints" style="display:none;">\n';
+            html += '<h2 style="color:#58a6ff;margin-bottom:1rem;font-size:1.25rem;">Hints</h2>\n';
+            html += '<div class="hints-container">\n';
+            problem.hints.forEach((hint, i) => {
+                html += '<details class="hint" style="background:#2d333b;border:1px solid #444c56;border-radius:6px;margin-bottom:0.5rem;padding:0.75rem 1rem;">\n';
+                html += '<summary style="color:#adbac7;font-weight:500;cursor:pointer;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
+                html += '<p style="color:#adbac7;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
+                html += '</details>\n';
+            });
+            html += '</div>\n';
+
+            // Approach (on Hints tab)
+            if (problem.problem) {
+                html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Approach</h2>\n';
+                html += '<div style="background:#2d333b;border:1px solid #444c56;border-radius:8px;padding:1rem 1.25rem;">\n';
+                html += '<p style="color:#adbac7;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
+                html += '</div>\n\n';
+            }
+
+            html += '</div>\n'; // End .tab-content-hints
+        }
+
+        // ========== SOLUTIONS TAB CONTENT (hidden by default) ==========
+        if (problem.solutions) {
+            html += '<div class="tab-content-solutions" style="display:none;">\n';
+            html += '<h2 style="color:#58a6ff;margin-bottom:1rem;font-size:1.25rem;">Solutions</h2>\n';
+
+            // Tab buttons
+            html += '<div style="display:flex;gap:0.5rem;margin-bottom:1rem;">\n';
+            if (problem.solutions.python) {
+                html += '<button id="sol-tab-python" onclick="showSolutionTab(\'python\')" style="background:#238636;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Python</button>\n';
+            }
+            if (problem.solutions.go) {
+                html += '<button id="sol-tab-go" onclick="showSolutionTab(\'go\')" style="background:#444c56;color:#8b949e;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Go</button>\n';
+            }
+            html += '</div>\n';
+
+            // Solution content
+            if (problem.solutions.python) {
+                html += '<div id="sol-content-python" style="display:block;">\n';
+                html += '<pre style="background:#22272e;border:1px solid #444c56;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-python">' + escapeHtml(problem.solutions.python) + '</code></pre>\n';
+                html += '</div>\n';
+            }
+            if (problem.solutions.go) {
+                html += '<div id="sol-content-go" style="display:none;">\n';
+                html += '<pre style="background:#22272e;border:1px solid #444c56;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-go">' + escapeHtml(problem.solutions.go) + '</code></pre>\n';
+                html += '</div>\n';
+            }
+            html += '</div>\n'; // End .tab-content-solutions
         }
 
         return html;
