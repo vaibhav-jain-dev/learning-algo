@@ -138,6 +138,13 @@
             case 'hash-prefix-sum':
                 return runZeroSumSubarray(example, config, complexity);
 
+            // Additional two-pointer algorithms (sub-problems)
+            case 'two-pointer-three-sum':
+            case 'two-pointer-dedup':
+                return runThreeNumberSum(example, config, complexity);
+            case 'two-pointer-two-arrays':
+                return runGenericVisualization(example, config, complexity);
+
             // Graph algorithms
             case 'graph-dfs':
                 return runGraphDFS(example, config, complexity);
@@ -551,12 +558,13 @@
 
     // Algorithm: Two Number Sum (Hash Table)
     function runTwoNumberSum(example, config, complexity) {
-        if (!example || !example.input || !example.input.array || example.input.targetSum === undefined) {
+        // Handle both input formats: {array, targetSum} and {nums, target}
+        var arr = example.input.array || example.input.nums;
+        var target = example.input.targetSum !== undefined ? example.input.targetSum : example.input.target;
+        if (!example || !example.input || !arr || target === undefined) {
             console.error('[runTwoNumberSum] Missing required input properties');
             return null;
         }
-        var arr = example.input.array;
-        var target = example.input.targetSum;
         var expected = example.output;
         var steps = [];
         var hashSet = [];
@@ -705,9 +713,11 @@
 
     // Algorithm: Three Number Sum (Sort + Two Pointers)
     function runThreeNumberSum(example, config, complexity) {
-        if (!example || !example.input || !example.input.array || example.input.targetSum === undefined) return null;
-        var arr = example.input.array.slice().sort(function(a, b) { return a - b; });
-        var target = example.input.targetSum;
+        // Handle both input formats: {array, targetSum} and {nums, target}
+        var inputArr = example.input.array || example.input.nums;
+        var target = example.input.targetSum !== undefined ? example.input.targetSum : example.input.target;
+        if (!example || !example.input || !inputArr || target === undefined) return null;
+        var arr = inputArr.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
         var steps = [];
         var triplets = [];
@@ -2481,7 +2491,7 @@
     // Tree DFS (Branch Sums, etc.)
     function runTreeDFS(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree;
+        var tree = example.input.tree || example.input.root || example.input.tree1;
         if (!tree) return runGenericVisualization(example, config, complexity);
 
         var nodes = [];
@@ -2560,7 +2570,7 @@
     // Tree BFS
     function runTreeBFS(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree;
+        var tree = example.input.tree || example.input.root || example.input.tree1;
         if (!tree) return runGenericVisualization(example, config, complexity);
 
         var nodes = [];
@@ -3144,8 +3154,8 @@
     // BST Search
     function runBSTSearch(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree;
-        var target = example.input.target;
+        var tree = example.input.tree || example.input.root || example.input.bst;
+        var target = example.input.target !== undefined ? example.input.target : example.input.val;
         if (!tree || target === undefined) return runGenericVisualization(example, config, complexity);
 
         // Handle array representation of BST
@@ -3260,7 +3270,7 @@
     // Generic BST Visualization
     function runBSTGeneric(example, config, complexity) {
         var steps = [];
-        var tree = example.input.tree;
+        var tree = example.input.tree || example.input.root || example.input.bst;
         var arr = example.input.array || example.input.nums || example.input.preorderTraversalValues;
 
         // Handle Same BSTs problem with arrayOne and arrayTwo
