@@ -2,6 +2,27 @@
 
 Simple guide to set up SSH for deployments.
 
+```mermaid
+flowchart LR
+    subgraph Local["Local PC"]
+        A[Generate Key]
+    end
+
+    subgraph Server["Server"]
+        B[authorized_keys]
+    end
+
+    subgraph GitHub["GitHub"]
+        C[Secrets]
+        D[Deploy Keys]
+    end
+
+    A -->|Public Key| B
+    A -->|Private Key| C
+    B -->|Allows| C
+    D -->|Allows Server| GitHub
+```
+
 ---
 
 ## 1. On Your Local PC (Laptop)

@@ -203,6 +203,7 @@ func main() {
 	app.Get("/system-architectures", h.SystemArchitectures)
 	app.Get("/golang", h.Golang)
 	app.Get("/python-asyncio", h.PythonAsyncio)
+	app.Get("/deployment-guide", h.DeploymentGuide)
 	app.Get("/topic/:category/:topic", h.TopicDetail)
 
 	// API routes
