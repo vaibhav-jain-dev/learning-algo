@@ -1452,10 +1452,146 @@
         }
     }
 
+    // Grid-based DFS/BFS Visualization (for Number of Islands, Max Area, etc.)
+    function runGridVisualization(example, config, complexity) {
+        var steps = [];
+        var grid = example.input.grid || example.input.matrix || example.input.board;
+        if (!grid || !Array.isArray(grid) || grid.length === 0) {
+            return runGenericVisualization(example, config, complexity);
+        }
+
+        var rows = grid.length;
+        var cols = grid[0].length;
+        var expected = example.output;
+
+        // Deep copy grid for simulation
+        var simGrid = grid.map(function(row) {
+            return row.map(function(cell) {
+                return typeof cell === 'string' ? cell : String(cell);
+            });
+        });
+
+        // Step 1: Introduction
+        steps.push({
+            vizType: 'grid',
+            grid: simGrid.map(function(r) { return r.slice(); }),
+            rows: rows,
+            cols: cols,
+            visited: [],
+            current: null,
+            status: 'Initialize: ' + config.name,
+            explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                '<strong>Grid Size:</strong> ' + rows + ' x ' + cols + '<br>' +
+                '<strong>Expected Output:</strong> ' + JSON.stringify(expected) + '<br><br>' +
+                '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+        });
+
+        // Simulate DFS/BFS on grid
+        var visited = [];
+        var count = 0;
+        var maxArea = 0;
+
+        for (var r = 0; r < rows && steps.length < 25; r++) {
+            for (var c = 0; c < cols && steps.length < 25; c++) {
+                var cellVal = simGrid[r][c];
+                var isLand = cellVal === '1' || cellVal === 1;
+
+                if (isLand) {
+                    // Found a new island - run DFS
+                    count++;
+                    var area = 0;
+                    var stack = [[r, c]];
+
+                    steps.push({
+                        vizType: 'grid',
+                        grid: simGrid.map(function(row) { return row.slice(); }),
+                        rows: rows,
+                        cols: cols,
+                        visited: visited.slice(),
+                        current: [r, c],
+                        status: 'Found land at [' + r + ',' + c + ']',
+                        explanation: '🏝️ <strong>Found new island #' + count + '</strong><br><br>' +
+                            '• Starting DFS from cell [' + r + ', ' + c + ']<br>' +
+                            '• Will explore all connected land cells'
+                    });
+
+                    // DFS to explore island
+                    while (stack.length > 0 && steps.length < 25) {
+                        var curr = stack.pop();
+                        var cr = curr[0], cc = curr[1];
+                        var key = cr + ',' + cc;
+
+                        if (visited.indexOf(key) !== -1) continue;
+                        if (cr < 0 || cr >= rows || cc < 0 || cc >= cols) continue;
+                        if (simGrid[cr][cc] !== '1' && simGrid[cr][cc] !== 1) continue;
+
+                        visited.push(key);
+                        area++;
+                        simGrid[cr][cc] = '0'; // Mark as visited
+
+                        // Add neighbors (4-directional)
+                        var directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+                        directions.forEach(function(d) {
+                            var nr = cr + d[0], nc = cc + d[1];
+                            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                                if (simGrid[nr][nc] === '1' || simGrid[nr][nc] === 1) {
+                                    stack.push([nr, nc]);
+                                }
+                            }
+                        });
+
+                        if (steps.length < 20) {
+                            steps.push({
+                                vizType: 'grid',
+                                grid: simGrid.map(function(row) { return row.slice(); }),
+                                rows: rows,
+                                cols: cols,
+                                visited: visited.slice(),
+                                current: [cr, cc],
+                                status: 'Visit [' + cr + ',' + cc + '] (area=' + area + ')',
+                                explanation: '🔍 <strong>Exploring cell [' + cr + ', ' + cc + ']</strong><br><br>' +
+                                    '• Marked as visited<br>' +
+                                    '• Current island area: ' + area + '<br>' +
+                                    '• Islands found so far: ' + count
+                            });
+                        }
+                    }
+
+                    if (area > maxArea) maxArea = area;
+                }
+            }
+        }
+
+        // Final result
+        steps.push({
+            vizType: 'grid',
+            grid: simGrid.map(function(row) { return row.slice(); }),
+            rows: rows,
+            cols: cols,
+            visited: visited,
+            current: null,
+            status: 'Complete! Result: ' + expected,
+            explanation: '✅ <strong>Complete!</strong><br><br>' +
+                '• Total islands found: ' + count + '<br>' +
+                '• Maximum island area: ' + maxArea + '<br>' +
+                '• Expected output: ' + JSON.stringify(expected)
+        });
+
+        return steps;
+    }
+
     // Graph DFS Visualization
     function runGraphDFS(example, config, complexity) {
         var steps = [];
         var tree = example.input.tree || example.input.graph;
+        var grid = example.input.grid || example.input.matrix || example.input.board;
+
+        // If grid input, use grid visualization
+        if (grid && Array.isArray(grid)) {
+            return runGridVisualization(example, config, complexity);
+        }
+
         if (!tree) return runGenericVisualization(example, config, complexity);
 
         // Flatten tree to nodes/edges
@@ -1540,6 +1676,13 @@
     function runGraphBFS(example, config, complexity) {
         var steps = [];
         var tree = example.input.tree || example.input.graph;
+        var grid = example.input.grid || example.input.matrix || example.input.board;
+
+        // If grid input, use grid visualization
+        if (grid && Array.isArray(grid)) {
+            return runGridVisualization(example, config, complexity);
+        }
+
         if (!tree) return runGenericVisualization(example, config, complexity);
 
         var nodes = [];
@@ -1763,51 +1906,9 @@
         }
 
         // Handle 2D grid format (e.g., Number of Islands, Flood Fill)
+        // Use the dedicated grid visualization for better rendering
         if (grid && Array.isArray(grid) && Array.isArray(grid[0])) {
-            var rows = grid.length;
-            var cols = grid[0].length;
-
-            steps.push({
-                vizType: 'matrix',
-                matrix: grid,
-                currentRow: -1,
-                currentCol: -1,
-                status: config.name,
-                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
-                    '<strong>Algorithm:</strong> ' + config.algorithm + '<br>' +
-                    '<strong>Grid Size:</strong> ' + rows + ' x ' + cols + '<br>' +
-                    '<strong>Input:</strong> ' + (example.inputRaw || rows + 'x' + cols + ' grid') + '<br>' +
-                    '<strong>Expected:</strong> ' + (example.outputRaw || JSON.stringify(example.output)) + '<br><br>' +
-                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
-                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
-            });
-
-            // Show traversal animation (visit some cells)
-            var maxCells = Math.min(rows * cols, 6);
-            for (var i = 0; i < maxCells; i++) {
-                var r = Math.floor(i / cols) % rows;
-                var c = i % cols;
-                var cellVal = grid[r] && grid[r][c] !== undefined ? grid[r][c] : '?';
-                steps.push({
-                    vizType: 'matrix',
-                    matrix: grid,
-                    currentRow: r,
-                    currentCol: c,
-                    status: 'Checking cell (' + r + ',' + c + ')',
-                    explanation: '🔍 <strong>Processing cell (' + r + ',' + c + ')</strong><br>Value: ' + cellVal
-                });
-            }
-
-            steps.push({
-                vizType: 'matrix',
-                matrix: example.output && Array.isArray(example.output) && Array.isArray(example.output[0]) ? example.output : grid,
-                currentRow: -1,
-                currentCol: -1,
-                status: 'Result: ' + (example.outputRaw || JSON.stringify(example.output)),
-                explanation: '✅ <strong>Result:</strong> ' + (example.outputRaw || JSON.stringify(example.output))
-            });
-
-            return steps;
+            return runGridVisualization(example, config, complexity);
         }
 
         // Handle adjacency list format (e.g., edges = [[1,3],[2,3,4],[0],[],[2,5],[]])
@@ -7118,6 +7219,8 @@
             case 'intervals':
                 return renderIntervalsViz(step);
             // New visualization types
+            case 'grid':
+                return renderGridViz(step);
             case 'graph':
                 return renderGraphViz(step);
             case 'linked-list':
@@ -7141,6 +7244,80 @@
     // =========================================================================
     // NEW VISUALIZATION RENDERERS
     // =========================================================================
+
+    // Grid Visualization (for Number of Islands, Max Area of Island, etc.)
+    function renderGridViz(step) {
+        var html = '';
+        var grid = step.grid || [];
+        var rows = step.rows || grid.length;
+        var cols = step.cols || (grid[0] ? grid[0].length : 0);
+        var visited = step.visited || [];
+        var current = step.current;
+
+        if (!grid || grid.length === 0) {
+            return '<div style="text-align:center;padding:1rem;color:#8b949e;">No grid data available</div>';
+        }
+
+        html += '<div style="text-align:center;padding:0.5rem;">';
+
+        // Draw grid as a table
+        html += '<div style="display:inline-grid;grid-template-columns:repeat(' + cols + ', 1fr);gap:2px;padding:0.5rem;background:#21262d;border-radius:8px;">';
+
+        for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+                var cellVal = grid[r] && grid[r][c] !== undefined ? grid[r][c] : '?';
+                var key = r + ',' + c;
+                var isVisited = visited.indexOf(key) !== -1;
+                var isCurrent = current && current[0] === r && current[1] === c;
+                var isLand = cellVal === '1' || cellVal === 1;
+                var isWater = cellVal === '0' || cellVal === 0;
+
+                var bg, border, textColor;
+                if (isCurrent) {
+                    bg = 'linear-gradient(135deg,#f0883e,#d29922)';
+                    border = '2px solid #f0883e';
+                    textColor = '#fff';
+                } else if (isVisited) {
+                    bg = '#238636';
+                    border = '2px solid #3fb950';
+                    textColor = '#fff';
+                } else if (isLand) {
+                    bg = '#1f6feb';
+                    border = '2px solid #58a6ff';
+                    textColor = '#fff';
+                } else if (isWater) {
+                    bg = '#161b22';
+                    border = '1px solid #30363d';
+                    textColor = '#484f58';
+                } else {
+                    bg = '#21262d';
+                    border = '1px solid #30363d';
+                    textColor = '#c9d1d9';
+                }
+
+                var cellSize = cols > 8 ? '28px' : (cols > 5 ? '35px' : '42px');
+                var fontSize = cols > 8 ? '0.75rem' : (cols > 5 ? '0.85rem' : '1rem');
+
+                html += '<div style="width:' + cellSize + ';height:' + cellSize + ';background:' + bg + ';border:' + border + ';color:' + textColor + ';display:flex;align-items:center;justify-content:center;border-radius:4px;font-weight:600;font-size:' + fontSize + ';transition:all 0.2s;">';
+                html += cellVal;
+                html += '</div>';
+            }
+        }
+
+        html += '</div>';
+
+        // Legend
+        html += '<div style="margin-top:0.75rem;display:flex;justify-content:center;gap:1rem;font-size:0.75rem;color:#8b949e;">';
+        html += '<span style="display:flex;align-items:center;gap:0.25rem;"><span style="width:12px;height:12px;background:#1f6feb;border-radius:2px;"></span> Land</span>';
+        html += '<span style="display:flex;align-items:center;gap:0.25rem;"><span style="width:12px;height:12px;background:#238636;border-radius:2px;"></span> Visited</span>';
+        html += '<span style="display:flex;align-items:center;gap:0.25rem;"><span style="width:12px;height:12px;background:#f0883e;border-radius:2px;"></span> Current</span>';
+        html += '<span style="display:flex;align-items:center;gap:0.25rem;"><span style="width:12px;height:12px;background:#161b22;border:1px solid #30363d;border-radius:2px;"></span> Water</span>';
+        html += '</div>';
+
+        html += '</div>';
+
+        return html;
+    }
 
     // Graph Visualization
     function renderGraphViz(step) {
