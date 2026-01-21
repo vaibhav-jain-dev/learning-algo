@@ -11,9 +11,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/html/v2"
@@ -61,13 +59,12 @@ func main() {
 	// Middleware
 	app.Use(recover.New())
 
-	// Gzip compression for all responses (reduces transfer size by ~70%)
-	app.Use(compress.New(compress.Config{
-		Level: compress.LevelBestSpeed, // Fast compression, good balance
-	}))
-
-	// ETag support for caching validation
-	app.Use(etag.New())
+	// Note: Compression and ETag disabled for now - was causing CSS issues
+	// Can be re-enabled in production after testing
+	// app.Use(compress.New(compress.Config{
+	// 	Level: compress.LevelBestSpeed,
+	// }))
+	// app.Use(etag.New())
 
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} - ${method} ${path} (${latency})\n",
@@ -193,25 +190,10 @@ func main() {
 		}()
 	}
 
-	// Static files with caching headers for browser caching
-	app.Static("/static", "./frontend/static", fiber.Static{
-		Compress:  true,
-		ByteRange: true,
-		Browse:    false,
-		MaxAge:    86400, // 1 day cache in browser
-	})
-	app.Static("/assets", "./frontend/assets", fiber.Static{
-		Compress:  true,
-		ByteRange: true,
-		Browse:    false,
-		MaxAge:    86400,
-	})
-	app.Static("/problems", "./problems", fiber.Static{
-		Compress:  true,
-		ByteRange: true,
-		Browse:    false,
-		MaxAge:    3600, // 1 hour for problem files
-	})
+	// Static files - simple config for development
+	app.Static("/static", "./frontend/static")
+	app.Static("/assets", "./frontend/assets")
+	app.Static("/problems", "./problems")
 
 	// Note: Page-level caching can be enabled for production by uncommenting below
 	// For development, it's disabled to allow live changes
