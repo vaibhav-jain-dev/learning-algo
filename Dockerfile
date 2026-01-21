@@ -1,6 +1,17 @@
 # DSAlgo Learn Platform - Dockerfile
 # Optimized multi-stage build for minimal image size
 # Target: < 150MB compressed
+#
+# DEPENDENCY CACHING STRATEGY:
+# Each stage copies dependency files (go.mod, requirements.txt, package.json)
+# BEFORE source code. This creates cached layers that only rebuild when
+# dependencies change, not when code changes.
+#
+# Build stages:
+#   1. go-builder:      Compiles Go backend (caches go.mod/go.sum)
+#   2. go-extractor:    Extracts minimal Go toolchain
+#   3. frontend-builder: Builds frontend assets (caches package.json)
+#   4. runtime:         Final image with Python + Go + app (caches requirements.txt)
 
 # =============================================================================
 # Stage 1: Build Go backend
@@ -12,15 +23,16 @@ WORKDIR /build
 # Install build dependencies
 RUN apk add --no-cache git
 
-# Copy go.mod first for better layer caching
-COPY backend/go.mod ./
+# DEPENDENCY CACHING: Copy dependency files FIRST, before source code
+# This ensures dependencies are only re-downloaded when go.mod/go.sum change
+COPY backend/go.mod backend/go.sum ./
 
-# Copy backend source
+# Download dependencies (cached layer - only rebuilds when go.mod/go.sum change)
+RUN go mod download && go mod verify
+
+# NOW copy backend source code (changes here won't invalidate dependency cache)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
-
-# Download dependencies and generate go.sum
-RUN go mod tidy
 
 # Build the binary with maximum optimizations
 # -ldflags="-w -s" strips debug info, reduces ~30% size
@@ -42,7 +54,32 @@ RUN mkdir -p /go-minimal/bin /go-minimal/src /go-minimal/pkg && \
     cp -r /usr/local/go/pkg /go-minimal/
 
 # =============================================================================
-# Stage 3: Minimal Python runtime
+# Stage 3: Frontend builder (for npm dependencies if package.json exists)
+# =============================================================================
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /frontend
+
+# DEPENDENCY CACHING: Copy package files FIRST
+# Only rebuilds when package.json or package-lock.json change
+COPY frontend/package*.json ./
+
+# Install dependencies (cached layer)
+# Use || true to gracefully handle projects without package.json
+RUN if [ -f package.json ]; then \
+        npm ci --only=production 2>/dev/null || npm install --only=production; \
+    fi
+
+# Copy frontend source (changes here won't invalidate dependency cache)
+COPY frontend/ ./
+
+# Build frontend if build script exists
+RUN if [ -f package.json ] && grep -q '"build"' package.json; then \
+        npm run build; \
+    fi
+
+# =============================================================================
+# Stage 4: Minimal Python runtime
 # =============================================================================
 FROM python:3.12-alpine AS runtime
 
@@ -56,6 +93,14 @@ RUN apk add --no-cache \
     wget \
     && rm -rf /var/cache/apk/* /tmp/*
 
+# PYTHON DEPENDENCY CACHING: Copy requirements FIRST
+# Only rebuilds when requirements.txt changes
+WORKDIR /app
+COPY requirements.txt ./
+
+# Install Python dependencies (cached layer - only rebuilds when requirements.txt changes)
+RUN pip install --no-cache-dir -r requirements.txt 2>/dev/null || true
+
 # Copy minimal Go toolchain from extractor
 COPY --from=go-extractor /go-minimal /usr/local/go
 
@@ -65,14 +110,15 @@ ENV GOPATH="/go"
 ENV GOCACHE="/app/.go-cache"
 ENV PATH="/usr/local/go/bin:${GOPATH}/bin:${PATH}"
 
-# Set working directory
-WORKDIR /app
+# Python optimization
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 # Copy built server binary from builder
 COPY --from=go-builder /build/server ./server
 
-# Copy frontend, problems, topics, and docs
-COPY frontend/ ./frontend/
+# Copy frontend (use built assets if available, otherwise source)
+COPY --from=frontend-builder /frontend ./frontend/
 COPY problems/ ./problems/
 COPY topics/ ./topics/
 COPY docs/ ./docs/

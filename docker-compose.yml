@@ -188,10 +188,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # Mount for live development
-      - ./problems:/app/problems:ro
-      - ./frontend:/app/frontend:ro
-      - ./topics:/app/topics:ro
+      # PRODUCTION: Only persistent data volumes, no code mounts
+      # Code is COPY'd in Dockerfile for consistent deployments
       # Go build cache for kernel warmup
       - dsalgo-learn-go-cache:/app/.go-cache
       # State persistence for execution tracking
@@ -274,10 +272,14 @@ services:
     ports:
       - "8080:8080"
     volumes:
+      # DEV: Mount source code for hot reload (air watches for changes)
+      # Code changes trigger automatic server restart via air
       - ./backend:/app/backend:ro
       - ./frontend:/app/frontend:ro
       - ./problems:/app/problems:ro
       - ./topics:/app/topics:ro
+      - ./docs:/app/docs:ro
+      # Persistent data volumes
       - dsalgo-learn-go-cache:/app/.go-cache
       - dsalgo-learn-state:/app/state
     environment:

@@ -1,0 +1,15 @@
+{
+  "name": "dsalgo-learn-frontend",
+  "version": "1.0.0",
+  "description": "DSAlgo Learn Platform - Frontend",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build step required - static assets'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "_comment": "Add npm dependencies here. Docker caching ensures dependencies are only re-installed when package.json changes."
+}

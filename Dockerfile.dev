@@ -1,5 +1,11 @@
 # DSAlgo Learn Platform - Development Dockerfile
 # Optimized for hot-reload development with minimal footprint
+#
+# DEPENDENCY CACHING STRATEGY:
+# - Go: go.mod/go.sum copied first, then go mod download
+# - Python: requirements.txt copied first, then pip install
+# - Frontend: package.json copied first (if npm needed)
+# This ensures dependencies are only re-downloaded when dependency files change.
 
 FROM golang:1.21-alpine
 
@@ -8,6 +14,8 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     git \
+    nodejs \
+    npm \
     && rm -rf /var/cache/apk/*
 
 # Install air for Go hot reload
@@ -15,11 +23,25 @@ RUN go install github.com/air-verse/air@latest
 
 WORKDIR /app
 
-# Copy go mod files and download deps
-COPY backend/go.mod backend/go.sum* ./backend/
-RUN cd backend && go mod download 2>/dev/null || true
+# =============================================================================
+# DEPENDENCY CACHING: Copy dependency files FIRST, before source code
+# =============================================================================
 
-# Copy source (will be overridden by volume mount)
+# Go dependencies (cached layer)
+COPY backend/go.mod backend/go.sum ./backend/
+RUN cd backend && go mod download && go mod verify
+
+# Python dependencies (cached layer)
+COPY requirements.txt ./
+RUN pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true
+
+# Frontend dependencies (cached layer)
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm install 2>/dev/null || true
+
+# =============================================================================
+# NOW copy source code (changes here won't invalidate dependency cache)
+# =============================================================================
 COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
