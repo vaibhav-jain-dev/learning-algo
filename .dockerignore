@@ -12,7 +12,8 @@
 # Documentation
 *.md
 !README.md
-docs/
+!docs/
+!docs/SSH-SETUP-GUIDE.md
 
 # Tests
 *_test.go
