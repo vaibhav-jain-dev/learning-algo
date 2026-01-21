@@ -7,11 +7,15 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/html/v2"
@@ -25,9 +29,13 @@ import (
 )
 
 func main() {
+	// Check if running in production mode
+	isProd := os.Getenv("GO_ENV") == "production"
+
 	// Initialize template engine
 	engine := html.New("./frontend/templates", ".html")
-	engine.Reload(true)
+	// Only reload templates in development (improves performance in production)
+	engine.Reload(!isProd)
 
 	// Add custom template functions
 	engine.AddFunc("safeHTML", func(s string) template.HTML {
@@ -54,6 +62,15 @@ func main() {
 
 	// Middleware
 	app.Use(recover.New())
+
+	// Gzip compression for all responses (reduces transfer size by ~70%)
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelBestSpeed, // Fast compression, good balance
+	}))
+
+	// ETag support for caching validation
+	app.Use(etag.New())
+
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} - ${method} ${path} (${latency})\n",
 	}))
@@ -178,10 +195,33 @@ func main() {
 		}()
 	}
 
-	// Static files
-	app.Static("/static", "./frontend/static")
-	app.Static("/assets", "./frontend/assets")
-	app.Static("/problems", "./problems") // Serve problem files (solutions, etc.)
+	// Static files with aggressive caching (1 year for immutable assets)
+	staticConfig := fiber.Static{
+		Compress:      true,
+		ByteRange:     true,
+		Browse:        false,
+		CacheDuration: 365 * 24 * time.Hour, // 1 year cache for static assets
+		MaxAge:        31536000,              // 1 year in seconds
+	}
+	app.Static("/static", "./frontend/static", staticConfig)
+	app.Static("/assets", "./frontend/assets", staticConfig)
+	app.Static("/problems", "./problems", staticConfig) // Serve problem files (solutions, etc.)
+
+	// Cache index pages for faster subsequent loads (5 minutes)
+	app.Use(cache.New(cache.Config{
+		Next: func(c *fiber.Ctx) bool {
+			// Skip caching for API routes, WebSocket, and POST requests
+			path := c.Path()
+			return c.Method() != "GET" ||
+				strings.HasPrefix(path, "/api/") ||
+				strings.HasPrefix(path, "/ws/") ||
+				strings.HasPrefix(path, "/htmx/") ||
+				strings.HasPrefix(path, "/static/") ||
+				strings.HasPrefix(path, "/assets/")
+		},
+		Expiration:   5 * time.Minute,
+		CacheControl: true,
+	}))
 
 	// Page routes (HTMX) - Unified routes with tab navigation
 	app.Get("/", h.Home)

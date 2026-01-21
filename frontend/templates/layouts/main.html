@@ -8,14 +8,22 @@
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-    <!-- Preconnect to external domains for better performance -->
+    <!-- DNS prefetch and preconnect for external domains -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
 
-    <!-- Preload critical resources -->
+    <!-- Preload critical resources for faster FCP -->
     <link rel="preload" href="/static/css/styles.css" as="style">
+    <link rel="preload" href="/static/js/lazy-loader.js" as="script">
+    <link rel="preload" href="/static/js/state-manager.js" as="script">
 
     <!-- Critical CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
