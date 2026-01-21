@@ -668,8 +668,9 @@
 
     // Algorithm: Sorted Squared Array
     function runSortedSquaredArray(example, config, complexity) {
-        if (!example || !example.input || !example.input.array) return null;
-        var arr = example.input.array;
+        // Handle multiple input formats
+        var arr = example.input.array || example.input.arr1 || example.input.nums;
+        if (!example || !example.input || !arr) return null;
         var expected = example.output;
         var result = new Array(arr.length);
         var left = 0, right = arr.length - 1;
@@ -784,8 +785,9 @@
 
     // Algorithm: Spiral Traverse
     function runSpiralTraverse(example, config, complexity) {
-        if (!example || !example.input || !example.input.matrix) return null;
-        var matrix = example.input.matrix;
+        // Handle multiple input formats
+        var matrix = example.input.matrix || example.input.grid || example.input.array;
+        if (!example || !example.input || !matrix) return null;
         var expected = example.output;
         var steps = [];
         var result = [];
@@ -859,9 +861,13 @@
 
     // Algorithm: Tournament Winner (Hash Counting)
     function runTournamentWinner(example, config, complexity) {
-        if (!example || !example.input || !example.input.competitions || !example.input.results) return null;
-        var competitions = example.input.competitions;
-        var results = example.input.results;
+        // Handle multiple input formats
+        var competitions = example.input.competitions || example.input.matches || example.input.bracket;
+        var results = example.input.results || example.input.outcomes || example.input.scores;
+        if (!example || !example.input || !competitions) {
+            // Fall back to generic if no structured data
+            return runGenericVisualization(example, config, complexity);
+        }
         var expected = example.output;
         var steps = [];
         var scores = {};
@@ -914,8 +920,10 @@
 
     // Algorithm: Non-Constructible Change (Greedy)
     function runNonConstructibleChange(example, config, complexity) {
-        if (!example || !example.input || !example.input.coins) return null;
-        var coins = example.input.coins.slice().sort(function(a, b) { return a - b; });
+        // Handle multiple input formats
+        var coins = example.input.coins || example.input.array || example.input.nums;
+        if (!example || !example.input || !coins) return null;
+        coins = coins.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
         var steps = [];
         var currentChange = 0;
@@ -968,8 +976,9 @@
 
     // Algorithm: Matrix Transpose
     function runMatrixTranspose(example, config, complexity) {
-        if (!example || !example.input || !example.input.matrix) return null;
-        var matrix = example.input.matrix;
+        // Handle multiple input formats
+        var matrix = example.input.matrix || example.input.grid || example.input.array;
+        if (!example || !example.input || !matrix) return null;
         var expected = example.output;
         var steps = [];
         var rows = matrix.length;
@@ -1081,8 +1090,9 @@
 
     // Algorithm: Monotonic Array (Linear Scan)
     function runMonotonicArray(example, config, complexity) {
-        if (!example || !example.input || !example.input.array) return null;
-        var arr = example.input.array;
+        // Handle multiple input formats
+        var arr = example.input.array || example.input.nums || example.input.arr;
+        if (!example || !example.input || !arr) return null;
         var expected = example.output;
         var steps = [];
         var isIncreasing = true;
@@ -1134,8 +1144,9 @@
 
     // Algorithm: Array of Products (Prefix-Suffix)
     function runArrayOfProducts(example, config, complexity) {
-        if (!example || !example.input || !example.input.array) return null;
-        var arr = example.input.array;
+        // Handle multiple input formats
+        var arr = example.input.array || example.input.nums || example.input.arr;
+        if (!example || !example.input || !arr) return null;
         var expected = example.output;
         var steps = [];
         var n = arr.length;
@@ -1196,8 +1207,10 @@
 
     // Algorithm: First Duplicate Value (Index Marking)
     function runFirstDuplicateValue(example, config, complexity) {
-        if (!example || !example.input || !example.input.array) return null;
-        var arr = example.input.array.slice();
+        // Handle multiple input formats
+        var inputArr = example.input.array || example.input.nums || example.input.arr;
+        if (!example || !example.input || !inputArr) return null;
+        var arr = inputArr.slice();
         var expected = example.output;
         var steps = [];
 
@@ -1308,8 +1321,9 @@
 
     // Algorithm: Longest Peak
     function runLongestPeak(example, config, complexity) {
-        if (!example || !example.input || !example.input.array) return null;
-        var arr = example.input.array;
+        // Handle multiple input formats
+        var arr = example.input.array || example.input.nums || example.input.arr;
+        if (!example || !example.input || !arr) return null;
         var expected = example.output;
         var steps = [];
         var longestPeak = 0;
