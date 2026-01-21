@@ -734,3 +734,26 @@ func (h *Handlers) Redis(c *fiber.Ctx) error {
 		"HasLessons":   true,
 	})
 }
+
+// DeploymentGuide renders the SSH deployment guide page
+func (h *Handlers) DeploymentGuide(c *fiber.Ctx) error {
+	// Read the SSH setup guide markdown from docs directory
+	mdContent, err := os.ReadFile("./docs/SSH-SETUP-GUIDE.md")
+	if err != nil {
+		// Fallback to .github/workflows location
+		mdContent, err = os.ReadFile("./.github/workflows/SSH-SETUP-GUIDE.md")
+		if err != nil {
+			return c.Status(404).SendString("Deployment guide not found")
+		}
+	}
+
+	var buf bytes.Buffer
+	if err := h.md.Convert(mdContent, &buf); err != nil {
+		return c.Status(500).SendString("Failed to parse guide")
+	}
+
+	return c.Render("pages/deployment-guide", fiber.Map{
+		"Title":   "Deployment Instructions",
+		"Content": buf.String(),
+	})
+}

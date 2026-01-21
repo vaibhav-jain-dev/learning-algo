@@ -71,10 +71,11 @@ WORKDIR /app
 # Copy built server binary from builder
 COPY --from=go-builder /build/server ./server
 
-# Copy frontend, problems, and topics
+# Copy frontend, problems, topics, and docs
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 COPY topics/ ./topics/
+COPY docs/ ./docs/
 
 # Create non-root user and necessary directories
 RUN adduser -D -s /bin/sh dsalgo && \
