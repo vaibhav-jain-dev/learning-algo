@@ -313,12 +313,71 @@
         }
     }
 
-    // Generic visualization that shows input/output/complexity
+    // Generic visualization - tries to find arrays/data and provide step-by-step animation
     function runGenericVisualization(example, config, complexity) {
         var steps = [];
         var inputStr = JSON.stringify(example.input, null, 2);
         var outputStr = JSON.stringify(example.output);
 
+        // Try to find an array in the input (any field name)
+        var arr = null;
+        var arrName = '';
+        var input = example.input || {};
+        for (var key in input) {
+            if (Array.isArray(input[key]) && input[key].length > 0) {
+                // Check if it's a simple array (not 2D)
+                if (!Array.isArray(input[key][0]) || typeof input[key][0] === 'string') {
+                    arr = input[key];
+                    arrName = key;
+                    break;
+                }
+            }
+        }
+
+        // If we found an array, show array-based visualization
+        if (arr && arr.length > 0 && arr.length <= 20) {
+            // Step 1: Introduction
+            steps.push({
+                vizType: 'array-scan',
+                array: arr.slice(),
+                currentIndex: -1,
+                status: 'Initialize: ' + config.name,
+                explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
+                    '<strong>Input ' + arrName + ':</strong> [' + arr.slice(0, 10).join(', ') + (arr.length > 10 ? '...' : '') + ']<br>' +
+                    '<strong>Expected:</strong> ' + (typeof example.output === 'object' ? JSON.stringify(example.output) : example.output) + '<br><br>' +
+                    '<div style="background:#1f6feb22;padding:0.75rem;border-radius:6px;border-left:3px solid #58a6ff;">' +
+                    '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
+            });
+
+            // Step 2-N: Scan through array
+            var scanLimit = Math.min(arr.length, 8);
+            for (var i = 0; i < scanLimit; i++) {
+                steps.push({
+                    vizType: 'array-scan',
+                    array: arr.slice(),
+                    currentIndex: i,
+                    status: 'Processing index ' + i + ': ' + arr[i],
+                    explanation: '🔍 <strong>Step ' + (i + 1) + ':</strong> Processing ' + arrName + '[' + i + '] = ' + arr[i] + '<br><br>' +
+                        'Examining element at index ' + i + ' according to the algorithm logic.'
+                });
+            }
+
+            // Final step
+            steps.push({
+                vizType: 'array-scan',
+                array: arr.slice(),
+                currentIndex: -1,
+                result: example.output,
+                status: 'Complete: ' + (typeof example.output === 'object' ? JSON.stringify(example.output) : example.output),
+                explanation: '✅ <strong>Complete!</strong><br><br>' +
+                    '<strong>Result:</strong> ' + (typeof example.output === 'object' ? JSON.stringify(example.output) : example.output) + '<br><br>' +
+                    (example.explanation ? example.explanation : 'Algorithm finished processing all elements.')
+            });
+
+            return steps;
+        }
+
+        // Fallback: Basic input/output visualization
         steps.push({
             vizType: 'generic',
             status: 'Problem: ' + config.name,
@@ -332,7 +391,7 @@
             vizType: 'generic',
             input: example.input,
             status: 'Input',
-            explanation: '📥 <strong>Input:</strong><br><pre style="background:#161b22;padding:0.5rem;border-radius:4px;overflow-x:auto;">' +
+            explanation: '📥 <strong>Input:</strong><br><pre style="background:#2d333b;padding:0.5rem;border-radius:4px;overflow-x:auto;color:#e6edf3;">' +
                 (example.inputRaw || inputStr) + '</pre>'
         });
 
@@ -348,7 +407,7 @@
             vizType: 'generic',
             output: example.output,
             status: 'Output: ' + (example.outputRaw || outputStr),
-            explanation: '📤 <strong>Output:</strong><br><pre style="background:#161b22;padding:0.5rem;border-radius:4px;overflow-x:auto;">' +
+            explanation: '📤 <strong>Output:</strong><br><pre style="background:#2d333b;padding:0.5rem;border-radius:4px;overflow-x:auto;color:#e6edf3;">' +
                 (example.outputRaw || outputStr) + '</pre><br><br>' +
                 '✅ <strong>Complete!</strong>'
         });
@@ -8196,11 +8255,12 @@
     function renderArrayScanViz(step) {
         if (!step.array) return '<p>No data</p>';
         var html = '';
+        var currentIdx = step.currentIdx !== undefined ? step.currentIdx : step.currentIndex;
 
         html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
         step.array.forEach(function(val, idx) {
-            var isCurrent = idx === step.currentIdx;
-            var isProcessed = idx < (step.currentIdx || 0);
+            var isCurrent = idx === currentIdx;
+            var isProcessed = idx < (currentIdx !== undefined ? currentIdx : 0);
             var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : (isProcessed ? '#1f6feb33' : '#21262d');
             var border = isCurrent ? '2px solid #3fb950' : (isProcessed ? '2px solid #58a6ff' : '2px solid #30363d');
             html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:bold;font-size:1.1rem;">' + val + '</div>';
