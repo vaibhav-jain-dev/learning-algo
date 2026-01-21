@@ -10,7 +10,7 @@
     const problem = {
         name: 'Block Matrix Transpose',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'spiral-matrix',
         parent: '06-transpose-matrix',
         description: 'Transpose a matrix where elements are grouped into blocks of size k×k.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',

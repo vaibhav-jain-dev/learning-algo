@@ -10,7 +10,7 @@
     const problem = {
         name: 'Tournament Tiebreakers',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'hash-counting',
         parent: '04-tournament-winner',
         description: 'Same as tournament winner but with tiebreaker rules: if points are equal, the team with more head-to-head wins against tied opponents wins.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',

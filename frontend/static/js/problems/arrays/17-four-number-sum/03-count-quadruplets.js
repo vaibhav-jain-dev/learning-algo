@@ -10,7 +10,7 @@
     const problem = {
         name: 'Count Quadruplets',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'sort-three-sum',
         parent: '17-four-number-sum',
         description: 'Count the number of quadruplets (i, j, k, l) where i < j < k < l and array[i] + array[j] + array[k] + array[l] = target. Elements with same values but different indices are counted separately.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,29 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 1, 1, 1, 2, 2], target = 5"
-},
+          "array": [
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "target": 5
+        },
         output: "12\nExplanation: Multiple combinations of indices give sum 5",
         explanation: 'Given the input, the algorithm processes it to produce 12\nExplanation: Multiple combinations of indices give sum 5'
     },
     {
         input: {
-        "raw": "array = [1, 2, 3, 4], target = 10"
-},
+          "array": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "target": 10
+        },
         output: "1\nExplanation: Only (1, 2, 3, 4) = 10",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Only (1, 2, 3, 4) = 10'
     }

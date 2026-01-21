@@ -10,7 +10,7 @@
     const problem = {
         name: 'Kth Smallest Squared',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'two-pointer-sorted-squared',
         parent: '03-sorted-squared-array',
         description: 'Given a sorted array of integers and an integer k, find the k-th smallest element after squaring all elements, without fully sorting the squared array.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,28 @@
         examples: [
     {
         input: {
-        "raw": "array = [-4, -2, 0, 1, 3], k = 3"
-},
+          "array": [
+            -4,
+            -2,
+            0,
+            1,
+            3
+          ],
+          "k": 3
+        },
         output: "1\nExplanation: Squared array sorted: [0, 1, 4, 9, 16], 3rd element is 1",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Squared array sorted: [0, 1, 4, 9, 16], 3rd element is 1'
     },
     {
         input: {
-        "raw": "array = [-3, -1, 2, 4], k = 2"
-},
+          "array": [
+            -3,
+            -1,
+            2,
+            4
+          ],
+          "k": 2
+        },
         output: "1\nExplanation: Squared array sorted: [1, 4, 9, 16], 2nd element is 1",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Squared array sorted: [1, 4, 9, 16], 2nd element is 1'
     }

@@ -10,7 +10,7 @@
     const problem = {
         name: 'Spiral Matrix Transpose',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'spiral-matrix',
         parent: '06-transpose-matrix',
         description: 'Read a matrix in spiral order and write the values in spiral order to a transposed-dimension matrix.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',

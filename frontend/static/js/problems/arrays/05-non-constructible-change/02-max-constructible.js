@@ -10,7 +10,7 @@
     const problem = {
         name: 'Max Constructible',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'greedy-change',
         parent: '05-non-constructible-change',
         description: 'Given coins and a budget of K additional coins (each with value 1), find the maximum consecutive range starting from 1 that you can construct.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,25 @@
         examples: [
     {
         input: {
-        "raw": "coins = [1, 5, 10], budget = 2"
-},
+          "coins": [
+            1,
+            5,
+            10
+          ],
+          "budget": 2
+        },
         output: "8\nExplanation: Add two 1s to get [1, 1, 1, 5, 10]. Can make values 1-8.",
         explanation: 'Given the input, the algorithm processes it to produce 8\nExplanation: Add two 1s to get [1, 1, 1, 5, 10]. Can make values 1-8.'
     },
     {
         input: {
-        "raw": "coins = [1, 2, 4], budget = 0"
-},
+          "coins": [
+            1,
+            2,
+            4
+          ],
+          "budget": 0
+        },
         output: "7\nExplanation: Without adding coins, can already make 1-7.",
         explanation: 'Given the input, the algorithm processes it to produce 7\nExplanation: Without adding coins, can already make 1-7.'
     }

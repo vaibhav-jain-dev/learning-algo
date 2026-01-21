@@ -10,7 +10,7 @@
     const problem = {
         name: 'Shortest Unsorted With K',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'linear-scan',
         parent: '18-subarray-sort',
         description: 'Given an integer array, find the shortest contiguous subarray that, if sorted, would result in the whole array being sorted. Return the length of that subarray.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,28 @@
         examples: [
     {
         input: {
-        "raw": "array = [2, 6, 4, 8, 10, 9, 15]"
-},
+          "array": [
+            2,
+            6,
+            4,
+            8,
+            10,
+            9,
+            15
+          ]
+        },
         output: "5\nExplanation: Sort subarray [6, 4, 8, 10, 9] to get sorted array",
         explanation: 'Given the input, the algorithm processes it to produce 5\nExplanation: Sort subarray [6, 4, 8, 10, 9] to get sorted array'
     },
     {
         input: {
-        "raw": "array = [1, 2, 3, 4]"
-},
+          "array": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
         output: "0\nExplanation: Already sorted",
         explanation: 'Given the input, the algorithm processes it to produce 0\nExplanation: Already sorted'
     }

@@ -10,7 +10,7 @@
     const problem = {
         name: 'Min Matches Guarantee',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'hash-counting',
         parent: '04-tournament-winner',
         description: 'Given n teams and their current scores, find the minimum number of remaining matches needed to guarantee a single winner.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,23 @@
         examples: [
     {
         input: {
-        "raw": "scores = [10, 7, 5]"
-},
+          "scores": [
+            10,
+            7,
+            5
+          ]
+        },
         output: "1\nExplanation: Leader needs 1 more win to be uncatchable.",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Leader needs 1 more win to be uncatchable.'
     },
     {
         input: {
-        "raw": "scores = [6, 6, 6]"
-},
+          "scores": [
+            6,
+            6,
+            6
+          ]
+        },
         output: "2\nExplanation: Two matches needed to break the tie.",
         explanation: 'Given the input, the algorithm processes it to produce 2\nExplanation: Two matches needed to break the tie.'
     }

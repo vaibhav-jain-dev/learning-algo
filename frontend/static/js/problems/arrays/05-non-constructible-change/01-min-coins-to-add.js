@@ -10,7 +10,7 @@
     const problem = {
         name: 'Min Coins To Add',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'greedy-change',
         parent: '05-non-constructible-change',
         description: 'Given an array of coins (positive integers) and a target value, find the minimum number of coins you need to add so that you can construct every value from 1 to target (inclusive).',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,22 +28,36 @@
         examples: [
     {
         input: {
-        "raw": "coins = [1, 3], target = 6"
-},
+          "coins": [
+            1,
+            3
+          ],
+          "target": 6
+        },
         output: "1\nExplanation: Add coin with value 2. Now with [1, 2, 3] you can make all values 1-6.",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Add coin with value 2. Now with [1, 2, 3] you can make all values 1-6.'
     },
     {
         input: {
-        "raw": "coins = [1, 5, 10], target = 20"
-},
+          "coins": [
+            1,
+            5,
+            10
+          ],
+          "target": 20
+        },
         output: "2\nExplanation: Add coins with values 2 and 4. Now you can make all values 1-20.",
         explanation: 'Given the input, the algorithm processes it to produce 2\nExplanation: Add coins with values 2 and 4. Now you can make all values 1-20.'
     },
     {
         input: {
-        "raw": "coins = [1, 2, 5], target = 10"
-},
+          "coins": [
+            1,
+            2,
+            5
+          ],
+          "target": 10
+        },
         output: "0\nExplanation: With [1, 2, 5] you can already make all values 1-10.",
         explanation: 'Given the input, the algorithm processes it to produce 0\nExplanation: With [1, 2, 5] you can already make all values 1-10.'
     }

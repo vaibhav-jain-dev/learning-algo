@@ -10,7 +10,7 @@
     const problem = {
         name: 'Merge Sorted Arrays With Squares',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'two-pointer-sorted-squared',
         parent: '03-sorted-squared-array',
         description: 'Given two sorted arrays, square all elements and merge them into a single sorted array.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,32 @@
         examples: [
     {
         input: {
-        "raw": "arr1 = [-3, -1, 2], arr2 = [-2, 4]"
-},
+          "arr1": [
+            -3,
+            -1,
+            2
+          ],
+          "arr2": [
+            -2,
+            4
+          ]
+        },
         output: "[1, 4, 4, 9, 16]",
         explanation: 'Given the input, the algorithm processes it to produce [1, 4, 4, 9, 16]'
     },
     {
         input: {
-        "raw": "arr1 = [-5, 0, 3], arr2 = [1, 2, 6]"
-},
+          "arr1": [
+            -5,
+            0,
+            3
+          ],
+          "arr2": [
+            1,
+            2,
+            6
+          ]
+        },
         output: "[0, 1, 4, 9, 25, 36]",
         explanation: 'Given the input, the algorithm processes it to produce [0, 1, 4, 9, 25, 36]'
     }

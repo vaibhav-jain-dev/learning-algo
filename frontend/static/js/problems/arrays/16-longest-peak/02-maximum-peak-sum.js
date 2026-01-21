@@ -10,7 +10,7 @@
     const problem = {
         name: 'Maximum Peak Sum',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'peak-expansion',
         parent: '16-longest-peak',
         description: 'Given an array of integers, find the peak with the maximum sum of elements. A peak consists of strictly increasing elements to a tip, then strictly decreasing. Return the sum of that peak.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,26 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 10, 2, 100, 50, 1]"
-},
+          "array": [
+            1,
+            10,
+            2,
+            100,
+            50,
+            1
+          ]
+        },
         output: "153\nExplanation: Peak [2, 100, 50, 1] has sum 153",
         explanation: 'Given the input, the algorithm processes it to produce 153\nExplanation: Peak [2, 100, 50, 1] has sum 153'
     },
     {
         input: {
-        "raw": "array = [1, 3, 2]"
-},
+          "array": [
+            1,
+            3,
+            2
+          ]
+        },
         output: "6\nExplanation: Peak [1, 3, 2] has sum 6",
         explanation: 'Given the input, the algorithm processes it to produce 6\nExplanation: Peak [1, 3, 2] has sum 6'
     }

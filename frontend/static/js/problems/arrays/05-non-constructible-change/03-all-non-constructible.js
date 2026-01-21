@@ -10,7 +10,7 @@
     const problem = {
         name: 'All Non Constructible',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'greedy-change',
         parent: '05-non-constructible-change',
         description: 'Find all values up to a given limit that cannot be constructed from the given coins.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,25 @@
         examples: [
     {
         input: {
-        "raw": "coins = [1, 2, 5], limit = 10"
-},
+          "coins": [
+            1,
+            2,
+            5
+          ],
+          "limit": 10
+        },
         output: "[] (all values 1-10 can be constructed)",
         explanation: 'Given the input, the algorithm processes it to produce [] (all values 1-10 can be constructed)'
     },
     {
         input: {
-        "raw": "coins = [1, 5, 10], limit = 20"
-},
+          "coins": [
+            1,
+            5,
+            10
+          ],
+          "limit": 20
+        },
         output: "[7, 8, 9, 17, 18, 19, 20]",
         explanation: 'Given the input, the algorithm processes it to produce [7, 8, 9, 17, 18, 19, 20]'
     }

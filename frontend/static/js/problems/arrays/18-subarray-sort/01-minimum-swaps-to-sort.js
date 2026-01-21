@@ -10,7 +10,7 @@
     const problem = {
         name: 'Minimum Swaps To Sort',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'linear-scan',
         parent: '18-subarray-sort',
         description: 'Find the minimum number of swaps needed to sort an array of distinct integers.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,26 @@
         examples: [
     {
         input: {
-        "raw": "array = [4, 3, 2, 1]"
-},
+          "array": [
+            4,
+            3,
+            2,
+            1
+          ]
+        },
         output: "2\nExplanation: Swap 4<->1, then 3<->2",
         explanation: 'Given the input, the algorithm processes it to produce 2\nExplanation: Swap 4<->1, then 3<->2'
     },
     {
         input: {
-        "raw": "array = [1, 5, 4, 3, 2]"
-},
+          "array": [
+            1,
+            5,
+            4,
+            3,
+            2
+          ]
+        },
         output: "2\nExplanation: Swap 5<->2, then 4<->3",
         explanation: 'Given the input, the algorithm processes it to produce 2\nExplanation: Swap 5<->2, then 4<->3'
     }

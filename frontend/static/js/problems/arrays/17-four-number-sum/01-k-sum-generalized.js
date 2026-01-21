@@ -10,7 +10,7 @@
     const problem = {
         name: 'K Sum Generalized',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'sort-three-sum',
         parent: '17-four-number-sum',
         description: 'Given an array of integers and integers k and target, find all unique combinations of k numbers that sum to target.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,32 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 2, 3, 4, 5], k = 3, target = 9"
-},
+          "array": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "k": 3,
+          "target": 9
+        },
         output: "[[1, 3, 5], [2, 3, 4]]",
         explanation: 'Given the input, the algorithm processes it to produce [[1, 3, 5], [2, 3, 4]]'
     },
     {
         input: {
-        "raw": "array = [1, 0, -1, 0, -2, 2], k = 4, target = 0"
-},
+          "array": [
+            1,
+            0,
+            -1,
+            0,
+            -2,
+            2
+          ],
+          "k": 4,
+          "target": 0
+        },
         output: "[[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]",
         explanation: 'Given the input, the algorithm processes it to produce [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]'
     }

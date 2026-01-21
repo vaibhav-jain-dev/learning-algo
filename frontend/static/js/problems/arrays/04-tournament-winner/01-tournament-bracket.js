@@ -10,7 +10,7 @@
     const problem = {
         name: 'Tournament Bracket',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'hash-counting',
         parent: '04-tournament-winner',
         description: 'You are organizing a single-elimination tournament bracket. In a single-elimination tournament, teams are paired up and compete against each other. The loser of each match is immediately eliminated from the tournament, while the winner advances to the next round. This process continues until only one team remains - the tournament champion. Given: - A 2D array bracket representing the tournament rounds, where each inner array contains pairs of teams competing against each other in that round - A ',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',

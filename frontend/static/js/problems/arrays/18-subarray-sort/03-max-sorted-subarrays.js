@@ -10,7 +10,7 @@
     const problem = {
         name: 'Max Sorted Subarrays',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'linear-scan',
         parent: '18-subarray-sort',
         description: 'Given an array, find the maximum number of chunks we can make to sort the array. Each chunk can be sorted independently, and after sorting all chunks and concatenating them, the result should be a sorted array.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,27 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 0, 2, 3, 4]"
-},
+          "array": [
+            1,
+            0,
+            2,
+            3,
+            4
+          ]
+        },
         output: "4\nExplanation: Chunks: [1, 0], [2], [3], [4]",
         explanation: 'Given the input, the algorithm processes it to produce 4\nExplanation: Chunks: [1, 0], [2], [3], [4]'
     },
     {
         input: {
-        "raw": "array = [4, 3, 2, 1, 0]"
-},
+          "array": [
+            4,
+            3,
+            2,
+            1,
+            0
+          ]
+        },
         output: "1\nExplanation: Only one chunk (entire array)",
         explanation: 'Given the input, the algorithm processes it to produce 1\nExplanation: Only one chunk (entire array)'
     }

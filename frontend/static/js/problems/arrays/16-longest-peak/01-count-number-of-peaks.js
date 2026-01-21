@@ -10,7 +10,7 @@
     const problem = {
         name: 'Count Number Of Peaks',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'peak-expansion',
         parent: '16-longest-peak',
         description: 'Given an array of integers, count the total number of valid peaks. A peak is an element that is strictly greater than both its neighbors. Edge elements cannot be peaks.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,22 +28,42 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 3, 2, 4, 1, 5, 2]"
-},
+          "array": [
+            1,
+            3,
+            2,
+            4,
+            1,
+            5,
+            2
+          ]
+        },
         output: "3\nExplanation: Peaks at indices 1 (3), 3 (4), and 5 (5)",
         explanation: 'Given the input, the algorithm processes it to produce 3\nExplanation: Peaks at indices 1 (3), 3 (4), and 5 (5)'
     },
     {
         input: {
-        "raw": "array = [1, 2, 3, 4, 5]"
-},
+          "array": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
         output: "0\nExplanation: No element is greater than both neighbors",
         explanation: 'Given the input, the algorithm processes it to produce 0\nExplanation: No element is greater than both neighbors'
     },
     {
         input: {
-        "raw": "array = [5, 4, 3, 4, 5]"
-},
+          "array": [
+            5,
+            4,
+            3,
+            4,
+            5
+          ]
+        },
         output: "0\nExplanation: 5 at index 4 is at the edge, not a valid peak",
         explanation: 'Given the input, the algorithm processes it to produce 0\nExplanation: 5 at index 4 is at the edge, not a valid peak'
     }

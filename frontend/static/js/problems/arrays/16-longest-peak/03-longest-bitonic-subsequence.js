@@ -10,7 +10,7 @@
     const problem = {
         name: 'Longest Bitonic Subsequence',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'peak-expansion',
         parent: '16-longest-peak',
         description: 'Given an array of integers, find the length of the longest bitonic subsequence. A bitonic subsequence first increases then decreases (not necessarily contiguous).',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,30 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 11, 2, 10, 4, 5, 2, 1]"
-},
+          "array": [
+            1,
+            11,
+            2,
+            10,
+            4,
+            5,
+            2,
+            1
+          ]
+        },
         output: "6\nExplanation: [1, 2, 10, 4, 2, 1] or [1, 2, 4, 5, 2, 1]",
         explanation: 'Given the input, the algorithm processes it to produce 6\nExplanation: [1, 2, 10, 4, 2, 1] or [1, 2, 4, 5, 2, 1]'
     },
     {
         input: {
-        "raw": "array = [1, 2, 3, 4, 5]"
-},
+          "array": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
         output: "5\nExplanation: Entire array is increasing (degenerate bitonic)",
         explanation: 'Given the input, the algorithm processes it to produce 5\nExplanation: Entire array is increasing (degenerate bitonic)'
     }

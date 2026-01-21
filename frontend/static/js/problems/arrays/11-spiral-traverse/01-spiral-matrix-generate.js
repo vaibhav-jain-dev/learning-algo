@@ -10,7 +10,7 @@
     const problem = {
         name: 'Spiral Matrix Generate',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'spiral-matrix',
         parent: '11-spiral-traverse',
         description: 'Given a positive integer n, generate an n x n matrix filled with elements from 1 to n^2 in spiral order.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,22 +28,22 @@
         examples: [
     {
         input: {
-        "raw": "n = 3"
-},
+          "n": 3
+        },
         output: "[\n    [1, 2, 3],\n    [8, 9, 4],\n    [7, 6, 5]\n]",
         explanation: 'Given the input, the algorithm processes it to produce [\n    [1, 2, 3],\n    [8, 9, 4],\n    [7, 6, 5]\n]'
     },
     {
         input: {
-        "raw": "n = 4"
-},
+          "n": 4
+        },
         output: "[\n    [1,  2,  3,  4],\n    [12, 13, 14, 5],\n    [11, 16, 15, 6],\n    [10, 9,  8,  7]\n]",
         explanation: 'Given the input, the algorithm processes it to produce [\n    [1,  2,  3,  4],\n    [12, 13, 14, 5],\n    [11, 16, 15, 6],\n    [10, 9,  8,  7]\n]'
     },
     {
         input: {
-        "raw": "n = 1"
-},
+          "n": 1
+        },
         output: "[[1]]",
         explanation: 'Given the input, the algorithm processes it to produce [[1]]'
     }

@@ -10,7 +10,7 @@
     const problem = {
         name: 'Longest Monotonic Subarray',
         difficulty: 'Medium',
-        algorithm: 'general',
+        algorithm: 'linear-scan',
         parent: '10-monotonic-array',
         description: 'Given an array of integers, find the length of the longest **contiguous** subarray that is monotonic (either entirely non-increasing or entirely non-decreasing).',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,22 +28,42 @@
         examples: [
     {
         input: {
-        "raw": "array = [1, 4, 3, 2, 5, 6, 7]"
-},
+          "array": [
+            1,
+            4,
+            3,
+            2,
+            5,
+            6,
+            7
+          ]
+        },
         output: "4\nExplanation: Subarray [2, 5, 6, 7] is non-decreasing with length 4",
         explanation: 'Given the input, the algorithm processes it to produce 4\nExplanation: Subarray [2, 5, 6, 7] is non-decreasing with length 4'
     },
     {
         input: {
-        "raw": "array = [5, 4, 3, 2, 1]"
-},
+          "array": [
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        },
         output: "5\nExplanation: The entire array is non-increasing",
         explanation: 'Given the input, the algorithm processes it to produce 5\nExplanation: The entire array is non-increasing'
     },
     {
         input: {
-        "raw": "array = [1, 2, 2, 3, 1]"
-},
+          "array": [
+            1,
+            2,
+            2,
+            3,
+            1
+          ]
+        },
         output: "4\nExplanation: Subarray [1, 2, 2, 3] is non-decreasing",
         explanation: 'Given the input, the algorithm processes it to produce 4\nExplanation: Subarray [1, 2, 2, 3] is non-decreasing'
     }

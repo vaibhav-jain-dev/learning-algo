@@ -10,7 +10,7 @@
     const problem = {
         name: 'Four Number Sum',
         difficulty: 'Hard',
-        algorithm: 'general',
+        algorithm: 'sort-three-sum',
         parent: '07-three-number-sum',
         description: 'Find all unique quadruplets in the array that sum to a target value.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
@@ -28,15 +28,31 @@
         examples: [
     {
         input: {
-        "raw": "array = [7, 6, 4, -1, 1, 2], target = 16"
-},
+          "array": [
+            7,
+            6,
+            4,
+            -1,
+            1,
+            2
+          ],
+          "target": 16
+        },
         output: "[[7, 6, 4, -1], [7, 6, 1, 2]]",
         explanation: 'Given the input, the algorithm processes it to produce [[7, 6, 4, -1], [7, 6, 1, 2]]'
     },
     {
         input: {
-        "raw": "array = [1, 0, -1, 0, -2, 2], target = 0"
-},
+          "array": [
+            1,
+            0,
+            -1,
+            0,
+            -2,
+            2
+          ],
+          "target": 0
+        },
         output: "[[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]",
         explanation: 'Given the input, the algorithm processes it to produce [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]'
     }
