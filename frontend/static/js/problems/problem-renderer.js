@@ -240,22 +240,7 @@
             html += '</div>\n';
             html += '</div>\n';
             html += '</div>\n';
-
-            // Add toggle function
-            html += '<script>\n';
-            html += 'function toggleSimilarProblems(btn) {\n';
-            html += '  var container = document.getElementById("similar-problems-container");\n';
-            html += '  if (container.style.display === "none") {\n';
-            html += '    container.style.display = "block";\n';
-            html += '    btn.innerHTML = "<span>🔗</span> Hide Related Problems";\n';
-            html += '    btn.style.background = "linear-gradient(135deg,#1f6feb,#388bfd)";\n';
-            html += '  } else {\n';
-            html += '    container.style.display = "none";\n';
-            html += '    btn.innerHTML = "<span>🔗</span> Show ' + problem.similar.length + ' Related Problems";\n';
-            html += '    btn.style.background = "linear-gradient(135deg,#238636,#2ea043)";\n';
-            html += '  }\n';
-            html += '}\n';
-            html += '</script>\n';
+            // toggleSimilarProblems is now a global function defined in ProblemRenderer
         }
 
         return html;
@@ -322,6 +307,24 @@
 
         return results;
     }
+
+    // Global toggle function for similar problems (must be global for onclick handlers in dynamic content)
+    window.toggleSimilarProblems = function(btn) {
+        var container = document.getElementById('similar-problems-container');
+        if (!container) return;
+
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            var count = container.querySelectorAll('[onclick]').length;
+            btn.innerHTML = '<span>🔗</span> Hide Related Problems';
+            btn.style.background = 'linear-gradient(135deg,#1f6feb,#388bfd)';
+        } else {
+            container.style.display = 'none';
+            var count = container.querySelectorAll('[onclick]').length;
+            btn.innerHTML = '<span>🔗</span> Show ' + count + ' Related Problems';
+            btn.style.background = 'linear-gradient(135deg,#238636,#2ea043)';
+        }
+    };
 
     // Export API
     window.ProblemRenderer = {

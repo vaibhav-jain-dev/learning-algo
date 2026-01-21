@@ -537,3 +537,224 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   Modal Styles
+   ============================================ */
+.detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #21262d;
+    border: 1px solid #30363d;
+    color: #f0f6fc;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #da3633;
+    border-color: #da3633;
+}
+
+.modal-title {
+    color: #f0f6fc;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-right: 2rem;
+}
+
+.modal-complexity {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-complexity .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.modal-complexity .badge.time {
+    background: rgba(126, 231, 135, 0.15);
+    color: #7ee787;
+}
+
+.modal-complexity .badge.space {
+    background: rgba(255, 123, 114, 0.15);
+    color: #ff7b72;
+}
+
+.modal-section {
+    margin-bottom: 1.5rem;
+}
+
+.modal-section h3 {
+    color: #58a6ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.5rem;
+}
+
+.modal-section p {
+    color: #c9d1d9;
+    line-height: 1.7;
+}
+
+.modal-section .steps-list {
+    color: #c9d1d9;
+    padding-left: 1.5rem;
+    line-height: 1.8;
+}
+
+.modal-section .steps-list li {
+    margin-bottom: 0.5rem;
+}
+
+.modal-section .code-block {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.modal-section .code-block code {
+    color: #c9d1d9;
+    white-space: pre;
+}
+
+.pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.pros-cons h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.pros h4 {
+    color: #7ee787;
+}
+
+.cons h4 {
+    color: #ff7b72;
+}
+
+.pros-cons ul {
+    color: #c9d1d9;
+    padding-left: 1.25rem;
+    line-height: 1.7;
+}
+
+.pros-cons li {
+    margin-bottom: 0.25rem;
+}
+
+.complexity-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.complexity-table th,
+.complexity-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #30363d;
+}
+
+.complexity-table th {
+    background: #21262d;
+    color: #f0f6fc;
+    font-weight: 600;
+}
+
+.complexity-table td {
+    color: #c9d1d9;
+}
+
+.complexity-table td.time {
+    color: #7ee787;
+    font-family: monospace;
+    font-weight: 600;
+}
+
+.patterns-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pattern-tag {
+    background: rgba(88, 166, 255, 0.15);
+    color: #58a6ff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .pros-cons {
+        grid-template-columns: 1fr;
+    }
+}

@@ -566,6 +566,15 @@
     </div>
 </div>
 
+<!-- Detail Modal -->
+<div id="detail-modal" class="detail-modal" style="display:none;">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
 <script>
 // Navigation smooth scroll
 document.querySelectorAll('.subject-nav .nav-item').forEach(item => {
@@ -590,15 +599,844 @@ function showDomain(domain) {
     if (panel) panel.classList.add('active');
 }
 
-// Algorithm details (placeholder for detailed view)
+// Algorithm and Data Structure detailed content
+const ALGO_CONTENT = {
+    'bubble-sort': {
+        name: 'Bubble Sort',
+        complexity: { time: 'O(n²)', space: 'O(1)' },
+        description: 'Bubble Sort repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted.',
+        howItWorks: [
+            'Start from the first element and compare it with the next element',
+            'If the current element is greater than the next, swap them',
+            'Move to the next pair and repeat',
+            'After each pass, the largest unsorted element "bubbles up" to its correct position',
+            'Repeat until no swaps are needed'
+        ],
+        code: `def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        # Flag to optimize if already sorted
+        swapped = False
+
+        # Last i elements are already in place
+        for j in range(0, n - i - 1):
+            # Compare adjacent elements
+            if arr[j] > arr[j + 1]:
+                # Swap if in wrong order
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+
+        # If no swaps, array is sorted
+        if not swapped:
+            break
+
+    return arr
+
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+print(bubble_sort(arr))  # [11, 12, 22, 25, 34, 64, 90]`,
+        whenToUse: 'Educational purposes, small datasets, nearly sorted arrays (with optimization flag).',
+        pros: ['Simple to understand and implement', 'In-place sorting (O(1) space)', 'Stable sort', 'Detects if array is already sorted'],
+        cons: ['O(n²) time complexity - very slow for large datasets', 'Not practical for real-world large-scale sorting']
+    },
+    'quick-sort': {
+        name: 'Quick Sort',
+        complexity: { time: 'O(n log n) avg, O(n²) worst', space: 'O(log n)' },
+        description: 'Quick Sort is a divide-and-conquer algorithm that picks a "pivot" element and partitions the array around it, putting smaller elements before and larger elements after the pivot.',
+        howItWorks: [
+            'Choose a pivot element (commonly last, first, or random)',
+            'Partition: rearrange so elements < pivot come before, elements > pivot come after',
+            'The pivot is now in its final sorted position',
+            'Recursively apply to the sub-arrays before and after pivot',
+            'Base case: arrays of size 0 or 1 are already sorted'
+        ],
+        code: `def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    pivot = arr[len(arr) // 2]  # Choose middle element as pivot
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+
+    return quick_sort(left) + middle + quick_sort(right)
+
+# In-place version (more efficient)
+def quick_sort_inplace(arr, low, high):
+    if low < high:
+        # Partition and get pivot index
+        pi = partition(arr, low, high)
+        quick_sort_inplace(arr, low, pi - 1)
+        quick_sort_inplace(arr, pi + 1, high)
+
+def partition(arr, low, high):
+    pivot = arr[high]  # Use last element as pivot
+    i = low - 1
+
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+
+# Example
+arr = [10, 7, 8, 9, 1, 5]
+print(quick_sort(arr))  # [1, 5, 7, 8, 9, 10]`,
+        whenToUse: 'General-purpose sorting, when average-case performance matters more than worst-case.',
+        pros: ['Very fast in practice - O(n log n) average', 'In-place sorting possible', 'Cache-friendly', 'Good for large datasets'],
+        cons: ['O(n²) worst case with bad pivot choices', 'Not stable', 'Recursive (stack overhead)']
+    },
+    'merge-sort': {
+        name: 'Merge Sort',
+        complexity: { time: 'O(n log n)', space: 'O(n)' },
+        description: 'Merge Sort divides the array into halves, recursively sorts each half, and then merges the sorted halves back together.',
+        howItWorks: [
+            'Divide the array into two halves',
+            'Recursively sort each half',
+            'Merge the two sorted halves by comparing elements',
+            'Use two pointers to track position in each half',
+            'Copy remaining elements from either half'
+        ],
+        code: `def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    # Add remaining elements
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# Example
+arr = [38, 27, 43, 3, 9, 82, 10]
+print(merge_sort(arr))  # [3, 9, 10, 27, 38, 43, 82]`,
+        whenToUse: 'When stable sort is needed, external sorting, linked lists, guaranteed O(n log n).',
+        pros: ['Consistent O(n log n) performance', 'Stable sort', 'Excellent for linked lists', 'Parallelizable'],
+        cons: ['O(n) extra space required', 'Slower than Quick Sort for small arrays', 'Not in-place']
+    },
+    'heap-sort': {
+        name: 'Heap Sort',
+        complexity: { time: 'O(n log n)', space: 'O(1)' },
+        description: 'Heap Sort builds a max-heap from the array, then repeatedly extracts the maximum element and places it at the end of the array.',
+        howItWorks: [
+            'Build a max-heap from the input array',
+            'The largest element is now at the root (index 0)',
+            'Swap root with the last element, reduce heap size by 1',
+            'Heapify the root to restore max-heap property',
+            'Repeat until heap size is 1'
+        ],
+        code: `def heap_sort(arr):
+    n = len(arr)
+
+    # Build max heap
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+    # Extract elements from heap one by one
+    for i in range(n - 1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]  # Swap
+        heapify(arr, i, 0)  # Heapify reduced heap
+
+    return arr
+
+def heapify(arr, n, i):
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
+
+    if left < n and arr[left] > arr[largest]:
+        largest = left
+
+    if right < n and arr[right] > arr[largest]:
+        largest = right
+
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+# Example
+arr = [12, 11, 13, 5, 6, 7]
+print(heap_sort(arr))  # [5, 6, 7, 11, 12, 13]`,
+        whenToUse: 'When guaranteed O(n log n) with O(1) space is needed.',
+        pros: ['O(n log n) guaranteed', 'In-place (O(1) space)', 'No worst case degradation'],
+        cons: ['Not stable', 'Slower in practice than Quick Sort', 'Poor cache performance']
+    },
+    'binary-search': {
+        name: 'Binary Search',
+        complexity: { time: 'O(log n)', space: 'O(1)' },
+        description: 'Binary Search finds a target value in a sorted array by repeatedly dividing the search interval in half.',
+        howItWorks: [
+            'Start with the entire sorted array',
+            'Find the middle element',
+            'If target equals middle, return index',
+            'If target < middle, search left half',
+            'If target > middle, search right half',
+            'Repeat until found or search space is empty'
+        ],
+        code: `def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            return mid  # Found
+        elif arr[mid] < target:
+            left = mid + 1  # Search right half
+        else:
+            right = mid - 1  # Search left half
+
+    return -1  # Not found
+
+# Recursive version
+def binary_search_recursive(arr, target, left, right):
+    if left > right:
+        return -1
+
+    mid = (left + right) // 2
+
+    if arr[mid] == target:
+        return mid
+    elif arr[mid] < target:
+        return binary_search_recursive(arr, target, mid + 1, right)
+    else:
+        return binary_search_recursive(arr, target, left, mid - 1)
+
+# Example
+arr = [1, 3, 5, 7, 9, 11, 13, 15]
+print(binary_search(arr, 7))   # 3
+print(binary_search(arr, 6))   # -1`,
+        whenToUse: 'Searching in sorted arrays, finding boundaries, rotated array problems.',
+        pros: ['Very fast O(log n)', 'Simple to implement', 'Minimal space usage'],
+        cons: ['Requires sorted array', 'Only works with random access (not linked lists)']
+    },
+    'dfs': {
+        name: 'Depth-First Search (DFS)',
+        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        description: 'DFS explores as far as possible along each branch before backtracking. It uses a stack (explicit or call stack) to remember nodes to visit.',
+        howItWorks: [
+            'Start at the root/source node',
+            'Mark current node as visited',
+            'Explore each unvisited neighbor recursively',
+            'Backtrack when no unvisited neighbors remain',
+            'Continue until all reachable nodes are visited'
+        ],
+        code: `# DFS for Graph (Adjacency List)
+def dfs(graph, start, visited=None):
+    if visited is None:
+        visited = set()
+
+    visited.add(start)
+    print(start, end=' ')  # Process node
+
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            dfs(graph, neighbor, visited)
+
+    return visited
+
+# DFS iterative with explicit stack
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            print(node, end=' ')
+
+            # Add neighbors to stack (reverse for left-to-right order)
+            for neighbor in reversed(graph[node]):
+                if neighbor not in visited:
+                    stack.append(neighbor)
+
+    return visited
+
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+dfs(graph, 'A')  # A B D E F C`,
+        whenToUse: 'Path finding, cycle detection, topological sort, maze solving, tree traversals.',
+        pros: ['Memory efficient for deep graphs', 'Simple recursive implementation', 'Good for path finding'],
+        cons: ['May not find shortest path', 'Can get stuck in infinite loops without visited check']
+    },
+    'bfs': {
+        name: 'Breadth-First Search (BFS)',
+        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        description: 'BFS explores all neighbors at the current depth before moving to nodes at the next depth level. It uses a queue to process nodes.',
+        howItWorks: [
+            'Start at the root/source node, add to queue',
+            'While queue is not empty, dequeue a node',
+            'Mark it as visited and process it',
+            'Enqueue all unvisited neighbors',
+            'Repeat until queue is empty'
+        ],
+        code: `from collections import deque
+
+def bfs(graph, start):
+    visited = set([start])
+    queue = deque([start])
+    result = []
+
+    while queue:
+        node = queue.popleft()
+        result.append(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    return result
+
+# BFS for shortest path (unweighted graph)
+def bfs_shortest_path(graph, start, end):
+    if start == end:
+        return [start]
+
+    visited = set([start])
+    queue = deque([(start, [start])])
+
+    while queue:
+        node, path = queue.popleft()
+
+        for neighbor in graph[node]:
+            if neighbor == end:
+                return path + [neighbor]
+
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, path + [neighbor]))
+
+    return None  # No path found
+
+# Example
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+print(bfs(graph, 'A'))  # ['A', 'B', 'C', 'D', 'E', 'F']
+print(bfs_shortest_path(graph, 'A', 'F'))  # ['A', 'C', 'F']`,
+        whenToUse: 'Shortest path in unweighted graphs, level-order traversal, finding connected components.',
+        pros: ['Finds shortest path in unweighted graphs', 'Level-order traversal', 'Good for nearby nodes'],
+        cons: ['Higher memory usage than DFS', 'Not suitable for very deep/wide graphs']
+    }
+};
+
+const DS_CONTENT = {
+    'arrays': {
+        name: 'Arrays',
+        description: 'An array is a contiguous block of memory storing elements of the same type. Elements are accessed by index in O(1) time.',
+        operations: [
+            { op: 'Access by index', time: 'O(1)', desc: 'Direct memory calculation' },
+            { op: 'Search (unsorted)', time: 'O(n)', desc: 'Linear scan required' },
+            { op: 'Search (sorted)', time: 'O(log n)', desc: 'Binary search' },
+            { op: 'Insert at end', time: 'O(1)*', desc: 'Amortized, may resize' },
+            { op: 'Insert at index', time: 'O(n)', desc: 'Shift elements right' },
+            { op: 'Delete at index', time: 'O(n)', desc: 'Shift elements left' }
+        ],
+        code: `# Python list (dynamic array)
+arr = [1, 2, 3, 4, 5]
+
+# Access - O(1)
+print(arr[2])  # 3
+
+# Append - O(1) amortized
+arr.append(6)  # [1, 2, 3, 4, 5, 6]
+
+# Insert at index - O(n)
+arr.insert(2, 10)  # [1, 2, 10, 3, 4, 5, 6]
+
+# Delete - O(n)
+arr.remove(10)  # [1, 2, 3, 4, 5, 6]
+del arr[0]      # [2, 3, 4, 5, 6]
+
+# Slicing - O(k) where k is slice size
+sub = arr[1:4]  # [3, 4, 5]
+
+# Two-pointer technique example
+def two_sum_sorted(arr, target):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        current = arr[left] + arr[right]
+        if current == target:
+            return [left, right]
+        elif current < target:
+            left += 1
+        else:
+            right -= 1
+    return None`,
+        patterns: ['Two Pointers', 'Sliding Window', 'Prefix Sum', 'Kadane\'s Algorithm', 'Dutch National Flag']
+    },
+    'linked-lists': {
+        name: 'Linked Lists',
+        description: 'A linked list is a linear data structure where elements (nodes) are connected via pointers. Each node contains data and a reference to the next node.',
+        operations: [
+            { op: 'Access by index', time: 'O(n)', desc: 'Must traverse from head' },
+            { op: 'Search', time: 'O(n)', desc: 'Linear traversal' },
+            { op: 'Insert at head', time: 'O(1)', desc: 'Update head pointer' },
+            { op: 'Insert at tail', time: 'O(1)*', desc: 'With tail pointer' },
+            { op: 'Insert after node', time: 'O(1)', desc: 'Update pointers' },
+            { op: 'Delete node', time: 'O(1)', desc: 'Update previous pointer' }
+        ],
+        code: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def insert_at_head(self, val):
+        new_node = ListNode(val)
+        new_node.next = self.head
+        self.head = new_node
+
+    def insert_at_tail(self, val):
+        new_node = ListNode(val)
+        if not self.head:
+            self.head = new_node
+            return
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+        curr.next = new_node
+
+    def delete(self, val):
+        if not self.head:
+            return
+        if self.head.val == val:
+            self.head = self.head.next
+            return
+        curr = self.head
+        while curr.next and curr.next.val != val:
+            curr = curr.next
+        if curr.next:
+            curr.next = curr.next.next
+
+# Fast and Slow pointer (detect cycle)
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+
+# Reverse linked list
+def reverse(head):
+    prev = None
+    curr = head
+    while curr:
+        next_temp = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_temp
+    return prev`,
+        patterns: ['Fast/Slow Pointers', 'Reversal', 'Merge Two Lists', 'Dummy Head', 'Runner Technique']
+    },
+    'trees': {
+        name: 'Binary Trees & BST',
+        description: 'A tree is a hierarchical data structure with nodes connected by edges. A binary tree has at most 2 children per node. A BST maintains sorted order.',
+        operations: [
+            { op: 'Search (BST)', time: 'O(log n)*', desc: 'Balanced tree' },
+            { op: 'Insert (BST)', time: 'O(log n)*', desc: 'Balanced tree' },
+            { op: 'Delete (BST)', time: 'O(log n)*', desc: 'Balanced tree' },
+            { op: 'Traversal', time: 'O(n)', desc: 'Visit all nodes' },
+            { op: 'Height', time: 'O(n)', desc: 'Recursive calculation' }
+        ],
+        code: `class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# Tree Traversals
+def preorder(root):  # Root -> Left -> Right
+    if not root: return []
+    return [root.val] + preorder(root.left) + preorder(root.right)
+
+def inorder(root):   # Left -> Root -> Right (sorted for BST)
+    if not root: return []
+    return inorder(root.left) + [root.val] + inorder(root.right)
+
+def postorder(root): # Left -> Right -> Root
+    if not root: return []
+    return postorder(root.left) + postorder(root.right) + [root.val]
+
+def levelorder(root):  # BFS
+    if not root: return []
+    from collections import deque
+    result, queue = [], deque([root])
+    while queue:
+        level = []
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            level.append(node.val)
+            if node.left: queue.append(node.left)
+            if node.right: queue.append(node.right)
+        result.append(level)
+    return result
+
+# BST Search
+def search_bst(root, val):
+    if not root or root.val == val:
+        return root
+    if val < root.val:
+        return search_bst(root.left, val)
+    return search_bst(root.right, val)
+
+# BST Insert
+def insert_bst(root, val):
+    if not root:
+        return TreeNode(val)
+    if val < root.val:
+        root.left = insert_bst(root.left, val)
+    else:
+        root.right = insert_bst(root.right, val)
+    return root`,
+        patterns: ['Recursive DFS', 'Level-Order BFS', 'Path Sum', 'LCA', 'Serialize/Deserialize']
+    },
+    'graphs': {
+        name: 'Graphs',
+        description: 'A graph consists of vertices (nodes) connected by edges. Can be directed/undirected, weighted/unweighted, cyclic/acyclic.',
+        operations: [
+            { op: 'Add vertex', time: 'O(1)', desc: 'Add to adjacency list' },
+            { op: 'Add edge', time: 'O(1)', desc: 'Add to adjacency list' },
+            { op: 'Remove edge', time: 'O(E)', desc: 'Search and remove' },
+            { op: 'DFS/BFS', time: 'O(V+E)', desc: 'Visit all nodes' },
+            { op: 'Find path', time: 'O(V+E)', desc: 'BFS for shortest' }
+        ],
+        code: `from collections import defaultdict, deque
+
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v, directed=False):
+        self.graph[u].append(v)
+        if not directed:
+            self.graph[v].append(u)
+
+    def dfs(self, start):
+        visited = set()
+        result = []
+
+        def dfs_helper(node):
+            visited.add(node)
+            result.append(node)
+            for neighbor in self.graph[node]:
+                if neighbor not in visited:
+                    dfs_helper(neighbor)
+
+        dfs_helper(start)
+        return result
+
+    def bfs(self, start):
+        visited = {start}
+        queue = deque([start])
+        result = []
+
+        while queue:
+            node = queue.popleft()
+            result.append(node)
+            for neighbor in self.graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        return result
+
+    def has_cycle(self):
+        visited = set()
+        rec_stack = set()
+
+        def dfs(node):
+            visited.add(node)
+            rec_stack.add(node)
+
+            for neighbor in self.graph[node]:
+                if neighbor not in visited:
+                    if dfs(neighbor):
+                        return True
+                elif neighbor in rec_stack:
+                    return True
+
+            rec_stack.remove(node)
+            return False
+
+        for node in self.graph:
+            if node not in visited:
+                if dfs(node):
+                    return True
+        return False`,
+        patterns: ['DFS/BFS Traversal', 'Topological Sort', 'Union-Find', 'Dijkstra', 'Cycle Detection']
+    },
+    'stacks': {
+        name: 'Stacks & Queues',
+        description: 'Stack: LIFO (Last In First Out). Queue: FIFO (First In First Out). Fundamental for many algorithms.',
+        operations: [
+            { op: 'Stack push', time: 'O(1)', desc: 'Add to top' },
+            { op: 'Stack pop', time: 'O(1)', desc: 'Remove from top' },
+            { op: 'Stack peek', time: 'O(1)', desc: 'View top element' },
+            { op: 'Queue enqueue', time: 'O(1)', desc: 'Add to rear' },
+            { op: 'Queue dequeue', time: 'O(1)', desc: 'Remove from front' }
+        ],
+        code: `from collections import deque
+
+# Stack using list
+stack = []
+stack.append(1)  # push
+stack.append(2)
+stack.pop()      # pop -> 2
+stack[-1]        # peek -> 1
+
+# Queue using deque
+queue = deque()
+queue.append(1)   # enqueue
+queue.append(2)
+queue.popleft()   # dequeue -> 1
+
+# Monotonic Stack (Next Greater Element)
+def next_greater(arr):
+    n = len(arr)
+    result = [-1] * n
+    stack = []  # stores indices
+
+    for i in range(n):
+        while stack and arr[i] > arr[stack[-1]]:
+            idx = stack.pop()
+            result[idx] = arr[i]
+        stack.append(i)
+
+    return result
+
+# Valid Parentheses
+def is_valid(s):
+    stack = []
+    mapping = {')': '(', '}': '{', ']': '['}
+
+    for char in s:
+        if char in mapping:
+            if not stack or stack.pop() != mapping[char]:
+                return False
+        else:
+            stack.append(char)
+
+    return len(stack) == 0
+
+print(next_greater([4, 5, 2, 10, 8]))  # [5, 10, 10, -1, -1]
+print(is_valid("({[]})"))  # True`,
+        patterns: ['Monotonic Stack', 'Expression Evaluation', 'Parentheses Matching', 'Min Stack', 'Sliding Window Max']
+    },
+    'hashmaps': {
+        name: 'Hash Maps',
+        description: 'Hash map (dictionary) stores key-value pairs with O(1) average lookup using hash functions.',
+        operations: [
+            { op: 'Get/Set', time: 'O(1)*', desc: 'Average case' },
+            { op: 'Delete', time: 'O(1)*', desc: 'Average case' },
+            { op: 'Contains key', time: 'O(1)*', desc: 'Average case' },
+            { op: 'Iterate', time: 'O(n)', desc: 'Visit all pairs' }
+        ],
+        code: `# Python dictionary
+hashmap = {}
+
+# Insert/Update - O(1)
+hashmap['name'] = 'Alice'
+hashmap['age'] = 30
+
+# Get - O(1)
+print(hashmap['name'])  # Alice
+print(hashmap.get('city', 'Unknown'))  # Unknown (default)
+
+# Delete - O(1)
+del hashmap['age']
+
+# Check existence - O(1)
+if 'name' in hashmap:
+    print('Found!')
+
+# Two Sum using HashMap - O(n)
+def two_sum(nums, target):
+    seen = {}  # value -> index
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return None
+
+# Frequency Counter
+def frequency_count(arr):
+    freq = {}
+    for item in arr:
+        freq[item] = freq.get(item, 0) + 1
+    return freq
+
+# Group Anagrams
+def group_anagrams(strs):
+    from collections import defaultdict
+    groups = defaultdict(list)
+    for s in strs:
+        key = tuple(sorted(s))
+        groups[key].append(s)
+    return list(groups.values())
+
+print(two_sum([2, 7, 11, 15], 9))  # [0, 1]
+print(frequency_count([1, 2, 2, 3, 3, 3]))  # {1: 1, 2: 2, 3: 3}`,
+        patterns: ['Two Sum Pattern', 'Frequency Count', 'Grouping', 'Caching/Memoization', 'Sliding Window']
+    }
+};
+
 function showAlgorithm(algo) {
-    console.log('Show algorithm:', algo);
-    // TODO: Open modal with detailed explanation and animation
+    const content = ALGO_CONTENT[algo];
+    if (!content) {
+        alert('Content coming soon for: ' + algo);
+        return;
+    }
+
+    const html = `
+        <h2 class="modal-title">${content.name}</h2>
+        <div class="modal-complexity">
+            <span class="badge time">Time: ${content.complexity.time}</span>
+            <span class="badge space">Space: ${content.complexity.space}</span>
+        </div>
+
+        <div class="modal-section">
+            <h3>Description</h3>
+            <p>${content.description}</p>
+        </div>
+
+        <div class="modal-section">
+            <h3>How It Works</h3>
+            <ol class="steps-list">
+                ${content.howItWorks.map(step => '<li>' + step + '</li>').join('')}
+            </ol>
+        </div>
+
+        <div class="modal-section">
+            <h3>Python Implementation</h3>
+            <pre class="code-block"><code>${escapeHtml(content.code)}</code></pre>
+        </div>
+
+        <div class="modal-section">
+            <h3>When to Use</h3>
+            <p>${content.whenToUse}</p>
+        </div>
+
+        <div class="modal-section pros-cons">
+            <div class="pros">
+                <h4>Pros</h4>
+                <ul>${content.pros.map(p => '<li>' + p + '</li>').join('')}</ul>
+            </div>
+            <div class="cons">
+                <h4>Cons</h4>
+                <ul>${content.cons.map(c => '<li>' + c + '</li>').join('')}</ul>
+            </div>
+        </div>
+    `;
+
+    openModal(html);
 }
 
-// Data structure details (placeholder)
 function showDataStructure(ds) {
-    console.log('Show data structure:', ds);
-    // TODO: Open modal with detailed explanation and animation
+    const content = DS_CONTENT[ds];
+    if (!content) {
+        alert('Content coming soon for: ' + ds);
+        return;
+    }
+
+    const html = `
+        <h2 class="modal-title">${content.name}</h2>
+
+        <div class="modal-section">
+            <h3>Description</h3>
+            <p>${content.description}</p>
+        </div>
+
+        <div class="modal-section">
+            <h3>Time Complexity</h3>
+            <table class="complexity-table">
+                <tr><th>Operation</th><th>Time</th><th>Note</th></tr>
+                ${content.operations.map(op =>
+                    '<tr><td>' + op.op + '</td><td class="time">' + op.time + '</td><td>' + op.desc + '</td></tr>'
+                ).join('')}
+            </table>
+        </div>
+
+        <div class="modal-section">
+            <h3>Python Implementation</h3>
+            <pre class="code-block"><code>${escapeHtml(content.code)}</code></pre>
+        </div>
+
+        <div class="modal-section">
+            <h3>Common Patterns</h3>
+            <div class="patterns-list">
+                ${content.patterns.map(p => '<span class="pattern-tag">' + p + '</span>').join('')}
+            </div>
+        </div>
+    `;
+
+    openModal(html);
 }
+
+function openModal(html) {
+    document.getElementById('modal-body').innerHTML = html;
+    document.getElementById('detail-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Highlight code if highlight.js is available
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('#modal-body pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+    }
+}
+
+function closeModal() {
+    document.getElementById('detail-modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
 </script>
