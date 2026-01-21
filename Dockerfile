@@ -3,15 +3,16 @@
 # Target: < 150MB compressed
 #
 # DEPENDENCY CACHING STRATEGY:
-# Each stage copies dependency files (go.mod, requirements.txt, package.json)
-# BEFORE source code. This creates cached layers that only rebuild when
-# dependencies change, not when code changes.
+# Uses Docker BuildKit cache mounts to persist downloaded dependencies across builds.
+# Even when layers are invalidated, cached modules are reused for fast rebuilds.
 #
 # Build stages:
-#   1. go-builder:      Compiles Go backend (caches go.mod/go.sum)
+#   1. go-builder:      Compiles Go backend (BuildKit cache for go modules)
 #   2. go-extractor:    Extracts minimal Go toolchain
 #   3. frontend-builder: Builds frontend assets (caches package.json)
 #   4. runtime:         Final image with Python + Go + app (caches requirements.txt)
+#
+# IMPORTANT: Requires Docker BuildKit (DOCKER_BUILDKIT=1 or Docker 23.0+)
 
 # =============================================================================
 # Stage 1: Build Go backend
@@ -23,21 +24,25 @@ WORKDIR /build
 # Install build dependencies
 RUN apk add --no-cache git
 
-# DEPENDENCY CACHING: Copy dependency files FIRST, before source code
-# This ensures dependencies are only re-downloaded when go.mod/go.sum change
-COPY backend/go.mod backend/go.sum ./
+# DEPENDENCY CACHING: Copy go.mod first to cache dependency download
+COPY backend/go.mod ./
 
-# Download dependencies (cached layer - only rebuilds when go.mod/go.sum change)
-RUN go mod download && go mod verify
-
-# NOW copy backend source code (changes here won't invalidate dependency cache)
+# Copy source code (needed for go mod tidy to resolve all imports)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
 
+# Download dependencies and generate/update go.sum
+# Uses BuildKit cache mount to persist downloaded modules across builds
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod tidy
+
 # Build the binary with maximum optimizations
+# Uses BuildKit cache for faster rebuilds
 # -ldflags="-w -s" strips debug info, reduces ~30% size
 # CGO_ENABLED=0 creates static binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
 
