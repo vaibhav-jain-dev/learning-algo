@@ -57,7 +57,9 @@
     }
         ],
         similar: [
-
+    { id: '01-longest-consecutive-gap-k', name: 'Longest Consecutive Gap K', difficulty: 'Medium' },
+    { id: '02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },
+    { id: '03-largest-range-after-addition', name: 'Largest Range After Addition', difficulty: 'Hard' }
         ]
     };
 

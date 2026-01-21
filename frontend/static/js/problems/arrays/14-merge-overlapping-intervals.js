@@ -91,7 +91,9 @@
     }
         ],
         similar: [
-
+    { id: '01-minimum-swaps-to-sort', name: 'Minimum Swaps To Sort', difficulty: 'Hard' },
+    { id: '02-shortest-unsorted-with-k', name: 'Shortest Unsorted With K', difficulty: 'Medium' },
+    { id: '03-max-sorted-subarrays', name: 'Max Sorted Subarrays', difficulty: 'Hard' }
         ]
     };
 

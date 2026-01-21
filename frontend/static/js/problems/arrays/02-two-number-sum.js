@@ -58,7 +58,9 @@
     }
         ],
         similar: [
-
+    { id: '01-three-sum-closest', name: 'Three Sum Closest', difficulty: 'Medium' },
+    { id: '02-three-sum-duplicates', name: 'Three Sum With Duplicates', difficulty: 'Medium' },
+    { id: '03-closest-sum-target', name: 'Closest Sum Target', difficulty: 'Hard' }
         ]
     };
 
