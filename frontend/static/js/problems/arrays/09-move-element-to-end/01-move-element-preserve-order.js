@@ -49,49 +49,74 @@
     }
         ],
         solutions: {
-            python: `def moveElementPreserveOrder(data):
+            python: `def moveElementPreserveOrder(array, toMove):
     """
-    Move Element Preserve Order
+    Move Element Preserve Order - Move all target values to end while preserving
+    relative order of non-target elements.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - Single pass through array
+    Space: O(1) - In-place modification
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # writeIdx tracks where next non-target element should be placed
+    writeIdx = 0
 
-    result = None
+    # First pass: move all non-target elements to front, preserving order
+    for readIdx in range(len(array)):
+        if array[readIdx] != toMove:
+            array[writeIdx] = array[readIdx]
+            writeIdx += 1
 
-    # Process input
-    # ...
+    # Second pass: fill remaining positions with target value
+    while writeIdx < len(array):
+        array[writeIdx] = toMove
+        writeIdx += 1
 
-    return result
+    return array
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(moveElementPreserveOrder([2, 1, 2, 3, 2, 4], 2))
+    # Output: [1, 3, 4, 2, 2, 2]
+    print(moveElementPreserveOrder([1, 2, 3, 4, 5], 3))
+    # Output: [1, 2, 4, 5, 3]
+    print(moveElementPreserveOrder([2, 2, 2], 2))
+    # Output: [2, 2, 2]`,
             go: `package main
 
 import "fmt"
 
-// MoveElementPreserveOrder solves the Move Element Preserve Order problem.
-// Time: O(n), Space: O(n)
-func MoveElementPreserveOrder(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MoveElementPreserveOrder moves all target values to end while preserving
+// relative order of non-target elements.
+// Time: O(n), Space: O(1)
+func MoveElementPreserveOrder(array []int, toMove int) []int {
+    // writeIdx tracks where next non-target element should be placed
+    writeIdx := 0
 
-    var result interface{}
+    // First pass: move all non-target elements to front, preserving order
+    for readIdx := 0; readIdx < len(array); readIdx++ {
+        if array[readIdx] != toMove {
+            array[writeIdx] = array[readIdx]
+            writeIdx++
+        }
+    }
 
-    // Process input
-    // ...
+    // Second pass: fill remaining positions with target value
+    for writeIdx < len(array) {
+        array[writeIdx] = toMove
+        writeIdx++
+    }
 
-    return result
+    return array
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MoveElementPreserveOrder([]int{2, 1, 2, 3, 2, 4}, 2))
+    // Output: [1 3 4 2 2 2]
+    fmt.Println(MoveElementPreserveOrder([]int{1, 2, 3, 4, 5}, 3))
+    // Output: [1 2 4 5 3]
+    fmt.Println(MoveElementPreserveOrder([]int{2, 2, 2}, 2))
+    // Output: [2 2 2]
 }`
         },
         similar: [

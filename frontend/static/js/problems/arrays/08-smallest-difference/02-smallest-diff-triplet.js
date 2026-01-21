@@ -42,49 +42,111 @@
     }
         ],
         solutions: {
-            python: `def smallestDiffTriplet(data):
+            python: `def smallestDiffTriplet(arr1, arr2, arr3):
     """
-    Smallest Diff Triplet
+    Smallest Diff Triplet - Find triplet from 3 sorted arrays minimizing (max - min).
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n1 + n2 + n3) - Single pass using three pointers
+    Space: O(1) - Only store pointers and result
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    i, j, k = 0, 0, 0
+    minRange = float('inf')
+    result = []
 
-    result = None
+    while i < len(arr1) and j < len(arr2) and k < len(arr3):
+        a, b, c = arr1[i], arr2[j], arr3[k]
 
-    # Process input
-    # ...
+        # Calculate range (max - min) for current triplet
+        currentMin = min(a, b, c)
+        currentMax = max(a, b, c)
+        currentRange = currentMax - currentMin
+
+        if currentRange < minRange:
+            minRange = currentRange
+            result = [a, b, c]
+
+        # If range is 0, we found optimal solution
+        if minRange == 0:
+            break
+
+        # Move pointer of the minimum element to try to reduce range
+        if currentMin == a:
+            i += 1
+        elif currentMin == b:
+            j += 1
+        else:
+            k += 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(smallestDiffTriplet([1, 4, 5], [10, 20], [14, 19]))
+    # Output: [5, 10, 14] (max-min = 14-5 = 9)
+    print(smallestDiffTriplet([1, 2, 3], [2, 3, 4], [3, 4, 5]))
+    # Output: [3, 3, 3] (range = 0)`,
             go: `package main
 
 import "fmt"
 
-// SmallestDiffTriplet solves the Smallest Diff Triplet problem.
-// Time: O(n), Space: O(n)
-func SmallestDiffTriplet(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// SmallestDiffTriplet finds triplet from 3 sorted arrays minimizing (max - min).
+// Time: O(n1 + n2 + n3), Space: O(1)
+func SmallestDiffTriplet(arr1, arr2, arr3 []int) []int {
+    i, j, k := 0, 0, 0
+    minRange := int(^uint(0) >> 1) // Max int
+    var result []int
 
-    var result interface{}
+    for i < len(arr1) && j < len(arr2) && k < len(arr3) {
+        a, b, c := arr1[i], arr2[j], arr3[k]
 
-    // Process input
-    // ...
+        // Calculate range for current triplet
+        currentMin := min(a, min(b, c))
+        currentMax := max(a, max(b, c))
+        currentRange := currentMax - currentMin
+
+        if currentRange < minRange {
+            minRange = currentRange
+            result = []int{a, b, c}
+        }
+
+        // If range is 0, we found optimal solution
+        if minRange == 0 {
+            break
+        }
+
+        // Move pointer of minimum element
+        if currentMin == a {
+            i++
+        } else if currentMin == b {
+            j++
+        } else {
+            k++
+        }
+    }
 
     return result
 }
 
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(SmallestDiffTriplet([]int{1, 4, 5}, []int{10, 20}, []int{14, 19}))
+    // Output: [5 10 14]
+    fmt.Println(SmallestDiffTriplet([]int{1, 2, 3}, []int{2, 3, 4}, []int{3, 4, 5}))
+    // Output: [3 3 3]
 }`
         },
         similar: [

@@ -48,45 +48,85 @@
     """
     Maximum Depth of Nested Arrays
 
-    Time: O(n)
-    Space: O(n)
+    Recursively find the maximum nesting depth of an array.
+    Base case: non-list element has depth 0 (doesn't add to nesting)
+    Recursive case: depth = 1 + max depth of any nested array
+
+    Time: O(n) where n is total number of elements
+    Space: O(d) where d is maximum depth (recursion stack)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    array = data.get("array", data) if isinstance(data, dict) else data
 
-    result = None
+    def get_depth(arr):
+        if not isinstance(arr, list):
+            return 0
 
-    # Process input
-    # ...
+        if len(arr) == 0:
+            return 1
 
-    return result
+        max_child_depth = 0
+        for element in arr:
+            if isinstance(element, list):
+                max_child_depth = max(max_child_depth, get_depth(element))
+
+        return 1 + max_child_depth
+
+    return get_depth(array)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maximumDepthOfNestedArrays({"array": [1, [2, [3, 4]]]}))  # Output: 3
+    print(maximumDepthOfNestedArrays({"array": [1, 2, 3]}))         # Output: 1
+    print(maximumDepthOfNestedArrays({"array": [[[[1]]]]}))         # Output: 4`,
             go: `package main
 
 import "fmt"
 
 // MaximumDepthOfNestedArrays solves the Maximum Depth of Nested Arrays problem.
-// Time: O(n), Space: O(n)
+// Recursively find the maximum nesting depth of an array.
+// Time: O(n), Space: O(d) where d is maximum depth
 func MaximumDepthOfNestedArrays(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    var array interface{}
+    switch v := data.(type) {
+    case map[string]interface{}:
+        array = v["array"]
+    default:
+        array = data
+    }
 
-    var result interface{}
+    return getDepth(array)
+}
 
-    // Process input
-    // ...
+func getDepth(arr interface{}) int {
+    slice, ok := arr.([]interface{})
+    if !ok {
+        return 0
+    }
 
-    return result
+    if len(slice) == 0 {
+        return 1
+    }
+
+    maxChildDepth := 0
+    for _, element := range slice {
+        if _, isList := element.([]interface{}); isList {
+            childDepth := getDepth(element)
+            if childDepth > maxChildDepth {
+                maxChildDepth = childDepth
+            }
+        }
+    }
+
+    return 1 + maxChildDepth
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    arr1 := []interface{}{1, []interface{}{2, []interface{}{3, 4}}}
+    fmt.Println(MaximumDepthOfNestedArrays(map[string]interface{}{"array": arr1})) // Output: 3
+
+    arr2 := []interface{}{1, 2, 3}
+    fmt.Println(MaximumDepthOfNestedArrays(map[string]interface{}{"array": arr2})) // Output: 1
 }`
         },
         similar: [

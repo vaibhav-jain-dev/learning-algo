@@ -60,49 +60,192 @@
     }
         ],
         solutions: {
-            python: `def twoSumClosestInBst(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def twoSumClosestInBst(data):
     """
     Two Sum Closest in BST
+
+    Approach: Get sorted values via inorder traversal, then use
+    two pointers to find pair with sum closest to target.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    target = data.get("target", 0)
 
-    result = None
+    root = buildTree(tree)
+    if not root:
+        return []
 
-    # Process input
-    # ...
+    # Get sorted values via inorder traversal
+    values = []
+    def inorder(node):
+        if not node:
+            return
+        inorder(node.left)
+        values.append(node.val)
+        inorder(node.right)
+
+    inorder(root)
+
+    if len(values) < 2:
+        return []
+
+    # Two pointer approach
+    left, right = 0, len(values) - 1
+    closest_sum = float('inf')
+    result = [values[left], values[right]]
+
+    while left < right:
+        current_sum = values[left] + values[right]
+
+        if abs(current_sum - target) < abs(closest_sum - target):
+            closest_sum = current_sum
+            result = [values[left], values[right]]
+
+        if current_sum < target:
+            left += 1
+        elif current_sum > target:
+            right -= 1
+        else:
+            # Exact match
+            return [values[left], values[right]]
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(twoSumClosestInBst({"tree": [10, 5, 15, 2, 7, 12, 20], "target": 22}))
+    print(twoSumClosestInBst({"tree": [5, 3, 7, 1, 4, 6, 8], "target": 10}))`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "math"
+)
 
-// TwoSumClosestInBst solves the Two Sum Closest in BST problem.
-// Time: O(n), Space: O(n)
-func TwoSumClosestInBst(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
+func TwoSumClosestInBst(data map[string]interface{}) []int {
+    treeArr := data["tree"].([]interface{})
+    target := int(data["target"].(float64))
+
+    root := buildTree(treeArr)
+    if root == nil {
+        return []int{}
+    }
+
+    // Get sorted values via inorder traversal
+    var values []int
+    var inorder func(node *TreeNode)
+    inorder = func(node *TreeNode) {
+        if node == nil {
+            return
+        }
+        inorder(node.Left)
+        values = append(values, node.Val)
+        inorder(node.Right)
+    }
+    inorder(root)
+
+    if len(values) < 2 {
+        return []int{}
+    }
+
+    // Two pointer approach
+    left, right := 0, len(values)-1
+    closestSum := math.MaxInt32
+    result := []int{values[left], values[right]}
+
+    for left < right {
+        currentSum := values[left] + values[right]
+
+        if abs(currentSum-target) < abs(closestSum-target) {
+            closestSum = currentSum
+            result = []int{values[left], values[right]}
+        }
+
+        if currentSum < target {
+            left++
+        } else if currentSum > target {
+            right--
+        } else {
+            return []int{values[left], values[right]}
+        }
+    }
 
     return result
 }
 
+func abs(x int) int {
+    if x < 0 {
+        return -x
+    }
+    return x
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree":   []interface{}{10.0, 5.0, 15.0, 2.0, 7.0, 12.0, 20.0},
+        "target": 22.0,
+    }
+    fmt.Println(TwoSumClosestInBst(data))
 }`
         },
         similar: [

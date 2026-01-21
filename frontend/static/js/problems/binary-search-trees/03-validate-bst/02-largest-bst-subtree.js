@@ -54,49 +54,168 @@
     }
         ],
         solutions: {
-            python: `def largestBstSubtree(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr or arr[0] is None:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def largestBstSubtree(data):
     """
     Largest BST Subtree
 
+    Approach: Post-order traversal. For each node, check if subtree
+    is valid BST and track size. Return tuple (is_bst, size, min, max).
+
     Time: O(n)
-    Space: O(n)
+    Space: O(h) recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    root = buildTree(tree)
 
-    result = None
+    if not root:
+        return 0
 
-    # Process input
-    # ...
+    max_size = [0]
 
-    return result
+    def helper(node):
+        """
+        Returns (is_bst, size, min_val, max_val)
+        """
+        if not node:
+            return (True, 0, float('inf'), float('-inf'))
+
+        left_bst, left_size, left_min, left_max = helper(node.left)
+        right_bst, right_size, right_min, right_max = helper(node.right)
+
+        # Check if current subtree is BST
+        if left_bst and right_bst and left_max < node.val < right_min:
+            size = left_size + right_size + 1
+            max_size[0] = max(max_size[0], size)
+            return (True, size, min(left_min, node.val), max(right_max, node.val))
+        else:
+            return (False, 0, 0, 0)
+
+    helper(root)
+    return max_size[0]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(largestBstSubtree({"tree": [10, 5, 15, 1, 8, None, 7]}))
+    print(largestBstSubtree({"tree": [2, 1, 3]}))`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "math"
+)
 
-// LargestBstSubtree solves the Largest BST Subtree problem.
-// Time: O(n), Space: O(n)
-func LargestBstSubtree(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
+type BSTInfo struct {
+    isBST bool
+    size  int
+    minV  int
+    maxV  int
+}
 
-    return result
+func LargestBstSubtree(data map[string]interface{}) int {
+    treeArr := data["tree"].([]interface{})
+    root := buildTree(treeArr)
+
+    if root == nil {
+        return 0
+    }
+
+    maxSize := 0
+
+    var helper func(node *TreeNode) BSTInfo
+    helper = func(node *TreeNode) BSTInfo {
+        if node == nil {
+            return BSTInfo{true, 0, math.MaxInt32, math.MinInt32}
+        }
+
+        left := helper(node.Left)
+        right := helper(node.Right)
+
+        if left.isBST && right.isBST && left.maxV < node.Val && node.Val < right.minV {
+            size := left.size + right.size + 1
+            if size > maxSize {
+                maxSize = size
+            }
+            minV := left.minV
+            if node.Val < minV {
+                minV = node.Val
+            }
+            maxV := right.maxV
+            if node.Val > maxV {
+                maxV = node.Val
+            }
+            return BSTInfo{true, size, minV, maxV}
+        }
+
+        return BSTInfo{false, 0, 0, 0}
+    }
+
+    helper(root)
+    return maxSize
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": []interface{}{10.0, 5.0, 15.0, 1.0, 8.0, nil, 7.0},
+    }
+    fmt.Println(LargestBstSubtree(data))
 }`
         },
         similar: [

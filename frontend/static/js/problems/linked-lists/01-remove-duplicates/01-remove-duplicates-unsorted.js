@@ -68,49 +68,132 @@
     }
         ],
         solutions: {
-            python: `def removeDuplicatesFromUnsortedLinkedList(data):
+            python: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def removeDuplicatesFromUnsortedLinkedList(head):
     """
     Remove Duplicates from Unsorted Linked List
+    Keep only the first occurrence of each value.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(n) - for the hash set
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not head:
+        return head
 
-    result = None
+    # Use a set to track seen values
+    seen = set()
+    seen.add(head.val)
 
-    # Process input
-    # ...
+    current = head
+    while current.next:
+        if current.next.val in seen:
+            # Skip the duplicate node
+            current.next = current.next.next
+        else:
+            # Add to seen and move forward
+            seen.add(current.next.val)
+            current = current.next
 
+    return head
+
+
+# Helper to convert list to linked list and back
+def to_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    current = head
+    for val in arr[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def to_array(head):
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: [3,2,2,1,3,2,4] -> [3,2,1,4]
+    head = to_linked_list([3, 2, 2, 1, 3, 2, 4])
+    result = removeDuplicatesFromUnsortedLinkedList(head)
+    print(to_array(result))  # [3, 2, 1, 4]
+
+    # Test case 2: [1,1,1,1] -> [1]
+    head = to_linked_list([1, 1, 1, 1])
+    result = removeDuplicatesFromUnsortedLinkedList(head)
+    print(to_array(result))  # [1]`,
             go: `package main
 
 import "fmt"
 
-// RemoveDuplicatesFromUnsortedLinkedList solves the Remove Duplicates from Unsorted Linked List problem.
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
+
+// RemoveDuplicatesFromUnsortedLinkedList removes duplicates keeping first occurrence.
 // Time: O(n), Space: O(n)
-func RemoveDuplicatesFromUnsortedLinkedList(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func RemoveDuplicatesFromUnsortedLinkedList(head *ListNode) *ListNode {
+    if head == nil {
+        return head
+    }
 
-    var result interface{}
+    // Use a map to track seen values
+    seen := make(map[int]bool)
+    seen[head.Val] = true
 
-    // Process input
-    // ...
+    current := head
+    for current.Next != nil {
+        if seen[current.Next.Val] {
+            // Skip the duplicate node
+            current.Next = current.Next.Next
+        } else {
+            // Add to seen and move forward
+            seen[current.Next.Val] = true
+            current = current.Next
+        }
+    }
 
+    return head
+}
+
+// Helper functions
+func toLinkedList(arr []int) *ListNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    head := &ListNode{Val: arr[0]}
+    current := head
+    for i := 1; i < len(arr); i++ {
+        current.Next = &ListNode{Val: arr[i]}
+        current = current.Next
+    }
+    return head
+}
+
+func toArray(head *ListNode) []int {
+    result := []int{}
+    for head != nil {
+        result = append(result, head.Val)
+        head = head.Next
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case: [3,2,2,1,3,2,4] -> [3,2,1,4]
+    head := toLinkedList([]int{3, 2, 2, 1, 3, 2, 4})
+    result := RemoveDuplicatesFromUnsortedLinkedList(head)
+    fmt.Println(toArray(result)) // [3 2 1 4]
 }`
         },
         similar: [

@@ -51,49 +51,112 @@
     }
         ],
         solutions: {
-            python: `def maximumSumCircularSubarray(data):
+            python: `def maxSubarraySumCircular(nums):
     """
     Maximum Sum Circular Subarray
 
+    Key insight: The answer is either:
+    1. Maximum subarray sum (normal Kadane's)
+    2. Total sum - minimum subarray sum (wrapping case)
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not nums:
+        return 0
 
-    result = None
+    # Standard Kadane's for max subarray
+    max_sum = nums[0]
+    current_max = nums[0]
 
-    # Process input
-    # ...
+    # Kadane's for min subarray
+    min_sum = nums[0]
+    current_min = nums[0]
 
-    return result
+    total = nums[0]
+
+    for i in range(1, len(nums)):
+        num = nums[i]
+        total += num
+
+        # Max subarray ending at i
+        current_max = max(num, current_max + num)
+        max_sum = max(max_sum, current_max)
+
+        # Min subarray ending at i
+        current_min = min(num, current_min + num)
+        min_sum = min(min_sum, current_min)
+
+    # If all elements are negative, return max_sum
+    # Otherwise, compare normal max with circular max (total - min_sum)
+    if max_sum < 0:
+        return max_sum
+
+    return max(max_sum, total - min_sum)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maxSubarraySumCircular([1, -2, 3, -2]))  # Output: 3
+    print(maxSubarraySumCircular([5, -3, 5]))      # Output: 10`,
             go: `package main
 
 import "fmt"
 
-// MaximumSumCircularSubarray solves the Maximum Sum Circular Subarray problem.
-// Time: O(n), Space: O(n)
-func MaximumSumCircularSubarray(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MaxSubarraySumCircular finds the maximum sum of a circular subarray.
+// Time: O(n), Space: O(1)
+func MaxSubarraySumCircular(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    maxSum := nums[0]
+    currentMax := nums[0]
+    minSum := nums[0]
+    currentMin := nums[0]
+    total := nums[0]
 
-    // Process input
-    // ...
+    for i := 1; i < len(nums); i++ {
+        num := nums[i]
+        total += num
 
-    return result
+        // Max subarray ending at i
+        if currentMax + num > num {
+            currentMax = currentMax + num
+        } else {
+            currentMax = num
+        }
+        if currentMax > maxSum {
+            maxSum = currentMax
+        }
+
+        // Min subarray ending at i
+        if currentMin + num < num {
+            currentMin = currentMin + num
+        } else {
+            currentMin = num
+        }
+        if currentMin < minSum {
+            minSum = currentMin
+        }
+    }
+
+    // If all elements are negative
+    if maxSum < 0 {
+        return maxSum
+    }
+
+    // Compare normal max with circular max
+    circularMax := total - minSum
+    if circularMax > maxSum {
+        return circularMax
+    }
+    return maxSum
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaxSubarraySumCircular([]int{1, -2, 3, -2})) // Output: 3
+    fmt.Println(MaxSubarraySumCircular([]int{5, -3, 5}))     // Output: 10
 }`
         },
         similar: [

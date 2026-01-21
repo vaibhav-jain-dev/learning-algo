@@ -44,49 +44,85 @@
     }
         ],
         solutions: {
-            python: `def longestConsecutiveWithGapK(data):
+            python: `def longestConsecutiveWithGapK(nums, k):
     """
     Longest Consecutive with Gap K
+
+    Find the length of the longest sequence where consecutive
+    elements differ by exactly k.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not nums:
+        return 0
 
-    result = None
+    num_set = set(nums)
+    max_length = 1
 
-    # Process input
-    # ...
+    for num in nums:
+        # Only start counting if num - k is not in set
+        # (this is the start of a sequence)
+        if num - k not in num_set:
+            current = num
+            length = 1
 
-    return result
+            # Keep extending while next element exists
+            while current + k in num_set:
+                current += k
+                length += 1
+
+            max_length = max(max_length, length)
+
+    return max_length
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(longestConsecutiveWithGapK([1, 3, 5, 7, 9, 2, 4], 2))  # 5
+    print(longestConsecutiveWithGapK([1, 2, 3, 4, 5], 1))  # 5`,
             go: `package main
 
 import "fmt"
 
-// LongestConsecutiveWithGapK solves the Longest Consecutive with Gap K problem.
+// LongestConsecutiveWithGapK finds longest sequence with gap k.
 // Time: O(n), Space: O(n)
-func LongestConsecutiveWithGapK(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func LongestConsecutiveWithGapK(nums []int, k int) int {
+    if len(nums) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    numSet := make(map[int]bool)
+    for _, num := range nums {
+        numSet[num] = true
+    }
 
-    // Process input
-    // ...
+    maxLength := 1
 
-    return result
+    for _, num := range nums {
+        // Only start if this is the beginning of a sequence
+        if !numSet[num-k] {
+            current := num
+            length := 1
+
+            // Keep extending while next element exists
+            for numSet[current+k] {
+                current += k
+                length++
+            }
+
+            if length > maxLength {
+                maxLength = length
+            }
+        }
+    }
+
+    return maxLength
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(LongestConsecutiveWithGapK([]int{1, 3, 5, 7, 9, 2, 4}, 2))  // 5
+    fmt.Println(LongestConsecutiveWithGapK([]int{1, 2, 3, 4, 5}, 1))  // 5
 }`
         },
         similar: [

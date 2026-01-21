@@ -51,49 +51,92 @@
     }
         ],
         solutions: {
-            python: `def maximumProductSubarray(data):
+            python: `def maxProduct(nums):
     """
     Maximum Product Subarray
 
+    Key insight: Track both max and min products because
+    a negative number can turn min into max and vice versa.
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not nums:
+        return 0
 
-    result = None
+    result = nums[0]
+    max_prod = nums[0]
+    min_prod = nums[0]
 
-    # Process input
-    # ...
+    for i in range(1, len(nums)):
+        num = nums[i]
+
+        # When multiplying by negative, max becomes min and vice versa
+        if num < 0:
+            max_prod, min_prod = min_prod, max_prod
+
+        # Max product ending at current position
+        max_prod = max(num, max_prod * num)
+        # Min product ending at current position
+        min_prod = min(num, min_prod * num)
+
+        result = max(result, max_prod)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maxProduct([2, 3, -2, 4]))  # Output: 6
+    print(maxProduct([-2, 0, -1]))    # Output: 0`,
             go: `package main
 
 import "fmt"
 
-// MaximumProductSubarray solves the Maximum Product Subarray problem.
-// Time: O(n), Space: O(n)
-func MaximumProductSubarray(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MaxProduct finds the contiguous subarray with largest product.
+// Time: O(n), Space: O(1)
+func MaxProduct(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    result := nums[0]
+    maxProd := nums[0]
+    minProd := nums[0]
 
-    // Process input
-    // ...
+    for i := 1; i < len(nums); i++ {
+        num := nums[i]
+
+        // When multiplying by negative, swap max and min
+        if num < 0 {
+            maxProd, minProd = minProd, maxProd
+        }
+
+        // Max product ending at current position
+        if num > maxProd * num {
+            maxProd = num
+        } else {
+            maxProd = maxProd * num
+        }
+
+        // Min product ending at current position
+        if num < minProd * num {
+            minProd = num
+        } else {
+            minProd = minProd * num
+        }
+
+        if maxProd > result {
+            result = maxProd
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaxProduct([]int{2, 3, -2, 4})) // Output: 6
+    fmt.Println(MaxProduct([]int{-2, 0, -1}))   // Output: 0
 }`
         },
         similar: [

@@ -84,49 +84,222 @@
     }
         ],
         solutions: {
-            python: `def reverseLinkedListIiReversePortion(data):
+            python: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverseLinkedListIiReversePortion(head, left, right):
     """
     Reverse Linked List II (Reverse Portion)
+    Reverse nodes from position left to right (1-indexed).
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Maintain prev, curr, next pointers while reversing
+    if not head or left == right:
+        return head
 
-    result = None
+    # Use dummy node for edge case when left=1
+    dummy = ListNode(0)
+    dummy.next = head
+    prev = dummy
 
-    # Process input
-    # ...
+    # Move prev to node just before position left
+    for _ in range(left - 1):
+        prev = prev.next
 
+    # Start reversing from position left
+    # prev points to node before left
+    # current points to node at position left
+    current = prev.next
+
+    # Reverse nodes from left to right using insertion method
+    # For each iteration, take the node after current and insert it after prev
+    for _ in range(right - left):
+        # Node to move
+        node_to_move = current.next
+
+        # Remove node_to_move from its position
+        current.next = node_to_move.next
+
+        # Insert node_to_move right after prev
+        node_to_move.next = prev.next
+        prev.next = node_to_move
+
+    return dummy.next
+
+
+# Alternative: Classic reverse approach
+def reverseBetweenClassic(head, left, right):
+    """
+    Time: O(n), Space: O(1)
+    """
+    if not head or left == right:
+        return head
+
+    dummy = ListNode(0)
+    dummy.next = head
+    prev = dummy
+
+    # Move to position before left
+    for _ in range(left - 1):
+        prev = prev.next
+
+    # Reverse the sublist
+    reverse_start = prev.next
+    current = reverse_start
+    rev_prev = None
+
+    for _ in range(right - left + 1):
+        next_node = current.next
+        current.next = rev_prev
+        rev_prev = current
+        current = next_node
+
+    # Connect the reversed portion
+    prev.next = rev_prev  # Connect before to new head
+    reverse_start.next = current  # Connect old head (now tail) to after
+
+    return dummy.next
+
+
+# Helper functions
+def to_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    current = head
+    for val in arr[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def to_array(head):
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: [1,2,3,4,5], left=2, right=4 -> [1,4,3,2,5]
+    head = to_linked_list([1, 2, 3, 4, 5])
+    result = reverseLinkedListIiReversePortion(head, 2, 4)
+    print(to_array(result))  # [1, 4, 3, 2, 5]
+
+    # Test case 2: [1,2,3,4,5], left=1, right=5 -> [5,4,3,2,1]
+    head = to_linked_list([1, 2, 3, 4, 5])
+    result = reverseLinkedListIiReversePortion(head, 1, 5)
+    print(to_array(result))  # [5, 4, 3, 2, 1]`,
             go: `package main
 
 import "fmt"
 
-// ReverseLinkedListIiReversePortion solves the Reverse Linked List II (Reverse Portion) problem.
-// Time: O(n), Space: O(n)
-func ReverseLinkedListIiReversePortion(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Maintain prev, curr, next pointers while reversing
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
-    var result interface{}
+// ReverseLinkedListIiReversePortion reverses from position left to right.
+// Time: O(n), Space: O(1)
+func ReverseLinkedListIiReversePortion(head *ListNode, left int, right int) *ListNode {
+    if head == nil || left == right {
+        return head
+    }
 
-    // Process input
-    // ...
+    // Use dummy node for edge case when left=1
+    dummy := &ListNode{Val: 0, Next: head}
+    prev := dummy
 
+    // Move prev to node just before position left
+    for i := 0; i < left-1; i++ {
+        prev = prev.Next
+    }
+
+    // Start reversing from position left
+    current := prev.Next
+
+    // Reverse using insertion method
+    for i := 0; i < right-left; i++ {
+        // Node to move
+        nodeToMove := current.Next
+
+        // Remove nodeToMove from its position
+        current.Next = nodeToMove.Next
+
+        // Insert nodeToMove right after prev
+        nodeToMove.Next = prev.Next
+        prev.Next = nodeToMove
+    }
+
+    return dummy.Next
+}
+
+// ReverseBetweenClassic uses classic reverse approach.
+// Time: O(n), Space: O(1)
+func ReverseBetweenClassic(head *ListNode, left int, right int) *ListNode {
+    if head == nil || left == right {
+        return head
+    }
+
+    dummy := &ListNode{Val: 0, Next: head}
+    prev := dummy
+
+    // Move to position before left
+    for i := 0; i < left-1; i++ {
+        prev = prev.Next
+    }
+
+    // Reverse the sublist
+    reverseStart := prev.Next
+    current := reverseStart
+    var revPrev *ListNode
+
+    for i := 0; i < right-left+1; i++ {
+        nextNode := current.Next
+        current.Next = revPrev
+        revPrev = current
+        current = nextNode
+    }
+
+    // Connect the reversed portion
+    prev.Next = revPrev           // Connect before to new head
+    reverseStart.Next = current   // Connect old head (now tail) to after
+
+    return dummy.Next
+}
+
+// Helper functions
+func toLinkedList(arr []int) *ListNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    head := &ListNode{Val: arr[0]}
+    current := head
+    for i := 1; i < len(arr); i++ {
+        current.Next = &ListNode{Val: arr[i]}
+        current = current.Next
+    }
+    return head
+}
+
+func toArray(head *ListNode) []int {
+    result := []int{}
+    for head != nil {
+        result = append(result, head.Val)
+        head = head.Next
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case: [1,2,3,4,5], left=2, right=4 -> [1,4,3,2,5]
+    head := toLinkedList([]int{1, 2, 3, 4, 5})
+    result := ReverseLinkedListIiReversePortion(head, 2, 4)
+    fmt.Println(toArray(result)) // [1 4 3 2 5]
 }`
         },
         similar: [

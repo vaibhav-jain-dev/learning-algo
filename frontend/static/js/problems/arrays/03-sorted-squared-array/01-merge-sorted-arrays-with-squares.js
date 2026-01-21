@@ -42,49 +42,124 @@
     }
         ],
         solutions: {
-            python: `def mergeSortedArraysWithSquares(data):
+            python: `def mergeSortedArraysWithSquares(arr1, arr2):
     """
-    Merge Sorted Arrays With Squares
+    Merge Sorted Arrays With Squares - Square elements and merge into sorted array.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n + m) where n, m are array lengths
+    Space: O(n + m) for the result array
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    def getSortedSquares(arr):
+        """Get sorted squared array using two-pointer technique."""
+        n = len(arr)
+        result = [0] * n
+        left, right = 0, n - 1
+        pos = n - 1  # Fill from the end (largest values)
 
-    result = None
+        while left <= right:
+            left_sq = arr[left] * arr[left]
+            right_sq = arr[right] * arr[right]
 
-    # Process input
-    # ...
+            if left_sq > right_sq:
+                result[pos] = left_sq
+                left += 1
+            else:
+                result[pos] = right_sq
+                right -= 1
+            pos -= 1
+
+        return result
+
+    # Get sorted squares of both arrays
+    sq1 = getSortedSquares(arr1) if arr1 else []
+    sq2 = getSortedSquares(arr2) if arr2 else []
+
+    # Merge two sorted arrays
+    result = []
+    i, j = 0, 0
+
+    while i < len(sq1) and j < len(sq2):
+        if sq1[i] <= sq2[j]:
+            result.append(sq1[i])
+            i += 1
+        else:
+            result.append(sq2[j])
+            j += 1
+
+    # Add remaining elements
+    result.extend(sq1[i:])
+    result.extend(sq2[j:])
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(mergeSortedArraysWithSquares([-3, -1, 2], [-2, 4]))  # [1, 4, 4, 9, 16]
+    print(mergeSortedArraysWithSquares([-5, 0, 3], [1, 2, 6]))  # [0, 1, 4, 9, 25, 36]`,
             go: `package main
 
 import "fmt"
 
-// MergeSortedArraysWithSquares solves the Merge Sorted Arrays With Squares problem.
-// Time: O(n), Space: O(n)
-func MergeSortedArraysWithSquares(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MergeSortedArraysWithSquares squares elements and merges into sorted array.
+// Time: O(n + m), Space: O(n + m)
+func MergeSortedArraysWithSquares(arr1, arr2 []int) []int {
+    // Get sorted squares of both arrays
+    sq1 := getSortedSquares(arr1)
+    sq2 := getSortedSquares(arr2)
 
-    var result interface{}
+    // Merge two sorted arrays
+    result := make([]int, 0, len(sq1)+len(sq2))
+    i, j := 0, 0
 
-    // Process input
-    // ...
+    for i < len(sq1) && j < len(sq2) {
+        if sq1[i] <= sq2[j] {
+            result = append(result, sq1[i])
+            i++
+        } else {
+            result = append(result, sq2[j])
+            j++
+        }
+    }
+
+    // Add remaining elements
+    result = append(result, sq1[i:]...)
+    result = append(result, sq2[j:]...)
+
+    return result
+}
+
+// getSortedSquares returns sorted squared array using two-pointer technique
+func getSortedSquares(arr []int) []int {
+    n := len(arr)
+    if n == 0 {
+        return []int{}
+    }
+
+    result := make([]int, n)
+    left, right := 0, n-1
+    pos := n - 1 // Fill from the end (largest values)
+
+    for left <= right {
+        leftSq := arr[left] * arr[left]
+        rightSq := arr[right] * arr[right]
+
+        if leftSq > rightSq {
+            result[pos] = leftSq
+            left++
+        } else {
+            result[pos] = rightSq
+            right--
+        }
+        pos--
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MergeSortedArraysWithSquares([]int{-3, -1, 2}, []int{-2, 4}))
+    fmt.Println(MergeSortedArraysWithSquares([]int{-5, 0, 3}, []int{1, 2, 6}))
 }`
         },
         similar: [

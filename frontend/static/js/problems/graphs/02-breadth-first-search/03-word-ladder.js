@@ -59,49 +59,127 @@
     }
         ],
         solutions: {
-            python: `def wordLadder(data):
+            python: `from collections import deque
+
+def ladderLength(beginWord, endWord, wordList):
     """
-    Word Ladder
+    Word Ladder - BFS to find shortest transformation sequence.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(M^2 * N) where M is word length, N is wordList size
+    Space: O(M^2 * N) for all intermediate states
     """
-    # TODO: Implement solution
-    # Key insight: BFS explores breadth-first, ideal for shortest paths
+    wordSet = set(wordList)
 
-    result = None
+    # If endWord not in dictionary, no valid transformation
+    if endWord not in wordSet:
+        return 0
 
-    # Process input
-    # ...
+    # BFS: (current_word, transformation_count)
+    queue = deque([(beginWord, 1)])
+    visited = {beginWord}
 
-    return result
+    while queue:
+        word, length = queue.popleft()
+
+        # Try changing each character position
+        for i in range(len(word)):
+            # Try all 26 letters
+            for c in 'abcdefghijklmnopqrstuvwxyz':
+                new_word = word[:i] + c + word[i+1:]
+
+                # Found the end word
+                if new_word == endWord:
+                    return length + 1
+
+                # Valid transformation not yet visited
+                if new_word in wordSet and new_word not in visited:
+                    visited.add(new_word)
+                    queue.append((new_word, length + 1))
+
+    return 0  # No transformation sequence found
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Example 1
+    beginWord1 = "hit"
+    endWord1 = "cog"
+    wordList1 = ["hot", "dot", "dog", "lot", "log", "cog"]
+    print(ladderLength(beginWord1, endWord1, wordList1))  # Output: 5
+    # hit -> hot -> dot -> dog -> cog
+
+    # Example 2: endWord not in wordList
+    wordList2 = ["hot", "dot", "dog", "lot", "log"]
+    print(ladderLength(beginWord1, endWord1, wordList2))  # Output: 0`,
             go: `package main
 
 import "fmt"
 
-// WordLadder solves the Word Ladder problem.
-// Time: O(n), Space: O(n)
-func WordLadder(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: BFS explores breadth-first, ideal for shortest paths
+// ladderLength finds shortest transformation sequence using BFS.
+// Time: O(M^2 * N), Space: O(M^2 * N)
+func ladderLength(beginWord string, endWord string, wordList []string) int {
+    // Build word set for O(1) lookup
+    wordSet := make(map[string]bool)
+    for _, word := range wordList {
+        wordSet[word] = true
+    }
 
-    var result interface{}
+    // If endWord not in dictionary, no valid transformation
+    if !wordSet[endWord] {
+        return 0
+    }
 
-    // Process input
-    // ...
+    // BFS queue
+    type state struct {
+        word   string
+        length int
+    }
+    queue := []state{{beginWord, 1}}
+    visited := map[string]bool{beginWord: true}
 
-    return result
+    for len(queue) > 0 {
+        curr := queue[0]
+        queue = queue[1:]
+
+        // Try changing each character position
+        wordBytes := []byte(curr.word)
+        for i := 0; i < len(wordBytes); i++ {
+            original := wordBytes[i]
+
+            // Try all 26 letters
+            for c := byte('a'); c <= byte('z'); c++ {
+                wordBytes[i] = c
+                newWord := string(wordBytes)
+
+                // Found the end word
+                if newWord == endWord {
+                    return curr.length + 1
+                }
+
+                // Valid transformation not yet visited
+                if wordSet[newWord] && !visited[newWord] {
+                    visited[newWord] = true
+                    queue = append(queue, state{newWord, curr.length + 1})
+                }
+            }
+
+            wordBytes[i] = original // Restore
+        }
+    }
+
+    return 0 // No transformation sequence found
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Example 1
+    beginWord := "hit"
+    endWord := "cog"
+    wordList := []string{"hot", "dot", "dog", "lot", "log", "cog"}
+    fmt.Println(ladderLength(beginWord, endWord, wordList)) // Output: 5
+
+    // Example 2: endWord not in wordList
+    wordList2 := []string{"hot", "dot", "dog", "lot", "log"}
+    fmt.Println(ladderLength(beginWord, endWord, wordList2)) // Output: 0
 }`
         },
         similar: [

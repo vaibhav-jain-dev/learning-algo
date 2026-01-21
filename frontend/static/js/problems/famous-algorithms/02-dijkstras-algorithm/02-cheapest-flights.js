@@ -65,49 +65,128 @@
     }
         ],
         solutions: {
-            python: `def cheapestFlightsWithinKStops(data):
+            python: `import heapq
+from collections import defaultdict
+
+def findCheapestPrice(n, flights, src, dst, k):
     """
-    Cheapest Flights Within K Stops
+    Cheapest Flights Within K Stops using Modified Dijkstra's
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(E * K)
+    Space: O(N * K)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list
+    graph = defaultdict(list)
+    for u, v, price in flights:
+        graph[u].append((v, price))
 
-    result = None
+    # Min-heap: (cost, stops, node)
+    heap = [(0, 0, src)]
 
-    # Process input
-    # ...
+    # Track minimum stops to reach each node
+    # We might visit a node multiple times with different stops
+    visited = {}  # node -> min stops used to reach it
 
-    return result
+    while heap:
+        cost, stops, node = heapq.heappop(heap)
+
+        # Found destination
+        if node == dst:
+            return cost
+
+        # Skip if we've used too many stops
+        if stops > k:
+            continue
+
+        # Skip if we've visited this node with fewer stops
+        if node in visited and visited[node] <= stops:
+            continue
+        visited[node] = stops
+
+        # Explore neighbors
+        for neighbor, price in graph[node]:
+            heapq.heappush(heap, (cost + price, stops + 1, neighbor))
+
+    return -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]]
+    print(findCheapestPrice(4, flights, 0, 3, 1))  # Output: 700`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// CheapestFlightsWithinKStops solves the Cheapest Flights Within K Stops problem.
-// Time: O(n), Space: O(n)
-func CheapestFlightsWithinKStops(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FlightItem represents state in priority queue
+type FlightItem struct {
+    cost, stops, node int
+}
 
-    var result interface{}
+// FlightPQ implements heap.Interface
+type FlightPQ []FlightItem
 
-    // Process input
-    // ...
+func (pq FlightPQ) Len() int           { return len(pq) }
+func (pq FlightPQ) Less(i, j int) bool { return pq[i].cost < pq[j].cost }
+func (pq FlightPQ) Swap(i, j int)      { pq[i], pq[j] = pq[j], pq[i] }
+func (pq *FlightPQ) Push(x interface{}) { *pq = append(*pq, x.(FlightItem)) }
+func (pq *FlightPQ) Pop() interface{} {
+    old := *pq
+    n := len(old)
+    item := old[n-1]
+    *pq = old[0 : n-1]
+    return item
+}
 
-    return result
+// FindCheapestPrice finds cheapest flight with at most k stops.
+// Time: O(E * K), Space: O(N * K)
+func FindCheapestPrice(n int, flights [][]int, src int, dst int, k int) int {
+    // Build adjacency list
+    graph := make(map[int][][2]int)
+    for _, f := range flights {
+        u, v, price := f[0], f[1], f[2]
+        graph[u] = append(graph[u], [2]int{v, price})
+    }
+
+    // Min-heap
+    pq := &FlightPQ{{0, 0, src}}
+    heap.Init(pq)
+
+    // Track min stops to reach each node
+    visited := make(map[int]int)
+
+    for pq.Len() > 0 {
+        item := heap.Pop(pq).(FlightItem)
+        cost, stops, node := item.cost, item.stops, item.node
+
+        if node == dst {
+            return cost
+        }
+
+        if stops > k {
+            continue
+        }
+
+        if prevStops, ok := visited[node]; ok && prevStops <= stops {
+            continue
+        }
+        visited[node] = stops
+
+        for _, edge := range graph[node] {
+            neighbor, price := edge[0], edge[1]
+            heap.Push(pq, FlightItem{cost + price, stops + 1, neighbor})
+        }
+    }
+
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    flights := [][]int{{0,1,100},{1,2,100},{2,0,100},{1,3,600},{2,3,200}}
+    fmt.Println(FindCheapestPrice(4, flights, 0, 3, 1)) // Output: 700
 }`
         },
         similar: [

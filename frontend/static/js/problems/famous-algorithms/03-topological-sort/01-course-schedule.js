@@ -58,49 +58,97 @@
     }
         ],
         solutions: {
-            python: `def courseSchedule(data):
+            python: `from collections import deque, defaultdict
+
+def canFinish(numCourses, prerequisites):
     """
-    Course Schedule
+    Course Schedule using Topological Sort (Kahn's Algorithm)
 
-    Time: O(n)
-    Space: O(n)
+    Returns True if all courses can be finished (no cycle).
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list and in-degree array
+    graph = defaultdict(list)
+    in_degree = [0] * numCourses
 
-    result = None
+    for course, prereq in prerequisites:
+        graph[prereq].append(course)
+        in_degree[course] += 1
 
-    # Process input
-    # ...
+    # Start with courses that have no prerequisites
+    queue = deque()
+    for i in range(numCourses):
+        if in_degree[i] == 0:
+            queue.append(i)
 
-    return result
+    completed = 0
+
+    while queue:
+        course = queue.popleft()
+        completed += 1
+
+        # Reduce in-degree for dependent courses
+        for next_course in graph[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+
+    # If we completed all courses, no cycle exists
+    return completed == numCourses
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(canFinish(2, [[1, 0]]))          # Output: True
+    print(canFinish(2, [[1, 0], [0, 1]]))  # Output: False`,
             go: `package main
 
 import "fmt"
 
-// CourseSchedule solves the Course Schedule problem.
-// Time: O(n), Space: O(n)
-func CourseSchedule(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CanFinish determines if all courses can be completed.
+// Time: O(V + E), Space: O(V + E)
+func CanFinish(numCourses int, prerequisites [][]int) bool {
+    // Build adjacency list and in-degree array
+    graph := make([][]int, numCourses)
+    inDegree := make([]int, numCourses)
 
-    var result interface{}
+    for _, prereq := range prerequisites {
+        course, pre := prereq[0], prereq[1]
+        graph[pre] = append(graph[pre], course)
+        inDegree[course]++
+    }
 
-    // Process input
-    // ...
+    // Start with courses that have no prerequisites
+    queue := []int{}
+    for i := 0; i < numCourses; i++ {
+        if inDegree[i] == 0 {
+            queue = append(queue, i)
+        }
+    }
 
-    return result
+    completed := 0
+
+    for len(queue) > 0 {
+        course := queue[0]
+        queue = queue[1:]
+        completed++
+
+        for _, nextCourse := range graph[course] {
+            inDegree[nextCourse]--
+            if inDegree[nextCourse] == 0 {
+                queue = append(queue, nextCourse)
+            }
+        }
+    }
+
+    return completed == numCourses
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CanFinish(2, [][]int{{1, 0}}))         // Output: true
+    fmt.Println(CanFinish(2, [][]int{{1, 0}, {0, 1}})) // Output: false
 }`
         },
         similar: [

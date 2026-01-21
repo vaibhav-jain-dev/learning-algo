@@ -49,45 +49,113 @@
     """
     Nested List Weighted Sum II
 
-    Time: O(n)
-    Space: O(n)
+    Weight is inverse of depth: deeper elements have less weight.
+    Element at depth d has weight (maxDepth - d + 1).
+
+    Approach: First find max depth, then calculate weighted sum.
+    Alternative: Use level sum approach - sum all integers at each level,
+    then accumulate (deeper levels get added fewer times).
+
+    Time: O(n) where n is total number of elements
+    Space: O(n) for recursion/BFS queue
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    array = data.get("array", data) if isinstance(data, dict) else data
 
-    result = None
+    # Approach: Use level-order traversal and accumulate sums
+    # At each level, add the current level sum to a running total
+    # This way, deeper levels get added fewer times
 
-    # Process input
-    # ...
+    from collections import deque
 
-    return result
+    unweighted_sum = 0
+    weighted_sum = 0
+    queue = deque(array)
+
+    while queue:
+        level_size = len(queue)
+        level_sum = 0
+
+        for _ in range(level_size):
+            element = queue.popleft()
+            if isinstance(element, list):
+                queue.extend(element)
+            else:
+                level_sum += element
+
+        unweighted_sum += level_sum
+        weighted_sum += unweighted_sum
+
+    return weighted_sum
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # [[1,1],2,[1,1]] -> depth 2: four 1s (weight 1), depth 1: one 2 (weight 2)
+    # = 4*1 + 2*2 = 8
+    print(nestedListWeightedSumIi({"array": [[1, 1], 2, [1, 1]]}))  # Output: 8
+    print(nestedListWeightedSumIi({"array": [1, [4, [6]]]}))        # Output: 17`,
             go: `package main
 
 import "fmt"
 
 // NestedListWeightedSumIi solves the Nested List Weighted Sum II problem.
+// Weight is inverse of depth: deeper elements have less weight.
+// Uses level-order traversal with accumulating sums.
 // Time: O(n), Space: O(n)
 func NestedListWeightedSumIi(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    var array []interface{}
+    switch v := data.(type) {
+    case map[string]interface{}:
+        array = v["array"].([]interface{})
+    case []interface{}:
+        array = v
+    }
 
-    var result interface{}
+    unweightedSum := 0
+    weightedSum := 0
+    queue := make([]interface{}, len(array))
+    copy(queue, array)
 
-    // Process input
-    // ...
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        levelSum := 0
 
-    return result
+        for i := 0; i < levelSize; i++ {
+            element := queue[0]
+            queue = queue[1:]
+
+            if nested, ok := element.([]interface{}); ok {
+                queue = append(queue, nested...)
+            } else {
+                // Handle both int and float64 (JSON numbers)
+                switch num := element.(type) {
+                case int:
+                    levelSum += num
+                case float64:
+                    levelSum += int(num)
+                }
+            }
+        }
+
+        unweightedSum += levelSum
+        weightedSum += unweightedSum
+    }
+
+    return weightedSum
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // [[1,1],2,[1,1]] -> 8
+    arr1 := []interface{}{
+        []interface{}{float64(1), float64(1)},
+        float64(2),
+        []interface{}{float64(1), float64(1)},
+    }
+    fmt.Println(NestedListWeightedSumIi(map[string]interface{}{"array": arr1})) // Output: 8
+
+    // [1,[4,[6]]] -> 17
+    arr2 := []interface{}{float64(1), []interface{}{float64(4), []interface{}{float64(6)}}}
+    fmt.Println(NestedListWeightedSumIi(map[string]interface{}{"array": arr2})) // Output: 17
 }`
         },
         similar: [

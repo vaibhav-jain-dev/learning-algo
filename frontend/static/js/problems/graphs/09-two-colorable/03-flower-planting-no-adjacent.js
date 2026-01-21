@@ -66,49 +66,104 @@
     }
         ],
         solutions: {
-            python: `def flowerPlantingWithNoAdjacent(data):
+            python: `from collections import defaultdict
+
+def gardenNoAdj(n, paths):
     """
-    Flower Planting With No Adjacent
+    Flower Planting With No Adjacent - Greedy Graph Coloring
 
-    Time: O(n)
-    Space: O(n)
+    Since each garden has at most 3 neighbors and we have 4 colors,
+    we can always find a valid color using greedy approach.
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list (gardens are 1-indexed)
+    graph = defaultdict(list)
+    for x, y in paths:
+        graph[x].append(y)
+        graph[y].append(x)
 
-    result = None
+    # result[i] = flower type for garden i+1 (1-indexed result)
+    result = [0] * n
 
-    # Process input
-    # ...
+    for garden in range(1, n + 1):
+        # Find colors used by neighbors
+        neighbor_colors = set()
+        for neighbor in graph[garden]:
+            if result[neighbor - 1] != 0:
+                neighbor_colors.add(result[neighbor - 1])
+
+        # Pick first available color (1-4)
+        for color in range(1, 5):
+            if color not in neighbor_colors:
+                result[garden - 1] = color
+                break
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1
+    print(gardenNoAdj(3, [[1,2],[2,3],[3,1]]))  # [1, 2, 3]
+
+    # Test case 2
+    print(gardenNoAdj(4, [[1,2],[3,4]]))  # [1, 2, 1, 2]
+
+    # Test case 3
+    print(gardenNoAdj(4, [[1,2],[2,3],[3,4],[4,1],[1,3],[2,4]]))  # [1, 2, 3, 4]`,
             go: `package main
 
 import "fmt"
 
-// FlowerPlantingWithNoAdjacent solves the Flower Planting With No Adjacent problem.
-// Time: O(n), Space: O(n)
-func FlowerPlantingWithNoAdjacent(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// GardenNoAdj assigns flower types to gardens
+// Time: O(V+E), Space: O(V+E)
+func GardenNoAdj(n int, paths [][]int) []int {
+    // Build adjacency list
+    graph := make([][]int, n+1)
+    for i := range graph {
+        graph[i] = []int{}
+    }
 
-    var result interface{}
+    for _, p := range paths {
+        x, y := p[0], p[1]
+        graph[x] = append(graph[x], y)
+        graph[y] = append(graph[y], x)
+    }
 
-    // Process input
-    // ...
+    result := make([]int, n)
+
+    for garden := 1; garden <= n; garden++ {
+        // Find colors used by neighbors
+        neighborColors := make(map[int]bool)
+        for _, neighbor := range graph[garden] {
+            if result[neighbor-1] != 0 {
+                neighborColors[result[neighbor-1]] = true
+            }
+        }
+
+        // Pick first available color (1-4)
+        for color := 1; color <= 4; color++ {
+            if !neighborColors[color] {
+                result[garden-1] = color
+                break
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1
+    fmt.Println(GardenNoAdj(3, [][]int{{1, 2}, {2, 3}, {3, 1}})) // [1 2 3]
+
+    // Test case 2
+    fmt.Println(GardenNoAdj(4, [][]int{{1, 2}, {3, 4}})) // [1 2 1 2]
+
+    // Test case 3
+    fmt.Println(GardenNoAdj(4, [][]int{{1, 2}, {2, 3}, {3, 4}, {4, 1}, {1, 3}, {2, 4}})) // [1 2 3 4]
 }`
         },
         similar: [

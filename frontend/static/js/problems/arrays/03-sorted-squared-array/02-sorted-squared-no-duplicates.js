@@ -42,49 +42,92 @@
     }
         ],
         solutions: {
-            python: `def sortedSquaredNoDuplicates(data):
+            python: `def sortedSquaredNoDuplicates(array):
     """
-    Sorted Squared No Duplicates
+    Sorted Squared No Duplicates - Square sorted array and remove duplicates.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(n) for result array
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not array:
+        return []
 
-    result = None
+    n = len(array)
+    squared = [0] * n
+    left, right = 0, n - 1
+    pos = n - 1  # Fill from the end (largest values)
 
-    # Process input
-    # ...
+    # Two-pointer to build sorted squared array
+    while left <= right:
+        left_sq = array[left] * array[left]
+        right_sq = array[right] * array[right]
+
+        if left_sq > right_sq:
+            squared[pos] = left_sq
+            left += 1
+        else:
+            squared[pos] = right_sq
+            right -= 1
+        pos -= 1
+
+    # Remove duplicates from sorted array
+    result = []
+    for val in squared:
+        if not result or result[-1] != val:
+            result.append(val)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(sortedSquaredNoDuplicates([-3, -2, -1, 1, 2, 3]))  # [1, 4, 9]
+    print(sortedSquaredNoDuplicates([-5, -3, 0, 2, 3, 5]))  # [0, 4, 9, 25]`,
             go: `package main
 
 import "fmt"
 
-// SortedSquaredNoDuplicates solves the Sorted Squared No Duplicates problem.
+// SortedSquaredNoDuplicates squares sorted array and removes duplicates.
 // Time: O(n), Space: O(n)
-func SortedSquaredNoDuplicates(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func SortedSquaredNoDuplicates(array []int) []int {
+    n := len(array)
+    if n == 0 {
+        return []int{}
+    }
 
-    var result interface{}
+    squared := make([]int, n)
+    left, right := 0, n-1
+    pos := n - 1 // Fill from the end (largest values)
 
-    // Process input
-    // ...
+    // Two-pointer to build sorted squared array
+    for left <= right {
+        leftSq := array[left] * array[left]
+        rightSq := array[right] * array[right]
+
+        if leftSq > rightSq {
+            squared[pos] = leftSq
+            left++
+        } else {
+            squared[pos] = rightSq
+            right--
+        }
+        pos--
+    }
+
+    // Remove duplicates from sorted array
+    result := []int{}
+    for _, val := range squared {
+        if len(result) == 0 || result[len(result)-1] != val {
+            result = append(result, val)
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(SortedSquaredNoDuplicates([]int{-3, -2, -1, 1, 2, 3}))
+    fmt.Println(SortedSquaredNoDuplicates([]int{-5, -3, 0, 2, 3, 5}))
 }`
         },
         similar: [

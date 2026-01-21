@@ -38,49 +38,188 @@
     }
         ],
         solutions: {
-            python: `def shortestPathToGetAllKeys(data):
+            python: `from collections import deque
+
+def shortestPathAllKeys(grid):
     """
-    Shortest Path to Get All Keys
+    Shortest Path to Get All Keys - BFS with state
 
-    Time: O(n)
-    Space: O(n)
+    State = (row, col, keys_collected)
+    Use bitmask to track which keys we have.
+
+    Time: O(M * N * 2^K) where K = number of keys
+    Space: O(M * N * 2^K)
     """
-    # TODO: Implement solution
-    # Key insight: BFS explores breadth-first, ideal for shortest paths
+    if not grid:
+        return -1
 
-    result = None
+    rows, cols = len(grid), len(grid[0])
 
-    # Process input
-    # ...
+    # Find start position and count keys
+    start_r, start_c = 0, 0
+    total_keys = 0
 
-    return result
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '@':
+                start_r, start_c = r, c
+            elif 'a' <= grid[r][c] <= 'f':
+                total_keys += 1
+
+    # All keys collected bitmask
+    all_keys = (1 << total_keys) - 1
+
+    # BFS: (row, col, keys_bitmask)
+    queue = deque([(start_r, start_c, 0, 0)])  # r, c, keys, steps
+    visited = set()
+    visited.add((start_r, start_c, 0))
+
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    while queue:
+        r, c, keys, steps = queue.popleft()
+
+        # Check if we have all keys
+        if keys == all_keys:
+            return steps
+
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+
+            if not (0 <= nr < rows and 0 <= nc < cols):
+                continue
+
+            cell = grid[nr][nc]
+
+            # Wall - cannot pass
+            if cell == '#':
+                continue
+
+            # Lock - need corresponding key
+            if 'A' <= cell <= 'F':
+                key_needed = 1 << (ord(cell) - ord('A'))
+                if not (keys & key_needed):
+                    continue
+
+            # Calculate new keys if we pick up a key
+            new_keys = keys
+            if 'a' <= cell <= 'f':
+                new_keys |= (1 << (ord(cell) - ord('a')))
+
+            state = (nr, nc, new_keys)
+            if state not in visited:
+                visited.add(state)
+                queue.append((nr, nc, new_keys, steps + 1))
+
+    return -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid1 = ["@.a..", "###.#", "b.A.B"]
+    print(shortestPathAllKeys(grid1))  # 8
+
+    grid2 = ["@..aA", "..B#.", "....b"]
+    print(shortestPathAllKeys(grid2))  # 6`,
             go: `package main
 
 import "fmt"
 
-// ShortestPathToGetAllKeys solves the Shortest Path to Get All Keys problem.
-// Time: O(n), Space: O(n)
-func ShortestPathToGetAllKeys(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: BFS explores breadth-first, ideal for shortest paths
+type State struct {
+    row, col, keys int
+}
 
-    var result interface{}
+// ShortestPathAllKeys finds minimum moves to collect all keys
+// Time: O(M*N*2^K), Space: O(M*N*2^K)
+func ShortestPathAllKeys(grid []string) int {
+    if len(grid) == 0 {
+        return -1
+    }
 
-    // Process input
-    // ...
+    rows, cols := len(grid), len(grid[0])
 
-    return result
+    // Find start position and count keys
+    startR, startC := 0, 0
+    totalKeys := 0
+
+    for r := 0; r < rows; r++ {
+        for c := 0; c < cols; c++ {
+            if grid[r][c] == '@' {
+                startR, startC = r, c
+            } else if grid[r][c] >= 'a' && grid[r][c] <= 'f' {
+                totalKeys++
+            }
+        }
+    }
+
+    // All keys collected bitmask
+    allKeys := (1 << totalKeys) - 1
+
+    // BFS queue: row, col, keys, steps
+    type QueueItem struct {
+        r, c, keys, steps int
+    }
+    queue := []QueueItem{{startR, startC, 0, 0}}
+    visited := make(map[State]bool)
+    visited[State{startR, startC, 0}] = true
+
+    directions := [][2]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
+
+    for len(queue) > 0 {
+        item := queue[0]
+        queue = queue[1:]
+        r, c, keys, steps := item.r, item.c, item.keys, item.steps
+
+        // Check if we have all keys
+        if keys == allKeys {
+            return steps
+        }
+
+        for _, d := range directions {
+            nr, nc := r+d[0], c+d[1]
+
+            if nr < 0 || nr >= rows || nc < 0 || nc >= cols {
+                continue
+            }
+
+            cell := grid[nr][nc]
+
+            // Wall
+            if cell == '#' {
+                continue
+            }
+
+            // Lock - need corresponding key
+            if cell >= 'A' && cell <= 'F' {
+                keyNeeded := 1 << (cell - 'A')
+                if keys&keyNeeded == 0 {
+                    continue
+                }
+            }
+
+            // Pick up key if present
+            newKeys := keys
+            if cell >= 'a' && cell <= 'f' {
+                newKeys |= (1 << (cell - 'a'))
+            }
+
+            state := State{nr, nc, newKeys}
+            if !visited[state] {
+                visited[state] = true
+                queue = append(queue, QueueItem{nr, nc, newKeys, steps + 1})
+            }
+        }
+    }
+
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid1 := []string{"@.a..", "###.#", "b.A.B"}
+    fmt.Println(ShortestPathAllKeys(grid1)) // 8
+
+    grid2 := []string{"@..aA", "..B#.", "....b"}
+    fmt.Println(ShortestPathAllKeys(grid2)) // 6
 }`
         },
         similar: [

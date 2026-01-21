@@ -72,49 +72,88 @@
     }
         ],
         solutions: {
-            python: `def allPathsFromSourceToTarget(data):
+            python: `def allPathsSourceTarget(graph):
     """
-    All Paths From Source to Target
+    All Paths From Source to Target - DFS backtracking on a DAG.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(2^N * N) - exponential paths possible, each path up to N nodes
+    Space: O(N) for recursion depth and current path
     """
-    # TODO: Implement solution
-    # Key insight: DFS explores depth-first, ideal for paths and connectivity
+    result = []
+    target = len(graph) - 1
 
-    result = None
+    def dfs(node, path):
+        # If we reached the target, add current path to result
+        if node == target:
+            result.append(path[:])  # Make a copy of the path
+            return
 
-    # Process input
-    # ...
+        # Explore all neighbors
+        for neighbor in graph[node]:
+            path.append(neighbor)
+            dfs(neighbor, path)
+            path.pop()  # Backtrack
 
+    # Start DFS from node 0
+    dfs(0, [0])
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Example 1: graph = [[1,2],[3],[3],[]]
+    graph1 = [[1, 2], [3], [3], []]
+    print(allPathsSourceTarget(graph1))
+    # Output: [[0,1,3], [0,2,3]]
+
+    # Example 2: graph = [[4,3,1],[3,2,4],[3],[4],[]]
+    graph2 = [[4, 3, 1], [3, 2, 4], [3], [4], []]
+    print(allPathsSourceTarget(graph2))
+    # Output: [[0,4], [0,3,4], [0,1,3,4], [0,1,2,3,4], [0,1,4]]`,
             go: `package main
 
 import "fmt"
 
-// AllPathsFromSourceToTarget solves the All Paths From Source to Target problem.
-// Time: O(n), Space: O(n)
-func AllPathsFromSourceToTarget(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: DFS explores depth-first, ideal for paths and connectivity
+// allPathsSourceTarget finds all paths from node 0 to node n-1 in a DAG.
+// Time: O(2^N * N), Space: O(N)
+func allPathsSourceTarget(graph [][]int) [][]int {
+    result := [][]int{}
+    target := len(graph) - 1
 
-    var result interface{}
+    var dfs func(node int, path []int)
+    dfs = func(node int, path []int) {
+        // If we reached the target, add current path to result
+        if node == target {
+            // Make a copy of the path
+            pathCopy := make([]int, len(path))
+            copy(pathCopy, path)
+            result = append(result, pathCopy)
+            return
+        }
 
-    // Process input
-    // ...
+        // Explore all neighbors
+        for _, neighbor := range graph[node] {
+            path = append(path, neighbor)
+            dfs(neighbor, path)
+            path = path[:len(path)-1] // Backtrack
+        }
+    }
 
+    // Start DFS from node 0
+    dfs(0, []int{0})
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Example 1
+    graph1 := [][]int{{1, 2}, {3}, {3}, {}}
+    fmt.Println(allPathsSourceTarget(graph1))
+    // Output: [[0 1 3] [0 2 3]]
+
+    // Example 2
+    graph2 := [][]int{{4, 3, 1}, {3, 2, 4}, {3}, {4}, {}}
+    fmt.Println(allPathsSourceTarget(graph2))
+    // Output: [[0 4] [0 3 4] [0 1 3 4] [0 1 2 3 4] [0 1 4]]
 }`
         },
         similar: [

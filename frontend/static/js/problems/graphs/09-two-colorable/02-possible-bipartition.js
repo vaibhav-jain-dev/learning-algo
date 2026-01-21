@@ -69,49 +69,127 @@
     }
         ],
         solutions: {
-            python: `def possibleBipartition(data):
+            python: `from collections import defaultdict, deque
+
+def possibleBipartition(n, dislikes):
     """
-    Possible Bipartition
+    Possible Bipartition - Graph Coloring (Bipartite Check)
 
-    Time: O(n)
-    Space: O(n)
+    Build a graph where edges connect people who dislike each other.
+    Check if this graph is bipartite (2-colorable).
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list (people are 1-indexed)
+    graph = defaultdict(list)
+    for a, b in dislikes:
+        graph[a].append(b)
+        graph[b].append(a)
 
-    result = None
+    color = {}  # person -> color (0 or 1)
 
-    # Process input
-    # ...
+    def bfs(start):
+        queue = deque([start])
+        color[start] = 0
 
-    return result
+        while queue:
+            person = queue.popleft()
+
+            for enemy in graph[person]:
+                if enemy not in color:
+                    color[enemy] = 1 - color[person]
+                    queue.append(enemy)
+                elif color[enemy] == color[person]:
+                    return False
+
+        return True
+
+    # Check each connected component
+    for person in range(1, n + 1):
+        if person not in color:
+            if not bfs(person):
+                return False
+
+    return True
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: Can partition
+    print(possibleBipartition(4, [[1,2],[1,3],[2,4]]))  # True
+
+    # Test case 2: Cannot partition (triangle of dislikes)
+    print(possibleBipartition(3, [[1,2],[1,3],[2,3]]))  # False
+
+    # Test case 3: Can partition
+    print(possibleBipartition(5, [[1,2],[2,3],[3,4],[4,5],[1,5]]))  # False`,
             go: `package main
 
 import "fmt"
 
-// PossibleBipartition solves the Possible Bipartition problem.
-// Time: O(n), Space: O(n)
-func PossibleBipartition(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// PossibleBipartition checks if n people can be split into 2 groups
+// Time: O(V+E), Space: O(V+E)
+func PossibleBipartition(n int, dislikes [][]int) bool {
+    // Build adjacency list
+    graph := make([][]int, n+1)
+    for i := range graph {
+        graph[i] = []int{}
+    }
 
-    var result interface{}
+    for _, d := range dislikes {
+        a, b := d[0], d[1]
+        graph[a] = append(graph[a], b)
+        graph[b] = append(graph[b], a)
+    }
 
-    // Process input
-    // ...
+    color := make([]int, n+1)
+    for i := range color {
+        color[i] = -1 // -1 = uncolored
+    }
 
-    return result
+    bfs := func(start int) bool {
+        queue := []int{start}
+        color[start] = 0
+
+        for len(queue) > 0 {
+            person := queue[0]
+            queue = queue[1:]
+
+            for _, enemy := range graph[person] {
+                if color[enemy] == -1 {
+                    color[enemy] = 1 - color[person]
+                    queue = append(queue, enemy)
+                } else if color[enemy] == color[person] {
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
+
+    // Check each connected component
+    for person := 1; person <= n; person++ {
+        if color[person] == -1 {
+            if !bfs(person) {
+                return false
+            }
+        }
+    }
+
+    return true
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1: Can partition
+    fmt.Println(PossibleBipartition(4, [][]int{{1, 2}, {1, 3}, {2, 4}})) // true
+
+    // Test case 2: Cannot partition
+    fmt.Println(PossibleBipartition(3, [][]int{{1, 2}, {1, 3}, {2, 3}})) // false
+
+    // Test case 3
+    fmt.Println(PossibleBipartition(5, [][]int{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {1, 5}})) // false
 }`
         },
         similar: [

@@ -39,45 +39,70 @@
     """
     N-th Tribonacci Number
 
+    The Tribonacci sequence: T0=0, T1=1, T2=1
+    Tn = Tn-1 + Tn-2 + Tn-3 for n >= 3
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data.get("n", data) if isinstance(data, dict) else data
 
-    result = None
+    if n == 0:
+        return 0
+    if n <= 2:
+        return 1
 
-    # Process input
-    # ...
+    # Use three variables to track the last three values
+    t0, t1, t2 = 0, 1, 1
 
-    return result
+    for _ in range(3, n + 1):
+        t0, t1, t2 = t1, t2, t0 + t1 + t2
+
+    return t2
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(nthTribonacciNumber({"n": 4}))   # Output: 4
+    print(nthTribonacciNumber({"n": 25}))  # Output: 1389537`,
             go: `package main
 
 import "fmt"
 
 // NthTribonacciNumber solves the N-th Tribonacci Number problem.
-// Time: O(n), Space: O(n)
+// The Tribonacci sequence: T0=0, T1=1, T2=1
+// Tn = Tn-1 + Tn-2 + Tn-3 for n >= 3
+// Time: O(n), Space: O(1)
 func NthTribonacciNumber(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    // Extract n from input
+    var n int
+    switch v := data.(type) {
+    case map[string]interface{}:
+        n = int(v["n"].(float64))
+    case int:
+        n = v
+    }
 
-    var result interface{}
+    if n == 0 {
+        return 0
+    }
+    if n <= 2 {
+        return 1
+    }
 
-    // Process input
-    // ...
+    // Use three variables to track the last three values
+    t0, t1, t2 := 0, 1, 1
 
-    return result
+    for i := 3; i <= n; i++ {
+        t0, t1, t2 = t1, t2, t0+t1+t2
+    }
+
+    return t2
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(NthTribonacciNumber(map[string]interface{}{"n": float64(4)}))  // Output: 4
+    fmt.Println(NthTribonacciNumber(map[string]interface{}{"n": float64(25)})) // Output: 1389537
 }`
         },
         similar: [

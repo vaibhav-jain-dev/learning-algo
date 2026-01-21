@@ -42,49 +42,78 @@
     }
         ],
         solutions: {
-            python: `def countQuadruplets(data):
+            python: `def countQuadruplets(array, target):
     """
     Count Quadruplets
 
-    Time: O(n)
-    Space: O(n)
+    Count quadruplets (i, j, k, l) where i < j < k < l
+    and array[i] + array[j] + array[k] + array[l] = target.
+    Different indices with same values count separately.
+
+    Time: O(n^2)
+    Space: O(n^2)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(array)
+    count = 0
 
-    result = None
+    # Map to store count of pair sums with their ending indices
+    # For each position k, we count pairs (i,j) where i < j < k
+    pair_count = {}
 
-    # Process input
-    # ...
+    for j in range(n):
+        # For each k > j, check if complement exists
+        for k in range(j + 1, n):
+            complement = target - array[j] - array[k]
+            if complement in pair_count:
+                count += pair_count[complement]
 
-    return result
+        # Add pairs ending at j to pair_count for future use
+        for i in range(j):
+            pair_sum = array[i] + array[j]
+            pair_count[pair_sum] = pair_count.get(pair_sum, 0) + 1
+
+    return count
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(countQuadruplets([1, 1, 1, 1, 2, 2], 5))  # 12
+    print(countQuadruplets([1, 2, 3, 4], 10))  # 1`,
             go: `package main
 
 import "fmt"
 
-// CountQuadruplets solves the Count Quadruplets problem.
-// Time: O(n), Space: O(n)
-func CountQuadruplets(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CountQuadruplets counts quadruplets that sum to target.
+// Time: O(n^2), Space: O(n^2)
+func CountQuadruplets(array []int, target int) int {
+    n := len(array)
+    count := 0
 
-    var result interface{}
+    // Map to store count of pair sums
+    pairCount := make(map[int]int)
 
-    // Process input
-    // ...
+    for j := 0; j < n; j++ {
+        // For each k > j, check if complement exists
+        for k := j + 1; k < n; k++ {
+            complement := target - array[j] - array[k]
+            if c, ok := pairCount[complement]; ok {
+                count += c
+            }
+        }
 
-    return result
+        // Add pairs ending at j to pairCount for future use
+        for i := 0; i < j; i++ {
+            pairSum := array[i] + array[j]
+            pairCount[pairSum]++
+        }
+    }
+
+    return count
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CountQuadruplets([]int{1, 1, 1, 1, 2, 2}, 5))  // 12
+    fmt.Println(CountQuadruplets([]int{1, 2, 3, 4}, 10))  // 1
 }`
         },
         similar: [

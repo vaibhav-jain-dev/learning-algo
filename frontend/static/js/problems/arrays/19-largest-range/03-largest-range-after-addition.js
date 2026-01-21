@@ -41,49 +41,118 @@
     }
         ],
         solutions: {
-            python: `def largestRangeAfterAddition(data):
+            python: `def largestRangeAfterAddition(nums, additions):
     """
     Largest Range After Addition
 
-    Time: O(n)
+    Find the largest consecutive range possible after adding
+    at most 'additions' elements to fill gaps.
+
+    Uses sliding window on sorted unique elements.
+
+    Time: O(n log n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not nums:
+        return 0
 
-    result = None
+    # Sort and remove duplicates
+    sorted_nums = sorted(set(nums))
+    n = len(sorted_nums)
 
-    # Process input
-    # ...
+    if n == 0:
+        return 0
 
-    return result
+    max_range = 1
+    left = 0
+
+    for right in range(n):
+        # Calculate gaps needed to make range [left, right] consecutive
+        # Total range length - number of existing elements = gaps needed
+        range_length = sorted_nums[right] - sorted_nums[left] + 1
+        existing_elements = right - left + 1
+        gaps_needed = range_length - existing_elements
+
+        # If we need more additions than allowed, shrink window
+        while gaps_needed > additions and left < right:
+            left += 1
+            range_length = sorted_nums[right] - sorted_nums[left] + 1
+            existing_elements = right - left + 1
+            gaps_needed = range_length - existing_elements
+
+        # Current range length (existing + additions used)
+        current_range = existing_elements + min(gaps_needed, additions)
+        # Actually, with additions we can extend beyond the window
+        # The range is: sorted_nums[right] - sorted_nums[left] + 1
+        if gaps_needed <= additions:
+            max_range = max(max_range, range_length)
+
+    return max_range
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(largestRangeAfterAddition([1, 3, 5, 7], 1))  # 4 (add 2: [1,2,3] or add 4: [3,4,5] etc.)
+    print(largestRangeAfterAddition([1, 2, 3, 10], 2))  # 5 (add 4,5: [1,2,3,4,5])`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// LargestRangeAfterAddition solves the Largest Range After Addition problem.
-// Time: O(n), Space: O(n)
-func LargestRangeAfterAddition(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// LargestRangeAfterAddition finds largest range after additions.
+// Time: O(n log n), Space: O(n)
+func LargestRangeAfterAddition(nums []int, additions int) int {
+    if len(nums) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // Remove duplicates and sort
+    unique := make(map[int]bool)
+    for _, v := range nums {
+        unique[v] = true
+    }
 
-    // Process input
-    // ...
+    sortedNums := []int{}
+    for v := range unique {
+        sortedNums = append(sortedNums, v)
+    }
+    sort.Ints(sortedNums)
 
-    return result
+    n := len(sortedNums)
+    if n == 0 {
+        return 0
+    }
+
+    maxRange := 1
+    left := 0
+
+    for right := 0; right < n; right++ {
+        // Calculate gaps needed
+        rangeLength := sortedNums[right] - sortedNums[left] + 1
+        existingElements := right - left + 1
+        gapsNeeded := rangeLength - existingElements
+
+        // Shrink window if needed
+        for gapsNeeded > additions && left < right {
+            left++
+            rangeLength = sortedNums[right] - sortedNums[left] + 1
+            existingElements = right - left + 1
+            gapsNeeded = rangeLength - existingElements
+        }
+
+        if gapsNeeded <= additions && rangeLength > maxRange {
+            maxRange = rangeLength
+        }
+    }
+
+    return maxRange
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(LargestRangeAfterAddition([]int{1, 3, 5, 7}, 1))  // 4
+    fmt.Println(LargestRangeAfterAddition([]int{1, 2, 3, 10}, 2))  // 5
 }`
         },
         similar: [

@@ -60,49 +60,155 @@
     }
         ],
         solutions: {
-            python: `def inorderPredecessorAndSuccessor(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def inorderPredecessorAndSuccessor(data):
     """
     Inorder Predecessor and Successor
 
-    Time: O(n)
-    Space: O(n)
+    Approach: Traverse the BST, using BST property to find
+    predecessor (largest value < target) and successor (smallest value > target).
+
+    Time: O(h) where h is tree height
+    Space: O(1) iterative
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    target = data.get("target", 0)
 
-    result = None
+    root = buildTree(tree)
+    if not root:
+        return {"predecessor": -1, "successor": -1}
 
-    # Process input
-    # ...
+    predecessor = -1
+    successor = -1
 
-    return result
+    # Find predecessor: largest value less than target
+    node = root
+    while node:
+        if node.val < target:
+            predecessor = node.val
+            node = node.right
+        else:
+            node = node.left
+
+    # Find successor: smallest value greater than target
+    node = root
+    while node:
+        if node.val > target:
+            successor = node.val
+            node = node.left
+        else:
+            node = node.right
+
+    return {"predecessor": predecessor, "successor": successor}
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(inorderPredecessorAndSuccessor({"tree": [5, 3, 7, 2, 4, 6, 8], "target": 4}))
+    print(inorderPredecessorAndSuccessor({"tree": [5, 3, 7, 2, 4, 6, 8], "target": 1}))`,
             go: `package main
 
 import "fmt"
 
-// InorderPredecessorAndSuccessor solves the Inorder Predecessor and Successor problem.
-// Time: O(n), Space: O(n)
-func InorderPredecessorAndSuccessor(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
+func InorderPredecessorAndSuccessor(data map[string]interface{}) map[string]int {
+    treeArr := data["tree"].([]interface{})
+    target := int(data["target"].(float64))
 
-    return result
+    root := buildTree(treeArr)
+    if root == nil {
+        return map[string]int{"predecessor": -1, "successor": -1}
+    }
+
+    predecessor := -1
+    successor := -1
+
+    // Find predecessor: largest value less than target
+    node := root
+    for node != nil {
+        if node.Val < target {
+            predecessor = node.Val
+            node = node.Right
+        } else {
+            node = node.Left
+        }
+    }
+
+    // Find successor: smallest value greater than target
+    node = root
+    for node != nil {
+        if node.Val > target {
+            successor = node.Val
+            node = node.Left
+        } else {
+            node = node.Right
+        }
+    }
+
+    return map[string]int{"predecessor": predecessor, "successor": successor}
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree":   []interface{}{5.0, 3.0, 7.0, 2.0, 4.0, 6.0, 8.0},
+        "target": 4.0,
+    }
+    fmt.Println(InorderPredecessorAndSuccessor(data))
 }`
         },
         similar: [

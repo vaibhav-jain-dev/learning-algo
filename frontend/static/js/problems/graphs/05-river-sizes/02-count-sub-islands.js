@@ -107,49 +107,150 @@
     }
         ],
         solutions: {
-            python: `def countSubIslands(data):
+            python: `def countSubIslands(grid1, grid2):
     """
     Count Sub Islands
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(M * N) - visit each cell at most once
+    Space: O(M * N) - recursion stack in worst case
+
+    Approach:
+    - An island in grid2 is a sub-island if ALL its cells are also 1 in grid1
+    - Use DFS to explore each island in grid2
+    - Track if any cell in the island is 0 in grid1
+    - If all cells match, count it as a sub-island
     """
-    # TODO: Implement solution
-    # Key insight: Connected components can be explored using DFS/BFS
+    if not grid2 or not grid2[0]:
+        return 0
 
-    result = None
+    m, n = len(grid2), len(grid2[0])
 
-    # Process input
-    # ...
+    def dfs(i, j):
+        """
+        DFS to explore island and check if it's a sub-island
+        Returns True if all cells of this island are also land in grid1
+        """
+        # Out of bounds or water
+        if i < 0 or i >= m or j < 0 or j >= n or grid2[i][j] == 0:
+            return True
 
-    return result
+        # Mark as visited by setting to 0
+        grid2[i][j] = 0
+
+        # Check if this cell exists in grid1
+        is_sub = grid1[i][j] == 1
+
+        # Explore all 4 directions
+        # Important: Don't short-circuit! Need to mark all cells as visited
+        top = dfs(i - 1, j)
+        bottom = dfs(i + 1, j)
+        left = dfs(i, j - 1)
+        right = dfs(i, j + 1)
+
+        return is_sub and top and bottom and left and right
+
+    count = 0
+    for i in range(m):
+        for j in range(n):
+            if grid2[i][j] == 1:
+                if dfs(i, j):
+                    count += 1
+
+    return count
+
+
+def countSubIslandsData(data):
+    """Process input data"""
+    grid1 = data.get('grid1', [])
+    grid2 = data.get('grid2', [])
+    # Make a copy since we modify grid2
+    grid2_copy = [row[:] for row in grid2]
+    return countSubIslands(grid1, grid2_copy)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid1 = [[1,1,1,0,0],[0,1,1,1,1],[0,0,0,0,0],[1,0,0,0,0],[1,1,0,1,1]]
+    grid2 = [[1,1,1,0,0],[0,0,1,1,1],[0,1,0,0,0],[1,0,1,1,0],[0,1,0,1,0]]
+    print(countSubIslands(grid1, grid2))  # Expected: 3`,
             go: `package main
 
 import "fmt"
 
-// CountSubIslands solves the Count Sub Islands problem.
-// Time: O(n), Space: O(n)
-func CountSubIslands(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Connected components can be explored using DFS/BFS
+// CountSubIslands counts islands in grid2 that are sub-islands of grid1
+// Time: O(M * N), Space: O(M * N)
+func CountSubIslands(grid1, grid2 [][]int) int {
+    if len(grid2) == 0 || len(grid2[0]) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    m, n := len(grid2), len(grid2[0])
 
-    // Process input
-    // ...
+    // DFS to explore island and check if it's a sub-island
+    var dfs func(i, j int) bool
+    dfs = func(i, j int) bool {
+        // Out of bounds or water
+        if i < 0 || i >= m || j < 0 || j >= n || grid2[i][j] == 0 {
+            return true
+        }
 
-    return result
+        // Mark as visited
+        grid2[i][j] = 0
+
+        // Check if this cell exists in grid1
+        isSub := grid1[i][j] == 1
+
+        // Explore all 4 directions (don't short-circuit!)
+        top := dfs(i-1, j)
+        bottom := dfs(i+1, j)
+        left := dfs(i, j-1)
+        right := dfs(i, j+1)
+
+        return isSub && top && bottom && left && right
+    }
+
+    count := 0
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if grid2[i][j] == 1 {
+                if dfs(i, j) {
+                    count++
+                }
+            }
+        }
+    }
+
+    return count
+}
+
+// CountSubIslandsWithCopy preserves original grid2
+func CountSubIslandsWithCopy(grid1, grid2 [][]int) int {
+    // Make a copy of grid2
+    grid2Copy := make([][]int, len(grid2))
+    for i := range grid2 {
+        grid2Copy[i] = make([]int, len(grid2[i]))
+        copy(grid2Copy[i], grid2[i])
+    }
+    return CountSubIslands(grid1, grid2Copy)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid1 := [][]int{
+        {1,1,1,0,0},
+        {0,1,1,1,1},
+        {0,0,0,0,0},
+        {1,0,0,0,0},
+        {1,1,0,1,1},
+    }
+    grid2 := [][]int{
+        {1,1,1,0,0},
+        {0,0,1,1,1},
+        {0,1,0,0,0},
+        {1,0,1,1,0},
+        {0,1,0,1,0},
+    }
+
+    fmt.Println(CountSubIslandsWithCopy(grid1, grid2)) // Expected: 3
 }`
         },
         similar: [

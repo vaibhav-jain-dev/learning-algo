@@ -45,49 +45,86 @@
     }
         ],
         solutions: {
-            python: `def countDistinctRanges(data):
+            python: `def countDistinctRanges(nums):
     """
     Count Distinct Ranges
 
-    Time: O(n)
+    Count the number of distinct consecutive ranges in array.
+    A consecutive range is a sequence of consecutive integers.
+
+    Time: O(n log n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not nums:
+        return 0
 
-    result = None
+    # Remove duplicates and sort
+    sorted_nums = sorted(set(nums))
 
-    # Process input
-    # ...
+    if len(sorted_nums) == 0:
+        return 0
 
-    return result
+    ranges = 1  # At least one range
+
+    for i in range(1, len(sorted_nums)):
+        # If current element is not consecutive to previous
+        if sorted_nums[i] != sorted_nums[i - 1] + 1:
+            ranges += 1
+
+    return ranges
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(countDistinctRanges([1, 2, 3, 5, 6, 8, 10, 11, 12]))  # 4
+    print(countDistinctRanges([1, 2, 3, 4, 5]))  # 1
+    print(countDistinctRanges([1, 3, 5, 7]))  # 4`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// CountDistinctRanges solves the Count Distinct Ranges problem.
-// Time: O(n), Space: O(n)
-func CountDistinctRanges(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CountDistinctRanges counts distinct consecutive ranges.
+// Time: O(n log n), Space: O(n)
+func CountDistinctRanges(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // Remove duplicates
+    unique := make(map[int]bool)
+    for _, v := range nums {
+        unique[v] = true
+    }
 
-    // Process input
-    // ...
+    sortedNums := []int{}
+    for v := range unique {
+        sortedNums = append(sortedNums, v)
+    }
+    sort.Ints(sortedNums)
 
-    return result
+    if len(sortedNums) == 0 {
+        return 0
+    }
+
+    ranges := 1
+
+    for i := 1; i < len(sortedNums); i++ {
+        // If not consecutive to previous
+        if sortedNums[i] != sortedNums[i-1]+1 {
+            ranges++
+        }
+    }
+
+    return ranges
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CountDistinctRanges([]int{1, 2, 3, 5, 6, 8, 10, 11, 12}))  // 4
+    fmt.Println(CountDistinctRanges([]int{1, 2, 3, 4, 5}))  // 1
+    fmt.Println(CountDistinctRanges([]int{1, 3, 5, 7}))  // 4
 }`
         },
         similar: [

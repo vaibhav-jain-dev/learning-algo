@@ -59,49 +59,109 @@
             }
         ],
         solutions: {
-            python: `def threeSumWithDuplicates(data):
+            python: `def threeSumWithDuplicates(nums, target):
     """
-    Three Sum With Duplicates
+    Three Sum With Duplicates - Find all unique triplets summing to target.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n^2) - sorting O(n log n) + nested two-pointer O(n^2)
+    Space: O(1) - excluding output array
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums.sort()
+    result = []
+    n = len(nums)
 
-    result = None
+    for i in range(n - 2):
+        # Skip duplicate first elements
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
 
-    # Process input
-    # ...
+        # Two-pointer approach for remaining sum
+        left, right = i + 1, n - 1
+        remaining = target - nums[i]
+
+        while left < right:
+            current_sum = nums[left] + nums[right]
+
+            if current_sum == remaining:
+                result.append([nums[i], nums[left], nums[right]])
+
+                # Skip duplicates for left pointer
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                # Skip duplicates for right pointer
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+
+                left += 1
+                right -= 1
+            elif current_sum < remaining:
+                left += 1
+            else:
+                right -= 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(threeSumWithDuplicates([1, 1, 1, 2, 2, 3], 6))  # [[1, 2, 3]]
+    print(threeSumWithDuplicates([-1, 0, 1, 2, -1, -4], 0))  # [[-1, -1, 2], [-1, 0, 1]]
+    print(threeSumWithDuplicates([0, 0, 0, 0], 0))  # [[0, 0, 0]]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// ThreeSumWithDuplicates solves the Three Sum With Duplicates problem.
-// Time: O(n), Space: O(n)
-func ThreeSumWithDuplicates(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// ThreeSumWithDuplicates finds all unique triplets that sum to target.
+// Time: O(n^2), Space: O(1) excluding output
+func ThreeSumWithDuplicates(nums []int, target int) [][]int {
+    sort.Ints(nums)
+    result := [][]int{}
+    n := len(nums)
 
-    var result interface{}
+    for i := 0; i < n-2; i++ {
+        // Skip duplicate first elements
+        if i > 0 && nums[i] == nums[i-1] {
+            continue
+        }
 
-    // Process input
-    // ...
+        left, right := i+1, n-1
+        remaining := target - nums[i]
+
+        for left < right {
+            currentSum := nums[left] + nums[right]
+
+            if currentSum == remaining {
+                result = append(result, []int{nums[i], nums[left], nums[right]})
+
+                // Skip duplicates for left pointer
+                for left < right && nums[left] == nums[left+1] {
+                    left++
+                }
+                // Skip duplicates for right pointer
+                for left < right && nums[right] == nums[right-1] {
+                    right--
+                }
+
+                left++
+                right--
+            } else if currentSum < remaining {
+                left++
+            } else {
+                right--
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(ThreeSumWithDuplicates([]int{1, 1, 1, 2, 2, 3}, 6))
+    fmt.Println(ThreeSumWithDuplicates([]int{-1, 0, 1, 2, -1, -4}, 0))
+    fmt.Println(ThreeSumWithDuplicates([]int{0, 0, 0, 0}, 0))
 }`
         },
         similar: []

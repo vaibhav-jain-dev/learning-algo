@@ -51,49 +51,114 @@
     }
         ],
         solutions: {
-            python: `def numberOfProvinces(data):
+            python: `def findCircleNum(isConnected):
     """
-    Number of Provinces
+    Number of Provinces using Union-Find
 
-    Time: O(n)
+    A province is a group of connected cities.
+
+    Time: O(n^2 * alpha(n)) where alpha is inverse Ackermann
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(isConnected)
 
-    result = None
+    # Union-Find with path compression and union by rank
+    parent = list(range(n))
+    rank = [0] * n
 
-    # Process input
-    # ...
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])  # Path compression
+        return parent[x]
 
-    return result
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+
+        # Union by rank
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
+    # Process connections
+    for i in range(n):
+        for j in range(i + 1, n):
+            if isConnected[i][j] == 1:
+                union(i, j)
+
+    # Count unique provinces (nodes that are their own parent)
+    provinces = sum(1 for i in range(n) if find(i) == i)
+
+    return provinces
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(findCircleNum([[1,1,0],[1,1,0],[0,0,1]]))  # Output: 2`,
             go: `package main
 
 import "fmt"
 
-// NumberOfProvinces solves the Number of Provinces problem.
-// Time: O(n), Space: O(n)
-func NumberOfProvinces(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FindCircleNum counts the number of provinces using Union-Find.
+// Time: O(n^2 * alpha(n)), Space: O(n)
+func FindCircleNum(isConnected [][]int) int {
+    n := len(isConnected)
 
-    var result interface{}
+    parent := make([]int, n)
+    rank := make([]int, n)
+    for i := range parent {
+        parent[i] = i
+    }
 
-    // Process input
-    // ...
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x]) // Path compression
+        }
+        return parent[x]
+    }
 
-    return result
+    union := func(x, y int) {
+        px, py := find(x), find(y)
+        if px == py {
+            return
+        }
+        // Union by rank
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+    }
+
+    // Process connections
+    for i := 0; i < n; i++ {
+        for j := i + 1; j < n; j++ {
+            if isConnected[i][j] == 1 {
+                union(i, j)
+            }
+        }
+    }
+
+    // Count unique provinces
+    provinces := 0
+    for i := 0; i < n; i++ {
+        if find(i) == i {
+            provinces++
+        }
+    }
+
+    return provinces
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(FindCircleNum([][]int{{1,1,0},{1,1,0},{0,0,1}})) // Output: 2
 }`
         },
         similar: [

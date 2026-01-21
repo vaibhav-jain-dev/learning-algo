@@ -68,45 +68,126 @@
     """
     Sum Root to Leaf Numbers
 
-    Time: O(n)
-    Space: O(n)
+    Each root-to-leaf path represents a number formed by concatenating
+    the node values. Return the sum of all such numbers.
+
+    Example: Path 1->2->3 represents number 123
+
+    Key insight: As we traverse, multiply current number by 10 and add
+    the new digit: num = num * 10 + node.value
+
+    Time: O(n) - visit each node once
+    Space: O(h) - recursion stack depth equals tree height
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get('tree')
 
-    result = None
+    if not tree:
+        return 0
 
-    # Process input
-    # ...
+    total_sum = 0
 
-    return result
+    def dfs(node, current_num):
+        nonlocal total_sum
+
+        if not node:
+            return
+
+        # Build the number: shift left and add current digit
+        current_num = current_num * 10 + node['value']
+
+        left = node.get('left')
+        right = node.get('right')
+
+        # If leaf node, add the complete number to total
+        if not left and not right:
+            total_sum += current_num
+        else:
+            # Continue traversal
+            if left:
+                dfs(left, current_num)
+            if right:
+                dfs(right, current_num)
+
+    dfs(tree, 0)
+    return total_sum
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data1 = {"tree": {"value": 1, "left": {"value": 2}, "right": {"value": 3}}}
+    print(sumRootToLeafNumbers(data1))  # 25 (12 + 13)
+
+    data2 = {"tree": {"value": 4, "left": {"value": 9, "left": {"value": 5}, "right": {"value": 1}}, "right": {"value": 0}}}
+    print(sumRootToLeafNumbers(data2))  # 1026 (495 + 491 + 40)`,
             go: `package main
 
 import "fmt"
 
-// SumRootToLeafNumbers solves the Sum Root to Leaf Numbers problem.
-// Time: O(n), Space: O(n)
-func SumRootToLeafNumbers(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TreeNode represents a node in the binary tree
+type TreeNode struct {
+    Value int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+// buildTree converts map data to TreeNode structure
+func buildTree(data map[string]interface{}) *TreeNode {
+    if data == nil {
+        return nil
+    }
+    node := &TreeNode{Value: int(data["value"].(float64))}
+    if left, ok := data["left"].(map[string]interface{}); ok {
+        node.Left = buildTree(left)
+    }
+    if right, ok := data["right"].(map[string]interface{}); ok {
+        node.Right = buildTree(right)
+    }
+    return node
+}
 
-    // Process input
-    // ...
+// SumRootToLeafNumbers calculates the sum of all root-to-leaf numbers
+// Time: O(n), Space: O(h)
+func SumRootToLeafNumbers(data map[string]interface{}) int {
+    treeData, _ := data["tree"].(map[string]interface{})
+    root := buildTree(treeData)
 
-    return result
+    totalSum := 0
+
+    var dfs func(node *TreeNode, currentNum int)
+    dfs = func(node *TreeNode, currentNum int) {
+        if node == nil {
+            return
+        }
+
+        // Build the number: shift left and add current digit
+        currentNum = currentNum*10 + node.Value
+
+        // If leaf node, add complete number to total
+        if node.Left == nil && node.Right == nil {
+            totalSum += currentNum
+        } else {
+            dfs(node.Left, currentNum)
+            dfs(node.Right, currentNum)
+        }
+    }
+
+    dfs(root, 0)
+    return totalSum
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": map[string]interface{}{
+            "value": float64(4),
+            "left": map[string]interface{}{
+                "value": float64(9),
+                "left":  map[string]interface{}{"value": float64(5)},
+                "right": map[string]interface{}{"value": float64(1)},
+            },
+            "right": map[string]interface{}{"value": float64(0)},
+        },
+    }
+    fmt.Println(SumRootToLeafNumbers(data)) // 1026
 }`
         },
         similar: [

@@ -59,49 +59,95 @@
             }
         ],
         solutions: {
-            python: `def threeSumClosest(data):
+            python: `def threeSumClosest(nums: list[int], target: int) -> int:
     """
-    Three Sum Closest
+    Find three numbers whose sum is closest to target.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n²) - sort + two-pointer for each element
+    Space: O(1) - sorting in place
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums.sort()
+    n = len(nums)
+    closest = float('inf')
 
-    result = None
+    for i in range(n - 2):
+        # Skip duplicates for optimization
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
 
-    # Process input
-    # ...
+        left, right = i + 1, n - 1
 
-    return result
+        while left < right:
+            current_sum = nums[i] + nums[left] + nums[right]
+
+            # Update closest if this sum is better
+            if abs(current_sum - target) < abs(closest - target):
+                closest = current_sum
+
+            # Early exit if exact match found
+            if current_sum == target:
+                return target
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+
+    return closest
 
 
 # Test
-if __name__ == "__main__":
-    # Add test cases
-    pass`,
+print(threeSumClosest([-1, 2, 1, -4], 1))  # 2
+print(threeSumClosest([0, 0, 0], 1))        # 0`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "math"
+    "sort"
+)
 
-// ThreeSumClosest solves the Three Sum Closest problem.
-// Time: O(n), Space: O(n)
-func ThreeSumClosest(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// threeSumClosest finds three numbers whose sum is closest to target.
+// Time: O(n²), Space: O(1)
+func threeSumClosest(nums []int, target int) int {
+    sort.Ints(nums)
+    n := len(nums)
+    closest := math.MaxInt32
 
-    var result interface{}
+    for i := 0; i < n-2; i++ {
+        // Skip duplicates
+        if i > 0 && nums[i] == nums[i-1] {
+            continue
+        }
 
-    // Process input
-    // ...
+        left, right := i+1, n-1
 
-    return result
+        for left < right {
+            sum := nums[i] + nums[left] + nums[right]
+
+            if abs(sum-target) < abs(closest-target) {
+                closest = sum
+            }
+
+            if sum == target {
+                return target
+            } else if sum < target {
+                left++
+            } else {
+                right--
+            }
+        }
+    }
+    return closest
+}
+
+func abs(x int) int {
+    if x < 0 { return -x }
+    return x
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(threeSumClosest([]int{-1, 2, 1, -4}, 1)) // 2
+    fmt.Println(threeSumClosest([]int{0, 0, 0}, 1))      // 0
 }`
         },
         similar: []

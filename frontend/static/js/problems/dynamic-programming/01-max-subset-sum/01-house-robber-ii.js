@@ -64,47 +64,96 @@
         solutions: {
             python: `def houseRobberIi(data):
     """
-    House Robber II
+    House Robber II - Circular arrangement of houses.
+
+    Key insight: Since houses are in a circle, we can't rob both
+    first and last house. So we solve two subproblems:
+    1. Rob houses[0..n-2] (exclude last)
+    2. Rob houses[1..n-1] (exclude first)
+    Take the maximum of both.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data["nums"]
+    n = len(nums)
 
-    result = None
+    if n == 0:
+        return 0
+    if n == 1:
+        return nums[0]
+    if n == 2:
+        return max(nums[0], nums[1])
 
-    # Process input
-    # ...
+    def rob_linear(houses):
+        """Standard house robber for linear arrangement."""
+        prev2, prev1 = 0, 0
+        for money in houses:
+            curr = max(prev1, prev2 + money)
+            prev2, prev1 = prev1, curr
+        return prev1
 
-    return result
+    # Case 1: Rob houses 0 to n-2 (exclude last house)
+    # Case 2: Rob houses 1 to n-1 (exclude first house)
+    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(houseRobberIi({"nums": [2, 3, 2]}))  # Expected: 3
+    print(houseRobberIi({"nums": [1, 2, 3, 1]}))  # Expected: 4
+    print(houseRobberIi({"nums": [1, 2, 3]}))  # Expected: 3`,
             go: `package main
 
 import "fmt"
 
 // HouseRobberIi solves the House Robber II problem.
-// Time: O(n), Space: O(n)
-func HouseRobberIi(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Since houses are circular, we can't rob both first and last.
+// We solve two subproblems and take the maximum.
+// Time: O(n), Space: O(1)
+func HouseRobberIi(data map[string]interface{}) int {
+    numsInterface := data["nums"].([]interface{})
+    nums := make([]int, len(numsInterface))
+    for i, v := range numsInterface {
+        nums[i] = int(v.(float64))
+    }
 
-    var result interface{}
+    n := len(nums)
+    if n == 0 {
+        return 0
+    }
+    if n == 1 {
+        return nums[0]
+    }
+    if n == 2 {
+        return max(nums[0], nums[1])
+    }
 
-    // Process input
-    // ...
+    // Helper function for linear house robber
+    robLinear := func(houses []int) int {
+        prev2, prev1 := 0, 0
+        for _, money := range houses {
+            curr := max(prev1, prev2+money)
+            prev2, prev1 = prev1, curr
+        }
+        return prev1
+    }
 
-    return result
+    // Case 1: Rob houses 0 to n-2 (exclude last)
+    // Case 2: Rob houses 1 to n-1 (exclude first)
+    return max(robLinear(nums[:n-1]), robLinear(nums[1:]))
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(HouseRobberIi(map[string]interface{}{"nums": []interface{}{2.0, 3.0, 2.0}}))  // Expected: 3
+    fmt.Println(HouseRobberIi(map[string]interface{}{"nums": []interface{}{1.0, 2.0, 3.0, 1.0}}))  // Expected: 4
 }`
         },
         similar: [

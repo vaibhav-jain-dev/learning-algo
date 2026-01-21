@@ -48,49 +48,93 @@
     }
         ],
         solutions: {
-            python: `def dutchNationalFlag(data):
+            python: `def dutchNationalFlag(array, pivot):
     """
-    Dutch National Flag
+    Dutch National Flag - Three-way partition around pivot value.
+    All elements < pivot come first, then elements == pivot, then > pivot.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - Single pass through array
+    Space: O(1) - In-place modification using three pointers
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Three pointers: low, mid, high
+    # Elements [0, low) are < pivot
+    # Elements [low, mid) are == pivot
+    # Elements (high, end] are > pivot
+    # Elements [mid, high] are unprocessed
 
-    result = None
+    low = 0
+    mid = 0
+    high = len(array) - 1
 
-    # Process input
-    # ...
+    while mid <= high:
+        if array[mid] < pivot:
+            # Swap with low section, move both pointers
+            array[low], array[mid] = array[mid], array[low]
+            low += 1
+            mid += 1
+        elif array[mid] > pivot:
+            # Swap with high section, only move high pointer
+            array[mid], array[high] = array[high], array[mid]
+            high -= 1
+        else:
+            # Equal to pivot, just move mid
+            mid += 1
 
-    return result
+    return array
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(dutchNationalFlag([2, 0, 1, 2, 1, 0], 1))
+    # Output: [0, 0, 1, 1, 2, 2]
+    print(dutchNationalFlag([1, 4, 2, 5, 3, 6], 3))
+    # Output: [1, 2, 3, 5, 4, 6] (< 3, == 3, > 3)
+    print(dutchNationalFlag([3, 3, 3, 3], 3))
+    # Output: [3, 3, 3, 3]`,
             go: `package main
 
 import "fmt"
 
-// DutchNationalFlag solves the Dutch National Flag problem.
-// Time: O(n), Space: O(n)
-func DutchNationalFlag(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// DutchNationalFlag performs three-way partition around pivot value.
+// All elements < pivot come first, then == pivot, then > pivot.
+// Time: O(n), Space: O(1)
+func DutchNationalFlag(array []int, pivot int) []int {
+    // Three pointers: low, mid, high
+    // Elements [0, low) are < pivot
+    // Elements [low, mid) are == pivot
+    // Elements (high, end] are > pivot
+    // Elements [mid, high] are unprocessed
 
-    var result interface{}
+    low := 0
+    mid := 0
+    high := len(array) - 1
 
-    // Process input
-    // ...
+    for mid <= high {
+        if array[mid] < pivot {
+            // Swap with low section, move both pointers
+            array[low], array[mid] = array[mid], array[low]
+            low++
+            mid++
+        } else if array[mid] > pivot {
+            // Swap with high section, only move high pointer
+            array[mid], array[high] = array[high], array[mid]
+            high--
+        } else {
+            // Equal to pivot, just move mid
+            mid++
+        }
+    }
 
-    return result
+    return array
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(DutchNationalFlag([]int{2, 0, 1, 2, 1, 0}, 1))
+    // Output: [0 0 1 1 2 2]
+    fmt.Println(DutchNationalFlag([]int{1, 4, 2, 5, 3, 6}, 3))
+    // Output: [1 2 3 5 4 6]
+    fmt.Println(DutchNationalFlag([]int{3, 3, 3, 3}, 3))
+    // Output: [3 3 3 3]
 }`
         },
         similar: [

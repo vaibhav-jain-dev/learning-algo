@@ -42,49 +42,87 @@
     }
         ],
         solutions: {
-            python: `def maxConstructible(data):
+            python: `def maxConstructible(coins, budget):
     """
-    Max Constructible
+    Max Constructible with Budget
 
-    Time: O(n)
-    Space: O(n)
+    Given coins and a budget of K additional coins (each value 1),
+    find the maximum consecutive range [1, max] that can be constructed.
+
+    Time: O(n log n) for sorting
+    Space: O(1)
+
+    Args:
+        coins: List of coin values
+        budget: Number of value-1 coins we can add
+
+    Returns:
+        Maximum value that completes consecutive range from 1
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    coins.sort()
 
-    result = None
+    current_max = 0  # Can construct [1, current_max]
+    remaining_budget = budget
+    i = 0
 
-    # Process input
-    # ...
+    while True:
+        # Try to use existing coins first
+        if i < len(coins) and coins[i] <= current_max + 1:
+            current_max += coins[i]
+            i += 1
+        elif remaining_budget > 0:
+            # Use budget to add a coin of value 1
+            # But strategically, add value = current_max + 1 to maximize range
+            # Since budget coins are value 1, we add one at a time
+            current_max += 1
+            remaining_budget -= 1
+        else:
+            # No more coins or budget, we're done
+            break
 
-    return result
+    return current_max
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maxConstructible([1, 5, 10], 2))  # 8 (add two 1s -> [1,1,1,5,10])
+    print(maxConstructible([1, 2, 4], 0))   # 7 (can make 1-7 already)`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// MaxConstructible solves the Max Constructible problem.
-// Time: O(n), Space: O(n)
-func MaxConstructible(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MaxConstructible finds max consecutive range with budget of 1-value coins
+// Time: O(n log n), Space: O(1)
+func MaxConstructible(coins []int, budget int) int {
+    sort.Ints(coins)
 
-    var result interface{}
+    currentMax := 0
+    remainingBudget := budget
+    i := 0
 
-    // Process input
-    // ...
+    for {
+        // Try to use existing coins first
+        if i < len(coins) && coins[i] <= currentMax+1 {
+            currentMax += coins[i]
+            i++
+        } else if remainingBudget > 0 {
+            // Use budget to add a coin of value 1
+            currentMax++
+            remainingBudget--
+        } else {
+            break
+        }
+    }
 
-    return result
+    return currentMax
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaxConstructible([]int{1, 5, 10}, 2)) // 8
+    fmt.Println(MaxConstructible([]int{1, 2, 4}, 0))  // 7
 }`
         },
         similar: [

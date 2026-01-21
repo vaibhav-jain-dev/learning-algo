@@ -51,49 +51,138 @@
     }
         ],
         solutions: {
-            python: `def rottingOranges(data):
+            python: `from collections import deque
+
+def orangesRotting(grid):
     """
-    Rotting Oranges
+    Rotting Oranges - Multi-source BFS
 
-    Time: O(n)
-    Space: O(n)
+    Start BFS from all rotten oranges simultaneously.
+    Each level of BFS = 1 minute passing.
+
+    Time: O(M * N)
+    Space: O(M * N)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not grid or not grid[0]:
+        return 0
 
-    result = None
+    rows, cols = len(grid), len(grid[0])
+    queue = deque()
+    fresh_count = 0
 
-    # Process input
-    # ...
+    # Initialize: find all rotten oranges and count fresh ones
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                queue.append((r, c))
+            elif grid[r][c] == 1:
+                fresh_count += 1
 
-    return result
+    # No fresh oranges - nothing to rot
+    if fresh_count == 0:
+        return 0
+
+    minutes = 0
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    # BFS - process level by level
+    while queue:
+        minutes += 1
+
+        for _ in range(len(queue)):
+            r, c = queue.popleft()
+
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+
+                if (0 <= nr < rows and 0 <= nc < cols
+                    and grid[nr][nc] == 1):
+                    grid[nr][nc] = 2  # Mark as rotten
+                    fresh_count -= 1
+                    queue.append((nr, nc))
+
+    # Return -1 if any fresh oranges remain
+    return minutes - 1 if fresh_count == 0 else -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid1 = [[2,1,1],[1,1,0],[0,1,1]]
+    print(orangesRotting(grid1))  # 4
+
+    grid2 = [[2,1,1],[0,1,1],[1,0,1]]
+    print(orangesRotting(grid2))  # -1
+
+    grid3 = [[0,2]]
+    print(orangesRotting(grid3))  # 0`,
             go: `package main
 
 import "fmt"
 
-// RottingOranges solves the Rotting Oranges problem.
-// Time: O(n), Space: O(n)
-func RottingOranges(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// OrangesRotting finds minimum minutes for all oranges to rot
+// Time: O(M*N), Space: O(M*N)
+func OrangesRotting(grid [][]int) int {
+    if len(grid) == 0 || len(grid[0]) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    rows, cols := len(grid), len(grid[0])
+    queue := [][2]int{}
+    freshCount := 0
 
-    // Process input
-    // ...
+    // Initialize: find all rotten oranges and count fresh ones
+    for r := 0; r < rows; r++ {
+        for c := 0; c < cols; c++ {
+            if grid[r][c] == 2 {
+                queue = append(queue, [2]int{r, c})
+            } else if grid[r][c] == 1 {
+                freshCount++
+            }
+        }
+    }
 
-    return result
+    // No fresh oranges - nothing to rot
+    if freshCount == 0 {
+        return 0
+    }
+
+    minutes := 0
+    directions := [][2]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
+
+    // BFS - process level by level
+    for len(queue) > 0 {
+        minutes++
+        size := len(queue)
+
+        for i := 0; i < size; i++ {
+            cell := queue[0]
+            queue = queue[1:]
+            r, c := cell[0], cell[1]
+
+            for _, d := range directions {
+                nr, nc := r+d[0], c+d[1]
+
+                if nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1 {
+                    grid[nr][nc] = 2 // Mark as rotten
+                    freshCount--
+                    queue = append(queue, [2]int{nr, nc})
+                }
+            }
+        }
+    }
+
+    if freshCount == 0 {
+        return minutes - 1
+    }
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid1 := [][]int{{2, 1, 1}, {1, 1, 0}, {0, 1, 1}}
+    fmt.Println(OrangesRotting(grid1)) // 4
+
+    grid2 := [][]int{{2, 1, 1}, {0, 1, 1}, {1, 0, 1}}
+    fmt.Println(OrangesRotting(grid2)) // -1
 }`
         },
         similar: [

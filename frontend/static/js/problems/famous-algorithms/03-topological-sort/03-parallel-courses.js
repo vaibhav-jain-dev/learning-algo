@@ -44,49 +44,110 @@
     }
         ],
         solutions: {
-            python: `def parallelCourses(data):
+            python: `from collections import deque, defaultdict
+
+def minimumSemesters(n, relations):
     """
-    Parallel Courses
+    Parallel Courses using Topological Sort with Level Tracking
 
-    Time: O(n)
-    Space: O(n)
+    Find minimum semesters to complete all courses.
+    Each semester, take all available courses (in-degree = 0).
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list and in-degree array
+    graph = defaultdict(list)
+    in_degree = [0] * (n + 1)
 
-    result = None
+    for prev_course, next_course in relations:
+        graph[prev_course].append(next_course)
+        in_degree[next_course] += 1
 
-    # Process input
-    # ...
+    # Start with courses that have no prerequisites
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
 
-    return result
+    semesters = 0
+    completed = 0
+
+    while queue:
+        # Process all courses available this semester
+        size = len(queue)
+        semesters += 1
+
+        for _ in range(size):
+            course = queue.popleft()
+            completed += 1
+
+            for next_course in graph[course]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+
+    # Return -1 if cycle exists (not all courses completed)
+    return semesters if completed == n else -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(minimumSemesters(3, [[1, 3], [2, 3]]))  # Output: 2`,
             go: `package main
 
 import "fmt"
 
-// ParallelCourses solves the Parallel Courses problem.
-// Time: O(n), Space: O(n)
-func ParallelCourses(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MinimumSemesters finds minimum semesters to complete all courses.
+// Time: O(V + E), Space: O(V + E)
+func MinimumSemesters(n int, relations [][]int) int {
+    // Build adjacency list and in-degree array
+    graph := make([][]int, n+1)
+    inDegree := make([]int, n+1)
 
-    var result interface{}
+    for _, rel := range relations {
+        prevCourse, nextCourse := rel[0], rel[1]
+        graph[prevCourse] = append(graph[prevCourse], nextCourse)
+        inDegree[nextCourse]++
+    }
 
-    // Process input
-    // ...
+    // Start with courses that have no prerequisites
+    queue := []int{}
+    for i := 1; i <= n; i++ {
+        if inDegree[i] == 0 {
+            queue = append(queue, i)
+        }
+    }
 
-    return result
+    semesters := 0
+    completed := 0
+
+    for len(queue) > 0 {
+        size := len(queue)
+        semesters++
+
+        for i := 0; i < size; i++ {
+            course := queue[0]
+            queue = queue[1:]
+            completed++
+
+            for _, nextCourse := range graph[course] {
+                inDegree[nextCourse]--
+                if inDegree[nextCourse] == 0 {
+                    queue = append(queue, nextCourse)
+                }
+            }
+        }
+    }
+
+    if completed == n {
+        return semesters
+    }
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MinimumSemesters(3, [][]int{{1, 3}, {2, 3}})) // Output: 2
 }`
         },
         similar: [

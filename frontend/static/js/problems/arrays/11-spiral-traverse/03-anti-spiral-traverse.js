@@ -42,49 +42,132 @@
     }
         ],
         solutions: {
-            python: `def antiSpiralTraverse(data):
+            python: `def antiSpiralTraverse(matrix):
     """
-    Anti Spiral Traverse
+    Anti Spiral Traverse - Traverse matrix counterclockwise starting from center.
+    Direction order: left, down, right, up (counterclockwise from center outward).
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(m * n) - Visit all cells
+    Space: O(m * n) - Store result
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not matrix or not matrix[0]:
+        return []
 
-    result = None
+    rows, cols = len(matrix), len(matrix[0])
+    result = []
 
-    # Process input
-    # ...
+    # Find center (for odd dimensions, exact center; for even, upper-left of center 4)
+    centerR = (rows - 1) // 2
+    centerC = (cols - 1) // 2
+
+    # Directions: left, down, right, up (counterclockwise)
+    dr = [0, 1, 0, -1]
+    dc = [-1, 0, 1, 0]
+
+    # Track visited cells
+    visited = [[False] * cols for _ in range(rows)]
+
+    r, c = centerR, centerC
+    direction = 0  # Start moving left
+    steps = 1
+    stepsTaken = 0
+    turnCount = 0
+
+    while len(result) < rows * cols:
+        if 0 <= r < rows and 0 <= c < cols and not visited[r][c]:
+            visited[r][c] = True
+            result.append(matrix[r][c])
+
+        # Move in current direction
+        r += dr[direction]
+        c += dc[direction]
+        stepsTaken += 1
+
+        # Check if we need to turn
+        if stepsTaken == steps:
+            stepsTaken = 0
+            direction = (direction + 1) % 4
+            turnCount += 1
+            if turnCount % 2 == 0:
+                steps += 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    matrix1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    print(antiSpiralTraverse(matrix1))
+    # Output: [5, 4, 7, 8, 9, 6, 3, 2, 1]
+
+    matrix2 = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+    print(antiSpiralTraverse(matrix2))`,
             go: `package main
 
 import "fmt"
 
-// AntiSpiralTraverse solves the Anti Spiral Traverse problem.
-// Time: O(n), Space: O(n)
-func AntiSpiralTraverse(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// AntiSpiralTraverse traverses matrix counterclockwise starting from center.
+// Time: O(m * n), Space: O(m * n)
+func AntiSpiralTraverse(matrix [][]int) []int {
+    if len(matrix) == 0 || len(matrix[0]) == 0 {
+        return []int{}
+    }
 
-    var result interface{}
+    rows, cols := len(matrix), len(matrix[0])
+    result := []int{}
 
-    // Process input
-    // ...
+    // Find center
+    centerR := (rows - 1) / 2
+    centerC := (cols - 1) / 2
+
+    // Directions: left, down, right, up (counterclockwise)
+    dr := []int{0, 1, 0, -1}
+    dc := []int{-1, 0, 1, 0}
+
+    // Track visited cells
+    visited := make([][]bool, rows)
+    for i := range visited {
+        visited[i] = make([]bool, cols)
+    }
+
+    r, c := centerR, centerC
+    direction := 0 // Start moving left
+    steps := 1
+    stepsTaken := 0
+    turnCount := 0
+
+    for len(result) < rows*cols {
+        if r >= 0 && r < rows && c >= 0 && c < cols && !visited[r][c] {
+            visited[r][c] = true
+            result = append(result, matrix[r][c])
+        }
+
+        // Move in current direction
+        r += dr[direction]
+        c += dc[direction]
+        stepsTaken++
+
+        // Check if we need to turn
+        if stepsTaken == steps {
+            stepsTaken = 0
+            direction = (direction + 1) % 4
+            turnCount++
+            if turnCount%2 == 0 {
+                steps++
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    matrix1 := [][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+    fmt.Println(AntiSpiralTraverse(matrix1))
+    // Output: [5 4 7 8 9 6 3 2 1]
+
+    matrix2 := [][]int{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}
+    fmt.Println(AntiSpiralTraverse(matrix2))
 }`
         },
         similar: [

@@ -52,45 +52,79 @@
     """
     Flatten Nested List
 
-    Time: O(n)
-    Space: O(n)
+    Recursively flatten a nested list into a single-level list.
+    For each element: if it's a list, recursively flatten it;
+    otherwise, add it to the result.
+
+    Time: O(n) where n is total number of elements
+    Space: O(d) for recursion stack + O(n) for result
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    array = data.get("array", data) if isinstance(data, dict) else data
 
-    result = None
+    def flatten(arr):
+        result = []
+        for element in arr:
+            if isinstance(element, list):
+                result.extend(flatten(element))
+            else:
+                result.append(element)
+        return result
 
-    # Process input
-    # ...
-
-    return result
+    return flatten(array)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(flattenNestedList({"array": [[1, 2], [3, [4, 5]], 6]}))  # Output: [1, 2, 3, 4, 5, 6]
+    print(flattenNestedList({"array": [1, [2, [3, [4]]]]}))        # Output: [1, 2, 3, 4]`,
             go: `package main
 
 import "fmt"
 
 // FlattenNestedList solves the Flatten Nested List problem.
+// Recursively flatten a nested list into a single-level list.
 // Time: O(n), Space: O(n)
 func FlattenNestedList(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    var array interface{}
+    switch v := data.(type) {
+    case map[string]interface{}:
+        array = v["array"]
+    default:
+        array = data
+    }
 
-    var result interface{}
+    return flatten(array)
+}
 
-    // Process input
-    // ...
+func flatten(arr interface{}) []interface{} {
+    result := []interface{}{}
+
+    slice, ok := arr.([]interface{})
+    if !ok {
+        return []interface{}{arr}
+    }
+
+    for _, element := range slice {
+        if nestedSlice, isList := element.([]interface{}); isList {
+            result = append(result, flatten(nestedSlice)...)
+        } else {
+            result = append(result, element)
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    arr1 := []interface{}{
+        []interface{}{1, 2},
+        []interface{}{3, []interface{}{4, 5}},
+        6,
+    }
+    fmt.Println(FlattenNestedList(map[string]interface{}{"array": arr1})) // Output: [1 2 3 4 5 6]
+
+    arr2 := []interface{}{1, []interface{}{2, []interface{}{3, []interface{}{4}}}}
+    fmt.Println(FlattenNestedList(map[string]interface{}{"array": arr2})) // Output: [1 2 3 4]
 }`
         },
         similar: [

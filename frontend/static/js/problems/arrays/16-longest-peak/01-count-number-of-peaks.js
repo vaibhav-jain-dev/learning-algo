@@ -49,49 +49,58 @@
     }
         ],
         solutions: {
-            python: `def countNumberOfPeaks(data):
+            python: `def countNumberOfPeaks(array):
     """
     Count Number Of Peaks
 
+    A peak is an element strictly greater than both neighbors.
+    Edge elements cannot be peaks.
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(array) < 3:
+        return 0
 
-    result = None
+    count = 0
+    for i in range(1, len(array) - 1):
+        if array[i] > array[i - 1] and array[i] > array[i + 1]:
+            count += 1
 
-    # Process input
-    # ...
-
-    return result
+    return count
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(countNumberOfPeaks([1, 3, 2, 4, 1, 5, 2]))  # 3
+    print(countNumberOfPeaks([1, 2, 3, 4, 5]))  # 0
+    print(countNumberOfPeaks([5, 4, 3, 4, 5]))  # 0`,
             go: `package main
 
 import "fmt"
 
-// CountNumberOfPeaks solves the Count Number Of Peaks problem.
-// Time: O(n), Space: O(n)
-func CountNumberOfPeaks(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CountNumberOfPeaks counts the number of peaks in an array.
+// A peak is an element strictly greater than both its neighbors.
+// Time: O(n), Space: O(1)
+func CountNumberOfPeaks(array []int) int {
+    if len(array) < 3 {
+        return 0
+    }
 
-    var result interface{}
+    count := 0
+    for i := 1; i < len(array)-1; i++ {
+        if array[i] > array[i-1] && array[i] > array[i+1] {
+            count++
+        }
+    }
 
-    // Process input
-    // ...
-
-    return result
+    return count
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CountNumberOfPeaks([]int{1, 3, 2, 4, 1, 5, 2}))  // 3
+    fmt.Println(CountNumberOfPeaks([]int{1, 2, 3, 4, 5}))  // 0
+    fmt.Println(CountNumberOfPeaks([]int{5, 4, 3, 4, 5}))  // 0
 }`
         },
         similar: [

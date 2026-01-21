@@ -57,45 +57,88 @@
     """
     Delete and Earn
 
-    Time: O(n)
-    Space: O(n)
+    Key insight: Transform into House Robber problem.
+    - Count total points for each value (value * count)
+    - Create array where index = value, arr[i] = total points for value i
+    - Can't take adjacent values (i and i+1), just like House Robber
+
+    Time: O(n + max_val)
+    Space: O(max_val)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data["nums"]
 
-    result = None
+    if not nums:
+        return 0
 
-    # Process input
-    # ...
+    max_val = max(nums)
 
-    return result
+    # Count points for each value
+    points = [0] * (max_val + 1)
+    for num in nums:
+        points[num] += num
+
+    # Apply House Robber algorithm on points array
+    # Can't take adjacent values (i and i+1)
+    prev2, prev1 = 0, 0
+    for p in points:
+        curr = max(prev1, prev2 + p)
+        prev2, prev1 = prev1, curr
+
+    return prev1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(deleteAndEarn({"nums": [3, 4, 2]}))  # Expected: 6
+    print(deleteAndEarn({"nums": [2, 2, 3, 3, 3, 4]}))  # Expected: 9`,
             go: `package main
 
 import "fmt"
 
-// DeleteAndEarn solves the Delete and Earn problem.
-// Time: O(n), Space: O(n)
-func DeleteAndEarn(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// DeleteAndEarn transforms the problem into House Robber.
+// Count total points per value, then apply House Robber on the points array.
+// Time: O(n + max_val), Space: O(max_val)
+func DeleteAndEarn(data map[string]interface{}) int {
+    numsInterface := data["nums"].([]interface{})
+    nums := make([]int, len(numsInterface))
+    maxVal := 0
+    for i, v := range numsInterface {
+        nums[i] = int(v.(float64))
+        if nums[i] > maxVal {
+            maxVal = nums[i]
+        }
+    }
 
-    var result interface{}
+    if len(nums) == 0 {
+        return 0
+    }
 
-    // Process input
-    // ...
+    // Count points for each value
+    points := make([]int, maxVal+1)
+    for _, num := range nums {
+        points[num] += num
+    }
 
-    return result
+    // Apply House Robber algorithm
+    prev2, prev1 := 0, 0
+    for _, p := range points {
+        curr := max(prev1, prev2+p)
+        prev2, prev1 = prev1, curr
+    }
+
+    return prev1
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(DeleteAndEarn(map[string]interface{}{"nums": []interface{}{3.0, 4.0, 2.0}}))  // Expected: 6
+    fmt.Println(DeleteAndEarn(map[string]interface{}{"nums": []interface{}{2.0, 2.0, 3.0, 3.0, 3.0, 4.0}}))  // Expected: 9
 }`
         },
         similar: [

@@ -65,49 +65,165 @@
     }
         ],
         solutions: {
-            python: `def cheapestFlightsWithinKStops(data):
+            python: `def findCheapestPrice(n, flights, src, dst, k):
     """
-    Cheapest Flights Within K Stops
+    Cheapest Flights Within K Stops - Bellman-Ford Variant
 
-    Time: O(n)
-    Space: O(n)
+    Run Bellman-Ford for exactly k+1 iterations (k stops = k+1 edges).
+    Use a copy of distances to avoid using updates from same iteration.
+
+    Time: O(K * E)
+    Space: O(V)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    INF = float('inf')
+    dist = [INF] * n
+    dist[src] = 0
 
-    result = None
+    # Relax edges k+1 times (k stops = k+1 edges maximum)
+    for _ in range(k + 1):
+        # Make a copy to avoid using updates from same iteration
+        temp = dist.copy()
 
-    # Process input
-    # ...
+        for u, v, price in flights:
+            if dist[u] != INF and dist[u] + price < temp[v]:
+                temp[v] = dist[u] + price
 
-    return result
+        dist = temp
+
+    return dist[dst] if dist[dst] != INF else -1
+
+
+def findCheapestPriceBFS(n, flights, src, dst, k):
+    """Alternative: BFS with pruning."""
+    from collections import defaultdict, deque
+
+    graph = defaultdict(list)
+    for u, v, price in flights:
+        graph[u].append((v, price))
+
+    # BFS: (node, cost, stops)
+    queue = deque([(src, 0, 0)])
+    min_cost = [float('inf')] * n
+    min_cost[src] = 0
+
+    while queue:
+        node, cost, stops = queue.popleft()
+
+        if stops > k:
+            continue
+
+        for neighbor, price in graph[node]:
+            new_cost = cost + price
+
+            # Only explore if this path is potentially better
+            if new_cost < min_cost[neighbor]:
+                min_cost[neighbor] = new_cost
+                queue.append((neighbor, new_cost, stops + 1))
+
+    return min_cost[dst] if min_cost[dst] != float('inf') else -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1
+    n = 4
+    flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]]
+    src, dst, k = 0, 3, 1
+    print(findCheapestPrice(n, flights, src, dst, k))  # 700
+
+    # Test case 2: k=0 means direct flight only
+    print(findCheapestPrice(3, [[0,1,100],[1,2,100],[0,2,500]], 0, 2, 0))  # 500`,
             go: `package main
 
 import "fmt"
 
-// CheapestFlightsWithinKStops solves the Cheapest Flights Within K Stops problem.
-// Time: O(n), Space: O(n)
-func CheapestFlightsWithinKStops(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+const INF = 1 << 30
 
-    var result interface{}
+// FindCheapestPrice finds cheapest flight with at most k stops
+// Uses Bellman-Ford variant
+// Time: O(K*E), Space: O(V)
+func FindCheapestPrice(n int, flights [][]int, src int, dst int, k int) int {
+    dist := make([]int, n)
+    for i := range dist {
+        dist[i] = INF
+    }
+    dist[src] = 0
 
-    // Process input
-    // ...
+    // Relax edges k+1 times
+    for i := 0; i <= k; i++ {
+        // Copy to avoid using updates from same iteration
+        temp := make([]int, n)
+        copy(temp, dist)
 
-    return result
+        for _, f := range flights {
+            u, v, price := f[0], f[1], f[2]
+            if dist[u] != INF && dist[u]+price < temp[v] {
+                temp[v] = dist[u] + price
+            }
+        }
+
+        dist = temp
+    }
+
+    if dist[dst] == INF {
+        return -1
+    }
+    return dist[dst]
+}
+
+// FindCheapestPriceBFS uses BFS approach
+func FindCheapestPriceBFS(n int, flights [][]int, src int, dst int, k int) int {
+    graph := make(map[int][][2]int)
+    for _, f := range flights {
+        u, v, price := f[0], f[1], f[2]
+        graph[u] = append(graph[u], [2]int{v, price})
+    }
+
+    type State struct {
+        node, cost, stops int
+    }
+
+    queue := []State{{src, 0, 0}}
+    minCost := make([]int, n)
+    for i := range minCost {
+        minCost[i] = INF
+    }
+    minCost[src] = 0
+
+    for len(queue) > 0 {
+        curr := queue[0]
+        queue = queue[1:]
+
+        if curr.stops > k {
+            continue
+        }
+
+        for _, edge := range graph[curr.node] {
+            neighbor, price := edge[0], edge[1]
+            newCost := curr.cost + price
+
+            if newCost < minCost[neighbor] {
+                minCost[neighbor] = newCost
+                queue = append(queue, State{neighbor, newCost, curr.stops + 1})
+            }
+        }
+    }
+
+    if minCost[dst] == INF {
+        return -1
+    }
+    return minCost[dst]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1
+    n := 4
+    flights := [][]int{{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}}
+    fmt.Println(FindCheapestPrice(n, flights, 0, 3, 1)) // 700
+
+    // Test case 2
+    flights2 := [][]int{{0, 1, 100}, {1, 2, 100}, {0, 2, 500}}
+    fmt.Println(FindCheapestPrice(3, flights2, 0, 2, 0)) // 500
 }`
         },
         similar: [

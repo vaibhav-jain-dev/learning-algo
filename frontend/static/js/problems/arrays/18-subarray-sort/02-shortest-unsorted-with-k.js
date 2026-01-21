@@ -42,49 +42,109 @@
     }
         ],
         solutions: {
-            python: `def shortestUnsortedWithK(data):
+            python: `def shortestUnsortedWithK(array):
     """
-    Shortest Unsorted With K
+    Shortest Unsorted Subarray
+
+    Find the shortest contiguous subarray that, if sorted,
+    would result in the whole array being sorted.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(array)
+    if n <= 1:
+        return 0
 
-    result = None
+    # Find the first element out of order from left
+    left = 0
+    while left < n - 1 and array[left] <= array[left + 1]:
+        left += 1
 
-    # Process input
-    # ...
+    # Array is already sorted
+    if left == n - 1:
+        return 0
 
-    return result
+    # Find the first element out of order from right
+    right = n - 1
+    while right > 0 and array[right] >= array[right - 1]:
+        right -= 1
+
+    # Find min and max in the unsorted subarray
+    sub_min = min(array[left:right + 1])
+    sub_max = max(array[left:right + 1])
+
+    # Extend left boundary if needed
+    while left > 0 and array[left - 1] > sub_min:
+        left -= 1
+
+    # Extend right boundary if needed
+    while right < n - 1 and array[right + 1] < sub_max:
+        right += 1
+
+    return right - left + 1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(shortestUnsortedWithK([2, 6, 4, 8, 10, 9, 15]))  # 5
+    print(shortestUnsortedWithK([1, 2, 3, 4]))  # 0`,
             go: `package main
 
 import "fmt"
 
-// ShortestUnsortedWithK solves the Shortest Unsorted With K problem.
-// Time: O(n), Space: O(n)
-func ShortestUnsortedWithK(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// ShortestUnsortedWithK finds shortest subarray to sort.
+// Time: O(n), Space: O(1)
+func ShortestUnsortedWithK(array []int) int {
+    n := len(array)
+    if n <= 1 {
+        return 0
+    }
 
-    var result interface{}
+    // Find first element out of order from left
+    left := 0
+    for left < n-1 && array[left] <= array[left+1] {
+        left++
+    }
 
-    // Process input
-    // ...
+    // Array is already sorted
+    if left == n-1 {
+        return 0
+    }
 
-    return result
+    // Find first element out of order from right
+    right := n - 1
+    for right > 0 && array[right] >= array[right-1] {
+        right--
+    }
+
+    // Find min and max in unsorted subarray
+    subMin, subMax := array[left], array[left]
+    for i := left; i <= right; i++ {
+        if array[i] < subMin {
+            subMin = array[i]
+        }
+        if array[i] > subMax {
+            subMax = array[i]
+        }
+    }
+
+    // Extend left boundary if needed
+    for left > 0 && array[left-1] > subMin {
+        left--
+    }
+
+    // Extend right boundary if needed
+    for right < n-1 && array[right+1] < subMax {
+        right++
+    }
+
+    return right - left + 1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(ShortestUnsortedWithK([]int{2, 6, 4, 8, 10, 9, 15}))  // 5
+    fmt.Println(ShortestUnsortedWithK([]int{1, 2, 3, 4}))  // 0
 }`
         },
         similar: [

@@ -63,49 +63,106 @@
             }
         ],
         solutions: {
-            python: `def closestSumTarget(data):
+            python: `def closestSumTarget(arr1, arr2, target):
     """
-    Closest Sum Target
+    Closest Sum Target - Find pair from two sorted arrays closest to target.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n + m) where n, m are array lengths (assuming sorted)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Ensure arrays are sorted
+    arr1.sort()
+    arr2.sort()
 
-    result = None
+    left = 0              # Start of arr1
+    right = len(arr2) - 1  # End of arr2
 
-    # Process input
-    # ...
+    min_diff = float('inf')
+    result = [arr1[0], arr2[0]]
+
+    while left < len(arr1) and right >= 0:
+        current_sum = arr1[left] + arr2[right]
+        current_diff = abs(current_sum - target)
+
+        # Update result if we found a closer pair
+        if current_diff < min_diff:
+            min_diff = current_diff
+            result = [arr1[left], arr2[right]]
+
+        # Exact match found
+        if current_sum == target:
+            return result
+        elif current_sum < target:
+            # Need larger sum, move left pointer right
+            left += 1
+        else:
+            # Need smaller sum, move right pointer left
+            right -= 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(closestSumTarget([1, 3, 5, 7], [2, 4, 6, 8], 10))  # [3, 7] or [5, 5] etc
+    print(closestSumTarget([-1, 3, 8, 12], [2, 4, 9, 15], 7))  # [3, 4]
+    print(closestSumTarget([1, 4, 5, 7], [10, 20, 30, 40], 32))  # [1, 30] or [4, 30]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// ClosestSumTarget solves the Closest Sum Target problem.
-// Time: O(n), Space: O(n)
-func ClosestSumTarget(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// ClosestSumTarget finds pair from two sorted arrays closest to target.
+// Time: O(n + m), Space: O(1)
+func ClosestSumTarget(arr1, arr2 []int, target int) []int {
+    // Ensure arrays are sorted
+    sort.Ints(arr1)
+    sort.Ints(arr2)
 
-    var result interface{}
+    left := 0
+    right := len(arr2) - 1
 
-    // Process input
-    // ...
+    minDiff := int(^uint(0) >> 1) // Max int
+    result := []int{arr1[0], arr2[0]}
+
+    for left < len(arr1) && right >= 0 {
+        currentSum := arr1[left] + arr2[right]
+        currentDiff := abs(currentSum - target)
+
+        // Update result if we found a closer pair
+        if currentDiff < minDiff {
+            minDiff = currentDiff
+            result = []int{arr1[left], arr2[right]}
+        }
+
+        // Exact match found
+        if currentSum == target {
+            return result
+        } else if currentSum < target {
+            // Need larger sum, move left pointer right
+            left++
+        } else {
+            // Need smaller sum, move right pointer left
+            right--
+        }
+    }
 
     return result
 }
 
+func abs(x int) int {
+    if x < 0 {
+        return -x
+    }
+    return x
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(ClosestSumTarget([]int{1, 3, 5, 7}, []int{2, 4, 6, 8}, 10))
+    fmt.Println(ClosestSumTarget([]int{-1, 3, 8, 12}, []int{2, 4, 9, 15}, 7))
+    fmt.Println(ClosestSumTarget([]int{1, 4, 5, 7}, []int{10, 20, 30, 40}, 32))
 }`
         },
         similar: []

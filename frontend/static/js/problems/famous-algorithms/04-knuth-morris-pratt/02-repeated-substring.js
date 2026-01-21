@@ -42,49 +42,93 @@
     }
         ],
         solutions: {
-            python: `def repeatedSubstringPattern(data):
+            python: `def repeatedSubstringPattern(s):
     """
-    Repeated Substring Pattern
+    Repeated Substring Pattern using KMP
+
+    Key insight: If s can be constructed from repeated substring,
+    then the LPS value at the last position tells us the pattern length.
+    Pattern length = n - lps[n-1], and n must be divisible by it.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(s)
+    if n == 0:
+        return False
 
-    result = None
+    # Build LPS array
+    lps = [0] * n
+    length = 0
+    i = 1
 
-    # Process input
-    # ...
+    while i < n:
+        if s[i] == s[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
 
-    return result
+    # Check if string can be formed by repeating a pattern
+    # Pattern length = n - lps[n-1]
+    pattern_len = n - lps[n - 1]
+
+    # Pattern must divide string length and lps must be non-zero
+    return lps[n - 1] > 0 and n % pattern_len == 0
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(repeatedSubstringPattern("abab"))        # Output: True
+    print(repeatedSubstringPattern("abcabcabcabc")) # Output: True
+    print(repeatedSubstringPattern("abc"))          # Output: False`,
             go: `package main
 
 import "fmt"
 
-// RepeatedSubstringPattern solves the Repeated Substring Pattern problem.
+// RepeatedSubstringPattern checks if s can be constructed by repeating a substring.
 // Time: O(n), Space: O(n)
-func RepeatedSubstringPattern(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func RepeatedSubstringPattern(s string) bool {
+    n := len(s)
+    if n == 0 {
+        return false
+    }
 
-    var result interface{}
+    // Build LPS array
+    lps := make([]int, n)
+    length := 0
+    i := 1
 
-    // Process input
-    // ...
+    for i < n {
+        if s[i] == s[length] {
+            length++
+            lps[i] = length
+            i++
+        } else {
+            if length != 0 {
+                length = lps[length-1]
+            } else {
+                lps[i] = 0
+                i++
+            }
+        }
+    }
 
-    return result
+    // Check if string can be formed by repeating a pattern
+    patternLen := n - lps[n-1]
+
+    return lps[n-1] > 0 && n%patternLen == 0
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(RepeatedSubstringPattern("abab"))         // Output: true
+    fmt.Println(RepeatedSubstringPattern("abcabcabcabc")) // Output: true
+    fmt.Println(RepeatedSubstringPattern("abc"))          // Output: false
 }`
         },
         similar: [

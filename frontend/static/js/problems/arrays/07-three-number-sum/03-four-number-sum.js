@@ -42,49 +42,80 @@
     }
         ],
         solutions: {
-            python: `def fourNumberSum(data):
+            python: `def fourNumberSum(array, target):
     """
-    Four Number Sum
+    Four Number Sum - Find all unique quadruplets that sum to target.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n^3) - Three nested loops with hash table lookup
+    Space: O(n^2) - Store pair sums in hash table
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    allPairSums = {}
+    quadruplets = []
 
-    result = None
+    for i in range(1, len(array) - 1):
+        # Look for quadruplets using current element and pair sums seen before
+        for j in range(i + 1, len(array)):
+            currentSum = array[i] + array[j]
+            difference = target - currentSum
+            if difference in allPairSums:
+                for pair in allPairSums[difference]:
+                    quadruplets.append(pair + [array[i], array[j]])
 
-    # Process input
-    # ...
+        # Add all pair sums with elements before current index
+        for k in range(0, i):
+            currentSum = array[i] + array[k]
+            if currentSum not in allPairSums:
+                allPairSums[currentSum] = []
+            allPairSums[currentSum].append([array[k], array[i]])
 
-    return result
+    return quadruplets
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(fourNumberSum([7, 6, 4, -1, 1, 2], 16))
+    # Output: [[7, 6, 4, -1], [7, 6, 1, 2]]
+    print(fourNumberSum([1, 0, -1, 0, -2, 2], 0))
+    # Output: [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]`,
             go: `package main
 
 import "fmt"
 
-// FourNumberSum solves the Four Number Sum problem.
-// Time: O(n), Space: O(n)
-func FourNumberSum(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FourNumberSum finds all unique quadruplets that sum to target.
+// Time: O(n^3), Space: O(n^2)
+func FourNumberSum(array []int, target int) [][]int {
+    allPairSums := make(map[int][][]int)
+    quadruplets := [][]int{}
 
-    var result interface{}
+    for i := 1; i < len(array)-1; i++ {
+        // Look for quadruplets using current element and pair sums seen before
+        for j := i + 1; j < len(array); j++ {
+            currentSum := array[i] + array[j]
+            difference := target - currentSum
+            if pairs, found := allPairSums[difference]; found {
+                for _, pair := range pairs {
+                    quad := append([]int{}, pair...)
+                    quad = append(quad, array[i], array[j])
+                    quadruplets = append(quadruplets, quad)
+                }
+            }
+        }
 
-    // Process input
-    // ...
+        // Add all pair sums with elements before current index
+        for k := 0; k < i; k++ {
+            currentSum := array[i] + array[k]
+            allPairSums[currentSum] = append(allPairSums[currentSum],
+                []int{array[k], array[i]})
+        }
+    }
 
-    return result
+    return quadruplets
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(FourNumberSum([]int{7, 6, 4, -1, 1, 2}, 16))
+    // Output: [[7 6 4 -1] [7 6 1 2]]
+    fmt.Println(FourNumberSum([]int{1, 0, -1, 0, -2, 2}, 0))
 }`
         },
         similar: [

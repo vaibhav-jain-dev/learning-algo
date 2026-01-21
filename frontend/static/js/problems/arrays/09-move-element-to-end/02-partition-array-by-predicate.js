@@ -48,49 +48,96 @@
     }
         ],
         solutions: {
-            python: `def partitionArrayByPredicate(data):
+            python: `def partitionArrayByPredicate(array, predicate):
     """
-    Partition Array By Predicate
+    Partition Array By Predicate - Rearrange so elements satisfying predicate
+    come before elements that don't. Uses two-pointer swap technique.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - Single pass through array
+    Space: O(1) - In-place modification
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    left = 0
+    right = len(array) - 1
 
-    result = None
+    while left < right:
+        # Move left pointer until we find element not satisfying predicate
+        while left < right and predicate(array[left]):
+            left += 1
 
-    # Process input
-    # ...
+        # Move right pointer until we find element satisfying predicate
+        while left < right and not predicate(array[right]):
+            right -= 1
 
-    return result
+        # Swap elements
+        if left < right:
+            array[left], array[right] = array[right], array[left]
+            left += 1
+            right -= 1
+
+    return array
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # isEven predicate
+    print(partitionArrayByPredicate([1, 4, 2, 5, 3, 6], lambda x: x % 2 == 0))
+    # Output: [6, 4, 2, 5, 3, 1] (evens first)
+
+    # x > 3 predicate
+    print(partitionArrayByPredicate([3, 1, 4, 1, 5, 9, 2, 6], lambda x: x > 3))
+    # Output: [6, 9, 4, 5, 1, 1, 2, 3] (elements > 3 first)
+
+    # isOdd predicate
+    print(partitionArrayByPredicate([1, 2, 3, 4, 5], lambda x: x % 2 == 1))
+    # Output: [1, 5, 3, 4, 2] (odds first)`,
             go: `package main
 
 import "fmt"
 
-// PartitionArrayByPredicate solves the Partition Array By Predicate problem.
-// Time: O(n), Space: O(n)
-func PartitionArrayByPredicate(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// PartitionArrayByPredicate rearranges array so elements satisfying predicate
+// come before elements that don't.
+// Time: O(n), Space: O(1)
+func PartitionArrayByPredicate(array []int, predicate func(int) bool) []int {
+    left := 0
+    right := len(array) - 1
 
-    var result interface{}
+    for left < right {
+        // Move left pointer until we find element not satisfying predicate
+        for left < right && predicate(array[left]) {
+            left++
+        }
 
-    // Process input
-    // ...
+        // Move right pointer until we find element satisfying predicate
+        for left < right && !predicate(array[right]) {
+            right--
+        }
 
-    return result
+        // Swap elements
+        if left < right {
+            array[left], array[right] = array[right], array[left]
+            left++
+            right--
+        }
+    }
+
+    return array
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // isEven predicate
+    isEven := func(x int) bool { return x%2 == 0 }
+    fmt.Println(PartitionArrayByPredicate([]int{1, 4, 2, 5, 3, 6}, isEven))
+    // Output: [6 4 2 5 3 1]
+
+    // x > 3 predicate
+    greaterThan3 := func(x int) bool { return x > 3 }
+    fmt.Println(PartitionArrayByPredicate([]int{3, 1, 4, 1, 5, 9, 2, 6}, greaterThan3))
+    // Output: [6 9 4 5 1 1 2 3]
+
+    // isOdd predicate
+    isOdd := func(x int) bool { return x%2 == 1 }
+    fmt.Println(PartitionArrayByPredicate([]int{1, 2, 3, 4, 5}, isOdd))
+    // Output: [1 5 3 4 2]
 }`
         },
         similar: [

@@ -74,45 +74,131 @@
     """
     Minimum Depth of Binary Tree
 
-    Time: O(n)
-    Space: O(n)
+    Return the number of nodes along the shortest path from root
+    to the nearest leaf node. Uses BFS for optimal performance -
+    returns as soon as the first leaf is found.
+
+    Key insight: BFS finds the shortest path naturally by exploring
+    level by level.
+
+    Time: O(n) - worst case visits all nodes
+    Space: O(w) - queue stores nodes at widest level
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    from collections import deque
 
-    result = None
+    tree = data.get('tree')
 
-    # Process input
-    # ...
+    if not tree:
+        return 0
 
-    return result
+    queue = deque([(tree, 1)])  # (node, depth)
+
+    while queue:
+        node, depth = queue.popleft()
+
+        left = node.get('left')
+        right = node.get('right')
+
+        # If leaf node, we found the minimum depth
+        if not left and not right:
+            return depth
+
+        # Add children to queue
+        if left:
+            queue.append((left, depth + 1))
+        if right:
+            queue.append((right, depth + 1))
+
+    return 0
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data1 = {"tree": {"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}}
+    print(minimumDepthOfBinaryTree(data1))  # 2
+
+    data2 = {"tree": {"value": 2, "right": {"value": 3, "right": {"value": 4, "right": {"value": 5, "right": {"value": 6}}}}}}
+    print(minimumDepthOfBinaryTree(data2))  # 5`,
             go: `package main
 
 import "fmt"
 
-// MinimumDepthOfBinaryTree solves the Minimum Depth of Binary Tree problem.
-// Time: O(n), Space: O(n)
-func MinimumDepthOfBinaryTree(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TreeNode represents a node in the binary tree
+type TreeNode struct {
+    Value int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+// buildTree converts map data to TreeNode structure
+func buildTree(data map[string]interface{}) *TreeNode {
+    if data == nil {
+        return nil
+    }
+    node := &TreeNode{Value: int(data["value"].(float64))}
+    if left, ok := data["left"].(map[string]interface{}); ok {
+        node.Left = buildTree(left)
+    }
+    if right, ok := data["right"].(map[string]interface{}); ok {
+        node.Right = buildTree(right)
+    }
+    return node
+}
 
-    // Process input
-    // ...
+// queueItem holds a node and its depth for BFS
+type queueItem struct {
+    node  *TreeNode
+    depth int
+}
 
-    return result
+// MinimumDepthOfBinaryTree returns the minimum depth using BFS
+// Time: O(n), Space: O(w)
+func MinimumDepthOfBinaryTree(data map[string]interface{}) int {
+    treeData, _ := data["tree"].(map[string]interface{})
+    root := buildTree(treeData)
+
+    if root == nil {
+        return 0
+    }
+
+    queue := []queueItem{{root, 1}}
+
+    for len(queue) > 0 {
+        item := queue[0]
+        queue = queue[1:]
+
+        node, depth := item.node, item.depth
+
+        // If leaf node, return current depth
+        if node.Left == nil && node.Right == nil {
+            return depth
+        }
+
+        // Add children to queue
+        if node.Left != nil {
+            queue = append(queue, queueItem{node.Left, depth + 1})
+        }
+        if node.Right != nil {
+            queue = append(queue, queueItem{node.Right, depth + 1})
+        }
+    }
+
+    return 0
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": map[string]interface{}{
+            "value": float64(3),
+            "left":  map[string]interface{}{"value": float64(9)},
+            "right": map[string]interface{}{
+                "value": float64(20),
+                "left":  map[string]interface{}{"value": float64(15)},
+                "right": map[string]interface{}{"value": float64(7)},
+            },
+        },
+    }
+    fmt.Println(MinimumDepthOfBinaryTree(data)) // 2
 }`
         },
         similar: [

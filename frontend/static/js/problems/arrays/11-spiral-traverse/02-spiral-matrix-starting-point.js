@@ -42,49 +42,112 @@
     }
         ],
         solutions: {
-            python: `def spiralMatrixStartingPoint(data):
+            python: `def spiralMatrixStartingPoint(rows, cols, rStart, cStart):
     """
-    Spiral Matrix Starting Point
+    Spiral Matrix Starting Point - Walk in clockwise spiral from starting position,
+    visiting all cells in a rows x cols grid.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(rows * cols) - Visit all cells
+    Space: O(rows * cols) - Store result (O(1) extra space)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    result = []
+    # Directions: right, down, left, up
+    dr = [0, 1, 0, -1]
+    dc = [1, 0, -1, 0]
 
-    result = None
+    # Total cells to visit
+    total = rows * cols
 
-    # Process input
-    # ...
+    # Start position
+    r, c = rStart, cStart
+    direction = 0  # Start moving right
+
+    # Steps in each direction: 1, 1, 2, 2, 3, 3, 4, 4, ...
+    steps = 1
+    stepsTaken = 0
+    turnCount = 0
+
+    while len(result) < total:
+        # Add cell if within bounds
+        if 0 <= r < rows and 0 <= c < cols:
+            result.append([r, c])
+
+        # Move in current direction
+        r += dr[direction]
+        c += dc[direction]
+        stepsTaken += 1
+
+        # Check if we need to turn
+        if stepsTaken == steps:
+            stepsTaken = 0
+            direction = (direction + 1) % 4
+            turnCount += 1
+            # Increase steps after every 2 turns
+            if turnCount % 2 == 0:
+                steps += 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(spiralMatrixStartingPoint(1, 4, 0, 0))
+    # Output: [[0,0], [0,1], [0,2], [0,3]]
+    print(spiralMatrixStartingPoint(5, 6, 1, 4))`,
             go: `package main
 
 import "fmt"
 
-// SpiralMatrixStartingPoint solves the Spiral Matrix Starting Point problem.
-// Time: O(n), Space: O(n)
-func SpiralMatrixStartingPoint(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// SpiralMatrixStartingPoint walks in clockwise spiral from starting position.
+// Time: O(rows * cols), Space: O(rows * cols)
+func SpiralMatrixStartingPoint(rows, cols, rStart, cStart int) [][]int {
+    result := [][]int{}
+    // Directions: right, down, left, up
+    dr := []int{0, 1, 0, -1}
+    dc := []int{1, 0, -1, 0}
 
-    var result interface{}
+    // Total cells to visit
+    total := rows * cols
 
-    // Process input
-    // ...
+    // Start position
+    r, c := rStart, cStart
+    direction := 0 // Start moving right
+
+    // Steps in each direction: 1, 1, 2, 2, 3, 3, ...
+    steps := 1
+    stepsTaken := 0
+    turnCount := 0
+
+    for len(result) < total {
+        // Add cell if within bounds
+        if r >= 0 && r < rows && c >= 0 && c < cols {
+            result = append(result, []int{r, c})
+        }
+
+        // Move in current direction
+        r += dr[direction]
+        c += dc[direction]
+        stepsTaken++
+
+        // Check if we need to turn
+        if stepsTaken == steps {
+            stepsTaken = 0
+            direction = (direction + 1) % 4
+            turnCount++
+            // Increase steps after every 2 turns
+            if turnCount%2 == 0 {
+                steps++
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(SpiralMatrixStartingPoint(1, 4, 0, 0))
+    // Output: [[0 0] [0 1] [0 2] [0 3]]
+    fmt.Println(SpiralMatrixStartingPoint(5, 6, 1, 4))
 }`
         },
         similar: [

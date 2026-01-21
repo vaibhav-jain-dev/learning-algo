@@ -49,49 +49,92 @@
     }
         ],
         solutions: {
-            python: `def longestMonotonicSubarray(data):
+            python: `def longestMonotonicSubarray(array):
     """
-    Longest Monotonic Subarray
+    Longest Monotonic Subarray - Find length of longest contiguous subarray
+    that is either non-increasing or non-decreasing.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - Single pass tracking both increasing and decreasing lengths
+    Space: O(1) - Only store counters
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(array) <= 1:
+        return len(array)
 
-    result = None
+    maxLen = 1
+    incLen = 1  # Length of current non-decreasing subarray
+    decLen = 1  # Length of current non-increasing subarray
 
-    # Process input
-    # ...
+    for i in range(1, len(array)):
+        if array[i] >= array[i - 1]:
+            incLen += 1
+        else:
+            incLen = 1
 
-    return result
+        if array[i] <= array[i - 1]:
+            decLen += 1
+        else:
+            decLen = 1
+
+        maxLen = max(maxLen, incLen, decLen)
+
+    return maxLen
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(longestMonotonicSubarray([1, 4, 3, 2, 5, 6, 7]))
+    # Output: 4 (subarray [2, 5, 6, 7] or [4, 3, 2])
+    print(longestMonotonicSubarray([5, 4, 3, 2, 1]))
+    # Output: 5 (entire array is non-increasing)
+    print(longestMonotonicSubarray([1, 2, 2, 3, 1]))
+    # Output: 4 (subarray [1, 2, 2, 3])`,
             go: `package main
 
 import "fmt"
 
-// LongestMonotonicSubarray solves the Longest Monotonic Subarray problem.
-// Time: O(n), Space: O(n)
-func LongestMonotonicSubarray(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// LongestMonotonicSubarray finds length of longest contiguous subarray
+// that is either non-increasing or non-decreasing.
+// Time: O(n), Space: O(1)
+func LongestMonotonicSubarray(array []int) int {
+    if len(array) <= 1 {
+        return len(array)
+    }
 
-    var result interface{}
+    maxLen := 1
+    incLen := 1 // Length of current non-decreasing subarray
+    decLen := 1 // Length of current non-increasing subarray
 
-    // Process input
-    // ...
+    for i := 1; i < len(array); i++ {
+        if array[i] >= array[i-1] {
+            incLen++
+        } else {
+            incLen = 1
+        }
 
-    return result
+        if array[i] <= array[i-1] {
+            decLen++
+        } else {
+            decLen = 1
+        }
+
+        if incLen > maxLen {
+            maxLen = incLen
+        }
+        if decLen > maxLen {
+            maxLen = decLen
+        }
+    }
+
+    return maxLen
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(LongestMonotonicSubarray([]int{1, 4, 3, 2, 5, 6, 7}))
+    // Output: 4
+    fmt.Println(LongestMonotonicSubarray([]int{5, 4, 3, 2, 1}))
+    // Output: 5
+    fmt.Println(LongestMonotonicSubarray([]int{1, 2, 2, 3, 1}))
+    // Output: 4
 }`
         },
         similar: [

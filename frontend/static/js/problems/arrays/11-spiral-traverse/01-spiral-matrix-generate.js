@@ -49,49 +49,125 @@
     }
         ],
         solutions: {
-            python: `def spiralMatrixGenerate(data):
+            python: `def spiralMatrixGenerate(n):
     """
-    Spiral Matrix Generate
+    Spiral Matrix Generate - Generate n x n matrix filled with 1 to n^2 in spiral order.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n^2) - Fill all n^2 cells
+    Space: O(n^2) - Store the matrix (O(1) extra space)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Initialize matrix with zeros
+    matrix = [[0] * n for _ in range(n)]
 
-    result = None
+    # Boundaries
+    top, bottom = 0, n - 1
+    left, right = 0, n - 1
+    num = 1
 
-    # Process input
-    # ...
+    while top <= bottom and left <= right:
+        # Fill top row (left to right)
+        for col in range(left, right + 1):
+            matrix[top][col] = num
+            num += 1
+        top += 1
 
-    return result
+        # Fill right column (top to bottom)
+        for row in range(top, bottom + 1):
+            matrix[row][right] = num
+            num += 1
+        right -= 1
+
+        # Fill bottom row (right to left)
+        if top <= bottom:
+            for col in range(right, left - 1, -1):
+                matrix[bottom][col] = num
+                num += 1
+            bottom -= 1
+
+        # Fill left column (bottom to top)
+        if left <= right:
+            for row in range(bottom, top - 1, -1):
+                matrix[row][left] = num
+                num += 1
+            left += 1
+
+    return matrix
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    for row in spiralMatrixGenerate(3):
+        print(row)
+    # Output: [1, 2, 3], [8, 9, 4], [7, 6, 5]
+    print()
+    for row in spiralMatrixGenerate(4):
+        print(row)`,
             go: `package main
 
 import "fmt"
 
-// SpiralMatrixGenerate solves the Spiral Matrix Generate problem.
-// Time: O(n), Space: O(n)
-func SpiralMatrixGenerate(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// SpiralMatrixGenerate generates n x n matrix filled with 1 to n^2 in spiral order.
+// Time: O(n^2), Space: O(n^2)
+func SpiralMatrixGenerate(n int) [][]int {
+    // Initialize matrix
+    matrix := make([][]int, n)
+    for i := range matrix {
+        matrix[i] = make([]int, n)
+    }
 
-    var result interface{}
+    // Boundaries
+    top, bottom := 0, n-1
+    left, right := 0, n-1
+    num := 1
 
-    // Process input
-    // ...
+    for top <= bottom && left <= right {
+        // Fill top row (left to right)
+        for col := left; col <= right; col++ {
+            matrix[top][col] = num
+            num++
+        }
+        top++
 
-    return result
+        // Fill right column (top to bottom)
+        for row := top; row <= bottom; row++ {
+            matrix[row][right] = num
+            num++
+        }
+        right--
+
+        // Fill bottom row (right to left)
+        if top <= bottom {
+            for col := right; col >= left; col-- {
+                matrix[bottom][col] = num
+                num++
+            }
+            bottom--
+        }
+
+        // Fill left column (bottom to top)
+        if left <= right {
+            for row := bottom; row >= top; row-- {
+                matrix[row][left] = num
+                num++
+            }
+            left++
+        }
+    }
+
+    return matrix
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    result := SpiralMatrixGenerate(3)
+    for _, row := range result {
+        fmt.Println(row)
+    }
+    // Output: [1 2 3], [8 9 4], [7 6 5]
+    fmt.Println()
+    result = SpiralMatrixGenerate(4)
+    for _, row := range result {
+        fmt.Println(row)
+    }
 }`
         },
         similar: [

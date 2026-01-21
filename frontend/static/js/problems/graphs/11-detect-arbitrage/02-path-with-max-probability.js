@@ -56,49 +56,172 @@
     }
         ],
         solutions: {
-            python: `def pathWithMaximumProbability(data):
+            python: `import heapq
+from collections import defaultdict
+
+def maxProbability(n, edges, succProb, start, end):
     """
-    Path with Maximum Probability
+    Path with Maximum Probability - Modified Dijkstra
 
-    Time: O(n)
-    Space: O(n)
+    Instead of minimizing distance, maximize probability.
+    Use a max-heap (negate probabilities for min-heap).
+
+    Time: O(E log V)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list
+    graph = defaultdict(list)
+    for i, (a, b) in enumerate(edges):
+        prob = succProb[i]
+        graph[a].append((b, prob))
+        graph[b].append((a, prob))
 
-    result = None
+    # Max probability to reach each node
+    max_prob = [0.0] * n
+    max_prob[start] = 1.0
 
-    # Process input
-    # ...
+    # Max-heap (use negative for max behavior)
+    heap = [(-1.0, start)]  # (neg_prob, node)
 
-    return result
+    while heap:
+        neg_prob, node = heapq.heappop(heap)
+        prob = -neg_prob
+
+        # Found the end node
+        if node == end:
+            return prob
+
+        # Skip if we've found a better path already
+        if prob < max_prob[node]:
+            continue
+
+        for neighbor, edge_prob in graph[node]:
+            new_prob = prob * edge_prob
+
+            if new_prob > max_prob[neighbor]:
+                max_prob[neighbor] = new_prob
+                heapq.heappush(heap, (-new_prob, neighbor))
+
+    return 0.0
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1
+    n = 3
+    edges = [[0,1],[1,2],[0,2]]
+    succProb = [0.5,0.5,0.2]
+    start, end = 0, 2
+    print(maxProbability(n, edges, succProb, start, end))  # 0.25
+
+    # Test case 2
+    n = 3
+    edges = [[0,1],[1,2],[0,2]]
+    succProb = [0.5,0.5,0.3]
+    start, end = 0, 2
+    print(maxProbability(n, edges, succProb, start, end))  # 0.3
+
+    # Test case 3: No path
+    n = 3
+    edges = [[0,1]]
+    succProb = [0.5]
+    start, end = 0, 2
+    print(maxProbability(n, edges, succProb, start, end))  # 0.0`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// PathWithMaximumProbability solves the Path with Maximum Probability problem.
-// Time: O(n), Space: O(n)
-func PathWithMaximumProbability(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type ProbItem struct {
+    prob float64
+    node int
+}
 
-    var result interface{}
+type MaxHeap []ProbItem
 
-    // Process input
-    // ...
+func (h MaxHeap) Len() int            { return len(h) }
+func (h MaxHeap) Less(i, j int) bool  { return h[i].prob > h[j].prob } // Max heap
+func (h MaxHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *MaxHeap) Push(x interface{}) { *h = append(*h, x.(ProbItem)) }
+func (h *MaxHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    return result
+// MaxProbability finds path with maximum success probability
+// Uses modified Dijkstra with max-heap
+// Time: O(E log V), Space: O(V+E)
+func MaxProbability(n int, edges [][]int, succProb []float64, start int, end int) float64 {
+    // Build adjacency list
+    type Edge struct {
+        to   int
+        prob float64
+    }
+    graph := make([][]Edge, n)
+    for i := range graph {
+        graph[i] = []Edge{}
+    }
+
+    for i, e := range edges {
+        a, b := e[0], e[1]
+        prob := succProb[i]
+        graph[a] = append(graph[a], Edge{b, prob})
+        graph[b] = append(graph[b], Edge{a, prob})
+    }
+
+    // Max probability to reach each node
+    maxProb := make([]float64, n)
+    maxProb[start] = 1.0
+
+    h := &MaxHeap{{1.0, start}}
+    heap.Init(h)
+
+    for h.Len() > 0 {
+        item := heap.Pop(h).(ProbItem)
+        prob, node := item.prob, item.node
+
+        // Found end node
+        if node == end {
+            return prob
+        }
+
+        // Skip if we've found better path
+        if prob < maxProb[node] {
+            continue
+        }
+
+        for _, edge := range graph[node] {
+            newProb := prob * edge.prob
+
+            if newProb > maxProb[edge.to] {
+                maxProb[edge.to] = newProb
+                heap.Push(h, ProbItem{newProb, edge.to})
+            }
+        }
+    }
+
+    return 0.0
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1
+    edges := [][]int{{0, 1}, {1, 2}, {0, 2}}
+    succProb := []float64{0.5, 0.5, 0.2}
+    fmt.Println(MaxProbability(3, edges, succProb, 0, 2)) // 0.25
+
+    // Test case 2
+    succProb2 := []float64{0.5, 0.5, 0.3}
+    fmt.Println(MaxProbability(3, edges, succProb2, 0, 2)) // 0.3
+
+    // Test case 3: No path
+    edges3 := [][]int{{0, 1}}
+    succProb3 := []float64{0.5}
+    fmt.Println(MaxProbability(3, edges3, succProb3, 0, 2)) // 0
 }`
         },
         similar: [

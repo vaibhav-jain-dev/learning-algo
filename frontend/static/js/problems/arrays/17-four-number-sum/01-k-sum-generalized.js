@@ -42,49 +42,124 @@
     }
         ],
         solutions: {
-            python: `def kSumGeneralized(data):
+            python: `def kSumGeneralized(array, k, target):
     """
     K Sum Generalized
 
-    Time: O(n)
-    Space: O(n)
+    Find all unique combinations of k numbers that sum to target.
+    Uses recursive approach reducing to 2-sum base case.
+
+    Time: O(n^(k-1)) for k >= 2
+    Space: O(k) for recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    array.sort()
+    result = []
 
-    result = None
+    def kSum(start, k, target, current):
+        if k == 2:
+            # Two pointer approach for 2-sum
+            left, right = start, len(array) - 1
+            while left < right:
+                total = array[left] + array[right]
+                if total == target:
+                    result.append(current + [array[left], array[right]])
+                    left += 1
+                    right -= 1
+                    # Skip duplicates
+                    while left < right and array[left] == array[left - 1]:
+                        left += 1
+                    while left < right and array[right] == array[right + 1]:
+                        right -= 1
+                elif total < target:
+                    left += 1
+                else:
+                    right -= 1
+        else:
+            for i in range(start, len(array) - k + 1):
+                # Skip duplicates
+                if i > start and array[i] == array[i - 1]:
+                    continue
+                # Early termination if smallest k elements exceed target
+                if array[i] * k > target:
+                    break
+                # Early termination if largest k elements are less than target
+                if array[-1] * k < target:
+                    break
+                kSum(i + 1, k - 1, target - array[i], current + [array[i]])
 
-    # Process input
-    # ...
-
+    kSum(0, k, target, [])
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(kSumGeneralized([1, 2, 3, 4, 5], 3, 9))  # [[1, 3, 5], [2, 3, 4]]
+    print(kSumGeneralized([1, 0, -1, 0, -2, 2], 4, 0))  # [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// KSumGeneralized solves the K Sum Generalized problem.
-// Time: O(n), Space: O(n)
-func KSumGeneralized(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// KSumGeneralized finds all unique k-tuples that sum to target.
+// Time: O(n^(k-1)), Space: O(k)
+func KSumGeneralized(array []int, k int, target int) [][]int {
+    sort.Ints(array)
+    result := [][]int{}
 
-    var result interface{}
+    var kSum func(start, k, target int, current []int)
+    kSum = func(start, k, target int, current []int) {
+        if k == 2 {
+            left, right := start, len(array)-1
+            for left < right {
+                total := array[left] + array[right]
+                if total == target {
+                    combo := make([]int, len(current)+2)
+                    copy(combo, current)
+                    combo[len(current)] = array[left]
+                    combo[len(current)+1] = array[right]
+                    result = append(result, combo)
+                    left++
+                    right--
+                    for left < right && array[left] == array[left-1] {
+                        left++
+                    }
+                    for left < right && array[right] == array[right+1] {
+                        right--
+                    }
+                } else if total < target {
+                    left++
+                } else {
+                    right--
+                }
+            }
+        } else {
+            for i := start; i <= len(array)-k; i++ {
+                if i > start && array[i] == array[i-1] {
+                    continue
+                }
+                if array[i]*k > target {
+                    break
+                }
+                if array[len(array)-1]*k < target {
+                    break
+                }
+                newCurrent := make([]int, len(current)+1)
+                copy(newCurrent, current)
+                newCurrent[len(current)] = array[i]
+                kSum(i+1, k-1, target-array[i], newCurrent)
+            }
+        }
+    }
 
-    // Process input
-    // ...
-
+    kSum(0, k, target, []int{})
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(KSumGeneralized([]int{1, 2, 3, 4, 5}, 3, 9))
+    fmt.Println(KSumGeneralized([]int{1, 0, -1, 0, -2, 2}, 4, 0))
 }`
         },
         similar: [

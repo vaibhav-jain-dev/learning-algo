@@ -41,49 +41,84 @@
     }
         ],
         solutions: {
-            python: `def findDuplicateNumber(data):
+            python: `def findDuplicate(nums):
     """
-    Find Duplicate Number
+    Find Duplicate Number using Floyd's Cycle Detection
+
+    Treat the array as a linked list where index i points to nums[i].
+    Since there's a duplicate, there must be a cycle.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Phase 1: Find intersection point in cycle
+    slow = nums[0]
+    fast = nums[0]
 
-    result = None
+    while True:
+        slow = nums[slow]           # Move 1 step
+        fast = nums[nums[fast]]     # Move 2 steps
+        if slow == fast:
+            break
 
-    # Process input
-    # ...
+    # Phase 2: Find cycle entrance (the duplicate)
+    slow = nums[0]
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
 
-    return result
+    return slow
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1
+    print(findDuplicate([1, 3, 4, 2, 2]))  # 2
+
+    # Test case 2
+    print(findDuplicate([3, 1, 3, 4, 2]))  # 3
+
+    # Test case 3
+    print(findDuplicate([1, 1]))  # 1`,
             go: `package main
 
 import "fmt"
 
-// FindDuplicateNumber solves the Find Duplicate Number problem.
-// Time: O(n), Space: O(n)
-func FindDuplicateNumber(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FindDuplicate finds the duplicate number using Floyd's Cycle Detection
+// Treats array as linked list: index i -> nums[i]
+// Time: O(n), Space: O(1)
+func FindDuplicate(nums []int) int {
+    // Phase 1: Find intersection point in cycle
+    slow := nums[0]
+    fast := nums[0]
 
-    var result interface{}
+    for {
+        slow = nums[slow]       // Move 1 step
+        fast = nums[nums[fast]] // Move 2 steps
+        if slow == fast {
+            break
+        }
+    }
 
-    // Process input
-    // ...
+    // Phase 2: Find cycle entrance (the duplicate)
+    slow = nums[0]
+    for slow != fast {
+        slow = nums[slow]
+        fast = nums[fast]
+    }
 
-    return result
+    return slow
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1
+    fmt.Println(FindDuplicate([]int{1, 3, 4, 2, 2})) // 2
+
+    // Test case 2
+    fmt.Println(FindDuplicate([]int{3, 1, 3, 4, 2})) // 3
+
+    // Test case 3
+    fmt.Println(FindDuplicate([]int{1, 1})) // 1
 }`
         },
         similar: [

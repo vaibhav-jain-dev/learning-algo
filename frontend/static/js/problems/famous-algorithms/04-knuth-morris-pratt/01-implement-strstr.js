@@ -44,49 +44,125 @@
     }
         ],
         solutions: {
-            python: `def implementStrstr(data):
+            python: `def strStr(haystack, needle):
     """
-    Implement strStr()
+    Implement strStr() using KMP Algorithm
 
-    Time: O(n)
-    Space: O(n)
+    Find first occurrence of needle in haystack.
+
+    Time: O(n + m)
+    Space: O(m) for the LPS array
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not needle:
+        return 0
 
-    result = None
+    # Build LPS (Longest Proper Prefix which is also Suffix) array
+    def buildLPS(pattern):
+        m = len(pattern)
+        lps = [0] * m
+        length = 0  # Length of previous longest prefix suffix
+        i = 1
 
-    # Process input
-    # ...
+        while i < m:
+            if pattern[i] == pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        return lps
 
-    return result
+    lps = buildLPS(needle)
+    n, m = len(haystack), len(needle)
+    i = j = 0  # Pointers for haystack and needle
+
+    while i < n:
+        if haystack[i] == needle[j]:
+            i += 1
+            j += 1
+
+            if j == m:
+                return i - j  # Found match
+
+        else:
+            if j != 0:
+                j = lps[j - 1]  # Use LPS to skip
+            else:
+                i += 1
+
+    return -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(strStr("sadbutsad", "sad"))  # Output: 0
+    print(strStr("leetcode", "leeto")) # Output: -1`,
             go: `package main
 
 import "fmt"
 
-// ImplementStrstr solves the Implement strStr() problem.
-// Time: O(n), Space: O(n)
-func ImplementStrstr(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// StrStr finds first occurrence of needle in haystack using KMP.
+// Time: O(n + m), Space: O(m)
+func StrStr(haystack string, needle string) int {
+    if len(needle) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // Build LPS array
+    buildLPS := func(pattern string) []int {
+        m := len(pattern)
+        lps := make([]int, m)
+        length := 0
+        i := 1
 
-    // Process input
-    // ...
+        for i < m {
+            if pattern[i] == pattern[length] {
+                length++
+                lps[i] = length
+                i++
+            } else {
+                if length != 0 {
+                    length = lps[length-1]
+                } else {
+                    lps[i] = 0
+                    i++
+                }
+            }
+        }
+        return lps
+    }
 
-    return result
+    lps := buildLPS(needle)
+    n, m := len(haystack), len(needle)
+    i, j := 0, 0
+
+    for i < n {
+        if haystack[i] == needle[j] {
+            i++
+            j++
+
+            if j == m {
+                return i - j
+            }
+        } else {
+            if j != 0 {
+                j = lps[j-1]
+            } else {
+                i++
+            }
+        }
+    }
+
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(StrStr("sadbutsad", "sad"))  // Output: 0
+    fmt.Println(StrStr("leetcode", "leeto")) // Output: -1
 }`
         },
         similar: [

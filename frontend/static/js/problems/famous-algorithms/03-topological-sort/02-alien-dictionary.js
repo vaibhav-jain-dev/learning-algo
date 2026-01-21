@@ -50,49 +50,147 @@
     }
         ],
         solutions: {
-            python: `def alienDictionary(data):
+            python: `from collections import deque, defaultdict
+
+def alienOrder(words):
     """
-    Alien Dictionary
+    Alien Dictionary using Topological Sort
 
-    Time: O(n)
-    Space: O(n)
+    Derive the order of letters from the sorted word list.
+
+    Time: O(C) where C is total characters
+    Space: O(1) - at most 26 letters
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build graph of character relationships
+    graph = defaultdict(set)
+    in_degree = {c: 0 for word in words for c in word}
 
-    result = None
+    # Compare adjacent words to find ordering rules
+    for i in range(len(words) - 1):
+        w1, w2 = words[i], words[i + 1]
+        min_len = min(len(w1), len(w2))
 
-    # Process input
-    # ...
+        # Check for invalid case: prefix comes after longer word
+        if len(w1) > len(w2) and w1[:min_len] == w2[:min_len]:
+            return ""
 
-    return result
+        # Find first differing character
+        for j in range(min_len):
+            if w1[j] != w2[j]:
+                if w2[j] not in graph[w1[j]]:
+                    graph[w1[j]].add(w2[j])
+                    in_degree[w2[j]] += 1
+                break
+
+    # Topological sort using BFS
+    queue = deque([c for c in in_degree if in_degree[c] == 0])
+    result = []
+
+    while queue:
+        c = queue.popleft()
+        result.append(c)
+
+        for neighbor in graph[c]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    # Check if all characters are included (no cycle)
+    if len(result) != len(in_degree):
+        return ""
+
+    return "".join(result)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(alienOrder(["wrt","wrf","er","ett","rftt"]))  # Output: "wertf"
+    print(alienOrder(["z","x"]))                         # Output: "zx"`,
             go: `package main
 
 import "fmt"
 
-// AlienDictionary solves the Alien Dictionary problem.
-// Time: O(n), Space: O(n)
-func AlienDictionary(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// AlienOrder derives character order from sorted alien dictionary.
+// Time: O(C), Space: O(1)
+func AlienOrder(words []string) string {
+    // Build character set and graph
+    inDegree := make(map[byte]int)
+    graph := make(map[byte][]byte)
 
-    var result interface{}
+    // Initialize all characters
+    for _, word := range words {
+        for i := 0; i < len(word); i++ {
+            if _, ok := inDegree[word[i]]; !ok {
+                inDegree[word[i]] = 0
+            }
+        }
+    }
 
-    // Process input
-    // ...
+    // Compare adjacent words
+    for i := 0; i < len(words)-1; i++ {
+        w1, w2 := words[i], words[i+1]
+        minLen := len(w1)
+        if len(w2) < minLen {
+            minLen = len(w2)
+        }
 
-    return result
+        // Check invalid case
+        if len(w1) > len(w2) && w1[:minLen] == w2[:minLen] {
+            return ""
+        }
+
+        // Find first difference
+        for j := 0; j < minLen; j++ {
+            if w1[j] != w2[j] {
+                // Check if edge already exists
+                found := false
+                for _, n := range graph[w1[j]] {
+                    if n == w2[j] {
+                        found = true
+                        break
+                    }
+                }
+                if !found {
+                    graph[w1[j]] = append(graph[w1[j]], w2[j])
+                    inDegree[w2[j]]++
+                }
+                break
+            }
+        }
+    }
+
+    // BFS topological sort
+    queue := []byte{}
+    for c, deg := range inDegree {
+        if deg == 0 {
+            queue = append(queue, c)
+        }
+    }
+
+    result := []byte{}
+    for len(queue) > 0 {
+        c := queue[0]
+        queue = queue[1:]
+        result = append(result, c)
+
+        for _, neighbor := range graph[c] {
+            inDegree[neighbor]--
+            if inDegree[neighbor] == 0 {
+                queue = append(queue, neighbor)
+            }
+        }
+    }
+
+    if len(result) != len(inDegree) {
+        return ""
+    }
+
+    return string(result)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(AlienOrder([]string{"wrt","wrf","er","ett","rftt"})) // Output: "wertf"
+    fmt.Println(AlienOrder([]string{"z","x"}))                        // Output: "zx"
 }`
         },
         similar: [

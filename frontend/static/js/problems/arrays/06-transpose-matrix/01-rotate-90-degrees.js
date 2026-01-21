@@ -42,49 +42,147 @@
     }
         ],
         solutions: {
-            python: `def rotate90Degrees(data):
+            python: `def rotate90Degrees(matrix):
     """
-    Rotate 90 Degrees
+    Rotate 90 Degrees Clockwise (In-Place)
 
-    Time: O(n)
-    Space: O(n)
+    Rotates an n x n matrix 90 degrees clockwise in-place.
+
+    Key insight: 90-degree clockwise rotation = Transpose + Reverse each row
+    Or equivalently: process layer by layer, rotating 4 elements at a time
+
+    Time: O(n^2) where n is the dimension
+    Space: O(1) - in-place rotation
+
+    Args:
+        matrix: n x n 2D list (modified in-place)
+
+    Returns:
+        The rotated matrix (same reference)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(matrix)
 
-    result = None
+    # Method: Transpose then reverse each row
 
-    # Process input
-    # ...
+    # Step 1: Transpose (swap matrix[i][j] with matrix[j][i])
+    for i in range(n):
+        for j in range(i + 1, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 
-    return result
+    # Step 2: Reverse each row
+    for i in range(n):
+        matrix[i].reverse()
+
+    return matrix
+
+
+def rotate90DegreesLayerMethod(matrix):
+    """
+    Alternative: Layer-by-layer rotation
+    Process each layer from outside to inside, rotating 4 elements at a time.
+    """
+    n = len(matrix)
+
+    # Process layer by layer
+    for layer in range(n // 2):
+        first = layer
+        last = n - 1 - layer
+
+        for i in range(first, last):
+            offset = i - first
+
+            # Save top
+            top = matrix[first][i]
+
+            # Left -> Top
+            matrix[first][i] = matrix[last - offset][first]
+
+            # Bottom -> Left
+            matrix[last - offset][first] = matrix[last][last - offset]
+
+            # Right -> Bottom
+            matrix[last][last - offset] = matrix[i][last]
+
+            # Top -> Right
+            matrix[i][last] = top
+
+    return matrix
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    matrix = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ]
+    print(rotate90Degrees(matrix))
+    # [[7, 4, 1], [8, 5, 2], [9, 6, 3]]`,
             go: `package main
 
 import "fmt"
 
-// Rotate90Degrees solves the Rotate 90 Degrees problem.
-// Time: O(n), Space: O(n)
-func Rotate90Degrees(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Rotate90Degrees rotates an n x n matrix 90 degrees clockwise in-place
+// Time: O(n^2), Space: O(1)
+func Rotate90Degrees(matrix [][]int) [][]int {
+    n := len(matrix)
 
-    var result interface{}
+    // Step 1: Transpose
+    for i := 0; i < n; i++ {
+        for j := i + 1; j < n; j++ {
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+        }
+    }
 
-    // Process input
-    // ...
+    // Step 2: Reverse each row
+    for i := 0; i < n; i++ {
+        for left, right := 0, n-1; left < right; left, right = left+1, right-1 {
+            matrix[i][left], matrix[i][right] = matrix[i][right], matrix[i][left]
+        }
+    }
 
-    return result
+    return matrix
+}
+
+// Rotate90DegreesLayerMethod uses layer-by-layer rotation
+func Rotate90DegreesLayerMethod(matrix [][]int) [][]int {
+    n := len(matrix)
+
+    for layer := 0; layer < n/2; layer++ {
+        first := layer
+        last := n - 1 - layer
+
+        for i := first; i < last; i++ {
+            offset := i - first
+
+            // Save top
+            top := matrix[first][i]
+
+            // Left -> Top
+            matrix[first][i] = matrix[last-offset][first]
+
+            // Bottom -> Left
+            matrix[last-offset][first] = matrix[last][last-offset]
+
+            // Right -> Bottom
+            matrix[last][last-offset] = matrix[i][last]
+
+            // Top -> Right
+            matrix[i][last] = top
+        }
+    }
+
+    return matrix
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    matrix := [][]int{
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9},
+    }
+    fmt.Println(Rotate90Degrees(matrix))
+    // [[7 4 1] [8 5 2] [9 6 3]]
 }`
         },
         similar: [

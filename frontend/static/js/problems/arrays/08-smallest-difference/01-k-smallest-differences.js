@@ -49,49 +49,129 @@
     }
         ],
         solutions: {
-            python: `def kSmallestDifferences(data):
+            python: `import heapq
+
+def kSmallestDifferences(arr1, arr2, k):
     """
-    K Smallest Differences
+    K Smallest Differences - Find K pairs with smallest absolute differences.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(k * log(min(k, m, n))) where m, n are array lengths
+    Space: O(min(k, m, n)) for the heap
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not arr1 or not arr2 or k <= 0:
+        return []
 
-    result = None
+    # Use a min-heap: (diff, idx1, idx2)
+    heap = []
+    result = []
 
-    # Process input
-    # ...
+    # Initialize with first element of arr1 paired with all of arr2
+    # or first element of arr2 paired with all of arr1 (whichever is smaller)
+    for i in range(min(len(arr1), k)):
+        heapq.heappush(heap, (abs(arr1[i] - arr2[0]), i, 0))
+
+    visited = set()
+
+    while heap and len(result) < k:
+        diff, i, j = heapq.heappop(heap)
+
+        if (i, j) in visited:
+            continue
+        visited.add((i, j))
+
+        result.append([arr1[i], arr2[j]])
+
+        # Add next pair from arr2 for same arr1 element
+        if j + 1 < len(arr2):
+            heapq.heappush(heap, (abs(arr1[i] - arr2[j + 1]), i, j + 1))
+
+        # Add next pair from arr1 for same arr2 element
+        if i + 1 < len(arr1) and (i + 1, j) not in visited:
+            heapq.heappush(heap, (abs(arr1[i + 1] - arr2[j]), i + 1, j))
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(kSmallestDifferences([1, 3, 5], [2, 4], 3))
+    # Output: [[1, 2], [3, 2], [3, 4]]
+    print(kSmallestDifferences([1, 7, 11], [2, 4, 6], 4))
+    # Output: [[1, 2], [7, 6], [1, 4], [1, 6]]`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// KSmallestDifferences solves the K Smallest Differences problem.
-// Time: O(n), Space: O(n)
-func KSmallestDifferences(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type PairHeap [][]int // [diff, i, j]
 
-    var result interface{}
+func (h PairHeap) Len() int           { return len(h) }
+func (h PairHeap) Less(i, j int) bool { return h[i][0] < h[j][0] }
+func (h PairHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *PairHeap) Push(x any)        { *h = append(*h, x.([]int)) }
+func (h *PairHeap) Pop() any {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    // Process input
-    // ...
+func abs(x int) int {
+    if x < 0 {
+        return -x
+    }
+    return x
+}
+
+// KSmallestDifferences finds K pairs with smallest absolute differences.
+// Time: O(k * log(min(k, m, n))), Space: O(min(k, m, n))
+func KSmallestDifferences(arr1, arr2 []int, k int) [][]int {
+    if len(arr1) == 0 || len(arr2) == 0 || k <= 0 {
+        return [][]int{}
+    }
+
+    h := &PairHeap{}
+    heap.Init(h)
+    result := [][]int{}
+    visited := make(map[[2]int]bool)
+
+    // Initialize heap
+    for i := 0; i < len(arr1) && i < k; i++ {
+        heap.Push(h, []int{abs(arr1[i] - arr2[0]), i, 0})
+    }
+
+    for h.Len() > 0 && len(result) < k {
+        item := heap.Pop(h).([]int)
+        i, j := item[1], item[2]
+
+        key := [2]int{i, j}
+        if visited[key] {
+            continue
+        }
+        visited[key] = true
+
+        result = append(result, []int{arr1[i], arr2[j]})
+
+        if j+1 < len(arr2) {
+            heap.Push(h, []int{abs(arr1[i] - arr2[j+1]), i, j + 1})
+        }
+        if i+1 < len(arr1) {
+            nextKey := [2]int{i + 1, j}
+            if !visited[nextKey] {
+                heap.Push(h, []int{abs(arr1[i+1] - arr2[j]), i + 1, j})
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(KSmallestDifferences([]int{1, 3, 5}, []int{2, 4}, 3))
+    fmt.Println(KSmallestDifferences([]int{1, 7, 11}, []int{2, 4, 6}, 4))
 }`
         },
         similar: [

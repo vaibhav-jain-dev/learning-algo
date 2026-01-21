@@ -43,45 +43,109 @@
     """
     Permutations with Duplicates
 
-    Time: O(n)
-    Space: O(n)
+    Generate all unique permutations of an array that may contain duplicates.
+    Key insight: Sort the array first, then skip duplicates during backtracking.
+
+    Time: O(n! * n) for generating permutations
+    Space: O(n) for recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data.get("nums", data) if isinstance(data, dict) else data
 
-    result = None
+    result = []
+    nums = sorted(nums)  # Sort to handle duplicates
+    used = [False] * len(nums)
 
-    # Process input
-    # ...
+    def backtrack(current):
+        if len(current) == len(nums):
+            result.append(current[:])
+            return
 
+        for i in range(len(nums)):
+            # Skip if already used
+            if used[i]:
+                continue
+
+            # Skip duplicates: if current element equals previous element
+            # and previous wasn't used in this branch, skip to avoid duplicates
+            if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+                continue
+
+            used[i] = True
+            current.append(nums[i])
+            backtrack(current)
+            current.pop()
+            used[i] = False
+
+    backtrack([])
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(permutationsWithDuplicates({"nums": [1, 1, 2]}))
+    # Output: [[1, 1, 2], [1, 2, 1], [2, 1, 1]]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// PermutationsWithDuplicates solves the Permutations with Duplicates problem.
-// Time: O(n), Space: O(n)
+// PermutationsWithDuplicates generates all unique permutations.
+// Sort array first, then skip duplicates during backtracking.
+// Time: O(n! * n), Space: O(n)
 func PermutationsWithDuplicates(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    var nums []int
+    switch v := data.(type) {
+    case map[string]interface{}:
+        arr := v["nums"].([]interface{})
+        nums = make([]int, len(arr))
+        for i, n := range arr {
+            nums[i] = int(n.(float64))
+        }
+    case []int:
+        nums = v
+    }
 
-    var result interface{}
+    sort.Ints(nums)
+    result := [][]int{}
+    used := make([]bool, len(nums))
 
-    // Process input
-    // ...
+    var backtrack func(current []int)
+    backtrack = func(current []int) {
+        if len(current) == len(nums) {
+            perm := make([]int, len(current))
+            copy(perm, current)
+            result = append(result, perm)
+            return
+        }
 
+        for i := 0; i < len(nums); i++ {
+            if used[i] {
+                continue
+            }
+
+            // Skip duplicates
+            if i > 0 && nums[i] == nums[i-1] && !used[i-1] {
+                continue
+            }
+
+            used[i] = true
+            current = append(current, nums[i])
+            backtrack(current)
+            current = current[:len(current)-1]
+            used[i] = false
+        }
+    }
+
+    backtrack([]int{})
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    nums := []interface{}{float64(1), float64(1), float64(2)}
+    fmt.Println(PermutationsWithDuplicates(map[string]interface{}{"nums": nums}))
+    // Output: [[1 1 2] [1 2 1] [2 1 1]]
 }`
         },
         similar: [

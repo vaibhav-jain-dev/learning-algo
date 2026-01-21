@@ -72,49 +72,243 @@
     }
         ],
         solutions: {
-            python: `def reverseLinkedListInGroupsOfK(data):
+            python: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverseLinkedListInGroupsOfK(head, k):
     """
     Reverse Linked List in Groups of K
+    If remaining nodes < k, leave them as is.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Maintain prev, curr, next pointers while reversing
+    if not head or k == 1:
+        return head
 
-    result = None
+    # Check if there are at least k nodes remaining
+    def hasKNodes(node, k):
+        count = 0
+        while node and count < k:
+            count += 1
+            node = node.next
+        return count == k
 
-    # Process input
-    # ...
+    # Reverse k nodes starting from head, return new head and next group start
+    def reverseKNodes(head, k):
+        prev = None
+        current = head
+        for _ in range(k):
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        # prev is new head, current is start of next group
+        # head is now the tail of reversed group
+        return prev, head, current
 
+    dummy = ListNode(0)
+    dummy.next = head
+    group_prev = dummy
+
+    while hasKNodes(group_prev.next, k):
+        # Reverse k nodes
+        new_head, new_tail, next_group = reverseKNodes(group_prev.next, k)
+
+        # Connect with previous part
+        group_prev.next = new_head
+
+        # Connect tail with next group
+        new_tail.next = next_group
+
+        # Move group_prev to the tail for next iteration
+        group_prev = new_tail
+
+    return dummy.next
+
+
+# Recursive approach
+def reverseKGroupRecursive(head, k):
+    """
+    Time: O(n), Space: O(n/k) for recursion stack
+    """
+    # Check if there are k nodes
+    current = head
+    count = 0
+    while current and count < k:
+        current = current.next
+        count += 1
+
+    if count < k:
+        return head  # Not enough nodes, return as is
+
+    # Reverse first k nodes
+    prev = None
+    current = head
+    for _ in range(k):
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+
+    # head is now tail of reversed part
+    # Recursively reverse rest and connect
+    head.next = reverseKGroupRecursive(current, k)
+
+    return prev
+
+
+# Helper functions
+def to_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    current = head
+    for val in arr[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def to_array(head):
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: [1,2,3,4,5], k=2 -> [2,1,4,3,5]
+    head = to_linked_list([1, 2, 3, 4, 5])
+    result = reverseLinkedListInGroupsOfK(head, 2)
+    print(to_array(result))  # [2, 1, 4, 3, 5]
+
+    # Test case 2: [1,2,3,4,5], k=3 -> [3,2,1,4,5]
+    head = to_linked_list([1, 2, 3, 4, 5])
+    result = reverseLinkedListInGroupsOfK(head, 3)
+    print(to_array(result))  # [3, 2, 1, 4, 5]`,
             go: `package main
 
 import "fmt"
 
-// ReverseLinkedListInGroupsOfK solves the Reverse Linked List in Groups of K problem.
-// Time: O(n), Space: O(n)
-func ReverseLinkedListInGroupsOfK(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Maintain prev, curr, next pointers while reversing
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
-    var result interface{}
+// ReverseLinkedListInGroupsOfK reverses nodes in groups of k.
+// Time: O(n), Space: O(1)
+func ReverseLinkedListInGroupsOfK(head *ListNode, k int) *ListNode {
+    if head == nil || k == 1 {
+        return head
+    }
 
-    // Process input
-    // ...
+    // Check if there are at least k nodes remaining
+    hasKNodes := func(node *ListNode, k int) bool {
+        count := 0
+        for node != nil && count < k {
+            count++
+            node = node.Next
+        }
+        return count == k
+    }
 
+    // Reverse k nodes starting from head
+    // Returns: newHead, newTail, nextGroupStart
+    reverseKNodes := func(head *ListNode, k int) (*ListNode, *ListNode, *ListNode) {
+        var prev *ListNode
+        current := head
+        for i := 0; i < k; i++ {
+            nextNode := current.Next
+            current.Next = prev
+            prev = current
+            current = nextNode
+        }
+        return prev, head, current
+    }
+
+    dummy := &ListNode{Val: 0, Next: head}
+    groupPrev := dummy
+
+    for hasKNodes(groupPrev.Next, k) {
+        // Reverse k nodes
+        newHead, newTail, nextGroup := reverseKNodes(groupPrev.Next, k)
+
+        // Connect with previous part
+        groupPrev.Next = newHead
+
+        // Connect tail with next group
+        newTail.Next = nextGroup
+
+        // Move groupPrev to the tail for next iteration
+        groupPrev = newTail
+    }
+
+    return dummy.Next
+}
+
+// ReverseKGroupRecursive uses recursion.
+// Time: O(n), Space: O(n/k)
+func ReverseKGroupRecursive(head *ListNode, k int) *ListNode {
+    // Check if there are k nodes
+    current := head
+    count := 0
+    for current != nil && count < k {
+        current = current.Next
+        count++
+    }
+
+    if count < k {
+        return head // Not enough nodes
+    }
+
+    // Reverse first k nodes
+    var prev *ListNode
+    current = head
+    for i := 0; i < k; i++ {
+        nextNode := current.Next
+        current.Next = prev
+        prev = current
+        current = nextNode
+    }
+
+    // head is now tail, connect with recursively reversed rest
+    head.Next = ReverseKGroupRecursive(current, k)
+
+    return prev
+}
+
+// Helper functions
+func toLinkedList(arr []int) *ListNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    head := &ListNode{Val: arr[0]}
+    current := head
+    for i := 1; i < len(arr); i++ {
+        current.Next = &ListNode{Val: arr[i]}
+        current = current.Next
+    }
+    return head
+}
+
+func toArray(head *ListNode) []int {
+    result := []int{}
+    for head != nil {
+        result = append(result, head.Val)
+        head = head.Next
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case: [1,2,3,4,5], k=2 -> [2,1,4,3,5]
+    head := toLinkedList([]int{1, 2, 3, 4, 5})
+    result := ReverseLinkedListInGroupsOfK(head, 2)
+    fmt.Println(toArray(result)) // [2 1 4 3 5]
 }`
         },
         similar: [

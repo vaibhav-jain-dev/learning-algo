@@ -53,49 +53,136 @@
     }
         ],
         solutions: {
-            python: `def criticalConnectionsInANetwork(data):
+            python: `from collections import defaultdict
+
+def criticalConnections(n, connections):
     """
-    Critical Connections in a Network
+    Critical Connections - Tarjan's Algorithm for Bridges
 
-    Time: O(n)
-    Space: O(n)
+    An edge is a bridge (critical connection) if removing it
+    disconnects the graph. Use DFS with discovery times and
+    low-link values to find bridges.
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list
+    graph = defaultdict(list)
+    for u, v in connections:
+        graph[u].append(v)
+        graph[v].append(u)
 
-    result = None
+    # Discovery time and low-link values
+    disc = [-1] * n
+    low = [-1] * n
+    bridges = []
+    time = [0]  # Use list to allow modification in nested function
 
-    # Process input
-    # ...
+    def dfs(node, parent):
+        disc[node] = low[node] = time[0]
+        time[0] += 1
 
-    return result
+        for neighbor in graph[node]:
+            if disc[neighbor] == -1:  # Not visited
+                dfs(neighbor, node)
+                low[node] = min(low[node], low[neighbor])
+
+                # If low[neighbor] > disc[node], edge is a bridge
+                if low[neighbor] > disc[node]:
+                    bridges.append([node, neighbor])
+
+            elif neighbor != parent:  # Back edge (not parent)
+                low[node] = min(low[node], disc[neighbor])
+
+    # Start DFS from node 0
+    dfs(0, -1)
+
+    return bridges
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1
+    n = 4
+    connections = [[0,1],[1,2],[2,0],[1,3]]
+    print(criticalConnections(n, connections))  # [[1, 3]]
+
+    # Test case 2
+    n = 2
+    connections = [[0,1]]
+    print(criticalConnections(n, connections))  # [[0, 1]]`,
             go: `package main
 
 import "fmt"
 
-// CriticalConnectionsInANetwork solves the Critical Connections in a Network problem.
-// Time: O(n), Space: O(n)
-func CriticalConnectionsInANetwork(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CriticalConnections finds all bridge edges in undirected graph
+// Uses Tarjan's algorithm
+// Time: O(V+E), Space: O(V+E)
+func CriticalConnections(n int, connections [][]int) [][]int {
+    // Build adjacency list
+    graph := make([][]int, n)
+    for i := range graph {
+        graph[i] = []int{}
+    }
 
-    var result interface{}
+    for _, conn := range connections {
+        u, v := conn[0], conn[1]
+        graph[u] = append(graph[u], v)
+        graph[v] = append(graph[v], u)
+    }
 
-    // Process input
-    // ...
+    disc := make([]int, n)  // Discovery time
+    low := make([]int, n)   // Low-link value
+    for i := range disc {
+        disc[i] = -1
+    }
 
-    return result
+    bridges := [][]int{}
+    time := 0
+
+    var dfs func(node, parent int)
+    dfs = func(node, parent int) {
+        disc[node] = time
+        low[node] = time
+        time++
+
+        for _, neighbor := range graph[node] {
+            if disc[neighbor] == -1 { // Not visited
+                dfs(neighbor, node)
+                low[node] = min(low[node], low[neighbor])
+
+                // Bridge condition
+                if low[neighbor] > disc[node] {
+                    bridges = append(bridges, []int{node, neighbor})
+                }
+            } else if neighbor != parent { // Back edge
+                low[node] = min(low[node], disc[neighbor])
+            }
+        }
+    }
+
+    dfs(0, -1)
+
+    return bridges
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1
+    n := 4
+    connections := [][]int{{0, 1}, {1, 2}, {2, 0}, {1, 3}}
+    fmt.Println(CriticalConnections(n, connections)) // [[1 3]]
+
+    // Test case 2
+    n = 2
+    connections = [][]int{{0, 1}}
+    fmt.Println(CriticalConnections(n, connections)) // [[0 1]]
 }`
         },
         similar: [

@@ -66,47 +66,101 @@
         solutions: {
             python: `def coinChangeIiExactCoins(data):
     """
-    Coin Change II - Exact Coins
+    Coin Change II - Exact Coins: Can we make 'amount' using exactly 'k' coins?
 
-    Time: O(n)
-    Space: O(n)
+    Key insight: 2D DP where dp[i][j] = True if we can make amount i using j coins.
+    For each coin, we can use it to transition from dp[i-coin][j-1] to dp[i][j].
+
+    Time: O(amount * k * len(coins))
+    Space: O(amount * k)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    amount = data["amount"]
+    coins = data["coins"]
+    k = data["k"]
 
-    result = None
+    if amount == 0:
+        return k == 0
 
-    # Process input
-    # ...
+    # dp[i][j] = True if we can make amount i using exactly j coins
+    dp = [[False] * (k + 1) for _ in range(amount + 1)]
+    dp[0][0] = True  # Can make 0 with 0 coins
 
-    return result
+    # For each coin (with unlimited use)
+    for coin in coins:
+        # Iterate amounts from coin to target
+        for a in range(coin, amount + 1):
+            # For each number of coins used
+            for num_coins in range(1, k + 1):
+                if dp[a - coin][num_coins - 1]:
+                    dp[a][num_coins] = True
+
+    return dp[amount][k]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(coinChangeIiExactCoins({"amount": 11, "coins": [1, 2, 5], "k": 3}))  # Expected: True (5+5+1)
+    print(coinChangeIiExactCoins({"amount": 10, "coins": [2, 5], "k": 2}))  # Expected: True (5+5)
+    print(coinChangeIiExactCoins({"amount": 7, "coins": [2, 4], "k": 3}))  # Expected: False`,
             go: `package main
 
 import "fmt"
 
-// CoinChangeIiExactCoins solves the Coin Change II - Exact Coins problem.
-// Time: O(n), Space: O(n)
-func CoinChangeIiExactCoins(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CoinChangeIiExactCoins checks if we can make 'amount' using exactly 'k' coins.
+// 2D DP where dp[i][j] = true if we can make amount i using j coins.
+// Time: O(amount * k * len(coins)), Space: O(amount * k)
+func CoinChangeIiExactCoins(data map[string]interface{}) bool {
+    amount := int(data["amount"].(float64))
+    coinsInterface := data["coins"].([]interface{})
+    coins := make([]int, len(coinsInterface))
+    for i, v := range coinsInterface {
+        coins[i] = int(v.(float64))
+    }
+    k := int(data["k"].(float64))
 
-    var result interface{}
+    if amount == 0 {
+        return k == 0
+    }
 
-    // Process input
-    // ...
+    // dp[i][j] = true if we can make amount i using exactly j coins
+    dp := make([][]bool, amount+1)
+    for i := range dp {
+        dp[i] = make([]bool, k+1)
+    }
+    dp[0][0] = true  // Can make 0 with 0 coins
 
-    return result
+    // For each coin (with unlimited use)
+    for _, coin := range coins {
+        // Iterate amounts from coin to target
+        for a := coin; a <= amount; a++ {
+            // For each number of coins used
+            for numCoins := 1; numCoins <= k; numCoins++ {
+                if dp[a-coin][numCoins-1] {
+                    dp[a][numCoins] = true
+                }
+            }
+        }
+    }
+
+    return dp[amount][k]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CoinChangeIiExactCoins(map[string]interface{}{
+        "amount": 11.0,
+        "coins":  []interface{}{1.0, 2.0, 5.0},
+        "k":      3.0,
+    }))  // Expected: true
+    fmt.Println(CoinChangeIiExactCoins(map[string]interface{}{
+        "amount": 10.0,
+        "coins":  []interface{}{2.0, 5.0},
+        "k":      2.0,
+    }))  // Expected: true
+    fmt.Println(CoinChangeIiExactCoins(map[string]interface{}{
+        "amount": 7.0,
+        "coins":  []interface{}{2.0, 4.0},
+        "k":      3.0,
+    }))  // Expected: false
 }`
         },
         similar: [

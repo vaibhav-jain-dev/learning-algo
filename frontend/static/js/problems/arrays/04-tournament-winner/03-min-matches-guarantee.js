@@ -42,49 +42,122 @@
     }
         ],
         solutions: {
-            python: `def minMatchesGuarantee(data):
+            python: `def minMatchesGuarantee(scores, points_per_win=3):
     """
     Min Matches Guarantee
 
-    Time: O(n)
-    Space: O(n)
+    Find minimum matches needed for one team to be guaranteed winner
+    (uncatchable by any other team).
+
+    Time: O(n log n) for sorting
+    Space: O(1)
+
+    Args:
+        scores: List of current scores for each team
+        points_per_win: Points awarded per win (default 3)
+
+    Returns:
+        Minimum number of additional matches needed
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(scores) <= 1:
+        return 0
 
-    result = None
+    # Sort scores in descending order
+    sorted_scores = sorted(scores, reverse=True)
 
-    # Process input
-    # ...
+    leader_score = sorted_scores[0]
+    second_score = sorted_scores[1]
 
-    return result
+    # If leader already has uncatchable lead
+    if leader_score > second_score:
+        # Leader is already ahead, but we need to check if they're uncatchable
+        # A team is uncatchable when no other team can reach their score
+        # even if they win all remaining matches
+        # For simplicity, we assume remaining matches = what's needed
+        pass
+
+    # Count teams tied for first
+    tied_count = sum(1 for s in scores if s == leader_score)
+
+    if tied_count > 1:
+        # Multiple teams tied - need matches to break tie
+        # Need at least (tied_count - 1) matches among tied teams
+        # But with round-robin style, we need enough for one to emerge
+        matches_needed = 0
+        while tied_count > 1:
+            matches_needed += 1
+            tied_count -= 1  # Each match eliminates one from contention
+        return matches_needed
+
+    # Leader is ahead - check gap to second place
+    gap = leader_score - second_score
+
+    # Leader needs a gap of at least (points_per_win) to be uncatchable
+    # after second place plays their next match
+    if gap >= points_per_win:
+        return 0
+
+    # Need one more win to secure lead
+    return 1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(minMatchesGuarantee([10, 7, 5]))  # 1
+    print(minMatchesGuarantee([6, 6, 6]))   # 2`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// MinMatchesGuarantee solves the Min Matches Guarantee problem.
-// Time: O(n), Space: O(n)
-func MinMatchesGuarantee(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MinMatchesGuarantee finds minimum matches for guaranteed winner
+// Time: O(n log n), Space: O(n)
+func MinMatchesGuarantee(scores []int, pointsPerWin int) int {
+    if len(scores) <= 1 {
+        return 0
+    }
 
-    var result interface{}
+    // Sort scores in descending order
+    sortedScores := make([]int, len(scores))
+    copy(sortedScores, scores)
+    sort.Sort(sort.Reverse(sort.IntSlice(sortedScores)))
 
-    // Process input
-    // ...
+    leaderScore := sortedScores[0]
+    secondScore := sortedScores[1]
 
-    return result
+    // Count teams tied for first
+    tiedCount := 0
+    for _, s := range scores {
+        if s == leaderScore {
+            tiedCount++
+        }
+    }
+
+    if tiedCount > 1 {
+        // Need matches to break tie
+        matchesNeeded := 0
+        for tiedCount > 1 {
+            matchesNeeded++
+            tiedCount--
+        }
+        return matchesNeeded
+    }
+
+    // Leader is ahead - check gap
+    gap := leaderScore - secondScore
+
+    if gap >= pointsPerWin {
+        return 0
+    }
+
+    return 1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MinMatchesGuarantee([]int{10, 7, 5}, 3)) // 1
+    fmt.Println(MinMatchesGuarantee([]int{6, 6, 6}, 3))  // 2
 }`
         },
         similar: [

@@ -61,49 +61,116 @@
     }
         ],
         solutions: {
-            python: `def cloneGraph(data):
+            python: `class Node:
+    def __init__(self, val=0, neighbors=None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+def cloneGraph(node):
     """
-    Clone Graph
+    Clone Graph - Deep copy using DFS with a hashmap to track cloned nodes.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(N + E) where N is nodes, E is edges
+    Space: O(N) for the hashmap and recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: DFS explores depth-first, ideal for paths and connectivity
+    if not node:
+        return None
 
-    result = None
+    # Dictionary to map original node -> cloned node
+    cloned = {}
 
-    # Process input
-    # ...
+    def dfs(original):
+        # If already cloned, return the clone
+        if original in cloned:
+            return cloned[original]
 
-    return result
+        # Create a clone of the current node
+        copy = Node(original.val)
+        cloned[original] = copy
+
+        # Recursively clone all neighbors
+        for neighbor in original.neighbors:
+            copy.neighbors.append(dfs(neighbor))
+
+        return copy
+
+    return dfs(node)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Create graph: 1 -- 2
+    #               |    |
+    #               4 -- 3
+    node1 = Node(1)
+    node2 = Node(2)
+    node3 = Node(3)
+    node4 = Node(4)
+    node1.neighbors = [node2, node4]
+    node2.neighbors = [node1, node3]
+    node3.neighbors = [node2, node4]
+    node4.neighbors = [node1, node3]
+
+    cloned = cloneGraph(node1)
+    print(cloned.val)  # Output: 1
+    print([n.val for n in cloned.neighbors])  # Output: [2, 4]`,
             go: `package main
 
 import "fmt"
 
-// CloneGraph solves the Clone Graph problem.
-// Time: O(n), Space: O(n)
-func CloneGraph(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: DFS explores depth-first, ideal for paths and connectivity
+// Node represents a graph node
+type Node struct {
+    Val       int
+    Neighbors []*Node
+}
 
-    var result interface{}
+// cloneGraph creates a deep copy of the graph using DFS.
+// Time: O(N + E), Space: O(N)
+func cloneGraph(node *Node) *Node {
+    if node == nil {
+        return nil
+    }
 
-    // Process input
-    // ...
+    // Map original node to cloned node
+    cloned := make(map[*Node]*Node)
 
-    return result
+    var dfs func(original *Node) *Node
+    dfs = func(original *Node) *Node {
+        // If already cloned, return the clone
+        if copy, exists := cloned[original]; exists {
+            return copy
+        }
+
+        // Create a clone of the current node
+        copy := &Node{Val: original.Val}
+        cloned[original] = copy
+
+        // Recursively clone all neighbors
+        for _, neighbor := range original.Neighbors {
+            copy.Neighbors = append(copy.Neighbors, dfs(neighbor))
+        }
+
+        return copy
+    }
+
+    return dfs(node)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Create graph: 1 -- 2
+    //               |    |
+    //               4 -- 3
+    node1 := &Node{Val: 1}
+    node2 := &Node{Val: 2}
+    node3 := &Node{Val: 3}
+    node4 := &Node{Val: 4}
+    node1.Neighbors = []*Node{node2, node4}
+    node2.Neighbors = []*Node{node1, node3}
+    node3.Neighbors = []*Node{node2, node4}
+    node4.Neighbors = []*Node{node1, node3}
+
+    cloned := cloneGraph(node1)
+    fmt.Println(cloned.Val) // Output: 1
 }`
         },
         similar: [

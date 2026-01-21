@@ -76,49 +76,122 @@
     }
         ],
         solutions: {
-            python: `def redundantConnection(data):
+            python: `def findRedundantConnection(edges):
     """
-    Redundant Connection
+    Redundant Connection - Union-Find to detect cycle-causing edge.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(N * alpha(N)) where alpha is inverse Ackermann (nearly O(N))
+    Space: O(N) for parent and rank arrays
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(edges)
+    parent = list(range(n + 1))  # Nodes are 1-indexed
+    rank = [0] * (n + 1)
 
-    result = None
+    def find(x):
+        """Find with path compression"""
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
 
-    # Process input
-    # ...
+    def union(x, y):
+        """Union by rank. Returns False if x and y already connected (cycle)"""
+        px, py = find(x), find(y)
 
-    return result
+        if px == py:
+            return False  # Cycle detected!
+
+        # Union by rank
+        if rank[px] < rank[py]:
+            parent[px] = py
+        elif rank[px] > rank[py]:
+            parent[py] = px
+        else:
+            parent[py] = px
+            rank[px] += 1
+
+        return True
+
+    # Process edges - first edge that creates a cycle is redundant
+    for u, v in edges:
+        if not union(u, v):
+            return [u, v]
+
+    return []
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Example 1
+    edges1 = [[1, 2], [1, 3], [2, 3]]
+    print(findRedundantConnection(edges1))  # Output: [2, 3]
+
+    # Example 2
+    edges2 = [[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]]
+    print(findRedundantConnection(edges2))  # Output: [1, 4]`,
             go: `package main
 
 import "fmt"
 
-// RedundantConnection solves the Redundant Connection problem.
-// Time: O(n), Space: O(n)
-func RedundantConnection(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// findRedundantConnection uses Union-Find to detect the cycle-causing edge.
+// Time: O(N * alpha(N)), Space: O(N)
+func findRedundantConnection(edges [][]int) []int {
+    n := len(edges)
+    parent := make([]int, n+1)
+    rank := make([]int, n+1)
 
-    var result interface{}
+    // Initialize: each node is its own parent
+    for i := range parent {
+        parent[i] = i
+    }
 
-    // Process input
-    // ...
+    // Find with path compression
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
 
-    return result
+    // Union by rank. Returns false if cycle detected
+    union := func(x, y int) bool {
+        px, py := find(x), find(y)
+
+        if px == py {
+            return false // Cycle detected!
+        }
+
+        // Union by rank
+        if rank[px] < rank[py] {
+            parent[px] = py
+        } else if rank[px] > rank[py] {
+            parent[py] = px
+        } else {
+            parent[py] = px
+            rank[px]++
+        }
+
+        return true
+    }
+
+    // Process edges - first edge that creates a cycle is redundant
+    for _, edge := range edges {
+        if !union(edge[0], edge[1]) {
+            return edge
+        }
+    }
+
+    return []int{}
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Example 1
+    edges1 := [][]int{{1, 2}, {1, 3}, {2, 3}}
+    fmt.Println(findRedundantConnection(edges1)) // Output: [2 3]
+
+    // Example 2
+    edges2 := [][]int{{1, 2}, {2, 3}, {3, 4}, {1, 4}, {1, 5}}
+    fmt.Println(findRedundantConnection(edges2)) // Output: [1 4]
 }`
         },
         similar: [

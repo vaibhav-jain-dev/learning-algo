@@ -49,49 +49,110 @@
     }
         ],
         solutions: {
-            python: `def minimumRemovalsMonotonic(data):
+            python: `import bisect
+
+def minimumRemovalsMonotonic(array):
     """
-    Minimum Removals Monotonic
+    Minimum Removals Monotonic - Find minimum removals to make array monotonic.
+    Equivalent to: len(array) - Longest Increasing/Decreasing Subsequence
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n log n) - Using binary search for LIS
+    Space: O(n) - Store tails array
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(array) <= 1:
+        return 0
 
-    result = None
+    def longestNonDecreasingSubseq(arr):
+        # Find LIS (non-decreasing) using patience sort with binary search
+        tails = []
+        for num in arr:
+            # Use bisect_right for non-decreasing (allows equal elements)
+            pos = bisect.bisect_right(tails, num)
+            if pos == len(tails):
+                tails.append(num)
+            else:
+                tails[pos] = num
+        return len(tails)
 
-    # Process input
-    # ...
+    def longestNonIncreasingSubseq(arr):
+        # Reverse and negate to convert to LIS problem
+        return longestNonDecreasingSubseq([-x for x in arr])
 
-    return result
+    # Find longest monotonic subsequence (either direction)
+    lisLen = longestNonDecreasingSubseq(array)
+    ldsLen = longestNonIncreasingSubseq(array)
+
+    longestMonotonic = max(lisLen, ldsLen)
+    return len(array) - longestMonotonic
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(minimumRemovalsMonotonic([1, 3, 2, 4, 5, 3]))
+    # Output: 2 (remove to get [1, 2, 4, 5])
+    print(minimumRemovalsMonotonic([5, 4, 3, 2, 1]))
+    # Output: 0 (already monotonic)
+    print(minimumRemovalsMonotonic([1, 2, 1, 2, 1]))
+    # Output: 2 (remove to get [1, 1, 1] or [1, 2, 2])`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// MinimumRemovalsMonotonic solves the Minimum Removals Monotonic problem.
-// Time: O(n), Space: O(n)
-func MinimumRemovalsMonotonic(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MinimumRemovalsMonotonic finds minimum removals to make array monotonic.
+// Time: O(n log n), Space: O(n)
+func MinimumRemovalsMonotonic(array []int) int {
+    if len(array) <= 1 {
+        return 0
+    }
 
-    var result interface{}
+    // Find longest non-decreasing subsequence using binary search
+    longestNonDecreasing := func(arr []int) int {
+        tails := []int{}
+        for _, num := range arr {
+            // Use sort.SearchInts for lower bound (strictly increasing)
+            // For non-decreasing, find position where num would be inserted
+            pos := sort.Search(len(tails), func(i int) bool {
+                return tails[i] > num
+            })
+            if pos == len(tails) {
+                tails = append(tails, num)
+            } else {
+                tails[pos] = num
+            }
+        }
+        return len(tails)
+    }
 
-    // Process input
-    // ...
+    // Find longest non-increasing subsequence
+    longestNonIncreasing := func(arr []int) int {
+        reversed := make([]int, len(arr))
+        for i, v := range arr {
+            reversed[i] = -v
+        }
+        return longestNonDecreasing(reversed)
+    }
 
-    return result
+    lisLen := longestNonDecreasing(array)
+    ldsLen := longestNonIncreasing(array)
+
+    longestMonotonic := lisLen
+    if ldsLen > longestMonotonic {
+        longestMonotonic = ldsLen
+    }
+
+    return len(array) - longestMonotonic
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MinimumRemovalsMonotonic([]int{1, 3, 2, 4, 5, 3}))
+    // Output: 2
+    fmt.Println(MinimumRemovalsMonotonic([]int{5, 4, 3, 2, 1}))
+    // Output: 0
+    fmt.Println(MinimumRemovalsMonotonic([]int{1, 2, 1, 2, 1}))
+    // Output: 2
 }`
         },
         similar: [

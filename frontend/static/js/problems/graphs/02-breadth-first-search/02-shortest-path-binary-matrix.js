@@ -90,49 +90,119 @@
     }
         ],
         solutions: {
-            python: `def shortestPathInBinaryMatrix(data):
+            python: `from collections import deque
+
+def shortestPathBinaryMatrix(grid):
     """
-    Shortest Path in Binary Matrix
+    Shortest Path in Binary Matrix - BFS with 8-directional movement.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(N^2) where N is the grid dimension
+    Space: O(N^2) for the queue in worst case
     """
-    # TODO: Implement solution
-    # Key insight: BFS explores breadth-first, ideal for shortest paths
+    n = len(grid)
 
-    result = None
+    # Check if start or end is blocked
+    if grid[0][0] != 0 or grid[n-1][n-1] != 0:
+        return -1
 
-    # Process input
-    # ...
+    # 8 directions: horizontal, vertical, and diagonal
+    directions = [
+        (-1, -1), (-1, 0), (-1, 1),
+        (0, -1),           (0, 1),
+        (1, -1),  (1, 0),  (1, 1)
+    ]
 
-    return result
+    # BFS queue: (row, col, distance)
+    queue = deque([(0, 0, 1)])
+    grid[0][0] = 1  # Mark as visited
+
+    while queue:
+        row, col, dist = queue.popleft()
+
+        # Check if reached destination
+        if row == n - 1 and col == n - 1:
+            return dist
+
+        # Explore all 8 directions
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+
+            # Check bounds and if cell is clear
+            if 0 <= new_row < n and 0 <= new_col < n and grid[new_row][new_col] == 0:
+                grid[new_row][new_col] = 1  # Mark as visited
+                queue.append((new_row, new_col, dist + 1))
+
+    return -1  # No path found
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid1 = [[0, 1], [1, 0]]
+    print(shortestPathBinaryMatrix(grid1))  # Output: 2
+
+    grid2 = [[0, 0, 0], [1, 1, 0], [1, 1, 0]]
+    print(shortestPathBinaryMatrix(grid2))  # Output: 4
+
+    grid3 = [[1, 0, 0], [1, 1, 0], [1, 1, 0]]
+    print(shortestPathBinaryMatrix(grid3))  # Output: -1`,
             go: `package main
 
 import "fmt"
 
-// ShortestPathInBinaryMatrix solves the Shortest Path in Binary Matrix problem.
-// Time: O(n), Space: O(n)
-func ShortestPathInBinaryMatrix(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: BFS explores breadth-first, ideal for shortest paths
+// shortestPathBinaryMatrix finds the shortest clear path using BFS.
+// Time: O(N^2), Space: O(N^2)
+func shortestPathBinaryMatrix(grid [][]int) int {
+    n := len(grid)
 
-    var result interface{}
+    // Check if start or end is blocked
+    if grid[0][0] != 0 || grid[n-1][n-1] != 0 {
+        return -1
+    }
 
-    // Process input
-    // ...
+    // 8 directions: horizontal, vertical, and diagonal
+    directions := [][2]int{
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1},           {0, 1},
+        {1, -1},  {1, 0},  {1, 1},
+    }
 
-    return result
+    // BFS queue
+    type cell struct {
+        row, col, dist int
+    }
+    queue := []cell{{0, 0, 1}}
+    grid[0][0] = 1 // Mark as visited
+
+    for len(queue) > 0 {
+        curr := queue[0]
+        queue = queue[1:]
+
+        // Check if reached destination
+        if curr.row == n-1 && curr.col == n-1 {
+            return curr.dist
+        }
+
+        // Explore all 8 directions
+        for _, dir := range directions {
+            newRow, newCol := curr.row+dir[0], curr.col+dir[1]
+
+            // Check bounds and if cell is clear
+            if newRow >= 0 && newRow < n && newCol >= 0 && newCol < n && grid[newRow][newCol] == 0 {
+                grid[newRow][newCol] = 1 // Mark as visited
+                queue = append(queue, cell{newRow, newCol, curr.dist + 1})
+            }
+        }
+    }
+
+    return -1 // No path found
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid1 := [][]int{{0, 1}, {1, 0}}
+    fmt.Println(shortestPathBinaryMatrix(grid1)) // Output: 2
+
+    grid2 := [][]int{{0, 0, 0}, {1, 1, 0}, {1, 1, 0}}
+    fmt.Println(shortestPathBinaryMatrix(grid2)) // Output: 4
 }`
         },
         similar: [

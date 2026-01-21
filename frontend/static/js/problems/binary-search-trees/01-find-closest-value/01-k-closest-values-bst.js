@@ -64,49 +64,185 @@
     }
         ],
         solutions: {
-            python: `def kClosestValuesInBst(data):
+            python: `import heapq
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def kClosestValuesInBst(data):
     """
     K Closest Values in BST
 
-    Time: O(n)
-    Space: O(n)
+    Approach: Use a max-heap of size k to track k closest values.
+    We use negative differences for max-heap behavior in Python's min-heap.
+
+    Time: O(n log k)
+    Space: O(k + h) where h is tree height
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    target = data.get("target", 0)
+    k = data.get("k", 1)
 
-    result = None
+    root = buildTree(tree)
+    if not root:
+        return []
 
-    # Process input
-    # ...
+    # Max-heap (use negative diff for max-heap behavior)
+    # Store (-diff, value)
+    max_heap = []
 
-    return result
+    def inorder(node):
+        if not node:
+            return
+        inorder(node.left)
+
+        diff = abs(node.val - target)
+        if len(max_heap) < k:
+            heapq.heappush(max_heap, (-diff, node.val))
+        elif diff < -max_heap[0][0]:
+            heapq.heapreplace(max_heap, (-diff, node.val))
+
+        inorder(node.right)
+
+    inorder(root)
+
+    return [val for _, val in max_heap]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(kClosestValuesInBst({"tree": [4, 2, 5, 1, 3], "target": 3.7, "k": 2}))`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+    "math"
+)
 
-// KClosestValuesInBst solves the K Closest Values in BST problem.
-// Time: O(n), Space: O(n)
-func KClosestValuesInBst(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+// MaxHeap for tracking k closest values
+type Item struct {
+    diff  float64
+    value int
+}
 
-    // Process input
-    // ...
+type MaxHeap []Item
 
+func (h MaxHeap) Len() int           { return len(h) }
+func (h MaxHeap) Less(i, j int) bool { return h[i].diff > h[j].diff } // Max heap
+func (h MaxHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *MaxHeap) Push(x interface{}) { *h = append(*h, x.(Item)) }
+func (h *MaxHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
+
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    if arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
+
+func KClosestValuesInBst(data map[string]interface{}) []int {
+    treeArr := data["tree"].([]interface{})
+    target := data["target"].(float64)
+    k := int(data["k"].(float64))
+
+    root := buildTree(treeArr)
+    if root == nil {
+        return []int{}
+    }
+
+    h := &MaxHeap{}
+    heap.Init(h)
+
+    var inorder func(node *TreeNode)
+    inorder = func(node *TreeNode) {
+        if node == nil {
+            return
+        }
+        inorder(node.Left)
+
+        diff := math.Abs(float64(node.Val) - target)
+        if h.Len() < k {
+            heap.Push(h, Item{diff: diff, value: node.Val})
+        } else if diff < (*h)[0].diff {
+            heap.Pop(h)
+            heap.Push(h, Item{diff: diff, value: node.Val})
+        }
+
+        inorder(node.Right)
+    }
+
+    inorder(root)
+
+    result := make([]int, h.Len())
+    for i := 0; i < len(result); i++ {
+        result[i] = (*h)[i].value
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree":   []interface{}{4.0, 2.0, 5.0, 1.0, 3.0},
+        "target": 3.7,
+        "k":      2.0,
+    }
+    fmt.Println(KClosestValuesInBst(data))
 }`
         },
         similar: [

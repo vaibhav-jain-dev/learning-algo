@@ -59,49 +59,195 @@
     }
         ],
         solutions: {
-            python: `def surroundedRegions(data):
+            python: `def solve(board):
     """
     Surrounded Regions
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(M * N) - visit each cell at most twice
+    Space: O(M * N) - recursion stack in worst case
+
+    Approach:
+    1. Mark all 'O's connected to border as safe (use temporary marker 'T')
+    2. Convert remaining 'O's to 'X' (these are surrounded)
+    3. Convert 'T' back to 'O' (these touch border)
+
+    Key insight: Instead of finding surrounded regions,
+    find regions that are NOT surrounded (touch border)
     """
-    # TODO: Implement solution
-    # Key insight: Connected components can be explored using DFS/BFS
+    if not board or not board[0]:
+        return board
 
-    result = None
+    m, n = len(board), len(board[0])
 
-    # Process input
-    # ...
+    def dfs(i, j):
+        """Mark 'O' cells connected to border as 'T' (temporary safe)"""
+        if i < 0 or i >= m or j < 0 or j >= n or board[i][j] != 'O':
+            return
 
-    return result
+        board[i][j] = 'T'  # Mark as safe
+
+        # Explore all 4 directions
+        dfs(i + 1, j)
+        dfs(i - 1, j)
+        dfs(i, j + 1)
+        dfs(i, j - 1)
+
+    # Step 1: Mark all 'O's connected to border
+    # Check first and last column
+    for i in range(m):
+        dfs(i, 0)
+        dfs(i, n - 1)
+
+    # Check first and last row
+    for j in range(n):
+        dfs(0, j)
+        dfs(m - 1, j)
+
+    # Step 2 & 3: Process the board
+    for i in range(m):
+        for j in range(n):
+            if board[i][j] == 'O':
+                board[i][j] = 'X'  # Surrounded, capture it
+            elif board[i][j] == 'T':
+                board[i][j] = 'O'  # Restore safe cells
+
+    return board
+
+
+def surroundedRegions(data):
+    """Process input data"""
+    board = data.get('board', [])
+    # Make a copy since we modify in place
+    board_copy = [row[:] for row in board]
+    return solve(board_copy)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    board = [
+        ["X","X","X","X"],
+        ["X","O","O","X"],
+        ["X","X","O","X"],
+        ["X","O","X","X"]
+    ]
+    result = solve(board)
+    for row in result:
+        print(row)
+    # Expected:
+    # ['X','X','X','X']
+    # ['X','X','X','X']
+    # ['X','X','X','X']
+    # ['X','O','X','X']`,
             go: `package main
 
 import "fmt"
 
-// SurroundedRegions solves the Surrounded Regions problem.
-// Time: O(n), Space: O(n)
-func SurroundedRegions(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Connected components can be explored using DFS/BFS
+// Solve captures surrounded regions in the board
+// Time: O(M * N), Space: O(M * N)
+func Solve(board [][]byte) {
+    if len(board) == 0 || len(board[0]) == 0 {
+        return
+    }
 
-    var result interface{}
+    m, n := len(board), len(board[0])
 
-    // Process input
-    // ...
+    // DFS to mark 'O' cells connected to border as 'T'
+    var dfs func(i, j int)
+    dfs = func(i, j int) {
+        if i < 0 || i >= m || j < 0 || j >= n || board[i][j] != 'O' {
+            return
+        }
 
-    return result
+        board[i][j] = 'T' // Mark as safe
+
+        dfs(i+1, j)
+        dfs(i-1, j)
+        dfs(i, j+1)
+        dfs(i, j-1)
+    }
+
+    // Mark all 'O's connected to border
+    for i := 0; i < m; i++ {
+        dfs(i, 0)
+        dfs(i, n-1)
+    }
+    for j := 0; j < n; j++ {
+        dfs(0, j)
+        dfs(m-1, j)
+    }
+
+    // Process the board
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if board[i][j] == 'O' {
+                board[i][j] = 'X' // Capture surrounded
+            } else if board[i][j] == 'T' {
+                board[i][j] = 'O' // Restore safe
+            }
+        }
+    }
+}
+
+// SolveStrings works with string slices for easier testing
+func SolveStrings(board [][]string) [][]string {
+    if len(board) == 0 || len(board[0]) == 0 {
+        return board
+    }
+
+    m, n := len(board), len(board[0])
+
+    var dfs func(i, j int)
+    dfs = func(i, j int) {
+        if i < 0 || i >= m || j < 0 || j >= n || board[i][j] != "O" {
+            return
+        }
+
+        board[i][j] = "T"
+        dfs(i+1, j)
+        dfs(i-1, j)
+        dfs(i, j+1)
+        dfs(i, j-1)
+    }
+
+    for i := 0; i < m; i++ {
+        dfs(i, 0)
+        dfs(i, n-1)
+    }
+    for j := 0; j < n; j++ {
+        dfs(0, j)
+        dfs(m-1, j)
+    }
+
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if board[i][j] == "O" {
+                board[i][j] = "X"
+            } else if board[i][j] == "T" {
+                board[i][j] = "O"
+            }
+        }
+    }
+
+    return board
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    board := [][]string{
+        {"X", "X", "X", "X"},
+        {"X", "O", "O", "X"},
+        {"X", "X", "O", "X"},
+        {"X", "O", "X", "X"},
+    }
+
+    result := SolveStrings(board)
+    for _, row := range result {
+        fmt.Println(row)
+    }
+    // Expected:
+    // [X X X X]
+    // [X X X X]
+    // [X X X X]
+    // [X O X X]
 }`
         },
         similar: [

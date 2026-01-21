@@ -67,49 +67,178 @@
     }
         ],
         solutions: {
-            python: `def cloneGraph(data):
+            python: `from collections import deque
+
+class Node:
+    def __init__(self, val=0, neighbors=None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+def cloneGraph(node):
     """
-    Clone Graph
+    Clone Graph using BFS
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(N + E) where N is nodes and E is edges
+    Space: O(N) for the hash map and queue
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not node:
+        return None
 
-    result = None
+    # Map from original node to cloned node
+    visited = {}
 
-    # Process input
-    # ...
+    # Start BFS from the given node
+    queue = deque([node])
+    visited[node] = Node(node.val)
 
-    return result
+    while queue:
+        current = queue.popleft()
+
+        for neighbor in current.neighbors:
+            if neighbor not in visited:
+                # Clone the neighbor
+                visited[neighbor] = Node(neighbor.val)
+                queue.append(neighbor)
+
+            # Add the cloned neighbor to current clone's neighbors
+            visited[current].neighbors.append(visited[neighbor])
+
+    return visited[node]
+
+
+def cloneGraphDFS(node):
+    """
+    Clone Graph using DFS (recursive)
+
+    Time: O(N + E)
+    Space: O(N)
+    """
+    if not node:
+        return None
+
+    visited = {}
+
+    def dfs(original):
+        if original in visited:
+            return visited[original]
+
+        # Create clone for current node
+        clone = Node(original.val)
+        visited[original] = clone
+
+        # Recursively clone all neighbors
+        for neighbor in original.neighbors:
+            clone.neighbors.append(dfs(neighbor))
+
+        return clone
+
+    return dfs(node)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Create graph: 1 -- 2
+    #               |    |
+    #               4 -- 3
+    n1, n2, n3, n4 = Node(1), Node(2), Node(3), Node(4)
+    n1.neighbors = [n2, n4]
+    n2.neighbors = [n1, n3]
+    n3.neighbors = [n2, n4]
+    n4.neighbors = [n1, n3]
+
+    clone = cloneGraph(n1)
+    print(f"Original node 1 val: {n1.val}")
+    print(f"Cloned node 1 val: {clone.val}")
+    print(f"Are they same object? {clone is n1}")  # False`,
             go: `package main
 
 import "fmt"
 
-// CloneGraph solves the Clone Graph problem.
-// Time: O(n), Space: O(n)
-func CloneGraph(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type Node struct {
+    Val       int
+    Neighbors []*Node
+}
 
-    var result interface{}
+// CloneGraph clones the graph using BFS.
+// Time: O(N + E), Space: O(N)
+func CloneGraph(node *Node) *Node {
+    if node == nil {
+        return nil
+    }
 
-    // Process input
-    // ...
+    // Map from original node to cloned node
+    visited := make(map[*Node]*Node)
 
-    return result
+    // Start BFS from the given node
+    queue := []*Node{node}
+    visited[node] = &Node{Val: node.Val}
+
+    for len(queue) > 0 {
+        current := queue[0]
+        queue = queue[1:]
+
+        for _, neighbor := range current.Neighbors {
+            if _, exists := visited[neighbor]; !exists {
+                // Clone the neighbor
+                visited[neighbor] = &Node{Val: neighbor.Val}
+                queue = append(queue, neighbor)
+            }
+
+            // Add the cloned neighbor to current clone's neighbors
+            visited[current].Neighbors = append(
+                visited[current].Neighbors,
+                visited[neighbor],
+            )
+        }
+    }
+
+    return visited[node]
+}
+
+// CloneGraphDFS clones the graph using DFS (recursive).
+// Time: O(N + E), Space: O(N)
+func CloneGraphDFS(node *Node) *Node {
+    if node == nil {
+        return nil
+    }
+
+    visited := make(map[*Node]*Node)
+
+    var dfs func(*Node) *Node
+    dfs = func(original *Node) *Node {
+        if clone, exists := visited[original]; exists {
+            return clone
+        }
+
+        // Create clone for current node
+        clone := &Node{Val: original.Val}
+        visited[original] = clone
+
+        // Recursively clone all neighbors
+        for _, neighbor := range original.Neighbors {
+            clone.Neighbors = append(clone.Neighbors, dfs(neighbor))
+        }
+
+        return clone
+    }
+
+    return dfs(node)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Create graph: 1 -- 2
+    //               |    |
+    //               4 -- 3
+    n1, n2, n3, n4 := &Node{Val: 1}, &Node{Val: 2}, &Node{Val: 3}, &Node{Val: 4}
+    n1.Neighbors = []*Node{n2, n4}
+    n2.Neighbors = []*Node{n1, n3}
+    n3.Neighbors = []*Node{n2, n4}
+    n4.Neighbors = []*Node{n1, n3}
+
+    clone := CloneGraph(n1)
+    fmt.Printf("Original node 1 val: %d\\n", n1.Val)
+    fmt.Printf("Cloned node 1 val: %d\\n", clone.Val)
+    fmt.Printf("Are they same object? %v\\n", clone == n1) // false
 }`
         },
         similar: [

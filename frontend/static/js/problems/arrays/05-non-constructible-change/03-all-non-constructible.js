@@ -42,49 +42,82 @@
     }
         ],
         solutions: {
-            python: `def allNonConstructible(data):
+            python: `def allNonConstructible(coins, limit):
     """
     All Non Constructible
 
-    Time: O(n)
-    Space: O(n)
+    Find all values from 1 to limit that cannot be constructed from coins.
+    Uses dynamic programming to track all constructible sums.
+
+    Time: O(n * limit) where n is number of coins
+    Space: O(limit) for the DP set
+
+    Args:
+        coins: List of coin values (can use each coin once)
+        limit: Upper bound to check
+
+    Returns:
+        List of values that cannot be constructed
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Use DP: constructible[i] = True if sum i can be made
+    constructible = [False] * (limit + 1)
+    constructible[0] = True  # Base case: sum of 0 is always possible
 
-    result = None
+    # For each coin, update what sums are possible
+    for coin in coins:
+        # Traverse backwards to avoid using same coin twice
+        for s in range(limit, coin - 1, -1):
+            if constructible[s - coin]:
+                constructible[s] = True
 
-    # Process input
-    # ...
+    # Collect all non-constructible values
+    result = []
+    for value in range(1, limit + 1):
+        if not constructible[value]:
+            result.append(value)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(allNonConstructible([1, 2, 5], 10))    # []
+    print(allNonConstructible([1, 5, 10], 20))   # [2, 3, 4, 7, 8, 9, 12, 13, 14, 17, 18, 19]`,
             go: `package main
 
 import "fmt"
 
-// AllNonConstructible solves the All Non Constructible problem.
-// Time: O(n), Space: O(n)
-func AllNonConstructible(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// AllNonConstructible finds all values up to limit that can't be constructed
+// Time: O(n * limit), Space: O(limit)
+func AllNonConstructible(coins []int, limit int) []int {
+    // DP: constructible[i] = true if sum i can be made
+    constructible := make([]bool, limit+1)
+    constructible[0] = true
 
-    var result interface{}
+    // For each coin, update possible sums
+    for _, coin := range coins {
+        // Traverse backwards to avoid using same coin twice
+        for s := limit; s >= coin; s-- {
+            if constructible[s-coin] {
+                constructible[s] = true
+            }
+        }
+    }
 
-    // Process input
-    // ...
+    // Collect non-constructible values
+    var result []int
+    for value := 1; value <= limit; value++ {
+        if !constructible[value] {
+            result = append(result, value)
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(AllNonConstructible([]int{1, 2, 5}, 10))   // []
+    fmt.Println(AllNonConstructible([]int{1, 5, 10}, 20))  // [2,3,4,7,8,9,12,13,14,17,18,19]
 }`
         },
         similar: [

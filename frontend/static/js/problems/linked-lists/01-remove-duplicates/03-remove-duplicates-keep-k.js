@@ -75,49 +75,165 @@
     }
         ],
         solutions: {
-            python: `def removeDuplicatesKeepingAtMostKOccurrences(data):
+            python: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def removeDuplicatesKeepingAtMostKOccurrences(head, k):
     """
-    Remove Duplicates Keeping At Most K Occurrences
+    Remove Duplicates Keeping At Most K Occurrences (from sorted list)
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not head or k <= 0:
+        return None if k <= 0 else head
 
-    result = None
+    dummy = ListNode(0)
+    dummy.next = head
+    prev = dummy
 
-    # Process input
-    # ...
+    while head:
+        # Count occurrences of current value
+        count = 1
+        current = head
 
+        # Move through all nodes with same value
+        while current.next and current.next.val == head.val:
+            count += 1
+            current = current.next
+
+        if count <= k:
+            # Keep all nodes, move prev to last node of this value
+            prev = current
+        else:
+            # Keep only k nodes
+            kept = head
+            for _ in range(k - 1):
+                kept = kept.next
+            # Connect prev to first k nodes, then skip rest
+            prev.next = head
+            prev = kept
+            prev.next = current.next
+
+        head = current.next
+
+    return dummy.next
+
+
+# Helper functions
+def to_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    current = head
+    for val in arr[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def to_array(head):
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: [1,1,1,2,2,3], k=2 -> [1,1,2,2,3]
+    head = to_linked_list([1, 1, 1, 2, 2, 3])
+    result = removeDuplicatesKeepingAtMostKOccurrences(head, 2)
+    print(to_array(result))  # [1, 1, 2, 2, 3]
+
+    # Test case 2: [1,1,1,1,2,2,2], k=1 -> [1,2]
+    head = to_linked_list([1, 1, 1, 1, 2, 2, 2])
+    result = removeDuplicatesKeepingAtMostKOccurrences(head, 1)
+    print(to_array(result))  # [1, 2]`,
             go: `package main
 
 import "fmt"
 
-// RemoveDuplicatesKeepingAtMostKOccurrences solves the Remove Duplicates Keeping At Most K Occurrences problem.
-// Time: O(n), Space: O(n)
-func RemoveDuplicatesKeepingAtMostKOccurrences(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
-    var result interface{}
+// RemoveDuplicatesKeepingAtMostKOccurrences keeps at most k occurrences.
+// Time: O(n), Space: O(1)
+func RemoveDuplicatesKeepingAtMostKOccurrences(head *ListNode, k int) *ListNode {
+    if head == nil || k <= 0 {
+        if k <= 0 {
+            return nil
+        }
+        return head
+    }
 
-    // Process input
-    // ...
+    dummy := &ListNode{Val: 0, Next: head}
+    prev := dummy
 
+    for head != nil {
+        // Count occurrences of current value
+        count := 1
+        current := head
+
+        // Move through all nodes with same value
+        for current.Next != nil && current.Next.Val == head.Val {
+            count++
+            current = current.Next
+        }
+
+        if count <= k {
+            // Keep all nodes, move prev to last node of this value
+            prev = current
+        } else {
+            // Keep only k nodes
+            kept := head
+            for i := 0; i < k-1; i++ {
+                kept = kept.Next
+            }
+            // Connect prev to first k nodes, then skip rest
+            prev.Next = head
+            prev = kept
+            prev.Next = current.Next
+        }
+
+        head = current.Next
+    }
+
+    return dummy.Next
+}
+
+// Helper functions
+func toLinkedList(arr []int) *ListNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    head := &ListNode{Val: arr[0]}
+    current := head
+    for i := 1; i < len(arr); i++ {
+        current.Next = &ListNode{Val: arr[i]}
+        current = current.Next
+    }
+    return head
+}
+
+func toArray(head *ListNode) []int {
+    result := []int{}
+    for head != nil {
+        result = append(result, head.Val)
+        head = head.Next
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case: [1,1,1,2,2,3], k=2 -> [1,1,2,2,3]
+    head := toLinkedList([]int{1, 1, 1, 2, 2, 3})
+    result := RemoveDuplicatesKeepingAtMostKOccurrences(head, 2)
+    fmt.Println(toArray(result)) // [1 1 2 2 3]
 }`
         },
         similar: [

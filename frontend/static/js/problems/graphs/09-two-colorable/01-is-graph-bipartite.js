@@ -78,49 +78,162 @@
     }
         ],
         solutions: {
-            python: `def isGraphBipartite(data):
+            python: `from collections import deque
+
+def isBipartite(graph):
     """
-    Is Graph Bipartite
+    Is Graph Bipartite - Graph Coloring with BFS
 
-    Time: O(n)
-    Space: O(n)
+    Try to 2-color the graph. If we can assign colors such that
+    no adjacent nodes have the same color, the graph is bipartite.
+
+    Time: O(V + E)
+    Space: O(V)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(graph)
+    color = [-1] * n  # -1 = uncolored, 0 or 1 = color
 
-    result = None
+    # Handle disconnected components
+    for start in range(n):
+        if color[start] != -1:
+            continue
 
-    # Process input
-    # ...
+        # BFS from this node
+        queue = deque([start])
+        color[start] = 0
 
-    return result
+        while queue:
+            node = queue.popleft()
+
+            for neighbor in graph[node]:
+                if color[neighbor] == -1:
+                    # Color with opposite color
+                    color[neighbor] = 1 - color[node]
+                    queue.append(neighbor)
+                elif color[neighbor] == color[node]:
+                    # Same color as current node - not bipartite
+                    return False
+
+    return True
+
+
+def isBipartiteDFS(graph):
+    """Alternative DFS solution."""
+    n = len(graph)
+    color = [-1] * n
+
+    def dfs(node, c):
+        color[node] = c
+        for neighbor in graph[node]:
+            if color[neighbor] == -1:
+                if not dfs(neighbor, 1 - c):
+                    return False
+            elif color[neighbor] == c:
+                return False
+        return True
+
+    for i in range(n):
+        if color[i] == -1:
+            if not dfs(i, 0):
+                return False
+
+    return True
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: Not bipartite
+    graph1 = [[1,2,3],[0,2],[0,1,3],[0,2]]
+    print(isBipartite(graph1))  # False
+
+    # Test case 2: Bipartite
+    graph2 = [[1,3],[0,2],[1,3],[0,2]]
+    print(isBipartite(graph2))  # True`,
             go: `package main
 
 import "fmt"
 
-// IsGraphBipartite solves the Is Graph Bipartite problem.
-// Time: O(n), Space: O(n)
-func IsGraphBipartite(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// IsBipartite checks if graph can be 2-colored
+// Time: O(V+E), Space: O(V)
+func IsBipartite(graph [][]int) bool {
+    n := len(graph)
+    color := make([]int, n)
+    for i := range color {
+        color[i] = -1 // -1 = uncolored
+    }
 
-    var result interface{}
+    // Handle disconnected components
+    for start := 0; start < n; start++ {
+        if color[start] != -1 {
+            continue
+        }
 
-    // Process input
-    // ...
+        // BFS from this node
+        queue := []int{start}
+        color[start] = 0
 
-    return result
+        for len(queue) > 0 {
+            node := queue[0]
+            queue = queue[1:]
+
+            for _, neighbor := range graph[node] {
+                if color[neighbor] == -1 {
+                    // Color with opposite color
+                    color[neighbor] = 1 - color[node]
+                    queue = append(queue, neighbor)
+                } else if color[neighbor] == color[node] {
+                    // Same color - not bipartite
+                    return false
+                }
+            }
+        }
+    }
+
+    return true
+}
+
+// IsBipartiteDFS uses DFS for graph coloring
+func IsBipartiteDFS(graph [][]int) bool {
+    n := len(graph)
+    color := make([]int, n)
+    for i := range color {
+        color[i] = -1
+    }
+
+    var dfs func(node, c int) bool
+    dfs = func(node, c int) bool {
+        color[node] = c
+        for _, neighbor := range graph[node] {
+            if color[neighbor] == -1 {
+                if !dfs(neighbor, 1-c) {
+                    return false
+                }
+            } else if color[neighbor] == c {
+                return false
+            }
+        }
+        return true
+    }
+
+    for i := 0; i < n; i++ {
+        if color[i] == -1 {
+            if !dfs(i, 0) {
+                return false
+            }
+        }
+    }
+
+    return true
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1: Not bipartite
+    graph1 := [][]int{{1, 2, 3}, {0, 2}, {0, 1, 3}, {0, 2}}
+    fmt.Println(IsBipartite(graph1)) // false
+
+    // Test case 2: Bipartite
+    graph2 := [][]int{{1, 3}, {0, 2}, {1, 3}, {0, 2}}
+    fmt.Println(IsBipartite(graph2)) // true
 }`
         },
         similar: [

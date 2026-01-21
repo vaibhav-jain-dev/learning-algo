@@ -82,49 +82,110 @@
     }
         ],
         solutions: {
-            python: `def findEventualSafeStates(data):
+            python: `def eventualSafeNodes(graph):
     """
-    Find Eventual Safe States
+    Find Eventual Safe States - DFS with coloring to find nodes not in cycles.
 
-    Time: O(n)
-    Space: O(n)
+    A safe node is one that doesn't lead to a cycle (all paths end at terminal).
+
+    Time: O(V + E) where V is nodes, E is edges
+    Space: O(V) for color array and recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(graph)
+    # Colors: 0 = white (unvisited), 1 = gray (visiting), 2 = black (safe)
+    color = [0] * n
 
-    result = None
+    def dfs(node):
+        """Returns True if node is safe (not part of or leading to a cycle)"""
+        if color[node] == 1:  # Gray - in current path, cycle found
+            return False
+        if color[node] == 2:  # Black - already confirmed safe
+            return True
 
-    # Process input
-    # ...
+        # Mark as visiting (gray)
+        color[node] = 1
+
+        # Check all neighbors
+        for neighbor in graph[node]:
+            if not dfs(neighbor):
+                return False  # Neighbor leads to cycle
+
+        # All paths from this node are safe
+        color[node] = 2  # Mark as safe (black)
+        return True
+
+    # Find all safe nodes
+    result = []
+    for i in range(n):
+        if dfs(i):
+            result.append(i)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Example 1
+    graph1 = [[1, 2], [2, 3], [5], [0], [5], [], []]
+    print(eventualSafeNodes(graph1))  # Output: [2, 4, 5, 6]
+
+    # Example 2
+    graph2 = [[1, 2, 3, 4], [1, 2], [3, 4], [0, 4], []]
+    print(eventualSafeNodes(graph2))  # Output: [4]`,
             go: `package main
 
 import "fmt"
 
-// FindEventualSafeStates solves the Find Eventual Safe States problem.
-// Time: O(n), Space: O(n)
-func FindEventualSafeStates(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// eventualSafeNodes finds all safe nodes using DFS with coloring.
+// Time: O(V + E), Space: O(V)
+func eventualSafeNodes(graph [][]int) []int {
+    n := len(graph)
+    // Colors: 0 = white (unvisited), 1 = gray (visiting), 2 = black (safe)
+    color := make([]int, n)
 
-    var result interface{}
+    var dfs func(node int) bool
+    dfs = func(node int) bool {
+        if color[node] == 1 { // Gray - cycle found
+            return false
+        }
+        if color[node] == 2 { // Black - already safe
+            return true
+        }
 
-    // Process input
-    // ...
+        // Mark as visiting (gray)
+        color[node] = 1
+
+        // Check all neighbors
+        for _, neighbor := range graph[node] {
+            if !dfs(neighbor) {
+                return false // Neighbor leads to cycle
+            }
+        }
+
+        // All paths from this node are safe
+        color[node] = 2 // Mark as safe (black)
+        return true
+    }
+
+    // Find all safe nodes
+    result := []int{}
+    for i := 0; i < n; i++ {
+        if dfs(i) {
+            result = append(result, i)
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Example 1
+    graph1 := [][]int{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}}
+    fmt.Println(eventualSafeNodes(graph1)) // Output: [2 4 5 6]
+
+    // Example 2
+    graph2 := [][]int{{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}}
+    fmt.Println(eventualSafeNodes(graph2)) // Output: [4]
 }`
         },
         similar: [

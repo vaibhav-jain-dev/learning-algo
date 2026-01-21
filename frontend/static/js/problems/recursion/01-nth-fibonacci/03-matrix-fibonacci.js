@@ -39,45 +39,114 @@
     """
     Fibonacci with Matrix Exponentiation
 
-    Time: O(n)
-    Space: O(n)
+    Uses the property: [[1,1],[1,0]]^n = [[F(n+1),F(n)],[F(n),F(n-1)]]
+    Matrix exponentiation allows O(log n) computation.
+
+    Time: O(log n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    MOD = 10**9 + 7
+    n = data.get("n", data) if isinstance(data, dict) else data
 
-    result = None
+    if n == 0:
+        return 0
+    if n <= 2:
+        return 1
 
-    # Process input
-    # ...
+    def matrix_mult(A, B):
+        """Multiply two 2x2 matrices with modulo"""
+        return [
+            [(A[0][0] * B[0][0] + A[0][1] * B[1][0]) % MOD,
+             (A[0][0] * B[0][1] + A[0][1] * B[1][1]) % MOD],
+            [(A[1][0] * B[0][0] + A[1][1] * B[1][0]) % MOD,
+             (A[1][0] * B[0][1] + A[1][1] * B[1][1]) % MOD]
+        ]
 
-    return result
+    def matrix_pow(M, power):
+        """Compute M^power using binary exponentiation"""
+        result = [[1, 0], [0, 1]]  # Identity matrix
+
+        while power > 0:
+            if power % 2 == 1:
+                result = matrix_mult(result, M)
+            M = matrix_mult(M, M)
+            power //= 2
+
+        return result
+
+    # Base matrix for Fibonacci
+    base = [[1, 1], [1, 0]]
+    result_matrix = matrix_pow(base, n)
+
+    # F(n) is at position [0][1] or [1][0]
+    return result_matrix[0][1]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(fibonacciWithMatrixExponentiation({"n": 10}))  # Output: 55
+    print(fibonacciWithMatrixExponentiation({"n": 50}))  # Output: 12586269025`,
             go: `package main
 
 import "fmt"
 
-// FibonacciWithMatrixExponentiation solves the Fibonacci with Matrix Exponentiation problem.
-// Time: O(n), Space: O(n)
-func FibonacciWithMatrixExponentiation(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+const MOD = 1000000007
 
-    var result interface{}
+// matrixMult multiplies two 2x2 matrices with modulo
+func matrixMult(A, B [2][2]int64) [2][2]int64 {
+    return [2][2]int64{
+        {(A[0][0]*B[0][0] + A[0][1]*B[1][0]) % MOD,
+         (A[0][0]*B[0][1] + A[0][1]*B[1][1]) % MOD},
+        {(A[1][0]*B[0][0] + A[1][1]*B[1][0]) % MOD,
+         (A[1][0]*B[0][1] + A[1][1]*B[1][1]) % MOD},
+    }
+}
 
-    // Process input
-    // ...
+// matrixPow computes M^power using binary exponentiation
+func matrixPow(M [2][2]int64, power int64) [2][2]int64 {
+    result := [2][2]int64{{1, 0}, {0, 1}} // Identity matrix
+
+    for power > 0 {
+        if power%2 == 1 {
+            result = matrixMult(result, M)
+        }
+        M = matrixMult(M, M)
+        power /= 2
+    }
 
     return result
 }
 
+// FibonacciWithMatrixExponentiation solves the Fibonacci problem.
+// Uses matrix exponentiation for O(log n) time complexity.
+// Time: O(log n), Space: O(1)
+func FibonacciWithMatrixExponentiation(data interface{}) interface{} {
+    var n int64
+    switch v := data.(type) {
+    case map[string]interface{}:
+        n = int64(v["n"].(float64))
+    case int:
+        n = int64(v)
+    }
+
+    if n == 0 {
+        return int64(0)
+    }
+    if n <= 2 {
+        return int64(1)
+    }
+
+    // Base matrix for Fibonacci
+    base := [2][2]int64{{1, 1}, {1, 0}}
+    resultMatrix := matrixPow(base, n)
+
+    // F(n) is at position [0][1] or [1][0]
+    return resultMatrix[0][1]
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(FibonacciWithMatrixExponentiation(map[string]interface{}{"n": float64(10)})) // Output: 55
+    fmt.Println(FibonacciWithMatrixExponentiation(map[string]interface{}{"n": float64(50)})) // Output: 12586269025
 }`
         },
         similar: [

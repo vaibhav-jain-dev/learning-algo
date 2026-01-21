@@ -52,47 +52,79 @@
         solutions: {
             python: `def combinationSumIv(data):
     """
-    Combination Sum IV
+    Combination Sum IV - Count permutations that sum to target.
 
-    Time: O(n)
-    Space: O(n)
+    Key insight: This is an unbounded knapsack variant counting permutations.
+    dp[i] = number of ways to reach sum i.
+    For each target sum, try all numbers as the last number.
+
+    Note: Order matters (permutations), so iterate target first, then nums.
+
+    Time: O(target * n)
+    Space: O(target)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data["nums"]
+    target = data["target"]
 
-    result = None
+    # dp[i] = number of permutations that sum to i
+    dp = [0] * (target + 1)
+    dp[0] = 1  # One way to make sum 0: use nothing
 
-    # Process input
-    # ...
+    # For each sum from 1 to target
+    for curr_sum in range(1, target + 1):
+        # Try each number as the last number in the permutation
+        for num in nums:
+            if num <= curr_sum:
+                dp[curr_sum] += dp[curr_sum - num]
 
-    return result
+    return dp[target]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(combinationSumIv({"nums": [1, 2, 3], "target": 4}))  # Expected: 7
+    print(combinationSumIv({"nums": [9], "target": 3}))  # Expected: 0`,
             go: `package main
 
 import "fmt"
 
-// CombinationSumIv solves the Combination Sum IV problem.
-// Time: O(n), Space: O(n)
-func CombinationSumIv(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CombinationSumIv counts permutations that sum to target.
+// Order matters, so we iterate target first, then nums.
+// Time: O(target * n), Space: O(target)
+func CombinationSumIv(data map[string]interface{}) int {
+    numsInterface := data["nums"].([]interface{})
+    nums := make([]int, len(numsInterface))
+    for i, v := range numsInterface {
+        nums[i] = int(v.(float64))
+    }
+    target := int(data["target"].(float64))
 
-    var result interface{}
+    // dp[i] = number of permutations that sum to i
+    dp := make([]int, target+1)
+    dp[0] = 1  // One way to make sum 0: use nothing
 
-    // Process input
-    // ...
+    // For each sum from 1 to target
+    for currSum := 1; currSum <= target; currSum++ {
+        // Try each number as the last number
+        for _, num := range nums {
+            if num <= currSum {
+                dp[currSum] += dp[currSum-num]
+            }
+        }
+    }
 
-    return result
+    return dp[target]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CombinationSumIv(map[string]interface{}{
+        "nums":   []interface{}{1.0, 2.0, 3.0},
+        "target": 4.0,
+    }))  // Expected: 7
+    fmt.Println(CombinationSumIv(map[string]interface{}{
+        "nums":   []interface{}{9.0},
+        "target": 3.0,
+    }))  // Expected: 0
 }`
         },
         similar: [

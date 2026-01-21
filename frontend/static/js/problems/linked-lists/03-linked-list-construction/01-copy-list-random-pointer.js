@@ -92,49 +92,191 @@
     }
         ],
         solutions: {
-            python: `def copyListWithRandomPointer(data):
+            python: `class Node:
+    def __init__(self, val=0, next=None, random=None):
+        self.val = val
+        self.next = next
+        self.random = random
+
+def copyListWithRandomPointer(head):
     """
     Copy List with Random Pointer
+    Creates a deep copy of a linked list with random pointers.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(n) - for the hash map
+
+    Approach: Use a hash map to map original nodes to their copies.
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not head:
+        return None
 
-    result = None
+    # Step 1: Create a mapping from original to copy
+    old_to_new = {}
 
-    # Process input
-    # ...
+    # First pass: create all new nodes
+    current = head
+    while current:
+        old_to_new[current] = Node(current.val)
+        current = current.next
 
-    return result
+    # Second pass: set next and random pointers
+    current = head
+    while current:
+        copy = old_to_new[current]
+        copy.next = old_to_new.get(current.next)
+        copy.random = old_to_new.get(current.random)
+        current = current.next
+
+    return old_to_new[head]
+
+
+# Alternative O(1) space approach (interleaving method)
+def copyListWithRandomPointerO1Space(head):
+    """
+    Time: O(n), Space: O(1)
+    Interleave copied nodes with original nodes.
+    """
+    if not head:
+        return None
+
+    # Step 1: Create interleaved list (A -> A' -> B -> B' -> ...)
+    current = head
+    while current:
+        copy = Node(current.val)
+        copy.next = current.next
+        current.next = copy
+        current = copy.next
+
+    # Step 2: Set random pointers for copied nodes
+    current = head
+    while current:
+        if current.random:
+            current.next.random = current.random.next
+        current = current.next.next
+
+    # Step 3: Separate the two lists
+    current = head
+    new_head = head.next
+    while current:
+        copy = current.next
+        current.next = copy.next
+        copy.next = copy.next.next if copy.next else None
+        current = current.next
+
+    return new_head
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Create test list: 7 -> 13 -> 11 -> 10 -> 1
+    nodes = [Node(7), Node(13), Node(11), Node(10), Node(1)]
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    nodes[0].random = None
+    nodes[1].random = nodes[0]
+    nodes[2].random = nodes[4]
+    nodes[3].random = nodes[2]
+    nodes[4].random = nodes[0]
+
+    copy = copyListWithRandomPointer(nodes[0])
+    print("Copy created successfully")`,
             go: `package main
 
 import "fmt"
 
-// CopyListWithRandomPointer solves the Copy List with Random Pointer problem.
+type Node struct {
+    Val    int
+    Next   *Node
+    Random *Node
+}
+
+// CopyListWithRandomPointer creates a deep copy of the list.
 // Time: O(n), Space: O(n)
-func CopyListWithRandomPointer(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func CopyListWithRandomPointer(head *Node) *Node {
+    if head == nil {
+        return nil
+    }
 
-    var result interface{}
+    // Map from original node to copied node
+    oldToNew := make(map[*Node]*Node)
 
-    // Process input
-    // ...
+    // First pass: create all new nodes
+    current := head
+    for current != nil {
+        oldToNew[current] = &Node{Val: current.Val}
+        current = current.Next
+    }
 
-    return result
+    // Second pass: set next and random pointers
+    current = head
+    for current != nil {
+        copy := oldToNew[current]
+        if current.Next != nil {
+            copy.Next = oldToNew[current.Next]
+        }
+        if current.Random != nil {
+            copy.Random = oldToNew[current.Random]
+        }
+        current = current.Next
+    }
+
+    return oldToNew[head]
+}
+
+// CopyListWithRandomPointerO1Space uses O(1) extra space.
+// Time: O(n), Space: O(1)
+func CopyListWithRandomPointerO1Space(head *Node) *Node {
+    if head == nil {
+        return nil
+    }
+
+    // Step 1: Create interleaved list (A -> A' -> B -> B' -> ...)
+    current := head
+    for current != nil {
+        copy := &Node{Val: current.Val}
+        copy.Next = current.Next
+        current.Next = copy
+        current = copy.Next
+    }
+
+    // Step 2: Set random pointers for copied nodes
+    current = head
+    for current != nil {
+        if current.Random != nil {
+            current.Next.Random = current.Random.Next
+        }
+        current = current.Next.Next
+    }
+
+    // Step 3: Separate the two lists
+    current = head
+    newHead := head.Next
+    for current != nil {
+        copy := current.Next
+        current.Next = copy.Next
+        if copy.Next != nil {
+            copy.Next = copy.Next.Next
+        }
+        current = current.Next
+    }
+
+    return newHead
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Create test list
+    nodes := []*Node{{Val: 7}, {Val: 13}, {Val: 11}, {Val: 10}, {Val: 1}}
+    for i := 0; i < len(nodes)-1; i++ {
+        nodes[i].Next = nodes[i+1]
+    }
+    nodes[1].Random = nodes[0]
+    nodes[2].Random = nodes[4]
+    nodes[3].Random = nodes[2]
+    nodes[4].Random = nodes[0]
+
+    copy := CopyListWithRandomPointer(nodes[0])
+    fmt.Println("Copy created, first val:", copy.Val)
 }`
         },
         similar: [

@@ -43,45 +43,106 @@
     """
     Next Permutation
 
+    Find the next lexicographically greater permutation.
+    Algorithm:
+    1. Find the largest index i such that nums[i] < nums[i + 1]
+    2. Find the largest index j greater than i such that nums[i] < nums[j]
+    3. Swap nums[i] and nums[j]
+    4. Reverse the suffix starting at nums[i + 1]
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1) - in-place modification
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data.get("nums", data) if isinstance(data, dict) else data
+    nums = list(nums)  # Make a copy to avoid modifying input
+    n = len(nums)
 
-    result = None
+    # Step 1: Find the first decreasing element from the right
+    i = n - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
 
-    # Process input
-    # ...
+    if i >= 0:
+        # Step 2: Find the smallest element greater than nums[i] to its right
+        j = n - 1
+        while nums[j] <= nums[i]:
+            j -= 1
 
-    return result
+        # Step 3: Swap
+        nums[i], nums[j] = nums[j], nums[i]
+
+    # Step 4: Reverse the suffix
+    left, right = i + 1, n - 1
+    while left < right:
+        nums[left], nums[right] = nums[right], nums[left]
+        left += 1
+        right -= 1
+
+    return nums
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(nextPermutation({"nums": [1, 2, 3]}))  # Output: [1, 3, 2]
+    print(nextPermutation({"nums": [3, 2, 1]}))  # Output: [1, 2, 3]
+    print(nextPermutation({"nums": [1, 1, 5]}))  # Output: [1, 5, 1]`,
             go: `package main
 
 import "fmt"
 
-// NextPermutation solves the Next Permutation problem.
-// Time: O(n), Space: O(n)
+// NextPermutation finds the next lexicographically greater permutation.
+// Algorithm: Find pivot, find swap target, swap, reverse suffix.
+// Time: O(n), Space: O(1)
 func NextPermutation(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    var nums []int
+    switch v := data.(type) {
+    case map[string]interface{}:
+        arr := v["nums"].([]interface{})
+        nums = make([]int, len(arr))
+        for i, n := range arr {
+            nums[i] = int(n.(float64))
+        }
+    case []int:
+        nums = make([]int, len(v))
+        copy(nums, v)
+    }
 
-    var result interface{}
+    n := len(nums)
 
-    // Process input
-    // ...
+    // Step 1: Find the first decreasing element from the right
+    i := n - 2
+    for i >= 0 && nums[i] >= nums[i+1] {
+        i--
+    }
 
-    return result
+    if i >= 0 {
+        // Step 2: Find the smallest element greater than nums[i] to its right
+        j := n - 1
+        for nums[j] <= nums[i] {
+            j--
+        }
+
+        // Step 3: Swap
+        nums[i], nums[j] = nums[j], nums[i]
+    }
+
+    // Step 4: Reverse the suffix
+    left, right := i+1, n-1
+    for left < right {
+        nums[left], nums[right] = nums[right], nums[left]
+        left++
+        right--
+    }
+
+    return nums
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    nums1 := []interface{}{float64(1), float64(2), float64(3)}
+    fmt.Println(NextPermutation(map[string]interface{}{"nums": nums1})) // Output: [1 3 2]
+
+    nums2 := []interface{}{float64(3), float64(2), float64(1)}
+    fmt.Println(NextPermutation(map[string]interface{}{"nums": nums2})) // Output: [1 2 3]
 }`
         },
         similar: [

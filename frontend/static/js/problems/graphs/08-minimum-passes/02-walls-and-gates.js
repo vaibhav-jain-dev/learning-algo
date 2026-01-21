@@ -60,49 +60,125 @@
     }
         ],
         solutions: {
-            python: `def wallsAndGates(data):
+            python: `from collections import deque
+
+def wallsAndGates(rooms):
     """
-    Walls and Gates
+    Walls and Gates - Multi-source BFS from all gates
 
-    Time: O(n)
-    Space: O(n)
+    Instead of BFS from each empty room to find nearest gate,
+    BFS from all gates simultaneously - much more efficient.
+
+    Time: O(M * N)
+    Space: O(M * N)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not rooms or not rooms[0]:
+        return rooms
 
-    result = None
+    INF = 2147483647
+    rows, cols = len(rooms), len(rooms[0])
+    queue = deque()
 
-    # Process input
-    # ...
+    # Initialize: add all gates to queue
+    for r in range(rows):
+        for c in range(cols):
+            if rooms[r][c] == 0:  # Gate
+                queue.append((r, c))
 
-    return result
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    # BFS from all gates
+    while queue:
+        r, c = queue.popleft()
+
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+
+            # Only process empty rooms (INF)
+            if (0 <= nr < rows and 0 <= nc < cols
+                and rooms[nr][nc] == INF):
+                rooms[nr][nc] = rooms[r][c] + 1
+                queue.append((nr, nc))
+
+    return rooms
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    INF = 2147483647
+    rooms = [
+        [INF, -1,  0, INF],
+        [INF, INF, INF, -1],
+        [INF, -1, INF, -1],
+        [0,   -1, INF, INF]
+    ]
+    result = wallsAndGates(rooms)
+    for row in result:
+        print(row)
+    # Expected:
+    # [3, -1, 0, 1]
+    # [2, 2, 1, -1]
+    # [1, -1, 2, -1]
+    # [0, -1, 3, 4]`,
             go: `package main
 
 import "fmt"
 
-// WallsAndGates solves the Walls and Gates problem.
-// Time: O(n), Space: O(n)
-func WallsAndGates(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+const INF = 2147483647
 
-    var result interface{}
+// WallsAndGates fills each room with distance to nearest gate
+// Time: O(M*N), Space: O(M*N)
+func WallsAndGates(rooms [][]int) [][]int {
+    if len(rooms) == 0 || len(rooms[0]) == 0 {
+        return rooms
+    }
 
-    // Process input
-    // ...
+    rows, cols := len(rooms), len(rooms[0])
+    queue := [][2]int{}
 
-    return result
+    // Initialize: add all gates to queue
+    for r := 0; r < rows; r++ {
+        for c := 0; c < cols; c++ {
+            if rooms[r][c] == 0 { // Gate
+                queue = append(queue, [2]int{r, c})
+            }
+        }
+    }
+
+    directions := [][2]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
+
+    // BFS from all gates
+    for len(queue) > 0 {
+        cell := queue[0]
+        queue = queue[1:]
+        r, c := cell[0], cell[1]
+
+        for _, d := range directions {
+            nr, nc := r+d[0], c+d[1]
+
+            // Only process empty rooms (INF)
+            if nr >= 0 && nr < rows && nc >= 0 && nc < cols && rooms[nr][nc] == INF {
+                rooms[nr][nc] = rooms[r][c] + 1
+                queue = append(queue, [2]int{nr, nc})
+            }
+        }
+    }
+
+    return rooms
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    rooms := [][]int{
+        {INF, -1, 0, INF},
+        {INF, INF, INF, -1},
+        {INF, -1, INF, -1},
+        {0, -1, INF, INF},
+    }
+    result := WallsAndGates(rooms)
+    for _, row := range result {
+        fmt.Println(row)
+    }
+    // Expected: [[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]]
 }`
         },
         similar: [

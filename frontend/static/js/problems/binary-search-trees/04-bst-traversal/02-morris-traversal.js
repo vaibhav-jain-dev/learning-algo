@@ -58,49 +58,225 @@
     }
         ],
         solutions: {
-            python: `def morrisTraversal(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr or arr[0] is None:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def morrisInorder(root):
     """
-    Morris Traversal
+    Morris Inorder Traversal - O(1) space complexity.
 
-    Time: O(n)
-    Space: O(n)
+    Key idea: Use threaded binary tree. Create temporary links
+    from rightmost node of left subtree back to current node.
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    result = []
+    current = root
 
-    result = None
+    while current:
+        if current.left is None:
+            # No left child, visit current and go right
+            result.append(current.val)
+            current = current.right
+        else:
+            # Find inorder predecessor (rightmost in left subtree)
+            predecessor = current.left
+            while predecessor.right and predecessor.right != current:
+                predecessor = predecessor.right
 
-    # Process input
-    # ...
+            if predecessor.right is None:
+                # Create thread: link predecessor to current
+                predecessor.right = current
+                current = current.left
+            else:
+                # Thread exists, remove it and visit current
+                predecessor.right = None
+                result.append(current.val)
+                current = current.right
 
     return result
+
+def morrisPreorder(root):
+    """
+    Morris Preorder Traversal - O(1) space complexity.
+    """
+    result = []
+    current = root
+
+    while current:
+        if current.left is None:
+            result.append(current.val)
+            current = current.right
+        else:
+            predecessor = current.left
+            while predecessor.right and predecessor.right != current:
+                predecessor = predecessor.right
+
+            if predecessor.right is None:
+                # Visit before going left (preorder)
+                result.append(current.val)
+                predecessor.right = current
+                current = current.left
+            else:
+                predecessor.right = None
+                current = current.right
+
+    return result
+
+def morrisTraversal(data):
+    """
+    Morris Traversal - Inorder traversal with O(1) space.
+
+    Approach: Temporarily modify tree structure by creating
+    threads from predecessors back to ancestors.
+
+    Time: O(n)
+    Space: O(1) - no stack or recursion needed
+    """
+    tree = data.get("tree", [])
+    root = buildTree(tree)
+
+    if not root:
+        return []
+
+    return morrisInorder(root)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(morrisTraversal({"tree": [4, 2, 6, 1, 3, 5, 7]}))
+    print(morrisTraversal({"tree": [1, 2, 3, 4, 5, None, 6]}))`,
             go: `package main
 
 import "fmt"
 
-// MorrisTraversal solves the Morris Traversal problem.
-// Time: O(n), Space: O(n)
-func MorrisTraversal(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
+func morrisInorder(root *TreeNode) []int {
+    var result []int
+    current := root
+
+    for current != nil {
+        if current.Left == nil {
+            result = append(result, current.Val)
+            current = current.Right
+        } else {
+            // Find predecessor
+            predecessor := current.Left
+            for predecessor.Right != nil && predecessor.Right != current {
+                predecessor = predecessor.Right
+            }
+
+            if predecessor.Right == nil {
+                // Create thread
+                predecessor.Right = current
+                current = current.Left
+            } else {
+                // Remove thread, visit current
+                predecessor.Right = nil
+                result = append(result, current.Val)
+                current = current.Right
+            }
+        }
+    }
 
     return result
 }
 
+func morrisPreorder(root *TreeNode) []int {
+    var result []int
+    current := root
+
+    for current != nil {
+        if current.Left == nil {
+            result = append(result, current.Val)
+            current = current.Right
+        } else {
+            predecessor := current.Left
+            for predecessor.Right != nil && predecessor.Right != current {
+                predecessor = predecessor.Right
+            }
+
+            if predecessor.Right == nil {
+                result = append(result, current.Val)
+                predecessor.Right = current
+                current = current.Left
+            } else {
+                predecessor.Right = nil
+                current = current.Right
+            }
+        }
+    }
+
+    return result
+}
+
+func MorrisTraversal(data map[string]interface{}) []int {
+    treeArr := data["tree"].([]interface{})
+    root := buildTree(treeArr)
+
+    if root == nil {
+        return []int{}
+    }
+
+    return morrisInorder(root)
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": []interface{}{4.0, 2.0, 6.0, 1.0, 3.0, 5.0, 7.0},
+    }
+    fmt.Println(MorrisTraversal(data))
 }`
         },
         similar: [

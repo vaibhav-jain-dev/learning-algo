@@ -85,45 +85,133 @@
     """
     Path Sum to Target
 
-    Time: O(n)
-    Space: O(n)
+    Find all root-to-leaf paths where sum equals target.
+    Uses DFS with backtracking to explore all paths.
+
+    Time: O(n) - visit each node once
+    Space: O(h) - recursion stack depth equals tree height
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get('tree')
+    target = data.get('target')
 
-    result = None
+    if not tree:
+        return []
 
-    # Process input
-    # ...
+    result = []
 
+    def dfs(node, current_path, current_sum):
+        if not node:
+            return
+
+        # Add current node to path
+        current_path.append(node['value'])
+        current_sum += node['value']
+
+        # Check if it's a leaf node
+        left = node.get('left')
+        right = node.get('right')
+
+        if not left and not right:
+            # Leaf node - check if sum equals target
+            if current_sum == target:
+                result.append(current_path[:])  # Make a copy
+        else:
+            # Continue DFS on children
+            if left:
+                dfs(left, current_path, current_sum)
+            if right:
+                dfs(right, current_path, current_sum)
+
+        # Backtrack - remove current node from path
+        current_path.pop()
+
+    dfs(tree, [], 0)
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {
+        "tree": {"value": 5, "left": {"value": 4, "left": {"value": 11, "left": {"value": 7}, "right": {"value": 2}}}, "right": {"value": 8, "left": {"value": 13}, "right": {"value": 4, "left": {"value": 5}, "right": {"value": 1}}}},
+        "target": 22
+    }
+    print(pathSumToTarget(data))  # [[5, 4, 11, 2], [5, 8, 4, 5]]`,
             go: `package main
 
 import "fmt"
 
-// PathSumToTarget solves the Path Sum to Target problem.
-// Time: O(n), Space: O(n)
-func PathSumToTarget(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TreeNode represents a node in the binary tree
+type TreeNode struct {
+    Value int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+// buildTree converts map data to TreeNode structure
+func buildTree(data map[string]interface{}) *TreeNode {
+    if data == nil {
+        return nil
+    }
+    node := &TreeNode{Value: int(data["value"].(float64))}
+    if left, ok := data["left"].(map[string]interface{}); ok {
+        node.Left = buildTree(left)
+    }
+    if right, ok := data["right"].(map[string]interface{}); ok {
+        node.Right = buildTree(right)
+    }
+    return node
+}
 
-    // Process input
-    // ...
+// PathSumToTarget finds all root-to-leaf paths with sum equal to target
+// Time: O(n), Space: O(h)
+func PathSumToTarget(data map[string]interface{}) [][]int {
+    treeData, _ := data["tree"].(map[string]interface{})
+    target := int(data["target"].(float64))
+    root := buildTree(treeData)
 
+    var result [][]int
+    var currentPath []int
+
+    var dfs func(node *TreeNode, currentSum int)
+    dfs = func(node *TreeNode, currentSum int) {
+        if node == nil {
+            return
+        }
+
+        currentPath = append(currentPath, node.Value)
+        currentSum += node.Value
+
+        // Check if leaf node
+        if node.Left == nil && node.Right == nil {
+            if currentSum == target {
+                // Make a copy of the path
+                pathCopy := make([]int, len(currentPath))
+                copy(pathCopy, currentPath)
+                result = append(result, pathCopy)
+            }
+        } else {
+            dfs(node.Left, currentSum)
+            dfs(node.Right, currentSum)
+        }
+
+        // Backtrack
+        currentPath = currentPath[:len(currentPath)-1]
+    }
+
+    dfs(root, 0)
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": map[string]interface{}{
+            "value": float64(5),
+            "left": map[string]interface{}{"value": float64(4), "left": map[string]interface{}{"value": float64(11), "left": map[string]interface{}{"value": float64(7)}, "right": map[string]interface{}{"value": float64(2)}}},
+            "right": map[string]interface{}{"value": float64(8), "left": map[string]interface{}{"value": float64(13)}, "right": map[string]interface{}{"value": float64(4), "left": map[string]interface{}{"value": float64(5)}, "right": map[string]interface{}{"value": float64(1)}}},
+        },
+        "target": float64(22),
+    }
+    fmt.Println(PathSumToTarget(data)) // [[5 4 11 2] [5 8 4 5]]
 }`
         },
         similar: [

@@ -42,49 +42,95 @@
     }
         ],
         solutions: {
-            python: `def maxSortedSubarrays(data):
+            python: `def maxSortedSubarrays(array):
     """
-    Max Sorted Subarrays
+    Max Sorted Subarrays (Max Chunks To Make Sorted)
+
+    Find maximum number of chunks that can be independently
+    sorted to produce a sorted array.
+
+    Key insight: We can make a cut after index i if max(arr[0..i]) <= min(arr[i+1..n-1])
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(array)
+    if n == 0:
+        return 0
 
-    result = None
+    # Precompute prefix max and suffix min
+    prefix_max = [0] * n
+    suffix_min = [0] * n
 
-    # Process input
-    # ...
+    prefix_max[0] = array[0]
+    for i in range(1, n):
+        prefix_max[i] = max(prefix_max[i - 1], array[i])
 
-    return result
+    suffix_min[n - 1] = array[n - 1]
+    for i in range(n - 2, -1, -1):
+        suffix_min[i] = min(suffix_min[i + 1], array[i])
+
+    # Count chunks: we can cut after i if prefix_max[i] <= suffix_min[i+1]
+    chunks = 1  # At least one chunk (the whole array)
+    for i in range(n - 1):
+        if prefix_max[i] <= suffix_min[i + 1]:
+            chunks += 1
+
+    return chunks
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maxSortedSubarrays([1, 0, 2, 3, 4]))  # 4
+    print(maxSortedSubarrays([4, 3, 2, 1, 0]))  # 1`,
             go: `package main
 
 import "fmt"
 
-// MaxSortedSubarrays solves the Max Sorted Subarrays problem.
+// MaxSortedSubarrays finds max chunks to make sorted.
 // Time: O(n), Space: O(n)
-func MaxSortedSubarrays(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func MaxSortedSubarrays(array []int) int {
+    n := len(array)
+    if n == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // Precompute prefix max and suffix min
+    prefixMax := make([]int, n)
+    suffixMin := make([]int, n)
 
-    // Process input
-    // ...
+    prefixMax[0] = array[0]
+    for i := 1; i < n; i++ {
+        if array[i] > prefixMax[i-1] {
+            prefixMax[i] = array[i]
+        } else {
+            prefixMax[i] = prefixMax[i-1]
+        }
+    }
 
-    return result
+    suffixMin[n-1] = array[n-1]
+    for i := n - 2; i >= 0; i-- {
+        if array[i] < suffixMin[i+1] {
+            suffixMin[i] = array[i]
+        } else {
+            suffixMin[i] = suffixMin[i+1]
+        }
+    }
+
+    // Count chunks
+    chunks := 1
+    for i := 0; i < n-1; i++ {
+        if prefixMax[i] <= suffixMin[i+1] {
+            chunks++
+        }
+    }
+
+    return chunks
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaxSortedSubarrays([]int{1, 0, 2, 3, 4}))  // 4
+    fmt.Println(MaxSortedSubarrays([]int{4, 3, 2, 1, 0}))  // 1
 }`
         },
         similar: [

@@ -53,49 +53,134 @@
     }
         ],
         solutions: {
-            python: `def networkDelayTime(data):
+            python: `import heapq
+from collections import defaultdict
+
+def networkDelayTime(times, n, k):
     """
-    Network Delay Time
+    Network Delay Time using Dijkstra's Algorithm
 
-    Time: O(n)
-    Space: O(n)
+    Time: O((V + E) log V)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Build adjacency list
+    graph = defaultdict(list)
+    for u, v, w in times:
+        graph[u].append((v, w))
 
-    result = None
+    # Distance array, initialized to infinity
+    dist = {i: float('inf') for i in range(1, n + 1)}
+    dist[k] = 0
 
-    # Process input
-    # ...
+    # Min-heap: (distance, node)
+    heap = [(0, k)]
 
-    return result
+    while heap:
+        d, node = heapq.heappop(heap)
+
+        # Skip if we've found a better path
+        if d > dist[node]:
+            continue
+
+        # Explore neighbors
+        for neighbor, weight in graph[node]:
+            new_dist = d + weight
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+                heapq.heappush(heap, (new_dist, neighbor))
+
+    # Find max distance (time for all nodes to receive signal)
+    max_dist = max(dist.values())
+
+    return max_dist if max_dist != float('inf') else -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    times = [[2, 1, 1], [2, 3, 1], [3, 4, 1]]
+    print(networkDelayTime(times, 4, 2))  # Output: 2`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// NetworkDelayTime solves the Network Delay Time problem.
-// Time: O(n), Space: O(n)
-func NetworkDelayTime(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Item represents a node with its distance
+type Item struct {
+    node, dist int
+}
 
-    var result interface{}
+// PriorityQueue implements heap.Interface
+type PriorityQueue []Item
 
-    // Process input
-    // ...
+func (pq PriorityQueue) Len() int           { return len(pq) }
+func (pq PriorityQueue) Less(i, j int) bool { return pq[i].dist < pq[j].dist }
+func (pq PriorityQueue) Swap(i, j int)      { pq[i], pq[j] = pq[j], pq[i] }
+func (pq *PriorityQueue) Push(x interface{}) { *pq = append(*pq, x.(Item)) }
+func (pq *PriorityQueue) Pop() interface{} {
+    old := *pq
+    n := len(old)
+    item := old[n-1]
+    *pq = old[0 : n-1]
+    return item
+}
 
-    return result
+// NetworkDelayTime finds minimum time for all nodes to receive signal.
+// Time: O((V + E) log V), Space: O(V + E)
+func NetworkDelayTime(times [][]int, n int, k int) int {
+    // Build adjacency list
+    graph := make(map[int][][2]int)
+    for _, t := range times {
+        u, v, w := t[0], t[1], t[2]
+        graph[u] = append(graph[u], [2]int{v, w})
+    }
+
+    // Distance map
+    dist := make(map[int]int)
+    for i := 1; i <= n; i++ {
+        dist[i] = 1 << 30 // infinity
+    }
+    dist[k] = 0
+
+    // Min-heap
+    pq := &PriorityQueue{{k, 0}}
+    heap.Init(pq)
+
+    for pq.Len() > 0 {
+        item := heap.Pop(pq).(Item)
+        d, node := item.dist, item.node
+
+        if d > dist[node] {
+            continue
+        }
+
+        for _, edge := range graph[node] {
+            neighbor, weight := edge[0], edge[1]
+            newDist := d + weight
+            if newDist < dist[neighbor] {
+                dist[neighbor] = newDist
+                heap.Push(pq, Item{neighbor, newDist})
+            }
+        }
+    }
+
+    maxDist := 0
+    for i := 1; i <= n; i++ {
+        if dist[i] > maxDist {
+            maxDist = dist[i]
+        }
+    }
+
+    if maxDist == 1<<30 {
+        return -1
+    }
+    return maxDist
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    times := [][]int{{2, 1, 1}, {2, 3, 1}, {3, 4, 1}}
+    fmt.Println(NetworkDelayTime(times, 4, 2)) // Output: 2
 }`
         },
         similar: [

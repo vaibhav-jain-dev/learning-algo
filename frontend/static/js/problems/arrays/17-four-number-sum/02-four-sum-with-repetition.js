@@ -42,49 +42,111 @@
     }
         ],
         solutions: {
-            python: `def fourSumWithRepetition(data):
+            python: `def fourSumWithRepetition(array, targetSum):
     """
     Four Sum With Repetition
 
-    Time: O(n)
-    Space: O(n)
+    Find all quadruplets where the same element can be used
+    multiple times. Elements with same value are treated as same.
+
+    Time: O(n^2)
+    Space: O(n^2)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    array = sorted(set(array))  # Remove duplicates and sort
+    n = len(array)
+    result = []
 
-    result = None
+    # Use hash map to store pair sums
+    pair_sums = {}
 
-    # Process input
-    # ...
+    # Generate all pairs (with repetition allowed)
+    for i in range(n):
+        for j in range(i, n):
+            pair_sum = array[i] + array[j]
+            if pair_sum not in pair_sums:
+                pair_sums[pair_sum] = []
+            pair_sums[pair_sum].append((array[i], array[j]))
 
-    return result
+    # Find complementary pairs
+    seen = set()
+    for pair_sum, pairs in pair_sums.items():
+        complement = targetSum - pair_sum
+        if complement in pair_sums:
+            for p1 in pairs:
+                for p2 in pair_sums[complement]:
+                    # Create sorted quadruplet to avoid duplicates
+                    quad = tuple(sorted([p1[0], p1[1], p2[0], p2[1]]))
+                    if quad not in seen:
+                        seen.add(quad)
+                        result.append(list(quad))
+
+    return sorted(result)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(fourSumWithRepetition([1, 2], 6))  # [[1, 1, 2, 2]]
+    print(fourSumWithRepetition([2, 3], 10))  # [[2, 2, 3, 3]]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// FourSumWithRepetition solves the Four Sum With Repetition problem.
-// Time: O(n), Space: O(n)
-func FourSumWithRepetition(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FourSumWithRepetition finds quadruplets with repetition allowed.
+// Time: O(n^2), Space: O(n^2)
+func FourSumWithRepetition(array []int, targetSum int) [][]int {
+    // Remove duplicates and sort
+    unique := make(map[int]bool)
+    for _, v := range array {
+        unique[v] = true
+    }
+    nums := []int{}
+    for v := range unique {
+        nums = append(nums, v)
+    }
+    sort.Ints(nums)
+    n := len(nums)
 
-    var result interface{}
+    // Store pair sums
+    type pair struct{ a, b int }
+    pairSums := make(map[int][]pair)
 
-    // Process input
-    // ...
+    for i := 0; i < n; i++ {
+        for j := i; j < n; j++ {
+            sum := nums[i] + nums[j]
+            pairSums[sum] = append(pairSums[sum], pair{nums[i], nums[j]})
+        }
+    }
+
+    // Find complementary pairs
+    seen := make(map[[4]int]bool)
+    result := [][]int{}
+
+    for pairSum, pairs := range pairSums {
+        complement := targetSum - pairSum
+        if compPairs, ok := pairSums[complement]; ok {
+            for _, p1 := range pairs {
+                for _, p2 := range compPairs {
+                    quad := []int{p1.a, p1.b, p2.a, p2.b}
+                    sort.Ints(quad)
+                    key := [4]int{quad[0], quad[1], quad[2], quad[3]}
+                    if !seen[key] {
+                        seen[key] = true
+                        result = append(result, quad)
+                    }
+                }
+            }
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(FourSumWithRepetition([]int{1, 2}, 6))  // [[1, 1, 2, 2]]
+    fmt.Println(FourSumWithRepetition([]int{2, 3}, 10))  // [[2, 2, 3, 3]]
 }`
         },
         similar: [

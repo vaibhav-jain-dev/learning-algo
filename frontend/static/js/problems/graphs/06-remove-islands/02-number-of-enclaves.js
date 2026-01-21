@@ -60,49 +60,160 @@
     }
         ],
         solutions: {
-            python: `def numberOfEnclaves(data):
+            python: `def numEnclaves(grid):
     """
     Number of Enclaves
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(M * N) - visit each cell at most once
+    Space: O(M * N) - recursion stack in worst case
+
+    Approach:
+    1. Use DFS to mark all land cells connected to boundary as visited (set to 0)
+    2. Count remaining land cells (these are enclaves)
+
+    Key insight: Land cells that can reach boundary are NOT enclaves
     """
-    # TODO: Implement solution
-    # Key insight: Connected components can be explored using DFS/BFS
+    if not grid or not grid[0]:
+        return 0
 
-    result = None
+    m, n = len(grid), len(grid[0])
 
-    # Process input
-    # ...
+    def dfs(i, j):
+        """Mark land cells connected to boundary as water (visited)"""
+        if i < 0 or i >= m or j < 0 or j >= n or grid[i][j] == 0:
+            return
 
-    return result
+        grid[i][j] = 0  # Mark as visited
+
+        # Explore all 4 directions
+        dfs(i + 1, j)
+        dfs(i - 1, j)
+        dfs(i, j + 1)
+        dfs(i, j - 1)
+
+    # Step 1: Mark all land connected to boundary
+    # Process first and last row
+    for j in range(n):
+        dfs(0, j)
+        dfs(m - 1, j)
+
+    # Process first and last column
+    for i in range(m):
+        dfs(i, 0)
+        dfs(i, n - 1)
+
+    # Step 2: Count remaining land cells (enclaves)
+    count = 0
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                count += 1
+
+    return count
+
+
+def numberOfEnclaves(data):
+    """Process input data"""
+    grid = data.get('grid', [])
+    # Make a copy since we modify the grid
+    grid_copy = [row[:] for row in grid]
+    return numEnclaves(grid_copy)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid = [
+        [0, 0, 0, 0],
+        [1, 0, 1, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0]
+    ]
+    print(numEnclaves([row[:] for row in grid]))  # Expected: 3
+
+    grid2 = [
+        [0, 1, 1, 0],
+        [0, 0, 1, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0]
+    ]
+    print(numEnclaves([row[:] for row in grid2]))  # Expected: 0`,
             go: `package main
 
 import "fmt"
 
-// NumberOfEnclaves solves the Number of Enclaves problem.
-// Time: O(n), Space: O(n)
-func NumberOfEnclaves(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Connected components can be explored using DFS/BFS
+// NumEnclaves counts land cells that cannot reach boundary
+// Time: O(M * N), Space: O(M * N)
+func NumEnclaves(grid [][]int) int {
+    if len(grid) == 0 || len(grid[0]) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    m, n := len(grid), len(grid[0])
 
-    // Process input
-    // ...
+    // DFS to mark land connected to boundary
+    var dfs func(i, j int)
+    dfs = func(i, j int) {
+        if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == 0 {
+            return
+        }
 
-    return result
+        grid[i][j] = 0 // Mark as visited
+
+        dfs(i+1, j)
+        dfs(i-1, j)
+        dfs(i, j+1)
+        dfs(i, j-1)
+    }
+
+    // Mark all land connected to boundary
+    for j := 0; j < n; j++ {
+        dfs(0, j)
+        dfs(m-1, j)
+    }
+    for i := 0; i < m; i++ {
+        dfs(i, 0)
+        dfs(i, n-1)
+    }
+
+    // Count remaining land cells
+    count := 0
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if grid[i][j] == 1 {
+                count++
+            }
+        }
+    }
+
+    return count
+}
+
+// NumEnclavesWithCopy preserves original grid
+func NumEnclavesWithCopy(grid [][]int) int {
+    gridCopy := make([][]int, len(grid))
+    for i := range grid {
+        gridCopy[i] = make([]int, len(grid[i]))
+        copy(gridCopy[i], grid[i])
+    }
+    return NumEnclaves(gridCopy)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid := [][]int{
+        {0, 0, 0, 0},
+        {1, 0, 1, 0},
+        {0, 1, 1, 0},
+        {0, 0, 0, 0},
+    }
+    fmt.Println(NumEnclavesWithCopy(grid)) // Expected: 3
+
+    grid2 := [][]int{
+        {0, 1, 1, 0},
+        {0, 0, 1, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 0},
+    }
+    fmt.Println(NumEnclavesWithCopy(grid2)) // Expected: 0
 }`
         },
         similar: [

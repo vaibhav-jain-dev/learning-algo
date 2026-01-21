@@ -74,49 +74,203 @@
     }
         ],
         solutions: {
-            python: `def deleteTheMiddleNodeOfALinkedList(data):
+            python: `class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def deleteTheMiddleNodeOfALinkedList(head):
     """
     Delete the Middle Node of a Linked List
+    Middle is floor(n/2)-th node (0-indexed).
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
+
+    Approach: Use slow-fast pointer technique.
+    Fast moves 2 steps, slow moves 1 step.
+    When fast reaches end, slow is at middle.
+    Use a prev pointer to delete the middle node.
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    # Edge case: single node - delete it
+    if not head or not head.next:
+        return None
 
-    result = None
+    # Use dummy node to handle edge cases
+    dummy = ListNode(0)
+    dummy.next = head
 
-    # Process input
-    # ...
+    slow = dummy
+    fast = head
 
+    # Move fast by 2, slow by 1
+    # When fast reaches end, slow.next is the middle
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+    # Delete the middle node
+    slow.next = slow.next.next
+
+    return dummy.next
+
+
+# Alternative: Count nodes first, then delete
+def deleteMiddleCountFirst(head):
+    """
+    Time: O(n), Space: O(1)
+    """
+    if not head or not head.next:
+        return None
+
+    # Count total nodes
+    count = 0
+    current = head
+    while current:
+        count += 1
+        current = current.next
+
+    # Find middle index
+    mid = count // 2
+
+    # Delete node at mid index
+    if mid == 0:
+        return head.next
+
+    current = head
+    for _ in range(mid - 1):
+        current = current.next
+
+    current.next = current.next.next
+    return head
+
+
+# Helper functions
+def to_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    current = head
+    for val in arr[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def to_array(head):
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: [1,3,4,7,1,2,6] -> [1,3,4,1,2,6]
+    head = to_linked_list([1, 3, 4, 7, 1, 2, 6])
+    result = deleteTheMiddleNodeOfALinkedList(head)
+    print(to_array(result))  # [1, 3, 4, 1, 2, 6]
+
+    # Test case 2: [1,2,3,4] -> [1,2,4]
+    head = to_linked_list([1, 2, 3, 4])
+    result = deleteTheMiddleNodeOfALinkedList(head)
+    print(to_array(result))  # [1, 2, 4]`,
             go: `package main
 
 import "fmt"
 
-// DeleteTheMiddleNodeOfALinkedList solves the Delete the Middle Node of a Linked List problem.
-// Time: O(n), Space: O(n)
-func DeleteTheMiddleNodeOfALinkedList(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
-    var result interface{}
+// DeleteTheMiddleNodeOfALinkedList deletes the middle node.
+// Time: O(n), Space: O(1)
+func DeleteTheMiddleNodeOfALinkedList(head *ListNode) *ListNode {
+    // Edge case: single node - delete it
+    if head == nil || head.Next == nil {
+        return nil
+    }
 
-    // Process input
-    // ...
+    // Use dummy node to handle edge cases
+    dummy := &ListNode{Val: 0, Next: head}
 
+    slow := dummy
+    fast := head
+
+    // Move fast by 2, slow by 1
+    // When fast reaches end, slow.Next is the middle
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+    }
+
+    // Delete the middle node
+    slow.Next = slow.Next.Next
+
+    return dummy.Next
+}
+
+// DeleteMiddleCountFirst counts nodes first, then deletes.
+// Time: O(n), Space: O(1)
+func DeleteMiddleCountFirst(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return nil
+    }
+
+    // Count total nodes
+    count := 0
+    current := head
+    for current != nil {
+        count++
+        current = current.Next
+    }
+
+    // Find middle index
+    mid := count / 2
+
+    // Delete node at mid index
+    if mid == 0 {
+        return head.Next
+    }
+
+    current = head
+    for i := 0; i < mid-1; i++ {
+        current = current.Next
+    }
+
+    current.Next = current.Next.Next
+    return head
+}
+
+// Helper functions
+func toLinkedList(arr []int) *ListNode {
+    if len(arr) == 0 {
+        return nil
+    }
+    head := &ListNode{Val: arr[0]}
+    current := head
+    for i := 1; i < len(arr); i++ {
+        current.Next = &ListNode{Val: arr[i]}
+        current = current.Next
+    }
+    return head
+}
+
+func toArray(head *ListNode) []int {
+    result := []int{}
+    for head != nil {
+        result = append(result, head.Val)
+        head = head.Next
+    }
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case: [1,3,4,7,1,2,6] -> [1,3,4,1,2,6]
+    head := toLinkedList([]int{1, 3, 4, 7, 1, 2, 6})
+    result := DeleteTheMiddleNodeOfALinkedList(head)
+    fmt.Println(toArray(result)) // [1 3 4 1 2 6]
 }`
         },
         similar: [

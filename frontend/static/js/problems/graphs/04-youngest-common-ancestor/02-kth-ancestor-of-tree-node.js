@@ -58,49 +58,146 @@
     }
         ],
         solutions: {
-            python: `def kthAncestorOfATreeNode(data):
+            python: `class TreeAncestor:
     """
-    Kth Ancestor of a Tree Node
+    Kth Ancestor of a Tree Node using Binary Lifting
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(N log N) preprocessing, O(log K) per query
+    Space: O(N log N) for the jump table
+
+    Approach: Binary Lifting
+    - Precompute 2^j-th ancestor for each node
+    - To find k-th ancestor, decompose k into binary
+    - Jump using precomputed ancestors
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
 
-    result = None
+    def __init__(self, n, parent):
+        # Maximum power of 2 needed (log2(n) + 1)
+        self.LOG = 20  # Handles up to 2^20 nodes
 
-    # Process input
-    # ...
+        # jump[i][j] = 2^j-th ancestor of node i
+        self.jump = [[-1] * self.LOG for _ in range(n)]
 
-    return result
+        # Base case: 2^0 = 1st ancestor is direct parent
+        for i in range(n):
+            self.jump[i][0] = parent[i]
+
+        # Build sparse table using DP
+        # 2^j-th ancestor = 2^(j-1)-th ancestor of 2^(j-1)-th ancestor
+        for j in range(1, self.LOG):
+            for i in range(n):
+                if self.jump[i][j-1] != -1:
+                    self.jump[i][j] = self.jump[self.jump[i][j-1]][j-1]
+
+    def getKthAncestor(self, node, k):
+        # Jump through binary representation of k
+        for j in range(self.LOG):
+            if k & (1 << j):  # If j-th bit is set
+                node = self.jump[node][j]
+                if node == -1:
+                    return -1
+        return node
+
+
+def kthAncestorOfATreeNode(data):
+    """
+    Process queries for k-th ancestor
+    """
+    n = data.get('n')
+    parent = data.get('parent', [])
+    queries = data.get('queries', [])
+
+    tree = TreeAncestor(n, parent)
+    results = []
+
+    for node, k in queries:
+        results.append(tree.getKthAncestor(node, k))
+
+    return results
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {
+        "n": 7,
+        "parent": [-1, 0, 0, 1, 1, 2, 2],
+        "queries": [[3, 1], [5, 2], [6, 3]]
+    }
+    print(kthAncestorOfATreeNode(data))  # Expected: [1, 0, -1]`,
             go: `package main
 
 import "fmt"
 
-// KthAncestorOfATreeNode solves the Kth Ancestor of a Tree Node problem.
-// Time: O(n), Space: O(n)
-func KthAncestorOfATreeNode(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TreeAncestor supports efficient k-th ancestor queries using binary lifting
+type TreeAncestor struct {
+    LOG  int
+    jump [][]int
+}
 
-    var result interface{}
+// NewTreeAncestor initializes the data structure
+// Time: O(N log N), Space: O(N log N)
+func NewTreeAncestor(n int, parent []int) *TreeAncestor {
+    LOG := 20 // Handles up to 2^20 nodes
 
-    // Process input
-    // ...
+    // Initialize jump table with -1
+    jump := make([][]int, n)
+    for i := range jump {
+        jump[i] = make([]int, LOG)
+        for j := range jump[i] {
+            jump[i][j] = -1
+        }
+    }
 
-    return result
+    // Base case: 2^0 = 1st ancestor is direct parent
+    for i := 0; i < n; i++ {
+        jump[i][0] = parent[i]
+    }
+
+    // Build sparse table using DP
+    for j := 1; j < LOG; j++ {
+        for i := 0; i < n; i++ {
+            if jump[i][j-1] != -1 {
+                jump[i][j] = jump[jump[i][j-1]][j-1]
+            }
+        }
+    }
+
+    return &TreeAncestor{LOG: LOG, jump: jump}
+}
+
+// GetKthAncestor returns k-th ancestor of node, or -1 if not exists
+// Time: O(log K)
+func (t *TreeAncestor) GetKthAncestor(node, k int) int {
+    for j := 0; j < t.LOG; j++ {
+        if k&(1<<j) != 0 { // If j-th bit is set
+            node = t.jump[node][j]
+            if node == -1 {
+                return -1
+            }
+        }
+    }
+    return node
+}
+
+// KthAncestorOfATreeNode processes multiple queries
+func KthAncestorOfATreeNode(n int, parent []int, queries [][]int) []int {
+    tree := NewTreeAncestor(n, parent)
+    results := make([]int, len(queries))
+
+    for i, q := range queries {
+        results[i] = tree.GetKthAncestor(q[0], q[1])
+    }
+
+    return results
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    n := 7
+    parent := []int{-1, 0, 0, 1, 1, 2, 2}
+    queries := [][]int{{3, 1}, {5, 2}, {6, 3}}
+
+    result := KthAncestorOfATreeNode(n, parent, queries)
+    fmt.Println(result) // Expected: [1, 0, -1]
 }`
         },
         similar: [

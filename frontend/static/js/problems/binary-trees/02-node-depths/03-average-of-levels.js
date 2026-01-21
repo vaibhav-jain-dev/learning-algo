@@ -77,45 +77,132 @@
     """
     Average of Levels in Binary Tree
 
-    Time: O(n)
-    Space: O(n)
+    Return the average value of nodes at each level.
+    Uses BFS to process nodes level by level.
+
+    Key insight: Process all nodes at current level before moving
+    to the next level. Use queue size to track level boundaries.
+
+    Time: O(n) - visit each node once
+    Space: O(w) - queue stores nodes at widest level
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    from collections import deque
 
-    result = None
+    tree = data.get('tree')
 
-    # Process input
-    # ...
+    if not tree:
+        return []
+
+    result = []
+    queue = deque([tree])
+
+    while queue:
+        level_size = len(queue)
+        level_sum = 0
+
+        # Process all nodes at current level
+        for _ in range(level_size):
+            node = queue.popleft()
+            level_sum += node['value']
+
+            # Add children for next level
+            if node.get('left'):
+                queue.append(node['left'])
+            if node.get('right'):
+                queue.append(node['right'])
+
+        # Calculate and store average for this level
+        result.append(level_sum / level_size)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data1 = {"tree": {"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}}
+    print(averageOfLevelsInBinaryTree(data1))  # [3.0, 14.5, 11.0]
+
+    data2 = {"tree": {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "right": {"value": 6}}}}
+    print(averageOfLevelsInBinaryTree(data2))  # [1.0, 2.5, 5.0]`,
             go: `package main
 
 import "fmt"
 
-// AverageOfLevelsInBinaryTree solves the Average of Levels in Binary Tree problem.
-// Time: O(n), Space: O(n)
-func AverageOfLevelsInBinaryTree(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TreeNode represents a node in the binary tree
+type TreeNode struct {
+    Value int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+// buildTree converts map data to TreeNode structure
+func buildTree(data map[string]interface{}) *TreeNode {
+    if data == nil {
+        return nil
+    }
+    node := &TreeNode{Value: int(data["value"].(float64))}
+    if left, ok := data["left"].(map[string]interface{}); ok {
+        node.Left = buildTree(left)
+    }
+    if right, ok := data["right"].(map[string]interface{}); ok {
+        node.Right = buildTree(right)
+    }
+    return node
+}
 
-    // Process input
-    // ...
+// AverageOfLevelsInBinaryTree returns average value at each level
+// Time: O(n), Space: O(w)
+func AverageOfLevelsInBinaryTree(data map[string]interface{}) []float64 {
+    treeData, _ := data["tree"].(map[string]interface{})
+    root := buildTree(treeData)
+
+    if root == nil {
+        return []float64{}
+    }
+
+    var result []float64
+    queue := []*TreeNode{root}
+
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        levelSum := 0
+
+        // Process all nodes at current level
+        for i := 0; i < levelSize; i++ {
+            node := queue[0]
+            queue = queue[1:]
+
+            levelSum += node.Value
+
+            // Add children for next level
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+            }
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+            }
+        }
+
+        // Calculate and store average for this level
+        result = append(result, float64(levelSum)/float64(levelSize))
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": map[string]interface{}{
+            "value": float64(3),
+            "left":  map[string]interface{}{"value": float64(9)},
+            "right": map[string]interface{}{
+                "value": float64(20),
+                "left":  map[string]interface{}{"value": float64(15)},
+                "right": map[string]interface{}{"value": float64(7)},
+            },
+        },
+    }
+    fmt.Println(AverageOfLevelsInBinaryTree(data)) // [3 14.5 11]
 }`
         },
         similar: [

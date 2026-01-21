@@ -48,49 +48,101 @@
     }
         ],
         solutions: {
-            python: `def redundantConnection(data):
+            python: `def findRedundantConnection(edges):
     """
-    Redundant Connection
+    Redundant Connection using Union-Find
 
-    Time: O(n)
+    Find the edge that creates a cycle in the graph.
+    The redundant edge is the one that connects two already-connected nodes.
+
+    Time: O(n * alpha(n))
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(edges)
 
-    result = None
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
 
-    # Process input
-    # ...
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
 
-    return result
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False  # Already connected - this is redundant!
+
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
+    # Process edges, return the first one that creates a cycle
+    for u, v in edges:
+        if not union(u, v):
+            return [u, v]
+
+    return []
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(findRedundantConnection([[1,2],[1,3],[2,3]]))  # Output: [2, 3]`,
             go: `package main
 
 import "fmt"
 
-// RedundantConnection solves the Redundant Connection problem.
-// Time: O(n), Space: O(n)
-func RedundantConnection(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// FindRedundantConnection finds the edge that can be removed.
+// Time: O(n * alpha(n)), Space: O(n)
+func FindRedundantConnection(edges [][]int) []int {
+    n := len(edges)
 
-    var result interface{}
+    parent := make([]int, n+1)
+    rank := make([]int, n+1)
+    for i := range parent {
+        parent[i] = i
+    }
 
-    // Process input
-    // ...
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
 
-    return result
+    union := func(x, y int) bool {
+        px, py := find(x), find(y)
+        if px == py {
+            return false // Already connected
+        }
+
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+        return true
+    }
+
+    // Process edges
+    for _, edge := range edges {
+        u, v := edge[0], edge[1]
+        if !union(u, v) {
+            return []int{u, v}
+        }
+    }
+
+    return []int{}
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(FindRedundantConnection([][]int{{1,2},{1,3},{2,3}})) // Output: [2 3]
 }`
         },
         similar: [

@@ -42,49 +42,118 @@
     }
         ],
         solutions: {
-            python: `def kthSmallestSquared(data):
+            python: `def kthSmallestSquared(array, k):
     """
-    Kth Smallest Squared
+    Kth Smallest Squared - Find k-th smallest in squared array using two pointers.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(k) - we only need to find k elements, not sort entire array
+    Space: O(1) - not counting output, just pointers
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not array or k <= 0 or k > len(array):
+        return None
 
-    result = None
+    n = len(array)
 
-    # Process input
-    # ...
+    # Find the split point where values change from negative to non-negative
+    # This is where smallest squares will be found
+    neg_ptr = -1  # Points to last negative number
+    for i in range(n):
+        if array[i] < 0:
+            neg_ptr = i
+        else:
+            break
+
+    pos_ptr = neg_ptr + 1  # Points to first non-negative number
+
+    # Use two pointers moving outward to find k-th smallest square
+    count = 0
+    result = 0
+
+    while count < k:
+        # Get squared values at both pointers (or infinity if out of bounds)
+        neg_sq = array[neg_ptr] ** 2 if neg_ptr >= 0 else float('inf')
+        pos_sq = array[pos_ptr] ** 2 if pos_ptr < n else float('inf')
+
+        if neg_sq <= pos_sq:
+            result = neg_sq
+            neg_ptr -= 1  # Move left in negative portion
+        else:
+            result = pos_sq
+            pos_ptr += 1  # Move right in positive portion
+
+        count += 1
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(kthSmallestSquared([-4, -2, 0, 1, 3], 3))  # 1 (sorted: [0, 1, 4, 9, 16])
+    print(kthSmallestSquared([-3, -1, 2, 4], 2))  # 1 (sorted: [1, 4, 9, 16])
+    print(kthSmallestSquared([-4, -2, 0, 1, 3], 1))  # 0`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "math"
+)
 
-// KthSmallestSquared solves the Kth Smallest Squared problem.
-// Time: O(n), Space: O(n)
-func KthSmallestSquared(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// KthSmallestSquared finds k-th smallest in squared array using two pointers.
+// Time: O(k), Space: O(1)
+func KthSmallestSquared(array []int, k int) int {
+    n := len(array)
+    if n == 0 || k <= 0 || k > n {
+        return -1
+    }
 
-    var result interface{}
+    // Find the split point where values change from negative to non-negative
+    negPtr := -1 // Points to last negative number
+    for i := 0; i < n; i++ {
+        if array[i] < 0 {
+            negPtr = i
+        } else {
+            break
+        }
+    }
 
-    // Process input
-    // ...
+    posPtr := negPtr + 1 // Points to first non-negative number
+
+    // Use two pointers moving outward to find k-th smallest square
+    count := 0
+    result := 0
+
+    for count < k {
+        // Get squared values at both pointers (or max int if out of bounds)
+        var negSq, posSq int
+        if negPtr >= 0 {
+            negSq = array[negPtr] * array[negPtr]
+        } else {
+            negSq = math.MaxInt64
+        }
+        if posPtr < n {
+            posSq = array[posPtr] * array[posPtr]
+        } else {
+            posSq = math.MaxInt64
+        }
+
+        if negSq <= posSq {
+            result = negSq
+            negPtr-- // Move left in negative portion
+        } else {
+            result = posSq
+            posPtr++ // Move right in positive portion
+        }
+
+        count++
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(KthSmallestSquared([]int{-4, -2, 0, 1, 3}, 3))  // 1
+    fmt.Println(KthSmallestSquared([]int{-3, -1, 2, 4}, 2))     // 1
+    fmt.Println(KthSmallestSquared([]int{-4, -2, 0, 1, 3}, 1))  // 0
 }`
         },
         similar: [

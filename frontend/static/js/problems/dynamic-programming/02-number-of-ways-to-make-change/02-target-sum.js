@@ -53,47 +53,98 @@
         solutions: {
             python: `def targetSum(data):
     """
-    Target Sum
+    Target Sum - Count expressions with +/- that evaluate to target.
 
-    Time: O(n)
-    Space: O(n)
+    Key insight: Transform into subset sum problem.
+    Let P = sum of positive elements, N = sum of negative elements.
+    P - N = target and P + N = total_sum
+    => P = (target + total_sum) / 2
+
+    So we need to count subsets that sum to (target + total_sum) / 2.
+
+    Time: O(n * sum)
+    Space: O(sum)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data["nums"]
+    target = data["target"]
 
-    result = None
+    total_sum = sum(nums)
 
-    # Process input
-    # ...
+    # Check if solution is possible
+    if (target + total_sum) % 2 != 0 or abs(target) > total_sum:
+        return 0
 
-    return result
+    subset_sum = (target + total_sum) // 2
+
+    # dp[i] = number of ways to achieve sum i
+    dp = [0] * (subset_sum + 1)
+    dp[0] = 1  # One way to make sum 0: choose nothing
+
+    # For each number, update dp from right to left
+    for num in nums:
+        for s in range(subset_sum, num - 1, -1):
+            dp[s] += dp[s - num]
+
+    return dp[subset_sum]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(targetSum({"nums": [1, 1, 1, 1, 1], "target": 3}))  # Expected: 5
+    print(targetSum({"nums": [1], "target": 1}))  # Expected: 1`,
             go: `package main
 
 import "fmt"
 
-// TargetSum solves the Target Sum problem.
-// Time: O(n), Space: O(n)
-func TargetSum(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// TargetSum counts expressions with +/- that evaluate to target.
+// Transforms into subset sum: find subsets summing to (target + totalSum) / 2.
+// Time: O(n * sum), Space: O(sum)
+func TargetSum(data map[string]interface{}) int {
+    numsInterface := data["nums"].([]interface{})
+    nums := make([]int, len(numsInterface))
+    totalSum := 0
+    for i, v := range numsInterface {
+        nums[i] = int(v.(float64))
+        totalSum += nums[i]
+    }
+    target := int(data["target"].(float64))
 
-    var result interface{}
+    // Check if solution is possible
+    if (target+totalSum)%2 != 0 {
+        return 0
+    }
+    if target > totalSum || target < -totalSum {
+        return 0
+    }
 
-    // Process input
-    // ...
+    subsetSum := (target + totalSum) / 2
+    if subsetSum < 0 {
+        return 0
+    }
 
-    return result
+    // dp[i] = number of ways to achieve sum i
+    dp := make([]int, subsetSum+1)
+    dp[0] = 1  // One way to make sum 0
+
+    // For each number, update dp from right to left
+    for _, num := range nums {
+        for s := subsetSum; s >= num; s-- {
+            dp[s] += dp[s-num]
+        }
+    }
+
+    return dp[subsetSum]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(TargetSum(map[string]interface{}{
+        "nums":   []interface{}{1.0, 1.0, 1.0, 1.0, 1.0},
+        "target": 3.0,
+    }))  // Expected: 5
+    fmt.Println(TargetSum(map[string]interface{}{
+        "nums":   []interface{}{1.0},
+        "target": 1.0,
+    }))  // Expected: 1
 }`
         },
         similar: [

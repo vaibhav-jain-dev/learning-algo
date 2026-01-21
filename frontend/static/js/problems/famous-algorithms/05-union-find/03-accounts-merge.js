@@ -50,49 +50,148 @@
     }
         ],
         solutions: {
-            python: `def accountsMerge(data):
+            python: `from collections import defaultdict
+
+def accountsMerge(accounts):
     """
-    Accounts Merge
+    Accounts Merge using Union-Find
 
-    Time: O(n)
-    Space: O(n)
+    Union emails that belong to the same account, then group by root.
+
+    Time: O(NK log NK) where N=accounts, K=max emails per account
+    Space: O(NK)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    parent = {}
+    rank = defaultdict(int)
+    email_to_name = {}
 
-    result = None
+    def find(x):
+        if x not in parent:
+            parent[x] = x
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
 
-    # Process input
-    # ...
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return
+
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+
+    # Union all emails in the same account
+    for account in accounts:
+        name = account[0]
+        first_email = account[1]
+
+        for email in account[1:]:
+            email_to_name[email] = name
+            union(first_email, email)
+
+    # Group emails by their root
+    groups = defaultdict(list)
+    for email in email_to_name:
+        root = find(email)
+        groups[root].append(email)
+
+    # Build result
+    result = []
+    for root, emails in groups.items():
+        name = email_to_name[root]
+        result.append([name] + sorted(emails))
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    accounts = [
+        ["John", "a@m.co", "b@m.co"],
+        ["John", "c@m.co"],
+        ["John", "a@m.co", "d@m.co"]
+    ]
+    print(accountsMerge(accounts))
+    # Output: [["John", "a@m.co", "b@m.co", "d@m.co"], ["John", "c@m.co"]]`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// AccountsMerge solves the Accounts Merge problem.
-// Time: O(n), Space: O(n)
-func AccountsMerge(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// AccountsMerge merges accounts with common emails.
+// Time: O(NK log NK), Space: O(NK)
+func AccountsMerge(accounts [][]string) [][]string {
+    parent := make(map[string]string)
+    rank := make(map[string]int)
+    emailToName := make(map[string]string)
 
-    var result interface{}
+    var find func(x string) string
+    find = func(x string) string {
+        if _, ok := parent[x]; !ok {
+            parent[x] = x
+        }
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
 
-    // Process input
-    // ...
+    union := func(x, y string) {
+        px, py := find(x), find(y)
+        if px == py {
+            return
+        }
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+    }
+
+    // Union all emails in the same account
+    for _, account := range accounts {
+        name := account[0]
+        firstEmail := account[1]
+
+        for _, email := range account[1:] {
+            emailToName[email] = name
+            union(firstEmail, email)
+        }
+    }
+
+    // Group emails by their root
+    groups := make(map[string][]string)
+    for email := range emailToName {
+        root := find(email)
+        groups[root] = append(groups[root], email)
+    }
+
+    // Build result
+    result := [][]string{}
+    for root, emails := range groups {
+        name := emailToName[root]
+        sort.Strings(emails)
+        merged := append([]string{name}, emails...)
+        result = append(result, merged)
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    accounts := [][]string{
+        {"John", "a@m.co", "b@m.co"},
+        {"John", "c@m.co"},
+        {"John", "a@m.co", "d@m.co"},
+    }
+    fmt.Println(AccountsMerge(accounts))
 }`
         },
         similar: [

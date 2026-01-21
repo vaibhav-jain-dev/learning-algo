@@ -55,49 +55,203 @@
     }
         ],
         solutions: {
-            python: `def recoverBinarySearchTree(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr or arr[0] is None:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def treeToArray(root):
+    """Convert tree back to level-order array."""
+    if not root:
+        return []
+    result = []
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        if node:
+            result.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
+        else:
+            result.append(None)
+    # Remove trailing Nones
+    while result and result[-1] is None:
+        result.pop()
+    return result
+
+def recoverBinarySearchTree(data):
     """
     Recover Binary Search Tree
 
+    Approach: In-order traversal finds swapped nodes. In valid BST,
+    inorder gives sorted sequence. Find two violations and swap.
+
     Time: O(n)
-    Space: O(n)
+    Space: O(h) recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    root = buildTree(tree)
 
-    result = None
+    if not root:
+        return []
 
-    # Process input
-    # ...
+    # Find the two swapped nodes using inorder traversal
+    first = None  # First node that's wrong (larger than successor)
+    second = None  # Second node that's wrong (smaller than predecessor)
+    prev = None
 
-    return result
+    def inorder(node):
+        nonlocal first, second, prev
+        if not node:
+            return
+
+        inorder(node.left)
+
+        # Check for violation
+        if prev and prev.val > node.val:
+            if first is None:
+                first = prev  # First violation
+            second = node  # Update second (handles adjacent and non-adjacent cases)
+
+        prev = node
+        inorder(node.right)
+
+    inorder(root)
+
+    # Swap the values of the two nodes
+    if first and second:
+        first.val, second.val = second.val, first.val
+
+    return treeToArray(root)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(recoverBinarySearchTree({"tree": [1, 3, None, None, 2]}))
+    print(recoverBinarySearchTree({"tree": [3, 1, 4, None, None, 2]}))`,
             go: `package main
 
 import "fmt"
 
-// RecoverBinarySearchTree solves the Recover Binary Search Tree problem.
-// Time: O(n), Space: O(n)
-func RecoverBinarySearchTree(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
-
+func treeToArray(root *TreeNode) []interface{} {
+    if root == nil {
+        return []interface{}{}
+    }
+    var result []interface{}
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        node := queue[0]
+        queue = queue[1:]
+        if node != nil {
+            result = append(result, node.Val)
+            queue = append(queue, node.Left)
+            queue = append(queue, node.Right)
+        } else {
+            result = append(result, nil)
+        }
+    }
+    // Remove trailing nils
+    for len(result) > 0 && result[len(result)-1] == nil {
+        result = result[:len(result)-1]
+    }
     return result
 }
 
+func RecoverBinarySearchTree(data map[string]interface{}) []interface{} {
+    treeArr := data["tree"].([]interface{})
+    root := buildTree(treeArr)
+
+    if root == nil {
+        return []interface{}{}
+    }
+
+    var first, second, prev *TreeNode
+
+    var inorder func(node *TreeNode)
+    inorder = func(node *TreeNode) {
+        if node == nil {
+            return
+        }
+        inorder(node.Left)
+
+        if prev != nil && prev.Val > node.Val {
+            if first == nil {
+                first = prev
+            }
+            second = node
+        }
+        prev = node
+
+        inorder(node.Right)
+    }
+
+    inorder(root)
+
+    // Swap values
+    if first != nil && second != nil {
+        first.Val, second.Val = second.Val, first.Val
+    }
+
+    return treeToArray(root)
+}
+
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": []interface{}{1.0, 3.0, nil, nil, 2.0},
+    }
+    fmt.Println(RecoverBinarySearchTree(data))
 }`
         },
         similar: [

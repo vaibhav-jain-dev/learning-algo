@@ -42,49 +42,108 @@
     }
         ],
         solutions: {
-            python: `def minimumSwapsToSort(data):
+            python: `def minimumSwapsToSort(array):
     """
     Minimum Swaps To Sort
 
-    Time: O(n)
+    Find minimum swaps to sort array of distinct integers.
+    Use cycle detection - each cycle of length k needs k-1 swaps.
+
+    Time: O(n log n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(array)
 
-    result = None
+    # Create array of (value, original_index) and sort by value
+    arr_pos = [(val, idx) for idx, val in enumerate(array)]
+    arr_pos.sort(key=lambda x: x[0])
 
-    # Process input
-    # ...
+    visited = [False] * n
+    swaps = 0
 
-    return result
+    for i in range(n):
+        # Skip if already visited or already in correct position
+        if visited[i] or arr_pos[i][1] == i:
+            continue
+
+        # Find cycle length
+        cycle_length = 0
+        j = i
+
+        while not visited[j]:
+            visited[j] = True
+            # Move to the index where current element should go
+            j = arr_pos[j][1]
+            cycle_length += 1
+
+        # A cycle of length k requires k-1 swaps
+        if cycle_length > 1:
+            swaps += cycle_length - 1
+
+    return swaps
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(minimumSwapsToSort([4, 3, 2, 1]))  # 2
+    print(minimumSwapsToSort([1, 5, 4, 3, 2]))  # 2`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// MinimumSwapsToSort solves the Minimum Swaps To Sort problem.
-// Time: O(n), Space: O(n)
-func MinimumSwapsToSort(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MinimumSwapsToSort finds minimum swaps to sort array.
+// Time: O(n log n), Space: O(n)
+func MinimumSwapsToSort(array []int) int {
+    n := len(array)
 
-    var result interface{}
+    // Create array of (value, original_index)
+    type pair struct {
+        val, idx int
+    }
+    arrPos := make([]pair, n)
+    for i, v := range array {
+        arrPos[i] = pair{v, i}
+    }
 
-    // Process input
-    // ...
+    // Sort by value
+    sort.Slice(arrPos, func(i, j int) bool {
+        return arrPos[i].val < arrPos[j].val
+    })
 
-    return result
+    visited := make([]bool, n)
+    swaps := 0
+
+    for i := 0; i < n; i++ {
+        // Skip if already visited or in correct position
+        if visited[i] || arrPos[i].idx == i {
+            continue
+        }
+
+        // Find cycle length
+        cycleLength := 0
+        j := i
+
+        for !visited[j] {
+            visited[j] = true
+            j = arrPos[j].idx
+            cycleLength++
+        }
+
+        // A cycle of length k requires k-1 swaps
+        if cycleLength > 1 {
+            swaps += cycleLength - 1
+        }
+    }
+
+    return swaps
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MinimumSwapsToSort([]int{4, 3, 2, 1}))  // 2
+    fmt.Println(MinimumSwapsToSort([]int{1, 5, 4, 3, 2}))  // 2
 }`
         },
         similar: [

@@ -56,49 +56,129 @@
     }
         ],
         solutions: {
-            python: `def convertSortedArrayToBst(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def convertSortedArrayToBst(data):
     """
-    Convert Sorted Array to BST
+    Convert Sorted Array to Height-Balanced BST
+
+    Approach: Use middle element as root for balanced tree,
+    recursively build left and right subtrees.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(log n) recursion stack
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    nums = data.get("nums", [])
 
-    result = None
+    if not nums:
+        return []
 
-    # Process input
-    # ...
+    def build(left, right):
+        if left > right:
+            return None
+
+        mid = (left + right) // 2
+        node = TreeNode(nums[mid])
+        node.left = build(left, mid - 1)
+        node.right = build(mid + 1, right)
+        return node
+
+    root = build(0, len(nums) - 1)
+
+    # Convert tree to level-order array for output
+    result = []
+    queue = deque([root])
+
+    while queue:
+        node = queue.popleft()
+        if node:
+            result.append(node.val)
+            queue.append(node.left)
+            queue.append(node.right)
+        else:
+            result.append(None)
+
+    # Remove trailing Nones
+    while result and result[-1] is None:
+        result.pop()
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(convertSortedArrayToBst({"nums": [-10, -3, 0, 5, 9]}))
+    print(convertSortedArrayToBst({"nums": [1, 2, 3, 4, 5, 6, 7]}))`,
             go: `package main
 
 import "fmt"
 
-// ConvertSortedArrayToBst solves the Convert Sorted Array to BST problem.
-// Time: O(n), Space: O(n)
-func ConvertSortedArrayToBst(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func ConvertSortedArrayToBst(data map[string]interface{}) []interface{} {
+    numsInterface := data["nums"].([]interface{})
+    nums := make([]int, len(numsInterface))
+    for i, v := range numsInterface {
+        nums[i] = int(v.(float64))
+    }
 
-    // Process input
-    // ...
+    if len(nums) == 0 {
+        return []interface{}{}
+    }
+
+    var build func(left, right int) *TreeNode
+    build = func(left, right int) *TreeNode {
+        if left > right {
+            return nil
+        }
+        mid := (left + right) / 2
+        node := &TreeNode{Val: nums[mid]}
+        node.Left = build(left, mid-1)
+        node.Right = build(mid+1, right)
+        return node
+    }
+
+    root := build(0, len(nums)-1)
+
+    // Convert to level-order array
+    var result []interface{}
+    queue := []*TreeNode{root}
+
+    for len(queue) > 0 {
+        node := queue[0]
+        queue = queue[1:]
+        if node != nil {
+            result = append(result, node.Val)
+            queue = append(queue, node.Left)
+            queue = append(queue, node.Right)
+        } else {
+            result = append(result, nil)
+        }
+    }
+
+    // Remove trailing nils
+    for len(result) > 0 && result[len(result)-1] == nil {
+        result = result[:len(result)-1]
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "nums": []interface{}{-10.0, -3.0, 0.0, 5.0, 9.0},
+    }
+    fmt.Println(ConvertSortedArrayToBst(data))
 }`
         },
         similar: [

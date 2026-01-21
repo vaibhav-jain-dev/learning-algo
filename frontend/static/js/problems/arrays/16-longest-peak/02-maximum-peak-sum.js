@@ -42,49 +42,106 @@
     }
         ],
         solutions: {
-            python: `def maximumPeakSum(data):
+            python: `def maximumPeakSum(array):
     """
     Maximum Peak Sum
 
+    Find the peak with maximum sum. A peak consists of strictly
+    increasing elements to a tip, then strictly decreasing.
+
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(array) < 3:
+        return 0
 
-    result = None
+    max_sum = 0
+    i = 1
 
-    # Process input
-    # ...
+    while i < len(array) - 1:
+        # Check if this is a peak tip
+        if array[i] > array[i - 1] and array[i] > array[i + 1]:
+            # Found a peak tip, expand left and right
+            left = i - 1
+            right = i + 1
 
-    return result
+            # Expand left while strictly increasing
+            while left > 0 and array[left - 1] < array[left]:
+                left -= 1
+
+            # Expand right while strictly decreasing
+            while right < len(array) - 1 and array[right] > array[right + 1]:
+                right += 1
+
+            # Calculate sum of this peak
+            peak_sum = sum(array[left:right + 1])
+            max_sum = max(max_sum, peak_sum)
+
+            # Move to the end of this peak
+            i = right + 1
+        else:
+            i += 1
+
+    return max_sum
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maximumPeakSum([1, 10, 2, 100, 50, 1]))  # 153
+    print(maximumPeakSum([1, 3, 2]))  # 6`,
             go: `package main
 
 import "fmt"
 
-// MaximumPeakSum solves the Maximum Peak Sum problem.
-// Time: O(n), Space: O(n)
-func MaximumPeakSum(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// MaximumPeakSum finds the peak with maximum sum.
+// Time: O(n), Space: O(1)
+func MaximumPeakSum(array []int) int {
+    if len(array) < 3 {
+        return 0
+    }
 
-    var result interface{}
+    maxSum := 0
+    i := 1
 
-    // Process input
-    // ...
+    for i < len(array)-1 {
+        // Check if this is a peak tip
+        if array[i] > array[i-1] && array[i] > array[i+1] {
+            // Found a peak tip, expand left and right
+            left := i - 1
+            right := i + 1
 
-    return result
+            // Expand left while strictly increasing
+            for left > 0 && array[left-1] < array[left] {
+                left--
+            }
+
+            // Expand right while strictly decreasing
+            for right < len(array)-1 && array[right] > array[right+1] {
+                right++
+            }
+
+            // Calculate sum of this peak
+            peakSum := 0
+            for j := left; j <= right; j++ {
+                peakSum += array[j]
+            }
+            if peakSum > maxSum {
+                maxSum = peakSum
+            }
+
+            // Move to the end of this peak
+            i = right + 1
+        } else {
+            i++
+        }
+    }
+
+    return maxSum
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaximumPeakSum([]int{1, 10, 2, 100, 50, 1}))  // 153
+    fmt.Println(MaximumPeakSum([]int{1, 3, 2}))  // 6
 }`
         },
         similar: [

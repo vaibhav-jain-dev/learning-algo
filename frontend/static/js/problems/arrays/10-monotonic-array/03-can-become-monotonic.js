@@ -56,49 +56,114 @@
     }
         ],
         solutions: {
-            python: `def canBecomeMonotonic(data):
+            python: `def canBecomeMonotonic(array):
     """
-    Can Become Monotonic
+    Can Become Monotonic - Check if array can become monotonic by changing
+    at most one element to any value.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - Single pass counting violations
+    Space: O(1) - Only store counters
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if len(array) <= 2:
+        return True
 
-    result = None
+    def canBecomeNonDecreasing(arr):
+        # Count violations where arr[i] > arr[i+1]
+        violations = 0
+        for i in range(len(arr) - 1):
+            if arr[i] > arr[i + 1]:
+                violations += 1
+                if violations > 1:
+                    return False
+                # Check if we can fix by modifying arr[i] or arr[i+1]
+                # Option 1: Change arr[i] to arr[i+1] (valid if i==0 or arr[i-1] <= arr[i+1])
+                # Option 2: Change arr[i+1] to arr[i] (valid if i+2==len or arr[i] <= arr[i+2])
+                canFixLeft = (i == 0 or arr[i - 1] <= arr[i + 1])
+                canFixRight = (i + 2 >= len(arr) or arr[i] <= arr[i + 2])
+                if not canFixLeft and not canFixRight:
+                    return False
+        return True
 
-    # Process input
-    # ...
+    def canBecomeNonIncreasing(arr):
+        # Reverse the check
+        violations = 0
+        for i in range(len(arr) - 1):
+            if arr[i] < arr[i + 1]:
+                violations += 1
+                if violations > 1:
+                    return False
+                canFixLeft = (i == 0 or arr[i - 1] >= arr[i + 1])
+                canFixRight = (i + 2 >= len(arr) or arr[i] >= arr[i + 2])
+                if not canFixLeft and not canFixRight:
+                    return False
+        return True
 
-    return result
+    return canBecomeNonDecreasing(array) or canBecomeNonIncreasing(array)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(canBecomeMonotonic([1, 5, 3, 4, 5]))  # True
+    print(canBecomeMonotonic([1, 2, 3, 4, 5]))  # True (already monotonic)
+    print(canBecomeMonotonic([4, 2, 3, 1]))     # False
+    print(canBecomeMonotonic([3, 4, 2, 3]))     # False`,
             go: `package main
 
 import "fmt"
 
-// CanBecomeMonotonic solves the Can Become Monotonic problem.
-// Time: O(n), Space: O(n)
-func CanBecomeMonotonic(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// CanBecomeMonotonic checks if array can become monotonic by changing
+// at most one element to any value.
+// Time: O(n), Space: O(1)
+func CanBecomeMonotonic(array []int) bool {
+    if len(array) <= 2 {
+        return true
+    }
 
-    var result interface{}
+    canBecomeNonDecreasing := func(arr []int) bool {
+        violations := 0
+        for i := 0; i < len(arr)-1; i++ {
+            if arr[i] > arr[i+1] {
+                violations++
+                if violations > 1 {
+                    return false
+                }
+                // Check if we can fix by modifying arr[i] or arr[i+1]
+                canFixLeft := (i == 0 || arr[i-1] <= arr[i+1])
+                canFixRight := (i+2 >= len(arr) || arr[i] <= arr[i+2])
+                if !canFixLeft && !canFixRight {
+                    return false
+                }
+            }
+        }
+        return true
+    }
 
-    // Process input
-    // ...
+    canBecomeNonIncreasing := func(arr []int) bool {
+        violations := 0
+        for i := 0; i < len(arr)-1; i++ {
+            if arr[i] < arr[i+1] {
+                violations++
+                if violations > 1 {
+                    return false
+                }
+                canFixLeft := (i == 0 || arr[i-1] >= arr[i+1])
+                canFixRight := (i+2 >= len(arr) || arr[i] >= arr[i+2])
+                if !canFixLeft && !canFixRight {
+                    return false
+                }
+            }
+        }
+        return true
+    }
 
-    return result
+    return canBecomeNonDecreasing(array) || canBecomeNonIncreasing(array)
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(CanBecomeMonotonic([]int{1, 5, 3, 4, 5})) // true
+    fmt.Println(CanBecomeMonotonic([]int{1, 2, 3, 4, 5})) // true
+    fmt.Println(CanBecomeMonotonic([]int{4, 2, 3, 1}))    // false
+    fmt.Println(CanBecomeMonotonic([]int{3, 4, 2, 3}))    // false
 }`
         },
         similar: [

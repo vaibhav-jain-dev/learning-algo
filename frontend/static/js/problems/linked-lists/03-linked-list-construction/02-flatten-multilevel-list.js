@@ -42,49 +42,226 @@
     }
         ],
         solutions: {
-            python: `def flattenAMultilevelDoublyLinkedList(data):
+            python: `class Node:
+    def __init__(self, val=0, prev=None, next=None, child=None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
+
+def flattenAMultilevelDoublyLinkedList(head):
     """
     Flatten a Multilevel Doubly Linked List
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n) - visit each node once
+    Space: O(depth) - recursion stack depth
+
+    When we encounter a child, we:
+    1. Flatten the child list recursively
+    2. Insert it between current and next
+    3. Fix all prev/next pointers
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not head:
+        return head
 
-    result = None
+    def flatten_and_get_tail(node):
+        """Flatten starting from node and return the tail."""
+        current = node
+        tail = node
 
-    # Process input
-    # ...
+        while current:
+            next_node = current.next
 
-    return result
+            if current.child:
+                # Recursively flatten the child list
+                child_head = current.child
+                child_tail = flatten_and_get_tail(child_head)
+
+                # Connect current to child_head
+                current.next = child_head
+                child_head.prev = current
+
+                # Connect child_tail to next_node
+                if next_node:
+                    child_tail.next = next_node
+                    next_node.prev = child_tail
+
+                # Clear the child pointer
+                current.child = None
+
+                # Update tail
+                tail = child_tail
+            else:
+                tail = current
+
+            current = next_node
+
+        return tail
+
+    flatten_and_get_tail(head)
+    return head
+
+
+# Iterative approach using stack
+def flattenIterative(head):
+    """
+    Time: O(n), Space: O(depth)
+    """
+    if not head:
+        return head
+
+    stack = []
+    current = head
+
+    while current:
+        if current.child:
+            # Save next to stack if exists
+            if current.next:
+                stack.append(current.next)
+
+            # Connect current to child
+            current.next = current.child
+            current.child.prev = current
+            current.child = None
+
+        if not current.next and stack:
+            # Pop from stack and connect
+            next_node = stack.pop()
+            current.next = next_node
+            next_node.prev = current
+
+        current = current.next
+
+    return head
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Create: 1-2-3 with 2->4-5
+    n1, n2, n3 = Node(1), Node(2), Node(3)
+    n4, n5 = Node(4), Node(5)
+    n1.next, n2.prev = n2, n1
+    n2.next, n3.prev = n3, n2
+    n4.next, n5.prev = n5, n4
+    n2.child = n4
+
+    result = flattenAMultilevelDoublyLinkedList(n1)
+    # Should print: 1, 2, 4, 5, 3
+    while result:
+        print(result.val, end=" ")
+        result = result.next`,
             go: `package main
 
 import "fmt"
 
-// FlattenAMultilevelDoublyLinkedList solves the Flatten a Multilevel Doubly Linked List problem.
-// Time: O(n), Space: O(n)
-func FlattenAMultilevelDoublyLinkedList(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type Node struct {
+    Val   int
+    Prev  *Node
+    Next  *Node
+    Child *Node
+}
 
-    var result interface{}
+// FlattenAMultilevelDoublyLinkedList flattens the multilevel list.
+// Time: O(n), Space: O(depth)
+func FlattenAMultilevelDoublyLinkedList(head *Node) *Node {
+    if head == nil {
+        return nil
+    }
 
-    // Process input
-    // ...
+    flattenAndGetTail(head)
+    return head
+}
 
-    return result
+// flattenAndGetTail flattens starting from node and returns the tail.
+func flattenAndGetTail(node *Node) *Node {
+    current := node
+    var tail *Node = node
+
+    for current != nil {
+        nextNode := current.Next
+
+        if current.Child != nil {
+            // Recursively flatten the child list
+            childHead := current.Child
+            childTail := flattenAndGetTail(childHead)
+
+            // Connect current to childHead
+            current.Next = childHead
+            childHead.Prev = current
+
+            // Connect childTail to nextNode
+            if nextNode != nil {
+                childTail.Next = nextNode
+                nextNode.Prev = childTail
+            }
+
+            // Clear the child pointer
+            current.Child = nil
+
+            // Update tail
+            tail = childTail
+        } else {
+            tail = current
+        }
+
+        current = nextNode
+    }
+
+    return tail
+}
+
+// FlattenIterative uses a stack-based approach.
+// Time: O(n), Space: O(depth)
+func FlattenIterative(head *Node) *Node {
+    if head == nil {
+        return nil
+    }
+
+    stack := []*Node{}
+    current := head
+
+    for current != nil {
+        if current.Child != nil {
+            // Save next to stack if exists
+            if current.Next != nil {
+                stack = append(stack, current.Next)
+            }
+
+            // Connect current to child
+            current.Next = current.Child
+            current.Child.Prev = current
+            current.Child = nil
+        }
+
+        if current.Next == nil && len(stack) > 0 {
+            // Pop from stack and connect
+            nextNode := stack[len(stack)-1]
+            stack = stack[:len(stack)-1]
+            current.Next = nextNode
+            nextNode.Prev = current
+        }
+
+        current = current.Next
+    }
+
+    return head
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Create: 1-2-3 with 2->4-5
+    n1, n2, n3 := &Node{Val: 1}, &Node{Val: 2}, &Node{Val: 3}
+    n4, n5 := &Node{Val: 4}, &Node{Val: 5}
+    n1.Next, n2.Prev = n2, n1
+    n2.Next, n3.Prev = n3, n2
+    n4.Next, n5.Prev = n5, n4
+    n2.Child = n4
+
+    result := FlattenAMultilevelDoublyLinkedList(n1)
+    // Should print: 1 2 4 5 3
+    for result != nil {
+        fmt.Print(result.Val, " ")
+        result = result.Next
+    }
 }`
         },
         similar: [

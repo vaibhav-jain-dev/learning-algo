@@ -42,49 +42,99 @@
     }
         ],
         solutions: {
-            python: `def longestBitonicSubsequence(data):
+            python: `def longestBitonicSubsequence(array):
     """
     Longest Bitonic Subsequence
 
-    Time: O(n)
+    A bitonic subsequence first increases then decreases.
+    Use DP to find LIS from left and LIS from right.
+
+    Time: O(n^2)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(array)
+    if n == 0:
+        return 0
 
-    result = None
+    # LIS ending at each index (left to right)
+    lis = [1] * n
+    for i in range(1, n):
+        for j in range(i):
+            if array[j] < array[i]:
+                lis[i] = max(lis[i], lis[j] + 1)
 
-    # Process input
-    # ...
+    # LIS starting at each index (right to left, decreasing)
+    lds = [1] * n
+    for i in range(n - 2, -1, -1):
+        for j in range(n - 1, i, -1):
+            if array[i] > array[j]:
+                lds[i] = max(lds[i], lds[j] + 1)
 
-    return result
+    # Find maximum bitonic length
+    max_len = 0
+    for i in range(n):
+        # lis[i] + lds[i] - 1 because peak element is counted twice
+        max_len = max(max_len, lis[i] + lds[i] - 1)
+
+    return max_len
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(longestBitonicSubsequence([1, 11, 2, 10, 4, 5, 2, 1]))  # 6
+    print(longestBitonicSubsequence([1, 2, 3, 4, 5]))  # 5`,
             go: `package main
 
 import "fmt"
 
-// LongestBitonicSubsequence solves the Longest Bitonic Subsequence problem.
-// Time: O(n), Space: O(n)
-func LongestBitonicSubsequence(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// LongestBitonicSubsequence finds the longest bitonic subsequence.
+// Time: O(n^2), Space: O(n)
+func LongestBitonicSubsequence(array []int) int {
+    n := len(array)
+    if n == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // LIS ending at each index (left to right)
+    lis := make([]int, n)
+    for i := range lis {
+        lis[i] = 1
+    }
+    for i := 1; i < n; i++ {
+        for j := 0; j < i; j++ {
+            if array[j] < array[i] && lis[j]+1 > lis[i] {
+                lis[i] = lis[j] + 1
+            }
+        }
+    }
 
-    // Process input
-    // ...
+    // LIS starting at each index (right to left, decreasing)
+    lds := make([]int, n)
+    for i := range lds {
+        lds[i] = 1
+    }
+    for i := n - 2; i >= 0; i-- {
+        for j := n - 1; j > i; j-- {
+            if array[i] > array[j] && lds[j]+1 > lds[i] {
+                lds[i] = lds[j] + 1
+            }
+        }
+    }
 
-    return result
+    // Find maximum bitonic length
+    maxLen := 0
+    for i := 0; i < n; i++ {
+        if lis[i]+lds[i]-1 > maxLen {
+            maxLen = lis[i] + lds[i] - 1
+        }
+    }
+
+    return maxLen
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(LongestBitonicSubsequence([]int{1, 11, 2, 10, 4, 5, 2, 1}))  // 6
+    fmt.Println(LongestBitonicSubsequence([]int{1, 2, 3, 4, 5}))  // 5
 }`
         },
         similar: [

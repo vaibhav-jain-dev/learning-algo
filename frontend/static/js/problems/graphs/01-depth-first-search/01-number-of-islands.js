@@ -99,49 +99,112 @@
     }
         ],
         solutions: {
-            python: `def numberOfIslands(data):
+            python: `def numIslands(grid):
     """
-    Number of Islands
+    Number of Islands - Count connected components of '1's using DFS.
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(M * N) where M is rows, N is columns
+    Space: O(M * N) for recursion stack in worst case
     """
-    # TODO: Implement solution
-    # Key insight: DFS explores depth-first, ideal for paths and connectivity
+    if not grid or not grid[0]:
+        return 0
 
-    result = None
+    rows, cols = len(grid), len(grid[0])
+    count = 0
 
-    # Process input
-    # ...
+    def dfs(r, c):
+        # Base case: out of bounds or water
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1':
+            return
 
-    return result
+        # Mark as visited by changing to '0'
+        grid[r][c] = '0'
+
+        # Explore all 4 directions
+        dfs(r + 1, c)  # down
+        dfs(r - 1, c)  # up
+        dfs(r, c + 1)  # right
+        dfs(r, c - 1)  # left
+
+    # Iterate through every cell
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':
+                count += 1
+                dfs(r, c)  # Sink the entire island
+
+    return count
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    grid1 = [
+        ["1","1","1","1","0"],
+        ["1","1","0","1","0"],
+        ["1","1","0","0","0"],
+        ["0","0","0","0","0"]
+    ]
+    print(numIslands(grid1))  # Output: 1
+
+    grid2 = [
+        ["1","1","0","0","0"],
+        ["1","1","0","0","0"],
+        ["0","0","1","0","0"],
+        ["0","0","0","1","1"]
+    ]
+    print(numIslands(grid2))  # Output: 3`,
             go: `package main
 
 import "fmt"
 
-// NumberOfIslands solves the Number of Islands problem.
-// Time: O(n), Space: O(n)
-func NumberOfIslands(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: DFS explores depth-first, ideal for paths and connectivity
+// numIslands counts the number of islands in a grid using DFS.
+// Time: O(M * N), Space: O(M * N)
+func numIslands(grid [][]byte) int {
+    if len(grid) == 0 || len(grid[0]) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    rows, cols := len(grid), len(grid[0])
+    count := 0
 
-    // Process input
-    // ...
+    var dfs func(r, c int)
+    dfs = func(r, c int) {
+        // Base case: out of bounds or water
+        if r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1' {
+            return
+        }
 
-    return result
+        // Mark as visited
+        grid[r][c] = '0'
+
+        // Explore all 4 directions
+        dfs(r+1, c) // down
+        dfs(r-1, c) // up
+        dfs(r, c+1) // right
+        dfs(r, c-1) // left
+    }
+
+    // Iterate through every cell
+    for r := 0; r < rows; r++ {
+        for c := 0; c < cols; c++ {
+            if grid[r][c] == '1' {
+                count++
+                dfs(r, c) // Sink the entire island
+            }
+        }
+    }
+
+    return count
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    grid := [][]byte{
+        {'1','1','1','1','0'},
+        {'1','1','0','1','0'},
+        {'1','1','0','0','0'},
+        {'0','0','0','0','0'},
+    }
+    fmt.Println(numIslands(grid)) // Output: 1
 }`
         },
         similar: [

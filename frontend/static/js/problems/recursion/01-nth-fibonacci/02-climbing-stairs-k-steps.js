@@ -39,45 +39,90 @@
     """
     Climbing Stairs with K Steps
 
-    Time: O(n)
-    Space: O(n)
+    Count distinct ways to climb n stairs taking 1 to k steps at a time.
+    dp[i] = sum of dp[i-1], dp[i-2], ..., dp[i-k]
+
+    Time: O(n * k) or O(n) with sliding window
+    Space: O(k) using sliding window optimization
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data.get("n") if isinstance(data, dict) else data
+    k = data.get("k", 2) if isinstance(data, dict) else 2
 
-    result = None
+    if n == 0:
+        return 1
+    if n == 1:
+        return 1
 
-    # Process input
-    # ...
+    # dp[i] represents number of ways to reach step i
+    # Use sliding window to keep only last k values
+    dp = [0] * (k + 1)
+    dp[0] = 1  # Base case: 1 way to stay at ground
+    window_sum = 1
 
-    return result
+    for i in range(1, n + 1):
+        idx = i % (k + 1)
+        dp[idx] = window_sum
+        window_sum += dp[idx]
+
+        # Remove the element that's now out of window
+        if i >= k:
+            old_idx = (i - k) % (k + 1)
+            window_sum -= dp[old_idx]
+
+    return dp[n % (k + 1)]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(climbingStairsWithKSteps({"n": 4, "k": 2}))  # Output: 5
+    print(climbingStairsWithKSteps({"n": 5, "k": 3}))  # Output: 13`,
             go: `package main
 
 import "fmt"
 
 // ClimbingStairsWithKSteps solves the Climbing Stairs with K Steps problem.
-// Time: O(n), Space: O(n)
+// Count distinct ways to climb n stairs taking 1 to k steps at a time.
+// Time: O(n), Space: O(k) using sliding window optimization
 func ClimbingStairsWithKSteps(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+    // Extract n and k from input
+    var n, k int
+    switch v := data.(type) {
+    case map[string]interface{}:
+        n = int(v["n"].(float64))
+        if kVal, ok := v["k"]; ok {
+            k = int(kVal.(float64))
+        } else {
+            k = 2
+        }
+    }
 
-    var result interface{}
+    if n == 0 || n == 1 {
+        return 1
+    }
 
-    // Process input
-    // ...
+    // Use sliding window to keep only last k values
+    dp := make([]int, k+1)
+    dp[0] = 1 // Base case: 1 way to stay at ground
+    windowSum := 1
 
-    return result
+    for i := 1; i <= n; i++ {
+        idx := i % (k + 1)
+        dp[idx] = windowSum
+        windowSum += dp[idx]
+
+        // Remove the element that's now out of window
+        if i >= k {
+            oldIdx := (i - k) % (k + 1)
+            windowSum -= dp[oldIdx]
+        }
+    }
+
+    return dp[n%(k+1)]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(ClimbingStairsWithKSteps(map[string]interface{}{"n": float64(4), "k": float64(2)})) // Output: 5
+    fmt.Println(ClimbingStairsWithKSteps(map[string]interface{}{"n": float64(5), "k": float64(3)})) // Output: 13
 }`
         },
         similar: [

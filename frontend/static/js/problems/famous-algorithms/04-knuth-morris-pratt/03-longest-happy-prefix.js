@@ -42,49 +42,90 @@
     }
         ],
         solutions: {
-            python: `def longestHappyPrefix(data):
+            python: `def longestPrefix(s):
     """
-    Longest Happy Prefix
+    Longest Happy Prefix using KMP LPS Array
+
+    A "happy prefix" is a prefix that is also a suffix (excluding itself).
+    The LPS array at the last position gives us exactly this.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(s)
+    if n == 0:
+        return ""
 
-    result = None
+    # Build LPS array
+    lps = [0] * n
+    length = 0
+    i = 1
 
-    # Process input
-    # ...
+    while i < n:
+        if s[i] == s[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
 
-    return result
+    # The last value of LPS is the length of longest happy prefix
+    happy_len = lps[n - 1]
+
+    return s[:happy_len]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(longestPrefix("level"))   # Output: "l"
+    print(longestPrefix("ababab"))  # Output: "abab"
+    print(longestPrefix("abc"))     # Output: ""`,
             go: `package main
 
 import "fmt"
 
-// LongestHappyPrefix solves the Longest Happy Prefix problem.
+// LongestPrefix finds the longest happy prefix of s.
 // Time: O(n), Space: O(n)
-func LongestHappyPrefix(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func LongestPrefix(s string) string {
+    n := len(s)
+    if n == 0 {
+        return ""
+    }
 
-    var result interface{}
+    // Build LPS array
+    lps := make([]int, n)
+    length := 0
+    i := 1
 
-    // Process input
-    // ...
+    for i < n {
+        if s[i] == s[length] {
+            length++
+            lps[i] = length
+            i++
+        } else {
+            if length != 0 {
+                length = lps[length-1]
+            } else {
+                lps[i] = 0
+                i++
+            }
+        }
+    }
 
-    return result
+    // The last value of LPS is the length of longest happy prefix
+    happyLen := lps[n-1]
+
+    return s[:happyLen]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(LongestPrefix("level"))  // Output: "l"
+    fmt.Println(LongestPrefix("ababab")) // Output: "abab"
+    fmt.Println(LongestPrefix("abc"))    // Output: ""
 }`
         },
         similar: [

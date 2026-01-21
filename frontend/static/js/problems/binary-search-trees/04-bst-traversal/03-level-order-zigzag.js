@@ -57,49 +57,163 @@
     }
         ],
         solutions: {
-            python: `def binaryTreeZigzagLevelOrderTraversal(data):
+            python: `from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def buildTree(arr):
+    """Build tree from level-order array."""
+    if not arr or arr[0] is None:
+        return None
+    root = TreeNode(arr[0])
+    queue = deque([root])
+    i = 1
+    while queue and i < len(arr):
+        node = queue.popleft()
+        if i < len(arr) and arr[i] is not None:
+            node.left = TreeNode(arr[i])
+            queue.append(node.left)
+        i += 1
+        if i < len(arr) and arr[i] is not None:
+            node.right = TreeNode(arr[i])
+            queue.append(node.right)
+        i += 1
+    return root
+
+def binaryTreeZigzagLevelOrderTraversal(data):
     """
     Binary Tree Zigzag Level Order Traversal
+
+    Approach: BFS with level-by-level processing. Alternate
+    direction of adding values at each level.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    tree = data.get("tree", [])
+    root = buildTree(tree)
 
-    result = None
+    if not root:
+        return []
 
-    # Process input
-    # ...
+    result = []
+    queue = deque([root])
+    left_to_right = True
+
+    while queue:
+        level_size = len(queue)
+        level_values = deque()
+
+        for _ in range(level_size):
+            node = queue.popleft()
+
+            # Add to front or back based on direction
+            if left_to_right:
+                level_values.append(node.val)
+            else:
+                level_values.appendleft(node.val)
+
+            # Add children for next level
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        result.append(list(level_values))
+        left_to_right = not left_to_right
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(binaryTreeZigzagLevelOrderTraversal({"tree": [3, 9, 20, None, None, 15, 7]}))
+    print(binaryTreeZigzagLevelOrderTraversal({"tree": [1, 2, 3, 4, 5, 6, 7]}))`,
             go: `package main
 
 import "fmt"
 
-// BinaryTreeZigzagLevelOrderTraversal solves the Binary Tree Zigzag Level Order Traversal problem.
-// Time: O(n), Space: O(n)
-func BinaryTreeZigzagLevelOrderTraversal(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
 
-    var result interface{}
+func buildTree(arr []interface{}) *TreeNode {
+    if len(arr) == 0 || arr[0] == nil {
+        return nil
+    }
+    root := &TreeNode{Val: int(arr[0].(float64))}
+    queue := []*TreeNode{root}
+    i := 1
+    for len(queue) > 0 && i < len(arr) {
+        node := queue[0]
+        queue = queue[1:]
+        if i < len(arr) && arr[i] != nil {
+            node.Left = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Left)
+        }
+        i++
+        if i < len(arr) && arr[i] != nil {
+            node.Right = &TreeNode{Val: int(arr[i].(float64))}
+            queue = append(queue, node.Right)
+        }
+        i++
+    }
+    return root
+}
 
-    // Process input
-    // ...
+func BinaryTreeZigzagLevelOrderTraversal(data map[string]interface{}) [][]int {
+    treeArr := data["tree"].([]interface{})
+    root := buildTree(treeArr)
+
+    if root == nil {
+        return [][]int{}
+    }
+
+    var result [][]int
+    queue := []*TreeNode{root}
+    leftToRight := true
+
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        level := make([]int, levelSize)
+
+        for i := 0; i < levelSize; i++ {
+            node := queue[0]
+            queue = queue[1:]
+
+            // Determine index based on direction
+            idx := i
+            if !leftToRight {
+                idx = levelSize - 1 - i
+            }
+            level[idx] = node.Val
+
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+            }
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+            }
+        }
+
+        result = append(result, level)
+        leftToRight = !leftToRight
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "tree": []interface{}{3.0, 9.0, 20.0, nil, nil, 15.0, 7.0},
+    }
+    fmt.Println(BinaryTreeZigzagLevelOrderTraversal(data))
 }`
         },
         similar: [

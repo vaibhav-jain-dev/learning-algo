@@ -54,49 +54,97 @@
     }
         ],
         solutions: {
-            python: `def maximumSumWithAtLeastKElements(data):
+            python: `def maxSumWithAtLeastK(nums, k):
     """
     Maximum Sum with at Least K Elements
+
+    Key insight: Use prefix sums and track the maximum sum
+    we can extend from previous positions.
 
     Time: O(n)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = len(nums)
+    if n < k:
+        return 0
 
-    result = None
+    # Compute prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + nums[i]
 
-    # Process input
-    # ...
+    # Sum of first k elements
+    result = prefix[k]
+
+    # maxPrefixSum[i] = max sum we can add before position i-k
+    # This represents the best positive extension we can add
+    max_extension = 0
+
+    for i in range(k, n):
+        # Window of exactly k elements ending at i
+        window_sum = prefix[i + 1] - prefix[i + 1 - k]
+
+        # Best extension we can add (from elements before the window)
+        # max_extension is the max of (prefix[j] - prefix[i-k]) for all valid j
+        max_extension = max(max_extension, prefix[i + 1 - k] - prefix[i - k])
+
+        # Update result: window + optional positive extension
+        result = max(result, window_sum + max_extension)
 
     return result
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(maxSumWithAtLeastK([1, -2, 3, -1, 5], 2))  # Output: 7
+    print(maxSumWithAtLeastK([-1, -2, -3], 2))       # Output: -3`,
             go: `package main
 
 import "fmt"
 
-// MaximumSumWithAtLeastKElements solves the Maximum Sum with at Least K Elements problem.
+// MaxSumWithAtLeastK finds max sum of subarray with at least k elements.
 // Time: O(n), Space: O(n)
-func MaximumSumWithAtLeastKElements(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+func MaxSumWithAtLeastK(nums []int, k int) int {
+    n := len(nums)
+    if n < k {
+        return 0
+    }
 
-    var result interface{}
+    // Compute prefix sums
+    prefix := make([]int, n+1)
+    for i := 0; i < n; i++ {
+        prefix[i+1] = prefix[i] + nums[i]
+    }
 
-    // Process input
-    // ...
+    // Sum of first k elements
+    result := prefix[k]
+
+    // Track best extension we can add
+    maxExtension := 0
+
+    for i := k; i < n; i++ {
+        // Window of exactly k elements ending at i
+        windowSum := prefix[i+1] - prefix[i+1-k]
+
+        // Update max extension
+        ext := prefix[i+1-k] - prefix[i-k]
+        if ext > maxExtension {
+            maxExtension = ext
+        }
+
+        // Update result
+        total := windowSum + maxExtension
+        if total > result {
+            result = total
+        }
+    }
 
     return result
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(MaxSumWithAtLeastK([]int{1, -2, 3, -1, 5}, 2)) // Output: 7
+    fmt.Println(MaxSumWithAtLeastK([]int{-1, -2, -3}, 2))      // Output: -3
 }`
         },
         similar: [

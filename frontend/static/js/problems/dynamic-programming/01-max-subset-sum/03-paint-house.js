@@ -66,47 +66,98 @@
         solutions: {
             python: `def paintHouse(data):
     """
-    Paint House
+    Paint House - Minimum cost to paint houses with 3 colors.
+
+    Key insight: dp[i][j] = min cost to paint house i with color j.
+    For each house, the cost of painting it color j is:
+    costs[i][j] + min(dp[i-1][other colors])
+
+    Since we only need previous row, we can use O(1) space.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    costs = data["costs"]
 
-    result = None
+    if not costs:
+        return 0
 
-    # Process input
-    # ...
+    n = len(costs)
 
-    return result
+    # Track minimum costs for previous house painted red, blue, green
+    prev_red, prev_blue, prev_green = costs[0][0], costs[0][1], costs[0][2]
+
+    for i in range(1, n):
+        # Current house costs
+        curr_red = costs[i][0] + min(prev_blue, prev_green)
+        curr_blue = costs[i][1] + min(prev_red, prev_green)
+        curr_green = costs[i][2] + min(prev_red, prev_blue)
+
+        prev_red, prev_blue, prev_green = curr_red, curr_blue, curr_green
+
+    return min(prev_red, prev_blue, prev_green)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(paintHouse({"costs": [[17, 2, 17], [16, 16, 5], [14, 3, 19]]}))  # Expected: 10
+    print(paintHouse({"costs": [[7, 6, 2]]}))  # Expected: 2`,
             go: `package main
 
 import "fmt"
 
-// PaintHouse solves the Paint House problem.
-// Time: O(n), Space: O(n)
-func PaintHouse(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// PaintHouse finds minimum cost to paint houses with 3 colors.
+// Each adjacent house must have different color.
+// Time: O(n), Space: O(1)
+func PaintHouse(data map[string]interface{}) int {
+    costsInterface := data["costs"].([]interface{})
+    if len(costsInterface) == 0 {
+        return 0
+    }
 
-    var result interface{}
+    // Parse costs
+    costs := make([][]int, len(costsInterface))
+    for i, row := range costsInterface {
+        rowInterface := row.([]interface{})
+        costs[i] = make([]int, 3)
+        for j, v := range rowInterface {
+            costs[i][j] = int(v.(float64))
+        }
+    }
 
-    // Process input
-    // ...
+    n := len(costs)
 
-    return result
+    // Track minimum costs for previous house
+    prevRed, prevBlue, prevGreen := costs[0][0], costs[0][1], costs[0][2]
+
+    for i := 1; i < n; i++ {
+        currRed := costs[i][0] + min(prevBlue, prevGreen)
+        currBlue := costs[i][1] + min(prevRed, prevGreen)
+        currGreen := costs[i][2] + min(prevRed, prevBlue)
+
+        prevRed, prevBlue, prevGreen = currRed, currBlue, currGreen
+    }
+
+    return min(prevRed, min(prevBlue, prevGreen))
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    costs1 := []interface{}{
+        []interface{}{17.0, 2.0, 17.0},
+        []interface{}{16.0, 16.0, 5.0},
+        []interface{}{14.0, 3.0, 19.0},
+    }
+    fmt.Println(PaintHouse(map[string]interface{}{"costs": costs1}))  // Expected: 10
+
+    costs2 := []interface{}{[]interface{}{7.0, 6.0, 2.0}}
+    fmt.Println(PaintHouse(map[string]interface{}{"costs": costs2}))  // Expected: 2
 }`
         },
         similar: [

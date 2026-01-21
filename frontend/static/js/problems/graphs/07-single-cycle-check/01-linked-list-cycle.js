@@ -40,49 +40,125 @@
     }
         ],
         solutions: {
-            python: `def linkedListCycle(data):
+            python: `class ListNode:
+    def __init__(self, val=0):
+        self.val = val
+        self.next = None
+
+def hasCycle(head):
     """
-    Linked List Cycle
+    Linked List Cycle - Floyd's Cycle Detection
+
+    Use two pointers: slow moves 1 step, fast moves 2 steps.
+    If there's a cycle, they will eventually meet.
 
     Time: O(n)
-    Space: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    if not head or not head.next:
+        return False
 
-    result = None
+    slow = head
+    fast = head
 
-    # Process input
-    # ...
+    while fast and fast.next:
+        slow = slow.next        # Move 1 step
+        fast = fast.next.next   # Move 2 steps
 
-    return result
+        if slow == fast:        # They meet - cycle exists
+            return True
+
+    return False  # Fast reached end - no cycle
+
+
+def buildLinkedList(values, pos):
+    """Helper to build linked list with cycle at position pos."""
+    if not values:
+        return None
+
+    nodes = [ListNode(v) for v in values]
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+
+    # Create cycle if pos >= 0
+    if pos >= 0:
+        nodes[-1].next = nodes[pos]
+
+    return nodes[0]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    # Test case 1: Cycle at position 1
+    head = buildLinkedList([3, 2, 0, -4], 1)
+    print(hasCycle(head))  # True
+
+    # Test case 2: No cycle
+    head = buildLinkedList([1, 2], -1)
+    print(hasCycle(head))  # False`,
             go: `package main
 
 import "fmt"
 
-// LinkedListCycle solves the Linked List Cycle problem.
-// Time: O(n), Space: O(n)
-func LinkedListCycle(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// ListNode represents a node in a linked list
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
-    var result interface{}
+// HasCycle detects if a linked list has a cycle using Floyd's algorithm
+// Time: O(n), Space: O(1)
+func HasCycle(head *ListNode) bool {
+    if head == nil || head.Next == nil {
+        return false
+    }
 
-    // Process input
-    // ...
+    slow := head
+    fast := head
 
-    return result
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next      // Move 1 step
+        fast = fast.Next.Next // Move 2 steps
+
+        if slow == fast { // They meet - cycle exists
+            return true
+        }
+    }
+
+    return false // Fast reached end - no cycle
+}
+
+// BuildLinkedList creates a linked list with optional cycle
+func BuildLinkedList(values []int, pos int) *ListNode {
+    if len(values) == 0 {
+        return nil
+    }
+
+    nodes := make([]*ListNode, len(values))
+    for i, v := range values {
+        nodes[i] = &ListNode{Val: v}
+    }
+
+    for i := 0; i < len(nodes)-1; i++ {
+        nodes[i].Next = nodes[i+1]
+    }
+
+    // Create cycle if pos >= 0
+    if pos >= 0 && pos < len(nodes) {
+        nodes[len(nodes)-1].Next = nodes[pos]
+    }
+
+    return nodes[0]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    // Test case 1: Cycle at position 1
+    head := BuildLinkedList([]int{3, 2, 0, -4}, 1)
+    fmt.Println(HasCycle(head)) // true
+
+    // Test case 2: No cycle
+    head = BuildLinkedList([]int{1, 2}, -1)
+    fmt.Println(HasCycle(head)) // false
 }`
         },
         similar: [

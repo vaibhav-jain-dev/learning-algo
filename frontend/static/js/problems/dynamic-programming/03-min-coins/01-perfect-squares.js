@@ -44,47 +44,78 @@
         solutions: {
             python: `def perfectSquares(data):
     """
-    Perfect Squares
+    Perfect Squares - Minimum perfect squares that sum to n.
 
-    Time: O(n)
+    Key insight: This is similar to coin change with coins being 1, 4, 9, 16, ...
+    dp[i] = minimum number of perfect squares that sum to i.
+
+    Time: O(n * sqrt(n))
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data["n"]
 
-    result = None
+    if n <= 0:
+        return 0
 
-    # Process input
-    # ...
+    # dp[i] = minimum number of perfect squares to sum to i
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # 0 squares needed to make sum 0
 
-    return result
+    # For each number from 1 to n
+    for i in range(1, n + 1):
+        # Try each perfect square <= i
+        j = 1
+        while j * j <= i:
+            dp[i] = min(dp[i], dp[i - j * j] + 1)
+            j += 1
+
+    return dp[n]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(perfectSquares({"n": 12}))  # Expected: 3 (4 + 4 + 4)
+    print(perfectSquares({"n": 13}))  # Expected: 2 (4 + 9)`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "math"
+)
 
-// PerfectSquares solves the Perfect Squares problem.
-// Time: O(n), Space: O(n)
-func PerfectSquares(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// PerfectSquares finds minimum perfect squares that sum to n.
+// Similar to coin change with coins being 1, 4, 9, 16, ...
+// Time: O(n * sqrt(n)), Space: O(n)
+func PerfectSquares(data map[string]interface{}) int {
+    n := int(data["n"].(float64))
 
-    var result interface{}
+    if n <= 0 {
+        return 0
+    }
 
-    // Process input
-    // ...
+    // dp[i] = minimum number of perfect squares to sum to i
+    dp := make([]int, n+1)
+    for i := range dp {
+        dp[i] = math.MaxInt32
+    }
+    dp[0] = 0  // 0 squares needed to make sum 0
 
-    return result
+    // For each number from 1 to n
+    for i := 1; i <= n; i++ {
+        // Try each perfect square <= i
+        for j := 1; j*j <= i; j++ {
+            if dp[i-j*j]+1 < dp[i] {
+                dp[i] = dp[i-j*j] + 1
+            }
+        }
+    }
+
+    return dp[n]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(PerfectSquares(map[string]interface{}{"n": 12.0}))  // Expected: 3
+    fmt.Println(PerfectSquares(map[string]interface{}{"n": 13.0}))  // Expected: 2
 }`
         },
         similar: [
