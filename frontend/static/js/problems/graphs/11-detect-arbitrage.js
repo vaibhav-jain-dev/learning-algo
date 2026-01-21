@@ -65,9 +65,9 @@
     }
         ],
         similar: [
-    { id: '01-cheapest-flights-k-stops', name: 'Cheapest Flights Within K Stops', difficulty: 'Medium' },
-    { id: '02-path-with-max-probability', name: 'Path with Maximum Probability', difficulty: 'Medium' },
-    { id: '03-negative-cycle-detection', name: 'Negative Cycle Detection', difficulty: 'Medium' }
+    { id: '11-detect-arbitrage/01-cheapest-flights-k-stops', name: 'Cheapest Flights Within K Stops', difficulty: 'Medium' },
+    { id: '11-detect-arbitrage/02-path-with-max-probability', name: 'Path with Maximum Probability', difficulty: 'Medium' },
+    { id: '11-detect-arbitrage/03-negative-cycle-detection', name: 'Negative Cycle Detection', difficulty: 'Medium' }
         ]
     };
 

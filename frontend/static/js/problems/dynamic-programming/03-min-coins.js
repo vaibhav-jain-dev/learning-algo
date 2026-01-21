@@ -50,9 +50,9 @@
     }
         ],
         similar: [
-    { id: '01-perfect-squares', name: 'Perfect Squares', difficulty: 'Medium' },
-    { id: '02-coin-change-ii-exact-coins', name: 'Coin Change II - Exact Coins', difficulty: 'Medium' },
-    { id: '03-integer-break', name: 'Integer Break', difficulty: 'Medium' }
+    { id: '03-min-coins/03-min-coins/01-perfect-squares', name: 'Perfect Squares', difficulty: 'Medium' },
+    { id: '03-min-coins/03-min-coins/02-coin-change-ii-exact-coins', name: 'Coin Change II - Exact Coins', difficulty: 'Medium' },
+    { id: '03-min-coins/03-integer-break', name: 'Integer Break', difficulty: 'Medium' }
         ]
     };
 

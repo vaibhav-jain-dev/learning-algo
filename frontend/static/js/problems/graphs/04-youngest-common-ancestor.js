@@ -37,9 +37,9 @@
     }
         ],
         similar: [
-    { id: '01-lowest-common-ancestor-binary-tree', name: 'Lowest Common Ancestor of a Binary Tree', difficulty: 'Medium' },
-    { id: '02-kth-ancestor-of-tree-node', name: 'Kth Ancestor of a Tree Node', difficulty: 'Hard' },
-    { id: '03-ancestors-in-dag', name: 'All Ancestors of a Node in a DAG', difficulty: 'Medium' }
+    { id: '04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree', name: 'Lowest Common Ancestor of a Binary Tree', difficulty: 'Medium' },
+    { id: '04-youngest-common-ancestor/02-kth-ancestor-of-tree-node', name: 'Kth Ancestor of a Tree Node', difficulty: 'Hard' },
+    { id: '04-youngest-common-ancestor/03-ancestors-in-dag', name: 'All Ancestors of a Node in a DAG', difficulty: 'Medium' }
         ]
     };
 

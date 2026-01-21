@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-remove-duplicates-unsorted', name: 'Remove Duplicates from Unsorted Linked List', difficulty: 'Medium' },
-    { id: '02-remove-all-duplicate-nodes', name: 'Remove All Nodes with Duplicate Values', difficulty: 'Medium' },
-    { id: '03-remove-duplicates-keep-k', name: 'Remove Duplicates Keeping At Most K Occurrences', difficulty: 'Hard' }
+    { id: '01-remove-duplicates/01-remove-duplicates-unsorted', name: 'Remove Duplicates from Unsorted Linked List', difficulty: 'Medium' },
+    { id: '01-remove-duplicates/02-remove-all-duplicate-nodes', name: 'Remove All Nodes with Duplicate Values', difficulty: 'Medium' },
+    { id: '01-remove-duplicates/03-remove-duplicates-keep-k', name: 'Remove Duplicates Keeping At Most K Occurrences', difficulty: 'Hard' }
         ]
     };
 

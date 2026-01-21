@@ -59,9 +59,9 @@
     }
         ],
         similar: [
-    { id: '01-network-delay-time', name: 'Network Delay Time', difficulty: 'Medium' },
-    { id: '02-cheapest-flights', name: 'Cheapest Flights Within K Stops', difficulty: 'Medium' },
-    { id: '03-path-with-minimum-effort', name: 'Path With Minimum Effort', difficulty: 'Medium' }
+    { id: '02-dijkstras-algorithm/02-dijkstras-algorithm/01-network-delay-time', name: 'Network Delay Time', difficulty: 'Medium' },
+    { id: '02-dijkstras-algorithm/02-cheapest-flights', name: 'Cheapest Flights Within K Stops', difficulty: 'Medium' },
+    { id: '02-dijkstras-algorithm/03-path-with-minimum-effort', name: 'Path With Minimum Effort', difficulty: 'Medium' }
         ]
     };
 

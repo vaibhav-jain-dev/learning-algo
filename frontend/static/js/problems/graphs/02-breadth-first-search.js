@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-level-order-traversal', name: 'Binary Tree Level Order Traversal', difficulty: 'Medium' },
-    { id: '02-shortest-path-binary-matrix', name: 'Shortest Path in Binary Matrix', difficulty: 'Medium' },
-    { id: '03-word-ladder', name: 'Word Ladder', difficulty: 'Hard' }
+    { id: '02-breadth-first-search/02-breadth-first-search/01-level-order-traversal', name: 'Binary Tree Level Order Traversal', difficulty: 'Medium' },
+    { id: '02-breadth-first-search/02-shortest-path-binary-matrix', name: 'Shortest Path in Binary Matrix', difficulty: 'Medium' },
+    { id: '02-breadth-first-search/03-word-ladder', name: 'Word Ladder', difficulty: 'Hard' }
         ]
     };
 

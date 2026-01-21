@@ -57,9 +57,9 @@
     }
         ],
         similar: [
-    { id: '01-linked-list-cycle', name: 'Linked List Cycle', difficulty: 'Easy' },
-    { id: '02-find-duplicate-number', name: 'Find Duplicate Number', difficulty: 'Medium' },
-    { id: '03-circular-array-loop', name: 'Circular Array Loop', difficulty: 'Medium' }
+    { id: '07-single-cycle-check/01-linked-list-cycle', name: 'Linked List Cycle', difficulty: 'Easy' },
+    { id: '07-single-cycle-check/02-find-duplicate-number', name: 'Find Duplicate Number', difficulty: 'Medium' },
+    { id: '07-single-cycle-check/03-circular-array-loop', name: 'Circular Array Loop', difficulty: 'Medium' }
         ]
     };
 

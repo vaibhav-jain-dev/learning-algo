@@ -84,9 +84,9 @@
     }
         ],
         similar: [
-    { id: '01-rotting-oranges', name: 'Rotting Oranges', difficulty: 'Medium' },
-    { id: '02-walls-and-gates', name: 'Walls and Gates', difficulty: 'Medium' },
-    { id: '03-shortest-path-all-keys', name: 'Shortest Path to Get All Keys', difficulty: 'Hard' }
+    { id: '08-minimum-passes/01-rotting-oranges', name: 'Rotting Oranges', difficulty: 'Medium' },
+    { id: '08-minimum-passes/02-walls-and-gates', name: 'Walls and Gates', difficulty: 'Medium' },
+    { id: '08-minimum-passes/03-shortest-path-all-keys', name: 'Shortest Path to Get All Keys', difficulty: 'Hard' }
         ]
     };
 

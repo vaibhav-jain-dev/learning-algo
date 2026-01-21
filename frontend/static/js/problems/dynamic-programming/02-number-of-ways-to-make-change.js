@@ -54,9 +54,9 @@
     }
         ],
         similar: [
-    { id: '01-combination-sum-iv', name: 'Combination Sum IV', difficulty: 'Medium' },
-    { id: '02-target-sum', name: 'Target Sum', difficulty: 'Medium' },
-    { id: '03-partition-equal-subset-sum', name: 'Partition Equal Subset Sum', difficulty: 'Medium' }
+    { id: '02-number-of-ways-to-make-change/02-number-of-ways-to-make-change/01-combination-sum-iv', name: 'Combination Sum IV', difficulty: 'Medium' },
+    { id: '02-number-of-ways-to-make-change/02-target-sum', name: 'Target Sum', difficulty: 'Medium' },
+    { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum', name: 'Partition Equal Subset Sum', difficulty: 'Medium' }
         ]
     };
 

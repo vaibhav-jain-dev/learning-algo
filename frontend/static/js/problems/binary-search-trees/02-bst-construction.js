@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-bst-iterator', name: 'BST Iterator', difficulty: 'Medium' },
-    { id: '02-convert-sorted-array-to-bst', name: 'Convert Sorted Array to BST', difficulty: 'Medium' },
-    { id: '03-serialize-deserialize-bst', name: 'Serialize and Deserialize BST', difficulty: 'Hard' }
+    { id: '02-bst-construction/02-bst-construction/01-bst-iterator', name: 'BST Iterator', difficulty: 'Medium' },
+    { id: '02-bst-construction/02-convert-sorted-array-to-bst', name: 'Convert Sorted Array to BST', difficulty: 'Medium' },
+    { id: '02-bst-construction/03-serialize-deserialize-bst', name: 'Serialize and Deserialize BST', difficulty: 'Hard' }
         ]
     };
 

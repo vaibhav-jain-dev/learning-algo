@@ -35,9 +35,9 @@
     }
         ],
         similar: [
-    { id: '01-iterative-tree-traversal', name: 'Iterative Tree Traversal', difficulty: 'Medium' },
-    { id: '02-morris-traversal', name: 'Morris Traversal', difficulty: 'Hard' },
-    { id: '03-level-order-zigzag', name: 'Binary Tree Zigzag Level Order Traversal', difficulty: 'Medium' }
+    { id: '04-bst-traversal/01-iterative-tree-traversal', name: 'Iterative Tree Traversal', difficulty: 'Medium' },
+    { id: '04-bst-traversal/02-morris-traversal', name: 'Morris Traversal', difficulty: 'Hard' },
+    { id: '04-bst-traversal/03-level-order-zigzag', name: 'Binary Tree Zigzag Level Order Traversal', difficulty: 'Medium' }
         ]
     };
 

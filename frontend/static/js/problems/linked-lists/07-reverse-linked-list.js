@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-reverse-in-groups-of-k', name: 'Reverse Linked List in Groups of K', difficulty: 'Hard' },
-    { id: '02-reverse-portion-of-list', name: 'Reverse Linked List II (Reverse Portion)', difficulty: 'Medium' },
-    { id: '03-reverse-alternating-k-nodes', name: 'Reverse Alternating K Nodes', difficulty: 'Hard' }
+    { id: '07-reverse-linked-list/01-reverse-in-groups-of-k', name: 'Reverse Linked List in Groups of K', difficulty: 'Hard' },
+    { id: '07-reverse-linked-list/02-reverse-portion-of-list', name: 'Reverse Linked List II (Reverse Portion)', difficulty: 'Medium' },
+    { id: '07-reverse-linked-list/03-reverse-alternating-k-nodes', name: 'Reverse Alternating K Nodes', difficulty: 'Hard' }
         ]
     };
 

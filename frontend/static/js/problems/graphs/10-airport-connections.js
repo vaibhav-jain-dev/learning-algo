@@ -124,9 +124,9 @@
     }
         ],
         similar: [
-    { id: '01-critical-connections', name: 'Critical Connections in a Network', difficulty: 'Hard' },
-    { id: '02-min-cost-connect-points', name: 'Min Cost to Connect Points', difficulty: 'Medium' },
-    { id: '03-network-delay-time', name: 'Network Delay Time', difficulty: 'Medium' }
+    { id: '10-airport-connections/01-critical-connections', name: 'Critical Connections in a Network', difficulty: 'Hard' },
+    { id: '10-airport-connections/02-min-cost-connect-points', name: 'Min Cost to Connect Points', difficulty: 'Medium' },
+    { id: '10-airport-connections/03-network-delay-time', name: 'Network Delay Time', difficulty: 'Medium' }
         ]
     };
 

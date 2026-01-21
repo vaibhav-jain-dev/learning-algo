@@ -33,9 +33,9 @@
     }
         ],
         similar: [
-    { id: '01-max-circular-subarray', name: 'Maximum Sum Circular Subarray', difficulty: 'Medium' },
-    { id: '02-max-product-subarray', name: 'Maximum Product Subarray', difficulty: 'Medium' },
-    { id: '03-max-sum-k-elements', name: 'Maximum Sum with at Least K Elements', difficulty: 'Medium' }
+    { id: '01-kadanes-algorithm/01-max-circular-subarray', name: 'Maximum Sum Circular Subarray', difficulty: 'Medium' },
+    { id: '01-kadanes-algorithm/02-max-product-subarray', name: 'Maximum Product Subarray', difficulty: 'Medium' },
+    { id: '01-kadanes-algorithm/03-max-sum-k-elements', name: 'Maximum Sum with at Least K Elements', difficulty: 'Medium' }
         ]
     };
 

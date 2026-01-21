@@ -50,9 +50,9 @@
     }
         ],
         similar: [
-    { id: '01-remove-nodes-greater-right', name: 'Remove Nodes With Greater Value on Right', difficulty: 'Medium' },
-    { id: '02-delete-middle-node', name: 'Delete the Middle Node of a Linked List', difficulty: 'Medium' },
-    { id: '03-swapping-nodes', name: 'Swapping Nodes in a Linked List', difficulty: 'Medium' }
+    { id: '04-remove-kth-node/01-remove-nodes-greater-right', name: 'Remove Nodes With Greater Value on Right', difficulty: 'Medium' },
+    { id: '04-remove-kth-node/02-delete-middle-node', name: 'Delete the Middle Node of a Linked List', difficulty: 'Medium' },
+    { id: '04-remove-kth-node/03-swapping-nodes', name: 'Swapping Nodes in a Linked List', difficulty: 'Medium' }
         ]
     };
 

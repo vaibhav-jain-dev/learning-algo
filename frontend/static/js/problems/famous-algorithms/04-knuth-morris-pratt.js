@@ -35,9 +35,9 @@
     }
         ],
         similar: [
-    { id: '01-implement-strstr', name: 'Implement strStr()', difficulty: 'Easy' },
-    { id: '02-repeated-substring', name: 'Repeated Substring Pattern', difficulty: 'Easy' },
-    { id: '03-longest-happy-prefix', name: 'Longest Happy Prefix', difficulty: 'Hard' }
+    { id: '04-knuth-morris-pratt/01-implement-strstr', name: 'Implement strStr()', difficulty: 'Easy' },
+    { id: '04-knuth-morris-pratt/02-repeated-substring', name: 'Repeated Substring Pattern', difficulty: 'Easy' },
+    { id: '04-knuth-morris-pratt/03-longest-happy-prefix', name: 'Longest Happy Prefix', difficulty: 'Hard' }
         ]
     };
 

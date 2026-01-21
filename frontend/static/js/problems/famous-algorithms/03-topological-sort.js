@@ -69,9 +69,9 @@
     }
         ],
         similar: [
-    { id: '01-course-schedule', name: 'Course Schedule', difficulty: 'Medium' },
-    { id: '02-alien-dictionary', name: 'Alien Dictionary', difficulty: 'Hard' },
-    { id: '03-parallel-courses', name: 'Parallel Courses', difficulty: 'Medium' }
+    { id: '03-topological-sort/03-topological-sort/01-course-schedule', name: 'Course Schedule', difficulty: 'Medium' },
+    { id: '03-topological-sort/03-topological-sort/02-alien-dictionary', name: 'Alien Dictionary', difficulty: 'Hard' },
+    { id: '03-topological-sort/03-parallel-courses', name: 'Parallel Courses', difficulty: 'Medium' }
         ]
     };
 

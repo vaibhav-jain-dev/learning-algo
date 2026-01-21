@@ -30,9 +30,9 @@
     }
         ],
         similar: [
-    { id: '01-permutations-with-duplicates', name: 'Permutations with Duplicates', difficulty: 'Medium' },
-    { id: '02-next-permutation', name: 'Next Permutation', difficulty: 'Medium' },
-    { id: '03-kth-permutation', name: 'Kth Permutation Sequence', difficulty: 'Hard' }
+    { id: '03-permutations/03-permutations/01-permutations-with-duplicates', name: 'Permutations with Duplicates', difficulty: 'Medium' },
+    { id: '03-permutations/03-permutations/02-next-permutation', name: 'Next Permutation', difficulty: 'Medium' },
+    { id: '03-permutations/03-kth-permutation', name: 'Kth Permutation Sequence', difficulty: 'Hard' }
         ]
     };
 

@@ -37,9 +37,9 @@
     }
         ],
         similar: [
-    { id: '01-path-sum-to-target', name: 'Path Sum to Target', difficulty: 'Medium' },
-    { id: '02-binary-tree-max-path-sum', name: 'Binary Tree Maximum Path Sum', difficulty: 'Hard' },
-    { id: '03-sum-root-to-leaf-numbers', name: 'Sum Root to Leaf Numbers', difficulty: 'Medium' }
+    { id: '01-branch-sums/01-path-sum-to-target', name: 'Path Sum to Target', difficulty: 'Medium' },
+    { id: '01-branch-sums/02-binary-tree-max-path-sum', name: 'Binary Tree Maximum Path Sum', difficulty: 'Hard' },
+    { id: '01-branch-sums/03-sum-root-to-leaf-numbers', name: 'Sum Root to Leaf Numbers', difficulty: 'Medium' }
         ]
     };
 

@@ -33,9 +33,9 @@
     }
         ],
         similar: [
-    { id: '01-tribonacci', name: 'N-th Tribonacci Number', difficulty: 'Medium' },
-    { id: '02-climbing-stairs-k-steps', name: 'Climbing Stairs with K Steps', difficulty: 'Medium' },
-    { id: '03-matrix-fibonacci', name: 'Fibonacci with Matrix Exponentiation', difficulty: 'Hard' }
+    { id: '01-nth-fibonacci/01-tribonacci', name: 'N-th Tribonacci Number', difficulty: 'Medium' },
+    { id: '01-nth-fibonacci/02-climbing-stairs-k-steps', name: 'Climbing Stairs with K Steps', difficulty: 'Medium' },
+    { id: '01-nth-fibonacci/03-matrix-fibonacci', name: 'Fibonacci with Matrix Exponentiation', difficulty: 'Hard' }
         ]
     };
 

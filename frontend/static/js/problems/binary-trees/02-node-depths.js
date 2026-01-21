@@ -37,9 +37,9 @@
     }
         ],
         similar: [
-    { id: '01-maximum-depth', name: 'Maximum Depth of Binary Tree', difficulty: 'Easy' },
-    { id: '02-minimum-depth', name: 'Minimum Depth of Binary Tree', difficulty: 'Easy' },
-    { id: '03-average-of-levels', name: 'Average of Levels in Binary Tree', difficulty: 'Easy' }
+    { id: '02-node-depths/02-node-depths/01-maximum-depth', name: 'Maximum Depth of Binary Tree', difficulty: 'Easy' },
+    { id: '02-node-depths/02-minimum-depth', name: 'Minimum Depth of Binary Tree', difficulty: 'Easy' },
+    { id: '02-node-depths/03-average-of-levels', name: 'Average of Levels in Binary Tree', difficulty: 'Easy' }
         ]
     };
 

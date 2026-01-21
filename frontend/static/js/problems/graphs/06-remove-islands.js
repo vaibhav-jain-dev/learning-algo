@@ -98,9 +98,9 @@
     }
         ],
         similar: [
-    { id: '01-surrounded-regions', name: 'Surrounded Regions', difficulty: 'Medium' },
-    { id: '02-number-of-enclaves', name: 'Number of Enclaves', difficulty: 'Medium' },
-    { id: '03-count-closed-islands', name: 'Number of Closed Islands', difficulty: 'Medium' }
+    { id: '06-remove-islands/01-surrounded-regions', name: 'Surrounded Regions', difficulty: 'Medium' },
+    { id: '06-remove-islands/02-number-of-enclaves', name: 'Number of Enclaves', difficulty: 'Medium' },
+    { id: '06-remove-islands/03-count-closed-islands', name: 'Number of Closed Islands', difficulty: 'Medium' }
         ]
     };
 

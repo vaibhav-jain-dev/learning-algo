@@ -63,9 +63,9 @@
     }
         ],
         similar: [
-    { id: '01-min-cost-connect-points-prim', name: 'Min Cost to Connect Points (Prim\'s)', difficulty: 'Medium' },
-    { id: '02-network-delay-mst', name: 'Network Delay via MST', difficulty: 'Medium' },
-    { id: '03-minimum-spanning-tree-verify', name: 'Minimum Spanning Tree Verification', difficulty: 'Medium' }
+    { id: '07-prims-algorithm/01-min-cost-connect-points-prim', name: 'Min Cost to Connect Points (Prim\'s)', difficulty: 'Medium' },
+    { id: '07-prims-algorithm/02-network-delay-mst', name: 'Network Delay via MST', difficulty: 'Medium' },
+    { id: '07-prims-algorithm/03-minimum-spanning-tree-verify', name: 'Minimum Spanning Tree Verification', difficulty: 'Medium' }
         ]
     };
 

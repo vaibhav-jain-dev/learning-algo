@@ -55,9 +55,9 @@
     }
         ],
         similar: [
-    { id: '01-recover-bst', name: 'Recover Binary Search Tree', difficulty: 'Medium' },
-    { id: '02-largest-bst-subtree', name: 'Largest BST Subtree', difficulty: 'Medium' },
-    { id: '03-count-nodes-in-range', name: 'Count Nodes in Range', difficulty: 'Easy' }
+    { id: '03-validate-bst/03-validate-bst/01-recover-bst', name: 'Recover Binary Search Tree', difficulty: 'Medium' },
+    { id: '03-validate-bst/03-validate-bst/02-largest-bst-subtree', name: 'Largest BST Subtree', difficulty: 'Medium' },
+    { id: '03-validate-bst/03-count-nodes-in-range', name: 'Count Nodes in Range', difficulty: 'Easy' }
         ]
     };
 

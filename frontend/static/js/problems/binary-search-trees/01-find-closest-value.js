@@ -34,9 +34,9 @@
     }
         ],
         similar: [
-    { id: '01-k-closest-values-bst', name: 'K Closest Values in BST', difficulty: 'Medium' },
-    { id: '02-closest-bst-value-ii', name: 'Inorder Predecessor and Successor', difficulty: 'Medium' },
-    { id: '03-two-sum-closest-bst', name: 'Two Sum Closest in BST', difficulty: 'Medium' }
+    { id: '01-find-closest-value/01-k-closest-values-bst', name: 'K Closest Values in BST', difficulty: 'Medium' },
+    { id: '01-find-closest-value/02-closest-bst-value-ii', name: 'Inorder Predecessor and Successor', difficulty: 'Medium' },
+    { id: '01-find-closest-value/03-two-sum-closest-bst', name: 'Two Sum Closest in BST', difficulty: 'Medium' }
         ]
     };
 

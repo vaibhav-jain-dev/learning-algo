@@ -63,9 +63,9 @@
     }
         ],
         similar: [
-    { id: '01-is-graph-bipartite', name: 'Is Graph Bipartite', difficulty: 'Medium' },
-    { id: '02-possible-bipartition', name: 'Possible Bipartition', difficulty: 'Medium' },
-    { id: '03-flower-planting-no-adjacent', name: 'Flower Planting With No Adjacent', difficulty: 'Medium' }
+    { id: '09-two-colorable/01-is-graph-bipartite', name: 'Is Graph Bipartite', difficulty: 'Medium' },
+    { id: '09-two-colorable/02-possible-bipartition', name: 'Possible Bipartition', difficulty: 'Medium' },
+    { id: '09-two-colorable/03-flower-planting-no-adjacent', name: 'Flower Planting With No Adjacent', difficulty: 'Medium' }
         ]
     };
 

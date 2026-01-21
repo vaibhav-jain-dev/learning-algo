@@ -59,9 +59,9 @@
     }
         ],
         similar: [
-    { id: '01-shortest-path-in-grid', name: 'Shortest Path in Binary Grid', difficulty: 'Medium' },
-    { id: '02-sliding-puzzle', name: 'Sliding Puzzle', difficulty: 'Hard' },
-    { id: '03-word-ladder-heuristic', name: 'Word Ladder with Heuristic', difficulty: 'Hard' }
+    { id: '08-a-star-algorithm/01-shortest-path-in-grid', name: 'Shortest Path in Binary Grid', difficulty: 'Medium' },
+    { id: '08-a-star-algorithm/02-sliding-puzzle', name: 'Sliding Puzzle', difficulty: 'Hard' },
+    { id: '08-a-star-algorithm/03-word-ladder-heuristic', name: 'Word Ladder with Heuristic', difficulty: 'Hard' }
         ]
     };
 

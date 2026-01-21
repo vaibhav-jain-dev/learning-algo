@@ -42,9 +42,9 @@
     }
         ],
         similar: [
-    { id: '01-copy-list-random-pointer', name: 'Copy List with Random Pointer', difficulty: 'Medium' },
-    { id: '02-flatten-multilevel-list', name: 'Flatten a Multilevel Doubly Linked List', difficulty: 'Medium' },
-    { id: '03-clone-graph', name: 'Clone Graph', difficulty: 'Medium' }
+    { id: '03-linked-list-construction/03-linked-list-construction/01-copy-list-random-pointer', name: 'Copy List with Random Pointer', difficulty: 'Medium' },
+    { id: '03-linked-list-construction/03-linked-list-construction/02-flatten-multilevel-list', name: 'Flatten a Multilevel Doubly Linked List', difficulty: 'Medium' },
+    { id: '03-linked-list-construction/03-clone-graph', name: 'Clone Graph', difficulty: 'Medium' }
         ]
     };
 

@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-house-robber-ii', name: 'House Robber II', difficulty: 'Medium' },
-    { id: '02-delete-and-earn', name: 'Delete and Earn', difficulty: 'Medium' },
-    { id: '03-paint-house', name: 'Paint House', difficulty: 'Medium' }
+    { id: '01-max-subset-sum/01-house-robber-ii', name: 'House Robber II', difficulty: 'Medium' },
+    { id: '01-max-subset-sum/02-delete-and-earn', name: 'Delete and Earn', difficulty: 'Medium' },
+    { id: '01-max-subset-sum/03-paint-house', name: 'Paint House', difficulty: 'Medium' }
         ]
     };
 

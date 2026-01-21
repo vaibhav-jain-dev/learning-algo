@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-number-of-islands', name: 'Number of Islands', difficulty: 'Medium' },
-    { id: '02-clone-graph', name: 'Clone Graph', difficulty: 'Medium' },
-    { id: '03-all-paths-source-target', name: 'All Paths From Source to Target', difficulty: 'Medium' }
+    { id: '01-depth-first-search/01-number-of-islands', name: 'Number of Islands', difficulty: 'Medium' },
+    { id: '01-depth-first-search/02-clone-graph', name: 'Clone Graph', difficulty: 'Medium' },
+    { id: '01-depth-first-search/03-all-paths-source-target', name: 'All Paths From Source to Target', difficulty: 'Medium' }
         ]
     };
 

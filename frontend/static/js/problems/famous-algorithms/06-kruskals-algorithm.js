@@ -54,9 +54,9 @@
     }
         ],
         similar: [
-    { id: '01-min-cost-to-connect', name: 'Min Cost to Connect All Points', difficulty: 'Medium' },
-    { id: '02-connecting-cities', name: 'Connecting Cities With Minimum Cost', difficulty: 'Medium' },
-    { id: '03-optimize-water-distribution', name: 'Optimize Water Distribution in a Village', difficulty: 'Hard' }
+    { id: '06-kruskals-algorithm/01-min-cost-to-connect', name: 'Min Cost to Connect All Points', difficulty: 'Medium' },
+    { id: '06-kruskals-algorithm/02-connecting-cities', name: 'Connecting Cities With Minimum Cost', difficulty: 'Medium' },
+    { id: '06-kruskals-algorithm/03-optimize-water-distribution', name: 'Optimize Water Distribution in a Village', difficulty: 'Hard' }
         ]
     };
 

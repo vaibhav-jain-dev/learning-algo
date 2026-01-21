@@ -33,9 +33,9 @@
     }
         ],
         similar: [
-    { id: '01-number-of-provinces', name: 'Number of Provinces', difficulty: 'Medium' },
-    { id: '02-redundant-connection', name: 'Redundant Connection', difficulty: 'Medium' },
-    { id: '03-accounts-merge', name: 'Accounts Merge', difficulty: 'Medium' }
+    { id: '05-union-find/01-number-of-provinces', name: 'Number of Provinces', difficulty: 'Medium' },
+    { id: '05-union-find/02-redundant-connection', name: 'Redundant Connection', difficulty: 'Medium' },
+    { id: '05-union-find/03-accounts-merge', name: 'Accounts Merge', difficulty: 'Medium' }
         ]
     };
 

@@ -40,9 +40,9 @@
     }
         ],
         similar: [
-    { id: '01-course-schedule', name: 'Course Schedule', difficulty: 'Medium' },
-    { id: '02-redundant-connection', name: 'Redundant Connection', difficulty: 'Medium' },
-    { id: '03-find-eventual-safe-states', name: 'Find Eventual Safe States', difficulty: 'Medium' }
+    { id: '03-cycle-in-graph/03-cycle-in-graph/01-course-schedule', name: 'Course Schedule', difficulty: 'Medium' },
+    { id: '03-cycle-in-graph/03-cycle-in-graph/02-redundant-connection', name: 'Redundant Connection', difficulty: 'Medium' },
+    { id: '03-cycle-in-graph/03-find-eventual-safe-states', name: 'Find Eventual Safe States', difficulty: 'Medium' }
         ]
     };
 

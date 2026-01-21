@@ -85,9 +85,9 @@
     }
         ],
         similar: [
-    { id: '01-max-area-of-island', name: 'Max Area of Island', difficulty: 'Medium' },
-    { id: '02-count-sub-islands', name: 'Count Sub Islands', difficulty: 'Medium' },
-    { id: '03-making-a-large-island', name: 'Making A Large Island', difficulty: 'Hard' }
+    { id: '05-river-sizes/01-max-area-of-island', name: 'Max Area of Island', difficulty: 'Medium' },
+    { id: '05-river-sizes/02-count-sub-islands', name: 'Count Sub Islands', difficulty: 'Medium' },
+    { id: '05-river-sizes/03-making-a-large-island', name: 'Making A Large Island', difficulty: 'Hard' }
         ]
     };
 

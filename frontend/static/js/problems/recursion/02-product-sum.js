@@ -42,9 +42,9 @@
     }
         ],
         similar: [
-    { id: '01-nested-array-depth', name: 'Maximum Depth of Nested Arrays', difficulty: 'Easy' },
-    { id: '02-flatten-nested-list', name: 'Flatten Nested List', difficulty: 'Medium' },
-    { id: '03-nested-list-weighted-sum-ii', name: 'Nested List Weighted Sum II', difficulty: 'Medium' }
+    { id: '02-product-sum/02-product-sum/01-nested-array-depth', name: 'Maximum Depth of Nested Arrays', difficulty: 'Easy' },
+    { id: '02-product-sum/02-flatten-nested-list', name: 'Flatten Nested List', difficulty: 'Medium' },
+    { id: '02-product-sum/03-nested-list-weighted-sum-ii', name: 'Nested List Weighted Sum II', difficulty: 'Medium' }
         ]
     };
 

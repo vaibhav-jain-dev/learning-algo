@@ -1,0 +1,58 @@
+/**
+ * Number of Provinces
+ * Category: famous-algorithms
+ * Difficulty: Medium
+ * Algorithm: union-find
+ */
+(function() {
+    'use strict';
+
+    const problem = {
+        name: 'Number of Provinces',
+        difficulty: 'Medium',
+        algorithm: 'union-find',
+        description: 'There are n cities. A province is a group of directly or indirectly connected cities. Given an n x n matrix isConnected where isConnected[i][j] = 1 if city i and city j are directly connected, return the total number of provinces.',
+        complexity: {
+            time: 'O(n^2 * alpha(n))',
+            space: 'O(n)'
+        },
+        examples: [
+    {
+        input: {
+        "isConnected": [
+                [
+                        1,
+                        1,
+                        0
+                ],
+                [
+                        1,
+                        1,
+                        0
+                ],
+                [
+                        0,
+                        0,
+                        1
+                ]
+        ]
+},
+        output: 2,
+        explanation: 'Processing the input data produces the output. For input isConnected=[[1, 1, 0], [1, 1, 0], [0, 0, 1]], the result is 2.'
+    }
+        ],
+        similar: [
+
+        ]
+    };
+
+    // Register with ProblemRenderer
+    if (window.ProblemRenderer) {
+        window.ProblemRenderer.register('famous-algorithms', '05-union-find/01-number-of-provinces', problem);
+    }
+
+    // Export for direct access
+    window.Problems = window.Problems || {};
+    window.Problems['famous-algorithms/05-union-find/01-number-of-provinces'] = problem;
+
+})();
