@@ -87,14 +87,14 @@
         }
 
         console.log('[VizConfig] No config found in HTML');
-        return null;
+        return runGenericVisualization(example, config, complexity);
     }
 
     // Generate visualization steps from embedded config
     function generateStepsFromConfig(config, exampleIndex) {
         if (!config || !config.examples || !config.examples[exampleIndex]) {
             console.log('[VizConfig] No config or example found');
-            return null;
+            return runGenericVisualization(example, config, complexity);
         }
 
         var example = config.examples[exampleIndex];
@@ -561,7 +561,7 @@
         // Defensive checks for required properties
         if (!example || !example.input || !example.input.array || !example.input.sequence) {
             console.error('[runValidateSubsequence] Missing required input properties');
-            return null;
+            return runGenericVisualization(example, config, complexity);
         }
         var arr = example.input.array;
         var seq = example.input.sequence;
@@ -623,7 +623,7 @@
         var target = example.input.targetSum !== undefined ? example.input.targetSum : example.input.target;
         if (!example || !example.input || !arr || target === undefined) {
             console.error('[runTwoNumberSum] Missing required input properties');
-            return null;
+            return runGenericVisualization(example, config, complexity);
         }
         var expected = example.output;
         var steps = [];
@@ -670,7 +670,7 @@
     // Algorithm: Move Element To End (Two Pointers)
     function runMoveElementToEnd(example, config, complexity) {
         if (!example || !example.input || !example.input.array || example.input.toMove === undefined) {
-            return null;
+            return runGenericVisualization(example, config, complexity);
         }
         var arr = example.input.array.slice();
         var toMove = example.input.toMove;
@@ -729,7 +729,7 @@
     function runSortedSquaredArray(example, config, complexity) {
         // Handle multiple input formats
         var arr = example.input.array || example.input.arr1 || example.input.nums;
-        if (!example || !example.input || !arr) return null;
+        if (!example || !example.input || !arr) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var result = new Array(arr.length);
         var left = 0, right = arr.length - 1;
@@ -777,7 +777,7 @@
         // Handle both input formats: {array, targetSum} and {nums, target}
         var inputArr = example.input.array || example.input.nums;
         var target = example.input.targetSum !== undefined ? example.input.targetSum : example.input.target;
-        if (!example || !example.input || !inputArr || target === undefined) return null;
+        if (!example || !example.input || !inputArr || target === undefined) return runGenericVisualization(example, config, complexity);
         var arr = inputArr.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
         var steps = [];
@@ -846,7 +846,7 @@
     function runSpiralTraverse(example, config, complexity) {
         // Handle multiple input formats
         var matrix = example.input.matrix || example.input.grid || example.input.array;
-        if (!example || !example.input || !matrix) return null;
+        if (!example || !example.input || !matrix) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var steps = [];
         var result = [];
@@ -981,7 +981,7 @@
     function runNonConstructibleChange(example, config, complexity) {
         // Handle multiple input formats
         var coins = example.input.coins || example.input.array || example.input.nums;
-        if (!example || !example.input || !coins) return null;
+        if (!example || !example.input || !coins) return runGenericVisualization(example, config, complexity);
         coins = coins.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
         var steps = [];
@@ -1037,7 +1037,7 @@
     function runMatrixTranspose(example, config, complexity) {
         // Handle multiple input formats
         var matrix = example.input.matrix || example.input.grid || example.input.array;
-        if (!example || !example.input || !matrix) return null;
+        if (!example || !example.input || !matrix) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var steps = [];
         var rows = matrix.length;
@@ -1087,7 +1087,7 @@
 
     // Algorithm: Smallest Difference (Two Pointer)
     function runSmallestDifference(example, config, complexity) {
-        if (!example || !example.input || !example.input.arrayOne || !example.input.arrayTwo) return null;
+        if (!example || !example.input || !example.input.arrayOne || !example.input.arrayTwo) return runGenericVisualization(example, config, complexity);
         var arr1 = example.input.arrayOne.slice().sort(function(a, b) { return a - b; });
         var arr2 = example.input.arrayTwo.slice().sort(function(a, b) { return a - b; });
         var expected = example.output;
@@ -1151,7 +1151,7 @@
     function runMonotonicArray(example, config, complexity) {
         // Handle multiple input formats
         var arr = example.input.array || example.input.nums || example.input.arr;
-        if (!example || !example.input || !arr) return null;
+        if (!example || !example.input || !arr) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var steps = [];
         var isIncreasing = true;
@@ -1205,7 +1205,7 @@
     function runArrayOfProducts(example, config, complexity) {
         // Handle multiple input formats
         var arr = example.input.array || example.input.nums || example.input.arr;
-        if (!example || !example.input || !arr) return null;
+        if (!example || !example.input || !arr) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var steps = [];
         var n = arr.length;
@@ -1268,7 +1268,7 @@
     function runFirstDuplicateValue(example, config, complexity) {
         // Handle multiple input formats
         var inputArr = example.input.array || example.input.nums || example.input.arr;
-        if (!example || !example.input || !inputArr) return null;
+        if (!example || !example.input || !inputArr) return runGenericVisualization(example, config, complexity);
         var arr = inputArr.slice();
         var expected = example.output;
         var steps = [];
@@ -1323,7 +1323,7 @@
 
     // Algorithm: Merge Intervals (Sort and Merge)
     function runMergeIntervals(example, config, complexity) {
-        if (!example || !example.input || !example.input.intervals) return null;
+        if (!example || !example.input || !example.input.intervals) return runGenericVisualization(example, config, complexity);
         var intervals = example.input.intervals.slice().sort(function(a, b) { return a[0] - b[0]; });
         var expected = example.output;
         var steps = [];
@@ -1382,7 +1382,7 @@
     function runLongestPeak(example, config, complexity) {
         // Handle multiple input formats
         var arr = example.input.array || example.input.nums || example.input.arr;
-        if (!example || !example.input || !arr) return null;
+        if (!example || !example.input || !arr) return runGenericVisualization(example, config, complexity);
         var expected = example.output;
         var steps = [];
         var longestPeak = 0;
@@ -1440,7 +1440,7 @@
 
     // Algorithm: Zero Sum Subarray (Hash + Prefix Sum)
     function runZeroSumSubarray(example, config, complexity) {
-        if (!example || !example.input || !example.input.nums) return null;
+        if (!example || !example.input || !example.input.nums) return runGenericVisualization(example, config, complexity);
         var nums = example.input.nums;
         var expected = example.output;
         var steps = [];
@@ -3928,7 +3928,7 @@
         if (currentExamples.length > 0 && currentExamples[selectedExampleIndex]) {
             return currentExamples[selectedExampleIndex].input;
         }
-        return null;
+        return runGenericVisualization(example, config, complexity);
     }
 
     // Change selected example and reinitialize visualization
@@ -5580,7 +5580,7 @@
         if (problemId && problemVisualizations[problemId]) {
             return problemVisualizations[problemId].complexity;
         }
-        return null;
+        return runGenericVisualization(example, config, complexity);
     }
 
     function generateTopologicalSortSteps() {
