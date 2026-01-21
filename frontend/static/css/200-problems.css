@@ -798,85 +798,433 @@ li.CodeMirror-hint-active {
 @media (max-width: 1024px) {
     .hero-section {
         grid-template-columns: 1fr;
-        gap: var(--space-6, 1.5rem);
+        gap: var(--space-4, 1rem);
+        padding: var(--space-4, 1rem) 0;
     }
 
     .editor-layout {
         grid-template-columns: 1fr;
+        padding: var(--space-1, 0.25rem);
+        gap: var(--space-1, 0.25rem);
     }
 
     .categories-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: 1fr;
+        gap: var(--space-3, 0.75rem);
     }
 
     .description-panel {
-        max-height: 40vh;
+        max-height: 35vh;
+        min-height: 200px;
+        border-radius: var(--radius-md, 8px);
     }
 
     .code-panel {
-        min-height: 50vh;
+        min-height: 45vh;
+        border-radius: var(--radius-md, 8px);
+    }
+
+    .output-panel {
+        height: 100px;
     }
 }
 
 @media (max-width: 768px) {
     .must-solve-page {
-        padding: var(--space-4, 1rem);
+        padding: var(--space-2, 0.5rem);
+    }
+
+    .hero-section {
+        padding: var(--space-2, 0.5rem) 0;
+        margin-bottom: var(--space-4, 1rem);
     }
 
     .hero-content h1 {
-        font-size: var(--text-2xl, 1.5rem);
+        font-size: var(--text-xl, 1.25rem);
+        margin: var(--space-2, 0.5rem) 0;
     }
 
     .hero-subtitle {
-        font-size: var(--text-base, 1rem);
+        font-size: var(--text-sm, 0.875rem);
+        margin: var(--space-2, 0.5rem) 0 var(--space-3, 0.75rem) 0;
+    }
+
+    .hero-badge {
+        font-size: var(--text-xs, 0.75rem);
+        padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
     }
 
     .hero-stats {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: var(--space-4, 1rem);
+        margin: var(--space-3, 0.75rem) 0;
+    }
+
+    .stat {
+        flex: 1 1 80px;
+        min-width: 80px;
+    }
+
+    .stat-number {
+        font-size: var(--text-xl, 1.25rem);
+    }
+
+    .stat-label {
+        font-size: var(--text-xs, 0.75rem);
     }
 
     .categories-grid {
         grid-template-columns: 1fr;
+        gap: var(--space-2, 0.5rem);
     }
 
     .hero-visual {
         display: none;
     }
 
+    .difficulty-legend {
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        gap: var(--space-2, 0.5rem);
+        margin-bottom: var(--space-3, 0.75rem);
+    }
+
+    .legend-title {
+        font-size: var(--text-sm, 0.875rem);
+        width: 100%;
+        margin-bottom: var(--space-1, 0.25rem);
+    }
+
+    .diff-badge {
+        font-size: var(--text-xs, 0.75rem);
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+    }
+
+    /* Editor view mobile optimization */
+    .editor-view {
+        background: var(--color-bg-primary, #ffffff);
+    }
+
     .editor-header-bar {
-        padding: var(--space-2, 0.5rem);
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        gap: var(--space-2, 0.5rem);
+        min-height: 44px;
+    }
+
+    .back-btn {
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+        min-height: 36px;
     }
 
     .problem-title {
-        font-size: var(--text-base, 1rem);
+        font-size: var(--text-sm, 0.875rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+
+    .problem-difficulty {
+        font-size: var(--text-xs, 0.75rem);
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+    }
+
+    .editor-layout {
+        padding: 0;
+        gap: 0;
+    }
+
+    .description-panel {
+        max-height: 30vh;
+        min-height: 150px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .code-panel {
+        min-height: 40vh;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+    }
+
+    .description-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .description-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .desc-tab {
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        font-size: var(--text-xs, 0.75rem);
+        min-height: 40px;
+        white-space: nowrap;
+    }
+
+    .description-content {
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        font-size: var(--text-xs, 0.75rem);
+        line-height: 1.6;
     }
 
     .code-header {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        gap: var(--space-1, 0.25rem);
     }
 
     .language-selector {
-        justify-content: center;
+        flex: 1;
+        justify-content: flex-start;
+        padding: 1px;
+    }
+
+    .lang-btn {
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+        min-height: 32px;
     }
 
     .code-actions {
-        justify-content: center;
+        flex-wrap: nowrap;
+        gap: var(--space-1, 0.25rem);
+    }
+
+    .action-btn,
+    .run-btn {
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+        min-height: 32px;
+    }
+
+    .run-btn {
+        padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+    }
+
+    .output-panel {
+        height: 80px;
+    }
+
+    .output-header {
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+    }
+
+    .output-content {
+        padding: var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+    }
+
+    .font-btn {
+        min-width: 24px;
+        padding: 0.125rem 0.25rem;
+        font-size: 0.625rem;
+    }
+
+    /* Panel content mobile */
+    .panel-header {
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        gap: var(--space-2, 0.5rem);
+    }
+
+    .panel-title {
+        font-size: var(--text-base, 1rem);
+    }
+
+    .panel-content {
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
     }
 }
 
 @media (max-width: 480px) {
+    .must-solve-page {
+        padding: var(--space-1, 0.25rem);
+    }
+
+    .hero-section {
+        padding: var(--space-1, 0.25rem) 0;
+    }
+
+    .hero-content h1 {
+        font-size: var(--text-lg, 1.125rem);
+    }
+
     .stat-number {
-        font-size: var(--text-2xl, 1.5rem);
+        font-size: var(--text-lg, 1.125rem);
     }
 
     .category-card {
-        padding: var(--space-4, 1rem);
+        padding: var(--space-3, 0.75rem);
+    }
+
+    .category-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: var(--space-2, 0.5rem);
     }
 
     .category-name {
+        font-size: var(--text-base, 1rem);
+    }
+
+    .category-desc {
+        font-size: var(--text-xs, 0.75rem);
+        margin-bottom: var(--space-2, 0.5rem);
+    }
+
+    .category-stats {
+        margin-bottom: var(--space-2, 0.5rem);
+        padding-bottom: var(--space-2, 0.5rem);
+    }
+
+    .problem-count {
+        font-size: var(--text-xs, 0.75rem);
+    }
+
+    .section-title {
         font-size: var(--text-lg, 1.125rem);
+        margin-bottom: var(--space-3, 0.75rem);
+    }
+
+    /* Editor mobile - even smaller screens */
+    .problem-title {
+        max-width: 100px;
+        font-size: var(--text-xs, 0.75rem);
+    }
+
+    .description-panel {
+        max-height: 25vh;
+        min-height: 120px;
+    }
+
+    .code-panel {
+        min-height: 35vh;
+    }
+
+    .output-panel {
+        height: 70px;
+    }
+
+    /* CodeMirror mobile font */
+    .code-editor-container .CodeMirror {
+        font-size: 12px !important;
+    }
+}
+
+/* Extra small screens (360px) */
+@media (max-width: 360px) {
+    .must-solve-page {
+        padding: 0;
+    }
+
+    .category-card {
+        padding: var(--space-2, 0.5rem);
+        border-radius: var(--radius-md, 8px);
+    }
+
+    .hero-content h1 {
+        font-size: var(--text-base, 1rem);
+    }
+
+    .editor-header-bar {
+        padding: var(--space-1, 0.25rem);
+    }
+
+    .back-btn span:not(.back-arrow) {
+        display: none;
+    }
+
+    .problem-title {
+        max-width: 80px;
+    }
+}
+
+/* ============================================
+   MOBILE OVERRIDE FOR DYNAMICALLY GENERATED
+   PROBLEM LIST GRID (JS inline styles)
+   ============================================ */
+@media (max-width: 768px) {
+    /* Override inline grid-template-columns on problem list */
+    .panel-content > div[style*="grid-template-columns"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        padding: 0.25rem !important;
+    }
+
+    /* Make difficulty section cards full width */
+    .panel-content > div[style*="grid-template-columns"] > div {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 0.75rem !important;
+    }
+
+    /* Smaller font sizes in problem cards */
+    .panel-content .problem-card {
+        padding: 0.5rem !important;
+    }
+
+    .panel-content .problem-card span {
+        font-size: 0.8rem !important;
+    }
+
+    /* Compact similar problems */
+    .panel-content [id^="similar-list-"] {
+        margin-top: 0.35rem !important;
+        padding-top: 0.35rem !important;
+    }
+
+    .panel-content [id^="similar-list-"] > div {
+        padding: 0.25rem 0 !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Even more compact on small screens */
+    .panel-content > div[style*="grid-template-columns"] {
+        gap: 0.5rem !important;
+        padding: 0 !important;
+    }
+
+    .panel-content > div[style*="grid-template-columns"] > div {
+        padding: 0.5rem !important;
+        border-radius: 8px !important;
+    }
+
+    .panel-content > div[style*="grid-template-columns"] > div h3 {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .panel-content .problem-card {
+        padding: 0.4rem !important;
+        border-radius: 6px !important;
+    }
+
+    .panel-content .problem-card span {
+        font-size: 0.75rem !important;
+    }
+
+    /* Number badges */
+    .panel-content .problem-card span[style*="min-width"] {
+        min-width: 20px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Similar problem badges */
+    .panel-content [id^="similar-btn-"] {
+        font-size: 0.6rem !important;
+        padding: 0.1rem 0.3rem !important;
     }
 }
 
