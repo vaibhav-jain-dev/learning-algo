@@ -6748,10 +6748,36 @@
         var category = currentProblem ? currentProblem.category : 'arrays';
         var problemId = currentProblem ? currentProblem.id : '';
 
-        // Render based on problem type (check problemId first for specific algorithms)
-        if (problemId && problemId.includes('topological')) {
+        // Check step.vizType first for specific rendering (this is the key fix!)
+        var vizType = step.vizType || '';
+
+        // Route based on vizType first - this handles all algorithm-specific visualizations
+        if (vizType === 'matrix' || vizType === 'bfs-matrix' || vizType === 'grid') {
+            mainArea.innerHTML = renderMatrixViz(step);
+        } else if (vizType === 'string-matching' || vizType === 'kmp' || vizType === 'pattern-match') {
+            mainArea.innerHTML = renderStringMatchingViz(step);
+        } else if (vizType === 'tree' || vizType === 'bst') {
+            mainArea.innerHTML = renderTreeViz(step);
+        } else if (vizType === 'linked-list') {
+            mainArea.innerHTML = renderLinkedListViz(step);
+        } else if (vizType === 'lru-cache') {
+            mainArea.innerHTML = renderLRUCacheViz(step);
+        } else if (vizType === 'recursion') {
+            mainArea.innerHTML = renderRecursionViz(step);
+        } else if (vizType === 'dp-table') {
+            mainArea.innerHTML = renderDPTableViz(step);
+        } else if (vizType === 'famous-algorithm') {
+            mainArea.innerHTML = renderFamousAlgorithmViz(step);
+        } else if (vizType === 'graph') {
+            mainArea.innerHTML = renderGraphViz(step);
+        } else if (vizType === 'array' || vizType.startsWith('array-') || vizType.startsWith('two-') || vizType.startsWith('three-') || vizType === 'spiral-matrix' || vizType === 'hash-table' || vizType === 'intervals') {
+            // Array-based visualizations (handled by renderArrayVisualization switch)
+            mainArea.innerHTML = renderArrayVisualization(step);
+        } else if (problemId && problemId.includes('topological')) {
+            // Problem ID specific (legacy support)
             mainArea.innerHTML = renderTopologicalSortVisualization(step);
         } else if (category === 'graphs' || category === 'famous-algorithms') {
+            // Fallback to category-based rendering only if no specific vizType
             mainArea.innerHTML = renderGraphVisualization(step);
         } else if (category === 'arrays') {
             mainArea.innerHTML = renderArrayVisualization(step);
@@ -6763,6 +6789,8 @@
             mainArea.innerHTML = renderLinkedListVisualization(step);
         } else if (category === 'recursion') {
             mainArea.innerHTML = renderRecursionVisualization(step);
+        } else if (vizType === 'generic') {
+            mainArea.innerHTML = renderGenericArrayViz(step);
         } else {
             mainArea.innerHTML = '<p style="color:#8b949e;">' + (step.action || 'Processing...') + '</p>';
         }
@@ -7068,6 +7096,93 @@
         html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">New</span></div>';
         html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#1f6feb;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Accessed</span></div>';
         html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#da3633;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Evicting</span></div>';
+        html += '</div>';
+
+        html += '</div>';
+        return html;
+    }
+
+    // String Matching Visualization (KMP, etc.)
+    function renderStringMatchingViz(step) {
+        var html = '<div style="text-align:center;padding:1rem;">';
+
+        var text = step.text || '';
+        var pattern = step.pattern || '';
+        var textIdx = step.textIdx !== undefined ? step.textIdx : -1;
+        var patternIdx = step.patternIdx !== undefined ? step.patternIdx : -1;
+        var matchedIndices = step.matchedIndices || [];
+        var failureTable = step.failureTable || [];
+        var result = step.result;
+
+        // Handle empty data
+        if (!text && !pattern) {
+            html += '<div style="color:#8b949e;">No string matching data available</div>';
+            if (result !== undefined) {
+                html += '<div style="margin-top:1rem;"><span style="color:#8b949e;">Result: </span><span style="color:#3fb950;">' + JSON.stringify(result) + '</span></div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        // Show text string with highlighting
+        html += '<div style="margin-bottom:1rem;">';
+        html += '<div style="color:#8b949e;font-size:0.75rem;margin-bottom:0.25rem;">Text:</div>';
+        html += '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;">';
+        for (var i = 0; i < text.length; i++) {
+            var isCurrentText = i === textIdx;
+            var isMatched = matchedIndices.indexOf(i) !== -1;
+            var bg = isCurrentText ? 'linear-gradient(135deg,#238636,#2ea043)' :
+                     (isMatched ? '#1f6feb' : '#21262d');
+            var border = isCurrentText ? '2px solid #3fb950' :
+                        (isMatched ? '2px solid #58a6ff' : '2px solid #30363d');
+            html += '<div style="min-width:28px;height:32px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:4px;font-family:monospace;font-size:0.9rem;">' + text[i] + '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+
+        // Show pattern string with highlighting
+        if (pattern) {
+            html += '<div style="margin-bottom:1rem;">';
+            html += '<div style="color:#8b949e;font-size:0.75rem;margin-bottom:0.25rem;">Pattern:</div>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;">';
+            for (var j = 0; j < pattern.length; j++) {
+                var isCurrentPattern = j === patternIdx;
+                var isMatchedPattern = j < patternIdx;
+                var bgP = isCurrentPattern ? 'linear-gradient(135deg,#f0883e,#d29922)' :
+                         (isMatchedPattern ? '#1f6feb' : '#21262d');
+                var borderP = isCurrentPattern ? '2px solid #f0883e' :
+                             (isMatchedPattern ? '2px solid #58a6ff' : '2px solid #30363d');
+                html += '<div style="min-width:28px;height:32px;background:' + bgP + ';border:' + borderP + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:4px;font-family:monospace;font-size:0.9rem;">' + pattern[j] + '</div>';
+            }
+            html += '</div>';
+            html += '</div>';
+        }
+
+        // Show failure/LPS table if available
+        if (failureTable && failureTable.length > 0) {
+            html += '<div style="margin-top:1rem;">';
+            html += '<div style="color:#8b949e;font-size:0.75rem;margin-bottom:0.25rem;">Failure Table (LPS):</div>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;">';
+            for (var k = 0; k < failureTable.length; k++) {
+                html += '<div style="min-width:28px;height:28px;background:#21262d;border:2px solid #30363d;color:#58a6ff;display:flex;align-items:center;justify-content:center;border-radius:4px;font-family:monospace;font-size:0.8rem;">' + failureTable[k] + '</div>';
+            }
+            html += '</div>';
+            html += '</div>';
+        }
+
+        // Show result if available
+        if (result !== undefined) {
+            html += '<div style="margin-top:1rem;">';
+            html += '<span style="color:#8b949e;">Result: </span>';
+            html += '<span style="color:#3fb950;font-family:monospace;">' + JSON.stringify(result) + '</span>';
+            html += '</div>';
+        }
+
+        // Legend
+        html += '<div style="display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap;">';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Current (text)</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#f0883e;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Current (pattern)</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#1f6feb;border-radius:3px;"></div><span style="color:#8b949e;font-size:0.75rem;">Matched</span></div>';
         html += '</div>';
 
         html += '</div>';
@@ -7809,37 +7924,138 @@
     }
 
     function renderTreeVisualization(step) {
-        var html = '<svg viewBox="0 0 400 220" style="width:100%;max-width:450px;">';
-
-        // Draw edges
-        var edges = [
-            [200,50,120,110], [200,50,280,110],
-            [120,130,70,180], [120,130,170,180],
-            [280,130,230,180], [280,130,330,180]
-        ];
-        edges.forEach(function(e) {
-            html += '<line x1="'+e[0]+'" y1="'+e[1]+'" x2="'+e[2]+'" y2="'+e[3]+'" stroke="#30363d" stroke-width="2"/>';
-        });
-
-        // Draw nodes
-        var nodes = [
-            {x:200,y:30,val:10}, {x:120,y:100,val:5}, {x:280,y:100,val:15},
-            {x:70,y:170,val:2}, {x:170,y:170,val:7}, {x:230,y:170,val:13}, {x:330,y:170,val:20}
-        ];
-
+        var stepNodes = step.nodes || [];
+        var stepEdges = step.edges || [];
         var visited = step.visited || [];
-        nodes.forEach(function(n) {
-            var isVisited = visited.indexOf(n.val) !== -1;
-            var isActive = step.nodes && step.nodes.some(function(sn) { return sn.active && sn.val === n.val; });
-            var fill = isActive ? '#238636' : (isVisited ? '#58a6ff' : '#21262d');
-            var stroke = isActive ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d');
-            html += '<circle cx="'+n.x+'" cy="'+n.y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
-            html += '<text x="'+n.x+'" y="'+(n.y+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+n.val+'</text>';
-        });
+        var current = step.current;
+
+        // If no step.nodes provided, use default hardcoded tree for backward compatibility
+        var useDefaultTree = stepNodes.length === 0;
+
+        var html = '<svg viewBox="0 0 400 250" style="width:100%;max-width:500px;">';
+
+        if (useDefaultTree) {
+            // Default tree for backward compatibility
+            var defaultEdges = [
+                [200,40,120,100], [200,40,280,100],
+                [120,120,70,180], [120,120,170,180],
+                [280,120,230,180], [280,120,330,180]
+            ];
+            defaultEdges.forEach(function(e) {
+                html += '<line x1="'+e[0]+'" y1="'+e[1]+'" x2="'+e[2]+'" y2="'+e[3]+'" stroke="#30363d" stroke-width="2"/>';
+            });
+
+            var defaultNodes = [
+                {x:200,y:25,val:10}, {x:120,y:90,val:5}, {x:280,y:90,val:15},
+                {x:70,y:165,val:2}, {x:170,y:165,val:7}, {x:230,y:165,val:13}, {x:330,y:165,val:20}
+            ];
+
+            defaultNodes.forEach(function(n) {
+                var nodeVal = n.val;
+                var nodeId = 'node_' + nodeVal;
+                var isVisited = visited.indexOf(nodeId) !== -1 || visited.indexOf(nodeVal) !== -1 || visited.indexOf(String(nodeVal)) !== -1;
+                var isCurrent = current === nodeId || current === nodeVal || current === String(nodeVal);
+                var isActive = step.nodes && step.nodes.some(function(sn) { return sn.active && (sn.val === nodeVal || sn.value === nodeVal); });
+
+                var fill = isCurrent ? '#238636' : (isActive ? '#238636' : (isVisited ? '#1f6feb' : '#21262d'));
+                var stroke = isCurrent ? '#3fb950' : (isActive ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d'));
+
+                html += '<circle cx="'+n.x+'" cy="'+n.y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+                html += '<text x="'+n.x+'" y="'+(n.y+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+nodeVal+'</text>';
+            });
+        } else {
+            // Use actual step.nodes and step.edges
+            // Calculate positions based on tree structure
+            var nodePositions = {};
+            var levels = {};
+
+            // Build level map from edges
+            if (stepNodes.length > 0) {
+                var rootNode = stepNodes[0];
+                var rootId = rootNode.id || rootNode.label || rootNode.value || 0;
+                levels[rootId] = 0;
+
+                stepEdges.forEach(function(edge) {
+                    var from = edge.from || edge[0];
+                    var to = edge.to || edge[1];
+                    if (levels[from] !== undefined) {
+                        levels[to] = levels[from] + 1;
+                    }
+                });
+            }
+
+            // Group nodes by level
+            var levelGroups = {};
+            stepNodes.forEach(function(node) {
+                var nodeId = node.id || node.label || node.value;
+                var level = levels[nodeId] !== undefined ? levels[nodeId] : 0;
+                if (!levelGroups[level]) levelGroups[level] = [];
+                levelGroups[level].push(node);
+            });
+
+            // Calculate positions
+            var maxLevel = Math.max.apply(null, Object.keys(levelGroups).map(Number)) || 0;
+            var levelHeight = 200 / Math.max(maxLevel + 1, 3);
+
+            Object.keys(levelGroups).forEach(function(levelStr) {
+                var level = parseInt(levelStr);
+                var nodesAtLevel = levelGroups[level];
+                var levelWidth = 350 / Math.max(nodesAtLevel.length, 1);
+                nodesAtLevel.forEach(function(node, idx) {
+                    var nodeId = node.id || node.label || node.value;
+                    nodePositions[nodeId] = {
+                        x: 25 + levelWidth * (idx + 0.5),
+                        y: 25 + level * levelHeight
+                    };
+                });
+            });
+
+            // Draw edges
+            stepEdges.forEach(function(edge) {
+                var from = edge.from || edge[0];
+                var to = edge.to || edge[1];
+                var p1 = nodePositions[from];
+                var p2 = nodePositions[to];
+                if (p1 && p2) {
+                    html += '<line x1="'+p1.x+'" y1="'+p1.y+'" x2="'+p2.x+'" y2="'+p2.y+'" stroke="#30363d" stroke-width="2"/>';
+                }
+            });
+
+            // Draw nodes
+            stepNodes.forEach(function(node) {
+                var nodeId = node.id || node.label || node.value;
+                var nodeLabel = node.label || node.value || node.id || '?';
+                var pos = nodePositions[nodeId];
+                if (!pos) return;
+
+                var isVisited = visited.indexOf(nodeId) !== -1 || visited.indexOf(String(nodeId)) !== -1;
+                var isCurrent = current === nodeId || current === String(nodeId);
+                var isActive = node.active === true;
+
+                var fill = isCurrent ? '#238636' : (isActive ? '#238636' : (isVisited ? '#1f6feb' : '#21262d'));
+                var stroke = isCurrent ? '#3fb950' : (isActive ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d'));
+
+                html += '<circle cx="'+pos.x+'" cy="'+pos.y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+                var displayLabel = String(nodeLabel).substring(0, 3);
+                var fontSize = displayLabel.length > 2 ? 11 : 14;
+                html += '<text x="'+pos.x+'" y="'+(pos.y+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="'+fontSize+'">'+displayLabel+'</text>';
+            });
+        }
 
         html += '</svg>';
-        html += '<div style="margin-top:1rem;color:#8b949e;">' + (step.action || '') + '</div>';
-        html += '<div style="margin-top:0.5rem;color:#58a6ff;">Visited: [' + (step.visited || []).join(' → ') + ']</div>';
+
+        // Legend
+        html += '<div style="display:flex;justify-content:center;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;">';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Current</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#1f6feb;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Visited</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#21262d;border:1px solid #30363d;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Unvisited</span></div>';
+        html += '</div>';
+
+        html += '<div style="margin-top:0.5rem;color:#8b949e;font-size:0.85rem;">' + (step.action || step.status || '') + '</div>';
+
+        if (visited.length > 0) {
+            html += '<div style="margin-top:0.25rem;color:#58a6ff;font-size:0.8rem;">Visited: [' + visited.map(function(v) { return typeof v === 'object' ? v.id || v.value : v; }).join(' → ') + ']</div>';
+        }
 
         return html;
     }
@@ -8437,8 +8653,8 @@
                 html += '</div>';
             }
 
-        } else if (vizType === 'tree') {
-            // Tree state panel
+        } else if (vizType === 'tree' || vizType === 'bst') {
+            // Tree state panel with call stack history
             html += '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:0.5rem;">TREE STATE</div>';
 
             if (step.current) {
@@ -8451,12 +8667,62 @@
             if (step.visited && step.visited.length > 0) {
                 html += '<div style="background:#1f6feb22;border-radius:4px;padding:0.5rem;margin-bottom:0.5rem;">';
                 html += '<div style="color:#58a6ff;font-size:0.7rem;">Visited: ' + step.visited.length + ' nodes</div>';
+                // Show visited path
+                var visitedPath = step.visited.slice(-5).map(function(v) {
+                    return typeof v === 'object' ? (v.label || v.value || v.id) : v;
+                }).join(' → ');
+                if (step.visited.length > 5) visitedPath = '... → ' + visitedPath;
+                html += '<div style="color:#8b949e;font-size:0.65rem;margin-top:0.25rem;">' + visitedPath + '</div>';
+                html += '</div>';
+            }
+
+            // Show call stack if available (for recursive tree algorithms)
+            if (step.callStack && step.callStack.length > 0) {
+                html += '<div style="font-size:0.7rem;color:#a371f7;margin-top:0.5rem;margin-bottom:0.25rem;">📚 CALL STACK</div>';
+                var reversedCallStack = step.callStack.slice().reverse();
+                reversedCallStack.slice(0, 5).forEach(function(call, idx) {
+                    var isTop = idx === 0;
+                    var bg = isTop ? '#238636' : '#21262d';
+                    var border = isTop ? '#3fb950' : '#30363d';
+                    var opacity = Math.max(0.5, 1 - idx * 0.15);
+                    html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:4px;padding:0.3rem 0.5rem;margin-bottom:0.15rem;opacity:' + opacity + ';">';
+                    html += '<div style="color:#c9d1d9;font-family:monospace;font-size:0.75rem;">' + call + '</div>';
+                    html += '</div>';
+                });
+                if (step.callStack.length > 5) {
+                    html += '<div style="color:#8b949e;font-size:0.65rem;text-align:center;">+' + (step.callStack.length - 5) + ' more...</div>';
+                }
+            }
+
+            // Show call stack history (backtracking visualization)
+            if (step.callStackHistory && step.callStackHistory.length > 0) {
+                html += '<div style="font-size:0.7rem;color:#f0883e;margin-top:0.5rem;margin-bottom:0.25rem;">📜 HISTORY</div>';
+                html += '<div style="max-height:100px;overflow-y:auto;background:#21262d;border-radius:4px;padding:0.25rem;">';
+                step.callStackHistory.slice(-8).forEach(function(entry, idx) {
+                    var icon = entry.type === 'call' ? '→' : (entry.type === 'return' ? '←' : '•');
+                    var color = entry.type === 'call' ? '#3fb950' : (entry.type === 'return' ? '#f85149' : '#8b949e');
+                    html += '<div style="color:' + color + ';font-size:0.65rem;font-family:monospace;padding:0.1rem 0;">';
+                    html += icon + ' ' + (entry.call || entry.action || entry);
+                    html += '</div>';
+                });
                 html += '</div>';
             }
 
             if (step.runningSum !== undefined) {
-                html += '<div style="background:#f0883e22;border-radius:4px;padding:0.5rem;">';
+                html += '<div style="background:#f0883e22;border-radius:4px;padding:0.5rem;margin-top:0.5rem;">';
                 html += '<div style="color:#f0883e;font-size:0.8rem;">Running sum: ' + step.runningSum + '</div>';
+                html += '</div>';
+            }
+
+            if (step.diameter !== undefined) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.5rem;margin-top:0.5rem;">';
+                html += '<div style="color:#3fb950;font-size:0.8rem;">Max diameter: ' + step.diameter + '</div>';
+                html += '</div>';
+            }
+
+            if (step.result !== undefined && step.result !== null) {
+                html += '<div style="background:#23863622;border-radius:4px;padding:0.5rem;margin-top:0.5rem;">';
+                html += '<div style="color:#3fb950;font-size:0.85rem;">Result: ' + (typeof step.result === 'object' ? JSON.stringify(step.result) : step.result) + '</div>';
                 html += '</div>';
             }
 
