@@ -1,34 +1,548 @@
 <div class="guide-page">
     <nav class="breadcrumb">
-        <a href="/">Home</a>
+        <a href="/">Home</a> <span class="breadcrumb-sep">/</span> <span>Python Asyncio</span>
     </nav>
 
     <div class="guide-header">
-        <span class="guide-badge python-badge">Python 3.10+ Asyncio</span>
-        <h1>Python Asyncio Guide</h1>
-        <p class="guide-description">Master asynchronous programming in Python - from GIL basics to advanced patterns</p>
+        <div class="guide-header-content">
+            <span class="guide-badge python-badge">Python 3.10+</span>
+            <h1>Python Asyncio Complete Guide</h1>
+            <p class="guide-description">Master asynchronous programming in Python - from language basics to production-ready patterns</p>
+            <div class="guide-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">&#128218;</span>
+                    <span class="stat-text">4 Sections</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#9889;</span>
+                    <span class="stat-text">Interactive Code</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#128200;</span>
+                    <span class="stat-text">Beginner to Advanced</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="guide-nav">
-        <a href="#basic" class="guide-nav-link active" data-section="basic">Basic</a>
-        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">Intermediate</a>
-        <a href="#advanced" class="guide-nav-link" data-section="advanced">Advanced</a>
+        <a href="#python-basics" class="guide-nav-link active" data-section="python-basics">
+            <span class="nav-icon">&#128013;</span> Python Basics
+        </a>
+        <a href="#basic" class="guide-nav-link" data-section="basic">
+            <span class="nav-icon">&#9881;</span> Async Basics
+        </a>
+        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">
+            <span class="nav-icon">&#128295;</span> Intermediate
+        </a>
+        <a href="#advanced" class="guide-nav-link" data-section="advanced">
+            <span class="nav-icon">&#128640;</span> Advanced
+        </a>
     </div>
 
-    <!-- BASIC SECTION -->
-    <section id="basic" class="guide-section">
-        <h2>Basic - Understanding Python's Concurrency Model</h2>
+    <!-- PYTHON BASICS SECTION -->
+    <section id="python-basics" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128013;</span> Python Language Fundamentals</h2>
+            <p class="section-description">Essential Python concepts you need before diving into asyncio</p>
+        </div>
+
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>Why Learn Python Basics First?</h3>
+            </div>
+            <p>Before mastering asyncio, you need a solid foundation in Python fundamentals. Understanding functions, classes, generators, and decorators will make async concepts much clearer.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <span class="concept-icon">&#128221;</span>
+                    <h4>Variables & Types</h4>
+                    <p>Dynamic typing, type hints, data structures</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#9881;</span>
+                    <h4>Functions</h4>
+                    <p>First-class functions, *args, **kwargs</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128230;</span>
+                    <h4>Classes</h4>
+                    <p>OOP, dunder methods, context managers</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#127922;</span>
+                    <h4>Generators</h4>
+                    <p>yield, iterators, lazy evaluation</p>
+                </div>
+            </div>
+        </div>
 
         <div class="topic-block">
-            <h3>What is the GIL (Global Interpreter Lock)?</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128221;</span>
+                <h3>Variables, Types, and Data Structures</h3>
+            </div>
+            <p>Python is dynamically typed but supports type hints for better code quality.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Variables and Type Hints
+from typing import List, Dict, Optional, Tuple
+
+# Basic types
+name: str = "Alice"
+age: int = 30
+price: float = 19.99
+is_active: bool = True
+
+# Collections
+numbers: List[int] = [1, 2, 3, 4, 5]
+user_data: Dict[str, str] = {"name": "Alice", "email": "alice@example.com"}
+coordinates: Tuple[int, int] = (10, 20)
+
+# Optional (can be None)
+middle_name: Optional[str] = None
+
+# List comprehensions - Pythonic way to create lists
+squares = [x**2 for x in range(10)]
+print(f"Squares: {squares}")
+
+# Dict comprehension
+word_lengths = {word: len(word) for word in ["apple", "banana", "cherry"]}
+print(f"Word lengths: {word_lengths}")
+
+# Set comprehension
+unique_chars = {char for char in "hello world" if char != " "}
+print(f"Unique chars: {unique_chars}")
+
+# Unpacking
+first, *middle, last = [1, 2, 3, 4, 5]
+print(f"First: {first}, Middle: {middle}, Last: {last}")
+
+# Dictionary unpacking
+config = {"host": "localhost", "port": 8080}
+print("Host: {host}, Port: {port}".format(**config))</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9881;</span>
+                <h3>Functions - First-Class Citizens</h3>
+            </div>
+            <p>In Python, functions are first-class objects - they can be passed around, returned, and stored in variables. This is fundamental to understanding async callbacks and handlers.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">from typing import Callable
+
+# Functions are objects
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
+
+# Assign function to variable
+say_hello = greet
+print(say_hello("World"))
+
+# Functions with *args and **kwargs
+def flexible_function(*args, **kwargs):
+    print(f"Positional args: {args}")
+    print(f"Keyword args: {kwargs}")
+
+flexible_function(1, 2, 3, name="Alice", age=30)
+
+# Higher-order functions (take or return functions)
+def create_multiplier(factor: int) -> Callable[[int], int]:
+    def multiplier(x: int) -> int:
+        return x * factor
+    return multiplier
+
+double = create_multiplier(2)
+triple = create_multiplier(3)
+print(f"Double 5: {double(5)}")
+print(f"Triple 5: {triple(5)}")
+
+# Lambda functions (anonymous functions)
+numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+sorted_nums = sorted(numbers, key=lambda x: -x)  # Sort descending
+print(f"Sorted descending: {sorted_nums}")
+
+# Map, filter, reduce
+from functools import reduce
+
+nums = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x**2, nums))
+evens = list(filter(lambda x: x % 2 == 0, nums))
+total = reduce(lambda a, b: a + b, nums)
+
+print(f"Squared: {squared}")
+print(f"Evens: {evens}")
+print(f"Total: {total}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Classes and OOP</h3>
+            </div>
+            <p>Understanding classes is essential for async context managers and custom async iterators.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">from typing import Optional
+
+class User:
+    """A simple User class demonstrating Python OOP."""
+
+    # Class variable (shared by all instances)
+    user_count: int = 0
+
+    def __init__(self, name: str, email: str):
+        # Instance variables
+        self.name = name
+        self.email = email
+        self._password: Optional[str] = None  # Convention: _ means "private"
+        User.user_count += 1
+
+    # Instance method
+    def greet(self) -> str:
+        return f"Hi, I'm {self.name}!"
+
+    # Property decorator for getter
+    @property
+    def password(self) -> str:
+        return "****" if self._password else "Not set"
+
+    # Property setter
+    @password.setter
+    def password(self, value: str):
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        self._password = value
+
+    # Class method (operates on class, not instance)
+    @classmethod
+    def get_user_count(cls) -> int:
+        return cls.user_count
+
+    # Static method (utility function, no access to self or cls)
+    @staticmethod
+    def validate_email(email: str) -> bool:
+        return "@" in email and "." in email
+
+    # String representation
+    def __repr__(self) -> str:
+        return f"User(name={self.name!r}, email={self.email!r})"
+
+# Using the class
+user1 = User("Alice", "alice@example.com")
+user2 = User("Bob", "bob@example.com")
+
+print(user1.greet())
+print(f"Total users: {User.get_user_count()}")
+print(f"Valid email: {User.validate_email('test@test.com')}")
+
+# Using property
+user1.password = "secure123"
+print(f"Password: {user1.password}")
+
+print(f"Repr: {user1!r}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128268;</span>
+                <h3>Context Managers (with statement)</h3>
+            </div>
+            <p>Context managers handle setup/teardown automatically. Understanding them is crucial for <code>async with</code>.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import time
+
+# Context manager using class
+class Timer:
+    """Measure execution time of a code block."""
+
+    def __init__(self, name: str = "Operation"):
+        self.name = name
+        self.start_time = None
+
+    def __enter__(self):
+        self.start_time = time.time()
+        print(f"{self.name}: Starting...")
+        return self  # Value bound to 'as' variable
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        elapsed = time.time() - self.start_time
+        print(f"{self.name}: Completed in {elapsed:.4f}s")
+
+        # Handle exceptions (return True to suppress)
+        if exc_type is not None:
+            print(f"{self.name}: Error occurred - {exc_val}")
+        return False  # Don't suppress exceptions
+
+# Using the context manager
+with Timer("Calculation") as t:
+    total = sum(range(100000))
+    print(f"Sum: {total}")
+
+# Context manager using contextlib (simpler)
+from contextlib import contextmanager
+
+@contextmanager
+def temp_directory_context(name: str):
+    """Simulates creating and cleaning up a temp directory."""
+    print(f"Creating temp directory: {name}")
+    try:
+        yield name  # Value for 'as' clause
+    finally:
+        print(f"Cleaning up temp directory: {name}")
+
+with temp_directory_context("my_temp") as dirname:
+    print(f"Working in: {dirname}")
+    # Do work...
+
+print("\nDone!")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#127922;</span>
+                <h3>Generators and Iterators</h3>
+            </div>
+
+            <div class="info-box">
+                <div class="info-header">
+                    <span class="info-icon">&#128161;</span>
+                    <span>Key Insight</span>
+                </div>
+                <p><strong>Generators are the foundation of async/await!</strong> The <code>yield</code> keyword in generators is conceptually similar to <code>await</code> - both pause execution and can resume later.</p>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Simple generator function
+def countdown(n: int):
+    """Yields numbers from n down to 1."""
+    print("Starting countdown...")
+    while n > 0:
+        yield n  # Pause here, return value
+        n -= 1
+    print("Blastoff!")
+
+# Using the generator
+print("=== Countdown Generator ===")
+for num in countdown(3):
+    print(f"T-minus {num}")
+
+# Generator expression (like list comprehension but lazy)
+print("\n=== Generator Expression ===")
+squares_gen = (x**2 for x in range(5))  # Not evaluated yet!
+print(f"Generator object: {squares_gen}")
+print(f"Values: {list(squares_gen)}")
+
+# Generators for memory efficiency
+def read_large_file_lines(filename: str):
+    """Simulates reading a large file line by line."""
+    for i in range(1000000):
+        yield f"Line {i}: Some data here"
+
+# Only processes one line at a time - no memory explosion!
+line_gen = read_large_file_lines("huge.txt")
+print("\n=== First 3 lines ===")
+for i, line in enumerate(line_gen):
+    if i >= 3:
+        break
+    print(line)
+
+# yield from - delegate to another generator
+def combined_generator():
+    yield from range(3)
+    yield from ['a', 'b', 'c']
+    yield from (x**2 for x in range(3, 6))
+
+print("\n=== Combined Generator ===")
+print(list(combined_generator()))
+
+# Two-way communication with send()
+def accumulator():
+    """Generator that accumulates values sent to it."""
+    total = 0
+    while True:
+        value = yield total  # Receive value, yield total
+        if value is None:
+            break
+        total += value
+
+print("\n=== Accumulator ===")
+acc = accumulator()
+next(acc)  # Prime the generator
+print(f"Send 10: {acc.send(10)}")
+print(f"Send 20: {acc.send(20)}")
+print(f"Send 5: {acc.send(5)}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#127873;</span>
+                <h3>Decorators</h3>
+            </div>
+            <p>Decorators wrap functions to add behavior. Many async patterns use decorators.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python">import time
+from functools import wraps
+from typing import Callable, Any
+
+# Basic decorator
+def timer_decorator(func: Callable) -> Callable:
+    """Decorator that times function execution."""
+    @wraps(func)  # Preserves function metadata
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+@timer_decorator
+def slow_function():
+    """A slow function."""
+    time.sleep(0.1)
+    return "Done"
+
+print("=== Timer Decorator ===")
+result = slow_function()
+print(f"Result: {result}")
+print(f"Function name preserved: {slow_function.__name__}")
+
+# Decorator with arguments
+def retry(max_attempts: int = 3, delay: float = 0.1):
+    """Decorator that retries a function on failure."""
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            last_error = None
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_error = e
+                    print(f"Attempt {attempt} failed: {e}")
+                    if attempt < max_attempts:
+                        time.sleep(delay)
+            raise last_error
+        return wrapper
+    return decorator
+
+attempt_count = 0
+
+@retry(max_attempts=3, delay=0.05)
+def flaky_function():
+    """Fails twice, then succeeds."""
+    global attempt_count
+    attempt_count += 1
+    if attempt_count < 3:
+        raise ValueError("Random failure!")
+    return "Success!"
+
+print("\n=== Retry Decorator ===")
+try:
+    result = flaky_function()
+    print(f"Final result: {result}")
+except Exception as e:
+    print(f"All attempts failed: {e}")
+
+# Class-based decorator
+class CacheDecorator:
+    """Simple memoization cache."""
+
+    def __init__(self, func: Callable):
+        self.func = func
+        self.cache = {}
+
+    def __call__(self, *args):
+        if args not in self.cache:
+            self.cache[args] = self.func(*args)
+        return self.cache[args]
+
+@CacheDecorator
+def fibonacci(n: int) -> int:
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print("\n=== Cache Decorator ===")
+print(f"fib(10) = {fibonacci(10)}")
+print(f"fib(20) = {fibonacci(20)}")
+print(f"fib(30) = {fibonacci(30)}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ASYNC BASICS SECTION -->
+    <section id="basic" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#9881;</span> Understanding Python's Concurrency Model</h2>
+            <p class="section-description">How asyncio works under the hood and why it exists</p>
+        </div>
+
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128274;</span>
+                <h3>What is the GIL (Global Interpreter Lock)?</h3>
+            </div>
             <p>The GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode simultaneously. This is why Python is often called "single-threaded" despite having a <code>threading</code> module.</p>
 
+            <div class="diagram-container">
+                <div class="diagram-title">GIL Impact on Threading</div>
+                <div class="mermaid">
+flowchart LR
+    subgraph "CPU-Bound (GIL Blocks)"
+        T1[Thread 1] -->|Blocked| GIL[GIL Lock]
+        T2[Thread 2] -->|Blocked| GIL
+        GIL -->|Only 1| CPU[CPU Core]
+    end
+
+    subgraph "I/O-Bound (GIL Released)"
+        T3[Thread 1] -->|Released| IO1[Network I/O]
+        T4[Thread 2] -->|Released| IO2[Disk I/O]
+    end
+                </div>
+            </div>
+
             <h4>Why Does Python Have the GIL?</h4>
-            <ul>
-                <li><strong>Memory Management:</strong> Python uses reference counting for memory management. The GIL prevents race conditions when modifying reference counts.</li>
-                <li><strong>C Extensions:</strong> Many C extensions are not thread-safe. The GIL makes it easier to integrate C libraries.</li>
-                <li><strong>Simplicity:</strong> Single-threaded execution simplifies the interpreter implementation.</li>
-            </ul>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">&#128190;</span>
+                    <div>
+                        <strong>Memory Management</strong>
+                        <p>Python uses reference counting. The GIL prevents race conditions when modifying reference counts.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">&#128268;</span>
+                    <div>
+                        <strong>C Extensions</strong>
+                        <p>Many C extensions are not thread-safe. The GIL makes it easier to integrate C libraries.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">&#9889;</span>
+                    <div>
+                        <strong>Simplicity</strong>
+                        <p>Single-threaded execution simplifies the interpreter implementation.</p>
+                    </div>
+                </div>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-python">import threading
@@ -104,18 +618,88 @@ print(f"Speedup: {sequential_time/threaded_time:.1f}x")</code></pre>
                 <button class="run-code-btn" data-language="python">Run Code</button>
             </div>
 
-            <h4>Future of Python: Free-Threading (PEP 703)</h4>
-            <p>Python 3.13+ introduces experimental free-threading mode (no GIL). This is a major step toward true parallelism.</p>
-            <ul>
-                <li><strong>Python 3.13:</strong> Experimental opt-in free-threading build</li>
-                <li><strong>Future:</strong> Expected to become the default over several releases</li>
-                <li><strong>For now:</strong> Use asyncio for I/O-bound, multiprocessing for CPU-bound</li>
-            </ul>
+            <div class="info-box info-success">
+                <div class="info-header">
+                    <span class="info-icon">&#128640;</span>
+                    <span>Future of Python: Free-Threading (PEP 703)</span>
+                </div>
+                <p>Python 3.13+ introduces experimental free-threading mode (no GIL). This is a major step toward true parallelism. For now, use <strong>asyncio for I/O-bound</strong> and <strong>multiprocessing for CPU-bound</strong> tasks.</p>
+            </div>
         </div>
 
         <div class="topic-block">
-            <h3>Why Asyncio? The Event Loop Model</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Why Asyncio? The Event Loop Model</h3>
+            </div>
             <p>Asyncio uses cooperative multitasking - tasks voluntarily yield control. This avoids GIL issues and thread overhead while handling thousands of concurrent I/O operations.</p>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Event Loop - Cooperative Multitasking</div>
+                <div class="mermaid">
+sequenceDiagram
+    participant EL as Event Loop
+    participant T1 as Task 1
+    participant T2 as Task 2
+    participant T3 as Task 3
+
+    EL->>T1: Start
+    T1->>T1: Run until await
+    T1-->>EL: Yield (await sleep)
+    EL->>T2: Start
+    T2->>T2: Run until await
+    T2-->>EL: Yield (await fetch)
+    EL->>T3: Start
+    T3->>T3: Run until await
+    T3-->>EL: Yield (await read)
+    Note over EL: All waiting on I/O
+    EL->>T1: Resume (sleep done)
+    T1->>T1: Continue
+    T1-->>EL: Complete
+                </div>
+            </div>
+
+            <div class="comparison-table">
+                <div class="comparison-header">
+                    <div class="comparison-title">Threading vs Asyncio</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Threading</th>
+                            <th>Asyncio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Switching</td>
+                            <td>Preemptive (OS decides)</td>
+                            <td>Cooperative (code decides)</td>
+                        </tr>
+                        <tr>
+                            <td>Memory</td>
+                            <td>~8MB per thread</td>
+                            <td>~KB per task</td>
+                        </tr>
+                        <tr>
+                            <td>Scalability</td>
+                            <td>Hundreds of threads</td>
+                            <td>Millions of tasks</td>
+                        </tr>
+                        <tr>
+                            <td>Race Conditions</td>
+                            <td>Common (need locks)</td>
+                            <td>Rare (single thread)</td>
+                        </tr>
+                        <tr>
+                            <td>Best For</td>
+                            <td>Blocking I/O libs</td>
+                            <td>Modern async I/O</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
@@ -149,7 +733,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Essential Asyncio Keywords and Functions</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128273;</span>
+                <h3>Essential Asyncio Keywords and Functions</h3>
+            </div>
 
             <h4>async def - Define Coroutine</h4>
             <div class="code-example">
@@ -298,9 +885,16 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Important: What to Take Care of</h3>
+            <div class="block-header warning-header">
+                <span class="block-icon">&#9888;</span>
+                <h3>Important: What to Take Care of</h3>
+            </div>
 
             <h4>1. Never Block the Event Loop</h4>
+            <div class="warning-box">
+                <p><strong>Critical:</strong> Using blocking calls like <code>time.sleep()</code> or synchronous I/O will freeze ALL async tasks!</p>
+            </div>
+
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 import time
@@ -431,10 +1025,16 @@ asyncio.run(main())</code></pre>
 
     <!-- INTERMEDIATE SECTION -->
     <section id="intermediate" class="guide-section">
-        <h2>Intermediate - Practical Async Patterns</h2>
+        <div class="section-header">
+            <h2><span class="section-icon">&#128295;</span> Intermediate - Practical Async Patterns</h2>
+            <p class="section-description">Real-world patterns for building async applications</p>
+        </div>
 
         <div class="topic-block">
-            <h3>Async Context Managers</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Async Context Managers</h3>
+            </div>
             <p>Use <code>async with</code> for resources that need async setup/teardown.</p>
 
             <div class="code-example">
@@ -471,9 +1071,6 @@ async def main():
         result = await db.query("SELECT * FROM users")
         print(f"Query result: {result}")
 
-        # Even if exception occurs, __aexit__ is called
-        # raise ValueError("Oops!")
-
     print("\nConnection automatically closed!")
 
 asyncio.run(main())</code></pre>
@@ -482,7 +1079,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Async Iterators and Generators</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Async Iterators and Generators</h3>
+            </div>
             <p>Use <code>async for</code> to iterate over async data streams.</p>
 
             <div class="code-example">
@@ -532,7 +1132,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Timeouts and Cancellation</h3>
+            <div class="block-header">
+                <span class="block-icon">&#9200;</span>
+                <h3>Timeouts and Cancellation</h3>
+            </div>
 
             <h4>asyncio.timeout (Python 3.11+) / asyncio.wait_for</h4>
             <div class="code-example">
@@ -555,15 +1158,6 @@ async def main():
         print(f"Result: {result}")
     except asyncio.TimeoutError:
         print("Operation timed out!")
-
-    # Method 2: asyncio.timeout context manager (Python 3.11+)
-    # Uncomment if using Python 3.11+:
-    # print("\n=== asyncio.timeout context ===")
-    # try:
-    #     async with asyncio.timeout(0.1):
-    #         await slow_operation(0.5)
-    # except asyncio.TimeoutError:
-    #     print("Timed out!")
 
     # Successful case
     print("\n=== Successful operation ===")
@@ -616,7 +1210,22 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Queues for Producer-Consumer Pattern</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Queues for Producer-Consumer Pattern</h3>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Producer-Consumer with Queue</div>
+                <div class="mermaid">
+flowchart LR
+    P1[Producer 1] -->|put| Q[(Async Queue)]
+    P2[Producer 2] -->|put| Q
+    Q -->|get| C1[Consumer 1]
+    Q -->|get| C2[Consumer 2]
+                </div>
+            </div>
+
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 import random
@@ -675,7 +1284,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Locks and Synchronization</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128274;</span>
+                <h3>Locks and Synchronization</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 
@@ -719,7 +1331,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Semaphores for Rate Limiting</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128295;</span>
+                <h3>Semaphores for Rate Limiting</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 import time
@@ -754,63 +1369,16 @@ asyncio.run(main())</code></pre>
 
     <!-- ADVANCED SECTION -->
     <section id="advanced" class="guide-section">
-        <h2>Advanced - Production-Ready Patterns</h2>
-
-        <div class="topic-block">
-            <h3>Task Groups (Python 3.11+)</h3>
-            <p>TaskGroups provide structured concurrency - all tasks complete or all are cancelled.</p>
-
-            <div class="code-example">
-                <pre><code class="language-python">import asyncio
-
-async def worker(name, duration, should_fail=False):
-    print(f"Worker {name}: Starting")
-    await asyncio.sleep(duration)
-    if should_fail:
-        raise ValueError(f"Worker {name} failed!")
-    print(f"Worker {name}: Done")
-    return f"Result from {name}"
-
-async def main():
-    # TaskGroup ensures all tasks complete together
-    # If one fails, others are cancelled
-
-    print("=== All succeed ===")
-    try:
-        # Python 3.11+ TaskGroup
-        # async with asyncio.TaskGroup() as tg:
-        #     task1 = tg.create_task(worker("A", 0.1))
-        #     task2 = tg.create_task(worker("B", 0.1))
-
-        # For Python 3.10, use gather
-        results = await asyncio.gather(
-            worker("A", 0.1),
-            worker("B", 0.1),
-        )
-        print(f"Results: {results}")
-    except Exception as e:
-        print(f"Error: {e}")
-
-    print("\n=== One fails (with return_exceptions) ===")
-    results = await asyncio.gather(
-        worker("C", 0.1),
-        worker("D", 0.1, should_fail=True),
-        worker("E", 0.1),
-        return_exceptions=True
-    )
-    for i, r in enumerate(results):
-        if isinstance(r, Exception):
-            print(f"Task {i}: FAILED - {r}")
-        else:
-            print(f"Task {i}: {r}")
-
-asyncio.run(main())</code></pre>
-                <button class="run-code-btn" data-language="python">Run Code</button>
-            </div>
+        <div class="section-header">
+            <h2><span class="section-icon">&#128640;</span> Advanced - Production-Ready Patterns</h2>
+            <p class="section-description">Battle-tested patterns for production async applications</p>
         </div>
 
         <div class="topic-block">
-            <h3>Connection Pool Pattern</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Connection Pool Pattern</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 from collections import deque
@@ -877,7 +1445,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Retry Pattern with Exponential Backoff</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128260;</span>
+                <h3>Retry Pattern with Exponential Backoff</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 import random
@@ -938,7 +1509,24 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Circuit Breaker Pattern</h3>
+            <div class="block-header">
+                <span class="block-icon">&#9889;</span>
+                <h3>Circuit Breaker Pattern</h3>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">Circuit Breaker State Machine</div>
+                <div class="mermaid">
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open : Failures >= Threshold
+    Open --> HalfOpen : Timeout Elapsed
+    HalfOpen --> Closed : Success
+    HalfOpen --> Open : Failure
+    Closed --> Closed : Success (reset count)
+                </div>
+            </div>
+
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 import time
@@ -1021,10 +1609,12 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Graceful Shutdown with Signal Handling</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128721;</span>
+                <h3>Graceful Shutdown with Signal Handling</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
-import signal
 
 class GracefulServer:
     def __init__(self):
@@ -1079,7 +1669,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Async Event for Coordination</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128276;</span>
+                <h3>Async Event for Coordination</h3>
+            </div>
             <div class="code-example">
                 <pre><code class="language-python">import asyncio
 
@@ -1120,7 +1713,10 @@ asyncio.run(main())</code></pre>
         </div>
 
         <div class="topic-block">
-            <h3>Async Debounce Pattern</h3>
+            <div class="block-header">
+                <span class="block-icon">&#128336;</span>
+                <h3>Async Debounce Pattern</h3>
+            </div>
             <p>Useful for rate-limiting rapid events (like search-as-you-type).</p>
 
             <div class="code-example">
@@ -1180,18 +1776,21 @@ asyncio.run(main())</code></pre>
 </div>
 
 <style>
+/* Enhanced Guide Page Styles */
 .guide-page {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem;
 }
 
+/* Breadcrumb */
 .breadcrumb {
     margin-bottom: 1.5rem;
+    font-size: 0.9rem;
 }
 
 .breadcrumb a {
-    color: var(--accent-color);
+    color: #3776AB;
     text-decoration: none;
 }
 
@@ -1199,103 +1798,186 @@ asyncio.run(main())</code></pre>
     text-decoration: underline;
 }
 
+.breadcrumb-sep {
+    margin: 0 0.5rem;
+    color: var(--color-text-muted, #94a3b8);
+}
+
+/* Guide Header */
 .guide-header {
-    margin-bottom: 2rem;
     text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, #3776AB10 0%, #FFD43B10 100%);
+    border-radius: 1rem;
+    border: 1px solid #3776AB30;
 }
 
 .guide-badge {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: #3776AB;
+    padding: 0.35rem 1rem;
+    background: linear-gradient(135deg, #3776AB 0%, #FFD43B 100%);
     color: white;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-}
-
-.python-badge {
-    background: #3776AB;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
 }
 
 .guide-header h1 {
     margin: 0.5rem 0;
     font-size: 2.5rem;
+    background: linear-gradient(135deg, #3776AB 0%, #2c5d87 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .guide-description {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+}
+
+.guide-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary, #475569);
+    font-size: 0.9rem;
+}
+
+.stat-icon {
     font-size: 1.1rem;
 }
 
+/* Navigation */
 .guide-nav {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-bottom: 2rem;
-    padding: 1rem;
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    background: var(--color-bg-primary, #ffffff);
+    border-radius: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
     position: sticky;
     top: 70px;
     z-index: 50;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
 }
 
 .guide-nav-link {
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s;
 }
 
 .guide-nav-link:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: var(--color-bg-secondary, #f8fafc);
+    color: var(--color-text-primary, #0f172a);
 }
 
 .guide-nav-link.active {
-    background: #3776AB;
+    background: linear-gradient(135deg, #3776AB 0%, #2c5d87 100%);
     color: white;
 }
 
+.nav-icon {
+    font-size: 1rem;
+}
+
+/* Section Headers */
+.section-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #3776AB;
+}
+
+.section-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+}
+
+.section-description {
+    color: var(--color-text-secondary, #475569);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+/* Guide Section */
 .guide-section {
     margin-bottom: 3rem;
     padding-top: 1rem;
 }
 
-.guide-section > h2 {
-    font-size: 1.75rem;
+/* Topic Block */
+.topic-block {
+    background: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 1rem;
+    padding: 1.75rem;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 3px solid #3776AB;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.topic-block {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+.topic-block.highlight-block {
+    background: linear-gradient(135deg, #3776AB08 0%, #ffffff 100%);
+    border-color: #3776AB40;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.block-header.warning-header {
+    color: #f59e0b;
+}
+
+.block-icon {
+    font-size: 1.5rem;
 }
 
 .topic-block h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--color-text-primary, #0f172a);
 }
 
 .topic-block h4 {
     font-size: 1.1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     margin-bottom: 0.75rem;
     color: #3776AB;
 }
 
 .topic-block p {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
     margin-bottom: 1rem;
     line-height: 1.7;
 }
@@ -1303,108 +1985,335 @@ asyncio.run(main())</code></pre>
 .topic-block ul, .topic-block ol {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary, #475569);
 }
 
 .topic-block li {
     margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 
 .topic-block code {
-    background: var(--bg-secondary);
-    padding: 0.2rem 0.4rem;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
+    background: #3776AB15;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: #3776AB;
+}
+
+/* Concept Grid */
+.concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.concept-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.concept-card:hover {
+    border-color: #3776AB;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(55, 118, 171, 0.15);
+}
+
+.concept-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.concept-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text-primary, #0f172a);
+    font-size: 1rem;
+}
+
+.concept-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted, #94a3b8);
+}
+
+/* Feature List */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.feature-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    border-radius: 0.75rem;
+    border-left: 4px solid #3776AB;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.feature-item strong {
+    color: var(--color-text-primary, #0f172a);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.feature-item p {
+    margin: 0;
     font-size: 0.9rem;
 }
 
-.code-example {
-    position: relative;
+/* Info Box */
+.info-box {
+    background: linear-gradient(135deg, #3b82f610 0%, #06b6d410 100%);
+    border: 1px solid #3b82f640;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.info-box.info-success {
+    background: linear-gradient(135deg, #10b98110 0%, #06b6d410 100%);
+    border-color: #10b98140;
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.info-box.info-success .info-header {
+    color: #10b981;
+}
+
+.info-icon {
+    font-size: 1.25rem;
+}
+
+.info-box p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Warning Box */
+.warning-box {
+    background: #fef3c710;
+    border: 1px solid #f59e0b40;
+    border-left: 4px solid #f59e0b;
+    border-radius: 0.5rem;
+    padding: 1rem;
     margin: 1rem 0;
 }
 
+.warning-box p {
+    margin: 0;
+    color: #92400e;
+}
+
+/* Diagram Container */
+.diagram-container {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.diagram-title {
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Comparison Table */
+.comparison-table {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.comparison-header {
+    background: linear-gradient(135deg, #3776AB 0%, #2c5d87 100%);
+    padding: 0.75rem 1rem;
+}
+
+.comparison-title {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.comparison-table th {
+    background: var(--color-bg-secondary, #f8fafc);
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.comparison-table td {
+    color: var(--color-text-secondary, #475569);
+    font-size: 0.9rem;
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Code Example */
+.code-example {
+    position: relative;
+    margin: 1.25rem 0;
+}
+
 .code-example pre {
-    background: #e8e8e8;
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    padding-top: 2.5rem;
+    background: #1e293b;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    padding-top: 3rem;
     overflow-x: auto;
     margin: 0;
-    border: 1px solid #d0d0d0;
+    border: 1px solid #334155;
 }
 
 .code-example pre code {
     background: none;
     padding: 0;
-    color: #333333;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     line-height: 1.6;
 }
 
 .run-code-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: #3776AB;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(135deg, #3776AB 0%, #2c5d87 100%);
     color: white;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 0.5rem;
     cursor: pointer;
     font-size: 0.8rem;
-    font-weight: 500;
-    transition: background 0.2s;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .run-code-btn:hover {
-    background: #2c5d87;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(55, 118, 171, 0.4);
 }
 
 .run-code-btn:disabled {
-    background: #666;
+    background: #64748b;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
+/* Code Output */
 .code-output {
     margin-top: 0.5rem;
 }
 
 .code-output pre {
     padding: 1rem;
-    border-radius: var(--radius-md);
+    border-radius: 0.5rem;
     font-size: 0.85rem;
     max-height: 300px;
     overflow-y: auto;
 }
 
 .success-output {
-    background: #2d3748;
-    border: 1px solid #2d5a2d;
-    color: #98c379;
+    background: #0f172a;
+    border: 1px solid #10b98140;
+    color: #4ade80;
 }
 
 .error-output {
-    background: #2e1a1a;
-    border: 1px solid #5a2d2d;
-    color: #e06c75;
+    background: #1e0a0a;
+    border: 1px solid #ef444440;
+    color: #f87171;
 }
 
+/* Mermaid diagrams */
+.mermaid {
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .guide-page {
         padding: 1rem;
+    }
+
+    .guide-header {
+        padding: 1.5rem;
     }
 
     .guide-header h1 {
         font-size: 1.75rem;
     }
 
+    .guide-stats {
+        gap: 1rem;
+    }
+
     .guide-nav {
-        flex-direction: column;
         position: static;
+        flex-direction: column;
     }
 
     .guide-nav-link {
-        text-align: center;
+        justify-content: center;
+    }
+
+    .concept-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-table {
+        font-size: 0.85rem;
+    }
+
+    .code-example pre {
+        padding-top: 3.5rem;
     }
 }
 </style>
@@ -1450,7 +2359,6 @@ asyncio.run(main())</code></pre>
             this.disabled = true;
             this.textContent = 'Running...';
 
-            // Send to execution API
             fetch('/api/run', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -1459,7 +2367,6 @@ asyncio.run(main())</code></pre>
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    // Poll for result with max attempts (60 seconds timeout)
                     let pollCount = 0;
                     const maxPolls = 120;
                     const checkResult = () => {
@@ -1467,12 +2374,10 @@ asyncio.run(main())</code></pre>
                         fetch('/api/execution/' + data.id)
                         .then(r => r.json())
                         .then(result => {
-                            console.log('Execution state:', result.state, 'poll:', pollCount);
                             if (result.state === 'complete' || result.state === 'error' || result.state === 'stopped') {
                                 this.disabled = false;
                                 this.textContent = 'Run Code';
 
-                                // Show output
                                 let outputDiv = this.parentElement.querySelector('.code-output');
                                 if (!outputDiv) {
                                     outputDiv = document.createElement('div');
@@ -1494,7 +2399,7 @@ asyncio.run(main())</code></pre>
                                     outputDiv.className = 'code-output';
                                     this.parentElement.appendChild(outputDiv);
                                 }
-                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out (state: ' + result.state + ')</pre>';
+                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out</pre>';
                             } else {
                                 setTimeout(checkResult, 500);
                             }
@@ -1517,7 +2422,12 @@ asyncio.run(main())</code></pre>
         return div.innerHTML;
     }
 
-    // Highlight code
+    // Initialize Mermaid if available
+    if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    }
+
+    // Highlight code if hljs available
     if (typeof hljs !== 'undefined') {
         document.querySelectorAll('.code-example pre code').forEach(block => {
             hljs.highlightElement(block);
