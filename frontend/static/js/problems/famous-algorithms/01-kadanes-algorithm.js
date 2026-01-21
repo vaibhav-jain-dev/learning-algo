@@ -12,6 +12,13 @@
         difficulty: 'Medium',
         algorithm: 'kadanes-algorithm',
         description: 'Given an array of integers (which may contain both positive and negative numbers), find the contiguous subarray with the largest sum. Return the maximum sum. This is the classic problem solved efficiently by Kadane\'s Algorithm, which uses dynamic programming to track the maximum subarray ending at each position.',
+        problem: 'Kadane\'s key insight: at each position, the maximum subarray ending here is either just the current element (start fresh) or the current element plus the maximum subarray ending at the previous position (extend). Track two values: maxEndingHere (max sum ending at current position) and maxSoFar (global max). For each element: maxEndingHere = max(element, maxEndingHere + element), then update maxSoFar if needed.',
+        hints: [
+            'Brute force checks all subarrays in O(n²). Can you do better by building on previous computations?',
+            'At each index, you have two choices: start a new subarray here, or extend the previous subarray.',
+            'If the sum of the previous subarray plus current element is less than just the current element, start fresh.',
+            'Track both the maximum ending at current position and the global maximum seen so far.'
+        ],
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -19,20 +26,10 @@
         examples: [
     {
         input: {
-        "nums": [
-                -2,
-                1,
-                -3,
-                4,
-                -1,
-                2,
-                1,
-                -5,
-                4
-        ]
-},
+        "nums": [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+        },
         output: 6,
-        explanation: 'Processing the input data produces the output. For input nums=[-2, 1, ..., 4] (length 9), the result is 6.'
+        explanation: 'Tracking maxEndingHere: -2→1→-2→4→3→5→6→1→5. At index 3 (value 4), we start fresh because 4 > (-2+4). The subarray [4,-1,2,1] has sum 6, which is the maximum. maxSoFar peaks at 6.'
     }
         ],
         similar: [

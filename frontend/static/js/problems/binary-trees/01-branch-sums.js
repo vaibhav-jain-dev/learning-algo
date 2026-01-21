@@ -12,6 +12,13 @@
         difficulty: 'Easy',
         algorithm: 'tree-dfs',
         description: 'Write a function that takes in a Binary Tree and returns a list of its branch sums ordered from leftmost branch sum to rightmost branch sum. A branch sum is the sum of all values in a Binary Tree branch. A Binary Tree branch is a path of nodes in a tree that starts at the root node and ends at any leaf node.',
+        problem: 'Use DFS to traverse the tree while keeping a running sum. Pass the current sum down to each child. When you reach a leaf node (no children), add the running sum to your results. Process left subtree before right subtree to maintain left-to-right order in the results.',
+        hints: [
+            'A branch ends at a leaf node. How do you identify a leaf node?',
+            'As you traverse down, you need to track the sum of all nodes in the current path.',
+            'Use recursion: pass the running sum as a parameter, adding each node\'s value as you go deeper.',
+            'When you reach a leaf (no left or right child), the running sum is a complete branch sum - add it to results.'
+        ],
         complexity: {
             time: 'O(n)',
             space: 'O(n)'
@@ -21,37 +28,12 @@
         input: {
         "tree": {
                 "value": 1,
-                "left": {
-                        "value": 2,
-                        "left": {
-                                "value": 4,
-                                "left": {
-                                        "value": 8
-                                },
-                                "right": {
-                                        "value": 9
-                                }
-                        },
-                        "right": {
-                                "value": 5,
-                                "right": {
-                                        "value": 10
-                                }
-                        }
-                },
-                "right": {
-                        "value": 3,
-                        "left": {
-                                "value": 6
-                        },
-                        "right": {
-                                "value": 7
-                        }
-                }
+                "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}},
+                "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}
         }
-},
+        },
         output: [15, 16, 18, 10, 11],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4, \'left\': {\'value\': 8}, \'right\': {\'value\': 9}}, \'right\': {\'value\': 5, \'right\': {\'value\': 10}}}, \'right\': {\'value\': 3, \'left\': {\'value\': 6}, \'right\': {\'value\': 7}}}, the result is [15, 16, 18, 10, 11].'
+        explanation: 'Branch 1→2→4→8: sum=15. Branch 1→2→4→9: sum=16. Branch 1→2→5→10: sum=18. Branch 1→3→6: sum=10. Branch 1→3→7: sum=11. Traversing left subtrees first gives left-to-right ordering.'
     }
         ],
         similar: [

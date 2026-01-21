@@ -12,6 +12,13 @@
         difficulty: 'Easy',
         algorithm: 'greedy-change',
         description: 'Given an array of positive integers representing the values of coins in your possession, write a function that returns the minimum amount of change (the minimum sum of money) that you cannot create. The given coins can have any positive integer value and aren\'t necessarily unique (i.e., you can have multiple coins of the same value).',
+        problem: 'Sort the coins. Track the maximum constructible amount starting at 0. For each coin in sorted order: if coin > currentMax + 1, then currentMax + 1 is impossible to create (gap found). Otherwise, add coin to currentMax and continue. If you process all coins, return currentMax + 1.',
+        hints: [
+            'If you can make change for amounts 1 through N, what coins would allow you to make N+1?',
+            'Sort the coins first. Think about what happens when you encounter a coin larger than currentSum + 1.',
+            'Key insight: if currentSum = N and next coin > N+1, you cannot make N+1 (there\'s a gap).',
+            'Start with currentSum = 0. For each coin: if coin > currentSum + 1, return currentSum + 1. Else currentSum += coin.'
+        ],
         complexity: {
             time: 'O(n log n)',
             space: 'O(1)'
@@ -19,48 +26,24 @@
         examples: [
     {
         input: {
-        "coins": [
-                5,
-                7,
-                1,
-                1,
-                2,
-                3,
-                22
-        ]
-},
+        "coins": [5, 7, 1, 1, 2, 3, 22]
+        },
         output: 20,
-        explanation: 'Using a greedy approach, we make locally optimal choices at each step. For input coins=[5, 7, ..., 22] (length 7), the result is 20.'
+        explanation: 'Sorted: [1,1,2,3,5,7,22]. Start sum=0. Coin 1: 1<=1, sum=1. Coin 1: 1<=2, sum=2. Coin 2: 2<=3, sum=4. Coin 3: 3<=5, sum=7. Coin 5: 5<=8, sum=12. Coin 7: 7<=13, sum=19. Coin 22: 22>20, return 20.'
     },
     {
         input: {
-        "coins": [
-                1,
-                1,
-                1,
-                1,
-                1
-        ]
-},
+        "coins": [1, 1, 1, 1, 1]
+        },
         output: 6,
-        explanation: 'Using a greedy approach, we make locally optimal choices at each step. For input coins=[1, 1, 1, 1, 1], the result is 6.'
+        explanation: 'Sorted: [1,1,1,1,1]. After processing all coins, sum=5. We can make 1-5 but not 6. Return 5+1=6.'
     },
     {
         input: {
-        "coins": [
-                1,
-                5,
-                1,
-                1,
-                1,
-                10,
-                15,
-                20,
-                100
-        ]
-},
+        "coins": [1, 5, 1, 1, 1, 10, 15, 20, 100]
+        },
         output: 55,
-        explanation: 'Using a greedy approach, we make locally optimal choices at each step. For input coins=[1, 5, ..., 100] (length 9), the result is 55.'
+        explanation: 'Sorted: [1,1,1,1,5,10,15,20,100]. Sum grows: 1,2,3,4,9,19,34,54. Coin 100: 100>55, return 55.'
     }
         ],
         similar: [

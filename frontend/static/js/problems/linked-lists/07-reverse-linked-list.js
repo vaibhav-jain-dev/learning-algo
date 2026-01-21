@@ -12,6 +12,13 @@
         difficulty: 'Medium',
         algorithm: 'll-reverse',
         description: 'Write a function that takes in the head of a Singly Linked List, reverses the list in place (i.e., doesn\'t create a brand new list), and returns its new head.',
+        problem: 'Use three pointers: prev (initially null), current (initially head), and next (to save the next node). For each node: save next, reverse the pointer (current.next = prev), move prev and current forward. When current is null, prev points to the new head.',
+        hints: [
+            'You need to change each node\'s next pointer to point to the previous node instead of the next.',
+            'If you just change current.next, you lose the reference to the rest of the list. Save it first!',
+            'Use three pointers: prev (starts null), curr (starts at head), next (temporary storage).',
+            'Pattern: save next = curr.next, reverse curr.next = prev, advance prev = curr, advance curr = next.'
+        ],
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -19,27 +26,17 @@
         examples: [
     {
         input: {
-        "list": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5
-        ]
-},
+        "list": [0, 1, 2, 3, 4, 5]
+        },
         output: [5, 4, 3, 2, 1, 0],
-        explanation: 'Processing the input data produces the output. For input list=[0, 1, ..., 5] (length 6), the result is [5, ..., 0] (length 6).'
+        explanation: 'Start: prev=null, curr=0. Step 1: 0→null, prev=0, curr=1. Step 2: 1→0, prev=1, curr=2. Continue until curr=null. Final: prev=5 is new head, pointing 5→4→3→2→1→0→null.'
     },
     {
         input: {
-        "list": [
-                1,
-                2
-        ]
-},
+        "list": [1, 2]
+        },
         output: [2, 1],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2], the result is [2, 1].'
+        explanation: 'Start: prev=null, curr=1. Save next=2, set 1.next=null, prev=1, curr=2. Save next=null, set 2.next=1, prev=2, curr=null. Done. Return prev=2.'
     }
         ],
         similar: [

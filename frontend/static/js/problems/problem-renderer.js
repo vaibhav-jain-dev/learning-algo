@@ -169,6 +169,27 @@
             html += '</div>\n\n';
         });
 
+        // Hints section (collapsible)
+        if (problem.hints && problem.hints.length > 0) {
+            html += '<h2>Hints</h2>\n';
+            html += '<div class="hints-container">\n';
+            problem.hints.forEach((hint, i) => {
+                html += '<details class="hint">\n';
+                html += '<summary><strong>Hint ' + (i + 1) + '</strong></summary>\n';
+                html += '<p>' + hint + '</p>\n';
+                html += '</details>\n';
+            });
+            html += '</div>\n\n';
+        }
+
+        // Problem approach/solution insights
+        if (problem.problem) {
+            html += '<h2>Approach</h2>\n';
+            html += '<div class="approach">\n';
+            html += '<p>' + problem.problem + '</p>\n';
+            html += '</div>\n\n';
+        }
+
         // Complexity
         html += '<h2>Complexity</h2>\n';
         html += '<ul>\n';
