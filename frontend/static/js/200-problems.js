@@ -306,6 +306,7 @@
             case 'out-of-order-bounds':
             case 'hash-set':
             case 'sorting':
+            case 'general':
             default:
                 // Generic visualization for algorithms without specific runners
                 return runGenericVisualization(example, config, complexity);
