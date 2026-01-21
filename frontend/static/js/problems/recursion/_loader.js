@@ -7,17 +7,17 @@
 
     const PROBLEMS = [
         '01-nth-fibonacci',
-        '01-tribonacci',
-        '02-climbing-stairs-k-steps',
-        '03-matrix-fibonacci',
+        '01-nth-fibonacci/01-tribonacci',
+        '01-nth-fibonacci/02-climbing-stairs-k-steps',
+        '01-nth-fibonacci/03-matrix-fibonacci',
         '02-product-sum',
-        '01-nested-array-depth',
-        '02-flatten-nested-list',
-        '03-nested-list-weighted-sum-ii',
+        '02-product-sum/01-nested-array-depth',
+        '02-product-sum/02-flatten-nested-list',
+        '02-product-sum/03-nested-list-weighted-sum-ii',
         '03-permutations',
-        '01-permutations-with-duplicates',
-        '02-next-permutation',
-        '03-kth-permutation',
+        '03-permutations/01-permutations-with-duplicates',
+        '03-permutations/02-next-permutation',
+        '03-permutations/03-kth-permutation',
         '04-powerset',
         '05-phone-mnemonics',
         '06-staircase-traversal',
@@ -35,10 +35,10 @@
     window.CategoryInfo = window.CategoryInfo || {};
     window.CategoryInfo['recursion'] = {
         name: 'Recursion',
-        count: 23,
+        count: PROBLEMS.length,
         problems: PROBLEMS
     };
 
-    console.log('[recursion] Loaded 23 problems');
+    console.log('[recursion] Loaded ' + PROBLEMS.length + ' problems');
 
 })();

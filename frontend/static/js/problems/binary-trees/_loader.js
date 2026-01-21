@@ -7,13 +7,13 @@
 
     const PROBLEMS = [
         '01-branch-sums',
-        '01-path-sum-to-target',
-        '02-binary-tree-max-path-sum',
-        '03-sum-root-to-leaf-numbers',
+        '01-branch-sums/01-path-sum-to-target',
+        '01-branch-sums/02-binary-tree-max-path-sum',
+        '01-branch-sums/03-sum-root-to-leaf-numbers',
         '02-node-depths',
-        '01-maximum-depth',
-        '02-minimum-depth',
-        '03-average-of-levels',
+        '02-node-depths/01-maximum-depth',
+        '02-node-depths/02-minimum-depth',
+        '02-node-depths/03-average-of-levels',
         '03-invert-tree',
         '04-binary-tree-diameter',
         '05-find-successor',
@@ -34,10 +34,10 @@
     window.CategoryInfo = window.CategoryInfo || {};
     window.CategoryInfo['binary-trees'] = {
         name: 'Binary Trees',
-        count: 22,
+        count: PROBLEMS.length,
         problems: PROBLEMS
     };
 
-    console.log('[binary-trees] Loaded 22 problems');
+    console.log('[binary-trees] Loaded ' + PROBLEMS.length + ' problems');
 
 })();
