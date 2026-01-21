@@ -3,12 +3,12 @@
 # Target: < 150MB compressed
 #
 # DEPENDENCY CACHING STRATEGY:
-# Each stage copies dependency files (go.mod, requirements.txt, package.json)
-# BEFORE source code. This creates cached layers that only rebuild when
-# dependencies change, not when code changes.
+# Uses BuildKit cache mounts to persist dependencies across builds.
+# Go modules are cached in /go/pkg/mod, so even when layers rebuild,
+# dependencies are already downloaded and verified.
 #
 # Build stages:
-#   1. go-builder:      Compiles Go backend (go.mod -> go mod download -> source)
+#   1. go-builder:      Compiles Go backend (go mod tidy with cache mount)
 #   2. go-extractor:    Extracts minimal Go toolchain
 #   3. frontend-builder: Builds frontend assets (package.json -> npm install -> source)
 #   4. runtime:         Final image with Python + Go + app (requirements.txt -> pip)
@@ -25,18 +25,16 @@ WORKDIR /build
 # Install build dependencies
 RUN apk add --no-cache git
 
-# DEPENDENCY CACHING: Copy go.mod first, download dependencies
-# This layer is cached and only rebuilds when go.mod changes
+# DEPENDENCY CACHING: Copy go.mod and source for go mod tidy
+# go.sum in repo is incomplete, so we generate it during build
 COPY backend/go.mod ./
-
-# Download dependencies (cached layer)
-# Uses BuildKit cache mount for persistent module storage
-RUN --mount=type=cache,target=/go/pkg/mod \
-    go mod download
-
-# NOW copy source code (changes here won't re-download dependencies)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
+
+# Download dependencies and generate complete go.sum
+# BuildKit cache mount persists modules across builds (fast even if layer rebuilds)
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod tidy
 
 # Build the binary with maximum optimizations
 # -ldflags="-w -s" strips debug info, reduces ~30% size
