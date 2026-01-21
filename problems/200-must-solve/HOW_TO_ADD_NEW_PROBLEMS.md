@@ -1,186 +1,211 @@
-# How to Add New Problems and Visualizations
+# How to Add New Problems to the 200 Questions Dashboard
 
-This guide explains how to add new problems to the 200 Must Solve Problems dashboard and create visualizations for them.
+This guide explains how to add new algorithm problems and their visualizations to the 200 Must-Solve Problems dashboard using the new JS-only format.
 
-## Table of Contents
+## Quick Start
 
-1. [Adding a New Problem](#adding-a-new-problem)
-2. [Creating Visualizations](#creating-visualizations)
-3. [Visualization Architecture](#visualization-architecture)
-4. [Generic vs Custom Visualizations](#generic-vs-custom-visualizations)
-5. [Testing Your Changes](#testing-your-changes)
+1. Create a new JS file in the appropriate category folder
+2. Define the problem configuration with input, output, and explanation
+3. Register with the ProblemRenderer
 
----
+## File Structure
 
-## Adding a New Problem
-
-### Step 1: Create the Problem Folder
-
-Create a new folder in the appropriate category:
+Problems are organized by category in `/frontend/static/js/problems/`:
 
 ```
-problems/200-must-solve/{category}/{XX-problem-name}/
+frontend/static/js/problems/
+├── _main-loader.js           # Loads all categories
+├── problem-renderer.js       # Generic rendering utility
+├── arrays/
+│   ├── _loader.js            # Category loader
+│   ├── 01-validate-subsequence.js
+│   ├── 02-two-number-sum.js
+│   └── ...
+├── graphs/
+├── dynamic-programming/
+├── binary-trees/
+├── binary-search-trees/
+├── linked-lists/
+├── recursion/
+└── famous-algorithms/
 ```
 
-Example:
-```
-problems/200-must-solve/arrays/20-new-problem/
-```
+## Problem JS File Format
 
-### Step 2: Create problem.md
-
-Create a `problem.md` file with the following structure:
-
-```markdown
-<div id="viz-config" style="display:none">
-{"name":"Problem Name","algorithm":"algorithm-type","complexity":{"time":"O(n)","space":"O(1)"},"examples":[{"input":{"array":[1,2,3]},"output":true,"inputRaw":"array=[1,2,3]","outputRaw":"true"}]}
-</div>
-
-# Problem Name
-
-**Difficulty:** Easy/Medium/Hard/Very Hard
-
-## Problem Statement
-
-[Description of the problem]
-
-## Examples
-
-**Example 1:**
-```
-Input: array = [1, 2, 3]
-Output: true
-```
-
-## Constraints
-
-- List constraints here
-
-## Hints
-
-<details>
-<summary>Hint 1</summary>
-First hint text
-</details>
-
-## Similar Problems (Harder)
-
-### 1. Harder Variant Name
-**Difficulty:** Medium
-
-[Description]
-```
-
-### Step 3: Add Solution Files
-
-Create solution files:
-- `python_code.py` - Python solution
-- `golang_code.go` - Go solution
-
-### Step 4: Add Similar Problems
-
-Create a `similar/` folder with harder variants:
-```
-similar/
-├── 01-harder-variant/
-│   ├── problem.md
-│   ├── python_code.py
-│   └── golang_code.go
-├── 02-harder-variant/
-└── 03-harder-variant/
-```
-
----
-
-## Creating Visualizations
-
-### Visualization Config (viz-config)
-
-The `viz-config` JSON in `problem.md` controls the visualization. Key fields:
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| `name` | Problem display name | `"Two Number Sum"` |
-| `algorithm` | Algorithm type for visualization handler | `"hash-table-two-sum"` |
-| `complexity.time` | Time complexity | `"O(n)"` |
-| `complexity.space` | Space complexity | `"O(1)"` |
-| `examples` | Array of test examples | See below |
-
-### Example Structure
-
-```json
-{
-  "input": {
-    "array": [1, 2, 3, 4],
-    "target": 5
-  },
-  "output": [1, 4],
-  "inputRaw": "array=[1,2,3,4], target=5",
-  "outputRaw": "[1, 4]"
-}
-```
-
----
-
-## Visualization Architecture
-
-### File Structure
-
-```
-frontend/static/js/
-├── viz-utils.js           # Core utility functions
-├── viz/
-│   ├── arrays_viz.js      # Array algorithm visualizations
-│   ├── graphs_viz.js      # Graph algorithm visualizations
-│   ├── linked_lists_viz.js # Linked list visualizations
-│   ├── trees_viz.js       # Binary tree visualizations
-│   ├── bst_viz.js         # BST visualizations
-│   ├── recursion_viz.js   # Recursion visualizations
-│   ├── dp_viz.js          # Dynamic programming visualizations
-│   ├── famous_viz.js      # Famous algorithm visualizations
-│   └── viz-index.js       # Visualization index
-```
-
-### Registering a New Visualization
-
-1. **Choose the appropriate viz file** based on the category
-2. **Create a handler function** that generates visualization steps
-3. **Register the handler** with VizUtils
-
-Example:
+Each problem is defined in a single JS file with the following structure:
 
 ```javascript
-// In arrays_viz.js
+/**
+ * Problem Name
+ * Category: category-name
+ * Difficulty: Easy/Medium/Hard
+ * Algorithm: algorithm-identifier
+ */
+(function() {
+    'use strict';
 
+    const problem = {
+        // Required: Display name of the problem
+        name: 'Two Number Sum',
+
+        // Required: Difficulty level (Easy, Medium, Hard)
+        difficulty: 'Easy',
+
+        // Required: Algorithm identifier for visualization lookup
+        // This maps to visualizers in /frontend/static/js/viz/
+        algorithm: 'hash-table-two-sum',
+
+        // Required: Problem description
+        description: 'Given an array of integers and a target sum, return the pair of numbers that add up to the target.',
+
+        // Required: Time and space complexity
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
+
+        // Required: At least one example with input, output, and explanation
+        examples: [
+            {
+                // Input object with named parameters
+                input: {
+                    array: [3, 5, -4, 8, 11, 1, -1, 6],
+                    targetSum: 10
+                },
+                // Expected output
+                output: [-1, 11],
+                // Explanation of how input transforms to output
+                explanation: 'Using a hash table, we store each number and check if (target - current) exists. When we reach 11, we find that -1 (10-11) is in our hash, so we return [-1, 11].'
+            },
+            {
+                input: {
+                    array: [1, 2, 3, 4, 5],
+                    targetSum: 10
+                },
+                output: [],
+                explanation: 'No two numbers in the array sum to 10, so we return an empty array.'
+            }
+        ],
+
+        // Optional: List of similar/harder problems
+        similar: [
+            { id: '01-three-sum', name: 'Three Sum', difficulty: 'Medium' },
+            { id: '02-four-sum', name: 'Four Sum', difficulty: 'Hard' }
+        ]
+    };
+
+    // Register with ProblemRenderer (required)
+    if (window.ProblemRenderer) {
+        window.ProblemRenderer.register('arrays', '02-two-number-sum', problem);
+    }
+
+    // Export for direct access (optional but recommended)
+    window.Problems = window.Problems || {};
+    window.Problems['arrays/02-two-number-sum'] = problem;
+
+})();
+```
+
+## Input/Output Guidelines
+
+### Input Format
+
+Use descriptive keys that match the problem parameters:
+
+```javascript
+// Array problems
+input: { array: [1, 2, 3], target: 5 }
+
+// Graph problems
+input: {
+    nodes: ['A', 'B', 'C'],
+    edges: [['A', 'B'], ['B', 'C']]
+}
+
+// Tree problems
+input: {
+    tree: { value: 1, left: { value: 2 }, right: { value: 3 } }
+}
+
+// String problems
+input: { string: 'hello', pattern: 'll' }
+```
+
+### Output Format
+
+Match the expected return type:
+
+```javascript
+// Boolean
+output: true
+
+// Number
+output: 42
+
+// Array
+output: [1, 2, 3]
+
+// Nested array
+output: [[1, 2], [3, 4]]
+
+// Object
+output: { start: 0, end: 5 }
+```
+
+### Explanation Format
+
+Write clear explanations that connect input to output:
+
+```javascript
+explanation: 'Starting with array [1, 2, 3] and target 5, we use two pointers. ' +
+             'Left pointer at index 0 (value 1), right pointer at index 2 (value 3). ' +
+             '1 + 3 = 4 < 5, so we move left pointer. ' +
+             '2 + 3 = 5 = target! Return [2, 3].'
+```
+
+## Adding Visualization Support
+
+The visualization system uses the `algorithm` field to look up the appropriate visualizer.
+
+### Available Algorithm Identifiers
+
+| Algorithm Pattern | Identifier | Visualizer File |
+|-------------------|------------|-----------------|
+| Two Pointer | `two-pointer-*` | arrays_viz.js |
+| Hash Table | `hash-table-*` | arrays_viz.js |
+| Sorting | `sort-*` | arrays_viz.js |
+| DFS | `graph-dfs`, `tree-dfs` | graphs_viz.js, trees_viz.js |
+| BFS | `graph-bfs`, `tree-bfs` | graphs_viz.js, trees_viz.js |
+| Dynamic Programming | `dp-*` | dp_viz.js |
+| Union Find | `union-find` | famous_viz.js |
+| Linked List | `ll-*` | linked_lists_viz.js |
+| BST | `bst-*` | bst_viz.js |
+| Recursion | `recursion-*` | recursion_viz.js |
+
+### Creating a New Visualizer
+
+If no existing visualizer fits, add one to the appropriate `*_viz.js` file:
+
+```javascript
 function runMyNewAlgorithm(example, config, complexity) {
     const steps = [];
-    const arr = example.input.array;
 
     // Step 1: Introduction
     steps.push({
-        vizType: 'array',
-        array: arr.slice(),
+        vizType: 'array-hash',  // Type of visualization
+        array: example.input.array.slice(),
         status: 'Initialize',
         explanation: '<strong>' + config.name + '</strong><br>' +
-            '<strong>Input:</strong> [' + arr.join(', ') + ']<br>' +
-            '<strong>Complexity:</strong> Time: ' + complexity.time
+            'Input: [' + example.input.array.join(', ') + ']<br>' +
+            'Expected: ' + example.output
     });
 
-    // Step 2: Processing steps
-    for (let i = 0; i < arr.length; i++) {
-        steps.push({
-            vizType: 'array',
-            array: arr.slice(),
-            currentIndex: i,
-            status: 'Processing index ' + i,
-            explanation: 'Processing element ' + arr[i]
-        });
-    }
+    // Step 2-N: Algorithm steps
+    // ... add more steps showing the algorithm progress
 
-    // Step 3: Result
+    // Final step: Result
     steps.push({
-        vizType: 'array',
-        array: arr,
+        vizType: 'array-hash',
         status: 'Complete!',
         explanation: '<strong>Result:</strong> ' + JSON.stringify(example.output)
     });
@@ -188,137 +213,111 @@ function runMyNewAlgorithm(example, config, complexity) {
     return steps;
 }
 
-// Register the visualization
+// Register the visualizer
 window.VizUtils.register('my-new-algorithm', runMyNewAlgorithm);
 ```
 
-### Available vizType Values
+## Naming Conventions
 
-| vizType | Description | Required Fields |
-|---------|-------------|-----------------|
-| `array` | Single array | `array` |
-| `array-hash` | Array with hash table | `array`, `hashTable` |
-| `two-arrays` | Two arrays comparison | `arr1` or `array`, `sequence` |
-| `two-pointer` | Two pointer technique | `array`, `left`, `right` |
-| `two-pointer-result` | Two pointers with result | `array`, `result`, `left`, `right` |
-| `three-pointer` | Three pointers (for 3-sum) | `array`, `i`, `left`, `right` |
-| `hash-table` | Hash table operations | `scores` or `hashTable` |
-| `intervals` | Interval merging | `intervals`, `merged` |
-| `linked-list` | Linked list nodes | `nodes` |
-| `tree` | Binary tree | `nodes`, `edges` |
-| `graph` | Graph structure | `nodes`, `edges`, `visited` |
-| `matrix` | 2D grid/matrix | `matrix` |
-| `spiral-matrix` | Spiral traversal | `matrix`, `result` |
-| `dp-table` | DP table | `dp` or `table` |
-| `recursion-tree` | Recursion call tree | `callStack` |
+### File Names
+- Use kebab-case: `01-two-number-sum.js`
+- Prefix with number for ordering: `01-`, `02-`, etc.
 
----
+### Problem IDs
+- Match file name without `.js`: `01-two-number-sum`
 
-## Generic vs Custom Visualizations
+### Algorithm Identifiers
+- Use descriptive, hyphenated names: `two-pointer-subsequence`
+- Include algorithm family: `hash-table-two-sum`, `dp-knapsack`
 
-### Using Generic Visualization
+## Updating Category Loader
 
-If no specific handler is registered for an algorithm type, the system falls back to `runGenericVisualization()` which shows:
+After adding a new problem, update the category's `_loader.js`:
 
-1. Problem info and complexity
-2. Input display
-3. Processing indicator
-4. Output display
-
-This is useful for quick setup but provides minimal animation.
-
-### Creating Custom Visualization
-
-Custom visualizations provide:
-- Step-by-step algorithm execution
-- Visual highlights on data structures
-- Pointer/index tracking
-- Detailed explanations per step
-
-**When to create custom:**
-- Algorithm has clear visual steps
-- Students benefit from seeing data transformations
-- The algorithm is commonly taught
-
-**When to use generic:**
-- Algorithm is conceptually simple
-- Visualization adds little value
-- Quick prototype needed
-
----
+```javascript
+// In _loader.js
+const PROBLEMS = [
+    '01-validate-subsequence',
+    '02-two-number-sum',
+    '03-new-problem',  // Add new problem here
+];
+```
 
 ## Testing Your Changes
 
-### 1. Start the Development Server
+1. Add the JS file to the category folder
+2. Update the category's `_loader.js` to include the new problem
+3. Open the 200 Problems dashboard in a browser
+4. Verify the problem appears and visualization works
 
-```bash
-cd /home/user/learning-algo
-go run main.go
-```
-
-### 2. Access the Dashboard
-
-Navigate to `http://localhost:8080/200-problems`
-
-### 3. Check the Index
-
-Click the "Index" button to see all registered visualizations and verify your new algorithm appears.
-
-### 4. Test the Visualization
-
-1. Select your problem category
-2. Click on your new problem
-3. Go to the "Visualize" tab
-4. Test with different examples
-5. Verify step-by-step animation works correctly
-
-### 5. Browser Console
+### Browser Console
 
 Check for errors in the browser console (F12 > Console):
 - Missing required fields
 - Invalid vizType
 - Handler registration errors
 
----
+## Example: Adding a New Array Problem
+
+```javascript
+// File: frontend/static/js/problems/arrays/20-container-with-most-water.js
+
+/**
+ * Container With Most Water
+ * Category: arrays
+ * Difficulty: Medium
+ * Algorithm: two-pointer-container
+ */
+(function() {
+    'use strict';
+
+    const problem = {
+        name: 'Container With Most Water',
+        difficulty: 'Medium',
+        algorithm: 'two-pointer-container',
+        description: 'Given n non-negative integers representing the height of vertical lines, find two lines that together with the x-axis form a container that holds the most water.',
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
+        examples: [
+            {
+                input: {
+                    heights: [1, 8, 6, 2, 5, 4, 8, 3, 7]
+                },
+                output: 49,
+                explanation: 'The max area is between index 1 (height 8) and index 8 (height 7). Width = 8-1 = 7, height = min(8,7) = 7. Area = 7 * 7 = 49.'
+            }
+        ],
+        similar: [
+            { id: '01-trapping-rain-water', name: 'Trapping Rain Water', difficulty: 'Hard' }
+        ]
+    };
+
+    if (window.ProblemRenderer) {
+        window.ProblemRenderer.register('arrays', '20-container-with-most-water', problem);
+    }
+
+    window.Problems = window.Problems || {};
+    window.Problems['arrays/20-container-with-most-water'] = problem;
+
+})();
+```
 
 ## Checklist for New Problems
 
-- [ ] Created problem folder with correct naming
-- [ ] Created `problem.md` with viz-config
-- [ ] Added Python solution
-- [ ] Added Go solution
-- [ ] Added 3 similar harder problems
-- [ ] Registered visualization handler (if custom)
-- [ ] Updated viz-index.js with new algorithm type
+- [ ] Created problem JS file with correct naming
+- [ ] Added all required fields (name, difficulty, algorithm, description, complexity, examples)
+- [ ] Each example has input, output, and explanation
+- [ ] Updated category _loader.js
+- [ ] Registered visualization handler (if custom visualization needed)
 - [ ] Tested visualization in browser
 - [ ] Verified all examples work correctly
 
----
+## Migration from MD to JS
 
-## Common Issues
+All 259 problems have been migrated from Markdown to JS format. The old `problem.md` files have been removed. Use the existing JS files in `/frontend/static/js/problems/` as reference for the new format.
 
-### Visualization Not Showing
+## Questions?
 
-1. Check that `viz-config` JSON is valid
-2. Verify `algorithm` field matches registered handler
-3. Check browser console for errors
-
-### Steps Not Generating
-
-1. Ensure `example.input` has all required fields
-2. Check that handler returns an array of steps
-3. Verify step objects have `vizType`, `status`, `explanation`
-
-### Styling Issues
-
-1. Check that vizType is supported
-2. Verify CSS classes exist in 200-problems.css
-3. Test in different browsers
-
----
-
-## Need Help?
-
-- Check existing visualizations in `frontend/static/js/viz/` for examples
-- Review the `VizUtils` API in `frontend/static/js/viz-utils.js`
-- Look at similar algorithms for patterns to follow
+For questions or issues, check the existing problem files for examples or open an issue in the repository.
