@@ -147,7 +147,7 @@
         html += '</div>\n\n';
 
         // Problem title and difficulty
-        html += '<h1 style="color:#e6edf3;margin-bottom:0.5rem;font-weight:700;">' + problem.name + '</h1>\n\n';
+        html += '<h1 style="color:#ffffff;margin-bottom:0.5rem;font-weight:700;">' + problem.name + '</h1>\n\n';
 
         // Difficulty badge
         const diffColors = {
@@ -161,7 +161,7 @@
 
         // Problem description
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;font-weight:700;">Problem Statement</h2>\n';
-        html += '<p style="color:#e6edf3;line-height:1.8;margin-bottom:1.5rem;font-size:1rem;font-weight:500;">' + problem.description + '</p>\n\n';
+        html += '<p style="color:#ffffff;line-height:1.8;margin-bottom:1.5rem;font-size:1rem;font-weight:500;">' + problem.description + '</p>\n\n';
 
         // Examples section
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Examples</h2>\n';
@@ -177,7 +177,7 @@
 
             // Input to Output explanation
             if (ex.explanation) {
-                html += '<p style="color:#e6edf3;font-weight:500;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
+                html += '<p style="color:#ffffff;font-weight:500;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
             }
             html += '</div>\n\n';
         });
@@ -188,8 +188,8 @@
             html += '<div class="hints-container">\n';
             problem.hints.forEach((hint, i) => {
                 html += '<details class="hint" style="background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:0.5rem;padding:0.75rem 1rem;">\n';
-                html += '<summary style="color:#e6edf3;font-weight:500;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
-                html += '<p style="color:#e6edf3;font-weight:500;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
+                html += '<summary style="color:#ffffff;font-weight:500;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
+                html += '<p style="color:#ffffff;font-weight:500;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
                 html += '</details>\n';
             });
             html += '</div>\n\n';
@@ -199,7 +199,7 @@
         if (problem.problem) {
             html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Approach</h2>\n';
             html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;">\n';
-            html += '<p style="color:#e6edf3;font-weight:500;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
+            html += '<p style="color:#ffffff;font-weight:500;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
             html += '</div>\n\n';
         }
 
@@ -267,7 +267,7 @@
                 html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#1c2128\'" onmouseout="this.style.borderColor=\'#30363d\';this.style.background=\'#161b22\'">';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
                 html += '<span style="color:#6e7681;font-size:0.9rem;font-weight:500;">' + (idx + 1) + '.</span>';
-                html += '<span style="color:#e6edf3;font-weight:500;font-weight:500;">' + sim.name + '</span>';
+                html += '<span style="color:#ffffff;font-weight:500;font-weight:500;">' + sim.name + '</span>';
                 html += '</div>';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
                 html += '<span style="background:' + simDiff.bg + ';color:' + simDiff.text + ';padding:0.25rem 0.625rem;border-radius:0.75rem;font-size:0.75rem;font-weight:600;">' + sim.difficulty + '</span>';
