@@ -11,11 +11,20 @@
         name: 'K Smallest Differences',
         difficulty: 'Medium',
         algorithm: 'general',
+        parent: '08-smallest-difference',
         description: 'Given two sorted arrays of integers arr1 and arr2, and an integer k, find the K pairs with the smallest absolute differences between them. Each pair should consist of one element from arr1 and one element from arr2. Return the pairs sorted by their absolute difference in ascending order. If there are multiple pairs with the same difference, they can be returned in any order.',
+        problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
         },
+        hints: [
+            'Start by understanding what the problem is asking.',
+            'Consider the input constraints and edge cases.',
+            'Think about which data structures would be helpful.',
+            'Break down the problem into smaller subproblems.',
+            'Verify your solution with the given examples.'
+        ],
         examples: [
     {
         input: {
@@ -39,6 +48,52 @@
         explanation: 'Given the input, the algorithm processes it to produce [[2, 3], [1, 3]]\nExplanation:\n  - |2 - 3| = 1\n  - |1 - 3| = 2'
     }
         ],
+        solutions: {
+            python: `def kSmallestDifferences(data):
+    """
+    K Smallest Differences
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// KSmallestDifferences solves the K Smallest Differences problem.
+// Time: O(n), Space: O(n)
+func KSmallestDifferences(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: [
 
         ]

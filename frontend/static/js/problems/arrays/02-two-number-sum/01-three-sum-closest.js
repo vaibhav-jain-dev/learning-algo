@@ -11,6 +11,7 @@
         name: 'Three Sum Closest',
         difficulty: 'Medium',
         algorithm: 'two-pointer-three-sum',
+        parent: '02-two-number-sum',
         description: 'Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target. Return the sum of the three integers. You may assume that each input would have exactly one solution. The key insight is that after sorting the array, you can use two pointers to efficiently search for the closest sum.',
         problem: 'Sort the array first. For each element, use two pointers (left and right) to find the pair that makes the sum closest to target. Track the minimum difference between current sum and target. If sum < target, move left pointer right to increase sum. If sum > target, move right pointer left to decrease sum. If sum equals target exactly, return immediately.',
         hints: [
@@ -57,6 +58,52 @@
                 explanation: 'We can find an exact match: 0 + 3 + (-5) = -2 equals the target exactly.'
             }
         ],
+        solutions: {
+            python: `def threeSumClosest(data):
+    """
+    Three Sum Closest
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// ThreeSumClosest solves the Three Sum Closest problem.
+// Time: O(n), Space: O(n)
+func ThreeSumClosest(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: []
     };
 

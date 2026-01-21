@@ -11,11 +11,20 @@
         name: 'Delete the Middle Node of a Linked List',
         difficulty: 'Medium',
         algorithm: 'll-remove-kth',
+        parent: '04-remove-kth-node',
         description: 'Given the head of a singly linked list, delete the **middle node** and return the head of the modified list. The middle node of a linked list of size n is the floor(n/2)-th node from the start (0-indexed). For a list with n nodes: - If n is odd: delete the exact middle node - If n is even: delete the second of the two middle nodes',
+        problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
         },
+        hints: [
+            'Use three pointers: previous, current, and next.',
+            'Save the next node before changing the current link.',
+            'Move all pointers forward after reversing each link.',
+            'The new head is the last non-null current pointer.',
+            'Consider recursive approach for cleaner code.'
+        ],
         examples: [
     {
         input: {
@@ -64,6 +73,52 @@
         explanation: 'Processing the input data produces the output. For input list=[1], the result is [].'
     }
         ],
+        solutions: {
+            python: `def deleteTheMiddleNodeOfALinkedList(data):
+    """
+    Delete the Middle Node of a Linked List
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// DeleteTheMiddleNodeOfALinkedList solves the Delete the Middle Node of a Linked List problem.
+// Time: O(n), Space: O(n)
+func DeleteTheMiddleNodeOfALinkedList(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: [
 
         ]

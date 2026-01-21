@@ -11,11 +11,19 @@
         name: 'Reverse Linked List in Groups of K',
         difficulty: 'Hard',
         algorithm: 'll-reverse',
+        parent: '07-reverse-linked-list',
         description: 'Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list. k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k, the left-out nodes at the end should remain as they are. You may not alter the values in the list\'s nodes, only nodes themselves may be changed.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
         },
+        hints: [
+            'Use three pointers: previous, current, and next.',
+            'Save the next node before changing the current link.',
+            'Move all pointers forward after reversing each link.',
+            'The new head is the last non-null current pointer.',
+            'Consider recursive approach for cleaner code.'
+        ],
         examples: [
     {
         input: {
@@ -63,6 +71,52 @@
         explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 8] (length 8), k=3, the result is [3, ..., 8] (length 8).'
     }
         ],
+        solutions: {
+            python: `def reverseLinkedListInGroupsOfK(data):
+    """
+    Reverse Linked List in Groups of K
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Maintain prev, curr, next pointers while reversing
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// ReverseLinkedListInGroupsOfK solves the Reverse Linked List in Groups of K problem.
+// Time: O(n), Space: O(n)
+func ReverseLinkedListInGroupsOfK(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Maintain prev, curr, next pointers while reversing
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: [
 
         ]

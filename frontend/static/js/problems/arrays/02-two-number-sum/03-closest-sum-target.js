@@ -11,6 +11,7 @@
         name: 'Closest Sum Target',
         difficulty: 'Hard',
         algorithm: 'two-pointer-two-arrays',
+        parent: '02-two-number-sum',
         description: 'Given two sorted arrays arr1 and arr2, find one element from each array such that their sum is closest to a given target value. Return the pair of elements. If there are multiple pairs with the same closest sum, return any one of them. This problem combines concepts from Two Sum and binary search.',
         problem: 'Sort both arrays if not already sorted. Use two pointers: one starting at the beginning of arr1 (left) and one at the end of arr2 (right). Calculate sum = arr1[left] + arr2[right]. If sum < target, move left pointer right to increase sum. If sum > target, move right pointer left to decrease sum. Track the minimum absolute difference and the corresponding pair throughout.',
         hints: [
@@ -61,6 +62,52 @@
                 explanation: 'Pairs near target 1: 0+1=1 (exact match!), -2+3=1 would need 3 in arr2 but its not there. Return [0,1].'
             }
         ],
+        solutions: {
+            python: `def closestSumTarget(data):
+    """
+    Closest Sum Target
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// ClosestSumTarget solves the Closest Sum Target problem.
+// Time: O(n), Space: O(n)
+func ClosestSumTarget(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: []
     };
 

@@ -11,6 +11,7 @@
         name: 'Three Sum With Duplicates',
         difficulty: 'Medium',
         algorithm: 'two-pointer-dedup',
+        parent: '02-two-number-sum',
         description: 'Given an integer array nums that may contain duplicates, return all unique triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == target. The solution set must not contain duplicate triplets. This is a classic problem that combines sorting, two-pointer technique, and duplicate handling.',
         problem: 'Sort the array first. Iterate through each element as the first number of the triplet. For each first number, use two pointers to find pairs that sum to (target - first). Skip duplicate values to avoid duplicate triplets: skip duplicate first numbers, and when a valid triplet is found, skip duplicate second and third numbers.',
         hints: [
@@ -57,6 +58,52 @@
                 explanation: 'One unique triplet: (-2) + 0 + 2 = 0. Although there are multiple 0s and 2s, only one unique combination.'
             }
         ],
+        solutions: {
+            python: `def threeSumWithDuplicates(data):
+    """
+    Three Sum With Duplicates
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// ThreeSumWithDuplicates solves the Three Sum With Duplicates problem.
+// Time: O(n), Space: O(n)
+func ThreeSumWithDuplicates(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: []
     };
 

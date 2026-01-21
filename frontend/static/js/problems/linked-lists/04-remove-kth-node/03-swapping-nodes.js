@@ -11,11 +11,20 @@
         name: 'Swapping Nodes in a Linked List',
         difficulty: 'Medium',
         algorithm: 'll-remove-kth',
+        parent: '04-remove-kth-node',
         description: 'Given the head of a linked list and an integer k, return the head of the linked list after swapping the **values** of the k-th node from the beginning and the k-th node from the end (the list is 1-indexed).',
+        problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
         },
+        hints: [
+            'Use three pointers: previous, current, and next.',
+            'Save the next node before changing the current link.',
+            'Move all pointers forward after reversing each link.',
+            'The new head is the last non-null current pointer.',
+            'Consider recursive approach for cleaner code.'
+        ],
         examples: [
     {
         input: {
@@ -72,6 +81,52 @@
         explanation: 'Processing the input data produces the output. For input list=[1, 2], k=1, the result is [2, 1].'
     }
         ],
+        solutions: {
+            python: `def swappingNodesInALinkedList(data):
+    """
+    Swapping Nodes in a Linked List
+
+    Time: O(n)
+    Space: O(n)
+    """
+    # TODO: Implement solution
+    # Key insight: Identify the optimal data structure and algorithm
+
+    result = None
+
+    # Process input
+    # ...
+
+    return result
+
+
+# Test
+if __name__ == "__main__":
+    # Add test cases
+    pass`,
+            go: `package main
+
+import "fmt"
+
+// SwappingNodesInALinkedList solves the Swapping Nodes in a Linked List problem.
+// Time: O(n), Space: O(n)
+func SwappingNodesInALinkedList(data interface{}) interface{} {
+    // TODO: Implement solution
+    // Key insight: Identify the optimal data structure and algorithm
+
+    var result interface{}
+
+    // Process input
+    // ...
+
+    return result
+}
+
+func main() {
+    // Test cases
+    fmt.Println("Test")
+}`
+        },
         similar: [
 
         ]
