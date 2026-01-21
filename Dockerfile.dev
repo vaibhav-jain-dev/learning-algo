@@ -36,15 +36,15 @@ RUN pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/de
 COPY frontend/package*.json ./frontend/
 RUN cd frontend && npm install 2>/dev/null || true
 
-# Go dependencies (cached layer - only rebuilds when go.mod changes)
-COPY backend/go.mod ./backend/
-RUN --mount=type=cache,target=/go/pkg/mod \
-    cd backend && go mod download
-
 # =============================================================================
 # Copy all source code (will be overridden by volume mounts at runtime)
 # =============================================================================
 COPY backend/ ./backend/
+
+# Go dependencies - run go mod tidy to download deps with complete go.sum
+# BuildKit cache mount persists modules across builds
+RUN --mount=type=cache,target=/go/pkg/mod \
+    cd backend && go mod tidy
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 COPY topics/ ./topics/
