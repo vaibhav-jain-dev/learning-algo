@@ -250,6 +250,8 @@
             case 'dp-square-zeroes':
             case 'dp-graph-traversal':
             case 'dp-jumps':
+            case 'dp-2d':
+            case 'two-pointer-sliding':
                 return runDPGeneric(example, config, complexity);
 
             // BST algorithms
@@ -4143,13 +4145,13 @@
                     html += '<span style="color: ' + config.color + '; font-weight: 700; font-size: 0.8rem; min-width: 24px;">' + p.originalIndex + '</span>';
                     html += '<span style="color: #1f2937; font-weight: 500; font-size: 0.9rem; flex: 1;">' + p.name + '</span>';
                     if (hasSimilar) {
-                        html += '<span onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: ' + config.color + '; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">+' + problemData.similar.length + '</span>';
+                        html += '<span onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: ' + config.color + '; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">−' + problemData.similar.length + '</span>';
                     }
                     html += '</div>';
 
-                    // Similar problems (hidden by default)
+                    // Similar problems (shown by default as nested tabs)
                     if (hasSimilar) {
-                        html += '<div id="similar-list-' + p.id + '" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed ' + config.border + ';">';
+                        html += '<div id="similar-list-' + p.id + '" style="display: block; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed ' + config.border + ';">';
                         problemData.similar.forEach(function(sim, simIdx) {
                             html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; cursor: pointer; font-size: 0.8rem;" onmouseover="this.style.color=\'' + config.color + '\'" onmouseout="this.style.color=\'#6b7280\'">';
                             html += '<span style="color: #9ca3af;">↳</span>';
@@ -4252,6 +4254,24 @@
     };
 
     window.hideEditor = function() {
+        // Check if current problem is a sub-problem with a parent
+        if (currentProblem && currentProblem.id && currentProblem.id.includes('/')) {
+            // This is a sub-problem - navigate to parent
+            var parts = currentProblem.id.split('/');
+            var parentId = parts[0];
+            var category = currentProblem.category;
+
+            // Also check ProblemRenderer for parent info
+            var fullId = category + '/' + currentProblem.id;
+            var problemData = window.ProblemRenderer && window.ProblemRenderer.get(fullId);
+            if (problemData && problemData.parent) {
+                parentId = problemData.parent;
+            }
+
+            window.openProblem(category, parentId);
+            return;
+        }
+
         var editorView = document.getElementById('editor-view');
         if (editorView) editorView.classList.remove('active');
         currentProblem = null;

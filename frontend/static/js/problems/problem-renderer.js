@@ -210,6 +210,44 @@
         html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Space:</span> <span style="color:#ff7b72;font-family:monospace;font-weight:600;">' + problem.complexity.space + '</span></div>\n';
         html += '</div>\n\n';
 
+        // Solutions section (Python and Go)
+        if (problem.solutions) {
+            html += '<h2 style="color:#58a6ff;margin-top:2rem;margin-bottom:1rem;font-size:1.25rem;">Solutions</h2>\n';
+
+            // Tab buttons
+            html += '<div style="display:flex;gap:0.5rem;margin-bottom:1rem;">\n';
+            if (problem.solutions.python) {
+                html += '<button id="sol-tab-python" onclick="showSolutionTab(\'python\')" style="background:#238636;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Python</button>\n';
+            }
+            if (problem.solutions.go) {
+                html += '<button id="sol-tab-go" onclick="showSolutionTab(\'go\')" style="background:#30363d;color:#8b949e;border:none;padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;">Go</button>\n';
+            }
+            html += '</div>\n';
+
+            // Solution content
+            if (problem.solutions.python) {
+                html += '<div id="sol-content-python" style="display:block;">\n';
+                html += '<pre style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-python">' + escapeHtml(problem.solutions.python) + '</code></pre>\n';
+                html += '</div>\n';
+            }
+            if (problem.solutions.go) {
+                html += '<div id="sol-content-go" style="display:none;">\n';
+                html += '<pre style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:1rem;overflow-x:auto;margin:0;"><code class="language-go">' + escapeHtml(problem.solutions.go) + '</code></pre>\n';
+                html += '</div>\n';
+            }
+            html += '\n';
+        }
+
+        // Back to parent problem link (for sub-problems)
+        if (problem.parent) {
+            const category = problem.category || 'arrays';
+            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #30363d;">\n';
+            html += '<button onclick="window.openProblem(\'' + category + '\', \'' + problem.parent + '\')" style="background:linear-gradient(135deg,#6e40c9,#8957e5);color:#ffffff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(110,64,201,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'none\'">\n';
+            html += '<span>←</span> Back to Parent Problem\n';
+            html += '</button>\n';
+            html += '</div>\n\n';
+        }
+
         // Similar/Related Problems Button and Section (if any)
         if (problem.similar && problem.similar.length > 0) {
             const category = problem.category || 'arrays';
@@ -307,6 +345,48 @@
 
         return results;
     }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Global function to switch between solution tabs
+    window.showSolutionTab = function(lang) {
+        // Update tab buttons
+        var pythonTab = document.getElementById('sol-tab-python');
+        var goTab = document.getElementById('sol-tab-go');
+        if (pythonTab) {
+            pythonTab.style.background = lang === 'python' ? '#238636' : '#30363d';
+            pythonTab.style.color = lang === 'python' ? '#fff' : '#8b949e';
+        }
+        if (goTab) {
+            goTab.style.background = lang === 'go' ? '#238636' : '#30363d';
+            goTab.style.color = lang === 'go' ? '#fff' : '#8b949e';
+        }
+
+        // Update content visibility
+        var pythonContent = document.getElementById('sol-content-python');
+        var goContent = document.getElementById('sol-content-go');
+        if (pythonContent) pythonContent.style.display = lang === 'python' ? 'block' : 'none';
+        if (goContent) goContent.style.display = lang === 'go' ? 'block' : 'none';
+
+        // Highlight code if not already done
+        if (typeof hljs !== 'undefined') {
+            var container = document.getElementById('sol-content-' + lang);
+            if (container) {
+                container.querySelectorAll('pre code:not(.hljs)').forEach(function(block) {
+                    hljs.highlightElement(block);
+                });
+            }
+        }
+    };
 
     // Global toggle function for similar problems (must be global for onclick handlers in dynamic content)
     window.toggleSimilarProblems = function(btn) {
