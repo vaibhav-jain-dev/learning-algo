@@ -161,7 +161,7 @@
 
         // Problem description
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Problem Statement</h2>\n';
-        html += '<p style="color:#c9d1d9;line-height:1.7;margin-bottom:1.5rem;">' + problem.description + '</p>\n\n';
+        html += '<p style="color:#e6edf3;line-height:1.7;margin-bottom:1.5rem;">' + problem.description + '</p>\n\n';
 
         // Examples section
         html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Examples</h2>\n';
@@ -177,7 +177,7 @@
 
             // Input to Output explanation
             if (ex.explanation) {
-                html += '<p style="color:#8b949e;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
+                html += '<p style="color:#e6edf3;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
             }
             html += '</div>\n\n';
         });
@@ -188,8 +188,8 @@
             html += '<div class="hints-container">\n';
             problem.hints.forEach((hint, i) => {
                 html += '<details class="hint" style="background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:0.5rem;padding:0.75rem 1rem;">\n';
-                html += '<summary style="color:#c9d1d9;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
-                html += '<p style="color:#8b949e;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
+                html += '<summary style="color:#e6edf3;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
+                html += '<p style="color:#e6edf3;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
                 html += '</details>\n';
             });
             html += '</div>\n\n';
@@ -199,7 +199,7 @@
         if (problem.problem) {
             html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Approach</h2>\n';
             html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;">\n';
-            html += '<p style="color:#c9d1d9;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
+            html += '<p style="color:#e6edf3;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
             html += '</div>\n\n';
         }
 
