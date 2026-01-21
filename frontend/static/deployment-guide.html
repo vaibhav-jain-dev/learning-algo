@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSH Setup Guide - Deployment Instructions</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -80,12 +79,17 @@
             border-top: 1px solid #e5e7eb;
             margin: 2rem 0;
         }
-        .mermaid {
+        .diagram-container {
             background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 1.5rem;
             margin: 1.5rem 0;
             text-align: center;
+        }
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
         }
         strong { color: #111827; }
         .badge {
@@ -105,25 +109,24 @@
         <h1>SSH Setup Guide</h1>
         <p class="subtitle">Simple guide to set up SSH for deployments</p>
 
-        <div class="mermaid">
+        <div class="diagram-container">
+            <pre class="mermaid">
 flowchart LR
     subgraph Local["Local PC"]
         A[Generate Key]
     end
-
     subgraph Server["Server"]
         B[authorized_keys]
     end
-
     subgraph GitHub["GitHub"]
         C[Secrets]
         D[Deploy Keys]
     end
-
     A -->|Public Key| B
     A -->|Private Key| C
     B -->|Allows| C
     D -->|Allows Server| GitHub
+            </pre>
         </div>
 
         <hr>
@@ -205,12 +208,9 @@ ssh -i ~/.ssh/deploy_key username@your-server-ip "echo 'Connected!'"
 ssh -T git@github.com</code></pre>
     </div>
 
-    <script>
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: { useMaxWidth: true }
-        });
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
     </script>
 </body>
 </html>
