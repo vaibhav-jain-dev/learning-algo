@@ -4100,24 +4100,83 @@
         var html = '<div class="problem-list">';
 
         problems.forEach(function(p, idx) {
-            var tags = p.tags.map(function(t) { return '<span class="problem-tag" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; background: #e9ecef; border-radius: 4px; margin-right: 0.25rem;">' + t + '</span>'; }).join('');
-            html += '<div class="problem-item" onclick="window.openProblem(\'' + category + '\', \'' + p.id + '\')" style="background: white; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.borderColor=\'#667eea\'" onmouseout="this.style.borderColor=\'transparent\'">' +
-                '<div class="problem-number" style="width: 40px; height: 40px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #667eea;">' + (idx + 1) + '</div>' +
-                '<div class="problem-info" style="flex: 1;">' +
-                    '<div class="problem-name" style="font-weight: 600; color: #333; margin-bottom: 0.25rem;">' + p.name + '</div>' +
-                    '<div class="problem-tags">' + tags + '</div>' +
-                '</div>' +
-                '<span class="problem-diff" style="padding: 0.4rem 0.9rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; ' + getDifficultyClass(p.difficulty) + '">' + capitalize(p.difficulty) + '</span>' +
-            '</div>';
+            var tags = p.tags.map(function(t) { return '<span class="problem-tag" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; background: #21262d; color: #8b949e; border-radius: 4px; margin-right: 0.25rem;">' + t + '</span>'; }).join('');
+
+            // Check if this problem has similar problems in the JS registry
+            var fullId = category + '/' + p.id;
+            var problemData = window.ProblemRenderer ? window.ProblemRenderer.get(fullId) : null;
+            var hasSimilar = problemData && problemData.similar && problemData.similar.length > 0;
+
+            // Main problem item
+            html += '<div class="problem-group" style="margin-bottom: 0.75rem;">';
+            html += '<div class="problem-item" style="background: #161b22; border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; border: 1px solid #30363d; transition: all 0.2s;">';
+
+            // Problem number
+            html += '<div class="problem-number" style="width: 40px; height: 40px; background: #21262d; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #58a6ff;">' + (idx + 1) + '</div>';
+
+            // Problem info (clickable)
+            html += '<div class="problem-info" onclick="window.openProblem(\'' + category + '\', \'' + p.id + '\')" style="flex: 1; cursor: pointer;" onmouseover="this.querySelector(\'.problem-name\').style.color=\'#58a6ff\'" onmouseout="this.querySelector(\'.problem-name\').style.color=\'#e6edf3\'">';
+            html += '<div class="problem-name" style="font-weight: 600; color: #e6edf3; margin-bottom: 0.25rem; transition: color 0.2s;">' + p.name + '</div>';
+            html += '<div class="problem-tags">' + tags + '</div>';
+            html += '</div>';
+
+            // Difficulty badge
+            html += '<span class="problem-diff" style="padding: 0.4rem 0.9rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; ' + getDifficultyClass(p.difficulty) + '">' + capitalize(p.difficulty) + '</span>';
+
+            // Similar problems toggle button (if has similar)
+            if (hasSimilar) {
+                html += '<button onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: #238636; color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; white-space: nowrap;" title="Show related problems">';
+                html += '<span style="font-size: 0.85rem;">▶</span> +' + problemData.similar.length;
+                html += '</button>';
+            }
+
+            html += '</div>';
+
+            // Similar problems container (hidden by default)
+            if (hasSimilar) {
+                html += '<div id="similar-list-' + p.id + '" style="display: none; margin-left: 2.5rem; margin-top: 0.5rem; border-left: 2px solid #30363d; padding-left: 1rem;">';
+                html += '<div style="color: #8b949e; font-size: 0.75rem; margin-bottom: 0.5rem; padding: 0.25rem 0;">Related harder problems:</div>';
+
+                problemData.similar.forEach(function(sim, simIdx) {
+                    var simDiffStyle = getDifficultyClass(sim.difficulty.toLowerCase());
+                    html += '<div class="similar-item" onclick="window.open(\'/200-problems/' + sim.id + '?category=' + category + '\', \'_blank\')" style="background: #0d1117; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; border: 1px solid #21262d; transition: all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#161b22\'" onmouseout="this.style.borderColor=\'#21262d\';this.style.background=\'#0d1117\'">';
+                    html += '<span style="color: #6e7681; font-size: 0.8rem; width: 20px;">' + (simIdx + 1) + '.</span>';
+                    html += '<span style="color: #c9d1d9; flex: 1; font-size: 0.9rem;">' + sim.name + '</span>';
+                    html += '<span style="' + simDiffStyle + ' padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 600;">' + sim.difficulty + '</span>';
+                    html += '<span style="color: #58a6ff; font-size: 0.9rem;">↗</span>';
+                    html += '</div>';
+                });
+
+                html += '</div>';
+            }
+
+            html += '</div>'; // close problem-group
         });
 
         if (problems.length === 0) {
-            html += '<div style="text-align:center;padding:3rem;color:#888;">Problems coming soon...</div>';
+            html += '<div style="text-align:center;padding:3rem;color:#8b949e;">Problems coming soon...</div>';
         }
 
         html += '</div>';
         content.innerHTML = html;
         panel.classList.add('active');
+    };
+
+    // Toggle similar problems in the category list
+    window.toggleSimilarInList = function(problemId) {
+        var container = document.getElementById('similar-list-' + problemId);
+        var btn = document.getElementById('similar-btn-' + problemId);
+        if (!container || !btn) return;
+
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            btn.style.background = '#1f6feb';
+            btn.querySelector('span').textContent = '▼';
+        } else {
+            container.style.display = 'none';
+            btn.style.background = '#238636';
+            btn.querySelector('span').textContent = '▶';
+        }
     };
 
     window.hideCategory = function() {
