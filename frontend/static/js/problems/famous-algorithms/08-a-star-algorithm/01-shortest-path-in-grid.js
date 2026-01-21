@@ -53,47 +53,163 @@
         solutions: {
             python: `def shortestPathInBinaryGrid(data):
     """
-    Shortest Path in Binary Grid
+    Shortest Path in Binary Grid using A* Algorithm
 
-    Time: O(n)
-    Space: O(n)
+    Uses Manhattan distance heuristic to prioritize exploration.
+
+    Time: O(n^2 log n) with A*
+    Space: O(n^2)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    import heapq
 
-    result = None
+    grid = data["grid"]
+    n = len(grid)
 
-    # Process input
-    # ...
+    # Check if start or end is blocked
+    if grid[0][0] == 1 or grid[n-1][n-1] == 1:
+        return -1
 
-    return result
+    # Heuristic: Chebyshev distance (diagonal movement allowed)
+    def heuristic(r, c):
+        return max(n - 1 - r, n - 1 - c)
+
+    # 8 directions (including diagonals)
+    directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+
+    # A* algorithm: (f_score, g_score, row, col)
+    # f_score = g_score + heuristic
+    start_h = heuristic(0, 0)
+    min_heap = [(1 + start_h, 1, 0, 0)]  # (f, g, row, col)
+    visited = [[False] * n for _ in range(n)]
+    visited[0][0] = True
+
+    while min_heap:
+        f, g, row, col = heapq.heappop(min_heap)
+
+        # Reached destination
+        if row == n - 1 and col == n - 1:
+            return g
+
+        for dr, dc in directions:
+            nr, nc = row + dr, col + dc
+
+            if 0 <= nr < n and 0 <= nc < n and not visited[nr][nc] and grid[nr][nc] == 0:
+                visited[nr][nc] = True
+                new_g = g + 1
+                new_f = new_g + heuristic(nr, nc)
+                heapq.heappush(min_heap, (new_f, new_g, nr, nc))
+
+    return -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"grid": [[0,0,0], [1,1,0], [1,1,0]]}
+    print(shortestPathInBinaryGrid(data))  # Output: 4`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// ShortestPathInBinaryGrid solves the Shortest Path in Binary Grid problem.
-// Time: O(n), Space: O(n)
-func ShortestPathInBinaryGrid(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type GridState struct {
+    f, g, row, col int
+}
 
-    var result interface{}
+type GridHeap []GridState
 
-    // Process input
-    // ...
+func (h GridHeap) Len() int           { return len(h) }
+func (h GridHeap) Less(i, j int) bool { return h[i].f < h[j].f }
+func (h GridHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *GridHeap) Push(x interface{}) { *h = append(*h, x.(GridState)) }
+func (h *GridHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    return result
+// ShortestPathInBinaryGrid uses A* algorithm.
+// Time: O(n^2 log n), Space: O(n^2)
+func ShortestPathInBinaryGrid(data map[string]interface{}) int {
+    gridRaw := data["grid"].([]interface{})
+    n := len(gridRaw)
+
+    // Parse grid
+    grid := make([][]int, n)
+    for i, row := range gridRaw {
+        r := row.([]interface{})
+        grid[i] = make([]int, len(r))
+        for j, v := range r {
+            grid[i][j] = int(v.(float64))
+        }
+    }
+
+    // Check start/end
+    if grid[0][0] == 1 || grid[n-1][n-1] == 1 {
+        return -1
+    }
+
+    max := func(a, b int) int {
+        if a > b {
+            return a
+        }
+        return b
+    }
+
+    // Chebyshev distance heuristic
+    heuristic := func(r, c int) int {
+        return max(n-1-r, n-1-c)
+    }
+
+    // 8 directions
+    directions := [][2]int{{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}}
+
+    // A* algorithm
+    startH := heuristic(0, 0)
+    h := &GridHeap{{1 + startH, 1, 0, 0}}
+    heap.Init(h)
+
+    visited := make([][]bool, n)
+    for i := range visited {
+        visited[i] = make([]bool, n)
+    }
+    visited[0][0] = true
+
+    for h.Len() > 0 {
+        state := heap.Pop(h).(GridState)
+
+        if state.row == n-1 && state.col == n-1 {
+            return state.g
+        }
+
+        for _, d := range directions {
+            nr, nc := state.row+d[0], state.col+d[1]
+
+            if nr >= 0 && nr < n && nc >= 0 && nc < n &&
+                !visited[nr][nc] && grid[nr][nc] == 0 {
+                visited[nr][nc] = true
+                newG := state.g + 1
+                newF := newG + heuristic(nr, nc)
+                heap.Push(h, GridState{newF, newG, nr, nc})
+            }
+        }
+    }
+
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "grid": []interface{}{
+            []interface{}{float64(0), float64(0), float64(0)},
+            []interface{}{float64(1), float64(1), float64(0)},
+            []interface{}{float64(1), float64(1), float64(0)},
+        },
+    }
+    fmt.Println(ShortestPathInBinaryGrid(data)) // 4
 }`
         },
         similar: [

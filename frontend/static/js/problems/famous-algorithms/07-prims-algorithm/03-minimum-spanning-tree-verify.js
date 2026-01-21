@@ -83,45 +83,219 @@
     """
     Minimum Spanning Tree Verification
 
-    Time: O(n)
-    Space: O(n)
+    Verify if proposed tree is a valid MST by:
+    1. Check if proposed tree has exactly n-1 edges
+    2. Check if proposed tree connects all nodes
+    3. Compare total cost with actual MST cost
+
+    Time: O(E log V)
+    Space: O(V + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    import heapq
+    from collections import defaultdict
 
-    result = None
+    n = data["n"]
+    graph_edges = data["graphEdges"]
+    proposed = data["proposed"]
 
-    # Process input
-    # ...
+    # Check edge count
+    if len(proposed) != n - 1:
+        return False
 
-    return result
+    # Build graph adjacency list
+    graph = defaultdict(list)
+    for u, v, cost in graph_edges:
+        graph[u].append((v, cost))
+        graph[v].append((u, cost))
+
+    # Calculate proposed tree cost and check connectivity
+    proposed_cost = 0
+    proposed_adj = defaultdict(set)
+    for u, v, cost in proposed:
+        proposed_cost += cost
+        proposed_adj[u].add(v)
+        proposed_adj[v].add(u)
+
+    # Check if proposed tree connects all nodes (BFS)
+    visited = set([0])
+    stack = [0]
+    while stack:
+        node = stack.pop()
+        for neighbor in proposed_adj[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                stack.append(neighbor)
+
+    if len(visited) != n:
+        return False
+
+    # Calculate actual MST cost using Prim's
+    visited = [False] * n
+    min_heap = [(0, 0)]
+    mst_cost = 0
+    edges_used = 0
+
+    while min_heap and edges_used < n:
+        cost, node = heapq.heappop(min_heap)
+
+        if visited[node]:
+            continue
+
+        visited[node] = True
+        mst_cost += cost
+        edges_used += 1
+
+        for neighbor, edge_cost in graph[node]:
+            if not visited[neighbor]:
+                heapq.heappush(min_heap, (edge_cost, neighbor))
+
+    # Proposed tree is MST if costs match
+    return proposed_cost == mst_cost
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {
+        "n": 4,
+        "graphEdges": [[0,1,1], [0,2,2], [1,2,3], [1,3,4], [2,3,5]],
+        "proposed": [[0,1,1], [0,2,2], [1,3,4]]
+    }
+    print(minimumSpanningTreeVerification(data))  # True`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// MinimumSpanningTreeVerification solves the Minimum Spanning Tree Verification problem.
-// Time: O(n), Space: O(n)
-func MinimumSpanningTreeVerification(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type VerifyEdge struct {
+    cost, node int
+}
 
-    var result interface{}
+type VerifyHeap []VerifyEdge
 
-    // Process input
-    // ...
+func (h VerifyHeap) Len() int           { return len(h) }
+func (h VerifyHeap) Less(i, j int) bool { return h[i].cost < h[j].cost }
+func (h VerifyHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *VerifyHeap) Push(x interface{}) { *h = append(*h, x.(VerifyEdge)) }
+func (h *VerifyHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    return result
+// MinimumSpanningTreeVerification checks if proposed tree is MST.
+// Time: O(E log V), Space: O(V + E)
+func MinimumSpanningTreeVerification(data map[string]interface{}) bool {
+    n := int(data["n"].(float64))
+    graphEdgesRaw := data["graphEdges"].([]interface{})
+    proposedRaw := data["proposed"].([]interface{})
+
+    // Check edge count
+    if len(proposedRaw) != n-1 {
+        return false
+    }
+
+    // Build graph
+    type edge struct{ to, cost int }
+    graph := make([][]edge, n)
+    for i := range graph {
+        graph[i] = []edge{}
+    }
+
+    for _, e := range graphEdgesRaw {
+        ed := e.([]interface{})
+        u := int(ed[0].(float64))
+        v := int(ed[1].(float64))
+        cost := int(ed[2].(float64))
+        graph[u] = append(graph[u], edge{v, cost})
+        graph[v] = append(graph[v], edge{u, cost})
+    }
+
+    // Calculate proposed cost and build adjacency
+    proposedCost := 0
+    proposedAdj := make([]map[int]bool, n)
+    for i := range proposedAdj {
+        proposedAdj[i] = make(map[int]bool)
+    }
+
+    for _, e := range proposedRaw {
+        ed := e.([]interface{})
+        u := int(ed[0].(float64))
+        v := int(ed[1].(float64))
+        cost := int(ed[2].(float64))
+        proposedCost += cost
+        proposedAdj[u][v] = true
+        proposedAdj[v][u] = true
+    }
+
+    // Check connectivity of proposed tree
+    visited := make(map[int]bool)
+    stack := []int{0}
+    visited[0] = true
+
+    for len(stack) > 0 {
+        node := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+        for neighbor := range proposedAdj[node] {
+            if !visited[neighbor] {
+                visited[neighbor] = true
+                stack = append(stack, neighbor)
+            }
+        }
+    }
+
+    if len(visited) != n {
+        return false
+    }
+
+    // Calculate actual MST cost using Prim's
+    visitedPrim := make([]bool, n)
+    h := &VerifyHeap{{0, 0}}
+    heap.Init(h)
+    mstCost := 0
+    edgesUsed := 0
+
+    for h.Len() > 0 && edgesUsed < n {
+        e := heap.Pop(h).(VerifyEdge)
+
+        if visitedPrim[e.node] {
+            continue
+        }
+
+        visitedPrim[e.node] = true
+        mstCost += e.cost
+        edgesUsed++
+
+        for _, neighbor := range graph[e.node] {
+            if !visitedPrim[neighbor.to] {
+                heap.Push(h, VerifyEdge{neighbor.cost, neighbor.to})
+            }
+        }
+    }
+
+    return proposedCost == mstCost
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "n": float64(4),
+        "graphEdges": []interface{}{
+            []interface{}{float64(0), float64(1), float64(1)},
+            []interface{}{float64(0), float64(2), float64(2)},
+            []interface{}{float64(1), float64(2), float64(3)},
+            []interface{}{float64(1), float64(3), float64(4)},
+            []interface{}{float64(2), float64(3), float64(5)},
+        },
+        "proposed": []interface{}{
+            []interface{}{float64(0), float64(1), float64(1)},
+            []interface{}{float64(0), float64(2), float64(2)},
+            []interface{}{float64(1), float64(3), float64(4)},
+        },
+    }
+    fmt.Println(MinimumSpanningTreeVerification(data)) // true
 }`
         },
         similar: [

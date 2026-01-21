@@ -48,47 +48,202 @@
         solutions: {
             python: `def slidingPuzzle(data):
     """
-    Sliding Puzzle
+    Sliding Puzzle using A*/BFS
 
-    Time: O(n)
-    Space: O(n)
+    Uses Manhattan distance sum as heuristic for A*.
+
+    Time: O((mn)!) - worst case all states
+    Space: O((mn)!)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    import heapq
 
-    result = None
+    board = data["board"]
+    target = "123450"
 
-    # Process input
-    # ...
+    # Convert board to string
+    start = "".join(str(num) for row in board for num in row)
 
-    return result
+    if start == target:
+        return 0
+
+    # Possible moves for position 0 at each index (2x3 board)
+    # Index: 0 1 2
+    #        3 4 5
+    neighbors = {
+        0: [1, 3],
+        1: [0, 2, 4],
+        2: [1, 5],
+        3: [0, 4],
+        4: [1, 3, 5],
+        5: [2, 4]
+    }
+
+    # Manhattan distance heuristic
+    def heuristic(state):
+        distance = 0
+        for i, ch in enumerate(state):
+            if ch != '0':
+                val = int(ch)
+                target_row, target_col = (val - 1) // 3, (val - 1) % 3
+                curr_row, curr_col = i // 3, i % 3
+                distance += abs(target_row - curr_row) + abs(target_col - curr_col)
+        return distance
+
+    # A* algorithm
+    # (f_score, moves, state)
+    start_h = heuristic(start)
+    min_heap = [(start_h, 0, start)]
+    visited = {start}
+
+    while min_heap:
+        f, moves, state = heapq.heappop(min_heap)
+
+        if state == target:
+            return moves
+
+        # Find position of 0
+        zero_pos = state.index('0')
+
+        # Try all possible swaps
+        for next_pos in neighbors[zero_pos]:
+            state_list = list(state)
+            state_list[zero_pos], state_list[next_pos] = state_list[next_pos], state_list[zero_pos]
+            new_state = "".join(state_list)
+
+            if new_state not in visited:
+                visited.add(new_state)
+                new_moves = moves + 1
+                new_f = new_moves + heuristic(new_state)
+                heapq.heappush(min_heap, (new_f, new_moves, new_state))
+
+    return -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"board": [[1,2,3], [4,0,5]]}
+    print(slidingPuzzle(data))  # Output: 1`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+    "strconv"
+    "strings"
+)
 
-// SlidingPuzzle solves the Sliding Puzzle problem.
-// Time: O(n), Space: O(n)
-func SlidingPuzzle(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type PuzzleState struct {
+    f, moves int
+    state    string
+}
 
-    var result interface{}
+type PuzzleHeap []PuzzleState
 
-    // Process input
-    // ...
+func (h PuzzleHeap) Len() int           { return len(h) }
+func (h PuzzleHeap) Less(i, j int) bool { return h[i].f < h[j].f }
+func (h PuzzleHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *PuzzleHeap) Push(x interface{}) { *h = append(*h, x.(PuzzleState)) }
+func (h *PuzzleHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    return result
+// SlidingPuzzle uses A* algorithm.
+// Time: O((mn)!), Space: O((mn)!)
+func SlidingPuzzle(data map[string]interface{}) int {
+    boardRaw := data["board"].([]interface{})
+    target := "123450"
+
+    // Convert board to string
+    var sb strings.Builder
+    for _, row := range boardRaw {
+        r := row.([]interface{})
+        for _, v := range r {
+            sb.WriteString(strconv.Itoa(int(v.(float64))))
+        }
+    }
+    start := sb.String()
+
+    if start == target {
+        return 0
+    }
+
+    // Neighbors for each position
+    neighbors := map[int][]int{
+        0: {1, 3},
+        1: {0, 2, 4},
+        2: {1, 5},
+        3: {0, 4},
+        4: {1, 3, 5},
+        5: {2, 4},
+    }
+
+    abs := func(x int) int {
+        if x < 0 {
+            return -x
+        }
+        return x
+    }
+
+    // Manhattan distance heuristic
+    heuristic := func(state string) int {
+        distance := 0
+        for i, ch := range state {
+            if ch != '0' {
+                val := int(ch - '0')
+                targetRow, targetCol := (val-1)/3, (val-1)%3
+                currRow, currCol := i/3, i%3
+                distance += abs(targetRow-currRow) + abs(targetCol-currCol)
+            }
+        }
+        return distance
+    }
+
+    // A* algorithm
+    startH := heuristic(start)
+    h := &PuzzleHeap{{startH, 0, start}}
+    heap.Init(h)
+    visited := map[string]bool{start: true}
+
+    for h.Len() > 0 {
+        curr := heap.Pop(h).(PuzzleState)
+
+        if curr.state == target {
+            return curr.moves
+        }
+
+        // Find position of 0
+        zeroPos := strings.Index(curr.state, "0")
+
+        // Try all swaps
+        for _, nextPos := range neighbors[zeroPos] {
+            stateBytes := []byte(curr.state)
+            stateBytes[zeroPos], stateBytes[nextPos] = stateBytes[nextPos], stateBytes[zeroPos]
+            newState := string(stateBytes)
+
+            if !visited[newState] {
+                visited[newState] = true
+                newMoves := curr.moves + 1
+                newF := newMoves + heuristic(newState)
+                heap.Push(h, PuzzleState{newF, newMoves, newState})
+            }
+        }
+    }
+
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "board": []interface{}{
+            []interface{}{float64(1), float64(2), float64(3)},
+            []interface{}{float64(4), float64(0), float64(5)},
+        },
+    }
+    fmt.Println(SlidingPuzzle(data)) // 1
 }`
         },
         similar: [

@@ -54,47 +54,155 @@
         solutions: {
             python: `def connectingCitiesWithMinimumCost(data):
     """
-    Connecting Cities With Minimum Cost
+    Connecting Cities With Minimum Cost using Kruskal's Algorithm
 
-    Time: O(n)
+    Time: O(E log E)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data["n"]
+    connections = data["connections"]
 
-    result = None
+    if n <= 1:
+        return 0
 
-    # Process input
-    # ...
+    # Union-Find data structure
+    parent = list(range(n + 1))  # Cities are 1-indexed
+    rank = [0] * (n + 1)
 
-    return result
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
+    # Sort connections by cost
+    connections.sort(key=lambda x: x[2])
+
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+
+    for city1, city2, cost in connections:
+        if union(city1, city2):
+            total_cost += cost
+            edges_used += 1
+            if edges_used == n - 1:
+                break
+
+    # Check if all cities are connected
+    return total_cost if edges_used == n - 1 else -1
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"n": 3, "connections": [[1,2,5], [1,3,6], [2,3,1]]}
+    print(connectingCitiesWithMinimumCost(data))  # Output: 6`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// ConnectingCitiesWithMinimumCost solves the Connecting Cities With Minimum Cost problem.
-// Time: O(n), Space: O(n)
-func ConnectingCitiesWithMinimumCost(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// ConnectingCitiesWithMinimumCost solves the Connecting Cities problem.
+// Time: O(E log E), Space: O(n)
+func ConnectingCitiesWithMinimumCost(data map[string]interface{}) int {
+    n := int(data["n"].(float64))
+    connectionsRaw := data["connections"].([]interface{})
 
-    var result interface{}
+    if n <= 1 {
+        return 0
+    }
 
-    // Process input
-    // ...
+    // Parse connections
+    type connection struct {
+        city1, city2, cost int
+    }
+    connections := make([]connection, len(connectionsRaw))
+    for i, c := range connectionsRaw {
+        conn := c.([]interface{})
+        connections[i] = connection{
+            int(conn[0].(float64)),
+            int(conn[1].(float64)),
+            int(conn[2].(float64)),
+        }
+    }
 
-    return result
+    // Union-Find
+    parent := make([]int, n+1)
+    rank := make([]int, n+1)
+    for i := range parent {
+        parent[i] = i
+    }
+
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
+
+    union := func(x, y int) bool {
+        px, py := find(x), find(y)
+        if px == py {
+            return false
+        }
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+        return true
+    }
+
+    // Sort by cost
+    sort.Slice(connections, func(i, j int) bool {
+        return connections[i].cost < connections[j].cost
+    })
+
+    // Kruskal's algorithm
+    totalCost := 0
+    edgesUsed := 0
+
+    for _, conn := range connections {
+        if union(conn.city1, conn.city2) {
+            totalCost += conn.cost
+            edgesUsed++
+            if edgesUsed == n-1 {
+                break
+            }
+        }
+    }
+
+    if edgesUsed == n-1 {
+        return totalCost
+    }
+    return -1
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "n": float64(3),
+        "connections": []interface{}{
+            []interface{}{float64(1), float64(2), float64(5)},
+            []interface{}{float64(1), float64(3), float64(6)},
+            []interface{}{float64(2), float64(3), float64(1)},
+        },
+    }
+    fmt.Println(ConnectingCitiesWithMinimumCost(data)) // 6
 }`
         },
         similar: [

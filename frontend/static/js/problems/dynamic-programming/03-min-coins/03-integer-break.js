@@ -53,45 +53,76 @@
     """
     Integer Break
 
-    Time: O(n)
+    Break integer n into at least 2 positive integers to maximize product.
+
+    Time: O(n^2)
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data["n"]
 
-    result = None
+    # Special cases
+    if n == 2:
+        return 1  # 1 + 1 = 2, product = 1
+    if n == 3:
+        return 2  # 1 + 2 = 3, product = 2
 
-    # Process input
-    # ...
+    # dp[i] = maximum product for integer i (can use whole number)
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    dp[2] = 2
+    dp[3] = 3
 
-    return result
+    for i in range(4, n + 1):
+        for j in range(1, i // 2 + 1):
+            dp[i] = max(dp[i], dp[j] * dp[i - j])
+
+    return dp[n]
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(integerBreak({"n": 2}))   # Output: 1
+    print(integerBreak({"n": 10}))  # Output: 36
+    print(integerBreak({"n": 8}))   # Output: 18`,
             go: `package main
 
 import "fmt"
 
 // IntegerBreak solves the Integer Break problem.
-// Time: O(n), Space: O(n)
-func IntegerBreak(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Break integer n into at least 2 positive integers to maximize product.
+// Time: O(n^2), Space: O(n)
+func IntegerBreak(data map[string]interface{}) int {
+    n := int(data["n"].(float64))
 
-    var result interface{}
+    // Special cases
+    if n == 2 {
+        return 1 // 1 + 1 = 2, product = 1
+    }
+    if n == 3 {
+        return 2 // 1 + 2 = 3, product = 2
+    }
 
-    // Process input
-    // ...
+    // dp[i] = maximum product for integer i (can use whole number)
+    dp := make([]int, n+1)
+    dp[1] = 1
+    dp[2] = 2
+    dp[3] = 3
 
-    return result
+    for i := 4; i <= n; i++ {
+        for j := 1; j <= i/2; j++ {
+            if dp[j]*dp[i-j] > dp[i] {
+                dp[i] = dp[j] * dp[i-j]
+            }
+        }
+    }
+
+    return dp[n]
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(IntegerBreak(map[string]interface{}{"n": float64(2)}))   // 1
+    fmt.Println(IntegerBreak(map[string]interface{}{"n": float64(10)}))  // 36
+    fmt.Println(IntegerBreak(map[string]interface{}{"n": float64(8)}))   // 18
 }`
         },
         similar: [

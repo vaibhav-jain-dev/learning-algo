@@ -58,47 +58,172 @@
         solutions: {
             python: `def minCostToConnectAllPoints(data):
     """
-    Min Cost to Connect All Points
+    Min Cost to Connect All Points using Kruskal's Algorithm
 
-    Time: O(n)
-    Space: O(n)
+    Time: O(n^2 log n)
+    Space: O(n^2)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    points = data["points"]
+    n = len(points)
 
-    result = None
+    if n <= 1:
+        return 0
 
-    # Process input
-    # ...
+    # Union-Find data structure
+    parent = list(range(n))
+    rank = [0] * n
 
-    return result
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])  # Path compression
+        return parent[x]
+
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        # Union by rank
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
+    # Create all edges with Manhattan distance
+    edges = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+            edges.append((dist, i, j))
+
+    # Sort edges by weight
+    edges.sort()
+
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+
+    for cost, u, v in edges:
+        if union(u, v):
+            total_cost += cost
+            edges_used += 1
+            if edges_used == n - 1:
+                break
+
+    return total_cost
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"points": [[0,0], [2,2], [3,10], [5,2], [7,0]]}
+    print(minCostToConnectAllPoints(data))  # Output: 20`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
 // MinCostToConnectAllPoints solves the Min Cost to Connect All Points problem.
-// Time: O(n), Space: O(n)
-func MinCostToConnectAllPoints(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Time: O(n^2 log n), Space: O(n^2)
+func MinCostToConnectAllPoints(data map[string]interface{}) int {
+    pointsRaw := data["points"].([]interface{})
+    n := len(pointsRaw)
 
-    var result interface{}
+    if n <= 1 {
+        return 0
+    }
 
-    // Process input
-    // ...
+    // Parse points
+    points := make([][2]int, n)
+    for i, p := range pointsRaw {
+        pt := p.([]interface{})
+        points[i] = [2]int{int(pt[0].(float64)), int(pt[1].(float64))}
+    }
 
-    return result
+    // Union-Find
+    parent := make([]int, n)
+    rank := make([]int, n)
+    for i := range parent {
+        parent[i] = i
+    }
+
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
+
+    union := func(x, y int) bool {
+        px, py := find(x), find(y)
+        if px == py {
+            return false
+        }
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+        return true
+    }
+
+    abs := func(x int) int {
+        if x < 0 {
+            return -x
+        }
+        return x
+    }
+
+    // Create edges
+    type edge struct {
+        cost, u, v int
+    }
+    var edges []edge
+    for i := 0; i < n; i++ {
+        for j := i + 1; j < n; j++ {
+            dist := abs(points[i][0]-points[j][0]) + abs(points[i][1]-points[j][1])
+            edges = append(edges, edge{dist, i, j})
+        }
+    }
+
+    // Sort edges
+    sort.Slice(edges, func(i, j int) bool {
+        return edges[i].cost < edges[j].cost
+    })
+
+    // Kruskal's algorithm
+    totalCost := 0
+    edgesUsed := 0
+
+    for _, e := range edges {
+        if union(e.u, e.v) {
+            totalCost += e.cost
+            edgesUsed++
+            if edgesUsed == n-1 {
+                break
+            }
+        }
+    }
+
+    return totalCost
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "points": []interface{}{
+            []interface{}{float64(0), float64(0)},
+            []interface{}{float64(2), float64(2)},
+            []interface{}{float64(3), float64(10)},
+            []interface{}{float64(5), float64(2)},
+            []interface{}{float64(7), float64(0)},
+        },
+    }
+    fmt.Println(MinCostToConnectAllPoints(data)) // 20
 }`
         },
         similar: [

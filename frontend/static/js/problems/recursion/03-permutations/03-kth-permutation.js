@@ -39,45 +39,105 @@
     """
     Kth Permutation Sequence
 
-    Time: O(n)
+    Mathematical approach using factorials.
+    For n numbers, there are n! permutations.
+    The first digit has (n-1)! permutations for each choice.
+
+    Time: O(n^2) due to list removal
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data["n"]
+    k = data["k"]
 
-    result = None
+    # Calculate factorials
+    factorials = [1] * (n + 1)
+    for i in range(1, n + 1):
+        factorials[i] = factorials[i - 1] * i
 
-    # Process input
-    # ...
+    # Available numbers
+    numbers = list(range(1, n + 1))
 
-    return result
+    # Convert k to 0-indexed
+    k -= 1
+
+    result = []
+
+    for i in range(n, 0, -1):
+        # How many permutations per digit at this position
+        perm_count = factorials[i - 1]
+
+        # Which digit to choose
+        digit_index = k // perm_count
+        result.append(str(numbers[digit_index]))
+
+        # Remove the used digit
+        numbers.pop(digit_index)
+
+        # Update k for next position
+        k %= perm_count
+
+    return "".join(result)
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    print(kthPermutationSequence({"n": 3, "k": 3}))  # Output: "213"
+    print(kthPermutationSequence({"n": 4, "k": 9}))  # Output: "2314"
+    print(kthPermutationSequence({"n": 3, "k": 1}))  # Output: "123"`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "strconv"
+    "strings"
+)
 
-// KthPermutationSequence solves the Kth Permutation Sequence problem.
-// Time: O(n), Space: O(n)
-func KthPermutationSequence(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// KthPermutationSequence finds the kth permutation mathematically.
+// Time: O(n^2), Space: O(n)
+func KthPermutationSequence(data map[string]interface{}) string {
+    n := int(data["n"].(float64))
+    k := int(data["k"].(float64))
 
-    var result interface{}
+    // Calculate factorials
+    factorials := make([]int, n+1)
+    factorials[0] = 1
+    for i := 1; i <= n; i++ {
+        factorials[i] = factorials[i-1] * i
+    }
 
-    // Process input
-    // ...
+    // Available numbers
+    numbers := make([]int, n)
+    for i := 0; i < n; i++ {
+        numbers[i] = i + 1
+    }
 
-    return result
+    // Convert k to 0-indexed
+    k--
+
+    var result strings.Builder
+
+    for i := n; i > 0; i-- {
+        // How many permutations per digit
+        permCount := factorials[i-1]
+
+        // Which digit to choose
+        digitIndex := k / permCount
+        result.WriteString(strconv.Itoa(numbers[digitIndex]))
+
+        // Remove used digit
+        numbers = append(numbers[:digitIndex], numbers[digitIndex+1:]...)
+
+        // Update k
+        k %= permCount
+    }
+
+    return result.String()
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    fmt.Println(KthPermutationSequence(map[string]interface{}{"n": float64(3), "k": float64(3)}))  // "213"
+    fmt.Println(KthPermutationSequence(map[string]interface{}{"n": float64(4), "k": float64(9)}))  // "2314"
+    fmt.Println(KthPermutationSequence(map[string]interface{}{"n": float64(3), "k": float64(1)}))  // "123"
 }`
         },
         similar: [

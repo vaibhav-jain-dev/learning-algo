@@ -57,47 +57,151 @@
         solutions: {
             python: `def minCostToConnectPointsPrim(data):
     """
-    Min Cost to Connect Points (Prim\
+    Min Cost to Connect Points using Prim's Algorithm
 
-    Time: O(n)
+    Time: O(n^2 log n) with heap, O(n^2) with array
     Space: O(n)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    import heapq
 
-    result = None
+    points = data["points"]
+    n = len(points)
 
-    # Process input
-    # ...
+    if n <= 1:
+        return 0
 
-    return result
+    def manhattan(i, j):
+        return abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+
+    # Prim's algorithm using min-heap
+    visited = [False] * n
+    min_heap = [(0, 0)]  # (cost, node)
+    total_cost = 0
+    edges_used = 0
+
+    while min_heap and edges_used < n:
+        cost, node = heapq.heappop(min_heap)
+
+        if visited[node]:
+            continue
+
+        visited[node] = True
+        total_cost += cost
+        edges_used += 1
+
+        # Add edges to unvisited neighbors
+        for neighbor in range(n):
+            if not visited[neighbor]:
+                dist = manhattan(node, neighbor)
+                heapq.heappush(min_heap, (dist, neighbor))
+
+    return total_cost
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"points": [[0,0], [2,2], [3,10], [5,2], [7,0]]}
+    print(minCostToConnectPointsPrim(data))  # Output: 20`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// MinCostToConnectPointsPrim solves the Min Cost to Connect Points (Prim\ problem.
-// Time: O(n), Space: O(n)
-func MinCostToConnectPointsPrim(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// Edge represents an edge with cost and destination node
+type Edge struct {
+    cost, node int
+}
 
-    var result interface{}
+// MinHeap implements heap.Interface for edges
+type MinHeap []Edge
 
-    // Process input
-    // ...
+func (h MinHeap) Len() int           { return len(h) }
+func (h MinHeap) Less(i, j int) bool { return h[i].cost < h[j].cost }
+func (h MinHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
-    return result
+func (h *MinHeap) Push(x interface{}) {
+    *h = append(*h, x.(Edge))
+}
+
+func (h *MinHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
+
+// MinCostToConnectPointsPrim solves using Prim's algorithm.
+// Time: O(n^2 log n), Space: O(n)
+func MinCostToConnectPointsPrim(data map[string]interface{}) int {
+    pointsRaw := data["points"].([]interface{})
+    n := len(pointsRaw)
+
+    if n <= 1 {
+        return 0
+    }
+
+    // Parse points
+    points := make([][2]int, n)
+    for i, p := range pointsRaw {
+        pt := p.([]interface{})
+        points[i] = [2]int{int(pt[0].(float64)), int(pt[1].(float64))}
+    }
+
+    abs := func(x int) int {
+        if x < 0 {
+            return -x
+        }
+        return x
+    }
+
+    manhattan := func(i, j int) int {
+        return abs(points[i][0]-points[j][0]) + abs(points[i][1]-points[j][1])
+    }
+
+    // Prim's algorithm
+    visited := make([]bool, n)
+    h := &MinHeap{{0, 0}}
+    heap.Init(h)
+
+    totalCost := 0
+    edgesUsed := 0
+
+    for h.Len() > 0 && edgesUsed < n {
+        e := heap.Pop(h).(Edge)
+
+        if visited[e.node] {
+            continue
+        }
+
+        visited[e.node] = true
+        totalCost += e.cost
+        edgesUsed++
+
+        for neighbor := 0; neighbor < n; neighbor++ {
+            if !visited[neighbor] {
+                dist := manhattan(e.node, neighbor)
+                heap.Push(h, Edge{dist, neighbor})
+            }
+        }
+    }
+
+    return totalCost
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "points": []interface{}{
+            []interface{}{float64(0), float64(0)},
+            []interface{}{float64(2), float64(2)},
+            []interface{}{float64(3), float64(10)},
+            []interface{}{float64(5), float64(2)},
+            []interface{}{float64(7), float64(0)},
+        },
+    }
+    fmt.Println(MinCostToConnectPointsPrim(data)) // 20
 }`
         },
         similar: [

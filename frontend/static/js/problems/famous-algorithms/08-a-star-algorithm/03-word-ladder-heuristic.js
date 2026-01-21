@@ -46,47 +46,177 @@
         solutions: {
             python: `def wordLadderWithHeuristic(data):
     """
-    Word Ladder with Heuristic
+    Word Ladder with Heuristic (A* Algorithm)
 
-    Time: O(n)
-    Space: O(n)
+    Uses character difference count as heuristic.
+
+    Time: O(M^2 * N) where M = word length, N = wordList size
+    Space: O(M * N)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    import heapq
+    from collections import defaultdict
 
-    result = None
+    begin_word = data["beginWord"]
+    end_word = data["endWord"]
+    word_list = data["wordList"]
 
-    # Process input
-    # ...
+    if end_word not in word_list:
+        return 0
 
-    return result
+    word_set = set(word_list)
+    word_len = len(begin_word)
+
+    # Heuristic: count character differences
+    def heuristic(word):
+        return sum(c1 != c2 for c1, c2 in zip(word, end_word))
+
+    # Build pattern dictionary for O(1) neighbor lookup
+    # e.g., "hot" -> ["*ot", "h*t", "ho*"]
+    patterns = defaultdict(list)
+    for word in word_list:
+        for i in range(word_len):
+            pattern = word[:i] + "*" + word[i+1:]
+            patterns[pattern].append(word)
+
+    # A* algorithm
+    # (f_score, g_score, word)
+    start_h = heuristic(begin_word)
+    min_heap = [(1 + start_h, 1, begin_word)]
+    visited = {begin_word}
+
+    while min_heap:
+        f, g, word = heapq.heappop(min_heap)
+
+        if word == end_word:
+            return g
+
+        # Find neighbors using patterns
+        for i in range(word_len):
+            pattern = word[:i] + "*" + word[i+1:]
+            for neighbor in patterns[pattern]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    new_g = g + 1
+                    new_f = new_g + heuristic(neighbor)
+                    heapq.heappush(min_heap, (new_f, new_g, neighbor))
+
+    return 0
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {
+        "beginWord": "hit",
+        "endWord": "cog",
+        "wordList": ["hot", "dot", "dog", "lot", "log", "cog"]
+    }
+    print(wordLadderWithHeuristic(data))  # Output: 5`,
             go: `package main
 
-import "fmt"
+import (
+    "container/heap"
+    "fmt"
+)
 
-// WordLadderWithHeuristic solves the Word Ladder with Heuristic problem.
-// Time: O(n), Space: O(n)
-func WordLadderWithHeuristic(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+type WordState struct {
+    f, g int
+    word string
+}
 
-    var result interface{}
+type WordHeap []WordState
 
-    // Process input
-    // ...
+func (h WordHeap) Len() int           { return len(h) }
+func (h WordHeap) Less(i, j int) bool { return h[i].f < h[j].f }
+func (h WordHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *WordHeap) Push(x interface{}) { *h = append(*h, x.(WordState)) }
+func (h *WordHeap) Pop() interface{} {
+    old := *h
+    n := len(old)
+    x := old[n-1]
+    *h = old[0 : n-1]
+    return x
+}
 
-    return result
+// WordLadderWithHeuristic uses A* with character difference heuristic.
+// Time: O(M^2 * N), Space: O(M * N)
+func WordLadderWithHeuristic(data map[string]interface{}) int {
+    beginWord := data["beginWord"].(string)
+    endWord := data["endWord"].(string)
+    wordListRaw := data["wordList"].([]interface{})
+
+    // Parse word list
+    wordList := make([]string, len(wordListRaw))
+    wordSet := make(map[string]bool)
+    for i, w := range wordListRaw {
+        wordList[i] = w.(string)
+        wordSet[w.(string)] = true
+    }
+
+    if !wordSet[endWord] {
+        return 0
+    }
+
+    wordLen := len(beginWord)
+
+    // Heuristic: character differences
+    heuristic := func(word string) int {
+        diff := 0
+        for i := 0; i < wordLen; i++ {
+            if word[i] != endWord[i] {
+                diff++
+            }
+        }
+        return diff
+    }
+
+    // Build pattern map
+    patterns := make(map[string][]string)
+    for _, word := range wordList {
+        for i := 0; i < wordLen; i++ {
+            pattern := word[:i] + "*" + word[i+1:]
+            patterns[pattern] = append(patterns[pattern], word)
+        }
+    }
+
+    // A* algorithm
+    startH := heuristic(beginWord)
+    h := &WordHeap{{1 + startH, 1, beginWord}}
+    heap.Init(h)
+    visited := map[string]bool{beginWord: true}
+
+    for h.Len() > 0 {
+        curr := heap.Pop(h).(WordState)
+
+        if curr.word == endWord {
+            return curr.g
+        }
+
+        // Find neighbors
+        for i := 0; i < wordLen; i++ {
+            pattern := curr.word[:i] + "*" + curr.word[i+1:]
+            for _, neighbor := range patterns[pattern] {
+                if !visited[neighbor] {
+                    visited[neighbor] = true
+                    newG := curr.g + 1
+                    newF := newG + heuristic(neighbor)
+                    heap.Push(h, WordState{newF, newG, neighbor})
+                }
+            }
+        }
+    }
+
+    return 0
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "beginWord": "hit",
+        "endWord":   "cog",
+        "wordList": []interface{}{
+            "hot", "dot", "dog", "lot", "log", "cog",
+        },
+    }
+    fmt.Println(WordLadderWithHeuristic(data)) // 5
 }`
         },
         similar: [

@@ -54,47 +54,173 @@
         solutions: {
             python: `def optimizeWaterDistributionInAVillage(data):
     """
-    Optimize Water Distribution in a Village
+    Optimize Water Distribution in a Village using Kruskal's Algorithm
 
-    Time: O(n)
-    Space: O(n)
+    Key insight: Add a virtual node 0 representing the water source.
+    Connect node 0 to each house i with edge cost = wells[i-1].
+    Then find MST of this augmented graph.
+
+    Time: O((n + E) log(n + E))
+    Space: O(n + E)
     """
-    # TODO: Implement solution
-    # Key insight: Identify the optimal data structure and algorithm
+    n = data["n"]
+    wells = data["wells"]
+    pipes = data["pipes"]
 
-    result = None
+    # Union-Find data structure
+    parent = list(range(n + 1))  # 0 is virtual node, houses are 1 to n
+    rank = [0] * (n + 1)
 
-    # Process input
-    # ...
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
 
-    return result
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
+    # Create edges: virtual node 0 connects to each house
+    edges = []
+    for i in range(n):
+        edges.append((wells[i], 0, i + 1))  # (cost, from, to)
+
+    # Add pipe edges
+    for house1, house2, cost in pipes:
+        edges.append((cost, house1, house2))
+
+    # Sort edges by cost
+    edges.sort()
+
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+
+    for cost, u, v in edges:
+        if union(u, v):
+            total_cost += cost
+            edges_used += 1
+            if edges_used == n:  # Need n edges to connect n+1 nodes
+                break
+
+    return total_cost
 
 
 # Test
 if __name__ == "__main__":
-    # Add test cases
-    pass`,
+    data = {"n": 3, "wells": [1, 2, 2], "pipes": [[1, 2, 1], [2, 3, 1]]}
+    print(optimizeWaterDistributionInAVillage(data))  # Output: 3`,
             go: `package main
 
-import "fmt"
+import (
+    "fmt"
+    "sort"
+)
 
-// OptimizeWaterDistributionInAVillage solves the Optimize Water Distribution in a Village problem.
-// Time: O(n), Space: O(n)
-func OptimizeWaterDistributionInAVillage(data interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Identify the optimal data structure and algorithm
+// OptimizeWaterDistributionInAVillage solves the water distribution problem.
+// Uses Kruskal's with a virtual node for wells.
+// Time: O((n + E) log(n + E)), Space: O(n + E)
+func OptimizeWaterDistributionInAVillage(data map[string]interface{}) int {
+    n := int(data["n"].(float64))
+    wellsRaw := data["wells"].([]interface{})
+    pipesRaw := data["pipes"].([]interface{})
 
-    var result interface{}
+    // Parse wells
+    wells := make([]int, len(wellsRaw))
+    for i, w := range wellsRaw {
+        wells[i] = int(w.(float64))
+    }
 
-    // Process input
-    // ...
+    // Union-Find
+    parent := make([]int, n+1)
+    rank := make([]int, n+1)
+    for i := range parent {
+        parent[i] = i
+    }
 
-    return result
+    var find func(x int) int
+    find = func(x int) int {
+        if parent[x] != x {
+            parent[x] = find(parent[x])
+        }
+        return parent[x]
+    }
+
+    union := func(x, y int) bool {
+        px, py := find(x), find(y)
+        if px == py {
+            return false
+        }
+        if rank[px] < rank[py] {
+            px, py = py, px
+        }
+        parent[py] = px
+        if rank[px] == rank[py] {
+            rank[px]++
+        }
+        return true
+    }
+
+    // Create edges
+    type edge struct {
+        cost, u, v int
+    }
+    var edges []edge
+
+    // Virtual node 0 connects to each house
+    for i := 0; i < n; i++ {
+        edges = append(edges, edge{wells[i], 0, i + 1})
+    }
+
+    // Add pipe edges
+    for _, p := range pipesRaw {
+        pipe := p.([]interface{})
+        edges = append(edges, edge{
+            int(pipe[2].(float64)),
+            int(pipe[0].(float64)),
+            int(pipe[1].(float64)),
+        })
+    }
+
+    // Sort by cost
+    sort.Slice(edges, func(i, j int) bool {
+        return edges[i].cost < edges[j].cost
+    })
+
+    // Kruskal's algorithm
+    totalCost := 0
+    edgesUsed := 0
+
+    for _, e := range edges {
+        if union(e.u, e.v) {
+            totalCost += e.cost
+            edgesUsed++
+            if edgesUsed == n {
+                break
+            }
+        }
+    }
+
+    return totalCost
 }
 
 func main() {
-    // Test cases
-    fmt.Println("Test")
+    data := map[string]interface{}{
+        "n": float64(3),
+        "wells": []interface{}{float64(1), float64(2), float64(2)},
+        "pipes": []interface{}{
+            []interface{}{float64(1), float64(2), float64(1)},
+            []interface{}{float64(2), float64(3), float64(1)},
+        },
+    }
+    fmt.Println(OptimizeWaterDistributionInAVillage(data)) // 3
 }`
         },
         similar: [
