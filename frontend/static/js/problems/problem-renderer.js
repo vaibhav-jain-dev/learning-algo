@@ -147,36 +147,49 @@
         html += '</div>\n\n';
 
         // Problem title and difficulty
-        html += '<h1>' + problem.name + '</h1>\n\n';
-        html += '<p><strong>Difficulty:</strong> ' + problem.difficulty + '</p>\n\n';
+        html += '<h1 style="color:#c9d1d9;margin-bottom:0.5rem;">' + problem.name + '</h1>\n\n';
+
+        // Difficulty badge
+        const diffColors = {
+            'Easy': { bg: '#238636', text: '#ffffff' },
+            'Medium': { bg: '#1f6feb', text: '#ffffff' },
+            'Hard': { bg: '#da3633', text: '#ffffff' },
+            'Very Hard': { bg: '#6e40c9', text: '#ffffff' }
+        };
+        const diffStyle = diffColors[problem.difficulty] || { bg: '#6e7681', text: '#ffffff' };
+        html += '<p style="color:#8b949e;margin-bottom:1.5rem;"><strong>Difficulty:</strong> <span style="background:' + diffStyle.bg + ';color:' + diffStyle.text + ';padding:0.25rem 0.75rem;border-radius:1rem;font-size:0.85rem;font-weight:600;">' + problem.difficulty + '</span></p>\n\n';
 
         // Problem description
-        html += '<h2>Problem Statement</h2>\n';
-        html += '<p>' + problem.description + '</p>\n\n';
+        html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Problem Statement</h2>\n';
+        html += '<p style="color:#c9d1d9;line-height:1.7;margin-bottom:1.5rem;">' + problem.description + '</p>\n\n';
 
-        // Examples
-        html += '<h2>Examples</h2>\n';
+        // Examples section
+        html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Examples</h2>\n';
         problem.examples.forEach((ex, i) => {
-            html += '<div class="example">\n';
-            html += '<p><strong>Example ' + (i + 1) + ':</strong></p>\n';
-            html += '<pre>Input: ' + formatInput(ex.input) + '\n';
-            html += 'Output: ' + formatOutput(ex.output) + '</pre>\n';
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;">\n';
+            html += '<p style="color:#58a6ff;font-weight:600;margin-bottom:0.75rem;font-size:1rem;">Example ' + (i + 1) + ':</p>\n';
+
+            // Input/Output in a code-like box
+            html += '<div style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:0.875rem 1rem;font-family:\'SF Mono\',\'Fira Code\',\'Consolas\',monospace;font-size:0.9rem;margin-bottom:0.75rem;">\n';
+            html += '<div style="margin-bottom:0.5rem;"><span style="color:#7ee787;font-weight:500;">Input:</span> <span style="color:#c9d1d9;">' + formatInput(ex.input) + '</span></div>\n';
+            html += '<div><span style="color:#ff7b72;font-weight:500;">Output:</span> <span style="color:#c9d1d9;">' + formatOutput(ex.output) + '</span></div>\n';
+            html += '</div>\n';
 
             // Input to Output explanation
             if (ex.explanation) {
-                html += '<p class="explanation"><strong>Explanation:</strong> ' + ex.explanation + '</p>\n';
+                html += '<p style="color:#8b949e;line-height:1.6;margin:0;font-size:0.9rem;"><strong style="color:#d2a8ff;">Explanation:</strong> ' + ex.explanation + '</p>\n';
             }
             html += '</div>\n\n';
         });
 
         // Hints section (collapsible)
         if (problem.hints && problem.hints.length > 0) {
-            html += '<h2>Hints</h2>\n';
+            html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:1rem;font-size:1.25rem;">Hints</h2>\n';
             html += '<div class="hints-container">\n';
             problem.hints.forEach((hint, i) => {
-                html += '<details class="hint">\n';
-                html += '<summary><strong>Hint ' + (i + 1) + '</strong></summary>\n';
-                html += '<p>' + hint + '</p>\n';
+                html += '<details class="hint" style="background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:0.5rem;padding:0.75rem 1rem;">\n';
+                html += '<summary style="color:#c9d1d9;cursor:pointer;font-weight:500;"><strong style="color:#58a6ff;">Hint ' + (i + 1) + '</strong></summary>\n';
+                html += '<p style="color:#8b949e;margin-top:0.75rem;margin-bottom:0;line-height:1.6;">' + hint + '</p>\n';
                 html += '</details>\n';
             });
             html += '</div>\n\n';
@@ -184,27 +197,31 @@
 
         // Problem approach/solution insights
         if (problem.problem) {
-            html += '<h2>Approach</h2>\n';
-            html += '<div class="approach">\n';
-            html += '<p>' + problem.problem + '</p>\n';
+            html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Approach</h2>\n';
+            html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;">\n';
+            html += '<p style="color:#c9d1d9;margin:0;line-height:1.7;">' + problem.problem + '</p>\n';
             html += '</div>\n\n';
         }
 
         // Complexity
-        html += '<h2>Complexity</h2>\n';
-        html += '<ul>\n';
-        html += '<li><strong>Time:</strong> ' + problem.complexity.time + '</li>\n';
-        html += '<li><strong>Space:</strong> ' + problem.complexity.space + '</li>\n';
-        html += '</ul>\n\n';
+        html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Complexity</h2>\n';
+        html += '<div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\n';
+        html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Time:</span> <span style="color:#7ee787;font-family:monospace;font-weight:600;">' + problem.complexity.time + '</span></div>\n';
+        html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:0.75rem 1.25rem;"><span style="color:#8b949e;">Space:</span> <span style="color:#ff7b72;font-family:monospace;font-weight:600;">' + problem.complexity.space + '</span></div>\n';
+        html += '</div>\n\n';
 
         // Similar problems (if any)
         if (problem.similar && problem.similar.length > 0) {
-            html += '<h2>Similar Problems</h2>\n';
-            html += '<ul>\n';
+            html += '<h2 style="color:#58a6ff;margin-top:1.5rem;margin-bottom:0.75rem;font-size:1.25rem;">Similar Problems</h2>\n';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;">\n';
             problem.similar.forEach(sim => {
-                html += '<li><strong>' + sim.name + '</strong> (' + sim.difficulty + ')</li>\n';
+                const simDiff = diffColors[sim.difficulty] || { bg: '#6e7681', text: '#ffffff' };
+                html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:6px;padding:0.5rem 0.875rem;display:flex;align-items:center;gap:0.5rem;">';
+                html += '<span style="color:#c9d1d9;font-weight:500;">' + sim.name + '</span>';
+                html += '<span style="background:' + simDiff.bg + ';color:' + simDiff.text + ';padding:0.125rem 0.5rem;border-radius:0.75rem;font-size:0.75rem;font-weight:500;">' + sim.difficulty + '</span>';
+                html += '</div>\n';
             });
-            html += '</ul>\n';
+            html += '</div>\n';
         }
 
         return html;
