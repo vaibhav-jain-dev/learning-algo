@@ -2268,41 +2268,89 @@
                     '<strong>Complexity:</strong> Time: ' + complexity.time + ', Space: ' + complexity.space + '</div>'
             });
 
-            // Show traversal (at least 4 steps for good animation)
-            var maxTraversal = Math.max(4, Math.min(nodes.length, 10));
-            for (var i = 0; i < Math.min(nodes.length, maxTraversal); i++) {
-                var nodeValue = getDisplayValue(nodes[i].value);
+            // Special handling for middle-node problem using slow/fast pointers
+            if (config.algorithm === 'll-middle') {
+                // Show slow/fast pointer technique
+                var slow = 0, fast = 0;
+
                 steps.push({
                     vizType: 'linked-list',
                     nodes: nodes,
-                    current: i,
-                    pointers: { current: i },
-                    status: 'Process node ' + nodeValue,
-                    explanation: '🔍 Processing node with value <strong>' + nodeValue + '</strong>'
+                    pointers: { slow: 0, fast: 0 },
+                    status: 'Initialize pointers',
+                    explanation: '🚀 <strong>Two Pointer Technique</strong><br><br>' +
+                        '• <span style="color:#a855f7;">SLOW</span> pointer moves 1 step at a time<br>' +
+                        '• <span style="color:#f97316;">FAST</span> pointer moves 2 steps at a time<br>' +
+                        '• When FAST reaches the end, SLOW will be at the middle'
                 });
-            }
 
-            var outputNodes = example.output;
-            if (Array.isArray(outputNodes)) {
-                var resultNodes = outputNodes.map(function(val, idx) {
-                    return { value: val, next: idx < outputNodes.length - 1 ? idx + 1 : null };
-                });
+                // Simulate slow/fast pointer traversal
+                while (fast < nodes.length - 1 && fast + 1 < nodes.length) {
+                    slow++;
+                    fast += 2;
+                    if (fast >= nodes.length) fast = nodes.length - 1;
+
+                    steps.push({
+                        vizType: 'linked-list',
+                        nodes: nodes,
+                        pointers: { slow: slow, fast: Math.min(fast, nodes.length - 1) },
+                        status: 'Move pointers',
+                        explanation: '🔄 <strong>Moving pointers</strong><br>' +
+                            '• SLOW at index ' + slow + ' (value: ' + getDisplayValue(nodes[slow].value) + ')<br>' +
+                            '• FAST at index ' + Math.min(fast, nodes.length - 1) + ' (value: ' + getDisplayValue(nodes[Math.min(fast, nodes.length - 1)].value) + ')'
+                    });
+                }
+
+                // Show final result - middle node
+                var middleIdx = slow;
+                var middleValue = getDisplayValue(nodes[middleIdx].value);
                 steps.push({
                     vizType: 'linked-list',
-                    nodes: resultNodes,
-                    current: -1,
-                    pointers: {},
-                    status: 'Result',
-                    explanation: '✅ <strong>Result:</strong> ' + outputNodes.join(' → ')
+                    nodes: nodes,
+                    pointers: { current: middleIdx },
+                    status: 'Middle Node Found!',
+                    explanation: '✅ <strong>Middle node found!</strong><br><br>' +
+                        '• Middle node is at index ' + middleIdx + '<br>' +
+                        '• Value: <strong style="color:#3fb950;">' + middleValue + '</strong><br><br>' +
+                        'When FAST reaches the end, SLOW is at the middle.'
                 });
             } else {
-                steps.push({
-                    vizType: 'linked-list',
-                    nodes: nodes,
-                    current: -1,
-                    status: 'Result: ' + example.output,
-                    explanation: '✅ <strong>Result:</strong> ' + example.output
-                });
+                // Generic traversal for other linked list problems
+                var maxTraversal = Math.max(4, Math.min(nodes.length, 10));
+                for (var i = 0; i < Math.min(nodes.length, maxTraversal); i++) {
+                    var nodeValue = getDisplayValue(nodes[i].value);
+                    steps.push({
+                        vizType: 'linked-list',
+                        nodes: nodes,
+                        current: i,
+                        pointers: { current: i },
+                        status: 'Process node ' + nodeValue,
+                        explanation: '🔍 Processing node with value <strong>' + nodeValue + '</strong>'
+                    });
+                }
+
+                var outputNodes = example.output;
+                if (Array.isArray(outputNodes)) {
+                    var resultNodes = outputNodes.map(function(val, idx) {
+                        return { value: val, next: idx < outputNodes.length - 1 ? idx + 1 : null };
+                    });
+                    steps.push({
+                        vizType: 'linked-list',
+                        nodes: resultNodes,
+                        current: -1,
+                        pointers: {},
+                        status: 'Result',
+                        explanation: '✅ <strong>Result:</strong> ' + outputNodes.join(' → ')
+                    });
+                } else {
+                    steps.push({
+                        vizType: 'linked-list',
+                        nodes: nodes,
+                        current: -1,
+                        status: 'Result: ' + example.output,
+                        explanation: '✅ <strong>Result:</strong> ' + example.output
+                    });
+                }
             }
         } else {
             return runGenericVisualization(example, config, complexity);
@@ -3175,13 +3223,15 @@
             }
 
             var bst1 = buildBSTFromArray(arrayOne);
-            var visited = [];
+            var callStack = [];
 
             steps.push({
                 vizType: 'tree',
                 nodes: bst1.nodes,
                 edges: bst1.edges,
                 visited: [],
+                callStack: [],
+                callStackHistory: [],
                 status: config.name + ' - Initialize',
                 explanation: '📋 <strong>' + config.name + '</strong><br><br>' +
                     '<strong>Array 1:</strong> [' + arrayOne.slice(0, 8).join(', ') + (arrayOne.length > 8 ? '...' : '') + ']<br>' +
@@ -3192,43 +3242,137 @@
             });
 
             // Show BST construction from arrayOne
+            callStack = ['sameBSTs(arr1, arr2)'];
             steps.push({
                 vizType: 'tree',
                 nodes: bst1.nodes,
                 edges: bst1.edges,
                 visited: bst1.nodes.map(function(n) { return n.id; }),
+                callStack: callStack.slice(),
+                callStackHistory: [],
                 status: 'BST from Array 1',
                 explanation: '🌳 <strong>BST built from Array 1</strong><br><br>' +
                     'Root: ' + arrayOne[0] + '<br>' +
                     'Insertion order: [' + arrayOne.slice(0, 6).join(' → ') + (arrayOne.length > 6 ? '...' : '') + ']'
             });
 
-            // Compare with arrayTwo - show the comparison process
+            // Compare with arrayTwo - show the comparison process step by step
+            var rootNode = bst1.nodeMap[arrayOne[0]];
+            var previousNodeId = null;
+            var currentNodeId = rootNode;
+            var nextNodeId = null;
+            var callStackHistory = [];
+
+            // Step 1: Compare roots
+            callStack.push('  └─ compare roots');
             steps.push({
                 vizType: 'tree',
                 nodes: bst1.nodes,
                 edges: bst1.edges,
                 visited: bst1.nodes.map(function(n) { return n.id; }),
-                current: bst1.nodes[0] ? bst1.nodes[0].id : null,
-                comparing: arrayTwo[0],
+                current: currentNodeId,
+                previous: previousNodeId,
+                next: nextNodeId,
+                callStack: callStack.slice(),
+                callStackHistory: callStackHistory.slice(),
                 status: 'Compare roots',
                 explanation: '🔍 <strong>Comparing roots</strong><br><br>' +
+                    '<span style="color:#3fb950;">● Current:</span> ' + arrayOne[0] + '<br>' +
                     'Array 1 root: ' + arrayOne[0] + '<br>' +
                     'Array 2 root: ' + arrayTwo[0] + '<br>' +
                     (arrayOne[0] === arrayTwo[0] ? '✅ Roots match!' : '❌ Roots differ!')
             });
 
+            // Get smaller and bigger elements for both arrays
+            var getSmaller = function(arr, val) {
+                return arr.filter(function(x) { return x < val; });
+            };
+            var getBigger = function(arr, val) {
+                return arr.filter(function(x) { return x >= val && x !== val; });
+            };
+
+            // Step 2: Recursively compare left subtrees
+            var smaller1 = getSmaller(arrayOne.slice(1), arrayOne[0]);
+            var smaller2 = getSmaller(arrayTwo.slice(1), arrayTwo[0]);
+            callStackHistory.push(callStack.slice());
+            callStack = ['sameBSTs(arr1, arr2)', '  └─ sameBSTs(smaller1, smaller2)'];
+
+            if (smaller1.length > 0 && bst1.nodeMap[smaller1[0]]) {
+                previousNodeId = currentNodeId;
+                currentNodeId = bst1.nodeMap[smaller1[0]];
+                var bigger1 = getBigger(arrayOne.slice(1), arrayOne[0]);
+                nextNodeId = bigger1.length > 0 && bst1.nodeMap[bigger1[0]] ? bst1.nodeMap[bigger1[0]] : null;
+
+                steps.push({
+                    vizType: 'tree',
+                    nodes: bst1.nodes,
+                    edges: bst1.edges,
+                    visited: bst1.nodes.map(function(n) { return n.id; }),
+                    current: currentNodeId,
+                    previous: previousNodeId,
+                    next: nextNodeId,
+                    callStack: callStack.slice(),
+                    callStackHistory: callStackHistory.slice(),
+                    status: 'Compare left subtrees',
+                    explanation: '🔍 <strong>Comparing left subtrees</strong><br><br>' +
+                        '<span style="color:#f0883e;">● Previous:</span> ' + arrayOne[0] + '<br>' +
+                        '<span style="color:#3fb950;">● Current:</span> ' + smaller1[0] + '<br>' +
+                        (nextNodeId ? '<span style="color:#58a6ff;">● Next:</span> ' + bigger1[0] + '<br>' : '') +
+                        'Smaller elements from arr1: [' + smaller1.slice(0, 5).join(', ') + ']<br>' +
+                        'Smaller elements from arr2: [' + smaller2.slice(0, 5).join(', ') + ']'
+                });
+            }
+
+            // Step 3: Recursively compare right subtrees
+            var bigger1 = getBigger(arrayOne.slice(1), arrayOne[0]);
+            var bigger2 = getBigger(arrayTwo.slice(1), arrayTwo[0]);
+            callStackHistory.push(callStack.slice());
+            callStack = ['sameBSTs(arr1, arr2)', '  └─ sameBSTs(bigger1, bigger2)'];
+
+            if (bigger1.length > 0 && bst1.nodeMap[bigger1[0]]) {
+                previousNodeId = bst1.nodeMap[arrayOne[0]];
+                currentNodeId = bst1.nodeMap[bigger1[0]];
+                nextNodeId = null;
+
+                steps.push({
+                    vizType: 'tree',
+                    nodes: bst1.nodes,
+                    edges: bst1.edges,
+                    visited: bst1.nodes.map(function(n) { return n.id; }),
+                    current: currentNodeId,
+                    previous: previousNodeId,
+                    next: nextNodeId,
+                    callStack: callStack.slice(),
+                    callStackHistory: callStackHistory.slice(),
+                    status: 'Compare right subtrees',
+                    explanation: '🔍 <strong>Comparing right subtrees</strong><br><br>' +
+                        '<span style="color:#f0883e;">● Previous:</span> ' + arrayOne[0] + '<br>' +
+                        '<span style="color:#3fb950;">● Current:</span> ' + bigger1[0] + '<br>' +
+                        'Bigger elements from arr1: [' + bigger1.slice(0, 5).join(', ') + ']<br>' +
+                        'Bigger elements from arr2: [' + bigger2.slice(0, 5).join(', ') + ']'
+                });
+            }
+
             // Final result
             var sameBST = example.output === true;
+            callStackHistory.push(callStack.slice());
+            callStack = ['sameBSTs(arr1, arr2) → ' + sameBST];
+
             steps.push({
                 vizType: 'tree',
                 nodes: bst1.nodes,
                 edges: bst1.edges,
                 visited: bst1.nodes.map(function(n) { return n.id; }),
+                callStack: callStack.slice(),
+                callStackHistory: callStackHistory.slice(),
                 status: sameBST ? 'Same BST!' : 'Different BSTs',
                 explanation: sameBST ?
                     '✅ <strong>Both arrays produce the same BST!</strong><br><br>' +
-                    'The relative ordering of elements in both arrays results in identical tree structure.' :
+                    'The relative ordering of elements in both arrays results in identical tree structure.<br><br>' +
+                    '<strong>Key insight:</strong> For same BST, both arrays must have:<br>' +
+                    '• Same root element<br>' +
+                    '• Same elements smaller than root (left subtree)<br>' +
+                    '• Same elements bigger than root (right subtree)' :
                     '❌ <strong>Arrays produce different BSTs!</strong><br><br>' +
                     'The different ordering causes different tree structures.'
             });
@@ -6937,6 +7081,8 @@
         var edges = step.edges || [];
         var visited = step.visited || [];
         var current = step.current;
+        var previous = step.previous;
+        var next = step.next;
 
         // Handle empty or invalid nodes
         if (!nodes || nodes.length === 0) {
@@ -6972,10 +7118,27 @@
             level.forEach(function(node) {
                 var isVisited = visited.indexOf(node.id) !== -1;
                 var isCurrent = node.id === current;
-                var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' :
-                         (isVisited ? '#1f6feb' : '#21262d');
-                var border = isCurrent ? '3px solid #3fb950' :
-                            (isVisited ? '2px solid #58a6ff' : '2px solid #30363d');
+                var isPrevious = node.id === previous;
+                var isNext = node.id === next;
+
+                // Color coding: current=green, previous=orange, next=blue
+                var bg, border;
+                if (isCurrent) {
+                    bg = 'linear-gradient(135deg,#238636,#2ea043)';
+                    border = '3px solid #3fb950';
+                } else if (isPrevious) {
+                    bg = '#f0883e';
+                    border = '3px solid #fb923c';
+                } else if (isNext) {
+                    bg = '#58a6ff';
+                    border = '3px solid #79c0ff';
+                } else if (isVisited) {
+                    bg = '#1f6feb';
+                    border = '2px solid #58a6ff';
+                } else {
+                    bg = '#21262d';
+                    border = '2px solid #30363d';
+                }
 
                 // Safely get displayable label - handle objects
                 var nodeLabel = node.label || node.value || node.id;
@@ -6996,6 +7159,21 @@
                 html += '<div style="text-align:center;color:#30363d;margin:0.25rem 0;">│</div>';
             }
         });
+
+        // Add legend for color coding when previous/current/next are present
+        if (previous || current || next) {
+            html += '<div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;justify-content:center;">';
+            if (previous) {
+                html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#f0883e;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Previous</span></div>';
+            }
+            if (current) {
+                html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Current</span></div>';
+            }
+            if (next) {
+                html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#58a6ff;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Next</span></div>';
+            }
+            html += '</div>';
+        }
 
         // Show running sum or other state
         if (step.runningSum !== undefined) {
@@ -7707,22 +7885,42 @@
 
         var html = '<div style="display:flex;align-items:center;gap:0;overflow-x:auto;padding:1rem 0;">';
 
-        step.nodes.forEach(function(val, idx) {
+        step.nodes.forEach(function(node, idx) {
             var isCurrent = step.pointers && step.pointers.current === idx;
             var isHead = step.pointers && step.pointers.head === idx;
             var isPrev = step.pointers && step.pointers.prev === idx;
+            var isSlow = step.pointers && step.pointers.slow === idx;
+            var isFast = step.pointers && step.pointers.fast === idx;
 
-            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' : '#21262d';
-            var border = isCurrent ? '2px solid #3fb950' : '2px solid #30363d';
+            // Determine background color based on pointer state
+            var bg = isCurrent ? 'linear-gradient(135deg,#238636,#2ea043)' :
+                     (isSlow ? '#a855f7' : (isFast ? '#f97316' : '#21262d'));
+            var border = isCurrent ? '2px solid #3fb950' :
+                        (isSlow ? '2px solid #c084fc' : (isFast ? '2px solid #fb923c' : '2px solid #30363d'));
+
+            // Extract value from node object properly
+            var displayValue = node;
+            if (typeof node === 'object' && node !== null) {
+                displayValue = node.value !== undefined ? node.value :
+                              (node.val !== undefined ? node.val :
+                              (node.data !== undefined ? node.data : JSON.stringify(node)));
+            }
+            if (displayValue === undefined || displayValue === null) {
+                displayValue = 'null';
+            }
 
             html += '<div style="display:flex;flex-direction:column;align-items:center;">';
+
+            // Show pointer labels with priority order
             if (isHead) html += '<div style="color:#58a6ff;font-size:0.75rem;margin-bottom:4px;">HEAD</div>';
+            else if (isSlow) html += '<div style="color:#a855f7;font-size:0.75rem;margin-bottom:4px;">SLOW</div>';
+            else if (isFast) html += '<div style="color:#f97316;font-size:0.75rem;margin-bottom:4px;">FAST</div>';
             else if (isPrev) html += '<div style="color:#f0883e;font-size:0.75rem;margin-bottom:4px;">PREV</div>';
             else if (isCurrent) html += '<div style="color:#3fb950;font-size:0.75rem;margin-bottom:4px;">CURR</div>';
             else html += '<div style="height:18px;"></div>';
 
             html += '<div style="display:flex;align-items:center;">';
-            html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold;font-size:1.2rem;">' + val + '</div>';
+            html += '<div style="width:50px;height:50px;background:' + bg + ';border:' + border + ';color:#c9d1d9;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:bold;font-size:1.2rem;">' + displayValue + '</div>';
 
             if (idx < step.nodes.length - 1) {
                 html += '<div style="width:40px;height:3px;background:#30363d;position:relative;">' +
@@ -7734,7 +7932,11 @@
         html += '<div style="margin-left:8px;color:#3fb950;font-weight:bold;font-size:0.9rem;">NULL</div>';
         html += '</div>';
 
-        html += '<div style="margin-top:1rem;color:#8b949e;">' + (step.action || '') + '</div>';
+        // Show title/description
+        if (step.status) {
+            html += '<div style="margin-top:0.5rem;color:#c9d1d9;font-weight:500;">' + step.status + '</div>';
+        }
+        html += '<div style="margin-top:0.5rem;color:#8b949e;">' + (step.action || '') + '</div>';
 
         return html;
     }
@@ -7806,36 +8008,117 @@
     function renderGraphVisualization(step) {
         if (!step) return '<p>No data</p>';
 
-        var positions = { A: [100,50], B: [50,120], C: [150,120], D: [100,190], E: [200,190] };
+        var nodes = step.nodes || [];
+        var edges = step.edges || [];
+        var visited = step.visited || [];
+        var current = step.current;
 
-        var html = '<svg viewBox="0 0 300 250" style="width:100%;max-width:350px;">';
+        // Handle empty or invalid nodes
+        if (!nodes || nodes.length === 0) {
+            return '<div style="text-align:center;padding:1rem;color:#8b949e;">No graph data available</div>';
+        }
+
+        // Calculate dynamic positions for any node set
+        var positions = {};
+        var numNodes = nodes.length;
+
+        if (numNodes <= 10) {
+            // Circular layout for small graphs
+            var centerX = 150, centerY = 130, radius = 90;
+            nodes.forEach(function(node, idx) {
+                var nodeId = typeof node === 'object' ? (node.id || node.label || idx) : node;
+                var angle = (2 * Math.PI * idx / numNodes) - Math.PI / 2;
+                positions[nodeId] = [
+                    Math.round(centerX + radius * Math.cos(angle)),
+                    Math.round(centerY + radius * Math.sin(angle))
+                ];
+            });
+        } else {
+            // Grid layout for larger graphs
+            var cols = Math.ceil(Math.sqrt(numNodes));
+            var spacing = 60;
+            var startX = 40, startY = 40;
+            nodes.forEach(function(node, idx) {
+                var nodeId = typeof node === 'object' ? (node.id || node.label || idx) : node;
+                var row = Math.floor(idx / cols);
+                var col = idx % cols;
+                positions[nodeId] = [startX + col * spacing, startY + row * spacing];
+            });
+        }
+
+        // Calculate SVG viewBox dimensions
+        var maxX = 300, maxY = 260;
+        Object.values(positions).forEach(function(pos) {
+            maxX = Math.max(maxX, pos[0] + 40);
+            maxY = Math.max(maxY, pos[1] + 40);
+        });
+
+        var html = '<svg viewBox="0 0 ' + maxX + ' ' + maxY + '" style="width:100%;max-width:500px;">';
+
+        // Arrow marker definition for directed edges
+        html += '<defs><marker id="arrowhead-graph" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff"/></marker></defs>';
 
         // Draw edges
-        (step.edges || []).forEach(function(e) {
-            var p1 = positions[e[0]];
-            var p2 = positions[e[1]];
+        edges.forEach(function(e) {
+            var fromId = typeof e === 'object' ? (e.from || e[0]) : e[0];
+            var toId = typeof e === 'object' ? (e.to || e[1]) : e[1];
+            var p1 = positions[fromId];
+            var p2 = positions[toId];
             if (p1 && p2) {
-                html += '<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="#30363d" stroke-width="2"/>';
+                // Calculate shorter line to not overlap with node circles
+                var dx = p2[0] - p1[0], dy = p2[1] - p1[1];
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                var offset = 24; // node radius
+                if (dist > 2 * offset) {
+                    var x1 = p1[0] + (dx / dist) * offset;
+                    var y1 = p1[1] + (dy / dist) * offset;
+                    var x2 = p2[0] - (dx / dist) * offset;
+                    var y2 = p2[1] - (dy / dist) * offset;
+                    html += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrowhead-graph)"/>';
+                }
             }
         });
 
         // Draw nodes
-        (step.nodes || []).forEach(function(n) {
-            var pos = positions[n];
+        nodes.forEach(function(n) {
+            var nodeId = typeof n === 'object' ? (n.id || n.label || n.value) : n;
+            var nodeLabel = typeof n === 'object' ? (n.label || n.id || n.value || '?') : n;
+            if (typeof nodeLabel === 'object') {
+                nodeLabel = nodeLabel.name || nodeLabel.value || JSON.stringify(nodeLabel);
+            }
+            var pos = positions[nodeId];
             if (!pos) return;
-            var isVisited = (step.visited || []).indexOf(n) !== -1;
-            var isCurrent = step.current === n;
-            var fill = isCurrent ? '#238636' : (isVisited ? '#58a6ff' : '#21262d');
+
+            var isVisited = visited.indexOf(nodeId) !== -1;
+            var isCurrent = current === nodeId;
+            var fill = isCurrent ? '#238636' : (isVisited ? '#1f6feb' : '#21262d');
             var stroke = isCurrent ? '#3fb950' : (isVisited ? '#58a6ff' : '#30363d');
+
             html += '<circle cx="'+pos[0]+'" cy="'+pos[1]+'" r="24" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
-            html += '<text x="'+pos[0]+'" y="'+(pos[1]+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="14">'+n+'</text>';
+            // Truncate long labels
+            var displayLabel = String(nodeLabel).substring(0, 4);
+            var fontSize = displayLabel.length > 2 ? 11 : 14;
+            html += '<text x="'+pos[0]+'" y="'+(pos[1]+5)+'" fill="white" text-anchor="middle" font-weight="bold" font-size="'+fontSize+'">'+displayLabel+'</text>';
         });
 
         html += '</svg>';
 
+        // Legend
+        html += '<div style="display:flex;gap:1rem;margin-top:0.5rem;flex-wrap:wrap;justify-content:center;">';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#238636;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Current</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#1f6feb;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Visited</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:0.3rem;"><div style="width:12px;height:12px;background:#21262d;border:1px solid #30363d;border-radius:50%;"></div><span style="color:#8b949e;font-size:0.75rem;">Unvisited</span></div>';
+        html += '</div>';
+
         html += '<div style="margin-top:1rem;">';
         html += '<span style="color:#8b949e;">Queue: </span><span style="color:#f0883e;">[' + (step.queue || []).join(', ') + ']</span>';
         html += '</div>';
+
+        // Show output if available
+        if (step.output !== undefined) {
+            html += '<div style="margin-top:0.5rem;"><span style="color:#8b949e;">Output: </span><span style="color:#3fb950;">' + step.output + '</span></div>';
+        }
+
         html += '<div style="color:#8b949e;margin-top:0.5rem;">' + (step.action || '') + '</div>';
 
         return html;
