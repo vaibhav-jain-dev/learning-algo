@@ -3933,6 +3933,159 @@
         return classes[diff] || 'background: #6c757d; color: white;';
     }
 
+    // Track loaded problem scripts to avoid duplicate loading
+    var loadedProblemScripts = {};
+
+    /**
+     * Load problem content from JS ProblemRenderer with dynamic script loading
+     * Falls back to backend fetch if JS problem not available
+     */
+    function loadProblemFromJS(category, problemId, similarIdx, fallbackPath) {
+        var descContent = document.getElementById('description-content');
+
+        // Helper function to render problem from ProblemRenderer
+        function renderFromProblemRenderer() {
+            var fullId = category + '/' + problemId;
+            var problem = window.ProblemRenderer && window.ProblemRenderer.get(fullId);
+
+            if (problem) {
+                console.log('[ProblemLoader] Found problem in ProblemRenderer:', fullId);
+
+                // Generate HTML from JS problem data
+                var html = window.ProblemRenderer.renderHTML(problem);
+
+                if (descContent) {
+                    descContent.innerHTML = html;
+                    // Highlight code blocks
+                    if (typeof hljs !== 'undefined') {
+                        descContent.querySelectorAll('pre code').forEach(function(block) {
+                            hljs.highlightElement(block);
+                        });
+                    }
+                }
+
+                // Extract viz config from rendered HTML (contains the viz-config div)
+                vizConfig = extractVizConfig(html);
+                console.log('[ProblemLoader] Viz config:', vizConfig);
+
+                // Set examples from problem data
+                if (problem.examples && problem.examples.length > 0) {
+                    currentExamples = problem.examples.map(function(ex, i) {
+                        return {
+                            number: i + 1,
+                            inputRaw: window.ProblemRenderer.formatInput(ex.input),
+                            outputRaw: window.ProblemRenderer.formatOutput(ex.output),
+                            input: ex.input,
+                            output: ex.output,
+                            explanation: ex.explanation
+                        };
+                    });
+                } else {
+                    currentExamples = [];
+                }
+                selectedExampleIndex = 0;
+                console.log('[ProblemLoader] Parsed examples:', currentExamples);
+
+                return true;
+            }
+            return false;
+        }
+
+        // Helper function to fall back to backend
+        function fallbackToBackend() {
+            console.log('[ProblemLoader] Falling back to backend fetch:', fallbackPath);
+            fetch(fallbackPath)
+                .then(function(r) { return r.ok ? r.text() : '<p>Problem content loading...</p>'; })
+                .then(function(html) {
+                    if (descContent) {
+                        descContent.innerHTML = html;
+                        if (typeof hljs !== 'undefined') {
+                            descContent.querySelectorAll('pre code').forEach(function(block) {
+                                hljs.highlightElement(block);
+                            });
+                        }
+                    }
+
+                    vizConfig = extractVizConfig(html);
+                    console.log('Viz config:', vizConfig);
+
+                    if (vizConfig && vizConfig.examples) {
+                        currentExamples = vizConfig.examples.map(function(ex, i) {
+                            return {
+                                number: i + 1,
+                                inputRaw: ex.inputRaw || JSON.stringify(ex.input),
+                                outputRaw: ex.outputRaw || JSON.stringify(ex.output),
+                                input: ex.input,
+                                output: ex.output
+                            };
+                        });
+                    } else {
+                        currentExamples = parseExamplesFromContent(html);
+                    }
+                    selectedExampleIndex = 0;
+                    console.log('Parsed examples:', currentExamples);
+                })
+                .catch(function() {
+                    if (descContent) descContent.innerHTML = '<p>Error loading problem content.</p>';
+                    currentExamples = [];
+                    vizConfig = null;
+                });
+        }
+
+        // First, check if ProblemRenderer exists and has this problem
+        if (window.ProblemRenderer) {
+            var fullId = category + '/' + problemId;
+
+            // Check if already registered
+            if (window.ProblemRenderer.get(fullId)) {
+                if (renderFromProblemRenderer()) {
+                    return;
+                }
+            }
+
+            // Try to dynamically load the problem JS file
+            var scriptPath = '/static/js/problems/' + category + '/' + problemId + '.js';
+
+            if (!loadedProblemScripts[scriptPath]) {
+                loadedProblemScripts[scriptPath] = 'loading';
+                console.log('[ProblemLoader] Loading problem script:', scriptPath);
+
+                var script = document.createElement('script');
+                script.src = scriptPath;
+                script.onload = function() {
+                    loadedProblemScripts[scriptPath] = 'loaded';
+                    console.log('[ProblemLoader] Script loaded:', scriptPath);
+
+                    // Give it a moment to register
+                    setTimeout(function() {
+                        if (!renderFromProblemRenderer()) {
+                            console.log('[ProblemLoader] Problem not in renderer after script load, using backend');
+                            fallbackToBackend();
+                        }
+                    }, 50);
+                };
+                script.onerror = function() {
+                    loadedProblemScripts[scriptPath] = 'error';
+                    console.log('[ProblemLoader] Script load failed:', scriptPath);
+                    fallbackToBackend();
+                };
+                document.head.appendChild(script);
+            } else if (loadedProblemScripts[scriptPath] === 'loaded') {
+                // Script already loaded, try to render
+                if (!renderFromProblemRenderer()) {
+                    fallbackToBackend();
+                }
+            } else {
+                // Script loading or errored, fall back
+                fallbackToBackend();
+            }
+        } else {
+            // No ProblemRenderer, use backend
+            console.log('[ProblemLoader] ProblemRenderer not available, using backend');
+            fallbackToBackend();
+        }
+    }
+
     window.showCategory = function(category) {
         currentCategory = category;
         var panel = document.getElementById('problem-panel');
@@ -4003,48 +4156,8 @@
             basePath += '/similar/' + similarIdx;
         }
 
-        // Load problem content from backend
-        fetch(basePath)
-            .then(function(r) { return r.ok ? r.text() : '<p>Problem content loading...</p>'; })
-            .then(function(html) {
-                var descContent = document.getElementById('description-content');
-                if (descContent) {
-                    descContent.innerHTML = html;
-                    // Highlight code blocks
-                    if (typeof hljs !== 'undefined') {
-                        descContent.querySelectorAll('pre code').forEach(function(block) {
-                            hljs.highlightElement(block);
-                        });
-                    }
-                }
-
-                // Extract embedded visualization config from script tag
-                vizConfig = extractVizConfig(html);
-                console.log('Viz config:', vizConfig);
-
-                // Parse examples from content for visualization (fallback)
-                if (vizConfig && vizConfig.examples) {
-                    currentExamples = vizConfig.examples.map(function(ex, i) {
-                        return {
-                            number: i + 1,
-                            inputRaw: ex.inputRaw || JSON.stringify(ex.input),
-                            outputRaw: ex.outputRaw || JSON.stringify(ex.output),
-                            input: ex.input,
-                            output: ex.output
-                        };
-                    });
-                } else {
-                    currentExamples = parseExamplesFromContent(html);
-                }
-                selectedExampleIndex = 0;
-                console.log('Parsed examples:', currentExamples);
-            })
-            .catch(function() {
-                var descContent = document.getElementById('description-content');
-                if (descContent) descContent.innerHTML = '<p>Error loading problem content.</p>';
-                currentExamples = [];
-                vizConfig = null;
-            });
+        // Try to load problem from JS ProblemRenderer first
+        loadProblemFromJS(category, problemId, similarIdx, basePath);
 
         // Load code files (with similar problem support)
         loadProblemCode(category, problemId, similarIdx);
