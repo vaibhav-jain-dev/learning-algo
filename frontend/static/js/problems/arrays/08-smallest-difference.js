@@ -54,9 +54,8 @@
     }
         ],
         similar: [
-    { id: '01-k-smallest-differences', name: '01 K Smallest Differences', difficulty: 'Medium' },
-    { id: '02-smallest-diff-triplet', name: '02 Smallest Diff Triplet', difficulty: 'Hard' },
-    { id: '03-closest-sum-target', name: '03 Closest Sum Target', difficulty: 'Hard' }
+            { id: '08-smallest-difference/01-k-smallest-differences', name: 'K Smallest Differences', difficulty: 'Medium' },
+            { id: '08-smallest-difference/02-smallest-diff-triplet', name: 'Smallest Diff Triplet', difficulty: 'Hard' }
         ]
     };
 

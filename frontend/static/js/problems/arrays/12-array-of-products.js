@@ -56,11 +56,7 @@
         explanation: 'Processing the input data produces the output. For input array=[-5, 2, -4, 14, -6], the result is [672, -1680, 840, -240, 560].'
     }
         ],
-        similar: [
-    { id: '01-merge-sorted-arrays-with-squares', name: 'Merge Sorted Arrays With Squares', difficulty: 'Medium' },
-    { id: '02-sorted-squared-no-duplicates', name: 'Sorted Squared No Duplicates', difficulty: 'Medium' },
-    { id: '03-kth-smallest-squared', name: 'Kth Smallest Squared', difficulty: 'Hard' }
-        ]
+        similar: []
     };
 
     // Register with ProblemRenderer

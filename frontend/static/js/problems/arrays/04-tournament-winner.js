@@ -42,9 +42,9 @@
     }
         ],
         similar: [
-    { id: '01-tournament-bracket', name: '01 Tournament Bracket', difficulty: 'Medium' },
-    { id: '02-tournament-tiebreakers', name: '02 Tournament Tiebreakers', difficulty: 'Medium' },
-    { id: '03-min-matches-guarantee', name: '03 Min Matches Guarantee', difficulty: 'Hard' }
+    { id: '04-tournament-winner/01-tournament-bracket', name: '01 Tournament Bracket', difficulty: 'Medium' },
+    { id: '04-tournament-winner/02-tournament-tiebreakers', name: '02 Tournament Tiebreakers', difficulty: 'Medium' },
+    { id: '04-tournament-winner/03-min-matches-guarantee', name: '03 Min Matches Guarantee', difficulty: 'Hard' }
         ]
     };
 

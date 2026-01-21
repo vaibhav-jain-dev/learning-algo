@@ -56,11 +56,7 @@
         explanation: 'Using a hash table, we store seen values for O(1) lookup to find the answer. For input nums=[-5, 5, 2, -3, 1], the result is true.'
     }
         ],
-        similar: [
-    { id: '01-longest-consecutive-gap-k', name: 'Longest Consecutive Gap K', difficulty: 'Medium' },
-    { id: '02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },
-    { id: '03-largest-range-after-addition', name: 'Largest Range After Addition', difficulty: 'Hard' }
-        ]
+        similar: []
     };
 
     // Register with ProblemRenderer

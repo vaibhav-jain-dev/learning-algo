@@ -62,9 +62,9 @@
     }
         ],
         similar: [
-    { id: '01-rotate-90-degrees', name: '01 Rotate 90 Degrees', difficulty: 'Medium' },
-    { id: '02-spiral-matrix-transpose', name: '02 Spiral Matrix Transpose', difficulty: 'Medium' },
-    { id: '03-block-matrix-transpose', name: '03 Block Matrix Transpose', difficulty: 'Hard' }
+    { id: '06-transpose-matrix/01-rotate-90-degrees', name: '01 Rotate 90 Degrees', difficulty: 'Medium' },
+    { id: '06-transpose-matrix/02-spiral-matrix-transpose', name: '02 Spiral Matrix Transpose', difficulty: 'Medium' },
+    { id: '06-transpose-matrix/03-block-matrix-transpose', name: '03 Block Matrix Transpose', difficulty: 'Hard' }
         ]
     };
 

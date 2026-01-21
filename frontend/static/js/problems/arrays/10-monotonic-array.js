@@ -60,9 +60,9 @@
     }
         ],
         similar: [
-    { id: '01-longest-monotonic-subarray', name: '01 Longest Monotonic Subarray', difficulty: 'Medium' },
-    { id: '02-minimum-removals-monotonic', name: '02 Minimum Removals Monotonic', difficulty: 'Hard' },
-    { id: '03-can-become-monotonic', name: '03 Can Become Monotonic', difficulty: 'Medium' }
+    { id: '10-monotonic-array/01-longest-monotonic-subarray', name: '01 Longest Monotonic Subarray', difficulty: 'Medium' },
+    { id: '10-monotonic-array/02-minimum-removals-monotonic', name: '02 Minimum Removals Monotonic', difficulty: 'Hard' },
+    { id: '10-monotonic-array/03-can-become-monotonic', name: '03 Can Become Monotonic', difficulty: 'Medium' }
         ]
     };
 

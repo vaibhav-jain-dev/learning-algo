@@ -50,9 +50,9 @@
     }
         ],
         similar: [
-    { id: '01-move-element-preserve-order', name: '01 Move Element Preserve Order', difficulty: 'Medium' },
-    { id: '02-partition-array-by-predicate', name: '02 Partition Array By Predicate', difficulty: 'Medium' },
-    { id: '03-dutch-national-flag', name: '03 Dutch National Flag', difficulty: 'Hard' }
+    { id: '09-move-element-to-end/01-move-element-preserve-order', name: '01 Move Element Preserve Order', difficulty: 'Medium' },
+    { id: '09-move-element-to-end/02-partition-array-by-predicate', name: '02 Partition Array By Predicate', difficulty: 'Medium' },
+    { id: '09-move-element-to-end/03-dutch-national-flag', name: '03 Dutch National Flag', difficulty: 'Hard' }
         ]
     };
 

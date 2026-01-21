@@ -64,9 +64,9 @@
     }
         ],
         similar: [
-    { id: '01-count-number-of-peaks', name: '01 Count Number Of Peaks', difficulty: 'Medium' },
-    { id: '02-maximum-peak-sum', name: '02 Maximum Peak Sum', difficulty: 'Hard' },
-    { id: '03-longest-bitonic-subsequence', name: '03 Longest Bitonic Subsequence', difficulty: 'Hard' }
+    { id: '16-longest-peak/01-count-number-of-peaks', name: '01 Count Number Of Peaks', difficulty: 'Medium' },
+    { id: '16-longest-peak/02-maximum-peak-sum', name: '02 Maximum Peak Sum', difficulty: 'Hard' },
+    { id: '16-longest-peak/03-longest-bitonic-subsequence', name: '03 Longest Bitonic Subsequence', difficulty: 'Hard' }
         ]
     };
 

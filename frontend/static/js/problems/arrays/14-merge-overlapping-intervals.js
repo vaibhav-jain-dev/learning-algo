@@ -90,11 +90,7 @@
         explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input intervals=[[1, 10], [2, 3], [4, 5], [6, 7]], the result is [[1, 10]].'
     }
         ],
-        similar: [
-    { id: '01-minimum-swaps-to-sort', name: 'Minimum Swaps To Sort', difficulty: 'Hard' },
-    { id: '02-shortest-unsorted-with-k', name: 'Shortest Unsorted With K', difficulty: 'Medium' },
-    { id: '03-max-sorted-subarrays', name: 'Max Sorted Subarrays', difficulty: 'Hard' }
-        ]
+        similar: []
     };
 
     // Register with ProblemRenderer

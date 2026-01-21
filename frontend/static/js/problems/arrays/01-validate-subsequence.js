@@ -50,9 +50,9 @@
     }
         ],
         similar: [
-    { id: '01-longest-common-subsequence', name: '01 Longest Common Subsequence', difficulty: 'Medium' },
-    { id: '02-count-distinct-subsequences', name: '02 Count Distinct Subsequences', difficulty: 'Hard' },
-    { id: '03-minimum-window-subsequence', name: '03 Minimum Window Subsequence', difficulty: 'Hard' }
+            { id: '01-validate-subsequence/01-longest-common-subsequence', name: 'Longest Common Subsequence', difficulty: 'Medium' },
+            { id: '01-validate-subsequence/02-count-distinct-subsequences', name: 'Count Distinct Subsequences', difficulty: 'Hard' },
+            { id: '01-validate-subsequence/03-minimum-window-subsequence', name: 'Minimum Window Subsequence', difficulty: 'Hard' }
         ]
     };
 

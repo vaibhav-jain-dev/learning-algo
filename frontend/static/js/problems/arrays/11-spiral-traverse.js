@@ -74,9 +74,9 @@
     }
         ],
         similar: [
-    { id: '01-spiral-matrix-generate', name: '01 Spiral Matrix Generate', difficulty: 'Medium' },
-    { id: '02-spiral-matrix-starting-point', name: '02 Spiral Matrix Starting Point', difficulty: 'Medium' },
-    { id: '03-anti-spiral-traverse', name: '03 Anti Spiral Traverse', difficulty: 'Hard' }
+    { id: '11-spiral-traverse/01-spiral-matrix-generate', name: '01 Spiral Matrix Generate', difficulty: 'Medium' },
+    { id: '11-spiral-traverse/02-spiral-matrix-starting-point', name: '02 Spiral Matrix Starting Point', difficulty: 'Medium' },
+    { id: '11-spiral-traverse/03-anti-spiral-traverse', name: '03 Anti Spiral Traverse', difficulty: 'Hard' }
         ]
     };
 

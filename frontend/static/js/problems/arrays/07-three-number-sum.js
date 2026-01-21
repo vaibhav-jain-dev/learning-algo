@@ -62,9 +62,7 @@
     }
         ],
         similar: [
-    { id: '01-three-sum-closest', name: '01 Three Sum Closest', difficulty: 'Medium' },
-    { id: '02-three-sum-duplicates', name: '02 Three Sum Duplicates', difficulty: 'Medium' },
-    { id: '03-four-number-sum', name: '03 Four Number Sum', difficulty: 'Hard' }
+            { id: '07-three-number-sum/03-four-number-sum', name: 'Four Number Sum', difficulty: 'Hard' }
         ]
     };
 

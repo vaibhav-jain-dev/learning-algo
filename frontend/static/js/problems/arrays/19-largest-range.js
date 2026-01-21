@@ -68,9 +68,9 @@
     }
         ],
         similar: [
-    { id: '01-longest-consecutive-gap-k', name: 'Longest Consecutive with Gap K', difficulty: 'Medium' },
-    { id: '02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },
-    { id: '03-largest-range-after-addition', name: 'Largest Range After Addition', difficulty: 'Hard' }
+    { id: '19-largest-range/01-longest-consecutive-gap-k', name: 'Longest Consecutive with Gap K', difficulty: 'Medium' },
+    { id: '19-largest-range/02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },
+    { id: '19-largest-range/03-largest-range-after-addition', name: 'Largest Range After Addition', difficulty: 'Hard' }
         ]
     };
 

@@ -47,9 +47,9 @@
     }
         ],
         similar: [
-    { id: '01-min-coins-to-add', name: '01 Min Coins To Add', difficulty: 'Medium' },
-    { id: '02-max-constructible', name: '02 Max Constructible', difficulty: 'Medium' },
-    { id: '03-all-non-constructible', name: '03 All Non Constructible', difficulty: 'Hard' }
+    { id: '05-non-constructible-change/01-min-coins-to-add', name: '01 Min Coins To Add', difficulty: 'Medium' },
+    { id: '05-non-constructible-change/02-max-constructible', name: '02 Max Constructible', difficulty: 'Medium' },
+    { id: '05-non-constructible-change/03-all-non-constructible', name: '03 All Non Constructible', difficulty: 'Hard' }
         ]
     };
 

@@ -76,11 +76,7 @@
         explanation: 'Processing the input data produces the output. For input array=[1, 1, ..., 2] (length 7), the result is 1.'
     }
         ],
-        similar: [
-    { id: '01-longest-consecutive-gap-k', name: 'Longest Consecutive Gap K', difficulty: 'Medium' },
-    { id: '02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },
-    { id: '03-largest-range-after-addition', name: 'Largest Range After Addition', difficulty: 'Hard' }
-        ]
+        similar: []
     };
 
     // Register with ProblemRenderer

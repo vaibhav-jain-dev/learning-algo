@@ -50,9 +50,9 @@
     }
         ],
         similar: [
-    { id: '01-k-sum-generalized', name: '01 K Sum Generalized', difficulty: 'Hard' },
-    { id: '02-four-sum-with-repetition', name: '02 Four Sum With Repetition', difficulty: 'Hard' },
-    { id: '03-count-quadruplets', name: '03 Count Quadruplets', difficulty: 'Hard' }
+    { id: '17-four-number-sum/01-k-sum-generalized', name: '01 K Sum Generalized', difficulty: 'Hard' },
+    { id: '17-four-number-sum/02-four-sum-with-repetition', name: '02 Four Sum With Repetition', difficulty: 'Hard' },
+    { id: '17-four-number-sum/03-count-quadruplets', name: '03 Count Quadruplets', difficulty: 'Hard' }
         ]
     };
 
