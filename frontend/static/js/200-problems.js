@@ -4869,6 +4869,19 @@
 
         solContent.innerHTML = '<div style="color:#666;padding:1rem;">Loading solutions...</div>';
 
+        // First check if solutions are embedded in the JS problem data
+        var fullId = currentProblem.category + '/' + currentProblem.id;
+        var problemData = window.ProblemRenderer && window.ProblemRenderer.get(fullId);
+
+        if (problemData && problemData.solutions && (problemData.solutions.python || problemData.solutions.go)) {
+            // Use embedded solutions from JS
+            var pythonCode = problemData.solutions.python || null;
+            var goCode = problemData.solutions.go || null;
+            renderSolutions(solContent, pythonCode, goCode);
+            return;
+        }
+
+        // Fall back to loading from external files
         var basePath = '/problems/200-must-solve/' + currentProblem.category + '/' + currentProblem.id;
         if (currentProblem.similarIdx) {
             basePath += '/similar/' + currentProblem.similarIdx;
@@ -4881,51 +4894,54 @@
         ]).then(function(results) {
             var pythonCode = filterSolutionCode(results[0], 'python');
             var goCode = filterSolutionCode(results[1], 'go');
-
-            var html = '<div style="display:flex;flex-direction:column;gap:1.5rem;">';
-
-            // Python Solution
-            html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
-            html += '<h3 style="color:#306998;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
-            if (pythonCode) {
-                html += '<button onclick="window.copyToEditor(\'python\')" style="background:#306998;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
-            }
-            html += '</div>';
-            if (pythonCode) {
-                html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
-            } else {
-                html += '<p style="color:#888;margin:0;">No Python solution available.</p>';
-            }
-            html += '</div>';
-
-            // Go Solution
-            html += '<div style="background:#f0f5f9;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
-            html += '<h3 style="color:#00ADD8;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
-            if (goCode) {
-                html += '<button onclick="window.copyToEditor(\'go\')" style="background:#00ADD8;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
-            }
-            html += '</div>';
-            if (goCode) {
-                html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
-            } else {
-                html += '<p style="color:#888;margin:0;">No Go solution available.</p>';
-            }
-            html += '</div>';
-
-            html += '</div>';
-            solContent.innerHTML = html;
-
-            // Apply syntax highlighting
-            if (typeof hljs !== 'undefined') {
-                solContent.querySelectorAll('pre code').forEach(function(block) {
-                    hljs.highlightElement(block);
-                });
-            }
+            renderSolutions(solContent, pythonCode, goCode);
         }).catch(function(err) {
             solContent.innerHTML = '<p style="color:#c62828;padding:1rem;">Error loading solutions: ' + err.message + '</p>';
         });
+    }
+
+    function renderSolutions(solContent, pythonCode, goCode) {
+        var html = '<div style="display:flex;flex-direction:column;gap:1.5rem;">';
+
+        // Python Solution
+        html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
+        html += '<h3 style="color:#306998;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+        if (pythonCode) {
+            html += '<button onclick="window.copyToEditor(\'python\')" style="background:#306998;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+        }
+        html += '</div>';
+        if (pythonCode) {
+            html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+        } else {
+            html += '<p style="color:#888;margin:0;">No Python solution available.</p>';
+        }
+        html += '</div>';
+
+        // Go Solution
+        html += '<div style="background:#f0f5f9;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
+        html += '<h3 style="color:#00ADD8;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+        if (goCode) {
+            html += '<button onclick="window.copyToEditor(\'go\')" style="background:#00ADD8;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+        }
+        html += '</div>';
+        if (goCode) {
+            html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+        } else {
+            html += '<p style="color:#888;margin:0;">No Go solution available.</p>';
+        }
+        html += '</div>';
+
+        html += '</div>';
+        solContent.innerHTML = html;
+
+        // Apply syntax highlighting
+        if (typeof hljs !== 'undefined') {
+            solContent.querySelectorAll('pre code').forEach(function(block) {
+                hljs.highlightElement(block);
+            });
+        }
     }
 
     // ============================================
