@@ -2,7 +2,8 @@
 # Optimized for hot-reload development with minimal footprint
 #
 # DEPENDENCY CACHING STRATEGY:
-# Uses Docker BuildKit cache mounts to persist dependencies across builds.
+# Dependency files (go.mod, requirements.txt, package.json) are copied BEFORE
+# source code. This creates cached layers that only rebuild when deps change.
 # At runtime, source is overridden by volume mounts for hot reload.
 #
 # IMPORTANT: Requires Docker BuildKit (DOCKER_BUILDKIT=1 or Docker 23.0+)
@@ -35,6 +36,11 @@ RUN pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/de
 COPY frontend/package*.json ./frontend/
 RUN cd frontend && npm install 2>/dev/null || true
 
+# Go dependencies (cached layer - only rebuilds when go.mod changes)
+COPY backend/go.mod ./backend/
+RUN --mount=type=cache,target=/go/pkg/mod \
+    cd backend && go mod download
+
 # =============================================================================
 # Copy all source code (will be overridden by volume mounts at runtime)
 # =============================================================================
@@ -42,10 +48,6 @@ COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 COPY problems/ ./problems/
 COPY topics/ ./topics/
-
-# Download Go dependencies (uses BuildKit cache)
-RUN --mount=type=cache,target=/go/pkg/mod \
-    cd backend && go mod tidy
 
 EXPOSE 8080
 

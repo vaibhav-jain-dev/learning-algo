@@ -3,14 +3,15 @@
 # Target: < 150MB compressed
 #
 # DEPENDENCY CACHING STRATEGY:
-# Uses Docker BuildKit cache mounts to persist downloaded dependencies across builds.
-# Even when layers are invalidated, cached modules are reused for fast rebuilds.
+# Each stage copies dependency files (go.mod, requirements.txt, package.json)
+# BEFORE source code. This creates cached layers that only rebuild when
+# dependencies change, not when code changes.
 #
 # Build stages:
-#   1. go-builder:      Compiles Go backend (BuildKit cache for go modules)
+#   1. go-builder:      Compiles Go backend (go.mod -> go mod download -> source)
 #   2. go-extractor:    Extracts minimal Go toolchain
-#   3. frontend-builder: Builds frontend assets (caches package.json)
-#   4. runtime:         Final image with Python + Go + app (caches requirements.txt)
+#   3. frontend-builder: Builds frontend assets (package.json -> npm install -> source)
+#   4. runtime:         Final image with Python + Go + app (requirements.txt -> pip)
 #
 # IMPORTANT: Requires Docker BuildKit (DOCKER_BUILDKIT=1 or Docker 23.0+)
 
@@ -24,20 +25,20 @@ WORKDIR /build
 # Install build dependencies
 RUN apk add --no-cache git
 
-# DEPENDENCY CACHING: Copy go.mod first to cache dependency download
+# DEPENDENCY CACHING: Copy go.mod first, download dependencies
+# This layer is cached and only rebuilds when go.mod changes
 COPY backend/go.mod ./
 
-# Copy source code (needed for go mod tidy to resolve all imports)
+# Download dependencies (cached layer)
+# Uses BuildKit cache mount for persistent module storage
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+# NOW copy source code (changes here won't re-download dependencies)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
 
-# Download dependencies and generate/update go.sum
-# Uses BuildKit cache mount to persist downloaded modules across builds
-RUN --mount=type=cache,target=/go/pkg/mod \
-    go mod tidy
-
 # Build the binary with maximum optimizations
-# Uses BuildKit cache for faster rebuilds
 # -ldflags="-w -s" strips debug info, reduces ~30% size
 # CGO_ENABLED=0 creates static binary
 RUN --mount=type=cache,target=/go/pkg/mod \
