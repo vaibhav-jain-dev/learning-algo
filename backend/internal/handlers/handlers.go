@@ -86,6 +86,13 @@ func (h *Handlers) TwoHundredProblems(c *fiber.Ctx) error {
 	})
 }
 
+// LearnSubject renders the learn subject page with algorithms, data structures, and terminologies
+func (h *Handlers) LearnSubject(c *fiber.Ctx) error {
+	return c.Render("pages/learn-subject", fiber.Map{
+		"Title": "Learn Subject - Algorithms, Data Structures & Terminologies",
+	})
+}
+
 // TwoHundredProblemsTree returns HTMX partial for 200 problems tree
 func (h *Handlers) TwoHundredProblemsTree(c *fiber.Ctx) error {
 	tree := h.buildProblemTreeFrom("./problems/200-must-solve")

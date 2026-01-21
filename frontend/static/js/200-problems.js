@@ -4597,6 +4597,35 @@
         if (output) output.innerHTML = '<div class="output-placeholder">Run your code to see output here</div>';
     };
 
+    // Font size controls
+    var editorFontSize = 14;
+    var outputFontSize = 14;
+
+    window.changeFontSize = function(target, delta) {
+        if (target === 'editor') {
+            editorFontSize = Math.max(10, Math.min(24, editorFontSize + delta));
+            var editorWrapper = document.getElementById('code-editor-wrapper');
+            if (editorWrapper) {
+                editorWrapper.style.fontSize = editorFontSize + 'px';
+            }
+            // Also update CodeMirror if it exists
+            if (window.codeEditor && window.codeEditor.getWrapperElement) {
+                window.codeEditor.getWrapperElement().style.fontSize = editorFontSize + 'px';
+                window.codeEditor.refresh();
+            }
+            if (editor) {
+                editor.getWrapperElement().style.fontSize = editorFontSize + 'px';
+                editor.refresh();
+            }
+        } else if (target === 'output') {
+            outputFontSize = Math.max(10, Math.min(24, outputFontSize + delta));
+            var outputContent = document.getElementById('output-content');
+            if (outputContent) {
+                outputContent.style.fontSize = outputFontSize + 'px';
+            }
+        }
+    };
+
     // Copy solution to code editor
     window.copyToEditor = function(lang) {
         var code = fullSolutions[lang];

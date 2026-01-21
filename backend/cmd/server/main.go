@@ -196,6 +196,7 @@ func main() {
 	app.Get("/must-solve-problems", h.MustSolveProblems) // 200 Must Solve Problems (topic overview)
 	app.Get("/200-problems", h.TwoHundredProblems)        // 200 Problems Practice Page
 	app.Get("/200-problems/*", h.TwoHundredProblems)      // 200 Problems with direct URL (e.g., /200-problems/validate-subsequence)
+	app.Get("/learn-subject", h.LearnSubject)            // Learn Subject - Algorithms, Data Structures & Terminologies
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)

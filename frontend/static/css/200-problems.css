@@ -685,6 +685,37 @@
     background: rgba(239, 68, 68, 0.15);
 }
 
+.output-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.font-btn {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-bg-tertiary, #f1f5f9);
+    color: var(--color-text-secondary, #475569);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-sm, 4px);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    transition: all 150ms ease;
+    min-width: 28px;
+}
+
+.font-btn:hover {
+    background: var(--color-bg-secondary, #e2e8f0);
+    color: var(--color-text-primary, #0f172a);
+}
+
+.editor-font-controls {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+}
+
 .output-content {
     flex: 1;
     overflow-y: auto;

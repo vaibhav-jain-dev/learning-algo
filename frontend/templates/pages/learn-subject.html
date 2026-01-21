@@ -1,0 +1,604 @@
+<link rel="stylesheet" href="/static/css/learn-subject.css">
+
+<div class="learn-subject-page">
+    <!-- Hero Section -->
+    <header class="learn-hero">
+        <div class="hero-content">
+            <div class="hero-badge">Foundation Building</div>
+            <h1 class="hero-title">Learn Subject</h1>
+            <p class="hero-subtitle">Master the fundamentals before solving problems. Learn algorithms, data structures, problem-solving patterns, and domain-specific terminologies with interactive visualizations.</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="subject-nav">
+        <a href="#algorithms" class="nav-item active">Algorithms</a>
+        <a href="#data-structures" class="nav-item">Data Structures</a>
+        <a href="#problem-solving" class="nav-item">Problem Solving</a>
+        <a href="#terminologies" class="nav-item">Terminologies</a>
+    </nav>
+
+    <!-- Algorithms Section -->
+    <section id="algorithms" class="subject-section">
+        <h2 class="section-title">Important Algorithms</h2>
+        <p class="section-desc">Essential algorithms you must know. Each includes Python implementation, complexity analysis, and visual step-by-step explanation.</p>
+
+        <div class="algorithm-grid">
+            <!-- Sorting Algorithms -->
+            <div class="algorithm-category">
+                <h3 class="category-title">Sorting Algorithms</h3>
+                <div class="algorithm-cards">
+                    <div class="algo-card" onclick="showAlgorithm('bubble-sort')">
+                        <div class="algo-header">
+                            <span class="algo-name">Bubble Sort</span>
+                            <span class="complexity">O(n²)</span>
+                        </div>
+                        <p class="algo-desc">Compare adjacent elements and swap if out of order. Simple but inefficient.</p>
+                        <div class="algo-visual">
+                            <div class="bar" style="height: 60%"></div>
+                            <div class="bar" style="height: 40%"></div>
+                            <div class="bar" style="height: 80%"></div>
+                            <div class="bar" style="height: 20%"></div>
+                            <div class="bar" style="height: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="algo-card" onclick="showAlgorithm('quick-sort')">
+                        <div class="algo-header">
+                            <span class="algo-name">Quick Sort</span>
+                            <span class="complexity">O(n log n)</span>
+                        </div>
+                        <p class="algo-desc">Divide and conquer using pivot. Most efficient general-purpose sort.</p>
+                        <div class="algo-visual">
+                            <div class="bar highlight" style="height: 50%"></div>
+                            <div class="bar" style="height: 30%"></div>
+                            <div class="bar" style="height: 70%"></div>
+                            <div class="bar" style="height: 40%"></div>
+                            <div class="bar" style="height: 90%"></div>
+                        </div>
+                    </div>
+
+                    <div class="algo-card" onclick="showAlgorithm('merge-sort')">
+                        <div class="algo-header">
+                            <span class="algo-name">Merge Sort</span>
+                            <span class="complexity">O(n log n)</span>
+                        </div>
+                        <p class="algo-desc">Divide into halves, sort, and merge. Stable and consistent performance.</p>
+                        <div class="algo-visual">
+                            <div class="bar left" style="height: 45%"></div>
+                            <div class="bar left" style="height: 65%"></div>
+                            <div class="bar right" style="height: 35%"></div>
+                            <div class="bar right" style="height: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="algo-card" onclick="showAlgorithm('heap-sort')">
+                        <div class="algo-header">
+                            <span class="algo-name">Heap Sort</span>
+                            <span class="complexity">O(n log n)</span>
+                        </div>
+                        <p class="algo-desc">Build max-heap, extract max repeatedly. In-place, not stable.</p>
+                        <div class="algo-visual tree-visual">
+                            <span class="node root">90</span>
+                            <span class="node left">70</span>
+                            <span class="node right">80</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Algorithms -->
+            <div class="algorithm-category">
+                <h3 class="category-title">Search Algorithms</h3>
+                <div class="algorithm-cards">
+                    <div class="algo-card" onclick="showAlgorithm('binary-search')">
+                        <div class="algo-header">
+                            <span class="algo-name">Binary Search</span>
+                            <span class="complexity">O(log n)</span>
+                        </div>
+                        <p class="algo-desc">Search sorted array by repeatedly dividing search space in half.</p>
+                        <div class="algo-visual search-visual">
+                            <span class="item">1</span>
+                            <span class="item">3</span>
+                            <span class="item mid">5</span>
+                            <span class="item">7</span>
+                            <span class="item">9</span>
+                        </div>
+                    </div>
+
+                    <div class="algo-card" onclick="showAlgorithm('dfs')">
+                        <div class="algo-header">
+                            <span class="algo-name">Depth-First Search</span>
+                            <span class="complexity">O(V+E)</span>
+                        </div>
+                        <p class="algo-desc">Explore as far as possible along each branch before backtracking.</p>
+                        <div class="algo-visual graph-visual">
+                            <span class="gnode active">A</span>
+                            <span class="gnode active">B</span>
+                            <span class="gnode active">D</span>
+                        </div>
+                    </div>
+
+                    <div class="algo-card" onclick="showAlgorithm('bfs')">
+                        <div class="algo-header">
+                            <span class="algo-name">Breadth-First Search</span>
+                            <span class="complexity">O(V+E)</span>
+                        </div>
+                        <p class="algo-desc">Explore all neighbors at current depth before moving deeper.</p>
+                        <div class="algo-visual graph-visual bfs">
+                            <span class="gnode active">A</span>
+                            <span class="gnode active">B</span>
+                            <span class="gnode active">C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Structures Section -->
+    <section id="data-structures" class="subject-section">
+        <h2 class="section-title">Data Structures</h2>
+        <p class="section-desc">Fundamental building blocks for solving problems. Understand when and how to use each structure.</p>
+
+        <div class="ds-grid">
+            <div class="ds-card" onclick="showDataStructure('arrays')">
+                <div class="ds-icon">[ ]</div>
+                <h3>Arrays</h3>
+                <ul class="ds-concepts">
+                    <li>Contiguous memory</li>
+                    <li>O(1) access by index</li>
+                    <li>O(n) insert/delete</li>
+                    <li>Two-pointer technique</li>
+                    <li>Sliding window</li>
+                </ul>
+            </div>
+
+            <div class="ds-card" onclick="showDataStructure('linked-lists')">
+                <div class="ds-icon">→ → →</div>
+                <h3>Linked Lists</h3>
+                <ul class="ds-concepts">
+                    <li>Node-based structure</li>
+                    <li>O(1) insert/delete at known position</li>
+                    <li>O(n) access by index</li>
+                    <li>Fast and slow pointer</li>
+                    <li>Reversal techniques</li>
+                </ul>
+            </div>
+
+            <div class="ds-card" onclick="showDataStructure('trees')">
+                <div class="ds-icon">△</div>
+                <h3>Binary Trees</h3>
+                <ul class="ds-concepts">
+                    <li>Hierarchical structure</li>
+                    <li>Traversals: Pre/In/Post/Level</li>
+                    <li>Height and depth</li>
+                    <li>Recursive thinking</li>
+                    <li>BST: O(log n) search</li>
+                </ul>
+            </div>
+
+            <div class="ds-card" onclick="showDataStructure('graphs')">
+                <div class="ds-icon">◯—◯</div>
+                <h3>Graphs</h3>
+                <ul class="ds-concepts">
+                    <li>Vertices and edges</li>
+                    <li>Adjacency list/matrix</li>
+                    <li>DFS and BFS traversal</li>
+                    <li>Shortest path algorithms</li>
+                    <li>Cycle detection</li>
+                </ul>
+            </div>
+
+            <div class="ds-card" onclick="showDataStructure('stacks')">
+                <div class="ds-icon">▐▐▐</div>
+                <h3>Stacks & Queues</h3>
+                <ul class="ds-concepts">
+                    <li>LIFO / FIFO</li>
+                    <li>Function call stack</li>
+                    <li>Monotonic stack</li>
+                    <li>BFS with queue</li>
+                    <li>Expression evaluation</li>
+                </ul>
+            </div>
+
+            <div class="ds-card" onclick="showDataStructure('hashmaps')">
+                <div class="ds-icon">{k:v}</div>
+                <h3>Hash Maps</h3>
+                <ul class="ds-concepts">
+                    <li>O(1) average lookup</li>
+                    <li>Key-value storage</li>
+                    <li>Collision handling</li>
+                    <li>Frequency counting</li>
+                    <li>Two-sum pattern</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Solving Section -->
+    <section id="problem-solving" class="subject-section">
+        <h2 class="section-title">Problem Solving Approach</h2>
+        <p class="section-desc">How to think about and break down problems systematically.</p>
+
+        <div class="approach-container">
+            <div class="approach-step">
+                <div class="step-number">1</div>
+                <h3>Understand the Problem</h3>
+                <ul>
+                    <li>Read the problem statement carefully</li>
+                    <li>Identify input format and constraints</li>
+                    <li>Understand expected output</li>
+                    <li>Work through examples manually</li>
+                    <li>Ask clarifying questions</li>
+                </ul>
+            </div>
+
+            <div class="approach-step">
+                <div class="step-number">2</div>
+                <h3>Plan Your Approach</h3>
+                <ul>
+                    <li>Identify the pattern (two-pointer, sliding window, DP, etc.)</li>
+                    <li>Consider brute force first</li>
+                    <li>Think about time/space complexity</li>
+                    <li>Choose appropriate data structures</li>
+                    <li>Write pseudocode</li>
+                </ul>
+            </div>
+
+            <div class="approach-step">
+                <div class="step-number">3</div>
+                <h3>Implement Solution</h3>
+                <ul>
+                    <li>Write clean, readable code</li>
+                    <li>Handle edge cases</li>
+                    <li>Use meaningful variable names</li>
+                    <li>Add comments for complex logic</li>
+                    <li>Follow language conventions</li>
+                </ul>
+            </div>
+
+            <div class="approach-step">
+                <div class="step-number">4</div>
+                <h3>Test and Verify</h3>
+                <ul>
+                    <li>Test with given examples</li>
+                    <li>Test edge cases (empty, single element, large input)</li>
+                    <li>Verify time/space complexity</li>
+                    <li>Look for optimization opportunities</li>
+                    <li>Refactor if needed</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terminology-box">
+            <h3>Common Coding Terminologies</h3>
+            <div class="term-grid">
+                <div class="term">
+                    <span class="term-name">Loop</span>
+                    <span class="term-desc">Repeated execution of code block (for, while)</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Recursion</span>
+                    <span class="term-desc">Function calling itself to solve subproblems</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Index</span>
+                    <span class="term-desc">Position of element in array (0-based)</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Pointer</span>
+                    <span class="term-desc">Variable tracking a position or reference</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Traverse</span>
+                    <span class="term-desc">Visit all elements in a data structure</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Memoization</span>
+                    <span class="term-desc">Caching results of expensive function calls</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">In-place</span>
+                    <span class="term-desc">Modify input without extra space (O(1) space)</span>
+                </div>
+                <div class="term">
+                    <span class="term-name">Subarray</span>
+                    <span class="term-desc">Contiguous portion of an array</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminologies Section -->
+    <section id="terminologies" class="subject-section">
+        <h2 class="section-title">Domain Terminologies</h2>
+        <p class="section-desc">Common terms used in system design, machine coding, and HLD across different industries.</p>
+
+        <div class="domain-tabs">
+            <button class="domain-tab active" onclick="showDomain('ecommerce')">E-Commerce</button>
+            <button class="domain-tab" onclick="showDomain('fintech')">FinTech</button>
+            <button class="domain-tab" onclick="showDomain('logistics')">Logistics</button>
+            <button class="domain-tab" onclick="showDomain('healthcare')">Healthcare</button>
+            <button class="domain-tab" onclick="showDomain('saas')">SaaS</button>
+            <button class="domain-tab" onclick="showDomain('learning')">EdTech</button>
+        </div>
+
+        <div class="domain-content" id="domain-content">
+            <!-- E-Commerce Domain -->
+            <div class="domain-panel active" id="ecommerce-panel">
+                <div class="domain-header">
+                    <h3>E-Commerce System Terminologies</h3>
+                    <p>Key concepts for designing online shopping platforms</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">E-Commerce Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch user-facing">
+                            <h4>User Facing</h4>
+                            <ul>
+                                <li><strong>Customer</strong> - End user who browses and purchases</li>
+                                <li><strong>Cart</strong> - Temporary storage for selected items</li>
+                                <li><strong>Wishlist</strong> - Saved items for later</li>
+                                <li><strong>Checkout</strong> - Payment and order finalization</li>
+                                <li><strong>Session</strong> - User's browsing context</li>
+                            </ul>
+                        </div>
+                        <div class="branch services">
+                            <h4>Core Services</h4>
+                            <ul>
+                                <li><strong>Order Service</strong> - Order creation, tracking, history</li>
+                                <li><strong>Inventory Service</strong> - Stock management, availability</li>
+                                <li><strong>Payment Gateway</strong> - Process transactions</li>
+                                <li><strong>Catalog Service</strong> - Product listings, search</li>
+                                <li><strong>Pricing Engine</strong> - Dynamic pricing, discounts</li>
+                            </ul>
+                        </div>
+                        <div class="branch entities">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Product</strong> - Item with SKU, price, attributes</li>
+                                <li><strong>Order</strong> - Collection of order items with status</li>
+                                <li><strong>Transaction</strong> - Payment record</li>
+                                <li><strong>Shipment</strong> - Delivery tracking unit</li>
+                                <li><strong>Review</strong> - Customer feedback on product</li>
+                            </ul>
+                        </div>
+                        <div class="branch patterns">
+                            <h4>Design Patterns</h4>
+                            <ul>
+                                <li><strong>CQRS</strong> - Separate read/write models</li>
+                                <li><strong>Event Sourcing</strong> - Store state as events</li>
+                                <li><strong>Saga Pattern</strong> - Distributed transactions</li>
+                                <li><strong>Circuit Breaker</strong> - Handle service failures</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FinTech Domain -->
+            <div class="domain-panel" id="fintech-panel">
+                <div class="domain-header">
+                    <h3>FinTech System Terminologies</h3>
+                    <p>Key concepts for financial technology applications</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">FinTech Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Account</strong> - User's financial account</li>
+                                <li><strong>Transaction</strong> - Money movement record</li>
+                                <li><strong>Ledger</strong> - Double-entry bookkeeping</li>
+                                <li><strong>Balance</strong> - Current account state</li>
+                                <li><strong>KYC</strong> - Know Your Customer verification</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Services</h4>
+                            <ul>
+                                <li><strong>Payment Service</strong> - Process payments</li>
+                                <li><strong>Fraud Detection</strong> - Identify suspicious activity</li>
+                                <li><strong>Risk Assessment</strong> - Evaluate transaction risk</li>
+                                <li><strong>Compliance Engine</strong> - Regulatory checks</li>
+                                <li><strong>Notification Service</strong> - Alerts and updates</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Key Concepts</h4>
+                            <ul>
+                                <li><strong>ACID</strong> - Transaction properties</li>
+                                <li><strong>Idempotency</strong> - Safe retry of operations</li>
+                                <li><strong>Reconciliation</strong> - Balance verification</li>
+                                <li><strong>Settlement</strong> - Final fund transfer</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logistics Domain -->
+            <div class="domain-panel" id="logistics-panel">
+                <div class="domain-header">
+                    <h3>Logistics System Terminologies</h3>
+                    <p>Key concepts for delivery and supply chain systems</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">Logistics Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Shipment</strong> - Package being delivered</li>
+                                <li><strong>Route</strong> - Delivery path</li>
+                                <li><strong>Hub</strong> - Distribution center</li>
+                                <li><strong>Carrier</strong> - Delivery agent/vehicle</li>
+                                <li><strong>Waypoint</strong> - Stop on delivery route</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Services</h4>
+                            <ul>
+                                <li><strong>Route Optimization</strong> - Find shortest path</li>
+                                <li><strong>Fleet Management</strong> - Vehicle tracking</li>
+                                <li><strong>ETA Calculation</strong> - Delivery time estimate</li>
+                                <li><strong>Geofencing</strong> - Location-based triggers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare Domain -->
+            <div class="domain-panel" id="healthcare-panel">
+                <div class="domain-header">
+                    <h3>Healthcare System Terminologies</h3>
+                    <p>Key concepts for medical and diagnostic applications</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">Healthcare Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Patient</strong> - Medical record holder</li>
+                                <li><strong>Appointment</strong> - Scheduled consultation</li>
+                                <li><strong>Prescription</strong> - Medication order</li>
+                                <li><strong>Diagnosis</strong> - Medical assessment</li>
+                                <li><strong>Lab Report</strong> - Test results</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Compliance</h4>
+                            <ul>
+                                <li><strong>HIPAA</strong> - Health data privacy</li>
+                                <li><strong>HL7/FHIR</strong> - Healthcare data standards</li>
+                                <li><strong>PHI</strong> - Protected Health Information</li>
+                                <li><strong>Audit Trail</strong> - Access logging</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SaaS Domain -->
+            <div class="domain-panel" id="saas-panel">
+                <div class="domain-header">
+                    <h3>SaaS System Terminologies</h3>
+                    <p>Key concepts for software as a service applications</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">SaaS Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Tenant</strong> - Organization/customer</li>
+                                <li><strong>Subscription</strong> - Service plan</li>
+                                <li><strong>User</strong> - Individual account</li>
+                                <li><strong>Workspace</strong> - Tenant's environment</li>
+                                <li><strong>Feature Flag</strong> - Toggle features</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Architecture</h4>
+                            <ul>
+                                <li><strong>Multi-tenancy</strong> - Shared infrastructure</li>
+                                <li><strong>Rate Limiting</strong> - API usage control</li>
+                                <li><strong>Usage Metering</strong> - Track consumption</li>
+                                <li><strong>SSO</strong> - Single sign-on</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EdTech Domain -->
+            <div class="domain-panel" id="learning-panel">
+                <div class="domain-header">
+                    <h3>EdTech System Terminologies</h3>
+                    <p>Key concepts for learning management systems</p>
+                </div>
+
+                <div class="brain-diagram">
+                    <div class="brain-center">EdTech Platform</div>
+                    <div class="brain-branches">
+                        <div class="branch">
+                            <h4>Core Entities</h4>
+                            <ul>
+                                <li><strong>Course</strong> - Learning program</li>
+                                <li><strong>Module</strong> - Course section</li>
+                                <li><strong>Lesson</strong> - Individual content unit</li>
+                                <li><strong>Assessment</strong> - Quiz/test</li>
+                                <li><strong>Progress</strong> - Learner advancement</li>
+                            </ul>
+                        </div>
+                        <div class="branch">
+                            <h4>Features</h4>
+                            <ul>
+                                <li><strong>LMS</strong> - Learning Management System</li>
+                                <li><strong>Gamification</strong> - Points, badges</li>
+                                <li><strong>Analytics</strong> - Learning insights</li>
+                                <li><strong>Certification</strong> - Completion proof</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back Button -->
+    <div class="back-section">
+        <a href="/200-problems" class="back-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to 200 Problems
+        </a>
+    </div>
+</div>
+
+<script>
+// Navigation smooth scroll
+document.querySelectorAll('.subject-nav .nav-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+// Domain tabs
+function showDomain(domain) {
+    document.querySelectorAll('.domain-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.domain-panel').forEach(p => p.classList.remove('active'));
+
+    event.target.classList.add('active');
+    const panel = document.getElementById(domain + '-panel');
+    if (panel) panel.classList.add('active');
+}
+
+// Algorithm details (placeholder for detailed view)
+function showAlgorithm(algo) {
+    console.log('Show algorithm:', algo);
+    // TODO: Open modal with detailed explanation and animation
+}
+
+// Data structure details (placeholder)
+function showDataStructure(ds) {
+    console.log('Show data structure:', ds);
+    // TODO: Open modal with detailed explanation and animation
+}
+</script>
