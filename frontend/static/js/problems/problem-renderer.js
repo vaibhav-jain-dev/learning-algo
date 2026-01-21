@@ -212,6 +212,8 @@
 
         // Similar/Related Problems Button and Section (if any)
         if (problem.similar && problem.similar.length > 0) {
+            const category = problem.category || 'arrays';
+
             html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #30363d;">\n';
             html += '<button onclick="toggleSimilarProblems(this)" style="background:linear-gradient(135deg,#238636,#2ea043);color:#ffffff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(35,134,54,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'none\'">\n';
             html += '<span>🔗</span> Show ' + problem.similar.length + ' Related Problems\n';
@@ -219,24 +221,20 @@
 
             html += '<div id="similar-problems-container" style="display:none;margin-top:1rem;">\n';
             html += '<h3 style="color:#58a6ff;margin-bottom:1rem;font-size:1.1rem;">Related Harder Problems</h3>\n';
-            html += '<p style="color:#8b949e;margin-bottom:1rem;font-size:0.85rem;">These problems use similar thinking patterns but are more challenging. Click to open in new tab.</p>\n';
+            html += '<p style="color:#8b949e;margin-bottom:1rem;font-size:0.85rem;">These problems use similar thinking patterns but are more challenging. Click to open.</p>\n';
             html += '<div style="display:flex;flex-direction:column;gap:0.75rem;">\n';
 
             problem.similar.forEach((sim, idx) => {
                 const simDiff = diffColors[sim.difficulty] || { bg: '#6e7681', text: '#ffffff' };
-                const category = problem.category || 'arrays';
-                html += '<a href="/200-problems/' + sim.id + '?category=' + category + '" target="_blank" rel="noopener" style="text-decoration:none;">';
-                html += '<div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#1c2128\'" onmouseout="this.style.borderColor=\'#30363d\';this.style.background=\'#161b22\'">';
+                html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#58a6ff\';this.style.background=\'#1c2128\'" onmouseout="this.style.borderColor=\'#30363d\';this.style.background=\'#161b22\'">';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
                 html += '<span style="color:#6e7681;font-size:0.9rem;font-weight:500;">' + (idx + 1) + '.</span>';
                 html += '<span style="color:#e6edf3;font-weight:500;">' + sim.name + '</span>';
                 html += '</div>';
                 html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
                 html += '<span style="background:' + simDiff.bg + ';color:' + simDiff.text + ';padding:0.25rem 0.625rem;border-radius:0.75rem;font-size:0.75rem;font-weight:600;">' + sim.difficulty + '</span>';
-                html += '<span style="color:#58a6ff;font-size:1.1rem;">↗</span>';
                 html += '</div>';
-                html += '</div>';
-                html += '</a>\n';
+                html += '</div>\n';
             });
 
             html += '</div>\n';
