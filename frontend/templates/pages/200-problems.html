@@ -1,4 +1,14 @@
 <link rel="stylesheet" href="/static/css/200-problems.css">
+<script src="/static/js/viz-utils.js"></script>
+<script src="/static/js/viz/arrays_viz.js"></script>
+<script src="/static/js/viz/graphs_viz.js"></script>
+<script src="/static/js/viz/linked_lists_viz.js"></script>
+<script src="/static/js/viz/trees_viz.js"></script>
+<script src="/static/js/viz/bst_viz.js"></script>
+<script src="/static/js/viz/recursion_viz.js"></script>
+<script src="/static/js/viz/dp_viz.js"></script>
+<script src="/static/js/viz/famous_viz.js"></script>
+<script src="/static/js/viz/viz-index.js"></script>
 <script src="/static/js/200-problems.js"></script>
 
 <div class="must-solve-page">
@@ -42,7 +52,15 @@
 
     <!-- Category Grid -->
     <section class="categories-section">
-        <h2 class="section-title">Choose a Category</h2>
+        <div class="section-header">
+            <h2 class="section-title">Choose a Category</h2>
+            <button class="btn btn-secondary btn-sm viz-index-btn" onclick="window.VizIndex && window.VizIndex.showModal()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                Index
+            </button>
+        </div>
         <div class="categories-grid" id="categories-grid">
 
             <!-- Arrays Category -->
