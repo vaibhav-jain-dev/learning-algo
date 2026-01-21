@@ -8,10 +8,12 @@
 # dependencies change, not when code changes.
 #
 # Build stages:
-#   1. go-builder:      Compiles Go backend (caches go.mod/go.sum)
+#   1. go-builder:      Compiles Go backend (go.mod -> go mod download -> source)
 #   2. go-extractor:    Extracts minimal Go toolchain
-#   3. frontend-builder: Builds frontend assets (caches package.json)
-#   4. runtime:         Final image with Python + Go + app (caches requirements.txt)
+#   3. frontend-builder: Builds frontend assets (package.json -> npm install -> source)
+#   4. runtime:         Final image with Python + Go + app (requirements.txt -> pip)
+#
+# IMPORTANT: Requires Docker BuildKit (DOCKER_BUILDKIT=1 or Docker 23.0+)
 
 # =============================================================================
 # Stage 1: Build Go backend
@@ -23,21 +25,25 @@ WORKDIR /build
 # Install build dependencies
 RUN apk add --no-cache git
 
-# DEPENDENCY CACHING: Copy dependency files FIRST, before source code
-# This ensures dependencies are only re-downloaded when go.mod/go.sum change
-COPY backend/go.mod backend/go.sum ./
+# DEPENDENCY CACHING: Copy go.mod first, download dependencies
+# This layer is cached and only rebuilds when go.mod changes
+COPY backend/go.mod ./
 
-# Download dependencies (cached layer - only rebuilds when go.mod/go.sum change)
-RUN go mod download && go mod verify
+# Download dependencies (cached layer)
+# Uses BuildKit cache mount for persistent module storage
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
-# NOW copy backend source code (changes here won't invalidate dependency cache)
+# NOW copy source code (changes here won't re-download dependencies)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
 
 # Build the binary with maximum optimizations
 # -ldflags="-w -s" strips debug info, reduces ~30% size
 # CGO_ENABLED=0 creates static binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-w -s" \
     -o server ./cmd/server
 
