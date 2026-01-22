@@ -97,6 +97,9 @@ func main() {
 	}
 	execManager := kernel.NewExecutionManager(pythonPool, goPool, stateDir)
 
+	// Warmup Go kernel in background (pre-populates build cache for faster first execution)
+	go goPool.Warmup()
+
 	// Create handlers
 	h := handlers.New(pythonPool, goPool, execManager)
 
