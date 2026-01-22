@@ -139,6 +139,43 @@
     overflow: auto;
     padding: 0;
 }
+
+/* Mobile responsive fixes */
+@media screen and (max-width: 768px) {
+    .lessons-main {
+        overflow-x: hidden;
+    }
+
+    /* Hide sidebar on mobile - Tailwind overrides */
+    .lessons-main .lg\:col-span-1 {
+        display: none !important;
+    }
+
+    .lessons-main .lg\:col-span-3 {
+        grid-column: span 1 !important;
+    }
+
+    /* Prevent diagram overflow */
+    .lessons-main div[style*="display: flex"],
+    .lessons-main div[style*="display:flex"] {
+        flex-wrap: wrap !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    .lessons-main pre,
+    .lessons-main code {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    /* Skip list diagram boxes fix */
+    .lessons-main .skip-node,
+    .lessons-main div[style*="border-radius"][style*="padding"] {
+        min-width: auto !important;
+        flex-shrink: 1 !important;
+    }
+}
 </style>
 
 <script>

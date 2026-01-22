@@ -2316,6 +2316,60 @@ asyncio.run(main())</code></pre>
         padding-top: 3.5rem;
     }
 }
+
+/* Syntax highlighting colors for Python code */
+.code-example pre code .hljs-keyword,
+.code-example pre code .token.keyword {
+    color: #ff7b72;
+}
+
+.code-example pre code .hljs-built_in,
+.code-example pre code .hljs-type,
+.code-example pre code .token.builtin {
+    color: #79c0ff;
+}
+
+.code-example pre code .hljs-string,
+.code-example pre code .token.string {
+    color: #a5d6ff !important;
+}
+
+.code-example pre code .hljs-number,
+.code-example pre code .token.number {
+    color: #79c0ff;
+}
+
+.code-example pre code .hljs-comment,
+.code-example pre code .token.comment {
+    color: #8b949e;
+    font-style: italic;
+}
+
+.code-example pre code .hljs-function,
+.code-example pre code .hljs-title,
+.code-example pre code .token.function {
+    color: #d2a8ff;
+}
+
+.code-example pre code .hljs-params,
+.code-example pre code .token.parameter {
+    color: #e6edf3;
+}
+
+.code-example pre code .hljs-variable,
+.code-example pre code .token.variable {
+    color: #ffa657;
+}
+
+.code-example pre code .hljs-operator,
+.code-example pre code .token.operator {
+    color: #ff7b72;
+}
+
+/* Ensure string literals are visible */
+.code-example pre code span[class*="string"] {
+    color: #a5d6ff !important;
+}
 </style>
 
 <script>

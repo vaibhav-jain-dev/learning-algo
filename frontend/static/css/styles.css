@@ -2554,3 +2554,164 @@ a:hover {
         scroll-behavior: auto !important;
     }
 }
+
+/* ============================================
+   MOBILE OVERFLOW & CONTENT FIXES
+   ============================================ */
+
+/* Global overflow prevention */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+.main {
+    overflow-x: hidden;
+}
+
+/* Better hamburger menu styling */
+@media screen and (max-width: 768px) {
+    header.header .nav {
+        padding: var(--space-4) !important;
+        gap: var(--space-2) !important;
+    }
+
+    header.header .nav .nav-pill {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        border-radius: var(--radius-md);
+    }
+}
+
+/* Fix diagram/content overflow on mobile */
+@media screen and (max-width: 768px) {
+    /* All content containers should not overflow */
+    .topic-content,
+    .lesson,
+    .content,
+    .main-content,
+    .description-content {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    /* Diagrams and styled divs */
+    .topic-content div[style],
+    .lesson div[style],
+    div[style*="display: flex"],
+    div[style*="display:flex"],
+    div[style*="display: grid"],
+    div[style*="display:grid"] {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Specific diagram containers */
+    .circuit-diagram,
+    .state-diagram,
+    .lb-architecture,
+    .diagram-row,
+    .balancer-features,
+    .lb-servers,
+    .lb-clients {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    /* Pre and code blocks */
+    pre, code {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        word-break: break-word;
+    }
+
+    /* Tables */
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+/* Fix SQL/Redis/Elasticsearch sidebar on mobile - ensure it's hidden */
+@media screen and (max-width: 768px) {
+    .unified-lessons .sidebar,
+    .unified-dashboard .sidebar,
+    .lessons-sidebar,
+    .curriculum-sidebar,
+    aside.sidebar {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+    }
+
+    /* Full width for main content when sidebar hidden */
+    .unified-lessons,
+    .unified-dashboard,
+    .unified-dashboard .dashboard-layout {
+        display: block !important;
+    }
+
+    .unified-lessons .content,
+    .unified-dashboard .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Fix string colors in code blocks - ensure visibility */
+pre code .hljs-string,
+pre code .hljs-attr,
+pre code .token.string,
+.code-content .hljs-string,
+.code-example .hljs-string {
+    color: #a5d6ff !important;
+}
+
+/* Fallback for unhighlighted strings (quoted text) */
+pre code,
+.code-content code {
+    color: #e6edf3;
+}
+
+/* Ensure dark code blocks have visible text */
+.code-example .code-content,
+.unified-lessons .code-content,
+pre[style*="background"] {
+    color: #e6edf3 !important;
+}
+
+.code-example .code-content *,
+.unified-lessons .code-content * {
+    color: inherit;
+}
+
+/* Syntax highlighting colors for dark backgrounds */
+.hljs-keyword { color: #ff7b72 !important; }
+.hljs-built_in { color: #79c0ff !important; }
+.hljs-type { color: #79c0ff !important; }
+.hljs-literal { color: #79c0ff !important; }
+.hljs-number { color: #a5d6ff !important; }
+.hljs-string { color: #a5d6ff !important; }
+.hljs-comment { color: #8b949e !important; }
+.hljs-function { color: #d2a8ff !important; }
+.hljs-title { color: #d2a8ff !important; }
+.hljs-params { color: #e6edf3 !important; }
+.hljs-variable { color: #ffa657 !important; }
+
+/* 200-problems page visualization fix */
+@media screen and (max-width: 768px) {
+    .visualize-container,
+    .visualization-area,
+    #visualize-tab {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    .array-visualization,
+    .step-controls {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+}
