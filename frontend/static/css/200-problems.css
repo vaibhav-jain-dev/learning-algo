@@ -509,6 +509,31 @@
     font-size: var(--text-sm, 0.875rem);
 }
 
+/* Problem content text colors - ensure readability on light backgrounds */
+.description-content h1,
+.description-content h2,
+.description-content h3 {
+    color: #0f172a !important;
+}
+
+.description-content h2 {
+    color: #3b82f6 !important;
+}
+
+.description-content p {
+    color: #1e293b !important;
+}
+
+.description-content .tab-content-problem h1 {
+    color: #0f172a !important;
+    font-weight: 700;
+}
+
+.description-content .tab-content-problem p {
+    color: #1e293b !important;
+    line-height: 1.8;
+}
+
 .solutions-content,
 .visualization-content,
 .hints-content {
