@@ -822,6 +822,8 @@
 @media (max-width: 768px) {
     .topic-detail-page {
         padding: 0.5rem;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .breadcrumb {
@@ -849,6 +851,8 @@
     .topic-content {
         padding: 0.75rem;
         border-radius: var(--radius-md);
+        max-width: 100%;
+        overflow-x: auto;
     }
 
     .topic-content h2 {
@@ -864,6 +868,53 @@
     .topic-content .diagram,
     .topic-content [class*="architecture"] {
         padding: 0.5rem;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Prevent inline styled divs from overflowing */
+    .topic-content div[style] {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Flex containers should wrap on mobile */
+    .topic-content div[style*="display: flex"],
+    .topic-content div[style*="display:flex"] {
+        flex-wrap: wrap !important;
+    }
+
+    /* Grid containers should be single column on mobile */
+    .topic-content div[style*="display: grid"],
+    .topic-content div[style*="display:grid"],
+    .topic-content div[style*="grid-template-columns"] {
+        display: block !important;
+    }
+
+    /* Diagram specific fixes */
+    .circuit-diagram,
+    .state-diagram,
+    .lb-architecture,
+    .diagram-row {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+
+    .diagram-box,
+    .state-box,
+    .client-box,
+    .server-box {
+        min-width: 80px !important;
+        flex: 1 1 auto !important;
+    }
+
+    .balancer-features {
+        grid-template-columns: 1fr !important;
+    }
+
+    .lb-servers {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }
 
@@ -887,6 +938,29 @@
     .topic-content pre {
         padding: 0.5rem;
         font-size: 0.8rem;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .lb-servers {
+        grid-template-columns: 1fr !important;
+    }
+
+    .diagram-row {
+        gap: 0.5rem !important;
+    }
+
+    .diagram-box,
+    .state-box {
+        min-width: 70px !important;
+        height: auto !important;
+        min-height: 60px !important;
+        padding: 0.5rem !important;
+    }
+
+    .diagram-box .box-label,
+    .state-box .state-title {
+        font-size: 0.7rem !important;
     }
 }
 </style>
