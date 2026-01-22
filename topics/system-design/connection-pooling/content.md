@@ -2,287 +2,153 @@
 
 ## Overview
 
-Connection pooling is a technique that maintains a cache of reusable connections to databases, HTTP servers, or other network resources. Instead of creating a new connection for each request (expensive), applications borrow a connection from the pool, use it, and return it.
+Connection pooling is a technique that maintains a cache of reusable database or network connections. Instead of creating a new connection for each request (which is expensive), your application borrows a connection from the pool, uses it, and returns it.
 
-## The Intuitive Mental Model: Car Rental Company
+Think of it like a **car rental company**: Instead of manufacturing a car for each customer and scrapping it when they're done, you maintain a fleet of cars that customers can rent and return.
 
-Think of connection pooling like a car rental company:
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
-      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Without Pooling (Manufacturing on Demand)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px;">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #58a6ff;">Customer needs car</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #f8514933; padding: 8px 14px; border-radius: 6px; color: #f85149;">Factory builds car</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer uses car</span>
-      </div>
-      <div style="display: flex; justify-content: center; gap: 80px; color: #8b949e; font-size: 12px; margin: 8px 0;">
-        <span style="color: #f85149;">[30 minutes]</span>
-        <span>[2 hours]</span>
-      </div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer returns</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #f8514933; padding: 8px 14px; border-radius: 6px; color: #f85149;">Factory scraps car</span>
-      </div>
-      <div style="text-align: center; color: #f85149; font-size: 12px; margin-top: 8px;">[5 minutes]</div>
-    </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; text-align: center;">
-      <span style="color: #f85149; font-weight: 600;">Total overhead: 35 minutes per trip!</span>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
-      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">With Pooling (Car Rental)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px;">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #58a6ff;">Customer needs car</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #23863633; padding: 8px 14px; border-radius: 6px; color: #7ee787;">Pick from fleet</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer uses car</span>
-      </div>
-      <div style="display: flex; justify-content: center; gap: 80px; color: #8b949e; font-size: 12px; margin: 8px 0;">
-        <span style="color: #7ee787;">[30 seconds]</span>
-        <span>[2 hours]</span>
-      </div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
-        <span style="background: #21262d; padding: 8px 14px; border-radius: 6px; color: #c9d1d9;">Customer done</span>
-        <span style="color: #8b949e;">-></span>
-        <span style="background: #23863633; padding: 8px 14px; border-radius: 6px; color: #7ee787;">Return to fleet</span>
-      </div>
-      <div style="text-align: center; color: #7ee787; font-size: 12px; margin-top: 8px;">[30 seconds]</div>
-    </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; text-align: center;">
-      <span style="color: #7ee787; font-weight: 600;">Total overhead: 1 minute per trip!</span>
-    </div>
-  </div>
-</div>
-
-### Mapping the Metaphor
-
-| Car Rental | Connection Pool | Purpose |
-|------------|-----------------|---------|
-| Fleet of cars | Pool of connections | Available resources |
-| Rental counter | Pool manager | Manages checkout/return |
-| Customer queue | Wait queue | Requests waiting for resources |
-| Car maintenance | Health checks | Validate resource is usable |
-| Fleet size | Pool size | How many resources to maintain |
-| Max rental period | Connection timeout | Prevent resource hogging |
-
----
-
-## 20-Year Insight: What Experience Teaches
-
-### What Junior Developers Think:
-> "Connection pooling is just about reusing connections. Set pool size = 100 and we're good."
-
-### What Senior Developers Know:
-> "Pool sizing is one of the most counterintuitive performance decisions. A smaller pool often outperforms a larger one. The real skill is understanding wait times, Little's Law, and connection lifecycle."
-
-### The Deeper Truth:
-After 20+ years of database performance tuning:
-1. **More is not better** - A pool of 1000 connections often performs worse than 10
-2. **The pool hides latency** - Until it doesn't, then everything explodes
-3. **Connection leaks are silent killers** - One missing `close()` takes down production
-4. **Database connection != HTTP connection** - Sizing strategies are completely different
-
----
-
-## Why Pooling Matters: The Numbers
-
-### Cost of Creating a New Connection
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #58a6ff33;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #58a6ff; border-radius: 50%;"></div>
-      <span style="color: #58a6ff; font-weight: 600; font-size: 16px;">Database Connection (PostgreSQL)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>1. TCP Handshake</span>
-        <span style="color: #f0883e;">~0.5ms - ~50ms</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>2. TLS Handshake</span>
-        <span style="color: #f0883e;">~10ms</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>3. Authentication</span>
-        <span style="color: #f0883e;">~5ms - ~50ms</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>4. Session Setup</span>
-        <span style="color: #f0883e;">~2ms</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>5. pg_stat tracking</span>
-        <span style="color: #f0883e;">~1ms</span>
-      </div>
-    </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d;">
-      <div style="color: #f85149; font-weight: 600; text-align: center;">Total: 18-113ms per connection!</div>
-      <div style="color: #8b949e; font-size: 12px; text-align: center; margin-top: 8px;">If your query takes 5ms, you're spending 80%+ on setup</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #d2a8ff33;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #d2a8ff; border-radius: 50%;"></div>
-      <span style="color: #d2a8ff; font-weight: 600; font-size: 16px;">HTTP Connection (with TLS)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>1. DNS Lookup</span>
-        <span style="color: #f0883e;">~20ms - ~200ms</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>2. TCP Handshake</span>
-        <span style="color: #f0883e;">~30ms (RTT)</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-        <span>3. TLS Handshake</span>
-        <span style="color: #f0883e;">~60ms (2 RTTs)</span>
-      </div>
-    </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d;">
-      <div style="color: #f85149; font-weight: 600; text-align: center;">Total: 110-290ms before first byte!</div>
-      <div style="background: #23863633; padding: 10px 16px; border-radius: 6px; margin-top: 12px; text-align: center;">
-        <span style="color: #7ee787;">With HTTP/2 keep-alive: ~0ms (reuse existing)</span>
-      </div>
-    </div>
-  </div>
-</div>
-
----
-
-## Pool Sizing: The Science
-
-### Little's Law
-
-```
-L = λ × W
-
-Where:
-  L = Average number of items in system (pool size needed)
-  λ = Arrival rate (requests per second)
-  W = Average time in system (connection hold time)
-
-Example:
-  λ = 100 requests/second
-  W = 50ms (0.05 seconds) average query time
-
-  L = 100 × 0.05 = 5 connections needed!
-
-Wait... 5 connections for 100 RPS? Yes!
-```
-
-### The Pool Sizing Formula
-
-```python
-def calculate_optimal_pool_size(
-    requests_per_second: float,
-    avg_connection_hold_time_ms: float,
-    target_wait_time_ms: float = 0,
-    safety_factor: float = 1.5
-) -> int:
-    """
-    Calculate optimal pool size using queueing theory.
-
-    Note: This is for STEADY STATE. Burst traffic needs more headroom.
-    """
-    # Little's Law: L = λ × W
-    hold_time_seconds = avg_connection_hold_time_ms / 1000
-    base_pool_size = requests_per_second * hold_time_seconds
-
-    # Add safety factor for variance
-    optimal = int(base_pool_size * safety_factor)
-
-    return max(optimal, 1)  # At least 1 connection
-
-
-# Examples
-print(calculate_optimal_pool_size(100, 50))   # 100 RPS, 50ms → 8 connections
-print(calculate_optimal_pool_size(1000, 10))  # 1000 RPS, 10ms → 15 connections
-print(calculate_optimal_pool_size(50, 200))   # 50 RPS, 200ms → 15 connections
-```
-
-### Why Larger Pools Can Be Slower
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px 32px; margin: 24px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">Scenario: Database with <span style="color: #58a6ff; font-weight: 600;">4 CPU cores</span></div>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Without vs With Connection Pooling</h4>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: #23863622; border: 1px solid #23863666; border-radius: 12px; padding: 24px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-        <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
-        <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Pool Size = 10</span>
-      </div>
-      <div style="font-family: monospace; font-size: 12px; line-height: 2;">
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Queries in parallel</span>
-          <span style="color: #7ee787;">4 at a time</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>CPU utilization</span>
-          <span style="color: #7ee787;">100% (all cores busy)</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Memory per connection</span>
-          <span>~10MB</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Total memory</span>
-          <span style="color: #7ee787;">100MB</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Query time</span>
-          <span style="color: #7ee787;">10ms</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9; padding-top: 8px; border-top: 1px solid #30363d; margin-top: 8px;">
-          <span style="font-weight: 600;">Throughput</span>
-          <span style="color: #7ee787; font-weight: 600;">400 queries/sec</span>
-        </div>
+    <div>
+      <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Without Pooling</div>
+      <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; font-size: 14px;">
+        <div style="margin-bottom: 8px;"><strong style="color: #1e293b;">For each request:</strong></div>
+        <ol style="color: #475569; margin: 0; padding-left: 20px;">
+          <li>Create new TCP connection (30-50ms)</li>
+          <li>TLS handshake (10-50ms)</li>
+          <li>Database authentication (5-20ms)</li>
+          <li>Execute query (5ms)</li>
+          <li>Close connection (5ms)</li>
+        </ol>
+        <div style="margin-top: 12px; color: #dc2626; font-weight: 600;">Total: 55-130ms per request!</div>
       </div>
     </div>
-    <div style="background: #f8514922; border: 1px solid #f8514966; border-radius: 12px; padding: 24px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-        <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
-        <span style="color: #f85149; font-weight: 600; font-size: 16px;">Pool Size = 200</span>
+    <div>
+      <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">With Pooling</div>
+      <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border: 1px solid #bbf7d0; font-size: 14px;">
+        <div style="margin-bottom: 8px;"><strong style="color: #1e293b;">For each request:</strong></div>
+        <ol style="color: #475569; margin: 0; padding-left: 20px;">
+          <li>Borrow connection from pool (0.1ms)</li>
+          <li>Execute query (5ms)</li>
+          <li>Return connection to pool (0.1ms)</li>
+        </ol>
+        <div style="margin-top: 12px; color: #16a34a; font-weight: 600;">Total: ~5ms per request!</div>
       </div>
-      <div style="font-family: monospace; font-size: 12px; line-height: 2;">
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Queries in parallel</span>
-          <span style="color: #f85149;">200 competing for 4 cores</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>CPU utilization</span>
-          <span style="color: #f0883e;">100% (context switching!)</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Memory per connection</span>
-          <span>~10MB</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Total memory</span>
-          <span style="color: #f85149;">2GB (may swap)</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9;">
-          <span>Query time</span>
-          <span style="color: #f85149;">50ms</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: #c9d1d9; padding-top: 8px; border-top: 1px solid #30363d; margin-top: 8px;">
-          <span style="font-weight: 600;">Throughput</span>
-          <span style="color: #f85149; font-weight: 600;">80 queries/sec (SLOWER!)</span>
-        </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Why This Matters
+
+### Real Company Examples
+
+**Uber** processes millions of database queries per second. Without connection pooling, they would need to create millions of TCP connections per second, overwhelming their database servers.
+
+**Netflix** uses connection pooling to maintain thousands of connections to their Cassandra clusters. Each connection can handle many queries, enabling their massive scale.
+
+**Stripe** pools connections to their PostgreSQL databases. During payment spikes (like Black Friday), pooling prevents database connection exhaustion.
+
+**Shopify** experienced major outages early on due to connection pool exhaustion. They now use PgBouncer to efficiently pool connections across thousands of application servers.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Connection Creation Cost</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px;">
+      <strong style="color: #1e293b;">Database Connection (PostgreSQL)</strong>
+      <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+        <li>TCP handshake: 0.5-50ms</li>
+        <li>TLS handshake: 10-50ms</li>
+        <li>Authentication: 5-50ms</li>
+        <li>Session setup: 2-5ms</li>
+      </ul>
+      <div style="margin-top: 12px; color: #dc2626; font-size: 13px;">Total: 18-155ms per connection</div>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px;">
+      <strong style="color: #1e293b;">HTTP Connection (with TLS)</strong>
+      <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+        <li>DNS lookup: 20-200ms</li>
+        <li>TCP handshake: 30ms (1 RTT)</li>
+        <li>TLS handshake: 60ms (2 RTTs)</li>
+      </ul>
+      <div style="margin-top: 12px; color: #dc2626; font-size: 13px;">Total: 110-290ms before first byte!</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## How It Works
+
+### Pool Lifecycle
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Connection Pool States</h4>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Initialization</strong>
+        <span style="color: #475569; font-size: 14px;"> - Create minimum number of connections at startup</span>
       </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Checkout</strong>
+        <span style="color: #475569; font-size: 14px;"> - Application requests connection, pool provides an idle one</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">In Use</strong>
+        <span style="color: #475569; font-size: 14px;"> - Application executes queries on the borrowed connection</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Return</strong>
+        <span style="color: #475569; font-size: 14px;"> - Application returns connection to pool for reuse</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">5</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Maintenance</strong>
+        <span style="color: #475569; font-size: 14px;"> - Validate connections, evict stale ones, maintain min/max</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Pool Sizing: The Counterintuitive Truth
+
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #92400e; margin-top: 0;">Smaller Pools Are Often Faster</h4>
+  <p style="color: #78350f; margin: 0 0 16px 0;">More connections does NOT mean better performance. Here's why:</p>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #16a34a;">Pool Size = 10</strong>
+      <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+        <li>4 queries run in parallel (4 CPU cores)</li>
+        <li>6 queries wait in queue</li>
+        <li>Each query: 10ms</li>
+        <li>No context switching overhead</li>
+        <li><strong>Throughput: 400 queries/sec</strong></li>
+      </ul>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #dc2626;">Pool Size = 200</strong>
+      <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+        <li>200 queries competing for 4 cores</li>
+        <li>Massive context switching</li>
+        <li>Each query: 50ms (5x slower)</li>
+        <li>2GB memory for connections</li>
+        <li><strong>Throughput: 80 queries/sec</strong></li>
+      </ul>
     </div>
   </div>
 </div>
@@ -290,36 +156,79 @@ print(calculate_optimal_pool_size(50, 200))   # 50 RPS, 200ms → 15 connections
 ### The HikariCP Formula (Production Proven)
 
 ```
-connections = (core_count * 2) + effective_spindle_count
+optimal_connections = (CPU_cores * 2) + effective_spindle_count
 
-For SSD:
-  connections = (CPU cores * 2) + 1
+For SSD: connections = (CPU_cores * 2) + 1
 
-Example:
-  8-core database server with SSD
-  connections = (8 * 2) + 1 = 17 connections
-
-This has been validated by real-world PostgreSQL benchmarking.
+Example: 8-core database with SSD
+connections = (8 * 2) + 1 = 17 connections
 ```
+
+This formula has been validated by extensive real-world PostgreSQL benchmarking.
 
 ---
 
-## Database Connection Pool Implementation
+## Real-Life Failure Story
 
-### Python - Production Database Pool
+### The Shopify Black Friday Outage (2014)
+
+**What Happened:** During Black Friday, Shopify's entire platform went down for hours. Merchants couldn't process sales during the biggest shopping day of the year.
+
+**The Timeline:**
+1. Traffic spiked 10x normal as Black Friday began
+2. Application servers needed more database connections
+3. Each server opened maximum allowed connections
+4. PostgreSQL hit max_connections limit (typically 100-300)
+5. New application server instances launched (auto-scaling)
+6. New servers couldn't get database connections
+7. Existing connections were held too long waiting for slow queries
+8. Connection timeout cascade brought down the entire platform
+
+**Root Cause:** No connection pooler between application and database. Each application server managed its own connections, and they couldn't share.
+
+**How They Fixed It:**
+1. **Immediate:** Increased PostgreSQL max_connections (temporary fix)
+2. **Short-term:** Deployed PgBouncer as connection pooler
+3. **Long-term:**
+   - Transaction-mode pooling (connections released after each transaction)
+   - Connection limits per application
+   - Query timeouts to release stuck connections
+   - Sharding to distribute load
+
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #92400e; margin-top: 0;">The Math That Failed</h4>
+  <ul style="color: #78350f; margin: 0; padding-left: 20px;">
+    <li>20 application servers x 20 connections each = 400 connections</li>
+    <li>PostgreSQL max_connections = 200</li>
+    <li>Auto-scaling added 30 more servers</li>
+    <li>50 servers x 20 connections = 1000 connections needed</li>
+    <li>Result: Complete connection exhaustion</li>
+  </ul>
+</div>
+
+---
+
+## Implementation
+
+### Python - Production Connection Pool
 
 ```python
 import time
 import threading
 import logging
-from queue import Queue, Empty, Full
+from queue import Queue, Empty
 from dataclasses import dataclass, field
 from typing import Optional, Callable, Any, List
 from contextlib import contextmanager
-import psycopg2
-from psycopg2 import pool as pg_pool
+from enum import Enum
 
 logger = logging.getLogger(__name__)
+
+
+class ConnectionState(Enum):
+    IDLE = "idle"
+    IN_USE = "in_use"
+    INVALID = "invalid"
 
 
 @dataclass
@@ -327,77 +236,89 @@ class PoolConfig:
     """Connection pool configuration."""
     min_connections: int = 2
     max_connections: int = 10
-    connection_timeout_seconds: float = 30.0
-    idle_timeout_seconds: float = 600.0  # 10 minutes
-    max_lifetime_seconds: float = 1800.0  # 30 minutes
-    validation_interval_seconds: float = 30.0
+    connection_timeout: float = 30.0  # Max wait time to get connection
+    idle_timeout: float = 600.0  # Close connections idle this long
+    max_lifetime: float = 1800.0  # Max age of connection
+    validation_interval: float = 30.0  # Validate idle connections
     validation_query: str = "SELECT 1"
 
 
 @dataclass
 class PooledConnection:
-    """Wrapper around a database connection."""
+    """Wrapper around a database connection with metadata."""
     connection: Any
     created_at: float = field(default_factory=time.time)
     last_used_at: float = field(default_factory=time.time)
     last_validated_at: float = field(default_factory=time.time)
-    in_use: bool = False
+    state: ConnectionState = ConnectionState.IDLE
+    use_count: int = 0
 
     def is_expired(self, max_lifetime: float) -> bool:
+        """Check if connection has exceeded max lifetime."""
         return time.time() - self.created_at > max_lifetime
 
     def is_idle_too_long(self, idle_timeout: float) -> bool:
+        """Check if connection has been idle too long."""
         return time.time() - self.last_used_at > idle_timeout
 
-    def needs_validation(self, validation_interval: float) -> bool:
-        return time.time() - self.last_validated_at > validation_interval
+    def needs_validation(self, interval: float) -> bool:
+        """Check if connection needs validation."""
+        return time.time() - self.last_validated_at > interval
 
 
 @dataclass
-class PoolMetrics:
-    """Pool metrics for monitoring."""
+class PoolStats:
+    """Pool statistics for monitoring."""
     total_connections: int = 0
     active_connections: int = 0
     idle_connections: int = 0
-    waiting_threads: int = 0
+    pending_requests: int = 0
     total_checkouts: int = 0
     total_timeouts: int = 0
     total_validations: int = 0
+    total_creations: int = 0
     total_evictions: int = 0
+    avg_checkout_time_ms: float = 0.0
 
 
 class ConnectionPool:
     """
-    Production-grade database connection pool.
+    Production-grade connection pool.
 
     Features:
-    - Connection validation (test before use)
+    - Connection validation before use
     - Idle connection eviction
     - Maximum lifetime enforcement
-    - Metrics and monitoring
+    - Health monitoring
     - Thread-safe operations
     """
 
     def __init__(self,
                  connection_factory: Callable[[], Any],
-                 config: PoolConfig = None):
+                 config: Optional[PoolConfig] = None):
         self.connection_factory = connection_factory
         self.config = config or PoolConfig()
-        self.metrics = PoolMetrics()
 
         self._pool: List[PooledConnection] = []
         self._lock = threading.Lock()
-        self._not_empty = threading.Condition(self._lock)
-
+        self._available = threading.Condition(self._lock)
         self._closed = False
-        self._maintenance_thread: Optional[threading.Thread] = None
 
-        # Initialize minimum connections
-        self._initialize_pool()
-        self._start_maintenance()
+        self._stats = PoolStats()
+        self._checkout_times: List[float] = []
 
-    def _initialize_pool(self):
-        """Create minimum connections on startup."""
+        # Initialize pool
+        self._initialize()
+
+        # Start maintenance thread
+        self._maintenance_thread = threading.Thread(
+            target=self._maintenance_loop,
+            daemon=True
+        )
+        self._maintenance_thread.start()
+
+    def _initialize(self):
+        """Create minimum connections at startup."""
         for _ in range(self.config.min_connections):
             try:
                 conn = self._create_connection()
@@ -408,36 +329,37 @@ class ConnectionPool:
     def _create_connection(self) -> PooledConnection:
         """Create a new pooled connection."""
         raw_conn = self.connection_factory()
+        self._stats.total_creations += 1
         return PooledConnection(connection=raw_conn)
 
-    def _validate_connection(self, pooled_conn: PooledConnection) -> bool:
-        """Validate that connection is still usable."""
+    def _validate_connection(self, pooled: PooledConnection) -> bool:
+        """Test if connection is still valid."""
         try:
-            cursor = pooled_conn.connection.cursor()
+            cursor = pooled.connection.cursor()
             cursor.execute(self.config.validation_query)
             cursor.fetchone()
             cursor.close()
-            pooled_conn.last_validated_at = time.time()
-            self.metrics.total_validations += 1
+            pooled.last_validated_at = time.time()
+            self._stats.total_validations += 1
             return True
         except Exception as e:
             logger.warning(f"Connection validation failed: {e}")
             return False
 
-    def _close_connection(self, pooled_conn: PooledConnection):
-        """Close and cleanup a connection."""
+    def _close_connection(self, pooled: PooledConnection):
+        """Close and remove a connection."""
         try:
-            pooled_conn.connection.close()
+            pooled.connection.close()
         except Exception as e:
             logger.warning(f"Error closing connection: {e}")
-        self.metrics.total_evictions += 1
+        self._stats.total_evictions += 1
 
-    def get_connection(self, timeout: float = None) -> Any:
+    def get(self, timeout: Optional[float] = None) -> Any:
         """
         Get a connection from the pool.
 
         Args:
-            timeout: Max seconds to wait. None uses config default.
+            timeout: Max seconds to wait. Uses config default if None.
 
         Returns:
             A database connection.
@@ -448,172 +370,278 @@ class ConnectionPool:
         if self._closed:
             raise RuntimeError("Pool is closed")
 
-        timeout = timeout or self.config.connection_timeout_seconds
-        deadline = time.time() + timeout
+        timeout = timeout or self.config.connection_timeout
+        start_time = time.time()
+        deadline = start_time + timeout
 
-        with self._not_empty:
+        with self._available:
             while True:
-                # Try to find an idle connection
-                for pooled_conn in self._pool:
-                    if not pooled_conn.in_use:
-                        # Check if connection is still valid
-                        if pooled_conn.is_expired(self.config.max_lifetime_seconds):
-                            self._close_connection(pooled_conn)
-                            self._pool.remove(pooled_conn)
+                # Try to find a valid idle connection
+                for pooled in self._pool:
+                    if pooled.state != ConnectionState.IDLE:
+                        continue
+
+                    # Check expiration
+                    if pooled.is_expired(self.config.max_lifetime):
+                        pooled.state = ConnectionState.INVALID
+                        continue
+
+                    # Validate if needed
+                    if pooled.needs_validation(self.config.validation_interval):
+                        if not self._validate_connection(pooled):
+                            pooled.state = ConnectionState.INVALID
                             continue
 
-                        if pooled_conn.needs_validation(
-                            self.config.validation_interval_seconds
-                        ):
-                            if not self._validate_connection(pooled_conn):
-                                self._close_connection(pooled_conn)
-                                self._pool.remove(pooled_conn)
-                                continue
+                    # Found a good connection
+                    pooled.state = ConnectionState.IN_USE
+                    pooled.last_used_at = time.time()
+                    pooled.use_count += 1
 
-                        # Connection is good, mark as in-use
-                        pooled_conn.in_use = True
-                        pooled_conn.last_used_at = time.time()
-                        self.metrics.total_checkouts += 1
-                        self._update_metrics()
-                        return pooled_conn.connection
+                    self._stats.total_checkouts += 1
+                    checkout_time = (time.time() - start_time) * 1000
+                    self._record_checkout_time(checkout_time)
+                    self._update_stats()
 
-                # No idle connection, can we create one?
+                    return pooled.connection
+
+                # Remove invalid connections
+                self._pool = [p for p in self._pool
+                             if p.state != ConnectionState.INVALID]
+
+                # Can we create a new connection?
                 if len(self._pool) < self.config.max_connections:
                     try:
                         new_conn = self._create_connection()
-                        new_conn.in_use = True
+                        new_conn.state = ConnectionState.IN_USE
+                        new_conn.use_count = 1
                         self._pool.append(new_conn)
-                        self.metrics.total_checkouts += 1
-                        self._update_metrics()
+
+                        self._stats.total_checkouts += 1
+                        checkout_time = (time.time() - start_time) * 1000
+                        self._record_checkout_time(checkout_time)
+                        self._update_stats()
+
                         return new_conn.connection
                     except Exception as e:
                         logger.error(f"Failed to create connection: {e}")
 
-                # Must wait for a connection
+                # Wait for a connection to become available
                 remaining = deadline - time.time()
                 if remaining <= 0:
-                    self.metrics.total_timeouts += 1
+                    self._stats.total_timeouts += 1
                     raise TimeoutError(
-                        f"Could not get connection within {timeout}s"
+                        f"Could not get connection within {timeout}s. "
+                        f"Pool size: {len(self._pool)}, "
+                        f"Active: {self._stats.active_connections}"
                     )
 
-                self.metrics.waiting_threads += 1
-                try:
-                    self._not_empty.wait(timeout=remaining)
-                finally:
-                    self.metrics.waiting_threads -= 1
+                self._stats.pending_requests += 1
+                self._available.wait(timeout=remaining)
+                self._stats.pending_requests -= 1
 
-    def return_connection(self, connection: Any, is_healthy: bool = True):
-        """Return a connection to the pool."""
-        with self._not_empty:
-            for pooled_conn in self._pool:
-                if pooled_conn.connection is connection:
-                    if is_healthy:
-                        pooled_conn.in_use = False
-                        pooled_conn.last_used_at = time.time()
+    def release(self, connection: Any, is_valid: bool = True):
+        """
+        Return a connection to the pool.
+
+        Args:
+            connection: The connection to return.
+            is_valid: Whether the connection is still usable.
+        """
+        with self._available:
+            for pooled in self._pool:
+                if pooled.connection is connection:
+                    if is_valid:
+                        pooled.state = ConnectionState.IDLE
+                        pooled.last_used_at = time.time()
                     else:
-                        # Connection is broken, remove it
-                        self._close_connection(pooled_conn)
-                        self._pool.remove(pooled_conn)
+                        pooled.state = ConnectionState.INVALID
 
-                    self._update_metrics()
-                    self._not_empty.notify()
+                    self._update_stats()
+                    self._available.notify()
                     return
 
-            # Connection not from this pool (should not happen)
+            # Connection not from this pool
             logger.warning("Returned connection not from this pool")
 
     @contextmanager
     def connection(self):
-        """Context manager for connection checkout/return."""
+        """
+        Context manager for safe connection checkout/release.
+
+        Usage:
+            with pool.connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM users")
+        """
         conn = None
-        is_healthy = True
+        is_valid = True
         try:
-            conn = self.get_connection()
+            conn = self.get()
             yield conn
         except Exception as e:
-            is_healthy = False
+            is_valid = False
             raise
         finally:
-            if conn:
-                self.return_connection(conn, is_healthy)
+            if conn is not None:
+                self.release(conn, is_valid)
 
-    def _update_metrics(self):
-        """Update pool metrics."""
-        active = sum(1 for c in self._pool if c.in_use)
-        self.metrics.total_connections = len(self._pool)
-        self.metrics.active_connections = active
-        self.metrics.idle_connections = len(self._pool) - active
+    def _record_checkout_time(self, time_ms: float):
+        """Record checkout time for statistics."""
+        self._checkout_times.append(time_ms)
+        # Keep only last 1000 measurements
+        if len(self._checkout_times) > 1000:
+            self._checkout_times = self._checkout_times[-1000:]
 
-    def _start_maintenance(self):
-        """Start background maintenance thread."""
-        def maintenance_loop():
-            while not self._closed:
-                time.sleep(60)  # Run every minute
-                self._run_maintenance()
+        if self._checkout_times:
+            self._stats.avg_checkout_time_ms = (
+                sum(self._checkout_times) / len(self._checkout_times)
+            )
 
-        self._maintenance_thread = threading.Thread(
-            target=maintenance_loop, daemon=True
-        )
-        self._maintenance_thread.start()
+    def _update_stats(self):
+        """Update pool statistics."""
+        active = sum(1 for p in self._pool if p.state == ConnectionState.IN_USE)
+        idle = sum(1 for p in self._pool if p.state == ConnectionState.IDLE)
 
-    def _run_maintenance(self):
-        """Evict idle and expired connections."""
+        self._stats.total_connections = len(self._pool)
+        self._stats.active_connections = active
+        self._stats.idle_connections = idle
+
+    def _maintenance_loop(self):
+        """Background maintenance: evict idle/expired connections."""
+        while not self._closed:
+            time.sleep(60)  # Run every minute
+
+            if self._closed:
+                break
+
+            with self._lock:
+                to_evict = []
+
+                for pooled in self._pool:
+                    if pooled.state != ConnectionState.IDLE:
+                        continue
+
+                    # Check expiration
+                    if pooled.is_expired(self.config.max_lifetime):
+                        to_evict.append(pooled)
+                        continue
+
+                    # Check idle timeout (but keep minimum)
+                    idle_count = sum(1 for p in self._pool
+                                   if p.state == ConnectionState.IDLE)
+                    if (idle_count > self.config.min_connections and
+                        pooled.is_idle_too_long(self.config.idle_timeout)):
+                        to_evict.append(pooled)
+
+                for pooled in to_evict:
+                    self._close_connection(pooled)
+                    self._pool.remove(pooled)
+
+                # Replenish to minimum
+                while len(self._pool) < self.config.min_connections:
+                    try:
+                        conn = self._create_connection()
+                        self._pool.append(conn)
+                    except Exception as e:
+                        logger.error(f"Failed to replenish pool: {e}")
+                        break
+
+                self._update_stats()
+
+    def get_stats(self) -> dict:
+        """Get current pool statistics."""
         with self._lock:
-            to_remove = []
-            for pooled_conn in self._pool:
-                if pooled_conn.in_use:
-                    continue
-
-                # Check expiration
-                if pooled_conn.is_expired(self.config.max_lifetime_seconds):
-                    to_remove.append(pooled_conn)
-                    continue
-
-                # Check idle timeout (but keep minimum)
-                idle_count = sum(1 for c in self._pool if not c.in_use)
-                if (idle_count > self.config.min_connections and
-                    pooled_conn.is_idle_too_long(self.config.idle_timeout_seconds)):
-                    to_remove.append(pooled_conn)
-
-            for pooled_conn in to_remove:
-                self._close_connection(pooled_conn)
-                self._pool.remove(pooled_conn)
-
-            self._update_metrics()
-
-    def get_metrics(self) -> dict:
-        """Get current pool metrics."""
-        with self._lock:
-            self._update_metrics()
+            self._update_stats()
             return {
-                "total_connections": self.metrics.total_connections,
-                "active_connections": self.metrics.active_connections,
-                "idle_connections": self.metrics.idle_connections,
-                "waiting_threads": self.metrics.waiting_threads,
-                "total_checkouts": self.metrics.total_checkouts,
-                "total_timeouts": self.metrics.total_timeouts,
-                "total_validations": self.metrics.total_validations,
-                "total_evictions": self.metrics.total_evictions,
-                "pool_utilization": (
-                    self.metrics.active_connections / self.config.max_connections
+                "total_connections": self._stats.total_connections,
+                "active_connections": self._stats.active_connections,
+                "idle_connections": self._stats.idle_connections,
+                "pending_requests": self._stats.pending_requests,
+                "total_checkouts": self._stats.total_checkouts,
+                "total_timeouts": self._stats.total_timeouts,
+                "total_creations": self._stats.total_creations,
+                "total_evictions": self._stats.total_evictions,
+                "avg_checkout_time_ms": self._stats.avg_checkout_time_ms,
+                "utilization": (
+                    self._stats.active_connections / self.config.max_connections
                     if self.config.max_connections > 0 else 0
-                ),
+                )
             }
 
     def close(self):
         """Close all connections and shutdown pool."""
         self._closed = True
+
         with self._lock:
-            for pooled_conn in self._pool:
-                self._close_connection(pooled_conn)
+            for pooled in self._pool:
+                try:
+                    pooled.connection.close()
+                except Exception:
+                    pass
             self._pool.clear()
+            self._available.notify_all()
 
 
-# ============ Usage Examples ============
+# HTTP Connection Pool Example
+class HTTPConnectionPool:
+    """
+    HTTP connection pool using requests Session.
 
-def create_postgres_pool():
+    Reuses TCP connections for multiple HTTP requests.
+    """
+
+    def __init__(self,
+                 base_url: str,
+                 pool_connections: int = 10,
+                 pool_maxsize: int = 10,
+                 max_retries: int = 3):
+        import requests
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+
+        self.base_url = base_url.rstrip('/')
+
+        # Configure retry strategy
+        retry_strategy = Retry(
+            total=max_retries,
+            backoff_factor=0.5,
+            status_forcelist=[429, 500, 502, 503, 504],
+        )
+
+        # Configure connection pool
+        adapter = HTTPAdapter(
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
+            max_retries=retry_strategy,
+            pool_block=True  # Block when pool exhausted
+        )
+
+        self.session = requests.Session()
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+
+    def get(self, path: str, **kwargs) -> dict:
+        """Make GET request using pooled connection."""
+        response = self.session.get(f"{self.base_url}{path}", **kwargs)
+        response.raise_for_status()
+        return response.json()
+
+    def post(self, path: str, data: dict, **kwargs) -> dict:
+        """Make POST request using pooled connection."""
+        response = self.session.post(f"{self.base_url}{path}", json=data, **kwargs)
+        response.raise_for_status()
+        return response.json()
+
+    def close(self):
+        """Close all connections."""
+        self.session.close()
+
+
+# Usage example
+def create_database_pool():
     """Create a PostgreSQL connection pool."""
+    import psycopg2
+
     def connection_factory():
         return psycopg2.connect(
             host="localhost",
@@ -621,850 +649,231 @@ def create_postgres_pool():
             database="mydb",
             user="myuser",
             password="mypassword",
-            connect_timeout=10,
+            connect_timeout=10
         )
 
-    pool = ConnectionPool(
+    return ConnectionPool(
         connection_factory=connection_factory,
         config=PoolConfig(
             min_connections=2,
             max_connections=10,
-            connection_timeout_seconds=5.0,
-            idle_timeout_seconds=300.0,  # 5 minutes
-            max_lifetime_seconds=1800.0,  # 30 minutes
+            connection_timeout=5.0,
+            idle_timeout=300.0,
+            max_lifetime=1800.0
         )
     )
-    return pool
 
 
-# Usage with context manager
-pool = create_postgres_pool()
+# Using the pool
+pool = create_database_pool()
 
+# With context manager (recommended)
 with pool.connection() as conn:
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     user = cursor.fetchone()
     cursor.close()
+# Connection automatically returned
 
-# Connection automatically returned to pool
-
-
-# Manual usage (not recommended)
-conn = pool.get_connection()
-try:
-    # Use connection
-    pass
-finally:
-    pool.return_connection(conn)
-```
-
-### Go - Production Connection Pool
-
-```go
-package pool
-
-import (
-	"context"
-	"database/sql"
-	"errors"
-	"sync"
-	"time"
-
-	_ "github.com/lib/pq"
-)
-
-var (
-	ErrPoolClosed  = errors.New("pool is closed")
-	ErrPoolTimeout = errors.New("connection pool timeout")
-)
-
-// Config holds pool configuration
-type Config struct {
-	MinConnections       int
-	MaxConnections       int
-	ConnectionTimeout    time.Duration
-	IdleTimeout          time.Duration
-	MaxLifetime          time.Duration
-	ValidationInterval   time.Duration
-	ValidationQuery      string
-}
-
-// DefaultConfig returns sensible defaults
-func DefaultConfig() Config {
-	return Config{
-		MinConnections:       2,
-		MaxConnections:       10,
-		ConnectionTimeout:    30 * time.Second,
-		IdleTimeout:          10 * time.Minute,
-		MaxLifetime:          30 * time.Minute,
-		ValidationInterval:   30 * time.Second,
-		ValidationQuery:      "SELECT 1",
-	}
-}
-
-// PooledConn wraps a database connection
-type PooledConn struct {
-	conn          *sql.Conn
-	createdAt     time.Time
-	lastUsedAt    time.Time
-	lastValidated time.Time
-	inUse         bool
-}
-
-// Metrics holds pool metrics
-type Metrics struct {
-	TotalConnections int64
-	ActiveConns      int64
-	IdleConns        int64
-	WaitingCount     int64
-	TotalCheckouts   int64
-	TotalTimeouts    int64
-	TotalEvictions   int64
-}
-
-// Pool implements a connection pool
-type Pool struct {
-	db      *sql.DB
-	config  Config
-	metrics Metrics
-
-	pool   []*PooledConn
-	mu     sync.Mutex
-	cond   *sync.Cond
-	closed bool
-}
-
-// New creates a new connection pool
-func New(dsn string, config Config) (*Pool, error) {
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	// Configure underlying sql.DB pool
-	db.SetMaxOpenConns(config.MaxConnections)
-	db.SetMaxIdleConns(config.MinConnections)
-	db.SetConnMaxLifetime(config.MaxLifetime)
-	db.SetConnMaxIdleTime(config.IdleTimeout)
-
-	p := &Pool{
-		db:     db,
-		config: config,
-		pool:   make([]*PooledConn, 0, config.MaxConnections),
-	}
-	p.cond = sync.NewCond(&p.mu)
-
-	// Initialize minimum connections
-	if err := p.initialize(); err != nil {
-		return nil, err
-	}
-
-	// Start maintenance goroutine
-	go p.maintenance()
-
-	return p, nil
-}
-
-func (p *Pool) initialize() error {
-	ctx := context.Background()
-	for i := 0; i < p.config.MinConnections; i++ {
-		conn, err := p.createConnection(ctx)
-		if err != nil {
-			return err
-		}
-		p.pool = append(p.pool, conn)
-	}
-	return nil
-}
-
-func (p *Pool) createConnection(ctx context.Context) (*PooledConn, error) {
-	conn, err := p.db.Conn(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &PooledConn{
-		conn:          conn,
-		createdAt:     time.Now(),
-		lastUsedAt:    time.Now(),
-		lastValidated: time.Now(),
-		inUse:         false,
-	}, nil
-}
-
-func (p *Pool) validateConnection(ctx context.Context, pc *PooledConn) bool {
-	err := pc.conn.PingContext(ctx)
-	if err != nil {
-		return false
-	}
-	pc.lastValidated = time.Now()
-	return true
-}
-
-// Get acquires a connection from the pool
-func (p *Pool) Get(ctx context.Context) (*sql.Conn, error) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	if p.closed {
-		return nil, ErrPoolClosed
-	}
-
-	deadline, hasDeadline := ctx.Deadline()
-	if !hasDeadline {
-		deadline = time.Now().Add(p.config.ConnectionTimeout)
-	}
-
-	for {
-		// Check context
-		select {
-		case <-ctx.Done():
-			p.metrics.TotalTimeouts++
-			return nil, ctx.Err()
-		default:
-		}
-
-		// Try to find idle connection
-		for i, pc := range p.pool {
-			if pc.inUse {
-				continue
-			}
-
-			// Check expiration
-			if time.Since(pc.createdAt) > p.config.MaxLifetime {
-				p.evictConnection(i)
-				continue
-			}
-
-			// Validate if needed
-			if time.Since(pc.lastValidated) > p.config.ValidationInterval {
-				if !p.validateConnection(ctx, pc) {
-					p.evictConnection(i)
-					continue
-				}
-			}
-
-			pc.inUse = true
-			pc.lastUsedAt = time.Now()
-			p.metrics.TotalCheckouts++
-			p.updateMetrics()
-			return pc.conn, nil
-		}
-
-		// Can we create a new connection?
-		if len(p.pool) < p.config.MaxConnections {
-			conn, err := p.createConnection(ctx)
-			if err == nil {
-				conn.inUse = true
-				p.pool = append(p.pool, conn)
-				p.metrics.TotalCheckouts++
-				p.updateMetrics()
-				return conn.conn, nil
-			}
-		}
-
-		// Wait for connection
-		if time.Now().After(deadline) {
-			p.metrics.TotalTimeouts++
-			return nil, ErrPoolTimeout
-		}
-
-		p.metrics.WaitingCount++
-		p.cond.Wait()
-		p.metrics.WaitingCount--
-	}
-}
-
-// Put returns a connection to the pool
-func (p *Pool) Put(conn *sql.Conn, healthy bool) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	for i, pc := range p.pool {
-		if pc.conn == conn {
-			if healthy {
-				pc.inUse = false
-				pc.lastUsedAt = time.Now()
-			} else {
-				p.evictConnection(i)
-			}
-			p.updateMetrics()
-			p.cond.Signal()
-			return
-		}
-	}
-}
-
-func (p *Pool) evictConnection(index int) {
-	pc := p.pool[index]
-	pc.conn.Close()
-	p.pool = append(p.pool[:index], p.pool[index+1:]...)
-	p.metrics.TotalEvictions++
-}
-
-func (p *Pool) updateMetrics() {
-	active := int64(0)
-	for _, pc := range p.pool {
-		if pc.inUse {
-			active++
-		}
-	}
-	p.metrics.TotalConnections = int64(len(p.pool))
-	p.metrics.ActiveConns = active
-	p.metrics.IdleConns = int64(len(p.pool)) - active
-}
-
-func (p *Pool) maintenance() {
-	ticker := time.NewTicker(time.Minute)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		p.mu.Lock()
-		if p.closed {
-			p.mu.Unlock()
-			return
-		}
-
-		// Evict expired and idle connections
-		for i := len(p.pool) - 1; i >= 0; i-- {
-			pc := p.pool[i]
-			if pc.inUse {
-				continue
-			}
-
-			shouldEvict := time.Since(pc.createdAt) > p.config.MaxLifetime
-
-			idleCount := 0
-			for _, c := range p.pool {
-				if !c.inUse {
-					idleCount++
-				}
-			}
-
-			if !shouldEvict && idleCount > p.config.MinConnections {
-				shouldEvict = time.Since(pc.lastUsedAt) > p.config.IdleTimeout
-			}
-
-			if shouldEvict {
-				p.evictConnection(i)
-			}
-		}
-
-		p.updateMetrics()
-		p.mu.Unlock()
-	}
-}
-
-// GetMetrics returns current pool metrics
-func (p *Pool) GetMetrics() Metrics {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.updateMetrics()
-	return p.metrics
-}
-
-// Close shuts down the pool
-func (p *Pool) Close() error {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	p.closed = true
-	for _, pc := range p.pool {
-		pc.conn.Close()
-	}
-	p.pool = nil
-	p.cond.Broadcast()
-
-	return p.db.Close()
-}
+# Check pool health
+stats = pool.get_stats()
+print(f"Pool utilization: {stats['utilization']:.1%}")
+print(f"Active connections: {stats['active_connections']}")
 ```
 
 ---
 
-## HTTP Connection Pooling
+## Interview Questions
 
-### Python - HTTP Pool with Retry
+### Q1: What's the optimal connection pool size?
 
+**Answer:**
+Use the HikariCP formula: `connections = (CPU_cores * 2) + effective_spindle_count`
+
+For most modern systems with SSDs: `connections = (cores * 2) + 1`
+
+Example: 8-core database server -> 17 connections
+
+This seems counterintuitively small, but:
+- Database can only execute `CPU_cores` queries in parallel
+- More connections = more context switching = slower
+- Memory overhead per connection (10-30MB)
+
+Start small, increase only with evidence of wait time issues.
+
+### Q2: How do you handle connection leaks?
+
+**Answer:**
+1. **Always use context managers**: `with pool.connection() as conn:`
+2. **Set connection timeout**: Close connections held too long
+3. **Monitoring**: Alert when active connections stay high
+4. **Connection tracking**: Log where connections are checked out
+5. **Periodic validation**: Test and evict stale connections
+
+Common leak pattern:
 ```python
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+# BAD - leak if exception occurs
+conn = pool.get()
+cursor = conn.cursor()
+cursor.execute(query)  # If this throws, connection never returned!
 
-
-def create_http_session(
-    max_retries: int = 3,
-    backoff_factor: float = 0.5,
-    pool_connections: int = 10,
-    pool_maxsize: int = 10,
-    pool_block: bool = True,
-) -> requests.Session:
-    """
-    Create an HTTP session with connection pooling and retry.
-
-    Args:
-        max_retries: Number of retries for failed requests
-        backoff_factor: Exponential backoff factor
-        pool_connections: Number of connection pools to cache
-        pool_maxsize: Maximum connections per pool
-        pool_block: Block when pool is full (vs creating new connections)
-    """
-    session = requests.Session()
-
-    retry_strategy = Retry(
-        total=max_retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["HEAD", "GET", "PUT", "DELETE", "OPTIONS", "TRACE"],
-    )
-
-    adapter = HTTPAdapter(
-        max_retries=retry_strategy,
-        pool_connections=pool_connections,
-        pool_maxsize=pool_maxsize,
-        pool_block=pool_block,
-    )
-
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-
-    return session
-
-
-# Global session for reuse (important!)
-_http_session = None
-
-def get_http_session() -> requests.Session:
-    global _http_session
-    if _http_session is None:
-        _http_session = create_http_session()
-    return _http_session
-
-
-# Usage
-def fetch_user(user_id: int) -> dict:
-    session = get_http_session()  # Reuse session!
-    response = session.get(
-        f"https://api.example.com/users/{user_id}",
-        timeout=10,
-    )
-    response.raise_for_status()
-    return response.json()
+# GOOD - always returns connection
+with pool.connection() as conn:
+    cursor = conn.cursor()
+    cursor.execute(query)
 ```
 
-### Go - HTTP Client with Connection Pool
+### Q3: Connection pool vs Connection multiplexer (like PgBouncer)?
 
-```go
-package main
+**Answer:**
+**Application Pool** (HikariCP, SQLAlchemy):
+- Lives in your application
+- One pool per application instance
+- Good for single application
 
-import (
-	"context"
-	"net"
-	"net/http"
-	"time"
-)
+**External Pooler** (PgBouncer, ProxySQL):
+- Separate process/service
+- Shared across all application instances
+- Essential for microservices/serverless
 
-// CreateHTTPClient creates an HTTP client with optimized connection pooling
-func CreateHTTPClient() *http.Client {
-	transport := &http.Transport{
-		// Connection pool settings
-		MaxIdleConns:        100,              // Total max idle connections
-		MaxIdleConnsPerHost: 10,               // Max idle connections per host
-		MaxConnsPerHost:     100,              // Max total connections per host
-		IdleConnTimeout:     90 * time.Second, // How long to keep idle conns
+Use external pooler when:
+- Many application instances (100+ servers)
+- Serverless functions (Lambda, Cloud Functions)
+- Need to share connections across services
 
-		// Timeouts
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second, // Connection timeout
-			KeepAlive: 30 * time.Second, // TCP keep-alive
-		}).DialContext,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-		ResponseHeaderTimeout: 30 * time.Second,
+### Q4: What causes "too many connections" errors?
 
-		// Performance
-		DisableCompression: false,
-		ForceAttemptHTTP2:  true,
-	}
+**Answer:**
+1. **Leaks**: Connections not returned to pool
+2. **Pool too large**: Sum of all app pools > database max
+3. **Long transactions**: Holding connections during slow operations
+4. **Unbounded scaling**: Auto-scaling without connection limits
+5. **No pooler**: Each serverless invocation opens new connection
 
-	return &http.Client{
-		Transport: transport,
-		Timeout:   60 * time.Second, // Overall request timeout
-	}
-}
+Fix:
+```python
+# Limit total connections across instances
+# If you have 10 app servers, each should have max_connections = 10
+# Total: 100 < PostgreSQL default of 100
 
-// Global client (create once, reuse everywhere)
-var httpClient = CreateHTTPClient()
-
-// Usage
-func fetchUser(ctx context.Context, userID int) (*User, error) {
-	req, err := http.NewRequestWithContext(
-		ctx,
-		"GET",
-		fmt.Sprintf("https://api.example.com/users/%d", userID),
-		nil,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := httpClient.Do(req)  // Uses connection pool!
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var user User
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
+# Use external pooler for many instances
+# PgBouncer: 10,000 client connections -> 100 database connections
 ```
+
+### Q5: How do you monitor connection pool health?
+
+**Answer:**
+Key metrics:
+1. **Utilization**: active/max (should be <80%)
+2. **Wait time**: How long requests wait for connections
+3. **Timeout count**: Requests that couldn't get connections
+4. **Connection age**: Identify stale connections
+5. **Creation rate**: High rate = possible leaks
+
+Alert thresholds:
+- Utilization > 80% for 5 minutes
+- Wait time P99 > 100ms
+- Any timeouts
+- Connection age > max_lifetime
 
 ---
 
-## Production War Stories
+## Common Mistakes
 
-### War Story 1: The "Pool" That Wasn't
-
-**The Scenario**:
-A Python application using SQLAlchemy reported connection issues under load. They had configured a pool of 20 connections.
-
-**What Happened**:
-```python
-# The problematic code
-def get_user(user_id):
-    engine = create_engine(DATABASE_URL, pool_size=20)  # NEW ENGINE EVERY CALL!
-    with engine.connect() as conn:
-        return conn.execute(query)
-```
-
-Each function call created a NEW engine with its own pool. Under load, they had thousands of connections.
-
-**The Fix**:
-```python
-# Singleton engine
-_engine = None
-
-def get_engine():
-    global _engine
-    if _engine is None:
-        _engine = create_engine(
-            DATABASE_URL,
-            pool_size=5,
-            max_overflow=10,
-            pool_pre_ping=True,
-        )
-    return _engine
-
-def get_user(user_id):
-    with get_engine().connect() as conn:
-        return conn.execute(query)
-```
-
-**20-Year Lesson**: Connection pools must be singletons. Creating a new pool per request defeats the entire purpose.
+<div style="background: #fef2f2; border: 2px solid #fecaca; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Creating pool per request</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Pool must be singleton. Creating new pool = creating new connections.</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Pool size = max_connections</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Leave headroom for admin connections and other applications.</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Holding connections during I/O</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Don't hold connection while calling external APIs or reading files.</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">No validation before use</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Network can kill idle connections. Validate before critical operations.</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Ignoring connection lifetime</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Connections accumulate state. Recycle them periodically.</p>
+    </div>
+  </div>
+</div>
 
 ---
 
-### War Story 2: The Leaky Pool
-
-**The Scenario**:
-A service ran fine for hours, then suddenly all requests started timing out. Restarting fixed it temporarily.
-
-**What Happened**:
-```python
-# Connection leak
-def process_order(order_id):
-    conn = pool.get_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM orders WHERE id = %s", (order_id,))
-        if not cursor.fetchone():
-            return None  # CONNECTION NEVER RETURNED!
-
-        # Process order...
-        cursor.close()
-        pool.return_connection(conn)
-```
-
-The early return path didn't return the connection. Under load, connections leaked until the pool was exhausted.
-
-**The Fix**:
-```python
-def process_order(order_id):
-    with pool.connection() as conn:  # Context manager guarantees return
-        cursor = conn.cursor()
-        try:
-            cursor.execute("SELECT * FROM orders WHERE id = %s", (order_id,))
-            row = cursor.fetchone()
-            if not row:
-                return None  # Connection still returned!
-            # Process order...
-            return result
-        finally:
-            cursor.close()
-```
-
-**20-Year Lesson**: ALWAYS use context managers for connections. Manual get/return is a leak waiting to happen.
-
----
-
-### War Story 3: The Stale Connection
-
-**The Scenario**:
-Intermittent "connection reset" errors, usually after quiet periods (nights, weekends).
-
-**What Happened**:
-1. Connection pooled and idle
-2. Network firewall times out idle TCP connections after 10 minutes
-3. Connection still in pool (looks valid)
-4. Application tries to use "dead" connection
-5. TCP reset error
-
-**The Fix**:
-```python
-pool_config = PoolConfig(
-    # Validate connections before use
-    validation_interval_seconds=30,
-    validation_query="SELECT 1",
-
-    # Evict connections that are idle too long
-    idle_timeout_seconds=300,  # Less than firewall timeout
-
-    # Force new connections periodically
-    max_lifetime_seconds=1800,
-)
-```
-
-**20-Year Lesson**: Network infrastructure can kill connections without telling you. Always validate before use and evict idle connections.
-
----
-
-### War Story 4: The Pool Contention
-
-**The Scenario**:
-Database CPU at 20%, application response times through the roof.
-
-**What Happened**:
-1. Pool size = 100 (because "more is better")
-2. 100 queries running simultaneously
-3. Database had 8 cores
-4. Massive context switching overhead
-5. Each query took 10x longer due to contention
-
-**The Fix**:
-```python
-# Before: pool_size=100 (terrible)
-# After: pool_size=17 (optimal for 8-core DB)
-
-# HikariCP formula: connections = (cores * 2) + 1
-optimal_pool_size = (8 * 2) + 1  # 17 connections
-
-pool_config = PoolConfig(
-    max_connections=optimal_pool_size,
-    connection_timeout_seconds=5,  # Fast fail if overloaded
-)
-```
-
-Result: Throughput increased 5x with a SMALLER pool.
-
-**20-Year Lesson**: Pool sizing is counterintuitive. Measure, don't guess. Start small, increase only with evidence.
-
----
-
-## Monitoring & Alerting
-
-### Key Metrics to Track
-
-```python
-class PoolMonitor:
-    """Export pool metrics to monitoring system."""
-
-    def __init__(self, pool: ConnectionPool, name: str):
-        self.pool = pool
-        self.name = name
-
-    def get_metrics(self) -> dict:
-        metrics = self.pool.get_metrics()
-
-        return {
-            # Pool utilization (should stay < 80%)
-            f"pool_utilization{{name=\"{self.name}\"}}":
-                metrics["pool_utilization"],
-
-            # Connection counts
-            f"pool_connections_total{{name=\"{self.name}\"}}":
-                metrics["total_connections"],
-            f"pool_connections_active{{name=\"{self.name}\"}}":
-                metrics["active_connections"],
-            f"pool_connections_idle{{name=\"{self.name}\"}}":
-                metrics["idle_connections"],
-
-            # Wait queue (should be 0)
-            f"pool_waiting_threads{{name=\"{self.name}\"}}":
-                metrics["waiting_threads"],
-
-            # Error rates
-            f"pool_timeouts_total{{name=\"{self.name}\"}}":
-                metrics["total_timeouts"],
-            f"pool_evictions_total{{name=\"{self.name}\"}}":
-                metrics["total_evictions"],
-        }
-
-
-# Alert rules (pseudo-config)
-ALERT_RULES = """
-- alert: PoolHighUtilization
-  expr: pool_utilization > 0.8
-  for: 5m
-  labels:
-    severity: warning
-  annotations:
-    summary: "Connection pool {{ $labels.name }} at {{ $value | humanizePercentage }} utilization"
-
-- alert: PoolExhausted
-  expr: pool_utilization >= 1.0
-  for: 1m
-  labels:
-    severity: critical
-  annotations:
-    summary: "Connection pool {{ $labels.name }} is exhausted"
-
-- alert: PoolWaitingThreads
-  expr: pool_waiting_threads > 0
-  for: 2m
-  labels:
-    severity: warning
-  annotations:
-    summary: "{{ $value }} threads waiting for connections in {{ $labels.name }}"
-
-- alert: PoolHighTimeouts
-  expr: rate(pool_timeouts_total[5m]) > 0.1
-  for: 5m
-  labels:
-    severity: critical
-  annotations:
-    summary: "High timeout rate on pool {{ $labels.name }}"
-"""
-```
-
----
-
-## Expert Configuration Guide
-
-### Database Connection Pool Sizing by Workload
-
-| Workload Type | Pool Size | Timeout | Idle Timeout | Rationale |
-|---------------|-----------|---------|--------------|-----------|
-| OLTP (fast queries) | cores * 2 + 1 | 5s | 5min | Low contention, fast turnover |
-| OLAP (slow queries) | cores * 2 | 60s | 10min | Long queries need patience |
-| Mixed | cores * 3 | 15s | 5min | Balance between types |
-| Batch processing | cores | 120s | 30min | Sequential, patient |
-| Web application | cores * 2 + 1 | 3s | 2min | Fast fail, user waiting |
-
-### HTTP Connection Pool Sizing
-
-```python
-# For calling a single external service
-HTTP_POOL_CONFIG = {
-    "pool_connections": 10,    # Number of connection pools
-    "pool_maxsize": 20,        # Max connections per host
-    "pool_block": True,        # Block vs create new when full
-}
-
-# Why these numbers?
-# - Most APIs can handle 10-20 concurrent connections per client
-# - More connections can trigger rate limiting
-# - Blocking prevents connection explosion under load
-```
-
----
-
-## Expert FAQs
-
-### Q: Should I use one pool per database or one pool per service?
-
-**A**: One pool per database connection string:
-```python
-pools = {
-    "primary": create_pool("postgresql://primary/db"),
-    "replica": create_pool("postgresql://replica/db"),
-    "analytics": create_pool("postgresql://analytics/db"),
-}
-
-def read_user(user_id):
-    with pools["replica"].connection() as conn:  # Use replica for reads
-        return query_user(conn, user_id)
-
-def write_user(user):
-    with pools["primary"].connection() as conn:  # Use primary for writes
-        return insert_user(conn, user)
-```
-
-### Q: How do I handle pool exhaustion gracefully?
-
-**A**: Circuit breaker + queue + fallback:
-```python
-class ResilientPool:
-    def __init__(self, pool: ConnectionPool):
-        self.pool = pool
-        self.circuit_breaker = CircuitBreaker("db-pool")
-        self.request_queue = Queue(maxsize=100)
-
-    def execute(self, query_func, *args, **kwargs):
-        # Check circuit breaker first
-        if not self.circuit_breaker.allow_request():
-            return self._fallback(*args, **kwargs)
-
-        try:
-            with self.pool.connection() as conn:
-                return query_func(conn, *args, **kwargs)
-        except TimeoutError:
-            self.circuit_breaker.record_failure(0)
-            return self._fallback(*args, **kwargs)
-
-    def _fallback(self, *args, **kwargs):
-        # Return cached data, queue for later, or graceful error
-        pass
-```
-
-### Q: What's the difference between connection timeout and query timeout?
-
-**A**: Different timeouts for different things:
-```python
-pool_config = PoolConfig(
-    connection_timeout_seconds=5,  # Max wait for pool checkout
-)
-
-# Query timeout is separate
-def execute_query(conn, query, params, timeout=30):
-    with conn.cursor() as cursor:
-        cursor.execute(f"SET statement_timeout = {timeout * 1000}")  # ms
-        cursor.execute(query, params)
-        return cursor.fetchall()
-```
-
-### Q: How do I share a pool across multiple threads/processes?
-
-**A**:
-- **Threads**: Pools are thread-safe by design. Share the same pool instance.
-- **Processes**: Each process needs its own pool (can't share connections across processes).
-
-```python
-# Multi-process application (e.g., Gunicorn with workers)
-# Each worker process creates its own pool
-
-from multiprocessing import current_process
-
-_pools = {}
-
-def get_pool():
-    pid = current_process().pid
-    if pid not in _pools:
-        _pools[pid] = create_pool()
-    return _pools[pid]
-```
+## Quick Reference Card
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Connection Pooling Cheat Sheet</h4>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <h5 style="color: #334155; margin-bottom: 8px;">Pool Sizing Guide</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li>Formula: (cores * 2) + 1</li>
+        <li>8-core DB: 17 connections</li>
+        <li>Start small, measure, adjust</li>
+        <li>Leave 20% headroom</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color: #334155; margin-bottom: 8px;">Timeout Guidelines</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li>Checkout timeout: 3-5 seconds</li>
+        <li>Idle timeout: 5-10 minutes</li>
+        <li>Max lifetime: 30 minutes</li>
+        <li>Validation: every 30 seconds</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+    <h5 style="color: #334155; margin-bottom: 8px;">Key Metrics</h5>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 13px;">
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Utilization</strong><br>
+        <span style="color: #64748b;">&lt;80%</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Wait Time</strong><br>
+        <span style="color: #64748b;">&lt;10ms P99</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Timeouts</strong><br>
+        <span style="color: #64748b;">0</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Leaks</strong><br>
+        <span style="color: #64748b;">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+    <h5 style="color: #334155; margin-bottom: 8px;">Popular Poolers</h5>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 13px;">
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;">
+        <strong style="color: #1e293b;">HikariCP</strong> - Java standard
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;">
+        <strong style="color: #1e293b;">PgBouncer</strong> - PostgreSQL
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;">
+        <strong style="color: #1e293b;">SQLAlchemy</strong> - Python
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;">
+        <strong style="color: #1e293b;">ProxySQL</strong> - MySQL
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -1472,5 +881,5 @@ def get_pool():
 
 - [Database Sharding](/topic/system-design/database-sharding)
 - [Load Balancing](/topic/system-design/load-balancing)
-- [Circuit Breaker](/topic/system-design/circuit-breaker)
-- [Microservices](/topic/system-design/microservices)
+- [Circuit Breaker](/topic/design-patterns/circuit-breaker)
+- [Database Replication](/topic/system-design/database-replication)
