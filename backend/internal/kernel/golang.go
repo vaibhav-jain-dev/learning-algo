@@ -501,3 +501,64 @@ func (p *GoPool) Execute(ctx context.Context, code string) (*ExecutionResult, er
 
 	return kernel.Execute(ctx, code)
 }
+
+// Warmup pre-creates a kernel and populates the Go build cache
+// This should be called in a background goroutine during app startup
+// to ensure the first user request is fast
+func (p *GoPool) Warmup() {
+	log.Println("Go kernel warmup: starting background warmup...")
+
+	// Simple Go program that imports common packages to populate build cache
+	warmupCode := `package main
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+	"strconv"
+	"math"
+	"time"
+	"sync"
+	"context"
+)
+
+func main() {
+	// Touch all imported packages to ensure they're cached
+	_ = fmt.Sprintf
+	_ = sort.Ints
+	_ = strings.Contains
+	_ = strconv.Itoa
+	_ = math.Max
+	_ = time.Now
+	_ = sync.Mutex{}
+	_ = context.Background
+	fmt.Println("warmup")
+}
+`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	// Acquire a kernel (this will create one since pool starts empty)
+	kernel, err := p.Acquire(ctx)
+	if err != nil {
+		log.Printf("Go kernel warmup: failed to acquire kernel: %v", err)
+		return
+	}
+	defer p.Release(kernel)
+
+	// Execute warmup code to populate the build cache
+	start := time.Now()
+	result, err := kernel.Execute(ctx, warmupCode)
+	if err != nil {
+		log.Printf("Go kernel warmup: execution error: %v", err)
+		return
+	}
+
+	if result.Error != "" {
+		log.Printf("Go kernel warmup: code error: %s", result.Error)
+		return
+	}
+
+	log.Printf("Go kernel warmup: completed successfully in %v (kernel ready for fast execution)", time.Since(start))
+}
