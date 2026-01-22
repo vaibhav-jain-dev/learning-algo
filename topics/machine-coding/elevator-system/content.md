@@ -1,381 +1,278 @@
-# Elevator System
+# Elevator System Design
 
 ## Problem Statement
 
-Design an elevator system for a building with multiple floors and elevators. Handle requests efficiently, manage elevator states, and optimize for minimal wait times.
+Design and implement an elevator control system for a multi-story building with multiple elevators. The system should efficiently handle pickup requests from floors and destination requests from inside elevators, optimizing for minimal wait times while ensuring fair service to all users.
 
-## Requirements
-
-- Multiple elevators serving multiple floors
-- Handle pickup and dropoff requests
-- Optimal elevator assignment
-- Track elevator states (idle, moving up/down)
-- Display current status
+This is a classic object-oriented design problem frequently asked at companies like Amazon, Google, Microsoft, and Uber. It tests your ability to model real-world systems, implement state machines, and design efficient scheduling algorithms.
 
 ---
 
-## Solution Breakdown
+## Requirements Clarification
 
-### Part 1: Understanding the Domain
+Before diving into implementation, clarify these requirements with your interviewer:
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-**Two Types of Requests:**
-1. **External Request**: Person at floor X presses UP or DOWN button
-2. **Internal Request**: Person inside elevator presses floor Y button
-**Key Challenges:**
-- How to assign the "best" elevator to an external request?
-- How to handle multiple simultaneous requests?
-- How to minimize total wait time across all users?
+### Functional Requirements
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Core Features</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **External Requests**: Handle hall button presses (floor X, direction UP/DOWN)
+- **Internal Requests**: Handle floor selection inside elevator cabins
+- **Optimal Assignment**: Assign the most suitable elevator to each request
+- **Status Display**: Show current position and direction of all elevators
+- **Multi-Elevator Support**: Coordinate multiple elevators efficiently
+
+</div>
 </div>
 
-### Part 2: State Machine for Elevator
+### Non-Functional Requirements
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Elevator State Machine</h4>
-<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
-<!-- IDLE State -->
-<div style="text-align: center;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-<div>
-<div style="color: #fff; font-size: 24px;">⏸️</div>
-<div style="color: #fff; font-weight: bold; font-size: 11px;">IDLE</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">System Constraints</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **Scalability**: Support 1-100 floors, 1-16 elevators
+- **Fairness**: Prevent starvation - all requests eventually served
+- **Efficiency**: Minimize total wait time across all passengers
+- **Thread Safety**: Handle concurrent requests safely
+- **Real-time**: Process requests and update state in real-time
+
 </div>
 </div>
+
+### Key Questions to Ask
+
+1. How many elevators and floors should we support?
+2. Do all elevators serve all floors, or are some zoned?
+3. Should we support VIP/express modes?
+4. What happens during fire emergencies or maintenance?
+5. Do we need to track elevator capacity?
+
+---
+
+## Architecture Diagram
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Elevator System Architecture</h4>
+
+<div style="display: flex; flex-direction: column; gap: 24px;">
+
+<!-- Controller Layer -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #0369a1; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Elevator Controller (Central Brain)</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Request Queue</div>
+<div style="color: #3b82f6; font-size: 11px;">Pending requests</div>
 </div>
-<!-- Arrow from IDLE to MOVING -->
-<div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #7ee787; font-size: 11px; margin-bottom: 4px;">Request</div>
-<div style="color: #7ee787; font-size: 24px;">→</div>
-<div style="color: #7ee787; font-size: 11px; margin-top: 4px;">received</div>
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Scheduler</div>
+<div style="color: #3b82f6; font-size: 11px;">SCAN algorithm</div>
 </div>
-<!-- MOVING State -->
-<div style="text-align: center;">
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-<div>
-<div style="color: #fff; font-size: 24px;">🔄</div>
-<div style="color: #fff; font-weight: bold; font-size: 11px;">MOVING</div>
-</div>
-</div>
-<div style="margin-top: 8px; display: flex; gap: 8px; justify-content: center;">
-<div style="background: #21262d; padding: 4px 8px; border-radius: 4px; color: #7ee787; font-size: 10px;">↑ UP</div>
-<div style="background: #21262d; padding: 4px 8px; border-radius: 4px; color: #f85149; font-size: 10px;">↓ DOWN</div>
-</div>
-</div>
-<!-- Arrow from MOVING to DOORS_OPEN -->
-<div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #ffa657; font-size: 11px; margin-bottom: 4px;">Arrived</div>
-<div style="color: #ffa657; font-size: 24px;">→</div>
-<div style="color: #ffa657; font-size: 11px; margin-top: 4px;">at stop</div>
-</div>
-<!-- DOORS_OPEN State -->
-<div style="text-align: center;">
-<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 20px 24px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-<div>
-<div style="color: #fff; font-size: 24px;">🚪</div>
-<div style="color: #fff; font-weight: bold; font-size: 10px;">DOORS</div>
-<div style="color: #fff; font-weight: bold; font-size: 10px;">OPEN</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Return arrows -->
-<div style="display: flex; justify-content: center; gap: 48px; margin-top: 24px;">
-<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; text-align: center;">
-<div style="color: #a371f7; font-size: 11px;">After timeout</div>
-<div style="color: #c9d1d9; font-size: 10px; margin-top: 4px;">DOORS_OPEN → MOVING (more stops)</div>
-<div style="color: #c9d1d9; font-size: 10px;">DOORS_OPEN → IDLE (no stops)</div>
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Dispatcher</div>
+<div style="color: #3b82f6; font-size: 11px;">Assignment logic</div>
 </div>
 </div>
 </div>
 
-**State Transitions:**
-- `IDLE` → `MOVING_UP/DOWN`: When request received
-- `MOVING` → `DOORS_OPEN`: When arrived at a stop
-- `DOORS_OPEN` → `MOVING/IDLE`: After timeout, if more stops or not
+<!-- Arrow -->
+<div style="text-align: center; color: #64748b; font-size: 24px;">&#8595;</div>
 
+<!-- Elevator Layer -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Elevator Fleet</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #f0fdf4; border: 2px solid #86efac; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="color: #166534; font-weight: bold; font-size: 13px;">Elevator A</div>
+<div style="color: #22c55e; font-size: 11px;">Floor 5 &#8593;</div>
+<div style="color: #15803d; font-size: 10px;">MOVING_UP</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #fcd34d; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="color: #92400e; font-weight: bold; font-size: 13px;">Elevator B</div>
+<div style="color: #d97706; font-size: 11px;">Floor 8 &#8226;</div>
+<div style="color: #b45309; font-size: 10px;">IDLE</div>
+</div>
+<div style="background: #fee2e2; border: 2px solid #fca5a5; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px;">Elevator C</div>
+<div style="color: #dc2626; font-size: 11px;">Floor 3 &#8595;</div>
+<div style="color: #b91c1c; font-size: 10px;">MOVING_DOWN</div>
+</div>
+</div>
 </div>
 
-### Part 3: The SCAN Algorithm (Elevator Algorithm)
-
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-**Why SCAN/LOOK?**
-```
-Scenario: Elevator at floor 5, going UP
-Requests: [3, 7, 2, 9, 4]
-FCFS Order: 3, 7, 2, 9, 4 → Total movement: 2+4+5+7+5 = 23 floors
-SCAN Order: 7, 9, 4, 3, 2 → Total movement: 2+2+5+1+1 = 11 floors
-            (go up)  (go down)
-```
-**SCAN Strategy:**
-1. Continue in current direction, serving all stops
-2. When no more stops in that direction, reverse
-3. Repeat
-**LOOK Optimization:** Don't go all the way to top/bottom, just to the last request
+<!-- State Machine -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Elevator State Machine</div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 50px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">IDLE</div>
+</div>
+<div style="color: #64748b; font-size: 12px;">&#8594; request &#8594;</div>
+<div style="background: #dbeafe; padding: 14px 20px; border-radius: 50px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">MOVING</div>
+</div>
+<div style="color: #64748b; font-size: 12px;">&#8594; arrived &#8594;</div>
+<div style="background: #fef3c7; padding: 14px 20px; border-radius: 50px; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 12px;">DOORS_OPEN</div>
+</div>
+<div style="color: #64748b; font-size: 12px;">&#8594; timeout &#8594;</div>
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 50px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">IDLE/MOVING</div>
+</div>
+</div>
 </div>
 
-### Part 4: Elevator Assignment Strategy
-
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-**How to pick which elevator serves a new request?**
-```
-Request: Floor 5, Direction UP
-Elevators:
-  A: Floor 2, going UP    → distance = 3, same direction ✓
-  B: Floor 8, going DOWN  → distance = 6 (8→0→5), opposite direction
-  C: Floor 5, IDLE        → distance = 0, perfect! ✓✓
-Scoring Formula:
-  score = distance + direction_penalty + load_penalty
-```
-**Factors to Consider:**
-1. **Distance**: Closer is better
-2. **Direction**: Same direction is better (especially if floor is on the way)
-3. **Load**: Less crowded elevator is better (if tracking capacity)
-4. **Wait time**: Elevator already serving many stops will be slower
 </div>
-
-### Part 5: Data Structures for Stops
-
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-**Option 1: Two Sets (Our Approach)**
-```python
-up_stops: Set[int] = {3, 7, 9}     # Stops when going up
-down_stops: Set[int] = {6, 2, 1}  # Stops when going down
-```
-- **Pros**: O(1) add/remove, easy to separate directions
-- **Cons**: Need to check both sets
-**Option 2: Priority Queues**
-```python
-up_heap: MinHeap[int] = [3, 7, 9]    # Next up stop = min
-down_heap: MaxHeap[int] = [6, 2, 1]  # Next down stop = max
-```
-- **Pros**: O(1) get next stop, O(log n) add
-- **Cons**: Can't efficiently remove arbitrary stops
-**Option 3: Sorted List**
-```python
-stops: SortedList[int] = [1, 2, 3, 6, 7, 9]
-```
-- **Pros**: Easy to find next stop in either direction
-- **Cons**: O(n) insert/delete
 </div>
 
 ---
 
-## Scheduling Algorithms Compared
+## Class Design
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-| Algorithm | Description | Pros | Cons |
-|-----------|-------------|------|------|
-| **FCFS** | First Come First Served | Fair, simple | Very inefficient |
-| **SSTF** | Shortest Seek Time First | Minimizes movement | Starvation possible |
-| **SCAN** | Sweep up then down | No starvation | Unfair to middle floors |
-| **LOOK** | Like SCAN, stops at last request | More efficient | Slightly complex |
-| **C-SCAN** | Circular SCAN (one direction only) | Uniform wait time | More movement |
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; font-size: 16px;">Class Diagram</h4>
+
+```
++------------------+       +----------------------+       +------------------+
+|   Direction      |       |    ElevatorState     |       |     Request      |
++------------------+       +----------------------+       +------------------+
+| UP = 1           |       | MOVING = "moving"    |       | floor: int       |
+| DOWN = -1        |       | STOPPED = "stopped"  |       | direction: Dir   |
+| IDLE = 0         |       | DOORS_OPEN = "open"  |       | timestamp: float |
++------------------+       +----------------------+       +------------------+
+        |                           |                            |
+        v                           v                            v
++-----------------------------------------------------------------------+
+|                            Elevator                                    |
++-----------------------------------------------------------------------+
+| - id: int                    - current_floor: int                     |
+| - direction: Direction       - state: ElevatorState                   |
+| - up_stops: Set[int]         - down_stops: Set[int]                   |
+| - min_floor: int             - max_floor: int                         |
++-----------------------------------------------------------------------+
+| + add_stop(floor, direction) -> bool                                  |
+| + get_next_stop() -> Optional[int]                                    |
+| + move() -> bool                                                      |
+| + distance_to(floor, direction) -> int                                |
+| + status() -> dict                                                    |
++-----------------------------------------------------------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------+
+|                       ElevatorController                               |
++-----------------------------------------------------------------------+
+| - elevators: List[Elevator]  - num_floors: int                        |
+| - pending_requests: List     - running: bool                          |
++-----------------------------------------------------------------------+
+| + request_elevator(floor, direction) -> int                           |
+| + select_floor(elevator_id, floor) -> None                            |
+| + step() -> None                                                      |
+| + find_best_elevator(floor, direction) -> Elevator                    |
++-----------------------------------------------------------------------+
+```
+</div>
+
+### Key Design Decisions
+
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #eab308;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Data Structure Choices</div>
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Stop Storage | Two Sets (up_stops, down_stops) | O(1) add/remove, separate direction tracking |
+| Direction | Enum with numeric values | Easy arithmetic (+1/-1 for movement) |
+| State Machine | Enum | Clear state transitions, type safety |
+| Request Queue | List with timestamps | FIFO with priority override capability |
+
 </div>
 
 ---
 
-## Alternative Approaches
+## API Design
 
-### Alternative 1: Destination Dispatch System
-
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
-**Modern approach used in skyscrapers:**
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0;">
-<!-- Traditional System -->
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
-<div style="color: #f85149; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Traditional</div>
-<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
-<div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px;">
-<div style="background: #238636; padding: 8px 16px; border-radius: 6px;">
-<div style="color: #fff; font-size: 16px;">▲</div>
-<div style="color: #fff; font-size: 10px;">UP</div>
-</div>
-<div style="background: #da3633; padding: 8px 16px; border-radius: 6px;">
-<div style="color: #fff; font-size: 16px;">▼</div>
-<div style="color: #fff; font-size: 10px;">DOWN</div>
-</div>
-</div>
-<div style="color: #8b949e; font-size: 10px;">buttons</div>
-</div>
-<div style="text-align: center; color: #ffa657; font-size: 20px; margin-bottom: 8px;">↓</div>
-<div style="background: #21262d; padding: 12px; border-radius: 6px; text-align: center;">
-<div style="color: #8b949e; font-size: 11px;">Wait for any elevator</div>
-</div>
-</div>
-<!-- Destination Dispatch System -->
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); padding: 20px; border-radius: 12px; border: 1px solid #30363d;">
-<div style="color: #7ee787; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px;">Destination Dispatch</div>
-<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
-<div style="color: #58a6ff; font-size: 11px; margin-bottom: 8px;">Enter destination</div>
-<div style="background: #0d1117; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">
-<span style="color: #8b949e; font-size: 11px;">Floor: </span>
-<span style="color: #7ee787; font-weight: bold; font-size: 14px;">[12]</span>
-</div>
-<div style="color: #ffa657; font-size: 11px;">Assigned: Elev B</div>
-</div>
-<div style="text-align: center; color: #7ee787; font-size: 20px; margin-bottom: 8px;">↓</div>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px; border-radius: 6px; text-align: center;">
-<div style="color: #fff; font-size: 11px;">Go directly to Elevator B</div>
-</div>
-</div>
-</div>
-<!-- Pros and Cons -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-<div style="background: #21262d; padding: 12px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Pros:</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
-- Group passengers by destination<br>
-- Reduce stops per trip<br>
-- 30-40% efficiency improvement
-</div>
-</div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px;">
-<div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Cons:</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
-- More complex hardware<br>
-- User education needed
-</div>
-</div>
-</div>
-</div>
-
-### Alternative 2: Zone-Based Allocation
-
-```
-Building: 30 floors
-
-Zone A: Floors 1-10  → Elevators 1, 2
-Zone B: Floors 11-20 → Elevators 3, 4
-Zone C: Floors 21-30 → Elevators 5, 6
-
-Express: Floors 1, 15, 30 only → Elevator 7
-```
-
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-**When to use zones:**
-- Very tall buildings (50+ floors)
-- High traffic between specific floors
-- Different tenant areas
-**When NOT to use:**
-- Small buildings
-- Uniform traffic patterns
-- Limited number of elevators
-</div>
-
-### Alternative 3: Machine Learning Approach
+### External API (for building system integration)
 
 ```python
-def predict_demand(time_of_day, day_of_week, floor, historical_data):
-    """
-    Predict elevator demand for proactive positioning
+class ElevatorController:
+    def request_elevator(self, floor: int, direction: Direction) -> int:
+        """
+        Request an elevator from a floor hallway button.
 
-    Example patterns:
-    - 8-9 AM: High demand at lobby (going up)
-    - 12-1 PM: High demand at cafeteria floor
-    - 5-6 PM: High demand at upper floors (going down)
-    """
-    # Use ML model to predict demand
-    return model.predict([time_of_day, day_of_week, floor])
+        Args:
+            floor: Floor number where request originated
+            direction: Direction the passenger wants to go (UP/DOWN)
 
-def preposition_elevators():
-    """Move idle elevators to predicted high-demand floors"""
-    predictions = [predict_demand(...) for floor in floors]
-    # Position elevators at predicted hot spots
+        Returns:
+            elevator_id: ID of the assigned elevator
+
+        Raises:
+            ValueError: If floor is out of bounds
+        """
+
+    def select_floor(self, elevator_id: int, floor: int) -> bool:
+        """
+        Passenger selects destination floor inside elevator.
+
+        Args:
+            elevator_id: ID of the elevator
+            floor: Destination floor
+
+        Returns:
+            success: True if floor was added to stops
+        """
+
+    def get_status(self) -> List[Dict]:
+        """
+        Get status of all elevators.
+
+        Returns:
+            List of elevator status dictionaries
+        """
+```
+
+### Internal API (elevator operations)
+
+```python
+class Elevator:
+    def add_stop(self, floor: int, direction: Direction = None) -> bool:
+        """Add a floor to the elevator's stop list."""
+
+    def get_next_stop(self) -> Optional[int]:
+        """Get the next floor to stop at based on SCAN algorithm."""
+
+    def move(self) -> bool:
+        """Move elevator one floor toward next stop. Returns True if arrived."""
+
+    def distance_to(self, floor: int, direction: Direction) -> int:
+        """Calculate effective distance to serve a request."""
 ```
 
 ---
 
-## Pros and Cons Analysis
+## Code Implementation
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-### SCAN Algorithm Pros
-- **No starvation** - Every floor eventually served
-- **Efficient** - Minimizes direction changes
-- **Predictable** - Easy to estimate wait time
-- **Simple** - Easy to implement
-- **Fair** - All floors get service
-</div>
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-### SCAN Algorithm Cons
-- **Edge bias** - Top/bottom floors served less frequently
-- **Not optimal** - SSTF can be faster for sparse requests
-- **No load balancing** - Doesn't consider elevator capacity
-- **Static** - Doesn't adapt to traffic patterns
-- **Direction locked** - Must finish direction before reversing
-</div>
-</div>
-
----
-
-## Complexity Analysis
-
-| Operation | Time | Space |
-|-----------|------|-------|
-| Add stop | O(1) with Set | O(1) |
-| Get next stop | O(n) worst case | O(1) |
-| Find best elevator | O(e) where e = elevators | O(1) |
-| **Total Space** | - | O(f × e) where f = floors |
-
-**Memory per elevator:**
-- Current floor: 4 bytes
-- Direction: 4 bytes
-- Up stops set: O(f) where f = floors
-- Down stops set: O(f)
-
----
-
-## Common Extensions
-
-1. **Capacity limits**: Don't assign more passengers than capacity
-2. **VIP mode**: Express service for executives
-3. **Fire mode**: All elevators go to ground floor
-4. **Maintenance mode**: Take elevator offline
-5. **Peak hour optimization**: Pre-position during rush hours
-
----
-
-## Interview Tips
-
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Start with single elevator** - Then extend to multiple
-2. **Draw the state machine** - Shows systematic thinking
-3. **Explain SCAN algorithm** - Classic disk scheduling parallel
-4. **Discuss assignment strategy** - How to pick which elevator
-5. **Consider edge cases**:
-   - All elevators busy
-   - Elevator breakdown
-   - Simultaneous requests at same floor
-**Common Follow-ups:**
-- How to handle rush hour (morning/evening)?
-- How to prioritize emergency requests?
-- How to implement maintenance mode?
-- How to handle capacity limits?
-</div>
-
----
-
-## Implementation
-
-### Python
+### Python Implementation
 
 ```python
 from enum import Enum
-from typing import List, Optional, Set
+from typing import List, Optional, Set, Dict
 from dataclasses import dataclass, field
-from collections import defaultdict
-import heapq
 import threading
 import time
 
 
 class Direction(Enum):
+    """Elevator movement direction."""
     UP = 1
     DOWN = -1
     IDLE = 0
 
 
 class ElevatorState(Enum):
+    """Current state of an elevator."""
     MOVING = "moving"
     STOPPED = "stopped"
     DOORS_OPEN = "doors_open"
@@ -383,12 +280,20 @@ class ElevatorState(Enum):
 
 @dataclass
 class Request:
+    """Represents a floor request with direction."""
     floor: int
     direction: Direction
     timestamp: float = field(default_factory=time.time)
 
 
 class Elevator:
+    """
+    Represents a single elevator car.
+
+    Uses the SCAN (elevator) algorithm for efficient floor servicing.
+    Maintains separate sets for up and down stops to optimize direction changes.
+    """
+
     def __init__(self, elevator_id: int, min_floor: int = 0, max_floor: int = 10):
         self.id = elevator_id
         self.current_floor = 0
@@ -397,27 +302,33 @@ class Elevator:
         self.min_floor = min_floor
         self.max_floor = max_floor
 
-        # Destinations in current direction
+        # Separate stop sets for each direction (SCAN algorithm)
         self.up_stops: Set[int] = set()
         self.down_stops: Set[int] = set()
 
+        # Thread safety
         self.lock = threading.Lock()
 
     def add_stop(self, floor: int, direction: Direction = None) -> bool:
-        """Add a floor to the elevator's stops."""
+        """
+        Add a floor to the elevator's stop list.
+
+        The stop is added to the appropriate set based on direction
+        and current elevator state.
+        """
         with self.lock:
             if floor < self.min_floor or floor > self.max_floor:
                 return False
 
+            # Determine which set to add to
             if direction == Direction.UP or (direction is None and floor > self.current_floor):
                 self.up_stops.add(floor)
             elif direction == Direction.DOWN or (direction is None and floor < self.current_floor):
                 self.down_stops.add(floor)
             elif floor == self.current_floor:
-                # Already at floor
-                return True
+                return True  # Already at floor
             else:
-                # Determine based on current direction
+                # Default based on current direction
                 if self.direction == Direction.UP:
                     self.up_stops.add(floor)
                 else:
@@ -426,40 +337,52 @@ class Elevator:
             return True
 
     def get_next_stop(self) -> Optional[int]:
-        """Get the next floor to stop at."""
+        """
+        Determine the next floor to stop at using SCAN algorithm.
+
+        SCAN (Elevator Algorithm):
+        1. Continue in current direction serving all stops
+        2. When no more stops in that direction, reverse
+        3. This minimizes direction changes and is fair to all floors
+        """
         with self.lock:
             if self.direction == Direction.UP or self.direction == Direction.IDLE:
-                # Continue up if there are stops above
+                # Look for stops above current floor
                 above = [f for f in self.up_stops if f > self.current_floor]
                 if above:
                     return min(above)
 
-                # Check for down stops at highest floor first
+                # No stops above, check down stops (highest first)
                 if self.down_stops:
                     return max(self.down_stops)
 
-                # Check remaining up stops below current floor
+                # Check remaining up stops below current
                 if self.up_stops:
                     return min(self.up_stops)
 
             if self.direction == Direction.DOWN or self.direction == Direction.IDLE:
-                # Continue down if there are stops below
+                # Look for stops below current floor
                 below = [f for f in self.down_stops if f < self.current_floor]
                 if below:
                     return max(below)
 
-                # Check for up stops at lowest floor first
+                # No stops below, check up stops (lowest first)
                 if self.up_stops:
                     return min(self.up_stops)
 
-                # Check remaining down stops above current floor
+                # Check remaining down stops above current
                 if self.down_stops:
                     return max(self.down_stops)
 
             return None
 
     def move(self) -> bool:
-        """Move elevator one step toward next stop."""
+        """
+        Move elevator one floor toward next stop.
+
+        Returns:
+            True if arrived at a stop, False otherwise
+        """
         next_stop = self.get_next_stop()
 
         if next_stop is None:
@@ -468,6 +391,7 @@ class Elevator:
             return False
 
         with self.lock:
+            # Determine direction and move
             if next_stop > self.current_floor:
                 self.direction = Direction.UP
                 self.current_floor += 1
@@ -482,6 +406,7 @@ class Elevator:
                 self.up_stops.discard(self.current_floor)
                 self.state = ElevatorState.DOORS_OPEN
                 return True
+
             if self.current_floor in self.down_stops:
                 self.down_stops.discard(self.current_floor)
                 self.state = ElevatorState.DOORS_OPEN
@@ -489,15 +414,19 @@ class Elevator:
 
         return False
 
-    def has_stops(self) -> bool:
-        return len(self.up_stops) > 0 or len(self.down_stops) > 0
-
     def distance_to(self, floor: int, direction: Direction) -> int:
-        """Calculate effective distance to serve a request."""
+        """
+        Calculate effective distance to serve a request.
+
+        This considers:
+        - Physical distance
+        - Current direction vs requested direction
+        - Whether floor is "on the way"
+        """
         if self.direction == Direction.IDLE:
             return abs(self.current_floor - floor)
 
-        # If going same direction and floor is on the way
+        # Same direction and floor is on the way
         if self.direction == Direction.UP and direction == Direction.UP:
             if floor >= self.current_floor:
                 return floor - self.current_floor
@@ -506,7 +435,7 @@ class Elevator:
             if floor <= self.current_floor:
                 return self.current_floor - floor
 
-        # Need to reverse direction
+        # Need to reverse direction - calculate full path
         if self.direction == Direction.UP:
             max_stop = max(self.up_stops) if self.up_stops else self.current_floor
             return (max_stop - self.current_floor) + (max_stop - floor)
@@ -514,7 +443,12 @@ class Elevator:
             min_stop = min(self.down_stops) if self.down_stops else self.current_floor
             return (self.current_floor - min_stop) + (floor - min_stop)
 
-    def status(self) -> dict:
+    def has_stops(self) -> bool:
+        """Check if elevator has any pending stops."""
+        return len(self.up_stops) > 0 or len(self.down_stops) > 0
+
+    def status(self) -> Dict:
+        """Get current elevator status."""
         return {
             'id': self.id,
             'floor': self.current_floor,
@@ -526,453 +460,347 @@ class Elevator:
 
 
 class ElevatorController:
+    """
+    Central controller managing multiple elevators.
+
+    Responsibilities:
+    - Receive and queue requests
+    - Assign optimal elevator to each request
+    - Coordinate elevator movements
+    - Provide system status
+    """
+
     def __init__(self, num_elevators: int, num_floors: int):
-        self.elevators = [Elevator(i, 0, num_floors) for i in range(num_elevators)]
+        self.elevators = [
+            Elevator(i, 0, num_floors) for i in range(num_elevators)
+        ]
         self.num_floors = num_floors
         self.pending_requests: List[Request] = []
         self.lock = threading.Lock()
         self.running = False
 
     def request_elevator(self, floor: int, direction: Direction) -> int:
-        """Request an elevator to a floor."""
+        """
+        Request an elevator to a floor (external hall button).
+
+        Uses a scoring algorithm to find the best elevator:
+        - Closer elevators score better
+        - Idle elevators get a bonus
+        - Elevators going same direction with floor on the way get a bonus
+        """
         best_elevator = self._find_best_elevator(floor, direction)
         best_elevator.add_stop(floor, direction)
         return best_elevator.id
 
     def _find_best_elevator(self, floor: int, direction: Direction) -> Elevator:
-        """Find the optimal elevator for a request."""
+        """Find the optimal elevator for a request using scoring."""
         best = None
-        best_distance = float('inf')
+        best_score = float('inf')
 
         for elevator in self.elevators:
-            distance = elevator.distance_to(floor, direction)
+            # Base score is distance
+            score = elevator.distance_to(floor, direction)
 
-            # Prefer idle elevators
+            # Bonus for idle elevators (more available)
             if elevator.direction == Direction.IDLE:
-                distance -= 0.5
+                score -= 0.5
 
-            # Prefer elevators going same direction on the way
+            # Bonus for same direction with floor on the way
             if elevator.direction == direction:
                 if direction == Direction.UP and elevator.current_floor <= floor:
-                    distance -= 1
+                    score -= 1
                 elif direction == Direction.DOWN and elevator.current_floor >= floor:
-                    distance -= 1
+                    score -= 1
 
-            if distance < best_distance:
-                best_distance = distance
+            if score < best_score:
+                best_score = score
                 best = elevator
 
         return best
 
-    def select_floor(self, elevator_id: int, floor: int):
+    def select_floor(self, elevator_id: int, floor: int) -> bool:
         """Passenger selects destination floor inside elevator."""
         if 0 <= elevator_id < len(self.elevators):
-            self.elevators[elevator_id].add_stop(floor)
+            return self.elevators[elevator_id].add_stop(floor)
+        return False
 
-    def step(self):
-        """Advance all elevators one step."""
+    def step(self) -> List[Dict]:
+        """
+        Advance simulation one time step.
+
+        Returns list of arrivals for logging/display.
+        """
+        arrivals = []
         for elevator in self.elevators:
             arrived = elevator.move()
             if arrived:
-                print(f"Elevator {elevator.id} arrived at floor {elevator.current_floor}")
+                arrivals.append({
+                    'elevator_id': elevator.id,
+                    'floor': elevator.current_floor
+                })
+        return arrivals
 
     def run(self, step_interval: float = 1.0):
         """Run the elevator system continuously."""
         self.running = True
         while self.running:
-            self.step()
+            arrivals = self.step()
+            for arrival in arrivals:
+                print(f"Elevator {arrival['elevator_id']} arrived at floor {arrival['floor']}")
             time.sleep(step_interval)
 
     def stop(self):
+        """Stop the elevator system."""
         self.running = False
 
     def display_status(self):
+        """Display status of all elevators."""
         print("\n=== Elevator System Status ===")
         for elevator in self.elevators:
             status = elevator.status()
-            dir_symbol = {"UP": "↑", "DOWN": "↓", "IDLE": "•"}[status['direction']]
-            print(f"Elevator {status['id']}: Floor {status['floor']} {dir_symbol} "
-                  f"[State: {status['state']}]")
+            symbol = {"UP": "^", "DOWN": "v", "IDLE": "-"}[status['direction']]
+            print(f"Elevator {status['id']}: Floor {status['floor']} [{symbol}] "
+                  f"State: {status['state']}")
             if status['up_stops']:
                 print(f"  Up stops: {status['up_stops']}")
             if status['down_stops']:
                 print(f"  Down stops: {status['down_stops']}")
 
 
-# Usage
-controller = ElevatorController(num_elevators=3, num_floors=10)
+# Example usage and demonstration
+if __name__ == "__main__":
+    # Create controller with 3 elevators, 10 floors
+    controller = ElevatorController(num_elevators=3, num_floors=10)
 
-# Simulate requests
-print("=== Elevator Requests ===")
+    print("=== Elevator System Demo ===\n")
 
-# Person at floor 0 wants to go up
-e1 = controller.request_elevator(0, Direction.UP)
-print(f"Request at floor 0 (UP) -> Elevator {e1}")
+    # Simulate requests
+    print("Request: Floor 0 wants to go UP")
+    e1 = controller.request_elevator(0, Direction.UP)
+    print(f"  -> Assigned to Elevator {e1}")
 
-# Person at floor 7 wants to go down
-e2 = controller.request_elevator(7, Direction.DOWN)
-print(f"Request at floor 7 (DOWN) -> Elevator {e2}")
+    print("Request: Floor 7 wants to go DOWN")
+    e2 = controller.request_elevator(7, Direction.DOWN)
+    print(f"  -> Assigned to Elevator {e2}")
 
-# Person at floor 3 wants to go up
-e3 = controller.request_elevator(3, Direction.UP)
-print(f"Request at floor 3 (UP) -> Elevator {e3}")
+    print("Request: Floor 3 wants to go UP")
+    e3 = controller.request_elevator(3, Direction.UP)
+    print(f"  -> Assigned to Elevator {e3}")
 
-# Passengers select destinations
-controller.select_floor(e1, 5)  # Go to floor 5
-controller.select_floor(e2, 2)  # Go to floor 2
-controller.select_floor(e3, 8)  # Go to floor 8
+    # Passengers select destinations
+    controller.select_floor(e1, 5)  # Go to floor 5
+    controller.select_floor(e2, 2)  # Go to floor 2
+    controller.select_floor(e3, 8)  # Go to floor 8
 
-# Simulate movement
-print("\n=== Simulation ===")
-for _ in range(15):
-    controller.step()
-    controller.display_status()
-    time.sleep(0.5)
+    print("\n=== Simulation ===")
+    for step in range(15):
+        print(f"\n--- Step {step + 1} ---")
+        arrivals = controller.step()
+        controller.display_status()
+        time.sleep(0.3)
 ```
 
-### Go
+---
 
-```go
-package main
+## Edge Cases
 
-import (
-	"fmt"
-	"math"
-	"sync"
-	"time"
-)
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Critical Edge Cases to Handle</div>
 
-type Direction int
+| Scenario | Expected Behavior | Implementation |
+|----------|-------------------|----------------|
+| **All elevators busy** | Queue request, assign when available | Pending request list with priority |
+| **Request at current floor** | Open doors immediately | Check before adding to stops |
+| **Elevator breakdown** | Redistribute stops, mark unavailable | Maintenance mode flag |
+| **Simultaneous requests same floor** | Assign single elevator, batch passengers | Deduplication in request handling |
+| **Invalid floor number** | Return error, reject request | Bounds checking in add_stop() |
+| **Direction change mid-travel** | Complete current direction first | SCAN algorithm handles naturally |
+| **Capacity exceeded** | Skip floor, signal full | Capacity tracking (extension) |
 
-const (
-	Up   Direction = 1
-	Down Direction = -1
-	Idle Direction = 0
-)
+</div>
 
-func (d Direction) String() string {
-	switch d {
-	case Up:
-		return "UP"
-	case Down:
-		return "DOWN"
-	default:
-		return "IDLE"
-	}
-}
+### Code for Edge Case Handling
 
-type ElevatorState int
+```python
+def add_stop(self, floor: int, direction: Direction = None) -> bool:
+    # Edge case: Invalid floor
+    if floor < self.min_floor or floor > self.max_floor:
+        return False
 
-const (
-	Moving ElevatorState = iota
-	Stopped
-	DoorsOpen
-)
+    # Edge case: Already at requested floor
+    if floor == self.current_floor and self.state == ElevatorState.STOPPED:
+        self.state = ElevatorState.DOORS_OPEN
+        return True
 
-type Elevator struct {
-	ID           int
-	CurrentFloor int
-	Direction    Direction
-	State        ElevatorState
-	MinFloor     int
-	MaxFloor     int
-	UpStops      map[int]bool
-	DownStops    map[int]bool
-	mu           sync.Mutex
-}
-
-func NewElevator(id, minFloor, maxFloor int) *Elevator {
-	return &Elevator{
-		ID:           id,
-		CurrentFloor: 0,
-		Direction:    Idle,
-		State:        Stopped,
-		MinFloor:     minFloor,
-		MaxFloor:     maxFloor,
-		UpStops:      make(map[int]bool),
-		DownStops:    make(map[int]bool),
-	}
-}
-
-func (e *Elevator) AddStop(floor int, direction Direction) bool {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-
-	if floor < e.MinFloor || floor > e.MaxFloor {
-		return false
-	}
-
-	if direction == Up || (direction == Idle && floor > e.CurrentFloor) {
-		e.UpStops[floor] = true
-	} else if direction == Down || (direction == Idle && floor < e.CurrentFloor) {
-		e.DownStops[floor] = true
-	} else if e.Direction == Up {
-		e.UpStops[floor] = true
-	} else {
-		e.DownStops[floor] = true
-	}
-
-	return true
-}
-
-func (e *Elevator) GetNextStop() int {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-
-	if e.Direction == Up || e.Direction == Idle {
-		// Get next stop above
-		minAbove := e.MaxFloor + 1
-		for floor := range e.UpStops {
-			if floor > e.CurrentFloor && floor < minAbove {
-				minAbove = floor
-			}
-		}
-		if minAbove <= e.MaxFloor {
-			return minAbove
-		}
-
-		// Get highest down stop
-		if len(e.DownStops) > 0 {
-			maxDown := e.MinFloor - 1
-			for floor := range e.DownStops {
-				if floor > maxDown {
-					maxDown = floor
-				}
-			}
-			return maxDown
-		}
-
-		// Get remaining up stops
-		if len(e.UpStops) > 0 {
-			minUp := e.MaxFloor + 1
-			for floor := range e.UpStops {
-				if floor < minUp {
-					minUp = floor
-				}
-			}
-			return minUp
-		}
-	}
-
-	if e.Direction == Down || e.Direction == Idle {
-		// Get next stop below
-		maxBelow := e.MinFloor - 1
-		for floor := range e.DownStops {
-			if floor < e.CurrentFloor && floor > maxBelow {
-				maxBelow = floor
-			}
-		}
-		if maxBelow >= e.MinFloor {
-			return maxBelow
-		}
-
-		// Get lowest up stop
-		if len(e.UpStops) > 0 {
-			minUp := e.MaxFloor + 1
-			for floor := range e.UpStops {
-				if floor < minUp {
-					minUp = floor
-				}
-			}
-			return minUp
-		}
-
-		// Get remaining down stops
-		if len(e.DownStops) > 0 {
-			maxDown := e.MinFloor - 1
-			for floor := range e.DownStops {
-				if floor > maxDown {
-					maxDown = floor
-				}
-			}
-			return maxDown
-		}
-	}
-
-	return -1
-}
-
-func (e *Elevator) Move() bool {
-	nextStop := e.GetNextStop()
-
-	if nextStop == -1 {
-		e.mu.Lock()
-		e.Direction = Idle
-		e.State = Stopped
-		e.mu.Unlock()
-		return false
-	}
-
-	e.mu.Lock()
-	defer e.mu.Unlock()
-
-	if nextStop > e.CurrentFloor {
-		e.Direction = Up
-		e.CurrentFloor++
-	} else if nextStop < e.CurrentFloor {
-		e.Direction = Down
-		e.CurrentFloor--
-	}
-
-	e.State = Moving
-
-	// Check if arrived
-	if e.UpStops[e.CurrentFloor] {
-		delete(e.UpStops, e.CurrentFloor)
-		e.State = DoorsOpen
-		return true
-	}
-	if e.DownStops[e.CurrentFloor] {
-		delete(e.DownStops, e.CurrentFloor)
-		e.State = DoorsOpen
-		return true
-	}
-
-	return false
-}
-
-func (e *Elevator) HasStops() bool {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	return len(e.UpStops) > 0 || len(e.DownStops) > 0
-}
-
-func (e *Elevator) DistanceTo(floor int, direction Direction) float64 {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-
-	if e.Direction == Idle {
-		return math.Abs(float64(e.CurrentFloor - floor))
-	}
-
-	// Same direction and on the way
-	if e.Direction == Up && direction == Up && floor >= e.CurrentFloor {
-		return float64(floor - e.CurrentFloor)
-	}
-	if e.Direction == Down && direction == Down && floor <= e.CurrentFloor {
-		return float64(e.CurrentFloor - floor)
-	}
-
-	// Need to reverse
-	if e.Direction == Up {
-		maxStop := e.CurrentFloor
-		for f := range e.UpStops {
-			if f > maxStop {
-				maxStop = f
-			}
-		}
-		return float64(maxStop-e.CurrentFloor) + float64(maxStop-floor)
-	}
-
-	minStop := e.CurrentFloor
-	for f := range e.DownStops {
-		if f < minStop {
-			minStop = f
-		}
-	}
-	return float64(e.CurrentFloor-minStop) + float64(floor-minStop)
-}
-
-type ElevatorController struct {
-	Elevators []*Elevator
-	NumFloors int
-	running   bool
-	mu        sync.Mutex
-}
-
-func NewElevatorController(numElevators, numFloors int) *ElevatorController {
-	elevators := make([]*Elevator, numElevators)
-	for i := 0; i < numElevators; i++ {
-		elevators[i] = NewElevator(i, 0, numFloors)
-	}
-	return &ElevatorController{
-		Elevators: elevators,
-		NumFloors: numFloors,
-	}
-}
-
-func (c *ElevatorController) RequestElevator(floor int, direction Direction) int {
-	best := c.findBestElevator(floor, direction)
-	best.AddStop(floor, direction)
-	return best.ID
-}
-
-func (c *ElevatorController) findBestElevator(floor int, direction Direction) *Elevator {
-	var best *Elevator
-	bestDistance := math.MaxFloat64
-
-	for _, elevator := range c.Elevators {
-		distance := elevator.DistanceTo(floor, direction)
-
-		// Prefer idle elevators
-		if elevator.Direction == Idle {
-			distance -= 0.5
-		}
-
-		// Prefer same direction on the way
-		if elevator.Direction == direction {
-			if direction == Up && elevator.CurrentFloor <= floor {
-				distance -= 1
-			} else if direction == Down && elevator.CurrentFloor >= floor {
-				distance -= 1
-			}
-		}
-
-		if distance < bestDistance {
-			bestDistance = distance
-			best = elevator
-		}
-	}
-
-	return best
-}
-
-func (c *ElevatorController) SelectFloor(elevatorID, floor int) {
-	if elevatorID >= 0 && elevatorID < len(c.Elevators) {
-		c.Elevators[elevatorID].AddStop(floor, Idle)
-	}
-}
-
-func (c *ElevatorController) Step() {
-	for _, elevator := range c.Elevators {
-		arrived := elevator.Move()
-		if arrived {
-			fmt.Printf("Elevator %d arrived at floor %d\n", elevator.ID, elevator.CurrentFloor)
-		}
-	}
-}
-
-func (c *ElevatorController) DisplayStatus() {
-	fmt.Println("\n=== Elevator Status ===")
-	for _, e := range c.Elevators {
-		symbol := map[Direction]string{Up: "↑", Down: "↓", Idle: "•"}[e.Direction]
-		fmt.Printf("Elevator %d: Floor %d %s\n", e.ID, e.CurrentFloor, symbol)
-	}
-}
-
-func main() {
-	controller := NewElevatorController(3, 10)
-
-	// Requests
-	e1 := controller.RequestElevator(0, Up)
-	fmt.Printf("Request at floor 0 (UP) -> Elevator %d\n", e1)
-
-	e2 := controller.RequestElevator(7, Down)
-	fmt.Printf("Request at floor 7 (DOWN) -> Elevator %d\n", e2)
-
-	e3 := controller.RequestElevator(3, Up)
-	fmt.Printf("Request at floor 3 (UP) -> Elevator %d\n", e3)
-
-	// Destinations
-	controller.SelectFloor(e1, 5)
-	controller.SelectFloor(e2, 2)
-	controller.SelectFloor(e3, 8)
-
-	// Simulate
-	for i := 0; i < 15; i++ {
-		controller.Step()
-		controller.DisplayStatus()
-		time.Sleep(500 * time.Millisecond)
-	}
-}
+    # Normal processing...
 ```
+
+---
+
+## Testing Approach
+
+### Unit Tests
+
+```python
+import unittest
+
+class TestElevator(unittest.TestCase):
+    def setUp(self):
+        self.elevator = Elevator(0, min_floor=0, max_floor=10)
+
+    def test_add_stop_valid_floor(self):
+        """Test adding a valid floor stop."""
+        result = self.elevator.add_stop(5, Direction.UP)
+        self.assertTrue(result)
+        self.assertIn(5, self.elevator.up_stops)
+
+    def test_add_stop_invalid_floor(self):
+        """Test rejecting invalid floor numbers."""
+        result = self.elevator.add_stop(15, Direction.UP)
+        self.assertFalse(result)
+
+    def test_scan_algorithm_continues_direction(self):
+        """Test SCAN continues in current direction."""
+        self.elevator.current_floor = 3
+        self.elevator.direction = Direction.UP
+        self.elevator.up_stops = {5, 7}
+        self.elevator.down_stops = {1, 2}
+
+        next_stop = self.elevator.get_next_stop()
+        self.assertEqual(next_stop, 5)  # Continue up first
+
+    def test_scan_algorithm_reverses(self):
+        """Test SCAN reverses when no stops in current direction."""
+        self.elevator.current_floor = 8
+        self.elevator.direction = Direction.UP
+        self.elevator.up_stops = set()
+        self.elevator.down_stops = {3, 5}
+
+        next_stop = self.elevator.get_next_stop()
+        self.assertEqual(next_stop, 5)  # Reverse to down
+
+    def test_distance_calculation_idle(self):
+        """Test distance calculation for idle elevator."""
+        self.elevator.current_floor = 3
+        self.elevator.direction = Direction.IDLE
+
+        distance = self.elevator.distance_to(7, Direction.UP)
+        self.assertEqual(distance, 4)
+
+
+class TestElevatorController(unittest.TestCase):
+    def setUp(self):
+        self.controller = ElevatorController(num_elevators=3, num_floors=10)
+
+    def test_assigns_nearest_elevator(self):
+        """Test that nearest idle elevator is assigned."""
+        # Move elevator 1 closer to floor 5
+        self.controller.elevators[1].current_floor = 4
+
+        assigned = self.controller.request_elevator(5, Direction.UP)
+        self.assertEqual(assigned, 1)
+
+    def test_prefers_same_direction(self):
+        """Test elevator going same direction is preferred."""
+        self.controller.elevators[0].current_floor = 3
+        self.controller.elevators[0].direction = Direction.UP
+        self.controller.elevators[0].up_stops = {6}
+
+        self.controller.elevators[1].current_floor = 4
+        self.controller.elevators[1].direction = Direction.IDLE
+
+        # Request at floor 5 going up - should prefer elevator 0
+        assigned = self.controller.request_elevator(5, Direction.UP)
+        self.assertEqual(assigned, 0)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### Integration Tests
+
+```python
+def test_full_simulation():
+    """Test complete elevator journey."""
+    controller = ElevatorController(num_elevators=2, num_floors=10)
+
+    # Request from floor 0 going up
+    e_id = controller.request_elevator(0, Direction.UP)
+    controller.select_floor(e_id, 5)
+
+    # Simulate until elevator reaches floor 5
+    steps = 0
+    max_steps = 20
+    while steps < max_steps:
+        controller.step()
+        elevator = controller.elevators[e_id]
+        if elevator.current_floor == 5 and not elevator.has_stops():
+            break
+        steps += 1
+
+    assert steps < max_steps, "Elevator should reach destination"
+    assert controller.elevators[e_id].current_floor == 5
+```
+
+---
+
+## Interview Tips
+
+<div style="background: #f0f9ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 16px;">How to Approach This in an Interview</div>
+
+### Time Allocation (45 minutes)
+
+| Phase | Time | Focus |
+|-------|------|-------|
+| Requirements | 5 min | Clarify scope, constraints |
+| High-level Design | 10 min | Draw architecture, state machine |
+| Class Design | 10 min | Define interfaces, relationships |
+| Implementation | 15 min | Core algorithms (SCAN, assignment) |
+| Edge Cases & Testing | 5 min | Discuss scenarios, testing strategy |
+
+### Key Points to Mention
+
+1. **Start simple**: Begin with single elevator, extend to multiple
+2. **Draw the state machine**: Shows systematic thinking
+3. **Explain SCAN algorithm**: Reference disk scheduling parallel
+4. **Discuss assignment strategy**: Distance + direction scoring
+5. **Thread safety**: Mention locks for concurrent access
+
+### Common Follow-up Questions
+
+- **How to handle rush hour?** Pre-position elevators at lobby 8-9 AM
+- **Emergency mode?** All elevators to ground floor, doors open
+- **VIP service?** Priority queue, express mode
+- **Capacity tracking?** Add weight sensors, skip if full
+- **Distributed system?** Each elevator could be a service, central coordinator
+
+### Red Flags to Avoid
+
+- Jumping into code without clarifying requirements
+- Ignoring thread safety in a concurrent system
+- Not considering elevator direction in assignment
+- Implementing O(n) algorithms where O(1) is possible
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time Complexity | Space Complexity |
+|-----------|-----------------|------------------|
+| Add stop | O(1) with Set | O(1) |
+| Get next stop | O(n) worst case | O(1) |
+| Find best elevator | O(e) where e = elevators | O(1) |
+| Move one step | O(1) | O(1) |
+| **Total Space** | - | O(f * e) where f = floors |
+
+### Space Breakdown Per Elevator
+
+- Current floor: 4 bytes
+- Direction enum: 4 bytes
+- Up stops set: O(f) max
+- Down stops set: O(f) max
+- Total: ~O(f) per elevator

@@ -2,200 +2,146 @@
 
 ## Overview
 
-Database sharding is a horizontal scaling technique that partitions data across multiple database instances (shards). Each shard holds a subset of the total data, allowing the system to handle more data and traffic than a single database can manage.
+**Simple Explanation**: Database sharding is like dividing a huge library into multiple smaller libraries, each holding books for different topics or authors. Instead of one enormous library that becomes impossible to manage, you have several smaller, faster libraries. In databases, sharding splits your data across multiple database servers, where each server (shard) holds a portion of the total data.
 
-## Key Concepts
+The key insight: a single database has limits (disk space, CPU, memory, connections). Sharding breaks through those limits by distributing data horizontally.
 
-### Why Sharding?
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-1. **Horizontal Scalability**: Distribute data across many machines
-2. **Improved Performance**: Queries only hit relevant shards
-3. **Higher Availability**: Failure of one shard doesn't affect others
-4. **Geographic Distribution**: Place data closer to users
-</div>
-
-### The Scaling Problem
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">WHY SINGLE DATABASE DOESN'T SCALE</div>
-  <div style="margin-bottom: 32px;">
-    <div style="color: #8b949e; font-size: 14px; font-weight: 500; margin-bottom: 16px;">VERTICAL SCALING (Scale Up)</div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 20px; min-width: 140px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">Small DB</div>
-        <div style="color: #aaffaa; font-size: 12px; margin-top: 8px;">8 CPU</div>
-        <div style="color: #aaffaa; font-size: 12px;">32 GB RAM</div>
-        <div style="color: #aaffaa; font-size: 12px;">1 TB Disk</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">THE SHARDING CONCEPT</div>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; align-items: center; margin-bottom: 24px;">
+    <div style="text-align: center;">
+      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; border: 2px solid #3b82f6;">
+        <div style="color: #1e40af; font-weight: 600; font-size: 16px;">100 Million Users</div>
+        <div style="color: #3b82f6; font-size: 13px; margin-top: 4px;">Single Database</div>
+        <div style="color: #dc2626; font-size: 12px; margin-top: 8px; font-weight: 500;">Struggling!</div>
       </div>
-      <div style="color: #58a6ff; font-size: 24px;">→</div>
-      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 20px; min-width: 140px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">Bigger DB</div>
-        <div style="color: #aaddff; font-size: 12px; margin-top: 8px;">32 CPU</div>
-        <div style="color: #aaddff; font-size: 12px;">256 GB RAM</div>
-        <div style="color: #aaddff; font-size: 12px;">10 TB SSD</div>
+    </div>
+    <div style="color: #6366f1; font-size: 28px;">--></div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac; text-align: center;">
+        <div style="color: #166534; font-weight: 500;">Shard 1</div>
+        <div style="color: #22c55e; font-size: 11px;">Users A-G (33M)</div>
       </div>
-      <div style="color: #58a6ff; font-size: 24px;">→</div>
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 20px; min-width: 140px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">BIGGEST DB</div>
-        <div style="color: #ddccff; font-size: 12px; margin-top: 8px;">128 CPU</div>
-        <div style="color: #ddccff; font-size: 12px;">1 TB RAM</div>
-        <div style="color: #ddccff; font-size: 12px;">100 TB SSD</div>
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac; text-align: center;">
+        <div style="color: #166534; font-weight: 500;">Shard 2</div>
+        <div style="color: #22c55e; font-size: 11px;">Users H-P (33M)</div>
       </div>
-      <div style="color: #58a6ff; font-size: 24px;">→</div>
-      <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 20px; min-width: 120px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">LIMIT!</div>
-        <div style="color: #ffdddd; font-size: 12px; margin-top: 8px;">Can't buy</div>
-        <div style="color: #ffdddd; font-size: 12px;">bigger box</div>
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac; text-align: center;">
+        <div style="color: #166534; font-weight: 500;">Shard 3</div>
+        <div style="color: #22c55e; font-size: 11px;">Users Q-Z (34M)</div>
       </div>
     </div>
   </div>
-  <div>
-    <div style="color: #8b949e; font-size: 14px; font-weight: 500; margin-bottom: 16px;">HORIZONTAL SCALING (Scale Out) with Sharding</div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 16px; min-width: 90px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 1</div>
-        <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">Users 1-1M</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 16px; min-width: 90px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 2</div>
-        <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">Users 1M-2M</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 16px; min-width: 90px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 3</div>
-        <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">Users 2M-3M</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 16px; min-width: 90px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 4</div>
-        <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">Users 3M-4M</div>
-      </div>
-      <div style="color: #8b949e; font-size: 16px;">...</div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 16px; min-width: 90px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard N</div>
-        <div style="color: #aaffaa; font-size: 11px; margin-top: 4px;">Users ...</div>
-      </div>
-    </div>
-    <div style="text-align: center; color: #7ee787; font-size: 18px; font-weight: 600; margin-top: 16px;">NO LIMIT! ∞</div>
+  <div style="text-align: center; background: rgba(34, 197, 94, 0.15); border-radius: 8px; padding: 12px; border: 1px solid #86efac;">
+    <span style="color: #166534;">Each shard handles 1/3 of the load - 3x the capacity!</span>
   </div>
 </div>
+
+## Why It Matters: Real Company Examples
+
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+
+**Instagram** shards user data by user_id. With 2 billion users, a single database is impossible. They use thousands of PostgreSQL shards, each holding millions of users. When you view a profile, the app routes to the exact shard holding that user.
+
+**Discord** shards messages by guild_id (server). Each Discord server's messages live on a specific shard. This means reading/writing messages for a conversation only touches one database, enabling their 150 million monthly users to chat in real-time.
+
+**Uber** shards trip data geographically. Trips in New York hit different shards than trips in San Francisco. This reduces latency (data is closer to users) and isolates failures (NYC outage doesn't affect SF).
+
+**Slack** shards by workspace. Each company's Slack workspace lives on dedicated shards, providing data isolation and predictable performance regardless of how large other workspaces grow.
+
+</div>
+
+## How It Works
 
 ### Sharding vs Replication
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Sharding | Replication |
-|----------|-------------|
-| Splits data across nodes | Copies same data to multiple nodes |
-| Increases write capacity | Increases read capacity |
-| Each shard has unique data | All replicas have same data |
-| Complex queries across shards | Simple failover |
-</div>
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">SHARDING vs REPLICATION</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-    <div>
-      <div style="color: #58a6ff; font-size: 14px; font-weight: 600; margin-bottom: 16px; text-align: center;">SHARDING (Different Data)</div>
-      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
-        <div style="color: #ffffff; font-weight: 600;">All Users Data</div>
-      </div>
-      <div style="text-align: center; color: #58a6ff; font-size: 20px; margin-bottom: 12px;">↓ ↓ ↓</div>
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 1</div>
-          <div style="color: #aaffaa; font-size: 11px;">Users A-M</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SHARDING vs REPLICATION</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px; text-align: center;">SHARDING (Split Data)</div>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+        <div style="background: white; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid #93c5fd;">
+          <div style="color: #1e40af; font-size: 12px; font-weight: 500;">Shard 1</div>
+          <div style="color: #3b82f6; font-size: 10px;">Users A-M</div>
         </div>
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 2</div>
-          <div style="color: #aaffaa; font-size: 11px;">Users N-S</div>
-        </div>
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Shard 3</div>
-          <div style="color: #aaffaa; font-size: 11px;">Users T-Z</div>
+        <div style="background: white; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid #93c5fd;">
+          <div style="color: #1e40af; font-size: 12px; font-weight: 500;">Shard 2</div>
+          <div style="color: #3b82f6; font-size: 10px;">Users N-Z</div>
         </div>
       </div>
-      <div style="margin-top: 16px; padding: 12px; background: rgba(35, 134, 54, 0.2); border-radius: 8px; text-align: center;">
-        <div style="color: #7ee787; font-size: 13px;">Total capacity: <strong>3x</strong></div>
-        <div style="color: #7ee787; font-size: 13px;">Write capacity: <strong>3x</strong></div>
+      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+        <div>Different data on each node</div>
+        <div>Increases write capacity</div>
+        <div>Scales horizontally</div>
       </div>
     </div>
-    <div>
-      <div style="color: #a371f7; font-size: 14px; font-weight: 600; margin-bottom: 16px; text-align: center;">REPLICATION (Same Data)</div>
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
-        <div style="color: #ffffff; font-weight: 600;">All Users Data</div>
-      </div>
-      <div style="text-align: center; color: #a371f7; font-size: 20px; margin-bottom: 12px;">↓ ↓ ↓</div>
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Copy 1</div>
-          <div style="color: #ddccff; font-size: 11px;">ALL Users</div>
+    <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; border: 1px solid #d8b4fe;">
+      <div style="color: #7c3aed; font-weight: 600; margin-bottom: 12px; text-align: center;">REPLICATION (Copy Data)</div>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+        <div style="background: white; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid #d8b4fe;">
+          <div style="color: #7c3aed; font-size: 12px; font-weight: 500;">Replica 1</div>
+          <div style="color: #a78bfa; font-size: 10px;">ALL Users</div>
         </div>
-        <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Copy 2</div>
-          <div style="color: #ddccff; font-size: 11px;">ALL Users</div>
-        </div>
-        <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 12px; text-align: center; flex: 1;">
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px;">Copy 3</div>
-          <div style="color: #ddccff; font-size: 11px;">ALL Users</div>
+        <div style="background: white; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid #d8b4fe;">
+          <div style="color: #7c3aed; font-size: 12px; font-weight: 500;">Replica 2</div>
+          <div style="color: #a78bfa; font-size: 10px;">ALL Users</div>
         </div>
       </div>
-      <div style="margin-top: 16px; padding: 12px; background: rgba(137, 87, 229, 0.2); border-radius: 8px; text-align: center;">
-        <div style="color: #d2a8ff; font-size: 13px;">Read capacity: <strong>3x</strong></div>
-        <div style="color: #ffa657; font-size: 13px;">Write capacity: <strong>1x</strong> (all writes go to all)</div>
+      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+        <div>Same data on each node</div>
+        <div>Increases read capacity</div>
+        <div>Provides redundancy</div>
       </div>
     </div>
   </div>
+  <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; padding: 12px; text-align: center;">
+    <span style="color: #4f46e5;">In practice: Sharding + Replication together. Each shard has replicas for HA.</span>
+  </div>
 </div>
 
-## Sharding Strategies
+### Sharding Strategies Comparison
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">SHARDING STRATEGY COMPARISON</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
       <thead>
-        <tr style="border-bottom: 2px solid #30363d;">
-          <th style="padding: 12px; text-align: left; color: #58a6ff;">Strategy</th>
-          <th style="padding: 12px; text-align: center; color: #58a6ff;">Distribution</th>
-          <th style="padding: 12px; text-align: center; color: #58a6ff;">Range Queries</th>
-          <th style="padding: 12px; text-align: center; color: #58a6ff;">Resharding</th>
-          <th style="padding: 12px; text-align: left; color: #58a6ff;">Use Case</th>
+        <tr style="border-bottom: 2px solid #cbd5e1;">
+          <th style="padding: 12px; text-align: left; color: #1e40af;">Strategy</th>
+          <th style="padding: 12px; text-align: center; color: #1e40af;">Distribution</th>
+          <th style="padding: 12px; text-align: center; color: #1e40af;">Range Queries</th>
+          <th style="padding: 12px; text-align: center; color: #1e40af;">Resharding</th>
+          <th style="padding: 12px; text-align: left; color: #1e40af;">Best For</th>
         </tr>
       </thead>
       <tbody>
-        <tr style="border-bottom: 1px solid #21262d;">
-          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Range-Based</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #ffa657;">Uneven</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Excellent</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #ffa657;">Medium</span></td>
-          <td style="padding: 12px; color: #8b949e;">Time data</td>
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Range-Based</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #d97706;">Uneven</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Excellent</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #d97706;">Medium</span></td>
+          <td style="padding: 12px; color: #64748b;">Time-series, logs</td>
         </tr>
-        <tr style="border-bottom: 1px solid #21262d;">
-          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Hash-Based</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Even</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #f85149;">Poor</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #f85149;">Hard</span></td>
-          <td style="padding: 12px; color: #8b949e;">Random access</td>
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Hash-Based</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Even</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #dc2626;">Poor</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #dc2626;">Hard</span></td>
+          <td style="padding: 12px; color: #64748b;">User data, sessions</td>
         </tr>
-        <tr style="border-bottom: 1px solid #21262d;">
-          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Consistent Hash</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Even</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #f85149;">Poor</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Easy</span></td>
-          <td style="padding: 12px; color: #8b949e;">Dynamic scaling</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #21262d;">
-          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Directory-Based</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #58a6ff;">Flexible</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Good</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #7ee787;">Easy</span></td>
-          <td style="padding: 12px; color: #8b949e;">Custom logic</td>
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Consistent Hash</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Even</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #dc2626;">Poor</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Easy</span></td>
+          <td style="padding: 12px; color: #64748b;">Dynamic clusters</td>
         </tr>
         <tr>
-          <td style="padding: 12px; color: #f0f6fc; font-weight: 500;">Geographic</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #a371f7;">By region</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #8b949e;">N/A</span></td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #8b949e;">N/A</span></td>
-          <td style="padding: 12px; color: #8b949e;">Multi-DC</td>
+          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Directory-Based</td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #3b82f6;">Flexible</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Good</span></td>
+          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Easy</span></td>
+          <td style="padding: 12px; color: #64748b;">Custom routing</td>
         </tr>
       </tbody>
     </table>
@@ -204,524 +150,260 @@ Database sharding is a horizontal scaling technique that partitions data across 
 
 ### 1. Range-Based Sharding
 
-Partition data by ranges of a key value.
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">RANGE-BASED SHARDING</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RANGE-BASED SHARDING</div>
   <div style="text-align: center; margin-bottom: 16px;">
-    <span style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 600;">user_id = 1,500,000</span>
+    <span style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-family: monospace; border: 1px solid #93c5fd;">user_id = 1,500,000</span>
   </div>
-  <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓</div>
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-    <div style="color: #58a6ff; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-align: center;">SHARD ROUTER</div>
+  <div style="text-align: center; color: #6366f1; font-size: 20px; margin-bottom: 16px;">|</div>
+  <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
+    <div style="color: #3b82f6; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-align: center;">ROUTING LOGIC</div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-family: monospace; font-size: 13px;">
-      <div style="color: #8b949e;">if id &lt; 1M</div><div style="color: #f0f6fc;">→ Shard 1</div>
-      <div style="color: #8b949e;">if id &lt; 2M</div><div style="color: #7ee787;">→ Shard 2 ← This one!</div>
-      <div style="color: #8b949e;">if id &lt; 3M</div><div style="color: #f0f6fc;">→ Shard 3</div>
-      <div style="color: #8b949e;">else</div><div style="color: #f0f6fc;">→ Shard 4</div>
+      <div style="color: #64748b;">if id &lt; 1,000,000</div><div style="color: #1e293b;">--> Shard 1</div>
+      <div style="color: #64748b;">if id &lt; 2,000,000</div><div style="color: #16a34a; font-weight: 600;">--> Shard 2 (match!)</div>
+      <div style="color: #64748b;">if id &lt; 3,000,000</div><div style="color: #1e293b;">--> Shard 3</div>
+      <div style="color: #64748b;">else</div><div style="color: #1e293b;">--> Shard 4</div>
     </div>
   </div>
-  <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓</div>
-  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 1</div>
-      <div style="color: #8b949e; font-size: 12px;">0-1M</div>
+  <div style="text-align: center; color: #6366f1; font-size: 20px; margin-bottom: 16px;">|</div>
+  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 1</div>
+      <div style="color: #64748b; font-size: 11px;">0-1M</div>
     </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
-      <div style="color: #ffffff; font-weight: 600;">Shard 2</div>
-      <div style="color: #aaffaa; font-size: 12px;">1M-2M</div>
-      <div style="color: #7ee787; font-size: 16px; margin-top: 4px;">✓</div>
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 2px solid #22c55e;">
+      <div style="color: #166534; font-weight: 600;">Shard 2</div>
+      <div style="color: #22c55e; font-size: 11px;">1M-2M</div>
     </div>
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 3</div>
-      <div style="color: #8b949e; font-size: 12px;">2M-3M</div>
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 3</div>
+      <div style="color: #64748b; font-size: 11px;">2M-3M</div>
     </div>
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 4</div>
-      <div style="color: #8b949e; font-size: 12px;">3M+</div>
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 4</div>
+      <div style="color: #64748b; font-size: 11px;">3M+</div>
     </div>
   </div>
-  <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; text-align: center;">
-    <span style="color: #ffa657; font-weight: 600;">Warning:</span>
-    <span style="color: #f0f6fc;"> Hotspots! New users (high IDs) always hit the last shard</span>
+  <div style="margin-top: 16px; background: rgba(234, 179, 8, 0.15); border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fcd34d;">
+    <span style="color: #92400e; font-weight: 500;">Hotspot Warning:</span>
+    <span style="color: #1e293b;"> New users (high IDs) always hit the last shard!</span>
   </div>
 </div>
 
 ```python
-def get_shard_by_range(user_id):
-    if user_id < 1000000:
-        return "shard_1"
-    elif user_id < 2000000:
-        return "shard_2"
-    elif user_id < 3000000:
-        return "shard_3"
-    else:
-        return "shard_4"
-```
+def get_shard_by_range(user_id: int) -> str:
+    """Route based on ID ranges."""
+    ranges = [
+        (0, 1_000_000, "shard_1"),
+        (1_000_000, 2_000_000, "shard_2"),
+        (2_000_000, 3_000_000, "shard_3"),
+    ]
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-**Pros**
-- Simple to implement
-- Efficient range queries (e.g., "get all users 1-1000")
-- Data locality for related records
-</div>
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-**Cons**
-- Uneven distribution (hotspots)
-- Requires rebalancing when shards fill up
-- New data hits one shard
-</div>
-</div>
+    for start, end, shard in ranges:
+        if start <= user_id < end:
+            return shard
+    return "shard_4"  # Default for overflow
+```
 
 ### 2. Hash-Based Sharding
 
-Use hash function to determine shard.
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">HASH-BASED SHARDING</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">HASH-BASED SHARDING</div>
   <div style="text-align: center; margin-bottom: 16px;">
-    <span style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: monospace;">user_id = "user_12345"</span>
+    <span style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-family: monospace; border: 1px solid #93c5fd;">user_id = "user_12345"</span>
   </div>
-  <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓</div>
-  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-    <div style="color: #ffffff; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-align: center;">HASH FUNCTION</div>
-    <div style="font-family: monospace; font-size: 13px; text-align: center;">
-      <div style="color: #f0f6fc;">hash("user_12345") = 0x7A3B... = <span style="color: #7ee787;">2,045,678,901</span></div>
-      <div style="color: #f0f6fc; margin-top: 8px;">shard_index = 2,045,678,901 % 4 = <span style="color: #7ee787; font-weight: bold;">1</span></div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #a371f7; font-size: 24px; margin-bottom: 16px;">↓</div>
-  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 0</div>
-      <div style="color: #8b949e; font-size: 12px;">~25% of data</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center; box-shadow: 0 0 20px rgba(46, 160, 67, 0.3);">
-      <div style="color: #ffffff; font-weight: 600;">Shard 1</div>
-      <div style="color: #aaffaa; font-size: 12px;">~25% of data</div>
-      <div style="color: #7ee787; font-size: 16px; margin-top: 4px;">✓</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 2</div>
-      <div style="color: #8b949e; font-size: 12px;">~25% of data</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; min-width: 100px; text-align: center;">
-      <div style="color: #f0f6fc; font-weight: 600;">Shard 3</div>
-      <div style="color: #8b949e; font-size: 12px;">~25% of data</div>
+  <div style="text-align: center; color: #6366f1; font-size: 20px; margin-bottom: 16px;">|</div>
+  <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #d8b4fe;">
+    <div style="color: #7c3aed; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-align: center;">HASH FUNCTION</div>
+    <div style="font-family: monospace; font-size: 13px; text-align: center; color: #1e293b;">
+      <div>hash("user_12345") = <span style="color: #7c3aed;">2,045,678,901</span></div>
+      <div style="margin-top: 8px;">shard = 2,045,678,901 % 4 = <span style="color: #16a34a; font-weight: bold;">1</span></div>
     </div>
   </div>
-  <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #238636; border-radius: 8px; padding: 12px; text-align: center;">
-    <span style="color: #7ee787; font-weight: 600;">✓ Even distribution across all shards!</span>
+  <div style="text-align: center; color: #6366f1; font-size: 20px; margin-bottom: 16px;">|</div>
+  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 0</div>
+      <div style="color: #64748b; font-size: 11px;">~25%</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 2px solid #22c55e;">
+      <div style="color: #166534; font-weight: 600;">Shard 1</div>
+      <div style="color: #22c55e; font-size: 11px;">~25%</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 2</div>
+      <div style="color: #64748b; font-size: 11px;">~25%</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 90px; text-align: center; border: 1px solid #cbd5e1;">
+      <div style="color: #475569; font-weight: 500;">Shard 3</div>
+      <div style="color: #64748b; font-size: 11px;">~25%</div>
+    </div>
+  </div>
+  <div style="margin-top: 16px; background: rgba(34, 197, 94, 0.15); border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #86efac;">
+    <span style="color: #166534;">Even distribution! But adding shards moves ~all data.</span>
   </div>
 </div>
 
 ```python
 import hashlib
 
-def get_shard_by_hash(user_id, num_shards):
-    hash_value = int(hashlib.md5(str(user_id).encode()).hexdigest(), 16)
-    return f"shard_{hash_value % num_shards}"
-```
+def get_shard_by_hash(user_id: str, num_shards: int) -> str:
+    """Hash-based routing for even distribution."""
+    hash_val = int(hashlib.md5(str(user_id).encode()).hexdigest(), 16)
+    shard_index = hash_val % num_shards
+    return f"shard_{shard_index}"
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-**Pros**
-- Even distribution of data
-- No hotspots
-- Simple to implement
-</div>
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-**Cons**
-- Range queries hit ALL shards
-- Resharding moves ~all data
-- Adding shards is expensive
-</div>
-</div>
+# Problem: When num_shards changes, most keys remap!
+# 4 shards: hash % 4 = 1
+# 5 shards: hash % 5 = 2  <- Different shard!
+```
 
 ### 3. Consistent Hashing
 
-Minimizes data movement when adding/removing shards.
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">CONSISTENT HASHING</div>
-  <div style="text-align: center; color: #8b949e; margin-bottom: 20px;">The Hash Ring (0 to 2^32)</div>
-  <div style="display: flex; justify-content: center; margin-bottom: 24px;">
-    <div style="position: relative; width: 280px; height: 280px;">
-      <div style="position: absolute; width: 240px; height: 240px; border: 3px solid #30363d; border-radius: 50%; top: 20px; left: 20px;"></div>
-      <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center;">
-        <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">A</div>
-        <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">0°</div>
-      </div>
-      <div style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); text-align: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">B</div>
-        <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">90°</div>
-      </div>
-      <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); text-align: center;">
-        <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">C</div>
-        <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">180°</div>
-      </div>
-      <div style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); text-align: center;">
-        <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">D</div>
-        <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">270°</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">CONSISTENT HASHING - THE RING</div>
+  <div style="text-align: center; color: #64748b; margin-bottom: 20px;">Keys and nodes map to positions on a ring (0 to 2^32)</div>
+  <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
+    <div style="text-align: center; font-family: monospace; font-size: 13px; color: #1e293b;">
+      <div style="margin-bottom: 8px;">Ring: <span style="color: #3b82f6;">[A @ 0deg]</span> ... <span style="color: #16a34a;">[B @ 90deg]</span> ... <span style="color: #7c3aed;">[C @ 180deg]</span> ... <span style="color: #dc2626;">[D @ 270deg]</span></div>
+      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+        Key "user_123" hashes to <span style="color: #d97706;">45deg</span> --> Walks clockwise --> Lands on <span style="color: #16a34a; font-weight: 600;">Node B</span>
       </div>
     </div>
   </div>
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; margin-bottom: 24px; text-align: center;">
-    <span style="color: #58a6ff;">Key "user_123"</span>
-    <span style="color: #8b949e;"> → hash() = </span>
-    <span style="color: #ffa657;">45°</span>
-    <span style="color: #8b949e;"> → Find next node clockwise → </span>
-    <span style="color: #7ee787; font-weight: 600;">Node B</span>
+  <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid #fcd34d;">
+    <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Adding Node E at 67deg:</div>
+    <div style="color: #1e293b; font-size: 13px;">
+      <div>Before: Keys 45deg-90deg go to B</div>
+      <div style="margin-top: 4px;">After: Keys 45deg-67deg go to <span style="color: #16a34a; font-weight: 600;">E</span>, Keys 67deg-90deg stay on B</div>
+      <div style="margin-top: 8px; color: #d97706; font-weight: 500;">Only ~1/N of data moves (not all!)</div>
+    </div>
   </div>
-  <div style="border-top: 1px solid #30363d; padding-top: 24px;">
-    <div style="color: #ffa657; font-weight: 600; margin-bottom: 16px;">ADDING A NEW NODE (E at 67°):</div>
-    <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 14px;">
-      <div style="color: #8b949e;">Before:</div>
-      <div style="color: #f0f6fc;">Keys 45°-90° go to Node B</div>
-      <div style="color: #8b949e;">After:</div>
-      <div><span style="color: #7ee787;">Keys 45°-67° go to Node E</span> <span style="color: #ffa657;">← Only these keys move!</span></div>
-      <div></div>
-      <div style="color: #f0f6fc;">Keys 67°-90° go to Node B</div>
-    </div>
-    <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #238636; border-radius: 8px; padding: 12px; text-align: center; margin-top: 16px;">
-      <span style="color: #7ee787;">Only ~1/N of data moves (not all data like in hash-based!)</span>
-    </div>
+  <div style="background: rgba(34, 197, 94, 0.15); border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #86efac;">
+    <span style="color: #166534;">Minimal data movement when scaling! Used by DynamoDB, Cassandra, Riak.</span>
   </div>
 </div>
 
 ```python
-class ConsistentHashSharding:
-    def __init__(self, shards, virtual_nodes=100):
-        self.ring = []
-        self.shard_map = {}
+import hashlib
+from bisect import bisect_right
 
-        for shard in shards:
-            for i in range(virtual_nodes):
-                hash_val = self._hash(f"{shard}:{i}")
-                self.ring.append(hash_val)
-                self.shard_map[hash_val] = shard
+class ConsistentHashRing:
+    """Consistent hashing for minimal data movement during scaling."""
 
-        self.ring.sort()
+    def __init__(self, nodes: list, virtual_nodes: int = 150):
+        self.virtual_nodes = virtual_nodes
+        self.ring = []  # Sorted list of (hash, node)
+        self.hash_to_node = {}
 
-    def _hash(self, key):
+        for node in nodes:
+            self.add_node(node)
+
+    def _hash(self, key: str) -> int:
         return int(hashlib.md5(key.encode()).hexdigest(), 16)
 
-    def get_shard(self, key):
+    def add_node(self, node: str):
+        """Add node with virtual nodes for better distribution."""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:vn{i}"
+            hash_val = self._hash(virtual_key)
+            self.ring.append(hash_val)
+            self.hash_to_node[hash_val] = node
+        self.ring.sort()
+
+    def remove_node(self, node: str):
+        """Remove node - only its keys will be redistributed."""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:vn{i}"
+            hash_val = self._hash(virtual_key)
+            self.ring.remove(hash_val)
+            del self.hash_to_node[hash_val]
+
+    def get_node(self, key: str) -> str:
+        """Find the node responsible for this key."""
         if not self.ring:
             return None
 
-        hash_val = self._hash(str(key))
+        hash_val = self._hash(key)
+        idx = bisect_right(self.ring, hash_val)
 
-        # Binary search for first node >= hash_val
-        for node_hash in self.ring:
-            if hash_val <= node_hash:
-                return self.shard_map[node_hash]
+        # Wrap around if past the end
+        if idx == len(self.ring):
+            idx = 0
 
-        return self.shard_map[self.ring[0]]
-```
+        return self.hash_to_node[self.ring[idx]]
 
-### 4. Directory-Based Sharding
 
-Lookup table maps keys to shards.
+# Usage
+ring = ConsistentHashRing(["shard1", "shard2", "shard3"])
+print(ring.get_node("user:123"))  # -> shard2
 
-```python
-class DirectorySharding:
-    def __init__(self):
-        self.directory = {}  # key -> shard mapping
-        self.shards = ["shard_1", "shard_2", "shard_3"]
-        self.current_shard_idx = 0
-
-    def get_shard(self, key):
-        if key in self.directory:
-            return self.directory[key]
-
-        # Assign to shard (round-robin or by capacity)
-        shard = self.shards[self.current_shard_idx]
-        self.directory[key] = shard
-        self.current_shard_idx = (self.current_shard_idx + 1) % len(self.shards)
-        return shard
-```
-
-**Pros**: Flexible, easy to move data
-**Cons**: Directory becomes single point of failure
-
-### 5. Geographic Sharding
-
-Partition by user location.
-
-```python
-def get_shard_by_region(user_region):
-    region_shards = {
-        "us-east": "shard_us_east",
-        "us-west": "shard_us_west",
-        "eu": "shard_eu",
-        "asia": "shard_asia"
-    }
-    return region_shards.get(user_region, "shard_default")
+# Add new shard - only ~33% of keys move
+ring.add_node("shard4")
 ```
 
 ## Shard Key Selection
 
-The shard key is crucial for performance:
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">SHARD KEY SELECTION</div>
-  <div style="margin-bottom: 32px;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-      <span style="color: #7ee787; font-size: 20px;">✓</span>
-      <span style="color: #7ee787; font-weight: 600;">GOOD SHARD KEY: user_id</span>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">GOOD vs BAD SHARD KEYS</div>
+  <div style="margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <span style="color: #16a34a; font-size: 20px; font-weight: bold;">OK</span>
+      <span style="color: #166534; font-weight: 600;">GOOD: user_id (high cardinality)</span>
     </div>
-    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Shard 1</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Shard 2</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Shard 3</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Shard 4</div>
-      </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 80px; height: 40px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px;"></div>
+      <div style="flex: 1; min-width: 80px; height: 40px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px;"></div>
+      <div style="flex: 1; min-width: 80px; height: 40px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px;"></div>
+      <div style="flex: 1; min-width: 80px; height: 40px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px;"></div>
     </div>
-    <div style="text-align: center; color: #7ee787; font-size: 13px;">← Even distribution!</div>
+    <div style="text-align: center; color: #16a34a; font-size: 12px; margin-top: 8px;">Even distribution across shards</div>
   </div>
-  <div style="margin-bottom: 32px;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-      <span style="color: #f85149; font-size: 20px;">✗</span>
-      <span style="color: #f85149; font-weight: 600;">BAD SHARD KEY: country</span>
+  <div style="margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <span style="color: #dc2626; font-size: 20px; font-weight: bold;">X</span>
+      <span style="color: #991b1b; font-weight: 600;">BAD: country (low cardinality)</span>
     </div>
-    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); height: 60px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 0 20px rgba(248, 81, 73, 0.3);"></div>
-        <div style="color: #8b949e; font-size: 12px;">US (90%)</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div style="flex: 3; min-width: 200px; height: 40px; background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #991b1b; font-size: 11px;">US - 90%</span>
       </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(to top, #21262d 75%, #da3633 75%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">EU (7%)</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(to top, #21262d 90%, #da3633 90%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Asia (2%)</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: #21262d; height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 12px;">Other (1%)</div>
-      </div>
+      <div style="flex: 0.3; min-width: 30px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px;"></div>
+      <div style="flex: 0.2; min-width: 20px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px;"></div>
+      <div style="flex: 0.1; min-width: 15px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px;"></div>
     </div>
-    <div style="text-align: center; color: #f85149; font-size: 13px;">← Hotspot on US!</div>
+    <div style="text-align: center; color: #dc2626; font-size: 12px; margin-top: 8px;">Hotspot! US shard is overloaded</div>
   </div>
   <div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-      <span style="color: #f85149; font-size: 20px;">✗</span>
-      <span style="color: #f85149; font-weight: 600;">BAD SHARD KEY: created_at (time-based)</span>
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <span style="color: #dc2626; font-size: 20px; font-weight: bold;">X</span>
+      <span style="color: #991b1b; font-weight: 600;">BAD: created_at (time-based)</span>
     </div>
-    <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; font-size: 12px; color: #8b949e;">
-      <div style="width: 90px; text-align: center;">Day 1 ↓</div>
-      <div style="width: 90px; text-align: center;">Day 2 ↓</div>
-      <div style="width: 90px; text-align: center;">Day 3 ↓</div>
-      <div style="width: 90px; text-align: center;">Day 4 ↓</div>
-    </div>
-    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 11px;">Jan 1-7</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 70px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #64748b; font-size: 10px;">Old</span>
       </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 11px;">Jan 8-14</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); height: 60px; border-radius: 8px; margin-bottom: 8px;"></div>
-        <div style="color: #8b949e; font-size: 11px;">Jan 15-21</div>
-      </div>
-      <div style="width: 90px; text-align: center;">
-        <div style="background: linear-gradient(135deg, #ffa657 0%, #d29922 100%); height: 60px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 0 20px rgba(255, 166, 87, 0.3);"></div>
-        <div style="color: #8b949e; font-size: 11px;">Jan 22-28</div>
+      <div style="flex: 1; min-width: 70px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px;"></div>
+      <div style="flex: 1; min-width: 70px; height: 40px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 6px;"></div>
+      <div style="flex: 1; min-width: 70px; height: 40px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 2px solid #f59e0b;">
+        <span style="color: #92400e; font-size: 10px;">ALL writes!</span>
       </div>
     </div>
-    <div style="text-align: center; color: #ffa657; font-size: 13px;">← All writes here! (current)</div>
+    <div style="text-align: center; color: #d97706; font-size: 12px; margin-top: 8px;">All new data hits one shard</div>
   </div>
 </div>
 
-### Good Shard Key Properties
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-1. **High Cardinality**: Many unique values (user_id: millions, country: ~200)
-2. **Even Distribution**: Data spreads evenly across shards
-3. **Query Patterns**: Matches how you query (shard by user_id if you query by user)
-4. **Immutable**: Shouldn't change (changing shard key = moving data!)
+**Good Shard Key Properties**:
+1. **High Cardinality** - Millions of unique values (user_id: good, country: bad)
+2. **Even Distribution** - Values spread uniformly (hash of user_id: good, sequential ID: bad)
+3. **Query Aligned** - Matches your access patterns (shard by user_id if you query by user)
+4. **Immutable** - Never changes (email: bad, user_id: good)
+
 </div>
 
-### Examples
-
-```sql
--- Good: user_id (high cardinality, even distribution)
--- Table: orders
--- Shard key: user_id
-
--- Bad: country (low cardinality, uneven)
--- 90% of users might be in one country
-
--- Bad: created_at (time-based hotspot)
--- All new writes go to one shard
-```
-
-## Cross-Shard Operations
-
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-⚠️ **Cross-shard operations are expensive!** Design your schema to minimize them. If you frequently need to join data across shards, you may have chosen the wrong shard key.
-</div>
-
-### Scatter-Gather Pattern
-
-Query all shards and aggregate results.
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">SCATTER-GATHER PATTERN</div>
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 10px; padding: 16px; margin-bottom: 20px; text-align: center;">
-    <div style="color: #58a6ff; font-family: monospace; font-size: 13px;">Query: "SELECT * FROM orders WHERE product='iPhone' ORDER BY date"</div>
-    <div style="color: #ffa657; font-size: 12px; margin-top: 8px;">(Can't use shard key - must query all shards!)</div>
-  </div>
-  <div style="text-align: center; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 32px; display: inline-block;">
-      <div style="color: #ffffff; font-weight: 600;">Coordinator</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #58a6ff; font-weight: 600; margin-bottom: 12px;">1. SCATTER (parallel)</div>
-  <div style="text-align: center; color: #58a6ff; font-size: 24px; margin-bottom: 16px;">↓ ↓ ↓</div>
-  <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 120px; text-align: center;">
-      <div style="color: #ffffff; font-weight: 600;">Shard 1</div>
-      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">Query...</div>
-      <div style="color: #ffffff; font-size: 14px; margin-top: 8px; font-weight: 600;">50 rows</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 120px; text-align: center;">
-      <div style="color: #ffffff; font-weight: 600;">Shard 2</div>
-      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">Query...</div>
-      <div style="color: #ffffff; font-size: 14px; margin-top: 8px; font-weight: 600;">30 rows</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 120px; text-align: center;">
-      <div style="color: #ffffff; font-weight: 600;">Shard 3</div>
-      <div style="color: #aaffaa; font-size: 12px; margin-top: 4px;">Query...</div>
-      <div style="color: #ffffff; font-size: 14px; margin-top: 8px; font-weight: 600;">70 rows</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #a371f7; font-size: 24px; margin-bottom: 12px;">↓ ↓ ↓</div>
-  <div style="text-align: center; color: #a371f7; font-weight: 600; margin-bottom: 16px;">2. GATHER (merge)</div>
-  <div style="text-align: center; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; display: inline-block;">
-      <div style="color: #ffffff; font-weight: 600;">Merge & Sort</div>
-      <div style="color: #ddccff; font-size: 12px; margin-top: 4px;">150 total rows - Sort by date</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #7ee787; font-size: 24px; margin-bottom: 8px;">↓</div>
-  <div style="text-align: center; color: #7ee787; font-weight: 600; margin-bottom: 20px;">Return to client</div>
-  <div style="background: rgba(255, 166, 87, 0.1); border: 1px solid #ffa657; border-radius: 8px; padding: 12px; text-align: center;">
-    <span style="color: #ffa657; font-weight: 600;">Warning:</span>
-    <span style="color: #f0f6fc;"> Latency = slowest shard + merge time</span>
-  </div>
-</div>
-
-```python
-async def search_all_shards(query):
-    tasks = []
-    for shard in shards:
-        tasks.append(query_shard(shard, query))
-
-    results = await asyncio.gather(*tasks)
-    return merge_results(results)
-```
-
-### Distributed Transactions
-
-Two-phase commit for cross-shard consistency.
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">TWO-PHASE COMMIT (2PC)</div>
-  <div style="text-align: center; color: #8b949e; margin-bottom: 24px;">Transaction: Transfer $100 from User A (Shard 1) to User B (Shard 2)</div>
-  <div style="text-align: center; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 32px; display: inline-block;">
-      <div style="color: #ffffff; font-weight: 600;">Coordinator</div>
-    </div>
-  </div>
-  <div style="background: rgba(88, 166, 255, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #58a6ff; font-weight: 600; text-align: center; margin-bottom: 16px;">PHASE 1: PREPARE</div>
-    <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 160px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; margin-bottom: 8px;">Shard 1</div>
-        <div style="color: #aaffaa; font-size: 12px;">PREPARE</div>
-        <div style="color: #aaffaa; font-size: 12px;">-$100 from A</div>
-        <div style="color: #aaffaa; font-size: 12px;">Lock row</div>
-        <div style="color: #7ee787; font-weight: 600; margin-top: 8px;">→ VOTE YES ✓</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; min-width: 160px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; margin-bottom: 8px;">Shard 2</div>
-        <div style="color: #aaffaa; font-size: 12px;">PREPARE</div>
-        <div style="color: #aaffaa; font-size: 12px;">+$100 to B</div>
-        <div style="color: #aaffaa; font-size: 12px;">Lock row</div>
-        <div style="color: #7ee787; font-weight: 600; margin-top: 8px;">→ VOTE YES ✓</div>
-      </div>
-    </div>
-  </div>
-  <div style="background: rgba(163, 113, 247, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #a371f7; font-weight: 600; text-align: center; margin-bottom: 16px;">PHASE 2: COMMIT (if all voted YES)</div>
-    <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 10px; padding: 16px; min-width: 160px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; margin-bottom: 8px;">Shard 1</div>
-        <div style="color: #ddccff; font-size: 12px;">COMMIT</div>
-        <div style="color: #ddccff; font-size: 12px;">Apply -$100</div>
-        <div style="color: #ddccff; font-size: 12px;">Release lock</div>
-        <div style="color: #7ee787; font-weight: 600; margin-top: 8px;">→ ACK ✓</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 10px; padding: 16px; min-width: 160px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; margin-bottom: 8px;">Shard 2</div>
-        <div style="color: #ddccff; font-size: 12px;">COMMIT</div>
-        <div style="color: #ddccff; font-size: 12px;">Apply +$100</div>
-        <div style="color: #ddccff; font-size: 12px;">Release lock</div>
-        <div style="color: #7ee787; font-weight: 600; margin-top: 8px;">→ ACK ✓</div>
-      </div>
-    </div>
-  </div>
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; text-align: center;">
-      <span style="color: #f85149; font-weight: 600;">Warning:</span>
-      <span style="color: #f0f6fc;"> If any shard votes NO → ABORT all (rollback)</span>
-    </div>
-    <div style="background: rgba(255, 166, 87, 0.1); border: 1px solid #ffa657; border-radius: 8px; padding: 12px; text-align: center;">
-      <span style="color: #ffa657; font-weight: 600;">Blocking:</span>
-      <span style="color: #f0f6fc;"> If coordinator fails, shards wait forever!</span>
-    </div>
-  </div>
-</div>
-
-```python
-class TwoPhaseCommit:
-    def execute(self, shards, operations):
-        # Phase 1: Prepare
-        prepared = []
-        for shard, op in zip(shards, operations):
-            if shard.prepare(op):
-                prepared.append(shard)
-            else:
-                # Rollback all prepared
-                for s in prepared:
-                    s.rollback()
-                return False
-
-        # Phase 2: Commit
-        for shard in prepared:
-            shard.commit()
-        return True
-```
-
-## Implementation Example
+## Code Examples
 
 ### Go - Sharded Database Router
 
@@ -729,286 +411,228 @@ class TwoPhaseCommit:
 package main
 
 import (
-	"crypto/md5"
-	"database/sql"
-	"encoding/binary"
-	"fmt"
-	"sync"
+    "context"
+    "crypto/sha256"
+    "database/sql"
+    "encoding/binary"
+    "fmt"
+    "sort"
+    "sync"
 )
 
 type ShardRouter struct {
-	shards    []*sql.DB
-	numShards int
-	mu        sync.RWMutex
+    shards     map[string]*sql.DB
+    shardNames []string
+    ring       []ringEntry
+    mu         sync.RWMutex
 }
 
-func NewShardRouter(dsns []string) (*ShardRouter, error) {
-	router := &ShardRouter{
-		shards:    make([]*sql.DB, len(dsns)),
-		numShards: len(dsns),
-	}
-
-	for i, dsn := range dsns {
-		db, err := sql.Open("postgres", dsn)
-		if err != nil {
-			return nil, err
-		}
-		router.shards[i] = db
-	}
-
-	return router, nil
+type ringEntry struct {
+    hash  uint64
+    shard string
 }
 
-func (r *ShardRouter) GetShard(key string) *sql.DB {
-	hash := md5.Sum([]byte(key))
-	shardIdx := binary.BigEndian.Uint64(hash[:8]) % uint64(r.numShards)
-	return r.shards[shardIdx]
+func NewShardRouter(configs map[string]string) (*ShardRouter, error) {
+    router := &ShardRouter{
+        shards:     make(map[string]*sql.DB),
+        shardNames: make([]string, 0),
+        ring:       make([]ringEntry, 0),
+    }
+
+    for name, dsn := range configs {
+        db, err := sql.Open("postgres", dsn)
+        if err != nil {
+            return nil, err
+        }
+        db.SetMaxOpenConns(25)
+        db.SetMaxIdleConns(5)
+
+        router.shards[name] = db
+        router.shardNames = append(router.shardNames, name)
+
+        // Add 100 virtual nodes per shard
+        for i := 0; i < 100; i++ {
+            key := fmt.Sprintf("%s:vn%d", name, i)
+            hash := router.hash(key)
+            router.ring = append(router.ring, ringEntry{hash, name})
+        }
+    }
+
+    sort.Slice(router.ring, func(i, j int) bool {
+        return router.ring[i].hash < router.ring[j].hash
+    })
+
+    return router, nil
 }
 
-func (r *ShardRouter) ExecuteOnShard(key string, query string, args ...interface{}) (*sql.Rows, error) {
-	shard := r.GetShard(key)
-	return shard.Query(query, args...)
+func (r *ShardRouter) hash(key string) uint64 {
+    h := sha256.Sum256([]byte(key))
+    return binary.BigEndian.Uint64(h[:8])
 }
 
-func (r *ShardRouter) ExecuteOnAllShards(query string, args ...interface{}) ([][]map[string]interface{}, error) {
-	var wg sync.WaitGroup
-	results := make([][]map[string]interface{}, r.numShards)
-	errors := make([]error, r.numShards)
+func (r *ShardRouter) GetShard(key string) string {
+    r.mu.RLock()
+    defer r.mu.RUnlock()
 
-	for i, shard := range r.shards {
-		wg.Add(1)
-		go func(idx int, db *sql.DB) {
-			defer wg.Done()
-			rows, err := db.Query(query, args...)
-			if err != nil {
-				errors[idx] = err
-				return
-			}
-			defer rows.Close()
+    hash := r.hash(key)
+    idx := sort.Search(len(r.ring), func(i int) bool {
+        return r.ring[i].hash >= hash
+    })
 
-			results[idx] = scanRows(rows)
-		}(i, shard)
-	}
+    if idx == len(r.ring) {
+        idx = 0
+    }
 
-	wg.Wait()
-
-	// Check for errors
-	for _, err := range errors {
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return results, nil
+    return r.ring[idx].shard
 }
 
-func scanRows(rows *sql.Rows) []map[string]interface{} {
-	columns, _ := rows.Columns()
-	var results []map[string]interface{}
+func (r *ShardRouter) ExecuteOnAll(ctx context.Context, query string) ([][]map[string]interface{}, error) {
+    var wg sync.WaitGroup
+    results := make([][]map[string]interface{}, len(r.shardNames))
+    errors := make([]error, len(r.shardNames))
 
-	for rows.Next() {
-		values := make([]interface{}, len(columns))
-		pointers := make([]interface{}, len(columns))
-		for i := range values {
-			pointers[i] = &values[i]
-		}
-
-		rows.Scan(pointers...)
-
-		row := make(map[string]interface{})
-		for i, col := range columns {
-			row[col] = values[i]
-		}
-		results = append(results, row)
-	}
-
-	return results
-}
-
-func main() {
-	dsns := []string{
-		"postgres://localhost:5432/shard1",
-		"postgres://localhost:5433/shard2",
-		"postgres://localhost:5434/shard3",
-	}
-
-	router, _ := NewShardRouter(dsns)
-
-	// Query specific shard
-	userID := "user123"
-	shard := router.GetShard(userID)
-	fmt.Printf("User %s routes to shard\n", userID)
-
-	// Query all shards
-	results, _ := router.ExecuteOnAllShards("SELECT COUNT(*) FROM users")
-	fmt.Printf("Results from all shards: %v\n", results)
-}
-```
-
-### Python - Sharding with SQLAlchemy
-
-```python
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-import hashlib
-
-class ShardedDatabase:
-    def __init__(self, shard_configs):
-        self.shards = {}
-        self.shard_names = []
-
-        for name, config in shard_configs.items():
-            engine = create_engine(config['url'])
-            Session = sessionmaker(bind=engine)
-            self.shards[name] = {
-                'engine': engine,
-                'session': Session
+    for i, name := range r.shardNames {
+        wg.Add(1)
+        go func(idx int, shardName string) {
+            defer wg.Done()
+            db := r.shards[shardName]
+            rows, err := db.QueryContext(ctx, query)
+            if err != nil {
+                errors[idx] = err
+                return
             }
-            self.shard_names.append(name)
+            defer rows.Close()
+            results[idx] = scanRows(rows)
+        }(i, name)
+    }
 
-    def get_shard_key(self, user_id):
-        hash_val = int(hashlib.md5(str(user_id).encode()).hexdigest(), 16)
-        idx = hash_val % len(self.shard_names)
-        return self.shard_names[idx]
-
-    def get_session(self, user_id):
-        shard_name = self.get_shard_key(user_id)
-        return self.shards[shard_name]['session']()
-
-    def execute_on_all(self, query):
-        results = []
-        for shard in self.shards.values():
-            session = shard['session']()
-            try:
-                result = session.execute(query)
-                results.extend(result.fetchall())
-            finally:
-                session.close()
-        return results
-
-
-# Usage
-db = ShardedDatabase({
-    'shard1': {'url': 'postgresql://localhost:5432/shard1'},
-    'shard2': {'url': 'postgresql://localhost:5433/shard2'},
-})
-
-# Get session for specific user
-session = db.get_session(user_id=12345)
-user = session.query(User).filter_by(id=12345).first()
+    wg.Wait()
+    return results, nil
+}
 ```
 
-## Resharding
+## Cross-Shard Operations
 
-When you need to add or remove shards:
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-  <div style="text-align: center; color: #f0f6fc; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #30363d;">ONLINE RESHARDING (Zero Downtime)</div>
-  <div style="margin-bottom: 28px;">
-    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Step 1: Add New Shards</div>
-    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px; width: 80px; height: 50px;"></div>
-      <div style="color: #8b949e; font-size: 20px;">+</div>
-      <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px dashed #ffa657; border-radius: 8px; padding: 12px; width: 80px; height: 50px; display: flex; align-items: center; justify-content: center;">
-        <span style="color: #ffa657; font-size: 11px;">New empty</span>
-      </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SCATTER-GATHER PATTERN</div>
+  <div style="text-align: center; color: #64748b; margin-bottom: 16px; font-size: 13px;">Query without shard key must hit ALL shards</div>
+  <div style="text-align: center; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 14px 24px; display: inline-block; border: 1px solid #93c5fd;">
+      <span style="color: #1e40af; font-weight: 600;">Coordinator</span>
     </div>
   </div>
-  <div style="margin-bottom: 28px;">
-    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Step 2: Double-Write</div>
-    <div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 16px;">
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="color: #f0f6fc;">New Write</span>
-        <span style="color: #58a6ff;">→</span>
-        <span style="color: #7ee787;">Shard 2 (old location)</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; padding-left: 70px;">
-        <span style="color: #58a6ff;">→</span>
-        <span style="color: #ffa657;">Shard 4 (new location)</span>
-      </div>
+  <div style="text-align: center; color: #3b82f6; margin-bottom: 12px;">1. SCATTER (parallel)</div>
+  <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 500;">Shard 1</div>
+      <div style="color: #22c55e; font-size: 11px;">50 rows</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 500;">Shard 2</div>
+      <div style="color: #22c55e; font-size: 11px;">30 rows</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 500;">Shard 3</div>
+      <div style="color: #22c55e; font-size: 11px;">70 rows</div>
     </div>
   </div>
-  <div style="margin-bottom: 28px;">
-    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Step 3: Backfill (copy existing data in background)</div>
-    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(to right, #238636 50%, #21262d 50%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="color: #ffa657; font-size: 24px;">→</div>
-      <div style="background: linear-gradient(to right, #21262d 30%, #ffa657 30%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <span style="color: #ffa657; font-size: 12px;">Backfilling...</span>
+  <div style="text-align: center; color: #7c3aed; margin-bottom: 12px;">2. GATHER (merge & sort)</div>
+  <div style="text-align: center; margin-bottom: 16px;">
+    <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 10px; padding: 14px 24px; display: inline-block; border: 1px solid #d8b4fe;">
+      <span style="color: #7c3aed; font-weight: 600;">150 rows merged</span>
     </div>
   </div>
-  <div style="margin-bottom: 28px;">
-    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Step 4: Switch Reads</div>
-    <div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 16px;">
-      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span style="color: #f0f6fc;">Read</span>
-        <span style="color: #58a6ff;">→</span>
-        <span style="color: #a371f7;">Router</span>
-        <span style="color: #58a6ff;">→</span>
-        <span style="color: #7ee787;">Shard 4 (new location)</span>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">Step 5: Remove Double-Write & Cleanup</div>
-    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(to right, #238636 60%, #21262d 60%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; width: 80px; height: 50px;"></div>
-      <div style="background: linear-gradient(to right, #21262d 40%, #238636 40%); border-radius: 8px; width: 80px; height: 50px;"></div>
-    </div>
-    <div style="text-align: center; color: #7ee787; font-size: 13px;">← Data redistributed!</div>
+  <div style="background: rgba(234, 179, 8, 0.15); border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fcd34d;">
+    <span style="color: #92400e;">Latency = max(shard latencies) + merge time. Avoid when possible!</span>
   </div>
 </div>
 
-### Online Resharding Steps
+## Common Pitfalls
 
-1. **Add new shards** - Provision new database instances
-2. **Double-write** - Write to both old and new locations
-3. **Backfill** - Copy existing data to new shards
-4. **Verify** - Ensure data consistency
-5. **Switch reads** - Direct reads to new shards
-6. **Remove double-write** - Write only to new locations
-7. **Cleanup** - Remove data from old shards
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
-## Common Interview Questions
+### 1. Wrong Shard Key
+**Problem**: Chose country as shard key; 90% of users are in US.
+**Solution**: Use high-cardinality keys (user_id, order_id); compound keys if needed.
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **How do you handle joins across shards?**
-   - Denormalize data
-   - Application-level joins
-   - Use reference tables replicated to all shards
-2. **How do you maintain auto-increment IDs?**
-   - UUID/GUID
-   - Centralized ID service (like Twitter's Snowflake)
-   - Shard prefix + local sequence
-3. **What happens when a shard fails?**
-   - Each shard should have replicas
-   - Automatic failover to replica
-   - Circuit breaker for failed shards
-4. **How do you choose the number of shards?**
-   - Start with more shards than needed
-   - Consider data growth projections
-   - Balance between overhead and flexibility
+### 2. Cross-Shard Joins
+**Problem**: Need to join user data with order data, but they're on different shards.
+**Solution**: Denormalize data, co-locate related data, or accept scatter-gather cost.
+
+### 3. Sequential IDs
+**Problem**: Auto-increment IDs from different shards collide.
+**Solution**: Use UUIDs, shard-prefixed IDs (shard1_00001), or Snowflake IDs.
+
+### 4. Hotspot Shards
+**Problem**: Celebrity user causes one shard to receive 1000x traffic.
+**Solution**: Further partition hot entities, use caching, rate limiting.
+
+### 5. Resharding Downtime
+**Problem**: Need to add shards but simple hash changes require moving all data.
+**Solution**: Use consistent hashing from the start; implement online resharding.
+
+</div>
+
+## Interview Questions
+
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+
+### Fundamental Questions
+
+1. **How do you choose a shard key?**
+   - High cardinality (many unique values)
+   - Even distribution (no hotspots)
+   - Matches query patterns (queries include shard key)
+   - Immutable (doesn't change)
+
+2. **How do you handle cross-shard joins?**
+   - Denormalize: Store related data together
+   - Application-side joins: Query both shards, join in code
+   - Reference tables: Replicate small tables to all shards
+   - Avoid: Design schema to minimize cross-shard queries
+
+3. **How do you generate unique IDs across shards?**
+   - UUIDs (no coordination needed)
+   - Snowflake IDs (timestamp + machine ID + sequence)
+   - Shard-prefixed sequences (shard_1_00001)
+
+4. **What happens when a shard gets full?**
+   - Split the shard (range-based)
+   - Add more shards (consistent hashing)
+   - Each shard should have replicas for HA
+
+### Advanced Questions
+
+5. **Explain the resharding process.**
+   - Add new empty shards
+   - Enable double-writes (old + new location)
+   - Backfill existing data in background
+   - Verify data consistency
+   - Switch reads to new routing
+   - Disable double-writes and clean up
+
+6. **What's the difference between hash and consistent hash sharding?**
+   - Hash: key % num_shards - simple but resharding moves ~all data
+   - Consistent hash: ring-based - only ~1/N data moves when scaling
+
 </div>
 
 ## Best Practices
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Choose shard key carefully** - It's hard to change later
-2. **Plan for resharding** - Use consistent hashing
-3. **Keep shards balanced** - Monitor data distribution
-4. **Replicate each shard** - For high availability
-5. **Avoid cross-shard transactions** - Design for single-shard operations
-6. **Use connection pooling** - Manage connections efficiently
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+
+1. **Start with more shards than you need** - Easier to add capacity than reshard
+2. **Use consistent hashing** - Plan for growth from day one
+3. **Replicate each shard** - Shards need HA too (primary + replicas)
+4. **Monitor shard balance** - Alert on uneven data distribution
+5. **Avoid cross-shard operations** - Design schema for single-shard queries
+6. **Test resharding in staging** - Before you need it in production
+7. **Keep shard key in every table** - Enables co-located joins within shard
+
 </div>
 
 ## Related Topics
 
 - [Database Replication](/topic/system-design/database-replication)
-- [CAP Theorem](/topic/system-design/cap-theorem)
 - [Consistent Hashing](/topic/system-design/load-balancing)
+- [CAP Theorem](/topic/system-design/cap-theorem)

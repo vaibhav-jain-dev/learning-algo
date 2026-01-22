@@ -2,811 +2,625 @@
 
 ## Overview
 
-Caching is a technique that stores copies of frequently accessed data in a faster storage layer to reduce latency, database load, and improve application performance. It's one of the most effective ways to scale systems.
-
-## Key Concepts
-
-### Why Caching?
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-1. **Reduced Latency**: Memory access is ~100x faster than disk, ~1000x faster than network
-2. **Lower Database Load**: Fewer queries hit the primary database
-3. **Cost Efficiency**: Serve more requests with fewer resources
-4. **Improved User Experience**: Faster response times
-</div>
-
-### Cache Layers Architecture
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE HIERARCHY</h3>
-  <!-- Flow diagram -->
-  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600; font-size: 13px;">Client Browser</div>
-    </div>
-    <span style="color: #58a6ff; font-size: 20px;">→</span>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600; font-size: 13px;">CDN (Edge)</div>
-    </div>
-    <span style="color: #58a6ff; font-size: 20px;">→</span>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600; font-size: 13px;">App Cache</div>
-    </div>
-    <span style="color: #58a6ff; font-size: 20px;">→</span>
-    <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600; font-size: 13px;">Database</div>
-    </div>
-  </div>
-  <!-- Cache types -->
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
-    <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #58a6ff; font-weight: 600; font-size: 12px; margin-bottom: 4px;">Browser Cache</div>
-      <div style="color: #7ee787; font-size: 11px;">~100ms</div>
-    </div>
-    <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #7ee787; font-weight: 600; font-size: 12px; margin-bottom: 4px;">Static Assets</div>
-      <div style="color: #7ee787; font-size: 11px;">~50ms</div>
-    </div>
-    <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #a371f7; font-weight: 600; font-size: 12px; margin-bottom: 4px;">In-Memory (Redis)</div>
-      <div style="color: #7ee787; font-size: 11px;">~1ms</div>
-    </div>
-    <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #f0883e; font-weight: 600; font-size: 12px; margin-bottom: 4px;">Query Cache</div>
-      <div style="color: #7ee787; font-size: 11px;">~10ms</div>
-    </div>
-  </div>
-  <!-- Latency spectrum -->
-  <div style="margin-bottom: 16px;">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-      <span style="color: #7ee787; font-size: 12px; font-weight: 600;">Fastest</span>
-      <span style="color: #f85149; font-size: 12px; font-weight: 600;">Slowest</span>
-    </div>
-    <div style="background: linear-gradient(90deg, #238636 0%, #1f6feb 25%, #8957e5 50%, #f0883e 75%, #f85149 100%); height: 6px; border-radius: 3px;"></div>
-  </div>
-  <!-- Latency table -->
-  <div style="background: #21262d; border-radius: 8px; padding: 16px;">
-    <div style="color: #8b949e; font-size: 12px; margin-bottom: 12px;">Typical latencies:</div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 12px;">
-      <div><span style="color: #7ee787;">L1 Cache:</span> <span style="color: #c9d1d9;">~1 ns</span></div>
-      <div><span style="color: #7ee787;">L2 Cache:</span> <span style="color: #c9d1d9;">~10 ns</span></div>
-      <div><span style="color: #58a6ff;">RAM:</span> <span style="color: #c9d1d9;">~100 ns</span></div>
-      <div><span style="color: #a371f7;">Redis:</span> <span style="color: #c9d1d9;">~1 ms</span></div>
-      <div><span style="color: #f0883e;">SSD:</span> <span style="color: #c9d1d9;">~100 us</span></div>
-      <div><span style="color: #f0883e;">HDD:</span> <span style="color: #c9d1d9;">~10 ms</span></div>
-      <div><span style="color: #f85149;">Network:</span> <span style="color: #c9d1d9;">~100 ms (cross-region)</span></div>
-    </div>
-  </div>
-</div>
+Caching is a technique that stores copies of frequently accessed data in a faster storage layer (like memory) to reduce latency and decrease load on the primary data source. Think of it as keeping your most-used tools on your desk instead of walking to the storage room every time you need them.
 
 ---
 
-## Caching Strategies
+## Why This Matters
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin: 0 0 16px 0; font-size: 16px;">Real Company Examples</h4>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+      <div style="color: #0f172a; font-weight: 600; margin-bottom: 8px;">Netflix</div>
+      <div style="color: #475569; font-size: 14px;">Caches movie metadata and thumbnails at edge servers. Reduced origin requests by 95% and serves 200+ million users globally.</div>
+    </div>
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+      <div style="color: #0f172a; font-weight: 600; margin-bottom: 8px;">Facebook</div>
+      <div style="color: #475569; font-size: 14px;">Uses Memcached clusters caching 75% of all reads. Handles billions of requests per second with sub-millisecond latency.</div>
+    </div>
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+      <div style="color: #0f172a; font-weight: 600; margin-bottom: 8px;">Amazon</div>
+      <div style="color: #475569; font-size: 14px;">Every 100ms of latency costs 1% in sales. Caching product pages and recommendations saves millions in revenue.</div>
+    </div>
+  </div>
+</div>
+
+**Why caching is essential:**
+- **Speed**: Memory access is ~100x faster than disk, ~1000x faster than network
+- **Cost Reduction**: Serve more requests with fewer database servers
+- **Scalability**: Handle traffic spikes without scaling expensive backend resources
+- **User Experience**: Users abandon sites that take more than 3 seconds to load
+
+---
+
+## Core Concepts
+
+### The Library Analogy
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <div style="color: #1e293b; font-size: 15px; line-height: 1.7;">
+    <p>Imagine a <strong>university library</strong>:</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
+      <div style="background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #cbd5e1;">
+        <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Without Caching</div>
+        <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+          <li>Every student walks to the archive basement</li>
+          <li>Finds the book in the catalog</li>
+          <li>Retrieves it from storage</li>
+          <li>Walks back to their desk</li>
+          <li><strong>Time: 10 minutes per book</strong></li>
+        </ul>
+      </div>
+      <div style="background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #cbd5e1;">
+        <div style="color: #16a34a; font-weight: 600; margin-bottom: 8px;">With Caching</div>
+        <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+          <li>Popular books kept on a "reserve shelf" near entrance</li>
+          <li>Students check reserve shelf first</li>
+          <li>If found (cache hit): grab and go</li>
+          <li>If not found (cache miss): go to archive</li>
+          <li><strong>Time: 30 seconds (hit) or 10 min (miss)</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Cache Terminology
+
+| Term | Library Analogy | Technical Meaning |
+|------|-----------------|-------------------|
+| **Cache Hit** | Book found on reserve shelf | Data found in cache |
+| **Cache Miss** | Book not on shelf, go to archive | Data not in cache, fetch from source |
+| **TTL** | Books returned to archive after 7 days | Time before cached data expires |
+| **Eviction** | Remove least-used books when shelf is full | Remove data when cache is full |
+| **Invalidation** | Remove outdated edition when new one arrives | Remove stale data after update |
+
+---
+
+## How It Works
+
+### Cache Hierarchy
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px;">THE CACHING PYRAMID</h4>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+    <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 12px 24px; border-radius: 8px; text-align: center; width: 120px;">
+      <div style="font-weight: 600; font-size: 13px;">Browser</div>
+      <div style="font-size: 11px; opacity: 0.9;">~0ms</div>
+    </div>
+    <div style="color: #64748b;">|</div>
+    <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 12px 24px; border-radius: 8px; text-align: center; width: 160px;">
+      <div style="font-weight: 600; font-size: 13px;">CDN Edge</div>
+      <div style="font-size: 11px; opacity: 0.9;">~20ms</div>
+    </div>
+    <div style="color: #64748b;">|</div>
+    <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 12px 24px; border-radius: 8px; text-align: center; width: 200px;">
+      <div style="font-weight: 600; font-size: 13px;">Application Cache (Redis)</div>
+      <div style="font-size: 11px; opacity: 0.9;">~1ms</div>
+    </div>
+    <div style="color: #64748b;">|</div>
+    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 24px; border-radius: 8px; text-align: center; width: 240px;">
+      <div style="font-weight: 600; font-size: 13px;">Database Query Cache</div>
+      <div style="font-size: 11px; opacity: 0.9;">~10ms</div>
+    </div>
+    <div style="color: #64748b;">|</div>
+    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 12px 24px; border-radius: 8px; text-align: center; width: 280px;">
+      <div style="font-weight: 600; font-size: 13px;">Database (Disk)</div>
+      <div style="font-size: 11px; opacity: 0.9;">~50-100ms</div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px;">
+    Faster at top, more capacity at bottom
+  </div>
+</div>
+
+### Caching Strategies
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px;">CACHE-ASIDE (LAZY LOADING)</h4>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px 24px; text-align: center;">
+      <div style="color: #1e293b; font-weight: 600;">Application</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <div style="color: #1e293b; font-size: 12px;">1. Check</div>
+      <div style="color: #3b82f6; font-size: 18px;">--></div>
+    </div>
+    <div style="background: #ffffff; border: 2px solid #8b5cf6; border-radius: 8px; padding: 16px 24px; text-align: center;">
+      <div style="color: #1e293b; font-weight: 600;">Cache</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 4px;">Hit? Return!</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+      <div style="color: #1e293b; font-size: 12px;">2. Miss?</div>
+      <div style="color: #ef4444; font-size: 18px;">--></div>
+    </div>
+    <div style="background: #ffffff; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px 24px; text-align: center;">
+      <div style="color: #1e293b; font-weight: 600;">Database</div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 16px; color: #475569; font-size: 13px;">
+    3. Store result in cache for next time
+  </div>
+</div>
 
 ### Strategy Comparison
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Strategy | Read Path | Write Path | Consistency | Best For |
-|----------|-----------|------------|-------------|----------|
-| **Cache-Aside** | App checks cache → DB on miss | App updates DB, invalidates cache | Eventual | General purpose |
-| **Read-Through** | Cache fetches from DB on miss | N/A | Eventual | Read-heavy |
-| **Write-Through** | Same as cache-aside | Write to cache + DB together | Strong | Read-heavy + consistency |
-| **Write-Behind** | Same as cache-aside | Write to cache, async DB | Eventual | Write-heavy |
-| **Refresh-Ahead** | Proactive refresh before expiry | N/A | Fresh data | Predictable access |
-</div>
-
-### 1. Cache-Aside (Lazy Loading)
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE-ASIDE PATTERN</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Read Flow -->
-    <div>
-      <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">READ FLOW:</div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-        <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 24px; border-radius: 8px;">
-          <span style="color: white; font-weight: 600; font-size: 13px;">Application</span>
-        </div>
-        <div style="color: #58a6ff; font-size: 12px;">↓ 1. Check cache</div>
-        <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px 24px; border-radius: 8px;">
-          <span style="color: white; font-weight: 600; font-size: 13px;">Cache</span>
-        </div>
-        <div style="display: flex; gap: 32px; align-items: center;">
-          <div style="text-align: center;">
-            <div style="color: #7ee787; font-size: 12px;">HIT?</div>
-            <div style="color: #7ee787; font-size: 11px;">YES → Return data</div>
-          </div>
-          <div style="text-align: center;">
-            <div style="color: #f85149; font-size: 12px;">MISS?</div>
-            <div style="color: #f85149; font-size: 11px;">↓</div>
-          </div>
-        </div>
-        <div style="color: #58a6ff; font-size: 12px;">2. Query database</div>
-        <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 12px 24px; border-radius: 8px;">
-          <span style="color: white; font-weight: 600; font-size: 13px;">Database</span>
-        </div>
-        <div style="color: #58a6ff; font-size: 12px;">↓ 3. Store in cache</div>
-        <div style="color: #7ee787; font-size: 12px;">↓ 4. Return data</div>
-      </div>
-    </div>
-    <!-- Write Flow -->
-    <div>
-      <div style="color: #f0883e; font-weight: 600; margin-bottom: 16px;">WRITE FLOW:</div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 10px 16px; border-radius: 8px;">
-            <span style="color: white; font-size: 12px;">Application</span>
-          </div>
-          <span style="color: #58a6ff;">→</span>
-          <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 10px 16px; border-radius: 8px;">
-            <span style="color: white; font-size: 12px;">Update DB</span>
-          </div>
-          <span style="color: #58a6ff;">→</span>
-          <div style="background: rgba(248, 81, 73, 0.2); border: 1px solid #f85149; padding: 10px 16px; border-radius: 8px;">
-            <span style="color: #f85149; font-size: 12px;">Invalidate Cache</span>
-          </div>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; color: #1e293b; font-size: 14px;">
+      <thead>
+        <tr style="background: #e2e8f0;">
+          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Strategy</th>
+          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Read Path</th>
+          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Write Path</th>
+          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #ffffff;">
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Cache-Aside</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">App checks cache, then DB</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Update DB, invalidate cache</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">General purpose</td>
+        </tr>
+        <tr style="background: #f8fafc;">
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Write-Through</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Read from cache</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Write to cache AND DB together</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Strong consistency needed</td>
+        </tr>
+        <tr style="background: #ffffff;">
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Write-Behind</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Read from cache</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Write to cache, async DB write</td>
+          <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Write-heavy workloads</td>
+        </tr>
+        <tr style="background: #f8fafc;">
+          <td style="padding: 12px; font-weight: 600;">Read-Through</td>
+          <td style="padding: 12px;">Cache fetches from DB on miss</td>
+          <td style="padding: 12px;">N/A</td>
+          <td style="padding: 12px;">Simplified read logic</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-**Pros**
-- Only caches what's needed
-- Cache failures don't break system
-- Simple to implement
-</div>
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-**Cons**
-- Initial requests are slow (cache miss)
-- Potential for stale data
-- Cache stampede on expiry
-</div>
-</div>
+### Cache Eviction Policies
 
-### 2. Write-Through
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WRITE-THROUGH PATTERN</h3>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 28px; border-radius: 10px;">
-      <span style="color: white; font-weight: 600;">Application</span>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px;">WHEN THE CACHE IS FULL, WHO GETS EVICTED?</h4>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">LRU (Least Recently Used)</div>
+      <div style="color: #475569; font-size: 13px;">Evict item not accessed longest. Most popular choice.</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px; font-style: italic;">"Haven't used this in ages? Out!"</div>
     </div>
-    <div style="color: #58a6ff; font-size: 13px;">↓ Write request</div>
-    <div style="display: flex; align-items: center; gap: 24px;">
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 28px; border-radius: 10px;">
-        <span style="color: white; font-weight: 600;">Cache</span>
-      </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <span style="color: #7ee787; font-size: 18px;">← → → →</span>
-        <span style="color: #7ee787; font-size: 11px;">Synchronous</span>
-      </div>
-      <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 14px 28px; border-radius: 10px;">
-        <span style="color: white; font-weight: 600;">Database</span>
-      </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">LFU (Least Frequently Used)</div>
+      <div style="color: #475569; font-size: 13px;">Evict item accessed fewest times overall.</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px; font-style: italic;">"Only used twice ever? Goodbye!"</div>
     </div>
-    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.4); border-radius: 8px; padding: 12px 24px; text-align: center;">
-      <div style="color: #7ee787; font-weight: 600;">Both updated atomically</div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">FIFO (First In First Out)</div>
+      <div style="color: #475569; font-size: 13px;">Evict oldest item regardless of usage.</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px; font-style: italic;">"You were here first, now leave first."</div>
     </div>
-    <div style="color: #58a6ff; font-size: 13px;">↓</div>
-    <div style="color: #7ee787; font-weight: 600;">Return success</div>
-    <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
-      <span style="color: #58a6ff; font-weight: 600;">Result:</span>
-      <span style="color: #c9d1d9;"> Cache always consistent with database</span>
-    </div>
-  </div>
-</div>
-
-**Pros**: Cache always consistent with database
-**Cons**: Higher write latency, cache may store unused data
-
-### 3. Write-Behind (Write-Back)
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WRITE-BEHIND PATTERN</h3>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 14px 28px; border-radius: 10px;">
-      <span style="color: white; font-weight: 600;">Application</span>
-    </div>
-    <div style="color: #58a6ff; font-size: 13px;">↓ 1. Write request</div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 28px; border-radius: 10px;">
-        <span style="color: white; font-weight: 600;">Cache</span>
-      </div>
-      <div style="background: rgba(126, 231, 135, 0.2); border: 1px solid #7ee787; padding: 8px 16px; border-radius: 6px;">
-        <span style="color: #7ee787; font-size: 12px;">← Return immediately (fast!)</span>
-      </div>
-    </div>
-    <div style="color: #58a6ff; font-size: 13px;">↓ 2. Queue write</div>
-    <div style="background: #21262d; border: 2px solid #30363d; border-radius: 10px; padding: 16px; text-align: center;">
-      <div style="color: #c9d1d9; font-size: 13px; margin-bottom: 8px;">Write Queue</div>
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <span style="background: #f0883e; color: white; padding: 6px 14px; border-radius: 4px; font-size: 12px;">A</span>
-        <span style="background: #f0883e; color: white; padding: 6px 14px; border-radius: 4px; font-size: 12px;">B</span>
-        <span style="background: #f0883e; color: white; padding: 6px 14px; border-radius: 4px; font-size: 12px;">C</span>
-      </div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 6px;">← Pending writes</div>
-    </div>
-    <div style="color: #58a6ff; font-size: 13px;">↓ 3. Async batch write</div>
-    <div style="background: linear-gradient(135deg, #f0883e 0%, #f0883e 100%); padding: 14px 28px; border-radius: 10px;">
-      <span style="color: white; font-weight: 600;">Database</span>
-    </div>
-    <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.4); border-radius: 8px; padding: 12px 20px; margin-top: 8px;">
-      <span style="color: #f85149; font-weight: 600;">⚠️ Risk:</span>
-      <span style="color: #f85149;"> Data loss if cache fails before flush!</span>
-    </div>
-  </div>
-</div>
-
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-**Pros**: Very fast writes, reduced database load, batch optimization
-**Cons**: Risk of data loss if cache fails before flush, complexity
-</div>
-
-### 4. Read-Through
-
-Cache automatically fetches from database on miss.
-
-### 5. Refresh-Ahead
-
-Proactively refresh cache before expiration - prevents cache miss latency for predictable access patterns.
-
----
-
-## Cache Eviction Policies
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE EVICTION POLICIES</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <!-- LRU -->
-    <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 12px; padding: 16px;">
-      <div style="color: #7ee787; font-weight: 600; margin-bottom: 12px;">1. LRU (Least Recently Used)</div>
-      <div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px;">
-        <span style="background: #f85149; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px;">E</span>
-        <span style="background: #f0883e; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px;">D</span>
-        <span style="background: #58a6ff; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px;">C</span>
-        <span style="background: #8957e5; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px;">B</span>
-        <span style="background: #238636; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px;">A</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 11px;">
-        <span style="color: #f85149;">↑ Evict first</span>
-        <span style="color: #7ee787;">Most recent ↑</span>
-      </div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 6px; text-align: center;">Access A → A moves to front</div>
-    </div>
-    <!-- LFU -->
-    <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 12px; padding: 16px;">
-      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 12px;">2. LFU (Least Frequently Used)</div>
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; justify-content: space-between; background: rgba(35, 134, 54, 0.2); padding: 6px 12px; border-radius: 4px;">
-          <span style="color: #7ee787; font-size: 12px;">A</span>
-          <span style="color: #7ee787; font-size: 12px;">freq: 5 ← Keep (popular)</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; background: rgba(88, 166, 255, 0.2); padding: 6px 12px; border-radius: 4px;">
-          <span style="color: #58a6ff; font-size: 12px;">B</span>
-          <span style="color: #58a6ff; font-size: 12px;">freq: 2</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; background: rgba(248, 81, 73, 0.2); padding: 6px 12px; border-radius: 4px;">
-          <span style="color: #f85149; font-size: 12px;">C</span>
-          <span style="color: #f85149; font-size: 12px;">freq: 1 ← Evict first</span>
-        </div>
-      </div>
-    </div>
-    <!-- TTL -->
-    <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 12px; padding: 16px;">
-      <div style="color: #a371f7; font-weight: 600; margin-bottom: 12px;">3. TTL (Time To Live)</div>
-      <div style="background: #21262d; border-radius: 6px; padding: 10px; font-size: 12px;">
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 4px;">
-          <span style="color: #8b949e;">Key</span>
-          <span style="color: #8b949e;">Expires At</span>
-          <span style="color: #a371f7;">A</span>
-          <span style="color: #c9d1d9;">2024-01-15 10:30:00</span>
-        </div>
-      </div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 8px;">← Auto-expire after TTL</div>
-    </div>
-    <!-- FIFO & Random -->
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 12px; padding: 12px;">
-        <div style="color: #f0883e; font-weight: 600; font-size: 13px; margin-bottom: 4px;">4. FIFO (First In First Out)</div>
-        <div style="color: #8b949e; font-size: 12px;">Evict oldest entries regardless of access pattern</div>
-      </div>
-      <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 12px; padding: 12px;">
-        <div style="color: #f85149; font-weight: 600; font-size: 13px; margin-bottom: 4px;">5. Random</div>
-        <div style="color: #8b949e; font-size: 12px;">Randomly select items to evict (simple but unpredictable)</div>
-      </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">TTL (Time To Live)</div>
+      <div style="color: #475569; font-size: 13px;">Items expire after set time period.</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px; font-style: italic;">"Your time is up!"</div>
     </div>
   </div>
 </div>
 
 ---
 
-## Cache Invalidation
+## Real-Life Failure Story
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-> "There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fecaca; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #991b1b; margin: 0 0 16px 0; font-size: 16px;">The Facebook Cache Stampede (2010)</h4>
+
+  <div style="color: #1e293b; font-size: 14px; line-height: 1.7;">
+    <p><strong>What Happened:</strong> Facebook experienced a major outage when a bug caused their entire Memcached cluster to invalidate simultaneously. When cache entries expired at the same time:</p>
+
+    <ol style="color: #475569; margin: 12px 0;">
+      <li>Millions of requests found empty caches (cache miss)</li>
+      <li>All requests hit the database simultaneously</li>
+      <li>Database servers were overwhelmed and crashed</li>
+      <li>Even after restart, the stampede repeated</li>
+    </ol>
+
+    <p><strong>The Fix:</strong></p>
+    <ul style="color: #475569; margin: 12px 0;">
+      <li><strong>Jittered TTLs:</strong> Added random variation to expiration times (e.g., 3600s +/- 300s)</li>
+      <li><strong>Locking:</strong> Only one request regenerates cache, others wait</li>
+      <li><strong>Stale-while-revalidate:</strong> Serve stale data while refreshing in background</li>
+    </ul>
+
+    <p><strong>Lesson:</strong> Never let cache entries expire at the same time. Add randomization to everything in distributed systems.</p>
+  </div>
 </div>
 
-### Strategies
+---
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Strategy | How It Works | Best For |
-|----------|--------------|----------|
-| **TTL-based** | Set expiration time | Tolerant of staleness |
-| **Event-based** | Invalidate on data changes | Strong consistency needs |
-| **Version-based** | Include version in cache key | Config, static data |
-</div>
+## What to Watch Out For
 
-### Cache Stampede Prevention
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CACHE STAMPEDE PROBLEM</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Problem -->
-    <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 12px; padding: 20px;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 16px;">THE PROBLEM</div>
-      <div style="color: #8b949e; font-size: 12px; margin-bottom: 12px;">Cache expires at T=0</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
-          <span style="color: #8b949e;">T=0.001</span>
-          <span style="color: #58a6ff;">Req 1</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">Cache MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Query DB</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
-          <span style="color: #8b949e;">T=0.002</span>
-          <span style="color: #58a6ff;">Req 2</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">Cache MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Query DB</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;">
-          <span style="color: #8b949e;">T=0.003</span>
-          <span style="color: #58a6ff;">Req 3</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">Cache MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Query DB</span>
-        </div>
-        <div style="color: #8b949e; font-size: 12px; text-align: center;">...</div>
-      </div>
-      <div style="background: rgba(248, 81, 73, 0.2); padding: 10px 14px; border-radius: 8px; text-align: center;">
-        <span style="color: #f85149; font-weight: 600;">Result: Database overwhelmed!</span>
-      </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin: 0 0 16px 0; font-size: 16px;">Common Pitfalls</h4>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #ef4444;">
+      <div style="color: #1e293b; font-weight: 600;">Cache Stampede</div>
+      <div style="color: #475569; font-size: 13px;">Many requests hit database when cache expires. Use locking or jittered TTLs.</div>
     </div>
-    <!-- Solution -->
-    <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 12px; padding: 20px;">
-      <div style="color: #7ee787; font-weight: 600; margin-bottom: 16px;">SOLUTION: Lock-based approach</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.001</span>
-          <span style="color: #58a6ff;">Req 1</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #7ee787;">Lock</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Query DB</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.002</span>
-          <span style="color: #58a6ff;">Req 2</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Wait for lock...</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.003</span>
-          <span style="color: #58a6ff;">Req 3</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f85149;">MISS</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #f0883e;">Wait for lock...</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.050</span>
-          <span style="color: #58a6ff;">Req 1</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #7ee787;">Update cache → Release</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.051</span>
-          <span style="color: #58a6ff;">Req 2</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #7ee787;">Cache HIT! ✓</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px;">
-          <span style="color: #8b949e;">T=0.052</span>
-          <span style="color: #58a6ff;">Req 3</span>
-          <span style="color: #8b949e;">→</span>
-          <span style="color: #7ee787;">Cache HIT! ✓</span>
-        </div>
-      </div>
-      <div style="background: rgba(126, 231, 135, 0.2); padding: 10px 14px; border-radius: 8px; text-align: center;">
-        <span style="color: #7ee787; font-weight: 600;">Result: Only ONE database query! ✓</span>
-      </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600;">Stale Data</div>
+      <div style="color: #475569; font-size: 13px;">Cache shows outdated information. Implement proper invalidation or use short TTLs.</div>
+    </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
+      <div style="color: #1e293b; font-weight: 600;">Cache Penetration</div>
+      <div style="color: #475569; font-size: 13px;">Queries for non-existent data always miss cache. Cache negative results too.</div>
+    </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600;">Hot Key Problem</div>
+      <div style="color: #475569; font-size: 13px;">One popular key overwhelms a single cache node. Replicate hot keys or use local caching.</div>
+    </div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
+      <div style="color: #1e293b; font-weight: 600;">Memory Pressure</div>
+      <div style="color: #475569; font-size: 13px;">Cache grows unbounded. Set memory limits and monitor eviction rates.</div>
     </div>
   </div>
 </div>
 
 ---
 
-## Distributed Caching
+## Interview Deep Dive
 
-### Consistent Hashing
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin: 0 0 16px 0; font-size: 16px;">Common Interview Questions</h4>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CONSISTENT HASHING FOR CACHE</h3>
-  <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
-    <!-- Ring visualization -->
-    <div style="position: relative; width: 200px; height: 200px;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid #30363d; border-radius: 50%;"></div>
-      <!-- Markers -->
-      <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 11px;">0</div>
-      <div style="position: absolute; top: 50%; right: -35px; transform: translateY(-50%); color: #8b949e; font-size: 11px;">2^32*3/4</div>
-      <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 11px;">2^32/2</div>
-      <div style="position: absolute; top: 50%; left: -25px; transform: translateY(-50%); color: #8b949e; font-size: 11px;">2^32/4</div>
-      <!-- Nodes -->
-      <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 10px; left: 50%; transform: translateX(20px); color: #7ee787; font-size: 11px;">Node A</div>
-      <div style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #1f6feb; width: 14px; height: 14px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 50%; right: -50px; transform: translateY(-50%); color: #58a6ff; font-size: 11px;">Node B</div>
-      <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #8957e5; width: 14px; height: 14px; border-radius: 50%;"></div>
-      <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(20px); color: #a371f7; font-size: 11px;">Node C</div>
-      <div style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: #f0883e; width: 14px; height: 14px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 50%; left: -50px; transform: translateY(-50%); color: #f0883e; font-size: 11px;">Node D</div>
+  <div style="margin-bottom: 20px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Q: How do you handle cache invalidation in a distributed system?</div>
+    <div style="color: #475569; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px;">
+      <strong>A:</strong> Multiple approaches: (1) <strong>TTL-based</strong> - set expiration, accept some staleness. (2) <strong>Event-driven</strong> - publish invalidation events via Kafka/Redis Pub-Sub when data changes. (3) <strong>Version-based</strong> - include version in cache key, increment on updates. For strong consistency, use write-through with distributed locks.
     </div>
-    <!-- Explanation -->
-    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 320px;">
-      <!-- Key routing -->
-      <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #58a6ff; font-weight: 600; font-size: 13px; margin-bottom: 8px;">Key Routing:</div>
-        <div style="color: #c9d1d9; font-size: 12px;">
-          Key <span style="color: #f0883e;">"user:123"</span> → hash() = X<br>
-          → Find next node clockwise<br>
-          → <span style="color: #58a6ff; font-weight: 600;">Routes to Node B</span>
-        </div>
-      </div>
-      <!-- When node fails -->
-      <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #f85149; font-weight: 600; font-size: 13px; margin-bottom: 8px;">When Node B fails:</div>
-        <div style="color: #c9d1d9; font-size: 12px;">
-          - Only keys between A and B move to C<br>
-          - <span style="color: #7ee787;">Keys on other nodes stay put!</span>
-        </div>
-      </div>
-      <!-- Virtual nodes -->
-      <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #7ee787; font-weight: 600; font-size: 13px; margin-bottom: 4px;">Virtual Nodes:</div>
-        <div style="color: #c9d1d9; font-size: 12px;">Each physical node gets multiple positions for better distribution</div>
-      </div>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Q: Redis vs Memcached - when would you choose each?</div>
+    <div style="color: #475569; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px;">
+      <strong>A:</strong> <strong>Redis</strong> when you need: data structures (lists, sets, sorted sets), persistence, pub/sub, Lua scripting, replication. <strong>Memcached</strong> when you need: simple key-value, multi-threaded performance, less memory overhead per key, or already have it in your stack. Redis is more versatile; Memcached is simpler and slightly faster for basic operations.
+    </div>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Q: How do you prevent cache stampede?</div>
+    <div style="color: #475569; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px;">
+      <strong>A:</strong> (1) <strong>Locking</strong> - only one request regenerates, others wait or return stale. (2) <strong>Probabilistic early expiration</strong> - randomly refresh before TTL. (3) <strong>Background refresh</strong> - async job refreshes popular keys. (4) <strong>Jittered TTLs</strong> - add randomness to prevent synchronized expiry.
+    </div>
+  </div>
+
+  <div>
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Q: When should you NOT use caching?</div>
+    <div style="color: #475569; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px;">
+      <strong>A:</strong> (1) <strong>Highly dynamic data</strong> that changes every request. (2) <strong>Strong consistency requirements</strong> where stale reads are unacceptable (financial transactions). (3) <strong>Low-traffic endpoints</strong> where cache hit rate would be low. (4) <strong>Large, unique datasets</strong> that don't fit in memory. (5) <strong>Security-sensitive data</strong> that shouldn't persist outside the database.
     </div>
   </div>
 </div>
 
 ---
 
-## Common Interview Questions
+## Code Implementation
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **How do you handle cache invalidation in a distributed system?**
-   - Use pub/sub for cache invalidation events
-   - Version-based keys
-   - Short TTLs with refresh-ahead
-2. **What's the difference between Redis and Memcached?**
-   - Redis: Data structures, persistence, replication, Lua scripting
-   - Memcached: Simpler, multi-threaded, slightly faster for simple use cases
-3. **How do you prevent cache stampede?**
-   - Locking/mutex
-   - Probabilistic early expiration
-   - Background refresh
-4. **When should you NOT use caching?**
-   - Highly dynamic data
-   - Write-heavy workloads
-   - When consistency is critical
-</div>
+### Python - Production Cache with Stampede Prevention
+
+```python
+import time
+import threading
+import hashlib
+import random
+from typing import Optional, Callable, Any
+from dataclasses import dataclass
+
+@dataclass
+class CacheEntry:
+    value: Any
+    expires_at: float
+    created_at: float
+
+class ProductionCache:
+    """
+    Production-ready cache with:
+    - TTL with jitter (prevents stampede)
+    - Locking for cache regeneration
+    - Stale-while-revalidate
+    - Cache statistics
+    """
+
+    def __init__(self, max_size: int = 10000, default_ttl: int = 3600):
+        self.cache: dict[str, CacheEntry] = {}
+        self.max_size = max_size
+        self.default_ttl = default_ttl
+        self.locks: dict[str, threading.Lock] = {}
+        self.lock_mutex = threading.Lock()
+
+        # Statistics
+        self.hits = 0
+        self.misses = 0
+
+    def _get_lock(self, key: str) -> threading.Lock:
+        """Get or create a lock for a specific key."""
+        with self.lock_mutex:
+            if key not in self.locks:
+                self.locks[key] = threading.Lock()
+            return self.locks[key]
+
+    def _add_jitter(self, ttl: int) -> float:
+        """Add 10% random jitter to TTL."""
+        jitter = ttl * 0.1 * random.random()
+        return ttl + jitter
+
+    def get(self, key: str) -> Optional[Any]:
+        """Get value from cache."""
+        entry = self.cache.get(key)
+
+        if entry is None:
+            self.misses += 1
+            return None
+
+        if time.time() > entry.expires_at:
+            self.misses += 1
+            return None
+
+        self.hits += 1
+        return entry.value
+
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+        """Set value in cache with jittered TTL."""
+        ttl = ttl or self.default_ttl
+        jittered_ttl = self._add_jitter(ttl)
+
+        # Evict if at capacity (simple LRU would be better)
+        if len(self.cache) >= self.max_size:
+            oldest_key = min(self.cache, key=lambda k: self.cache[k].created_at)
+            del self.cache[oldest_key]
+
+        self.cache[key] = CacheEntry(
+            value=value,
+            expires_at=time.time() + jittered_ttl,
+            created_at=time.time()
+        )
+
+    def get_or_set(
+        self,
+        key: str,
+        loader: Callable[[], Any],
+        ttl: Optional[int] = None,
+        stale_ttl: int = 60
+    ) -> Any:
+        """
+        Get from cache or load with stampede prevention.
+
+        Uses locking to ensure only one request loads data.
+        Others wait or return stale data.
+        """
+        entry = self.cache.get(key)
+        now = time.time()
+
+        # Fresh cache hit
+        if entry and now < entry.expires_at:
+            self.hits += 1
+            return entry.value
+
+        # Stale data available?
+        stale_value = entry.value if entry else None
+        stale_available = entry and now < entry.expires_at + stale_ttl
+
+        # Try to acquire lock
+        lock = self._get_lock(key)
+        acquired = lock.acquire(blocking=not stale_available)
+
+        if not acquired:
+            # Couldn't get lock, return stale if available
+            self.hits += 1  # Serving stale
+            return stale_value
+
+        try:
+            # Double-check after acquiring lock
+            entry = self.cache.get(key)
+            if entry and time.time() < entry.expires_at:
+                return entry.value
+
+            # Load fresh data
+            self.misses += 1
+            value = loader()
+            self.set(key, value, ttl)
+            return value
+        finally:
+            lock.release()
+
+    def invalidate(self, key: str) -> bool:
+        """Remove key from cache."""
+        if key in self.cache:
+            del self.cache[key]
+            return True
+        return False
+
+    def invalidate_pattern(self, pattern: str) -> int:
+        """Invalidate all keys matching pattern (simple prefix match)."""
+        keys_to_delete = [k for k in self.cache if k.startswith(pattern)]
+        for key in keys_to_delete:
+            del self.cache[key]
+        return len(keys_to_delete)
+
+    def stats(self) -> dict:
+        """Get cache statistics."""
+        total = self.hits + self.misses
+        return {
+            "hits": self.hits,
+            "misses": self.misses,
+            "hit_rate": self.hits / total if total > 0 else 0,
+            "size": len(self.cache),
+            "max_size": self.max_size
+        }
+
+
+# Usage Example
+cache = ProductionCache(max_size=10000, default_ttl=3600)
+
+def get_user(user_id: int) -> dict:
+    """Get user with caching."""
+    cache_key = f"user:{user_id}"
+
+    def load_from_db():
+        # Simulate database query
+        return {"id": user_id, "name": f"User {user_id}"}
+
+    return cache.get_or_set(cache_key, load_from_db, ttl=300)
+
+# First call - cache miss, loads from DB
+user = get_user(123)
+
+# Second call - cache hit
+user = get_user(123)
+
+# Check stats
+print(cache.stats())
+# {'hits': 1, 'misses': 1, 'hit_rate': 0.5, 'size': 1, 'max_size': 10000}
+```
+
+### Python - Distributed Cache with Redis
+
+```python
+import redis
+import json
+import time
+from typing import Optional, Any, Callable
+
+class RedisCache:
+    """Redis-backed distributed cache."""
+
+    def __init__(self, host: str = 'localhost', port: int = 6379, db: int = 0):
+        self.client = redis.Redis(host=host, port=port, db=db, decode_responses=True)
+        self.default_ttl = 3600
+
+    def get(self, key: str) -> Optional[Any]:
+        """Get value from Redis."""
+        value = self.client.get(key)
+        if value:
+            return json.loads(value)
+        return None
+
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
+        """Set value in Redis with TTL."""
+        ttl = ttl or self.default_ttl
+        self.client.setex(key, ttl, json.dumps(value))
+
+    def get_or_set(
+        self,
+        key: str,
+        loader: Callable[[], Any],
+        ttl: Optional[int] = None
+    ) -> Any:
+        """Get from cache or load with distributed locking."""
+        # Try cache first
+        value = self.get(key)
+        if value is not None:
+            return value
+
+        # Distributed lock using SETNX
+        lock_key = f"lock:{key}"
+        lock_acquired = self.client.setnx(lock_key, "1")
+
+        if lock_acquired:
+            self.client.expire(lock_key, 30)  # Lock timeout
+            try:
+                value = loader()
+                self.set(key, value, ttl)
+                return value
+            finally:
+                self.client.delete(lock_key)
+        else:
+            # Wait and retry
+            time.sleep(0.1)
+            return self.get(key) or loader()
+
+    def invalidate(self, key: str) -> bool:
+        """Delete key from Redis."""
+        return self.client.delete(key) > 0
+
+    def invalidate_pattern(self, pattern: str) -> int:
+        """Delete keys matching pattern."""
+        keys = self.client.keys(pattern)
+        if keys:
+            return self.client.delete(*keys)
+        return 0
+```
 
 ---
 
-## Best Practices
+## Quick Reference Card
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Set appropriate TTLs** - Balance freshness vs. hit rate
-2. **Monitor cache hit rates** - Target 90%+ for frequently accessed data
-3. **Use cache warming** - Pre-populate cache on startup
-4. **Handle cache failures gracefully** - Fall back to database
-5. **Avoid caching sensitive data** - Or encrypt if necessary
-6. **Use consistent hashing** - For distributed caches
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px;">CACHING CHEAT SHEET</h4>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">When to Cache</div>
+      <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+        <li>Read-heavy workloads (read:write > 10:1)</li>
+        <li>Expensive computations</li>
+        <li>Slow external API calls</li>
+        <li>Database query results</li>
+        <li>Session data</li>
+      </ul>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">When NOT to Cache</div>
+      <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+        <li>Rapidly changing data</li>
+        <li>Write-heavy workloads</li>
+        <li>Unique queries (low hit rate)</li>
+        <li>Sensitive financial data</li>
+        <li>Real-time requirements</li>
+      </ul>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">TTL Guidelines</div>
+      <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+        <li>Static assets: 1 year</li>
+        <li>User profiles: 1 hour</li>
+        <li>API responses: 5-15 minutes</li>
+        <li>Search results: 1-5 minutes</li>
+        <li>Real-time data: 10-30 seconds</li>
+      </ul>
+    </div>
+
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Key Metrics</div>
+      <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+        <li>Hit rate > 90% (for hot data)</li>
+        <li>Latency p99 < 10ms</li>
+        <li>Memory usage < 80%</li>
+        <li>Eviction rate (should be low)</li>
+        <li>Connection count</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding: 12px; background: #ffffff; border-radius: 8px; text-align: center;">
+    <code style="color: #1e293b; font-size: 13px;">Cache Rule: "Cache data that is read often, written rarely, and can tolerate some staleness"</code>
+  </div>
 </div>
 
 ---
 
 ## Related Topics
 
-- [Load Balancing](/topic/system-design/load-balancing)
-- [CDN](/topic/system-design/cdn)
-- [Database Replication](/topic/system-design/database-replication)
-
----
-
-## Implementation
-
-### Python - Cache-Aside Pattern
-
-```python
-def get_user(user_id):
-    # Try cache first
-    user = cache.get(f"user:{user_id}")
-    if user:
-        return user
-
-    # Cache miss - fetch from database
-    user = database.query(f"SELECT * FROM users WHERE id = {user_id}")
-
-    # Store in cache for future requests
-    cache.set(f"user:{user_id}", user, ttl=3600)
-    return user
-```
-
-### Python - Write-Through Pattern
-
-```python
-def update_user(user_id, data):
-    # Write to database
-    database.update("users", user_id, data)
-
-    # Write to cache
-    cache.set(f"user:{user_id}", data, ttl=3600)
-```
-
-### Python - Write-Behind Pattern
-
-```python
-def update_user(user_id, data):
-    # Write to cache only
-    cache.set(f"user:{user_id}", data)
-
-    # Queue async database write
-    write_queue.push({"table": "users", "id": user_id, "data": data})
-
-# Background worker
-def flush_writes():
-    while True:
-        item = write_queue.pop()
-        database.update(item["table"], item["id"], item["data"])
-```
-
-### Python - Read-Through Cache
-
-```python
-class ReadThroughCache:
-    def get(self, key, loader_func):
-        value = self.cache.get(key)
-        if value is None:
-            value = loader_func()
-            self.cache.set(key, value)
-        return value
-
-# Usage
-user = cache.get(f"user:{user_id}", lambda: database.get_user(user_id))
-```
-
-### Python - Refresh-Ahead
-
-```python
-def get_with_refresh(key, ttl, refresh_threshold=0.8):
-    value, remaining_ttl = cache.get_with_ttl(key)
-
-    if remaining_ttl < ttl * (1 - refresh_threshold):
-        # Async refresh in background
-        background_refresh(key)
-
-    return value
-```
-
-### Python - LRU Cache with OrderedDict
-
-```python
-from collections import OrderedDict
-
-class LRUCache:
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.cache = OrderedDict()
-
-    def get(self, key):
-        if key not in self.cache:
-            return None
-        self.cache.move_to_end(key)
-        return self.cache[key]
-
-    def put(self, key, value):
-        if key in self.cache:
-            self.cache.move_to_end(key)
-        self.cache[key] = value
-        if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)
-```
-
-### Python - Consistent Hashing
-
-```python
-import hashlib
-
-class ConsistentHash:
-    def __init__(self, nodes, virtual_nodes=100):
-        self.ring = {}
-        self.sorted_keys = []
-
-        for node in nodes:
-            for i in range(virtual_nodes):
-                key = self._hash(f"{node}:{i}")
-                self.ring[key] = node
-                self.sorted_keys.append(key)
-
-        self.sorted_keys.sort()
-
-    def _hash(self, key):
-        return int(hashlib.md5(key.encode()).hexdigest(), 16)
-
-    def get_node(self, key):
-        if not self.ring:
-            return None
-
-        hash_key = self._hash(key)
-        for ring_key in self.sorted_keys:
-            if hash_key <= ring_key:
-                return self.ring[ring_key]
-        return self.ring[self.sorted_keys[0]]
-```
-
-### Python - Cache Stampede Prevention
-
-```python
-import threading
-
-locks = {}
-
-def get_with_lock(key, loader_func, ttl):
-    value = cache.get(key)
-    if value:
-        return value
-
-    # Acquire lock for this key
-    lock = locks.setdefault(key, threading.Lock())
-    with lock:
-        # Double-check after acquiring lock
-        value = cache.get(key)
-        if value:
-            return value
-
-        value = loader_func()
-        cache.set(key, value, ttl)
-        return value
-```
-
-### Python - Redis Cluster Example
-
-```python
-import redis
-
-class DistributedCache:
-    def __init__(self, nodes):
-        self.cluster = redis.RedisCluster(
-            startup_nodes=nodes,
-            decode_responses=True
-        )
-
-    def get(self, key):
-        return self.cluster.get(key)
-
-    def set(self, key, value, ttl=3600):
-        self.cluster.setex(key, ttl, value)
-
-    def delete(self, key):
-        self.cluster.delete(key)
-```
-
-### Go - Thread-Safe LRU Cache
-
-```go
-package main
-
-import (
-	"container/list"
-	"sync"
-	"time"
-)
-
-type CacheItem struct {
-	Key       string
-	Value     interface{}
-	ExpiresAt time.Time
-}
-
-type LRUCache struct {
-	capacity int
-	items    map[string]*list.Element
-	order    *list.List
-	mu       sync.RWMutex
-}
-
-func NewLRUCache(capacity int) *LRUCache {
-	return &LRUCache{
-		capacity: capacity,
-		items:    make(map[string]*list.Element),
-		order:    list.New(),
-	}
-}
-
-func (c *LRUCache) Get(key string) (interface{}, bool) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	if elem, ok := c.items[key]; ok {
-		item := elem.Value.(*CacheItem)
-		if time.Now().Before(item.ExpiresAt) {
-			c.order.MoveToFront(elem)
-			return item.Value, true
-		}
-		// Expired - remove it
-		c.removeElement(elem)
-	}
-	return nil, false
-}
-
-func (c *LRUCache) Set(key string, value interface{}, ttl time.Duration) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	if elem, ok := c.items[key]; ok {
-		c.order.MoveToFront(elem)
-		item := elem.Value.(*CacheItem)
-		item.Value = value
-		item.ExpiresAt = time.Now().Add(ttl)
-		return
-	}
-
-	// Evict if at capacity
-	for c.order.Len() >= c.capacity {
-		c.removeOldest()
-	}
-
-	item := &CacheItem{
-		Key:       key,
-		Value:     value,
-		ExpiresAt: time.Now().Add(ttl),
-	}
-	elem := c.order.PushFront(item)
-	c.items[key] = elem
-}
-
-func (c *LRUCache) removeOldest() {
-	elem := c.order.Back()
-	if elem != nil {
-		c.removeElement(elem)
-	}
-}
-
-func (c *LRUCache) removeElement(elem *list.Element) {
-	c.order.Remove(elem)
-	item := elem.Value.(*CacheItem)
-	delete(c.items, item.Key)
-}
-
-func main() {
-	cache := NewLRUCache(100)
-
-	cache.Set("user:1", map[string]string{"name": "Alice"}, 5*time.Minute)
-
-	if value, ok := cache.Get("user:1"); ok {
-		println("Found:", value.(map[string]string)["name"])
-	}
-}
-```
+- [CDN](/topic/system-design/cdn) - Edge caching for static content
+- [Database Replication](/topic/system-design/database-replication) - Data redundancy
+- [Load Balancing](/topic/system-design/load-balancing) - Request distribution
+- [Redis](/topic/system-design/redis) - Popular caching solution

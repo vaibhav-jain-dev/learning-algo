@@ -1,18 +1,33 @@
 # Message Queues
 
-## Understanding Message Queues from First Principles
+## Overview
+
+A message queue is a form of asynchronous service-to-service communication where messages are stored in a queue until they are processed by a consumer. Think of it like a postal system - you drop a letter in the mailbox (produce), and the recipient picks it up when they are ready (consume), without you needing to wait at their door.
+
+Message queues decouple producers from consumers, enabling systems to handle load spikes gracefully, improve reliability through persistence, and scale components independently.
+
+---
+
+## Why Message Queues Matter
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Real-World Impact</h4>
+<div style="color: #1e293b;">
+
+**LinkedIn** processes over 7 trillion messages per day through Apache Kafka for activity feeds, metrics, and data pipelines. Message queues enable them to handle massive scale without losing data.
+
+**Uber** uses message queues to coordinate rides - when you request a ride, the request goes into a queue that matches drivers with riders asynchronously, enabling them to handle millions of concurrent ride requests.
+
+**Slack** relies on message queues to deliver billions of messages reliably. Even if a recipient's client is offline, the message is queued and delivered when they reconnect.
+
+</div>
+</div>
 
 ### The Problem: Direct Service Communication
 
-Imagine you're building an e-commerce system. When a customer places an order, several things need to happen:
-
-1. Save the order to the database
-2. Send a confirmation email
-3. Update inventory
-4. Notify the warehouse
-5. Update analytics
-
-**The naive approach:** The order service directly calls each of these services:
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<h4 style="color: #991b1b; margin-top: 0;">Without Message Queues</h4>
+<div style="color: #1e293b;">
 
 ```python
 def place_order(order):
@@ -24,161 +39,171 @@ def place_order(order):
     # Total: 600ms before customer sees "Order placed!"
 ```
 
-**What's wrong with this?**
+**Problems:**
+- **Slow response**: Customer waits 600ms. Add more services = even slower
+- **Fragile**: If email service is down, the entire order fails
+- **Tightly coupled**: Order service must know about ALL downstream services
+- **No retries**: If warehouse notification fails, how do you retry it?
 
-1. **Slow response**: Customer waits 600ms. Add more services → even slower
-2. **Fragile**: If email service is down, the entire order fails
-3. **Coupled**: Order service must know about ALL other services
-4. **No retries**: If warehouse notification fails, how do you retry it?
-5. **Scaling nightmare**: Order service must wait for the slowest service
+</div>
+</div>
 
-### The Solution: Introduce a Message Queue
-
-Instead of calling services directly, the order service drops a message into a queue. Other services pick up messages when they're ready.
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
+<h4 style="color: #166534; margin-top: 0;">With Message Queues</h4>
+<div style="color: #1e293b;">
 
 ```python
 def place_order(order):
-    save_to_database(order)       # 50ms
+    save_to_database(order)            # 50ms
     queue.publish("order_placed", order)  # ~5ms
     return "Success!"
     # Total: 55ms - customer sees "Order placed!" immediately!
 ```
 
-Now the email, inventory, warehouse, and analytics services all subscribe to the "order_placed" topic and process messages at their own pace.
+Email, inventory, warehouse, and analytics services subscribe to "order_placed" and process independently at their own pace.
 
-### What Is a Message Queue, Exactly?
+</div>
+</div>
 
-A message queue is a form of **asynchronous service-to-service communication**. It has three core components:
+---
 
-**1. Producers** - Services that send messages
-**2. The Queue** - A buffer that stores messages until they're processed
-**3. Consumers** - Services that receive and process messages
+## How Message Queues Work
 
-The queue acts as a shock absorber between producers and consumers. It enables:
+### Core Components
 
-- **Temporal decoupling**: Producer and consumer don't need to be running at the same time
-- **Spatial decoupling**: Producer doesn't need to know where the consumer is
-- **Rate decoupling**: Producer can send faster than consumer processes
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Message Queue Architecture</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700;">Producer</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 4px;">Sends messages</div>
+</div>
+<div style="color: #64748b; font-size: 24px;">--></div>
+<div style="background: #fef3c7; padding: 20px 30px; border-radius: 12px; text-align: center; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700;">Message Queue</div>
+<div style="color: #78716c; font-size: 12px; margin-top: 4px;">Stores & delivers</div>
+<div style="display: flex; gap: 4px; justify-content: center; margin-top: 8px;">
+<div style="background: #fbbf24; width: 20px; height: 20px; border-radius: 4px;"></div>
+<div style="background: #fbbf24; width: 20px; height: 20px; border-radius: 4px;"></div>
+<div style="background: #fbbf24; width: 20px; height: 20px; border-radius: 4px;"></div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 24px;">--></div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #22c55e;">
+<div style="color: #166534; font-weight: 700;">Consumer</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 4px;">Processes messages</div>
+</div>
+</div>
+</div>
 
-<div id="message-queue-flow-diagram" class="diagram-container dark"></div>
+### Key Benefits
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('message-queue-flow-diagram');
-    if (container && typeof FlowchartDiagram !== 'undefined') {
-        const diagram = new FlowchartDiagram('message-queue-flow-diagram', {
-            width: 700,
-            height: 400,
-            nodeWidth: 140,
-            nodeHeight: 50,
-            spacing: 90,
-            nodes: [
-                { id: 'producer', label: 'Producer', type: 'terminal' },
-                { id: 'queue', label: 'Message Queue', type: 'process' },
-                { id: 'consumer1', label: 'Consumer 1', type: 'terminal' },
-                { id: 'consumer2', label: 'Consumer 2', type: 'terminal' }
-            ],
-            edges: [
-                { from: 'producer', to: 'queue', label: 'publish' },
-                { from: 'queue', to: 'consumer1', label: 'consume' },
-                { from: 'queue', to: 'consumer2', label: 'consume' }
-            ]
-        });
-        diagramEngine.register('message-queue-flow-diagram', diagram);
-        diagram.render();
-    }
-});
-</script>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
+<h5 style="color: #1e40af; margin: 0 0 8px 0;">Temporal Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px;">Producer and consumer don't need to be running at the same time</p>
+</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Spatial Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px;">Producer doesn't need to know where or what the consumer is</p>
+</div>
+<div style="background: #fefce8; padding: 16px; border-radius: 8px;">
+<h5 style="color: #854d0e; margin: 0 0 8px 0;">Rate Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px;">Producer can send faster than consumer processes</p>
+</div>
+</div>
+</div>
+
+---
 
 ## Message Queue Patterns
 
-Understanding these patterns helps you choose the right architecture for your needs.
-
 ### Pattern 1: Point-to-Point (Work Queue)
 
-**The question it answers:** "How do I distribute work among multiple workers?"
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Point-to-Point Pattern</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">Producer</div>
+</div>
+<div style="color: #64748b;">--></div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 8px; border: 1px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600; text-align: center;">Queue</div>
+<div style="display: flex; gap: 4px; margin-top: 8px;">
+<div style="background: #fbbf24; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #92400e;">msg1</div>
+<div style="background: #fbbf24; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #92400e;">msg2</div>
+<div style="background: #fbbf24; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #92400e;">msg3</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #64748b;">--></div>
+<div style="background: #dcfce7; padding: 8px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Consumer 1</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #64748b;">--></div>
+<div style="background: #dcfce7; padding: 8px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Consumer 2</div>
+</div>
+</div>
+</div>
+</div>
+<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; margin-top: 16px;">
+<div style="color: #1e40af; font-size: 13px;"><strong>Key:</strong> Each message is processed by exactly ONE consumer. Add more consumers to process faster.</div>
+</div>
+</div>
 
-**How it works:** Messages sit in a queue. When a consumer pulls a message, that message is removed from the queue. Each message is processed by exactly ONE consumer.
+**Use Cases:** Order processing, email sending, image processing, background jobs
 
-**Real-world analogy:** A ticket counter at a bank. Multiple tellers (consumers) serve from one queue of customers (messages). Each customer is served by exactly one teller.
+### Pattern 2: Publish-Subscribe (Fan-out)
 
-**When to use it:**
-- Processing orders where each order should be handled once
-- Sending emails (each email should be sent once)
-- Image/video processing tasks
-- Any "work" that should be done exactly once
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Publish-Subscribe Pattern</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">Publisher</div>
+</div>
+<div style="color: #64748b;">--></div>
+<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 8px; border: 2px solid #a855f7;">
+<div style="color: #7c3aed; font-weight: 700; text-align: center;">Topic</div>
+<div style="color: #64748b; font-size: 11px; text-align: center;">user.created</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #64748b;">--></div>
+<div style="background: #dcfce7; padding: 8px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Email Service</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #64748b;">--></div>
+<div style="background: #fef3c7; padding: 8px 16px; border-radius: 8px;">
+<div style="color: #92400e; font-weight: 600;">Analytics</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="color: #64748b;">--></div>
+<div style="background: #dbeafe; padding: 8px 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">CRM Service</div>
+</div>
+</div>
+</div>
+</div>
+<div style="background: #f3e8ff; padding: 12px 16px; border-radius: 8px; margin-top: 16px;">
+<div style="color: #7c3aed; font-size: 13px;"><strong>Key:</strong> ALL subscribers receive a copy of every message. Publisher doesn't know who is listening.</div>
+</div>
+</div>
 
-**The scaling benefit:** Add more consumers → process messages faster. The queue automatically load-balances across consumers.
+**Use Cases:** Event notifications, activity feeds, real-time updates
 
-### Pattern 2: Publish-Subscribe (Fanout)
+### Pattern 3: Request-Reply
 
-**The question it answers:** "How do I notify multiple services about an event?"
-
-**How it works:** The publisher sends a message to a "topic." All subscribers to that topic receive a copy of the message. Each subscriber processes independently.
-
-**Real-world analogy:** A newsletter. When you publish an edition, ALL subscribers receive a copy. You don't care who they are or what they do with it.
-
-**When to use it:**
-- User signup → notify email service, analytics, CRM, etc.
-- Order placed → notify warehouse, accounting, customer support
-- Price change → notify all interested services
-- Any "event" that multiple services care about
-
-**Key insight:** The publisher doesn't know (or care) who is listening. New services can subscribe without changing the publisher.
-
-### Pattern 3: Fan-Out with Work Queues
-
-**The problem it solves:** "I want multiple services to receive events, AND each service needs to scale independently."
-
-**How it works:** Combine patterns 1 and 2. A topic fans out to multiple queues. Each queue has its own consumers.
-
-**Example:** When an order is placed:
-- Email queue → 2 workers send confirmation emails
-- Analytics queue → 1 worker tracks the event
-- Warehouse queue → 5 workers handle shipping
-
-Each queue can scale based on ITS workload.
-
-### 1. Point-to-Point (Queue)
-
-One message is consumed by exactly one consumer.
-
-```python
-# Producer
-queue.send("order:123", {"action": "process"})
-
-# Consumer 1 or Consumer 2 receives (not both)
-message = queue.receive()
-process(message)
-queue.acknowledge(message)
-```
-
-### 2. Publish-Subscribe (Topic)
-
-One message is delivered to all subscribers.
-
-```python
-# Publisher
-topic.publish("user.created", {"user_id": 123})
-
-# Subscriber 1 receives
-# Subscriber 2 receives
-# All subscribers get the message
-```
-
-### 3. Fan-Out
-
-Combine queue and topic - broadcast to multiple queues.
-
-```
-Topic → Queue A → Consumer A
-     ↘ Queue B → Consumer B
-     ↘ Queue C → Consumer C
-```
-
-### 4. Request-Reply
-
-Synchronous-like pattern over async messaging.
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin-top: 0;">Request-Reply Pattern</h4>
+<p style="color: #475569;">Synchronous-like pattern over async messaging. Used when you need a response but want queue benefits.</p>
 
 ```python
 # Requester
@@ -199,148 +224,123 @@ queue.send(request["reply_to"], {
     "result": result
 })
 ```
+</div>
 
-## Delivery Guarantees: The Hardest Problem in Messaging
+---
 
-Understanding delivery guarantees is crucial because they affect your application's correctness.
+## Delivery Guarantees
 
-### The Fundamental Question
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Delivery Guarantees Comparison</h4>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+<div style="background: #fef2f2; padding: 20px; border-radius: 12px; border: 1px solid #fecaca;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">At-Most-Once</h5>
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">"Fire and forget"</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Message may be lost</li>
+<li>No duplicates</li>
+<li>Fastest option</li>
+</ul>
+<div style="background: #fff; padding: 8px; border-radius: 6px; margin-top: 12px;">
+<div style="color: #64748b; font-size: 11px;"><strong>Use for:</strong> Metrics, logs, real-time gaming</div>
+</div>
+</div>
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">At-Least-Once</h5>
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">"Keep trying until confirmed"</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Message will be delivered</li>
+<li>May have duplicates</li>
+<li>Consumer must be idempotent</li>
+</ul>
+<div style="background: #fff; padding: 8px; border-radius: 6px; margin-top: 12px;">
+<div style="color: #64748b; font-size: 11px;"><strong>Use for:</strong> Most production systems</div>
+</div>
+</div>
+<div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Exactly-Once</h5>
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">"Guaranteed single delivery"</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>No loss, no duplicates</li>
+<li>Complex to implement</li>
+<li>Higher latency</li>
+</ul>
+<div style="background: #fff; padding: 8px; border-radius: 6px; margin-top: 12px;">
+<div style="color: #64748b; font-size: 11px;"><strong>Use for:</strong> Financial transactions</div>
+</div>
+</div>
+</div>
+</div>
 
-When the queue says "message delivered," what does that actually mean? Did the consumer:
-- Receive the message? (network said OK)
-- Store the message? (written to consumer's memory)
-- Process the message? (business logic completed)
-- Complete all side effects? (database updated, email sent)
+### The Duplicate Problem
 
-Different guarantees answer this differently.
+<div style="background: #fff7ed; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fed7aa;">
+<h4 style="color: #92400e; margin-top: 0;">Why At-Least-Once Can Cause Duplicates</h4>
+<div style="color: #1e293b; font-size: 14px;">
 
-### At-Most-Once: "Fire and Forget"
-
-**How it works:** Send the message, don't wait for confirmation, move on.
-
-**What can go wrong:**
-- Network drops the message → lost forever
-- Consumer crashes while processing → message is gone
-
-**Why would anyone want this?**
-
-Because it's FAST. For some data, losing occasional messages is acceptable:
-- Metrics/telemetry: Missing one data point out of millions is fine
-- Real-time gaming: Stale position updates are worse than missing ones
-- Logging: Some lost logs are okay
-
-**Key insight:** If you're okay with "some data might be lost," at-most-once is the simplest option.
-
-### At-Least-Once: "Keep trying until confirmed"
-
-**How it works:**
+```
 1. Queue sends message to consumer
-2. Consumer processes the message
-3. Consumer sends ACK (acknowledgment) back to queue
-4. Queue removes the message
-
-If no ACK arrives (consumer crashed, network failed), the queue retries.
-
-**The catch: Duplicates!**
-
-```
-Consumer receives message
-Consumer processes message (transfers $100)
-Consumer tries to send ACK
-Network fails!
-Queue thinks consumer didn't get it
-Queue resends the message
-Consumer processes AGAIN (transfers $100 AGAIN!)
+2. Consumer processes message (transfers $100)
+3. Consumer tries to send ACK
+4. Network fails!
+5. Queue thinks consumer didn't get it
+6. Queue resends the message
+7. Consumer processes AGAIN (transfers $100 AGAIN!)
 ```
 
-**The solution: Idempotency**
+</div>
+</div>
 
-Make your processing idempotent—doing it twice has the same effect as doing it once.
+### The Solution: Idempotency
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
+<h4 style="color: #166534; margin-top: 0;">Making Consumers Idempotent</h4>
 
 ```python
 def process_payment(message):
     # BAD: Always transfers money
-    transfer_money(message.from, message.to, message.amount)
+    transfer_money(message.from_user, message.to_user, message.amount)
 
     # GOOD: Check if already processed
     if not already_processed(message.id):
-        transfer_money(message.from, message.to, message.amount)
+        transfer_money(message.from_user, message.to_user, message.amount)
         mark_as_processed(message.id)
 ```
 
-**When to use:** Most production systems. The combination of at-least-once + idempotent consumers gives you reliable message processing.
+<div style="color: #166534; font-size: 13px; margin-top: 12px;">
+<strong>Rule:</strong> Processing the same message twice should have the same effect as processing it once.
+</div>
+</div>
 
-### Exactly-Once: The Holy Grail (Sort Of)
-
-**The harsh truth:** True exactly-once is impossible in distributed systems (see: Two Generals Problem). What systems call "exactly-once" is actually "at-least-once with built-in deduplication."
-
-**How systems fake it:**
-1. Every message has a unique ID
-2. Consumer tracks which IDs it has processed
-3. If it sees an ID again, it skips processing but still ACKs
-
-**Systems that claim exactly-once:** Kafka (with transactions), Apache Pulsar, Amazon SQS (with deduplication)
-
-**The cost:** More complexity, higher latency, requires storage for deduplication state.
-
-### 1. At-Most-Once
-- Message may be lost
-- No duplicates
-- Fastest
-
-### 2. At-Least-Once
-- Message will be delivered
-- May have duplicates
-- Consumer must be idempotent
-
-### 3. Exactly-Once
-- No loss, no duplicates
-- Complex to implement
-- Usually combines at-least-once with deduplication
-
-```python
-# Idempotent consumer for at-least-once
-def process_message(message):
-    message_id = message['id']
-
-    # Check if already processed
-    if redis.sismember('processed_messages', message_id):
-        return  # Skip duplicate
-
-    # Process message
-    do_work(message)
-
-    # Mark as processed
-    redis.sadd('processed_messages', message_id)
-    redis.expire('processed_messages', 86400)  # TTL 24h
-```
-
-## Message Ordering
-
-### FIFO (First-In-First-Out)
-
-```python
-# Messages processed in order
-# Use partition key for related messages
-
-queue.send("orders", {"order_id": 1}, partition_key="user_123")
-queue.send("orders", {"order_id": 2}, partition_key="user_123")
-# Both go to same partition → processed in order
-```
-
-### Partitioned Ordering
-
-Order guaranteed within partition, not across partitions.
-
-```
-Partition 0: [msg1, msg2, msg3] → Consumer 0
-Partition 1: [msg4, msg5, msg6] → Consumer 1
-Partition 2: [msg7, msg8, msg9] → Consumer 2
-```
+---
 
 ## Dead Letter Queues
 
-Handle messages that fail processing repeatedly.
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Dead Letter Queue Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fef3c7; padding: 12px 20px; border-radius: 8px; border: 1px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Main Queue</div>
+</div>
+<div style="color: #64748b;">--></div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">Consumer</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="color: #64748b; font-size: 12px;">Retry 1, 2, 3... Failed</div>
+<div style="color: #64748b;">|</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="color: #ef4444;">v</div>
+</div>
+<div style="background: #fef2f2; padding: 12px 20px; border-radius: 8px; border: 1px solid #ef4444;">
+<div style="color: #991b1b; font-weight: 600;">Dead Letter Queue</div>
+<div style="color: #64748b; font-size: 11px;">For investigation & manual processing</div>
+</div>
+</div>
+</div>
 
 ```python
 class MessageProcessor:
@@ -358,13 +358,194 @@ class MessageProcessor:
                 self.dlq.send(message)
                 self.queue.acknowledge(message)
             else:
-                # Retry with backoff
+                # Retry with exponential backoff
                 message['retry_count'] = retry_count + 1
-                delay = 2 ** retry_count  # Exponential backoff
+                delay = 2 ** retry_count  # 1s, 2s, 4s
                 self.queue.send(message, delay=delay)
 ```
 
-## Implementation Example
+---
+
+## Message Ordering
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin-top: 0;">FIFO vs Partitioned Ordering</h4>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">FIFO Queue</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">All messages processed in exact order. Simple but limits throughput to single consumer.</p>
+</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Partitioned Queue</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">Order guaranteed within partition. Use partition key to keep related messages together.</p>
+</div>
+</div>
+</div>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Partitioned Ordering</h4>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dcfce7; padding: 8px 16px; border-radius: 6px; min-width: 100px;">
+<div style="color: #166534; font-size: 12px;">Partition 0</div>
+</div>
+<div style="display: flex; gap: 4px;">
+<div style="background: #bbf7d0; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #166534;">msg1</div>
+<div style="background: #bbf7d0; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #166534;">msg2</div>
+<div style="background: #bbf7d0; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #166534;">msg3</div>
+</div>
+<div style="color: #64748b;">--></div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px;">
+<div style="color: #166534; font-size: 12px;">Consumer 0</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dbeafe; padding: 8px 16px; border-radius: 6px; min-width: 100px;">
+<div style="color: #1e40af; font-size: 12px;">Partition 1</div>
+</div>
+<div style="display: flex; gap: 4px;">
+<div style="background: #bfdbfe; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #1e40af;">msg4</div>
+<div style="background: #bfdbfe; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #1e40af;">msg5</div>
+<div style="background: #bfdbfe; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #1e40af;">msg6</div>
+</div>
+<div style="color: #64748b;">--></div>
+<div style="background: #dbeafe; padding: 8px 12px; border-radius: 6px;">
+<div style="color: #1e40af; font-size: 12px;">Consumer 1</div>
+</div>
+</div>
+</div>
+<div style="background: #fefce8; padding: 12px 16px; border-radius: 8px; margin-top: 16px;">
+<div style="color: #854d0e; font-size: 13px;"><strong>Partition Key Example:</strong> hash(user_id) % num_partitions ensures all messages for one user go to same partition and are processed in order.</div>
+</div>
+</div>
+
+---
+
+## Common Pitfalls
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; color: #1e293b;">
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Non-Idempotent Consumers:</strong> Without idempotency, duplicate messages cause data corruption or double charges.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>No Dead Letter Queue:</strong> Poison messages (that always fail) will block the queue forever or be lost.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Ignoring Backpressure:</strong> If consumers can't keep up, queues grow unbounded, eventually causing OOM or disk full.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Wrong Visibility Timeout:</strong> If timeout is shorter than processing time, messages get redelivered mid-processing.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>No Monitoring:</strong> Without queue depth monitoring, you won't know consumers are falling behind until it's too late.
+</div>
+</div>
+</div>
+
+---
+
+## Popular Message Queue Systems
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; color: #1e293b;">System</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Best For</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Key Features</th>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Apache Kafka</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">High throughput streaming</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Log-based, partitions, retention</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>RabbitMQ</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Complex routing</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">AMQP, exchanges, bindings</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Amazon SQS</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">AWS workloads</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Managed, auto-scaling, FIFO</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Redis Streams</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Real-time, low latency</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">In-memory, consumer groups</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b;"><strong>Apache Pulsar</strong></td>
+<td style="padding: 12px; color: #475569;">Multi-tenancy</td>
+<td style="padding: 12px; color: #475569;">Tiered storage, geo-replication</td>
+</tr>
+</table>
+</div>
+
+---
+
+## Interview Questions
+
+<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Common Interview Questions</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; color: #1e293b;">
+
+<div>
+<strong>1. How do you ensure exactly-once processing?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Use idempotent consumers with deduplication</li>
+<li>Store message ID before processing, check before each operation</li>
+<li>Use transactional outbox pattern for database + queue atomicity</li>
+<li>Leverage Kafka transactions or similar built-in features</li>
+</ul>
+</div>
+
+<div>
+<strong>2. How do you handle message ordering?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Use partition keys to route related messages to same partition</li>
+<li>Single consumer per partition guarantees order</li>
+<li>Include sequence numbers for verification</li>
+<li>Accept eventual consistency where possible</li>
+</ul>
+</div>
+
+<div>
+<strong>3. What happens if a consumer crashes mid-processing?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Message remains unacknowledged in queue</li>
+<li>After visibility timeout, message becomes visible again</li>
+<li>Another consumer (or same one after restart) picks it up</li>
+<li>Idempotency ensures safe reprocessing</li>
+</ul>
+</div>
+
+<div>
+<strong>4. How do you scale message consumers?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Add more partitions to increase parallelism</li>
+<li>Consumer groups share partitions automatically</li>
+<li>Each partition assigned to one consumer in the group</li>
+<li>Monitor lag and scale based on queue depth</li>
+</ul>
+</div>
+
+<div>
+<strong>5. Kafka vs RabbitMQ - when to use each?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li><strong>Kafka:</strong> High throughput, event streaming, replay capability, log aggregation</li>
+<li><strong>RabbitMQ:</strong> Complex routing, request-reply, lower latency, traditional messaging</li>
+</ul>
+</div>
+
+</div>
+</div>
+
+---
+
+## Code Examples
 
 ### Python - Simple Message Queue
 
@@ -391,6 +572,7 @@ class InMemoryMessageQueue:
         self.queues: Dict[str, Queue] = {}
         self.subscribers: Dict[str, list] = {}
         self.dlq: Queue = Queue()
+        self.processed_ids: set = set()
         self.lock = threading.Lock()
 
     def create_queue(self, name: str):
@@ -443,44 +625,6 @@ class InMemoryMessageQueue:
             threading.Thread(target=handler, args=(message,)).start()
 
 
-class Consumer:
-    def __init__(self, queue: InMemoryMessageQueue, queue_name: str):
-        self.queue = queue
-        self.queue_name = queue_name
-        self.running = False
-        self.max_retries = 3
-
-    def start(self, handler: Callable):
-        self.running = True
-
-        def consume():
-            while self.running:
-                message = self.queue.receive(self.queue_name, timeout=1)
-                if message:
-                    try:
-                        handler(message)
-                    except Exception as e:
-                        self._handle_failure(message, e)
-
-        thread = threading.Thread(target=consume)
-        thread.daemon = True
-        thread.start()
-
-    def _handle_failure(self, message: Message, error: Exception):
-        message.retry_count += 1
-
-        if message.retry_count >= self.max_retries:
-            print(f"Moving to DLQ: {message.id}")
-            self.queue.dlq.put(message)
-        else:
-            delay = 2 ** message.retry_count
-            print(f"Retrying in {delay}s: {message.id}")
-            self.queue.send(self.queue_name, message.payload, delay=delay)
-
-    def stop(self):
-        self.running = False
-
-
 # Usage
 mq = InMemoryMessageQueue()
 
@@ -488,25 +632,12 @@ mq = InMemoryMessageQueue()
 def order_handler(message):
     print(f"Processing order: {message.payload}")
 
-consumer = Consumer(mq, "orders")
-consumer.start(order_handler)
-
 mq.send("orders", {"order_id": 123, "amount": 99.99})
 
 # Pub-Sub
-def email_handler(message):
-    print(f"Sending email for: {message.payload}")
-
-def analytics_handler(message):
-    print(f"Tracking: {message.payload}")
-
-mq.subscribe("user.created", email_handler)
-mq.subscribe("user.created", analytics_handler)
-
+mq.subscribe("user.created", lambda msg: print(f"Email: {msg.payload}"))
+mq.subscribe("user.created", lambda msg: print(f"Analytics: {msg.payload}"))
 mq.publish("user.created", {"user_id": 456, "email": "test@example.com"})
-
-time.sleep(2)
-consumer.stop()
 ```
 
 ### Go - Message Queue with Worker Pool
@@ -515,253 +646,183 @@ consumer.stop()
 package main
 
 import (
-	"context"
-	"fmt"
-	"sync"
-	"time"
+    "context"
+    "fmt"
+    "sync"
+    "time"
 
-	"github.com/google/uuid"
+    "github.com/google/uuid"
 )
 
 type Message struct {
-	ID        string
-	Topic     string
-	Payload   map[string]interface{}
-	Timestamp time.Time
-	Retries   int
+    ID        string
+    Topic     string
+    Payload   map[string]interface{}
+    Timestamp time.Time
+    Retries   int
 }
 
 type MessageQueue struct {
-	queues      map[string]chan *Message
-	subscribers map[string][]func(*Message)
-	dlq         chan *Message
-	mu          sync.RWMutex
+    queues      map[string]chan *Message
+    subscribers map[string][]func(*Message)
+    dlq         chan *Message
+    mu          sync.RWMutex
 }
 
 func NewMessageQueue() *MessageQueue {
-	return &MessageQueue{
-		queues:      make(map[string]chan *Message),
-		subscribers: make(map[string][]func(*Message)),
-		dlq:         make(chan *Message, 1000),
-	}
+    return &MessageQueue{
+        queues:      make(map[string]chan *Message),
+        subscribers: make(map[string][]func(*Message)),
+        dlq:         make(chan *Message, 1000),
+    }
 }
 
 func (mq *MessageQueue) CreateQueue(name string, size int) {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
-
-	if _, exists := mq.queues[name]; !exists {
-		mq.queues[name] = make(chan *Message, size)
-	}
+    mq.mu.Lock()
+    defer mq.mu.Unlock()
+    if _, exists := mq.queues[name]; !exists {
+        mq.queues[name] = make(chan *Message, size)
+    }
 }
 
 func (mq *MessageQueue) Send(queueName string, payload map[string]interface{}) string {
-	mq.CreateQueue(queueName, 1000)
-
-	msg := &Message{
-		ID:        uuid.New().String(),
-		Topic:     queueName,
-		Payload:   payload,
-		Timestamp: time.Now(),
-	}
-
-	mq.queues[queueName] <- msg
-	return msg.ID
-}
-
-func (mq *MessageQueue) Receive(queueName string, timeout time.Duration) *Message {
-	mq.mu.RLock()
-	queue, exists := mq.queues[queueName]
-	mq.mu.RUnlock()
-
-	if !exists {
-		return nil
-	}
-
-	select {
-	case msg := <-queue:
-		return msg
-	case <-time.After(timeout):
-		return nil
-	}
-}
-
-func (mq *MessageQueue) Subscribe(topic string, handler func(*Message)) {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
-
-	mq.subscribers[topic] = append(mq.subscribers[topic], handler)
-}
-
-func (mq *MessageQueue) Publish(topic string, payload map[string]interface{}) {
-	msg := &Message{
-		ID:        uuid.New().String(),
-		Topic:     topic,
-		Payload:   payload,
-		Timestamp: time.Now(),
-	}
-
-	mq.mu.RLock()
-	handlers := mq.subscribers[topic]
-	mq.mu.RUnlock()
-
-	for _, handler := range handlers {
-		go handler(msg)
-	}
+    mq.CreateQueue(queueName, 1000)
+    msg := &Message{
+        ID:        uuid.New().String(),
+        Topic:     queueName,
+        Payload:   payload,
+        Timestamp: time.Now(),
+    }
+    mq.queues[queueName] <- msg
+    return msg.ID
 }
 
 type WorkerPool struct {
-	mq        *MessageQueue
-	queueName string
-	workers   int
-	handler   func(*Message) error
-	maxRetry  int
-	wg        sync.WaitGroup
-	ctx       context.Context
-	cancel    context.CancelFunc
+    mq        *MessageQueue
+    queueName string
+    workers   int
+    handler   func(*Message) error
+    maxRetry  int
+    ctx       context.Context
+    cancel    context.CancelFunc
+    wg        sync.WaitGroup
 }
 
 func NewWorkerPool(mq *MessageQueue, queueName string, workers int, handler func(*Message) error) *WorkerPool {
-	ctx, cancel := context.WithCancel(context.Background())
-	return &WorkerPool{
-		mq:        mq,
-		queueName: queueName,
-		workers:   workers,
-		handler:   handler,
-		maxRetry:  3,
-		ctx:       ctx,
-		cancel:    cancel,
-	}
+    ctx, cancel := context.WithCancel(context.Background())
+    return &WorkerPool{
+        mq:        mq,
+        queueName: queueName,
+        workers:   workers,
+        handler:   handler,
+        maxRetry:  3,
+        ctx:       ctx,
+        cancel:    cancel,
+    }
 }
 
 func (wp *WorkerPool) Start() {
-	for i := 0; i < wp.workers; i++ {
-		wp.wg.Add(1)
-		go wp.worker(i)
-	}
+    for i := 0; i < wp.workers; i++ {
+        wp.wg.Add(1)
+        go wp.worker(i)
+    }
 }
 
 func (wp *WorkerPool) worker(id int) {
-	defer wp.wg.Done()
-
-	for {
-		select {
-		case <-wp.ctx.Done():
-			return
-		default:
-			msg := wp.mq.Receive(wp.queueName, time.Second)
-			if msg == nil {
-				continue
-			}
-
-			if err := wp.handler(msg); err != nil {
-				wp.handleFailure(msg, err)
-			}
-		}
-	}
+    defer wp.wg.Done()
+    for {
+        select {
+        case <-wp.ctx.Done():
+            return
+        case msg := <-wp.mq.queues[wp.queueName]:
+            if err := wp.handler(msg); err != nil {
+                wp.handleFailure(msg, err)
+            }
+        }
+    }
 }
 
 func (wp *WorkerPool) handleFailure(msg *Message, err error) {
-	msg.Retries++
-
-	if msg.Retries >= wp.maxRetry {
-		fmt.Printf("Moving to DLQ: %s\n", msg.ID)
-		wp.mq.dlq <- msg
-		return
-	}
-
-	// Retry with backoff
-	delay := time.Duration(1<<msg.Retries) * time.Second
-	time.AfterFunc(delay, func() {
-		wp.mq.queues[wp.queueName] <- msg
-	})
-}
-
-func (wp *WorkerPool) Stop() {
-	wp.cancel()
-	wp.wg.Wait()
+    msg.Retries++
+    if msg.Retries >= wp.maxRetry {
+        fmt.Printf("Moving to DLQ: %s\n", msg.ID)
+        wp.mq.dlq <- msg
+        return
+    }
+    // Retry with backoff
+    delay := time.Duration(1<<msg.Retries) * time.Second
+    time.AfterFunc(delay, func() {
+        wp.mq.queues[wp.queueName] <- msg
+    })
 }
 
 func main() {
-	mq := NewMessageQueue()
+    mq := NewMessageQueue()
 
-	// Create worker pool for order processing
-	pool := NewWorkerPool(mq, "orders", 3, func(msg *Message) error {
-		fmt.Printf("Processing order: %v\n", msg.Payload)
-		return nil
-	})
-	pool.Start()
+    pool := NewWorkerPool(mq, "orders", 3, func(msg *Message) error {
+        fmt.Printf("Processing: %v\n", msg.Payload)
+        return nil
+    })
+    pool.Start()
 
-	// Send messages
-	for i := 0; i < 10; i++ {
-		mq.Send("orders", map[string]interface{}{
-			"order_id": i,
-			"amount":   float64(i) * 10.5,
-		})
-	}
+    for i := 0; i < 10; i++ {
+        mq.Send("orders", map[string]interface{}{
+            "order_id": i,
+            "amount":   float64(i) * 10.5,
+        })
+    }
 
-	// Pub-Sub example
-	mq.Subscribe("user.created", func(msg *Message) {
-		fmt.Printf("Email service: %v\n", msg.Payload)
-	})
-	mq.Subscribe("user.created", func(msg *Message) {
-		fmt.Printf("Analytics: %v\n", msg.Payload)
-	})
-
-	mq.Publish("user.created", map[string]interface{}{
-		"user_id": 123,
-		"email":   "test@example.com",
-	})
-
-	time.Sleep(2 * time.Second)
-	pool.Stop()
+    time.Sleep(2 * time.Second)
 }
 ```
 
-## Popular Message Queue Systems
-
-| System | Best For | Features |
-|--------|----------|----------|
-| **RabbitMQ** | Complex routing | AMQP, exchanges, bindings |
-| **Apache Kafka** | High throughput streaming | Log-based, partitions, retention |
-| **Amazon SQS** | AWS workloads | Managed, auto-scaling |
-| **Redis Streams** | Real-time | Fast, in-memory |
-| **Apache Pulsar** | Multi-tenancy | Tiered storage, geo-replication |
-
-## Common Interview Questions
-
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **How do you handle message ordering?**
-   - Use partitions with partition keys
-   - Single consumer per partition
-   - Sequence numbers for verification
-2. **How do you ensure exactly-once processing?**
-   - Idempotent consumers
-   - Deduplication with message IDs
-   - Transactional outbox pattern
-3. **What happens if a consumer crashes?**
-   - Message remains unacknowledged
-   - Redelivered after visibility timeout
-   - Use heartbeats for long processing
-4. **How do you scale consumers?**
-   - Consumer groups share partitions
-   - Each partition assigned to one consumer
-   - Add partitions to increase parallelism
-</div>
+---
 
 ## Best Practices
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Make consumers idempotent** - Handle duplicate messages
-2. **Use dead letter queues** - Don't lose failed messages
-3. **Set appropriate timeouts** - Visibility timeout > processing time
-4. **Monitor queue depth** - Alert on growing backlogs
-5. **Use batching** - Improve throughput for high-volume
-6. **Implement backpressure** - Prevent overwhelming consumers
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
+<h4 style="color: #166534; margin-top: 0;">Production Checklist</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: #1e293b;">
+<div>
+<strong style="color: #166534;">Reliability</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Make consumers idempotent</li>
+<li>Use dead letter queues</li>
+<li>Implement retry with backoff</li>
+</ul>
 </div>
+<div>
+<strong style="color: #166534;">Performance</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Use batching for throughput</li>
+<li>Set appropriate timeouts</li>
+<li>Implement backpressure</li>
+</ul>
+</div>
+<div>
+<strong style="color: #166534;">Monitoring</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Track queue depth</li>
+<li>Alert on consumer lag</li>
+<li>Monitor DLQ size</li>
+</ul>
+</div>
+<div>
+<strong style="color: #166534;">Operations</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Plan for replay scenarios</li>
+<li>Document message schemas</li>
+<li>Version your messages</li>
+</ul>
+</div>
+</div>
+</div>
+
+---
 
 ## Related Topics
 
 - [Microservices](/topic/system-design/microservices)
 - [Event Sourcing](/topic/system-design/event-sourcing)
 - [Rate Limiting](/topic/system-design/rate-limiting)
+- [Distributed Systems](/topic/system-design/distributed-systems)

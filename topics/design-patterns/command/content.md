@@ -2,99 +2,238 @@
 
 ## Overview
 
-The Command pattern encapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.
+The Command pattern encapsulates a request as an object, allowing you to parameterize clients with different requests, queue or log requests, and support undoable operations. It transforms a method call into a standalone object that contains all information about the request.
 
-## Key Concepts
+**Difficulty:** Intermediate
+**Category:** Behavioral Pattern
+**Also Known As:** Action, Transaction
 
-### When to Use
+---
 
-- Parameterize objects with operations
-- Queue, schedule, or log operations
-- Implement undo/redo functionality
-- Decouple sender from receiver
-- Support transactional operations
+## Simple Explanation: The Restaurant Analogy
 
-### Structure
-
-<div style="display: flex; align-items: flex-start; justify-content: center; gap: 2.5rem; margin: 2rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Invoker</div>
-    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">
-      + setCommand()<br>+ invoke()
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">📝</div>
+  <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">Think of a Restaurant Order</div>
+  <div style="color: #334155; font-size: 1rem; line-height: 1.7;">
+    When you dine at a restaurant, you don't walk into the kitchen and tell the chef what to cook. Instead, a waiter takes your order (writes it down on paper), carries it to the kitchen, and hands it to the chef. That piece of paper IS the command object - it encapsulates everything about your request: what dish, how cooked, any modifications. The waiter doesn't need to know how to cook; the chef doesn't need to know who ordered. The order slip decouples everyone.
   </div>
-  <div style="display: flex; align-items: center; color: #667eea; font-size: 1.5rem; padding-top: 1rem;">→</div>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-    <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; text-align: center;">
-      <div style="font-weight: 600;">Command (interface)</div>
-      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">+ execute()<br>+ undo()</div>
+  <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+    <div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
+      <div style="color: #1e40af; font-weight: 600;">Customer</div>
+      <div style="color: #3b82f6; font-size: 0.85rem;">Client (makes request)</div>
     </div>
-    <div style="color: #4ecdc4; font-size: 1.25rem;">↑ implements</div>
-    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
-      <div style="font-weight: 700;">ConcreteCommand</div>
-      <div style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; margin-top: 0.5rem;">
-        - receiver<br>- state<br>+ execute()<br>+ undo()
-      </div>
+    <div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+      <div style="color: #166534; font-weight: 600;">Order Slip</div>
+      <div style="color: #22c55e; font-size: 0.85rem;">Command Object</div>
     </div>
-    <div style="color: #f093fb; font-size: 1.25rem;">↓ calls</div>
-    <div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 10px; padding: 1rem 1.5rem; color: #f093fb; text-align: center;">
-      <div style="font-weight: 600;">Receiver</div>
-      <div style="font-size: 0.8rem; opacity: 0.8;">+ action()</div>
+    <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+      <div style="color: #92400e; font-weight: 600;">Waiter</div>
+      <div style="color: #f59e0b; font-size: 0.85rem;">Invoker (triggers)</div>
+    </div>
+    <div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center;">
+      <div style="color: #9d174d; font-weight: 600;">Chef</div>
+      <div style="color: #ec4899; font-size: 0.85rem;">Receiver (does work)</div>
     </div>
   </div>
 </div>
 
-## Implementation
+### The Expert Insight
 
-### Python - Text Editor with Undo/Redo
+**Novice thinks:** "Command is just wrapping a function call in an object."
+
+**Expert knows:** "Command transforms **imperative code into data**. Once an action becomes data, you can store it, transmit it, queue it, serialize it, replay it, and undo it. This is the foundation of event sourcing, transaction logs, and distributed systems."
+
+---
+
+## Real-World Company Usage
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
+  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <li><strong>Adobe Photoshop:</strong> Every action (brush stroke, filter, transform) is a command - enabling unlimited undo/redo history</li>
+    <li><strong>Git:</strong> Commits are commands that can be reverted, cherry-picked, or rebased</li>
+    <li><strong>Redux/Flux:</strong> Actions are commands dispatched to reducers - the entire state history can be replayed</li>
+    <li><strong>AWS Lambda:</strong> Each invocation is a command object with payload, enabling retry and dead-letter queues</li>
+    <li><strong>Slack:</strong> Slash commands encapsulate user requests that get routed to different handlers</li>
+    <li><strong>Database Transactions:</strong> SQL statements are commands that can be committed or rolled back</li>
+  </ul>
+</div>
+
+---
+
+## Pattern Structure
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Command Pattern Architecture</div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+    <!-- Client and Invoker Row -->
+    <div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap;">
+      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+        <div style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">Client</div>
+        <div style="font-size: 0.8rem; color: #3b82f6; margin-top: 4px;">Creates commands</div>
+      </div>
+      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+        <div style="font-weight: 700; color: #92400e; font-size: 1.1rem;">Invoker</div>
+        <div style="font-size: 0.8rem; color: #b45309; margin-top: 4px; font-family: monospace;">+ setCommand()<br/>+ invoke()</div>
+      </div>
+    </div>
+    <!-- Arrow down -->
+    <div style="color: #64748b; font-size: 1.5rem;">creates / triggers</div>
+    <div style="color: #64748b; font-size: 2rem;">&#8595;</div>
+    <!-- Command Interface -->
+    <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 32px; text-align: center;">
+      <div style="font-weight: 600; color: #475569; font-style: italic;">Command (interface)</div>
+      <div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ execute()<br/>+ undo()</div>
+    </div>
+    <!-- Arrow down -->
+    <div style="color: #64748b; font-size: 1rem;">implements</div>
+    <div style="color: #64748b; font-size: 2rem;">&#8595;</div>
+    <!-- Concrete Command -->
+    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px 32px; text-align: center;">
+      <div style="font-weight: 700; color: #166534; font-size: 1.1rem;">ConcreteCommand</div>
+      <div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace;">- receiver<br/>- state<br/>+ execute()<br/>+ undo()</div>
+    </div>
+    <!-- Arrow down -->
+    <div style="color: #64748b; font-size: 1rem;">delegates to</div>
+    <div style="color: #64748b; font-size: 2rem;">&#8595;</div>
+    <!-- Receiver -->
+    <div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 12px; padding: 16px 32px; text-align: center;">
+      <div style="font-weight: 700; color: #9d174d; font-size: 1.1rem;">Receiver</div>
+      <div style="font-size: 0.8rem; color: #be185d; margin-top: 8px; font-family: monospace;">+ action()</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## When to Use Command Pattern
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #22c55e;">
+  <div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Perfect Use Cases</div>
+  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <li><strong>Undo/Redo functionality:</strong> Store command history and reverse operations</li>
+    <li><strong>Queue operations:</strong> Schedule commands for later execution</li>
+    <li><strong>Log and audit:</strong> Record all actions for compliance or debugging</li>
+    <li><strong>Transaction systems:</strong> Group commands and rollback on failure</li>
+    <li><strong>Macro recording:</strong> Combine multiple commands into composite operations</li>
+    <li><strong>Remote procedure calls:</strong> Serialize commands and send over network</li>
+    <li><strong>GUI buttons/menus:</strong> Decouple UI elements from business logic</li>
+  </ul>
+</div>
+
+---
+
+## Anti-Patterns: When NOT to Use
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+  <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Common Mistakes</div>
+  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+    <li><strong>Over-engineering:</strong> Don't use Command for simple one-off operations without undo needs</li>
+    <li><strong>State pollution:</strong> Commands storing too much state become memory hogs</li>
+    <li><strong>God command:</strong> Single command doing too many things - violates SRP</li>
+    <li><strong>Ignoring failures:</strong> Not handling partial execution in composite commands</li>
+    <li><strong>Circular dependencies:</strong> Commands referencing other commands without clear hierarchy</li>
+  </ul>
+</div>
+
+---
+
+## Python Implementation: Text Editor with Undo/Redo
 
 ```python
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
+from datetime import datetime
+from copy import deepcopy
+
+
+# ============================================================
+# COMMAND INTERFACE
+# ============================================================
 
 class Command(ABC):
+    """
+    Abstract base class for all commands.
+    Every command must implement execute() and undo().
+    """
+
     @abstractmethod
     def execute(self) -> None:
+        """Execute the command action."""
         pass
 
     @abstractmethod
     def undo(self) -> None:
+        """Reverse the command action."""
+        pass
+
+    @abstractmethod
+    def description(self) -> str:
+        """Human-readable description for logging."""
         pass
 
 
+# ============================================================
+# RECEIVER - The object that performs actual work
+# ============================================================
+
 @dataclass
 class TextDocument:
+    """
+    Receiver class - contains the actual business logic.
+    Commands delegate work to this class.
+    """
     content: str = ""
 
     def insert(self, position: int, text: str) -> None:
+        """Insert text at a specific position."""
         self.content = self.content[:position] + text + self.content[position:]
 
     def delete(self, position: int, length: int) -> str:
+        """Delete text and return what was deleted (for undo)."""
         deleted = self.content[position:position + length]
         self.content = self.content[:position] + self.content[position + length:]
         return deleted
 
     def replace(self, position: int, length: int, text: str) -> str:
+        """Replace text and return what was replaced."""
         old_text = self.content[position:position + length]
         self.content = self.content[:position] + text + self.content[position + length:]
         return old_text
 
 
+# ============================================================
+# CONCRETE COMMANDS
+# ============================================================
+
 class InsertCommand(Command):
+    """Command to insert text at a position."""
+
     def __init__(self, document: TextDocument, position: int, text: str):
         self.document = document
         self.position = position
         self.text = text
+        self.executed = False
 
     def execute(self) -> None:
         self.document.insert(self.position, self.text)
+        self.executed = True
 
     def undo(self) -> None:
-        self.document.delete(self.position, len(self.text))
+        if self.executed:
+            self.document.delete(self.position, len(self.text))
+            self.executed = False
+
+    def description(self) -> str:
+        preview = self.text[:20] + "..." if len(self.text) > 20 else self.text
+        return f"Insert '{preview}' at position {self.position}"
 
 
 class DeleteCommand(Command):
+    """Command to delete text from a position."""
+
     def __init__(self, document: TextDocument, position: int, length: int):
         self.document = document
         self.position = position
@@ -105,15 +244,22 @@ class DeleteCommand(Command):
         self.deleted_text = self.document.delete(self.position, self.length)
 
     def undo(self) -> None:
-        self.document.insert(self.position, self.deleted_text)
+        if self.deleted_text:
+            self.document.insert(self.position, self.deleted_text)
+
+    def description(self) -> str:
+        preview = self.deleted_text[:20] + "..." if len(self.deleted_text) > 20 else self.deleted_text
+        return f"Delete '{preview}' from position {self.position}"
 
 
 class ReplaceCommand(Command):
-    def __init__(self, document: TextDocument, position: int, length: int, text: str):
+    """Command to replace text at a position."""
+
+    def __init__(self, document: TextDocument, position: int, length: int, new_text: str):
         self.document = document
         self.position = position
         self.length = length
-        self.new_text = text
+        self.new_text = new_text
         self.old_text: str = ""
 
     def execute(self) -> None:
@@ -122,516 +268,385 @@ class ReplaceCommand(Command):
     def undo(self) -> None:
         self.document.replace(self.position, len(self.new_text), self.old_text)
 
+    def description(self) -> str:
+        return f"Replace '{self.old_text}' with '{self.new_text}'"
+
+
+# ============================================================
+# MACRO COMMAND - Composite Pattern Integration
+# ============================================================
 
 class MacroCommand(Command):
-    """Composite command that executes multiple commands"""
-    def __init__(self, commands: List[Command] = None):
+    """
+    Composite command that executes multiple commands as one unit.
+    Useful for "batch" operations or "macros".
+    """
+
+    def __init__(self, name: str, commands: List[Command] = None):
+        self.name = name
         self.commands = commands or []
 
-    def add(self, command: Command) -> None:
+    def add(self, command: Command) -> 'MacroCommand':
+        """Fluent interface for adding commands."""
         self.commands.append(command)
+        return self
 
     def execute(self) -> None:
+        """Execute all commands in order."""
         for command in self.commands:
             command.execute()
 
     def undo(self) -> None:
+        """Undo all commands in reverse order."""
         for command in reversed(self.commands):
             command.undo()
 
+    def description(self) -> str:
+        return f"Macro '{self.name}' ({len(self.commands)} commands)"
+
+
+# ============================================================
+# CARETAKER - Manages command history
+# ============================================================
+
+@dataclass
+class CommandRecord:
+    """Record of an executed command with metadata."""
+    command: Command
+    timestamp: datetime = field(default_factory=datetime.now)
+
 
 class CommandHistory:
+    """
+    Caretaker class that manages command history.
+    Enables undo/redo functionality.
+    """
+
     def __init__(self, max_size: int = 100):
-        self.history: List[Command] = []
-        self.redo_stack: List[Command] = []
-        self.max_size = max_size
+        self._history: List[CommandRecord] = []
+        self._redo_stack: List[CommandRecord] = []
+        self._max_size = max_size
 
     def execute(self, command: Command) -> None:
+        """Execute a command and add to history."""
         command.execute()
-        self.history.append(command)
-        self.redo_stack.clear()  # Clear redo on new command
+        record = CommandRecord(command=command)
+        self._history.append(record)
 
-        if len(self.history) > self.max_size:
-            self.history.pop(0)
+        # Clear redo stack when new command is executed
+        self._redo_stack.clear()
+
+        # Limit history size
+        if len(self._history) > self._max_size:
+            self._history.pop(0)
+
+        print(f"Executed: {command.description()}")
 
     def undo(self) -> bool:
-        if not self.history:
+        """Undo the last command."""
+        if not self._history:
+            print("Nothing to undo")
             return False
 
-        command = self.history.pop()
-        command.undo()
-        self.redo_stack.append(command)
+        record = self._history.pop()
+        record.command.undo()
+        self._redo_stack.append(record)
+        print(f"Undone: {record.command.description()}")
         return True
 
     def redo(self) -> bool:
-        if not self.redo_stack:
+        """Redo the last undone command."""
+        if not self._redo_stack:
+            print("Nothing to redo")
             return False
 
-        command = self.redo_stack.pop()
-        command.execute()
-        self.history.append(command)
+        record = self._redo_stack.pop()
+        record.command.execute()
+        self._history.append(record)
+        print(f"Redone: {record.command.description()}")
         return True
 
+    def can_undo(self) -> bool:
+        return len(self._history) > 0
+
+    def can_redo(self) -> bool:
+        return len(self._redo_stack) > 0
+
+    def show_history(self) -> None:
+        """Display command history for debugging."""
+        print("\n=== Command History ===")
+        for i, record in enumerate(self._history):
+            print(f"  [{i}] {record.command.description()} @ {record.timestamp.strftime('%H:%M:%S')}")
+        if self._redo_stack:
+            print("--- Redo Stack ---")
+            for record in self._redo_stack:
+                print(f"  [R] {record.command.description()}")
+
+
+# ============================================================
+# INVOKER - Text Editor that uses commands
+# ============================================================
 
 class TextEditor:
+    """
+    Invoker class - provides high-level operations.
+    All operations go through the command pattern.
+    """
+
     def __init__(self):
         self.document = TextDocument()
         self.history = CommandHistory()
+        self._cursor = 0
 
     def type_text(self, text: str) -> None:
-        position = len(self.document.content)
-        command = InsertCommand(self.document, position, text)
+        """Type text at current cursor position."""
+        command = InsertCommand(self.document, self._cursor, text)
         self.history.execute(command)
+        self._cursor += len(text)
 
-    def insert_at(self, position: int, text: str) -> None:
-        command = InsertCommand(self.document, position, text)
-        self.history.execute(command)
+    def delete_chars(self, count: int = 1) -> None:
+        """Delete characters before cursor (like backspace)."""
+        if self._cursor > 0:
+            start = max(0, self._cursor - count)
+            command = DeleteCommand(self.document, start, min(count, self._cursor))
+            self.history.execute(command)
+            self._cursor = start
 
-    def delete(self, position: int, length: int) -> None:
-        command = DeleteCommand(self.document, position, length)
+    def select_and_replace(self, start: int, end: int, new_text: str) -> None:
+        """Select a range and replace with new text."""
+        command = ReplaceCommand(self.document, start, end - start, new_text)
         self.history.execute(command)
-
-    def replace(self, position: int, length: int, text: str) -> None:
-        command = ReplaceCommand(self.document, position, length, text)
-        self.history.execute(command)
+        self._cursor = start + len(new_text)
 
     def undo(self) -> None:
+        """Undo last action."""
         self.history.undo()
 
     def redo(self) -> None:
+        """Redo last undone action."""
         self.history.redo()
 
     def get_content(self) -> str:
         return self.document.content
 
+    def __str__(self) -> str:
+        return f"'{self.document.content}' (cursor: {self._cursor})"
 
-# Usage
-editor = TextEditor()
 
-editor.type_text("Hello")
-print(editor.get_content())  # Hello
+# ============================================================
+# USAGE EXAMPLE
+# ============================================================
 
-editor.type_text(" World")
-print(editor.get_content())  # Hello World
+if __name__ == "__main__":
+    editor = TextEditor()
 
-editor.insert_at(5, ",")
-print(editor.get_content())  # Hello, World
+    # Type some text
+    editor.type_text("Hello")
+    print(f"After typing 'Hello': {editor}")
 
-editor.undo()
-print(editor.get_content())  # Hello World
+    editor.type_text(" World")
+    print(f"After typing ' World': {editor}")
 
-editor.undo()
-print(editor.get_content())  # Hello
+    editor.type_text("!")
+    print(f"After typing '!': {editor}")
 
-editor.redo()
-print(editor.get_content())  # Hello World
+    # Undo operations
+    print("\n--- Undoing ---")
+    editor.undo()  # Remove "!"
+    print(f"After undo: {editor}")
 
-editor.replace(0, 5, "Hi")
-print(editor.get_content())  # Hi World
+    editor.undo()  # Remove " World"
+    print(f"After undo: {editor}")
+
+    # Redo
+    print("\n--- Redoing ---")
+    editor.redo()  # Restore " World"
+    print(f"After redo: {editor}")
+
+    # Replace operation
+    print("\n--- Replace ---")
+    editor.select_and_replace(0, 5, "Hi")
+    print(f"After replace 'Hello' with 'Hi': {editor}")
+
+    # Show history
+    editor.history.show_history()
+
+    # Macro command example
+    print("\n--- Macro Example ---")
+    editor2 = TextEditor()
+
+    macro = MacroCommand("Add Greeting")
+    macro.add(InsertCommand(editor2.document, 0, "Dear "))
+    macro.add(InsertCommand(editor2.document, 5, "Customer"))
+    macro.add(InsertCommand(editor2.document, 13, ",\n"))
+    macro.add(InsertCommand(editor2.document, 15, "Welcome!"))
+
+    editor2.history.execute(macro)
+    print(f"After macro: '{editor2.document.content}'")
+
+    editor2.undo()  # Undoes entire macro
+    print(f"After undo macro: '{editor2.document.content}'")
 ```
 
-### Go - Task Queue with Commands
+---
 
-```go
-package main
+## Command vs Strategy: Interview Question
 
-import (
-	"fmt"
-	"sync"
-	"time"
-)
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">A Common Interview Question</div>
+  <table style="width: 100%; border-collapse: collapse; color: #334155;">
+    <thead>
+      <tr style="background: #e2e8f0;">
+        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Aspect</th>
+        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Command</th>
+        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Strategy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Purpose</strong></td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Encapsulate a request/action</td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Encapsulate an algorithm</td>
+      </tr>
+      <tr style="background: #f8fafc;">
+        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>State</strong></td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Usually has state (parameters)</td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Usually stateless</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Undo</strong></td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Supports undo/redo</td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">No undo concept</td>
+      </tr>
+      <tr style="background: #f8fafc;">
+        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Lifetime</strong></td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Created, executed, stored</td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">Swapped in/out at runtime</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Example</strong></td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">"Delete row 5"</td>
+        <td style="padding: 12px; border: 1px solid #cbd5e1;">"Sort using QuickSort"</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-// Command interface
-type Command interface {
-	Execute() error
-	Undo() error
-	Description() string
-}
+---
 
-// Receiver
-type FileSystem struct {
-	files map[string]string
-	mu    sync.RWMutex
-}
+## Interview Questions
 
-func NewFileSystem() *FileSystem {
-	return &FileSystem{
-		files: make(map[string]string),
-	}
-}
-
-func (fs *FileSystem) CreateFile(name, content string) {
-	fs.mu.Lock()
-	defer fs.mu.Unlock()
-	fs.files[name] = content
-}
-
-func (fs *FileSystem) DeleteFile(name string) string {
-	fs.mu.Lock()
-	defer fs.mu.Unlock()
-	content := fs.files[name]
-	delete(fs.files, name)
-	return content
-}
-
-func (fs *FileSystem) ReadFile(name string) string {
-	fs.mu.RLock()
-	defer fs.mu.RUnlock()
-	return fs.files[name]
-}
-
-func (fs *FileSystem) ListFiles() []string {
-	fs.mu.RLock()
-	defer fs.mu.RUnlock()
-	files := make([]string, 0, len(fs.files))
-	for name := range fs.files {
-		files = append(files, name)
-	}
-	return files
-}
-
-// Concrete Commands
-type CreateFileCommand struct {
-	fs      *FileSystem
-	name    string
-	content string
-}
-
-func NewCreateFileCommand(fs *FileSystem, name, content string) *CreateFileCommand {
-	return &CreateFileCommand{fs: fs, name: name, content: content}
-}
-
-func (c *CreateFileCommand) Execute() error {
-	c.fs.CreateFile(c.name, c.content)
-	return nil
-}
-
-func (c *CreateFileCommand) Undo() error {
-	c.fs.DeleteFile(c.name)
-	return nil
-}
-
-func (c *CreateFileCommand) Description() string {
-	return fmt.Sprintf("Create file: %s", c.name)
-}
-
-type DeleteFileCommand struct {
-	fs             *FileSystem
-	name           string
-	deletedContent string
-}
-
-func NewDeleteFileCommand(fs *FileSystem, name string) *DeleteFileCommand {
-	return &DeleteFileCommand{fs: fs, name: name}
-}
-
-func (c *DeleteFileCommand) Execute() error {
-	c.deletedContent = c.fs.DeleteFile(c.name)
-	return nil
-}
-
-func (c *DeleteFileCommand) Undo() error {
-	c.fs.CreateFile(c.name, c.deletedContent)
-	return nil
-}
-
-func (c *DeleteFileCommand) Description() string {
-	return fmt.Sprintf("Delete file: %s", c.name)
-}
-
-// Command Invoker with queue
-type CommandQueue struct {
-	mu       sync.Mutex
-	queue    []Command
-	history  []Command
-	workers  int
-	stopChan chan struct{}
-}
-
-func NewCommandQueue(workers int) *CommandQueue {
-	return &CommandQueue{
-		queue:    make([]Command, 0),
-		history:  make([]Command, 0),
-		workers:  workers,
-		stopChan: make(chan struct{}),
-	}
-}
-
-func (q *CommandQueue) Enqueue(cmd Command) {
-	q.mu.Lock()
-	defer q.mu.Unlock()
-	q.queue = append(q.queue, cmd)
-}
-
-func (q *CommandQueue) Start() {
-	for i := 0; i < q.workers; i++ {
-		go q.worker(i)
-	}
-}
-
-func (q *CommandQueue) Stop() {
-	close(q.stopChan)
-}
-
-func (q *CommandQueue) worker(id int) {
-	for {
-		select {
-		case <-q.stopChan:
-			return
-		default:
-			cmd := q.dequeue()
-			if cmd != nil {
-				fmt.Printf("Worker %d executing: %s\n", id, cmd.Description())
-				if err := cmd.Execute(); err != nil {
-					fmt.Printf("Error: %v\n", err)
-				} else {
-					q.mu.Lock()
-					q.history = append(q.history, cmd)
-					q.mu.Unlock()
-				}
-			} else {
-				time.Sleep(100 * time.Millisecond)
-			}
-		}
-	}
-}
-
-func (q *CommandQueue) dequeue() Command {
-	q.mu.Lock()
-	defer q.mu.Unlock()
-
-	if len(q.queue) == 0 {
-		return nil
-	}
-
-	cmd := q.queue[0]
-	q.queue = q.queue[1:]
-	return cmd
-}
-
-func (q *CommandQueue) UndoLast() error {
-	q.mu.Lock()
-	defer q.mu.Unlock()
-
-	if len(q.history) == 0 {
-		return fmt.Errorf("nothing to undo")
-	}
-
-	cmd := q.history[len(q.history)-1]
-	q.history = q.history[:len(q.history)-1]
-
-	fmt.Printf("Undoing: %s\n", cmd.Description())
-	return cmd.Undo()
-}
-
-func main() {
-	fs := NewFileSystem()
-	queue := NewCommandQueue(2)
-	queue.Start()
-
-	// Queue commands
-	queue.Enqueue(NewCreateFileCommand(fs, "file1.txt", "Hello World"))
-	queue.Enqueue(NewCreateFileCommand(fs, "file2.txt", "Go is awesome"))
-	queue.Enqueue(NewCreateFileCommand(fs, "file3.txt", "Command pattern"))
-
-	time.Sleep(500 * time.Millisecond)
-
-	fmt.Println("Files:", fs.ListFiles())
-
-	// Undo last operation
-	queue.UndoLast()
-	fmt.Println("After undo:", fs.ListFiles())
-
-	queue.Stop()
-}
-```
-
-### Python - Smart Home Automation
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How would you implement transaction rollback using Command pattern?</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Use a composite command (MacroCommand) that stores multiple commands. Execute all commands in sequence. If any command fails, iterate through executed commands in reverse order and call undo(). Store previous state in each command to enable reversal.
 
 ```python
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any
-from datetime import datetime, time
-
-class SmartDevice(ABC):
-    def __init__(self, name: str):
-        self.name = name
-        self._is_on = False
-
-    @abstractmethod
-    def turn_on(self) -> None:
-        pass
-
-    @abstractmethod
-    def turn_off(self) -> None:
-        pass
-
-
-class Light(SmartDevice):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.brightness = 100
-
-    def turn_on(self) -> None:
-        self._is_on = True
-        print(f"{self.name} light is ON at {self.brightness}%")
-
-    def turn_off(self) -> None:
-        self._is_on = False
-        print(f"{self.name} light is OFF")
-
-    def set_brightness(self, level: int) -> None:
-        self.brightness = level
-        print(f"{self.name} brightness set to {level}%")
-
-
-class Thermostat(SmartDevice):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.temperature = 72
-
-    def turn_on(self) -> None:
-        self._is_on = True
-        print(f"{self.name} is ON, set to {self.temperature}°F")
-
-    def turn_off(self) -> None:
-        self._is_on = False
-        print(f"{self.name} is OFF")
-
-    def set_temperature(self, temp: int) -> None:
-        old_temp = self.temperature
-        self.temperature = temp
-        print(f"{self.name} temperature changed from {old_temp}°F to {temp}°F")
-        return old_temp
-
-
-class SmartCommand(ABC):
-    @abstractmethod
-    def execute(self) -> None:
-        pass
-
-    @abstractmethod
-    def undo(self) -> None:
-        pass
-
-
-class TurnOnCommand(SmartCommand):
-    def __init__(self, device: SmartDevice):
-        self.device = device
-
-    def execute(self) -> None:
-        self.device.turn_on()
-
-    def undo(self) -> None:
-        self.device.turn_off()
-
-
-class TurnOffCommand(SmartCommand):
-    def __init__(self, device: SmartDevice):
-        self.device = device
-
-    def execute(self) -> None:
-        self.device.turn_off()
-
-    def undo(self) -> None:
-        self.device.turn_on()
-
-
-class SetTemperatureCommand(SmartCommand):
-    def __init__(self, thermostat: Thermostat, temperature: int):
-        self.thermostat = thermostat
-        self.new_temp = temperature
-        self.old_temp = thermostat.temperature
-
-    def execute(self) -> None:
-        self.old_temp = self.thermostat.set_temperature(self.new_temp)
-
-    def undo(self) -> None:
-        self.thermostat.set_temperature(self.old_temp)
-
-
-class MacroCommand(SmartCommand):
-    def __init__(self, name: str, commands: List[SmartCommand]):
-        self.name = name
+class Transaction:
+    def __init__(self, commands: List[Command]):
         self.commands = commands
+        self.executed = []
 
-    def execute(self) -> None:
-        print(f"Executing macro: {self.name}")
-        for cmd in self.commands:
-            cmd.execute()
+    def execute(self):
+        try:
+            for cmd in self.commands:
+                cmd.execute()
+                self.executed.append(cmd)
+        except Exception as e:
+            self.rollback()
+            raise
 
-    def undo(self) -> None:
-        print(f"Undoing macro: {self.name}")
-        for cmd in reversed(self.commands):
+    def rollback(self):
+        for cmd in reversed(self.executed):
             cmd.undo()
-
-
-class SmartHomeController:
-    def __init__(self):
-        self.history: List[SmartCommand] = []
-
-    def execute(self, command: SmartCommand) -> None:
-        command.execute()
-        self.history.append(command)
-
-    def undo(self) -> None:
-        if self.history:
-            command = self.history.pop()
-            command.undo()
-
-
-# Usage
-living_room_light = Light("Living Room")
-bedroom_light = Light("Bedroom")
-thermostat = Thermostat("Main")
-
-controller = SmartHomeController()
-
-# Individual commands
-controller.execute(TurnOnCommand(living_room_light))
-controller.execute(SetTemperatureCommand(thermostat, 68))
-
-# Undo last command
-controller.undo()
-
-# Create "Good Night" macro
-good_night = MacroCommand("Good Night", [
-    TurnOffCommand(living_room_light),
-    TurnOffCommand(bedroom_light),
-    SetTemperatureCommand(thermostat, 65)
-])
-
-controller.execute(good_night)
-
-# Undo entire macro
-controller.undo()
+        self.executed.clear()
 ```
+</div>
+</details>
 
-## Common Interview Questions
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: How do you handle commands that cannot be undone?</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Create a marker interface or flag for irreversible commands. Options include:
+1. Throw UnsupportedOperationException in undo()
+2. Use Memento pattern to snapshot state before execution
+3. Warn user before execution of irreversible commands
+4. Implement "soft delete" where possible instead of hard delete
+</div>
+</details>
 
-1. **Command vs Strategy?**
-   - Command: Encapsulates action/request
-   - Strategy: Encapsulates algorithm
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you serialize commands for distributed execution?</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Design commands to be serializable:
+1. Store command type/name as string identifier
+2. Store parameters as JSON-serializable data
+3. Use a command registry to reconstruct commands
+4. Include version numbers for backward compatibility
 
-2. **How to implement transaction rollback?**
-   - Store undo commands
-   - Execute in reverse on rollback
+```python
+@dataclass
+class SerializableCommand:
+    type: str
+    params: dict
+    version: int = 1
 
-3. **When to use Macro Command?**
-   - Batch operations
-   - Complex workflows
-   - Atomic transactions
+    def to_json(self) -> str:
+        return json.dumps(asdict(self))
+
+    @classmethod
+    def from_json(cls, json_str: str) -> 'SerializableCommand':
+        return cls(**json.loads(json_str))
+```
+</div>
+</details>
+
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: What is the difference between Command and Event Sourcing?</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong>
+- <strong>Command:</strong> Represents intent ("CreateOrder"). May be rejected. Imperative.
+- <strong>Event:</strong> Represents fact ("OrderCreated"). Already happened. Past tense.
+
+Event Sourcing stores events as the source of truth. Commands are validated and if accepted, produce events. Commands can be replayed to rebuild state. Both use similar object structures but serve different purposes in the architecture.
+</div>
+</details>
+
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design a command queue system for a photo editing application.</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Key considerations:</strong>
+1. Commands may be CPU-intensive (filters) - use async execution
+2. Preview mode - execute temporarily without committing
+3. Batch operations - apply same command to multiple images
+4. Progressive rendering - show partial results
+5. Memory management - large images require efficient state handling
+6. Cancellation support - long operations need abort capability
+</div>
+</details>
+
+---
 
 ## Best Practices
 
-1. **Keep commands simple** - Single responsibility
-2. **Store state for undo** - Save before modifying
-3. **Use command history** - Enable undo/redo
-4. **Consider serialization** - For persistence/logging
-5. **Handle failures** - Rollback partial execution
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; margin: 20px 0;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Production Guidelines</div>
+  <ol style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
+    <li><strong>Single Responsibility:</strong> Each command does one thing well</li>
+    <li><strong>Store minimal state:</strong> Only what's needed for undo - avoid memory bloat</li>
+    <li><strong>Validate before execute:</strong> Check preconditions in a canExecute() method</li>
+    <li><strong>Handle failures gracefully:</strong> Partial execution should be recoverable</li>
+    <li><strong>Consider serialization:</strong> Design for persistence if commands need to survive restarts</li>
+    <li><strong>Add metadata:</strong> Timestamps, user IDs, correlation IDs for debugging</li>
+    <li><strong>Limit history size:</strong> Prevent unbounded memory growth</li>
+  </ol>
+</div>
+
+---
 
 ## Related Patterns
 
-- [Memento](/topic/design-patterns/memento) - State snapshots
-- [Strategy](/topic/design-patterns/strategy) - Interchangeable algorithms
-- [Chain of Responsibility](/topic/design-patterns/chain-of-responsibility) - Request handling chain
+- [Memento](/topic/design-patterns/memento) - Store state snapshots for undo instead of reverse operations
+- [Strategy](/topic/design-patterns/strategy) - Encapsulate algorithms vs actions
+- [Chain of Responsibility](/topic/design-patterns/chain-of-responsibility) - Commands can form processing chains
+- [Composite](/topic/design-patterns/composite) - MacroCommand uses Composite pattern

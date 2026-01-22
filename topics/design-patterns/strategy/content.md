@@ -2,484 +2,283 @@
 
 ## Overview
 
-The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it. It's one of the most practical patterns for real-world applications.
+The Strategy pattern defines a family of algorithms, encapsulates each one in a separate class, and makes them interchangeable. This allows the algorithm to vary independently from clients that use it, enabling runtime selection of behavior without modifying the code that uses it.
 
-**Difficulty:** Beginner to Intermediate (Easy to learn, nuanced to master)
+**Difficulty:** Beginner to Intermediate
 **Category:** Behavioral Pattern
 **Also Known As:** Policy Pattern
 
 ---
 
-## Intuitive Understanding
+## The GPS Navigation Analogy
 
-<div class="metaphor-card">
-  <div class="metaphor-icon">🗺️</div>
-  <div class="metaphor-title">Think of GPS Navigation</div>
-  <div class="metaphor-description">
-    When you use a GPS app, you can choose different routing strategies:
-    - Fastest route (minimize time)
-    - Shortest route (minimize distance)
-    - Avoid tolls
-    - Scenic route
-    - Avoid highways
-    The GPS app (Context) doesn't care HOW the route is calculated. It just asks the current strategy for directions. You can switch strategies mid-trip without the app's core code changing.
-  </div>
-  <div class="metaphor-mapping">
-    <div class="mapping-item">
-      <span class="real">GPS Navigation App</span>
-      <span class="arrow">→</span>
-      <span class="concept">Context</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Routing algorithm interface</span>
-      <span class="arrow">→</span>
-      <span class="concept">Strategy interface</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">"Fastest route" algorithm</span>
-      <span class="arrow">→</span>
-      <span class="concept">ConcreteStrategyA</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">"Avoid tolls" algorithm</span>
-      <span class="arrow">→</span>
-      <span class="concept">ConcreteStrategyB</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">Switching route preference</span>
-      <span class="arrow">→</span>
-      <span class="concept">setStrategy()</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">"Navigate to destination"</span>
-      <span class="arrow">→</span>
-      <span class="concept">context.execute()</span>
-    </div>
-  </div>
-</div>
+Think about using Google Maps or Waze for directions. When you enter a destination, the app asks you: "How do you want to get there?"
 
-### The 20-Year Insight
+- **Fastest route** - Minimize travel time (even if longer distance)
+- **Shortest route** - Minimize distance (even if slower)
+- **Avoid tolls** - Stay on free roads
+- **Avoid highways** - Use local streets only
+- **Scenic route** - Prioritize views over speed
 
-**Novice thinks:** "Strategy replaces if-else statements"
+The navigation app (Context) doesn't care HOW the route is calculated. It just asks the current routing strategy to compute directions. You can switch strategies mid-trip without the app's core code changing at all.
 
-**Expert knows:** "Strategy is about **RUNTIME behavior composition**. The real power isn't just avoiding conditionals - it's that strategies can be:
-- Loaded from configuration
-- Selected based on user preferences
-- A/B tested in production
-- Hot-swapped without deployment
-- Combined (composite strategies)
-- Decorated with cross-cutting concerns"
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif;">
-  <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.75rem;">Evolution of Understanding Strategy Pattern</div>
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #38ef7d; color: #1a1a2e; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 1</div>
-      <div style="color: #a0aec0;"><span style="color: #f093fb;">Junior:</span> "It's like switch/case but with objects"</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
+  <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.75rem;">GPS Navigation Strategy Mapping</div>
+  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600; min-width: 150px;">Navigation App</span>
+      <span style="color: #64748b;">maps to</span>
+      <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">Context</span>
     </div>
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #4ecdc4; color: #1a1a2e; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 2</div>
-      <div style="color: #a0aec0;"><span style="color: #f093fb;">Mid:</span> "It lets me add new algorithms without changing existing code"</div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600; min-width: 150px;">Route Calculator</span>
+      <span style="color: #64748b;">maps to</span>
+      <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">Strategy Interface</span>
     </div>
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #667eea; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 3</div>
-      <div style="color: #a0aec0;"><span style="color: #f093fb;">Senior:</span> "Strategies can be composed, decorated, and selected dynamically based on runtime conditions"</div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600; min-width: 150px;">Fastest/Shortest/etc</span>
+      <span style="color: #64748b;">maps to</span>
+      <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">Concrete Strategies</span>
     </div>
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">Level 4</div>
-      <div style="color: #a0aec0;"><span style="color: #f093fb;">Staff/Principal:</span> "Strategy enables A/B testing, feature flags, and gradual rollouts at the algorithm level. Combined with Factory and DI, it's the foundation of configurable business rules."</div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600; min-width: 150px;">User selects mode</span>
+      <span style="color: #64748b;">maps to</span>
+      <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">setStrategy()</span>
     </div>
   </div>
 </div>
 
 ---
 
-## Mental Model: When to Reach for Strategy
+## Real-World Company Usage
 
-### The Decision Matrix
+### Stripe - Payment Processing
+Stripe uses strategy pattern for payment methods. Each payment type (credit card, ACH, SEPA, cryptocurrency) is a strategy with different validation, processing, and fee calculation logic. New payment methods can be added without modifying existing code.
 
-| Situation | Use Strategy? | Why |
-|-----------|--------------|-----|
-| Multiple algorithms for same task | ✅ Yes | Classic use case |
-| Algorithm selection at runtime | ✅ Yes | Runtime polymorphism |
-| Complex conditional logic in method | ⚠️ Maybe | Might be over-engineering for simple cases |
-| Algorithm differs per customer/tenant | ✅ Yes | Perfect for multi-tenant |
-| Need to A/B test algorithms | ✅ Yes | Swap strategies per request |
-| Algorithm uses different data types | ❌ No | Consider generics/templates |
-| Behavior varies based on object state | ❌ No | Use State pattern |
-| One-time algorithm selection at startup | ⚠️ Maybe | Simple factory might suffice |
+### Netflix - Encoding Strategies
+Video encoding uses different strategies based on content type, target device, and network conditions. A sports broadcast needs different encoding than a dialogue-heavy drama. The streaming service selects strategies dynamically.
 
-### Strategy vs State
+### Amazon - Shipping Calculations
+Shipping cost calculation uses strategies for ground, express, same-day, and prime delivery. Each strategy accounts for weight, dimensions, distance, and service level differently.
 
-This is the most common confusion:
+### Uber - Pricing Algorithms
+Surge pricing, base fare calculation, and route pricing all use strategies. Different strategies apply for UberX, UberXL, UberBlack, or Pool rides, each with its own pricing algorithm.
 
-<div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem; color: white;">
-    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.75rem;">STRATEGY</div>
-    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
-      <li>Client chooses the strategy</li>
-      <li>Strategies are interchangeable</li>
-      <li>"How to do X"</li>
-      <li>Algorithms are unrelated</li>
-    </ul>
-    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem;">
-      <div style="font-weight: 600;">Example: CompressionStrategy</div>
-      <div style="opacity: 0.9;">GZip, LZ4, Snappy</div>
-      <div style="font-style: italic; opacity: 0.8; margin-top: 0.25rem;">(client picks best for use)</div>
+### Slack - Notification Delivery
+Messages can be delivered via push notification, email, SMS, or desktop alert. Each delivery mechanism is a strategy that can be selected based on user preferences and message urgency.
+
+---
+
+## Pattern Structure
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+    <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem 2rem; text-align: center; border: 2px solid #3b82f6;">
+      <div style="font-weight: 700; font-size: 1.1rem; color: #1e40af; margin-bottom: 0.5rem;">Context</div>
+      <div style="font-size: 0.85rem; color: #1e40af; border-top: 1px solid #93c5fd; padding-top: 0.5rem;">
+        - strategy: Strategy<br>
+        + setStrategy(strategy)<br>
+        + executeStrategy()
+      </div>
     </div>
-  </div>
-  <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem; color: white;">
-    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.75rem;">STATE</div>
-    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6;">
-      <li>Object changes state itself</li>
-      <li>States transition naturally</li>
-      <li>"What can I do now"</li>
-      <li>States are related lifecycle</li>
-    </ul>
-    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem;">
-      <div style="font-weight: 600;">Example: OrderState</div>
-      <div style="opacity: 0.9;">Pending→Paid→Shipped→Done</div>
-      <div style="font-style: italic; opacity: 0.8; margin-top: 0.25rem;">(order transitions itself)</div>
+    <div style="color: #3b82f6; font-size: 1.25rem;">|<br>uses<br>v</div>
+    <div style="background: #dcfce7; border: 2px dashed #22c55e; border-radius: 10px; padding: 1rem 1.5rem; text-align: center;">
+      <div style="font-weight: 600; color: #166534;">Strategy (interface)</div>
+      <div style="font-size: 0.8rem; color: #166534; margin-top: 0.25rem;">+ execute(data)</div>
+    </div>
+    <div style="color: #22c55e; font-size: 1.25rem;">^<br>implements</div>
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;">
+      <div style="background: #fef3c7; border-radius: 8px; padding: 0.75rem 1.25rem; text-align: center; border: 1px solid #f59e0b;">
+        <div style="font-weight: 600; color: #92400e;">StrategyA</div>
+      </div>
+      <div style="background: #fce7f3; border-radius: 8px; padding: 0.75rem 1.25rem; text-align: center; border: 1px solid #ec4899;">
+        <div style="font-weight: 600; color: #9d174d;">StrategyB</div>
+      </div>
+      <div style="background: #e0e7ff; border-radius: 8px; padding: 0.75rem 1.25rem; text-align: center; border: 1px solid #6366f1;">
+        <div style="font-weight: 600; color: #3730a3;">StrategyC</div>
+      </div>
     </div>
   </div>
 </div>
 
 ---
 
-## Key Concepts
+## When to Use Strategy Pattern
 
-### When to Use
-
-1. **Multiple algorithms** - Same problem, different solutions
-2. **Runtime selection** - User preference, A/B tests, feature flags
-3. **Isolating complex algorithms** - Keep context clean
-4. **Testing** - Easy to mock/stub strategies
-5. **Plugin systems** - Third parties provide strategies
-
-### When NOT to Use
-
-<div class="warning-box">
-  <div class="warning-title">⚠️ Over-Engineering Alert</div>
-  <div class="warning-content">
-    <ul>
-      <li><strong>Only one algorithm:</strong> YAGNI - just use the algorithm directly</li>
-      <li><strong>Simple conditionals:</strong> 2-3 line if/else is fine</li>
-      <li><strong>Algorithm never changes:</strong> No benefit to abstracting</li>
-      <li><strong>Strategies share lots of code:</strong> Template Method might be better</li>
-      <li><strong>Performance critical:</strong> Virtual dispatch has overhead</li>
-    </ul>
-  </div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+  <div style="color: #166534; font-weight: 700; margin-bottom: 1rem;">Use Strategy Pattern When:</div>
+  <ul style="color: #166534; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+    <li><strong>Multiple algorithms exist</strong> - Same problem has different solutions</li>
+    <li><strong>Runtime algorithm selection</strong> - User preference, A/B tests, feature flags</li>
+    <li><strong>Avoiding conditionals</strong> - Replace if/else chains for algorithm selection</li>
+    <li><strong>Algorithm isolation</strong> - Keep complex algorithms separate from business logic</li>
+    <li><strong>Testing flexibility</strong> - Easy to mock/stub strategies in tests</li>
+    <li><strong>Plugin systems</strong> - Third parties can provide their own strategies</li>
+  </ul>
 </div>
 
-### Structure
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
+  <div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem;">Anti-Patterns to Avoid:</div>
+  <ul style="color: #991b1b; margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+    <li><strong>Single algorithm</strong> - YAGNI, just use the algorithm directly</li>
+    <li><strong>Simple conditionals</strong> - 2-3 line if/else is cleaner than Strategy classes</li>
+    <li><strong>Algorithm never changes</strong> - No benefit to abstracting static behavior</li>
+    <li><strong>Strategies share lots of code</strong> - Template Method might be better</li>
+    <li><strong>Performance critical paths</strong> - Virtual dispatch adds overhead</li>
+    <li><strong>God strategies</strong> - Strategies that do too much or have too many methods</li>
+  </ul>
+</div>
 
-<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Context</div>
-    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">
-      - strategy: Strategy<br>+ setStrategy(strategy)<br>+ execute()
+---
+
+## Strategy vs State Pattern
+
+This is a classic interview question. They look structurally identical but serve different purposes:
+
+<div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 1px solid #93c5fd;">
+    <div style="font-weight: 700; font-size: 1.1rem; color: #1e40af; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid #93c5fd; padding-bottom: 0.75rem;">STRATEGY PATTERN</div>
+    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: #1e40af;">
+      <li><strong>Client chooses</strong> the strategy</li>
+      <li>Strategies are <strong>interchangeable</strong></li>
+      <li>Strategies are <strong>independent</strong> algorithms</li>
+      <li>Answers: <strong>"How to do X?"</strong></li>
+      <li>Strategies <strong>don't know</strong> about each other</li>
+    </ul>
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem; color: #1e40af;">
+      <strong>Example:</strong> Compression<br>
+      GZip, LZ4, Snappy (user picks best)
     </div>
   </div>
-  <div style="color: #667eea; font-size: 1.25rem;">↓ uses</div>
-  <div style="background: #1e3a5f; border: 2px dashed #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; color: #4ecdc4; text-align: center;">
-    <div style="font-weight: 600;">Strategy (interface)</div>
-    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">+ algorithm()</div>
-  </div>
-  <div style="color: #4ecdc4; font-size: 1.25rem;">▲ implements</div>
-  <div style="display: flex; gap: 2rem;">
-    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
-      <div style="font-weight: 600;">ConcreteStrategyA</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);">
-      <div style="font-weight: 600;">ConcreteStrategyB</div>
+  <div style="flex: 1; min-width: 280px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 1px solid #86efac;">
+    <div style="font-weight: 700; font-size: 1.1rem; color: #166534; margin-bottom: 1rem; text-align: center; border-bottom: 1px solid #86efac; padding-bottom: 0.75rem;">STATE PATTERN</div>
+    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: #166534;">
+      <li><strong>Object changes</strong> its own state</li>
+      <li>States <strong>transition</strong> to each other</li>
+      <li>States are part of object <strong>lifecycle</strong></li>
+      <li>Answers: <strong>"What can I do now?"</strong></li>
+      <li>States <strong>know about</strong> transitions</li>
+    </ul>
+    <div style="background: #bbf7d0; border-radius: 8px; padding: 0.75rem; margin-top: 1rem; font-size: 0.85rem; color: #166534;">
+      <strong>Example:</strong> Order lifecycle<br>
+      Pending -> Paid -> Shipped -> Done
     </div>
   </div>
 </div>
 
 ---
 
-## Implementation
-
-### Python - Payment Processing
+## Python Implementation - Discount System
 
 ```python
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Optional
-
-@dataclass
-class PaymentResult:
-    success: bool
-    transaction_id: Optional[str]
-    message: str
-    fee: Decimal = Decimal("0")
-
-
-class PaymentStrategy(ABC):
-    @abstractmethod
-    def pay(self, amount: Decimal) -> PaymentResult:
-        pass
-
-    @abstractmethod
-    def validate(self) -> bool:
-        pass
-
-    @abstractmethod
-    def get_fee(self, amount: Decimal) -> Decimal:
-        pass
-
-
-class CreditCardPayment(PaymentStrategy):
-    def __init__(self, card_number: str, expiry: str, cvv: str):
-        self.card_number = card_number
-        self.expiry = expiry
-        self.cvv = cvv
-
-    def validate(self) -> bool:
-        return len(self.card_number) == 16 and self.card_number.isdigit()
-
-    def get_fee(self, amount: Decimal) -> Decimal:
-        return amount * Decimal("0.029") + Decimal("0.30")
-
-    def pay(self, amount: Decimal) -> PaymentResult:
-        if not self.validate():
-            return PaymentResult(False, None, "Invalid card details")
-
-        fee = self.get_fee(amount)
-        return PaymentResult(
-            success=True,
-            transaction_id=f"CC-{self.card_number[-4:]}-{amount}",
-            message=f"Charged ${amount} to card ending in {self.card_number[-4:]}",
-            fee=fee
-        )
-
-
-class PayPalPayment(PaymentStrategy):
-    def __init__(self, email: str):
-        self.email = email
-
-    def validate(self) -> bool:
-        return "@" in self.email
-
-    def get_fee(self, amount: Decimal) -> Decimal:
-        return amount * Decimal("0.034") + Decimal("0.49")
-
-    def pay(self, amount: Decimal) -> PaymentResult:
-        if not self.validate():
-            return PaymentResult(False, None, "Invalid PayPal email")
-
-        fee = self.get_fee(amount)
-        return PaymentResult(
-            success=True,
-            transaction_id=f"PP-{hash(self.email)}-{amount}",
-            message=f"Charged ${amount} to PayPal account {self.email}",
-            fee=fee
-        )
-
-
-class CryptoPayment(PaymentStrategy):
-    def __init__(self, wallet_address: str, currency: str = "BTC"):
-        self.wallet_address = wallet_address
-        self.currency = currency
-
-    def validate(self) -> bool:
-        return len(self.wallet_address) >= 26
-
-    def get_fee(self, amount: Decimal) -> Decimal:
-        return amount * Decimal("0.01")
-
-    def pay(self, amount: Decimal) -> PaymentResult:
-        if not self.validate():
-            return PaymentResult(False, None, "Invalid wallet address")
-
-        fee = self.get_fee(amount)
-        return PaymentResult(
-            success=True,
-            transaction_id=f"CRYPTO-{self.wallet_address[:8]}",
-            message=f"Sent {amount} {self.currency} to {self.wallet_address[:8]}...",
-            fee=fee
-        )
-
-
-# Context
-class PaymentProcessor:
-    def __init__(self, strategy: PaymentStrategy = None):
-        self._strategy = strategy
-
-    def set_strategy(self, strategy: PaymentStrategy):
-        self._strategy = strategy
-
-    def process_payment(self, amount: Decimal) -> PaymentResult:
-        if not self._strategy:
-            return PaymentResult(False, None, "No payment method selected")
-
-        return self._strategy.pay(amount)
-
-
-# Usage
-processor = PaymentProcessor()
-
-processor.set_strategy(CreditCardPayment("4111111111111111", "12/25", "123"))
-result = processor.process_payment(Decimal("99.99"))
-print(result)
-
-processor.set_strategy(PayPalPayment("user@example.com"))
-result = processor.process_payment(Decimal("49.99"))
-print(result)
-```
-
-### Python - Production-Grade Strategy with Selection Logic
-
-```python
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from decimal import Decimal
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, Any, Optional, List
+from datetime import datetime, date
 from enum import Enum
-import logging
-import time
-
-logger = logging.getLogger(__name__)
 
 
-# ============================================================
-# STRATEGY INTERFACE WITH METADATA
-# ============================================================
-
-@dataclass
-class StrategyMetadata:
-    """Metadata for strategy selection and monitoring."""
-    name: str
-    version: str
-    description: str
-    supported_countries: List[str] = field(default_factory=list)
-    min_amount: Decimal = Decimal("0")
-    max_amount: Decimal = Decimal("999999999")
-    is_enabled: bool = True
-    priority: int = 0  # Higher = preferred
-
-
-class PricingStrategy(ABC):
-    """Base strategy with metadata and lifecycle hooks."""
+class DiscountStrategy(ABC):
+    """Abstract base class for discount strategies."""
 
     @property
     @abstractmethod
-    def metadata(self) -> StrategyMetadata:
+    def name(self) -> str:
+        """Human-readable name for display."""
         pass
 
     @abstractmethod
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        """Calculate discount amount (not percentage)."""
         pass
 
-    def can_handle(self, context: Dict[str, Any]) -> bool:
-        """Override to add custom eligibility logic."""
-        meta = self.metadata
-        amount = context.get("base_price", Decimal("0"))
-
-        if not meta.is_enabled:
-            return False
-
-        if meta.supported_countries:
-            country = context.get("country", "")
-            if country not in meta.supported_countries:
-                return False
-
-        if amount < meta.min_amount or amount > meta.max_amount:
-            return False
-
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        """Check if this strategy can be applied. Override for custom rules."""
         return True
 
-    def before_calculate(self, context: Dict[str, Any]) -> None:
-        """Hook called before calculation."""
-        pass
-
-    def after_calculate(self, result: Decimal, context: Dict[str, Any]) -> None:
-        """Hook called after calculation."""
-        pass
+    def get_description(self, discount_amount: Decimal) -> str:
+        """Return description for receipt."""
+        return f"{self.name}: -${discount_amount:.2f}"
 
 
-# ============================================================
-# CONCRETE STRATEGIES
-# ============================================================
-
-class StandardPricingStrategy(PricingStrategy):
-    """No discount - standard pricing."""
+class NoDiscountStrategy(DiscountStrategy):
+    """Default strategy - no discount applied."""
 
     @property
-    def metadata(self) -> StrategyMetadata:
-        return StrategyMetadata(
-            name="standard",
-            version="1.0",
-            description="Standard pricing without discounts",
-            priority=0,
-        )
+    def name(self) -> str:
+        return "Standard Pricing"
 
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
-        return base_price
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        return Decimal("0")
 
 
-class PercentageDiscountStrategy(PricingStrategy):
-    """Percentage-based discount."""
+class PercentageDiscountStrategy(DiscountStrategy):
+    """Fixed percentage off the subtotal."""
 
-    def __init__(self, discount_percent: Decimal, name: str = "percentage_discount"):
-        self._discount = discount_percent
-        self._name = name
+    def __init__(self, percent: Decimal, promo_name: str = "Percentage Discount"):
+        self._percent = percent
+        self._promo_name = promo_name
 
     @property
-    def metadata(self) -> StrategyMetadata:
-        return StrategyMetadata(
-            name=self._name,
-            version="1.0",
-            description=f"{self._discount}% discount",
-            priority=10,
-        )
+    def name(self) -> str:
+        return f"{self._promo_name} ({self._percent}% off)"
 
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
-        discount_amount = base_price * (self._discount / Decimal("100"))
-        return base_price - discount_amount
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        return subtotal * (self._percent / Decimal("100"))
 
 
-class TieredPricingStrategy(PricingStrategy):
-    """Volume-based tiered pricing."""
+class FixedAmountDiscountStrategy(DiscountStrategy):
+    """Fixed dollar amount off."""
+
+    def __init__(self, amount: Decimal, min_purchase: Decimal = Decimal("0")):
+        self._amount = amount
+        self._min_purchase = min_purchase
+
+    @property
+    def name(self) -> str:
+        return f"${self._amount} Off"
+
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        subtotal = context.get("subtotal", Decimal("0"))
+        return subtotal >= self._min_purchase
+
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        # Don't discount more than the subtotal
+        return min(self._amount, subtotal)
+
+
+class TieredDiscountStrategy(DiscountStrategy):
+    """Volume-based discount tiers."""
 
     def __init__(self, tiers: List[Dict[str, Any]]):
         """
         tiers = [
-            {"min_qty": 1, "max_qty": 10, "discount": 0},
-            {"min_qty": 11, "max_qty": 50, "discount": 10},
-            {"min_qty": 51, "max_qty": None, "discount": 20},
+            {"min_amount": 0, "max_amount": 50, "percent": 0},
+            {"min_amount": 50, "max_amount": 100, "percent": 5},
+            {"min_amount": 100, "max_amount": 200, "percent": 10},
+            {"min_amount": 200, "max_amount": None, "percent": 15},
         ]
         """
-        self._tiers = sorted(tiers, key=lambda t: t["min_qty"])
+        self._tiers = sorted(tiers, key=lambda t: t["min_amount"])
 
     @property
-    def metadata(self) -> StrategyMetadata:
-        return StrategyMetadata(
-            name="tiered",
-            version="2.0",
-            description="Volume-based tiered discounts",
-            priority=20,
-        )
+    def name(self) -> str:
+        return "Volume Discount"
 
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
-        quantity = context.get("quantity", 1)
-
-        discount_percent = Decimal("0")
-        for tier in self._tiers:
-            max_qty = tier.get("max_qty") or float("inf")
-            if tier["min_qty"] <= quantity <= max_qty:
-                discount_percent = Decimal(str(tier["discount"]))
-                break
-
-        discount_amount = base_price * (discount_percent / Decimal("100"))
-        return base_price - discount_amount
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        for tier in reversed(self._tiers):
+            max_amt = tier.get("max_amount") or float("inf")
+            if tier["min_amount"] <= float(subtotal) <= max_amt:
+                percent = Decimal(str(tier["percent"]))
+                return subtotal * (percent / Decimal("100"))
+        return Decimal("0")
 
 
-class LoyaltyPricingStrategy(PricingStrategy):
-    """Customer loyalty-based pricing."""
+class LoyaltyDiscountStrategy(DiscountStrategy):
+    """Discount based on customer loyalty tier."""
 
-    LOYALTY_DISCOUNTS = {
+    TIER_DISCOUNTS = {
         "bronze": Decimal("5"),
         "silver": Decimal("10"),
         "gold": Decimal("15"),
@@ -487,1024 +286,454 @@ class LoyaltyPricingStrategy(PricingStrategy):
     }
 
     @property
-    def metadata(self) -> StrategyMetadata:
-        return StrategyMetadata(
-            name="loyalty",
-            version="1.0",
-            description="Loyalty tier-based discounts",
-            priority=15,
-        )
+    def name(self) -> str:
+        return "Loyalty Member Discount"
 
-    def can_handle(self, context: Dict[str, Any]) -> bool:
-        if not super().can_handle(context):
-            return False
-        # Only for logged-in customers with loyalty tier
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
         return "loyalty_tier" in context
 
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
         tier = context.get("loyalty_tier", "").lower()
-        discount_percent = self.LOYALTY_DISCOUNTS.get(tier, Decimal("0"))
+        percent = self.TIER_DISCOUNTS.get(tier, Decimal("0"))
+        return subtotal * (percent / Decimal("100"))
 
-        discount_amount = base_price * (discount_percent / Decimal("100"))
-        return base_price - discount_amount
+    def get_description(self, discount_amount: Decimal) -> str:
+        return f"Loyalty Reward: -${discount_amount:.2f}"
 
 
-class ABTestPricingStrategy(PricingStrategy):
-    """A/B test wrapper - delegates to variant strategies."""
+class FirstPurchaseDiscountStrategy(DiscountStrategy):
+    """Special discount for first-time customers."""
+
+    def __init__(self, percent: Decimal = Decimal("20")):
+        self._percent = percent
+
+    @property
+    def name(self) -> str:
+        return f"Welcome Discount ({self._percent}% off)"
+
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        return context.get("is_first_purchase", False)
+
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        return subtotal * (self._percent / Decimal("100"))
+
+
+class SeasonalDiscountStrategy(DiscountStrategy):
+    """Time-based seasonal discounts."""
 
     def __init__(
         self,
-        control: PricingStrategy,
-        variant: PricingStrategy,
-        variant_percentage: int = 50
+        percent: Decimal,
+        start_date: date,
+        end_date: date,
+        campaign_name: str = "Seasonal Sale"
     ):
-        self._control = control
-        self._variant = variant
-        self._variant_pct = variant_percentage
+        self._percent = percent
+        self._start_date = start_date
+        self._end_date = end_date
+        self._campaign_name = campaign_name
 
     @property
-    def metadata(self) -> StrategyMetadata:
-        return StrategyMetadata(
-            name="ab_test",
-            version="1.0",
-            description=f"A/B test: {self._control.metadata.name} vs {self._variant.metadata.name}",
-            priority=100,  # High priority - overrides others
-        )
+    def name(self) -> str:
+        return f"{self._campaign_name} ({self._percent}% off)"
 
-    def calculate_price(self, base_price: Decimal, context: Dict[str, Any]) -> Decimal:
-        # Deterministic bucket based on user ID
-        user_id = context.get("user_id", "anonymous")
-        bucket = hash(user_id) % 100
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        today = context.get("current_date", date.today())
+        return self._start_date <= today <= self._end_date
 
-        if bucket < self._variant_pct:
-            strategy = self._variant
-            context["_ab_variant"] = "variant"
-        else:
-            strategy = self._control
-            context["_ab_variant"] = "control"
-
-        return strategy.calculate_price(base_price, context)
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        return subtotal * (self._percent / Decimal("100"))
 
 
-# ============================================================
-# STRATEGY SELECTOR (INTELLIGENT CONTEXT)
-# ============================================================
+class BundleDiscountStrategy(DiscountStrategy):
+    """Discount when buying specific product combinations."""
 
-class PricingEngine:
-    """
-    Production-grade pricing engine with:
-    - Automatic strategy selection
-    - Fallback chains
-    - Metrics & logging
-    - Strategy composition
-    """
+    def __init__(
+        self,
+        required_categories: List[str],
+        percent: Decimal,
+        bundle_name: str = "Bundle Deal"
+    ):
+        self._required_categories = set(required_categories)
+        self._percent = percent
+        self._bundle_name = bundle_name
 
-    def __init__(self, default_strategy: PricingStrategy = None):
-        self._strategies: List[PricingStrategy] = []
-        self._default = default_strategy or StandardPricingStrategy()
-        self._metrics = {
-            "calculations": 0,
-            "strategy_usage": {},
-            "avg_discount_percent": Decimal("0"),
-        }
+    @property
+    def name(self) -> str:
+        return self._bundle_name
 
-    def register(self, strategy: PricingStrategy) -> 'PricingEngine':
-        """Register a strategy. Returns self for chaining."""
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        cart_categories = set(context.get("cart_categories", []))
+        return self._required_categories.issubset(cart_categories)
+
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        return subtotal * (self._percent / Decimal("100"))
+
+
+# Strategy Selector - Best discount wins
+class BestDiscountSelector:
+    """Selects the strategy that gives the customer the best deal."""
+
+    def __init__(self):
+        self._strategies: List[DiscountStrategy] = []
+
+    def register(self, strategy: DiscountStrategy) -> 'BestDiscountSelector':
         self._strategies.append(strategy)
-        # Sort by priority (highest first)
-        self._strategies.sort(key=lambda s: s.metadata.priority, reverse=True)
         return self
 
-    def calculate_price(
+    def select_best(
         self,
-        base_price: Decimal,
-        context: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
-        """
-        Calculate final price using best available strategy.
+        subtotal: Decimal,
+        context: Dict[str, Any]
+    ) -> DiscountStrategy:
+        """Find the strategy that provides the maximum discount."""
+        context["subtotal"] = subtotal
+        best_strategy = NoDiscountStrategy()
+        best_discount = Decimal("0")
 
-        Returns dict with:
-        - final_price: The calculated price
-        - base_price: Original price
-        - discount: Amount discounted
-        - strategy_used: Name of strategy applied
-        - metadata: Additional info
-        """
-        context = context or {}
-        context["base_price"] = base_price
+        for strategy in self._strategies:
+            if strategy.is_applicable(context):
+                discount = strategy.calculate_discount(subtotal, context)
+                if discount > best_discount:
+                    best_discount = discount
+                    best_strategy = strategy
 
-        # Find best strategy
-        selected_strategy = self._select_strategy(context)
-        strategy_name = selected_strategy.metadata.name
+        return best_strategy
 
-        # Calculate
-        start_time = time.perf_counter()
-        selected_strategy.before_calculate(context)
-        final_price = selected_strategy.calculate_price(base_price, context)
-        selected_strategy.after_calculate(final_price, context)
-        duration_ms = (time.perf_counter() - start_time) * 1000
 
-        # Update metrics
-        self._update_metrics(strategy_name, base_price, final_price)
+@dataclass
+class CartItem:
+    name: str
+    price: Decimal
+    quantity: int
+    category: str
 
-        discount = base_price - final_price
-        discount_percent = (discount / base_price * 100) if base_price > 0 else Decimal("0")
+    @property
+    def total(self) -> Decimal:
+        return self.price * self.quantity
 
-        logger.info(
-            f"Pricing: {base_price} -> {final_price} "
-            f"({discount_percent:.1f}% off) using {strategy_name}"
-        )
 
+class ShoppingCart:
+    """Context class that uses discount strategies."""
+
+    def __init__(self, discount_selector: Optional[BestDiscountSelector] = None):
+        self._items: List[CartItem] = []
+        self._discount_strategy: DiscountStrategy = NoDiscountStrategy()
+        self._discount_selector = discount_selector
+        self._customer_context: Dict[str, Any] = {}
+
+    def add_item(self, item: CartItem) -> None:
+        self._items.append(item)
+
+    def set_customer_context(self, **kwargs) -> None:
+        """Set customer-specific context for discount calculation."""
+        self._customer_context.update(kwargs)
+
+    def set_strategy(self, strategy: DiscountStrategy) -> None:
+        """Manually set a discount strategy."""
+        self._discount_strategy = strategy
+
+    def auto_select_best_discount(self) -> None:
+        """Automatically select the best discount strategy."""
+        if self._discount_selector:
+            context = self._build_context()
+            self._discount_strategy = self._discount_selector.select_best(
+                self.subtotal, context
+            )
+
+    def _build_context(self) -> Dict[str, Any]:
         return {
-            "final_price": final_price,
-            "base_price": base_price,
-            "discount": discount,
-            "discount_percent": discount_percent,
-            "strategy_used": strategy_name,
-            "calculation_time_ms": duration_ms,
-            "metadata": context.get("_ab_variant"),
+            **self._customer_context,
+            "subtotal": self.subtotal,
+            "item_count": sum(item.quantity for item in self._items),
+            "cart_categories": list(set(item.category for item in self._items)),
+            "current_date": date.today(),
         }
 
-    def _select_strategy(self, context: Dict[str, Any]) -> PricingStrategy:
-        """Select best strategy based on context and priority."""
-        for strategy in self._strategies:
-            if strategy.can_handle(context):
-                logger.debug(f"Selected strategy: {strategy.metadata.name}")
-                return strategy
+    @property
+    def subtotal(self) -> Decimal:
+        return sum(item.total for item in self._items)
 
-        logger.debug(f"Using default strategy: {self._default.metadata.name}")
-        return self._default
+    @property
+    def discount(self) -> Decimal:
+        context = self._build_context()
+        if self._discount_strategy.is_applicable(context):
+            return self._discount_strategy.calculate_discount(self.subtotal, context)
+        return Decimal("0")
 
-    def _update_metrics(
-        self,
-        strategy_name: str,
-        base_price: Decimal,
-        final_price: Decimal
-    ):
-        self._metrics["calculations"] += 1
-        self._metrics["strategy_usage"][strategy_name] = \
-            self._metrics["strategy_usage"].get(strategy_name, 0) + 1
+    @property
+    def total(self) -> Decimal:
+        return self.subtotal - self.discount
 
-    def get_metrics(self) -> Dict[str, Any]:
-        return dict(self._metrics)
+    def print_receipt(self) -> None:
+        print("\n" + "=" * 50)
+        print("RECEIPT")
+        print("=" * 50)
 
-    def list_strategies(self) -> List[Dict[str, Any]]:
-        """List all registered strategies with metadata."""
-        return [
-            {
-                "name": s.metadata.name,
-                "version": s.metadata.version,
-                "description": s.metadata.description,
-                "priority": s.metadata.priority,
-                "enabled": s.metadata.is_enabled,
-            }
-            for s in self._strategies
-        ]
+        for item in self._items:
+            print(f"{item.name} x{item.quantity}: ${item.total:.2f}")
+
+        print("-" * 50)
+        print(f"Subtotal: ${self.subtotal:.2f}")
+
+        if self.discount > 0:
+            desc = self._discount_strategy.get_description(self.discount)
+            print(f"{desc}")
+
+        print("-" * 50)
+        print(f"TOTAL: ${self.total:.2f}")
+        print("=" * 50)
 
 
-# ============================================================
-# USAGE
-# ============================================================
-
+# Usage demonstration
 def main():
-    # Create pricing engine with strategies
-    engine = PricingEngine()
-
-    # Register strategies (order doesn't matter - sorted by priority)
-    engine.register(PercentageDiscountStrategy(Decimal("25"), "black_friday"))
-    engine.register(TieredPricingStrategy([
-        {"min_qty": 1, "max_qty": 10, "discount": 0},
-        {"min_qty": 11, "max_qty": 50, "discount": 10},
-        {"min_qty": 51, "max_qty": None, "discount": 20},
+    # Set up discount selector with all available strategies
+    selector = BestDiscountSelector()
+    selector.register(TieredDiscountStrategy([
+        {"min_amount": 0, "max_amount": 50, "percent": 0},
+        {"min_amount": 50, "max_amount": 100, "percent": 5},
+        {"min_amount": 100, "max_amount": 200, "percent": 10},
+        {"min_amount": 200, "max_amount": None, "percent": 15},
     ]))
-    engine.register(LoyaltyPricingStrategy())
-
-    # A/B test: standard vs 15% discount
-    engine.register(ABTestPricingStrategy(
-        control=StandardPricingStrategy(),
-        variant=PercentageDiscountStrategy(Decimal("15"), "test_discount"),
-        variant_percentage=20,  # 20% of users get variant
+    selector.register(LoyaltyDiscountStrategy())
+    selector.register(FirstPurchaseDiscountStrategy(Decimal("20")))
+    selector.register(SeasonalDiscountStrategy(
+        percent=Decimal("25"),
+        start_date=date(2024, 11, 25),
+        end_date=date(2024, 12, 2),
+        campaign_name="Black Friday"
+    ))
+    selector.register(BundleDiscountStrategy(
+        required_categories=["electronics", "accessories"],
+        percent=Decimal("12"),
+        bundle_name="Tech Bundle Deal"
     ))
 
-    # Calculate prices with different contexts
-    print("=== Standard User ===")
-    result = engine.calculate_price(Decimal("100.00"), {"user_id": "user123"})
-    print(f"Result: {result}")
+    # Example 1: Regular customer, small order
+    print("\n" + "=" * 60)
+    print("EXAMPLE 1: Regular Customer, Small Order")
+    print("=" * 60)
 
-    print("\n=== Gold Loyalty Member ===")
-    result = engine.calculate_price(
-        Decimal("100.00"),
-        {"user_id": "gold_member", "loyalty_tier": "gold"}
-    )
-    print(f"Result: {result}")
+    cart1 = ShoppingCart(selector)
+    cart1.add_item(CartItem("Book", Decimal("15.99"), 1, "books"))
+    cart1.add_item(CartItem("Pen Set", Decimal("8.99"), 2, "stationery"))
+    cart1.auto_select_best_discount()
+    cart1.print_receipt()
 
-    print("\n=== Bulk Order (25 items) ===")
-    result = engine.calculate_price(
-        Decimal("100.00"),
-        {"user_id": "bulk_buyer", "quantity": 25}
-    )
-    print(f"Result: {result}")
+    # Example 2: Gold loyalty member
+    print("\n" + "=" * 60)
+    print("EXAMPLE 2: Gold Loyalty Member")
+    print("=" * 60)
 
-    print("\n=== Metrics ===")
-    print(engine.get_metrics())
+    cart2 = ShoppingCart(selector)
+    cart2.add_item(CartItem("Headphones", Decimal("79.99"), 1, "electronics"))
+    cart2.add_item(CartItem("Phone Case", Decimal("29.99"), 1, "accessories"))
+    cart2.set_customer_context(loyalty_tier="gold")
+    cart2.auto_select_best_discount()
+    cart2.print_receipt()
 
-    print("\n=== Registered Strategies ===")
-    for s in engine.list_strategies():
-        print(f"  {s['priority']:3d} | {s['name']}: {s['description']}")
+    # Example 3: First-time customer
+    print("\n" + "=" * 60)
+    print("EXAMPLE 3: First-Time Customer")
+    print("=" * 60)
+
+    cart3 = ShoppingCart(selector)
+    cart3.add_item(CartItem("Laptop Stand", Decimal("45.00"), 1, "electronics"))
+    cart3.add_item(CartItem("Webcam", Decimal("65.00"), 1, "electronics"))
+    cart3.set_customer_context(is_first_purchase=True)
+    cart3.auto_select_best_discount()
+    cart3.print_receipt()
+
+    # Example 4: Manual strategy override
+    print("\n" + "=" * 60)
+    print("EXAMPLE 4: Manual Promo Code")
+    print("=" * 60)
+
+    cart4 = ShoppingCart()
+    cart4.add_item(CartItem("Gaming Mouse", Decimal("59.99"), 1, "electronics"))
+    cart4.set_strategy(PercentageDiscountStrategy(Decimal("30"), "SUMMER30"))
+    cart4.print_receipt()
 
 
 if __name__ == "__main__":
     main()
 ```
 
-### Go - Sorting Strategies
-
-```go
-package main
-
-import (
-	"fmt"
-	"sort"
-)
-
-type SortStrategy interface {
-	Sort(data []int) []int
-	Name() string
-}
-
-// Bubble Sort
-type BubbleSort struct{}
-
-func (b *BubbleSort) Name() string { return "Bubble Sort" }
-
-func (b *BubbleSort) Sort(data []int) []int {
-	result := make([]int, len(data))
-	copy(result, data)
-
-	n := len(result)
-	for i := 0; i < n-1; i++ {
-		for j := 0; j < n-i-1; j++ {
-			if result[j] > result[j+1] {
-				result[j], result[j+1] = result[j+1], result[j]
-			}
-		}
-	}
-	return result
-}
-
-// Quick Sort
-type QuickSort struct{}
-
-func (q *QuickSort) Name() string { return "Quick Sort" }
-
-func (q *QuickSort) Sort(data []int) []int {
-	result := make([]int, len(data))
-	copy(result, data)
-	q.quickSort(result, 0, len(result)-1)
-	return result
-}
-
-func (q *QuickSort) quickSort(arr []int, low, high int) {
-	if low < high {
-		pi := q.partition(arr, low, high)
-		q.quickSort(arr, low, pi-1)
-		q.quickSort(arr, pi+1, high)
-	}
-}
-
-func (q *QuickSort) partition(arr []int, low, high int) int {
-	pivot := arr[high]
-	i := low - 1
-
-	for j := low; j < high; j++ {
-		if arr[j] < pivot {
-			i++
-			arr[i], arr[j] = arr[j], arr[i]
-		}
-	}
-	arr[i+1], arr[high] = arr[high], arr[i+1]
-	return i + 1
-}
-
-// Context
-type Sorter struct {
-	strategy SortStrategy
-}
-
-func NewSorter(strategy SortStrategy) *Sorter {
-	return &Sorter{strategy: strategy}
-}
-
-func (s *Sorter) SetStrategy(strategy SortStrategy) {
-	s.strategy = strategy
-}
-
-func (s *Sorter) Sort(data []int) []int {
-	fmt.Printf("Sorting using %s\n", s.strategy.Name())
-	return s.strategy.Sort(data)
-}
-
-func main() {
-	data := []int{64, 34, 25, 12, 22, 11, 90}
-
-	sorter := NewSorter(&QuickSort{})
-	fmt.Println("Original:", data)
-	fmt.Println("Sorted:", sorter.Sort(data))
-
-	sorter.SetStrategy(&BubbleSort{})
-	fmt.Println("Sorted:", sorter.Sort(data))
-}
-```
-
-### Go - Production-Grade Strategy with Registry
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"sync"
-	"time"
-)
-
-// ============================================================
-// PRODUCTION STRATEGY PATTERN IN GO
-// Features: Registry, Metrics, Context-aware selection
-// ============================================================
-
-// Strategy metadata
-type StrategyInfo struct {
-	Name        string
-	Version     string
-	Description string
-	Priority    int
-	Enabled     bool
-}
-
-// Compression strategy interface
-type CompressionStrategy interface {
-	Compress(data []byte) ([]byte, error)
-	Decompress(data []byte) ([]byte, error)
-	Info() StrategyInfo
-	CanHandle(ctx context.Context, dataSize int) bool
-}
-
-// ============================================================
-// CONCRETE STRATEGIES
-// ============================================================
-
-type NoCompression struct{}
-
-func (n *NoCompression) Info() StrategyInfo {
-	return StrategyInfo{
-		Name:        "none",
-		Version:     "1.0",
-		Description: "No compression (passthrough)",
-		Priority:    0,
-		Enabled:     true,
-	}
-}
-
-func (n *NoCompression) Compress(data []byte) ([]byte, error) {
-	return data, nil
-}
-
-func (n *NoCompression) Decompress(data []byte) ([]byte, error) {
-	return data, nil
-}
-
-func (n *NoCompression) CanHandle(ctx context.Context, dataSize int) bool {
-	return true // Always available as fallback
-}
-
-type GzipCompression struct {
-	level int
-}
-
-func NewGzipCompression(level int) *GzipCompression {
-	return &GzipCompression{level: level}
-}
-
-func (g *GzipCompression) Info() StrategyInfo {
-	return StrategyInfo{
-		Name:        fmt.Sprintf("gzip_level_%d", g.level),
-		Version:     "1.0",
-		Description: fmt.Sprintf("GZIP compression (level %d)", g.level),
-		Priority:    10,
-		Enabled:     true,
-	}
-}
-
-func (g *GzipCompression) Compress(data []byte) ([]byte, error) {
-	// Simulated compression
-	return append([]byte("GZIP:"), data...), nil
-}
-
-func (g *GzipCompression) Decompress(data []byte) ([]byte, error) {
-	if len(data) > 5 {
-		return data[5:], nil
-	}
-	return data, nil
-}
-
-func (g *GzipCompression) CanHandle(ctx context.Context, dataSize int) bool {
-	// GZIP is good for medium to large data
-	return dataSize > 1024
-}
-
-type SnappyCompression struct{}
-
-func (s *SnappyCompression) Info() StrategyInfo {
-	return StrategyInfo{
-		Name:        "snappy",
-		Version:     "1.0",
-		Description: "Snappy compression (fast, moderate ratio)",
-		Priority:    20, // Higher priority when applicable
-		Enabled:     true,
-	}
-}
-
-func (s *SnappyCompression) Compress(data []byte) ([]byte, error) {
-	return append([]byte("SNPY:"), data...), nil
-}
-
-func (s *SnappyCompression) Decompress(data []byte) ([]byte, error) {
-	if len(data) > 5 {
-		return data[5:], nil
-	}
-	return data, nil
-}
-
-func (s *SnappyCompression) CanHandle(ctx context.Context, dataSize int) bool {
-	// Snappy is good for speed-critical scenarios
-	deadline, hasDeadline := ctx.Deadline()
-	if hasDeadline {
-		// Use Snappy if we have tight deadline
-		return time.Until(deadline) < 100*time.Millisecond
-	}
-	return dataSize > 512 // Good for smaller data than GZIP
-}
-
-// ============================================================
-// STRATEGY REGISTRY & ENGINE
-// ============================================================
-
-type CompressionEngine struct {
-	mu         sync.RWMutex
-	strategies []CompressionStrategy
-	fallback   CompressionStrategy
-	metrics    struct {
-		sync.Mutex
-		compressions map[string]int64
-		totalBytes   int64
-	}
-}
-
-func NewCompressionEngine() *CompressionEngine {
-	ce := &CompressionEngine{
-		strategies: make([]CompressionStrategy, 0),
-		fallback:   &NoCompression{},
-	}
-	ce.metrics.compressions = make(map[string]int64)
-	return ce
-}
-
-func (ce *CompressionEngine) Register(strategy CompressionStrategy) *CompressionEngine {
-	ce.mu.Lock()
-	defer ce.mu.Unlock()
-
-	ce.strategies = append(ce.strategies, strategy)
-	// Sort by priority (highest first)
-	sort.Slice(ce.strategies, func(i, j int) bool {
-		return ce.strategies[i].Info().Priority > ce.strategies[j].Info().Priority
-	})
-
-	return ce
-}
-
-func (ce *CompressionEngine) Compress(ctx context.Context, data []byte) ([]byte, string, error) {
-	strategy := ce.selectStrategy(ctx, len(data))
-	info := strategy.Info()
-
-	result, err := strategy.Compress(data)
-	if err != nil {
-		return nil, "", err
-	}
-
-	ce.recordMetric(info.Name, len(data))
-
-	return result, info.Name, nil
-}
-
-func (ce *CompressionEngine) selectStrategy(ctx context.Context, dataSize int) CompressionStrategy {
-	ce.mu.RLock()
-	defer ce.mu.RUnlock()
-
-	for _, strategy := range ce.strategies {
-		info := strategy.Info()
-		if !info.Enabled {
-			continue
-		}
-		if strategy.CanHandle(ctx, dataSize) {
-			return strategy
-		}
-	}
-
-	return ce.fallback
-}
-
-func (ce *CompressionEngine) recordMetric(name string, bytes int) {
-	ce.metrics.Lock()
-	defer ce.metrics.Unlock()
-	ce.metrics.compressions[name]++
-	ce.metrics.totalBytes += int64(bytes)
-}
-
-func (ce *CompressionEngine) GetMetrics() map[string]interface{} {
-	ce.metrics.Lock()
-	defer ce.metrics.Unlock()
-
-	return map[string]interface{}{
-		"compressions_by_strategy": ce.metrics.compressions,
-		"total_bytes_processed":    ce.metrics.totalBytes,
-	}
-}
-
-func (ce *CompressionEngine) ListStrategies() []StrategyInfo {
-	ce.mu.RLock()
-	defer ce.mu.RUnlock()
-
-	infos := make([]StrategyInfo, len(ce.strategies))
-	for i, s := range ce.strategies {
-		infos[i] = s.Info()
-	}
-	return infos
-}
-
-// ============================================================
-// USAGE
-// ============================================================
-
-func main() {
-	engine := NewCompressionEngine()
-
-	// Register strategies
-	engine.Register(&SnappyCompression{}).
-		Register(NewGzipCompression(6)).
-		Register(NewGzipCompression(9))
-
-	fmt.Println("Registered strategies:")
-	for _, info := range engine.ListStrategies() {
-		fmt.Printf("  %d | %s: %s\n", info.Priority, info.Name, info.Description)
-	}
-
-	// Compress with different contexts
-	fmt.Println("\n--- Normal compression (large data) ---")
-	ctx := context.Background()
-	largeData := make([]byte, 10000)
-	result, strategyUsed, _ := engine.Compress(ctx, largeData)
-	fmt.Printf("Used: %s, Result size: %d\n", strategyUsed, len(result))
-
-	fmt.Println("\n--- Tight deadline compression ---")
-	tightCtx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
-	defer cancel()
-	result, strategyUsed, _ = engine.Compress(tightCtx, largeData)
-	fmt.Printf("Used: %s (deadline forced fast algorithm)\n", strategyUsed)
-
-	fmt.Println("\n--- Small data compression ---")
-	smallData := make([]byte, 100)
-	result, strategyUsed, _ = engine.Compress(ctx, smallData)
-	fmt.Printf("Used: %s (small data = no compression)\n", strategyUsed)
-
-	fmt.Println("\n--- Metrics ---")
-	fmt.Printf("%+v\n", engine.GetMetrics())
-}
-```
-
 ---
 
-## Production War Stories
+## Strategy Composition Patterns
 
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">💥</span>
-    <span class="war-story-title">The Strategy That Broke During Black Friday</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>Company:</strong> E-commerce platform</p>
-    <p><strong>The Setup:</strong> Pricing engine with discount strategies. Black Friday had a 50% off strategy.</p>
-    <p><strong>The Bug:</strong> The Black Friday strategy was registered with highest priority but its can_handle() always returned true. It was supposed to check the date!</p>
-    <p><strong>The Impact:</strong> 50% discounts applied in October during testing. Lost ~$100K before caught.</p>
-```python
-# BEFORE: Bug - always applies
-class BlackFridayStrategy(PricingStrategy):
-    def can_handle(self, context):
-        return True  # BUG: Should check date!
-# AFTER: Fixed with proper date check
-class BlackFridayStrategy(PricingStrategy):
-    def __init__(self, start_date: datetime, end_date: datetime):
-        self.start_date = start_date
-        self.end_date = end_date
-    def can_handle(self, context):
-        now = datetime.now()
-        return self.start_date <= now <= self.end_date
-```
-    <p><strong>Lesson:</strong> Always test strategy eligibility conditions. Use feature flags for time-based strategies.</p>
-  </div>
-</div>
-
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">🔥</span>
-    <span class="war-story-title">The Strategy Selection That Took 500ms</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>The Setup:</strong> 50+ pricing strategies registered. Selection iterating through all to find match.</p>
-    <p><strong>The Problem:</strong> Each strategy's can_handle() made database calls to check customer eligibility.</p>
-```python
-# BEFORE: N database calls per price calculation!
-class LoyaltyStrategy:
-    def can_handle(self, context):
-        customer = self.db.get_customer(context["user_id"])  # DB call!
-        return customer.loyalty_tier == "gold"
-class PremiumStrategy:
-    def can_handle(self, context):
-        customer = self.db.get_customer(context["user_id"])  # Another DB call!
-        return customer.is_premium
-# Called for every strategy = 50 DB calls per price calculation!
-```
-    <p><strong>The Fix:</strong></p>
-```python
-# AFTER: Pre-fetch data, pass in context
-def calculate_price(self, base_price, user_id):
-    # One DB call, enrich context
-    customer = self.db.get_customer(user_id)
-    context = {
-        "user_id": user_id,
-        "base_price": base_price,
-        "loyalty_tier": customer.loyalty_tier,
-        "is_premium": customer.is_premium,
-        # Pre-computed eligibility flags
-    }
-    return self.engine.calculate_price(base_price, context)
-# Strategies now check in-memory context
-class LoyaltyStrategy:
-    def can_handle(self, context):
-        return context.get("loyalty_tier") == "gold"  # No DB call!
-```
-    <p><strong>Lesson:</strong> Strategy selection must be O(1) per strategy. Pre-fetch data, pass in context.</p>
-  </div>
-</div>
-
----
-
-## Deep Dive: Strategy Composition
-
-### Combining Multiple Strategies
-
-Sometimes you need to apply multiple strategies together:
+### Composite Strategy - Stack Multiple Discounts
 
 ```python
-class CompositeStrategy(PricingStrategy):
-    """Applies multiple strategies in sequence."""
+class CompositeDiscountStrategy(DiscountStrategy):
+    """Combines multiple strategies (discounts stack)."""
 
-    def __init__(self, strategies: List[PricingStrategy]):
+    def __init__(self, strategies: List[DiscountStrategy], name: str = "Combined Discounts"):
         self._strategies = strategies
-
-    def calculate_price(self, base_price: Decimal, context: Dict) -> Decimal:
-        price = base_price
-        for strategy in self._strategies:
-            if strategy.can_handle(context):
-                price = strategy.calculate_price(price, context)
-        return price
-
-
-# Usage: Stack loyalty discount on top of bulk discount
-composite = CompositeStrategy([
-    BulkDiscountStrategy(),    # 10% off for bulk
-    LoyaltyDiscountStrategy(), # Additional 5% for gold members
-])
-# Result: 100 * 0.9 * 0.95 = 85.5
-```
-
-### Strategy Decorator Pattern
-
-Add cross-cutting concerns to any strategy:
-
-```python
-class LoggingStrategyDecorator(PricingStrategy):
-    """Adds logging to any pricing strategy."""
-
-    def __init__(self, wrapped: PricingStrategy):
-        self._wrapped = wrapped
+        self._name = name
 
     @property
-    def metadata(self):
-        return self._wrapped.metadata
+    def name(self) -> str:
+        return self._name
 
-    def calculate_price(self, base_price: Decimal, context: Dict) -> Decimal:
-        logger.info(f"Strategy {self.metadata.name}: input={base_price}")
-        result = self._wrapped.calculate_price(base_price, context)
-        logger.info(f"Strategy {self.metadata.name}: output={result}")
-        return result
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        total_discount = Decimal("0")
+        remaining = subtotal
 
+        for strategy in self._strategies:
+            if strategy.is_applicable(context):
+                discount = strategy.calculate_discount(remaining, context)
+                total_discount += discount
+                remaining -= discount  # Each subsequent discount on reduced amount
 
-class TimingStrategyDecorator(PricingStrategy):
-    """Measures and records calculation time."""
-
-    def __init__(self, wrapped: PricingStrategy, metrics_client):
-        self._wrapped = wrapped
-        self._metrics = metrics_client
-
-    def calculate_price(self, base_price: Decimal, context: Dict) -> Decimal:
-        start = time.perf_counter()
-        result = self._wrapped.calculate_price(base_price, context)
-        duration = time.perf_counter() - start
-        self._metrics.record(f"pricing.{self.metadata.name}.duration", duration)
-        return result
+        return total_discount
 
 
-# Usage: Wrap any strategy
-strategy = TimingStrategyDecorator(
-    LoggingStrategyDecorator(
-        LoyaltyDiscountStrategy()
-    ),
-    metrics_client
-)
-```
-
----
-
-## Expert-Level FAQs
-
-<details>
-<summary><strong>Q: How do I unit test strategies effectively?</strong></summary>
-
-**A:** Test strategies in isolation, then integration:
-
-```python
-# Unit test - strategy logic only
-def test_percentage_discount_strategy():
-    strategy = PercentageDiscountStrategy(Decimal("20"))
-
-    result = strategy.calculate_price(Decimal("100"), {})
-
-    assert result == Decimal("80")
-
-
-# Parameterized tests for edge cases
-@pytest.mark.parametrize("discount,input,expected", [
-    (Decimal("0"), Decimal("100"), Decimal("100")),
-    (Decimal("100"), Decimal("100"), Decimal("0")),
-    (Decimal("50"), Decimal("0"), Decimal("0")),
+# Stack loyalty + seasonal discount
+stacked = CompositeDiscountStrategy([
+    LoyaltyDiscountStrategy(),
+    SeasonalDiscountStrategy(Decimal("10"), date.today(), date.today())
 ])
-def test_discount_edge_cases(discount, input, expected):
-    strategy = PercentageDiscountStrategy(discount)
-    assert strategy.calculate_price(input, {}) == expected
-
-
-# Integration test - strategy selection
-def test_engine_selects_loyalty_for_gold_member():
-    engine = PricingEngine()
-    engine.register(StandardPricingStrategy())
-    engine.register(LoyaltyPricingStrategy())
-
-    result = engine.calculate_price(
-        Decimal("100"),
-        {"loyalty_tier": "gold"}
-    )
-
-    assert result["strategy_used"] == "loyalty"
-```
-</details>
-
-<details>
-<summary><strong>Q: Strategy vs Command pattern?</strong></summary>
-
-**A:** They look similar but serve different purposes:
-
-| Aspect | Strategy | Command |
-|--------|----------|---------|
-| Purpose | HOW to do something | WHAT to do |
-| Encapsulates | Algorithm | Request |
-| Typical use | Calculation, validation | Actions, transactions |
-| State | Usually stateless | Often has parameters |
-| Undo support | Rare | Common |
-
-```python
-# Strategy: Different ways to calculate shipping
-class ShippingStrategy:
-    def calculate(self, order) -> Decimal: ...
-
-class StandardShipping(ShippingStrategy): ...
-class ExpressShipping(ShippingStrategy): ...
-
-# Command: Different actions to perform
-class Command:
-    def execute(self): ...
-    def undo(self): ...
-
-class PlaceOrderCommand(Command):
-    def __init__(self, order):
-        self.order = order
-
-    def execute(self):
-        self.order.place()
-
-    def undo(self):
-        self.order.cancel()
-```
-</details>
-
-<details>
-<summary><strong>Q: How do I handle strategy versioning?</strong></summary>
-
-**A:** Version strategies for backward compatibility and A/B testing:
-
-```python
-class StrategyRegistry:
-    """Registry supporting multiple versions of same strategy."""
-
-    def __init__(self):
-        self._strategies: Dict[str, Dict[str, PricingStrategy]] = {}
-        self._default_versions: Dict[str, str] = {}
-
-    def register(self, strategy: PricingStrategy, is_default: bool = False):
-        name = strategy.metadata.name
-        version = strategy.metadata.version
-
-        if name not in self._strategies:
-            self._strategies[name] = {}
-
-        self._strategies[name][version] = strategy
-
-        if is_default or name not in self._default_versions:
-            self._default_versions[name] = version
-
-    def get(self, name: str, version: str = None) -> PricingStrategy:
-        if name not in self._strategies:
-            raise KeyError(f"Unknown strategy: {name}")
-
-        version = version or self._default_versions[name]
-        return self._strategies[name][version]
-
-
-# Usage
-registry = StrategyRegistry()
-registry.register(LoyaltyStrategyV1(), is_default=False)
-registry.register(LoyaltyStrategyV2(), is_default=True)
-
-# Get specific version or default
-strategy = registry.get("loyalty", version="1.0")  # V1
-strategy = registry.get("loyalty")  # V2 (default)
-```
-</details>
-
-<details>
-<summary><strong>Q: How do I handle strategy configuration from database/config?</strong></summary>
-
-**A:** Use Factory pattern to create strategies from config:
-
-```python
-class StrategyFactory:
-    """Create strategies from configuration."""
-
-    @staticmethod
-    def from_config(config: Dict[str, Any]) -> PricingStrategy:
-        strategy_type = config["type"]
-
-        if strategy_type == "percentage":
-            return PercentageDiscountStrategy(
-                Decimal(config["discount"]),
-                name=config.get("name", "percentage")
-            )
-
-        elif strategy_type == "tiered":
-            return TieredPricingStrategy(config["tiers"])
-
-        elif strategy_type == "composite":
-            sub_strategies = [
-                StrategyFactory.from_config(sub)
-                for sub in config["strategies"]
-            ]
-            return CompositeStrategy(sub_strategies)
-
-        raise ValueError(f"Unknown strategy type: {strategy_type}")
-
-
-# Load from database/config file
-config = {
-    "type": "composite",
-    "strategies": [
-        {"type": "percentage", "discount": "10", "name": "summer_sale"},
-        {"type": "tiered", "tiers": [
-            {"min_qty": 10, "max_qty": None, "discount": 5}
-        ]}
-    ]
-}
-
-strategy = StrategyFactory.from_config(config)
-```
-</details>
-
----
-
-## Common Mistakes and Anti-Patterns
-
-### Mistake 1: Strategy That Knows About Context Internals
-
-```python
-# BAD: Strategy coupled to specific context structure
-class DiscountStrategy:
-    def calculate(self, context):
-        # Reaches deep into context internals
-        user = context.services.user_service.get_user(
-            context.request.session.user_id
-        )
-        return self._calculate_for_user(user)
-
-# GOOD: Strategy receives only what it needs
-class DiscountStrategy:
-    def calculate(self, base_price: Decimal, user_tier: str) -> Decimal:
-        # Clean interface, no dependencies
-        return base_price * self.TIER_DISCOUNTS[user_tier]
 ```
 
-### Mistake 2: Too Many Strategies
+### Decorator Strategy - Add Cross-Cutting Concerns
 
 ```python
-# BAD: One strategy per configuration value
-class Discount5Strategy: ...
-class Discount10Strategy: ...
-class Discount15Strategy: ...
-class Discount20Strategy: ...
-# ... 100 more classes
+class LoggingStrategyDecorator(DiscountStrategy):
+    """Adds logging to any strategy."""
 
-# GOOD: Parameterized strategy
-class PercentageDiscount:
-    def __init__(self, percent: Decimal):
-        self.percent = percent
+    def __init__(self, wrapped: DiscountStrategy, logger):
+        self._wrapped = wrapped
+        self._logger = logger
 
-# Create as needed
-strategies = [
-    PercentageDiscount(Decimal("5")),
-    PercentageDiscount(Decimal("10")),
-]
-```
+    @property
+    def name(self) -> str:
+        return self._wrapped.name
 
-### Mistake 3: Strategy Selection in Wrong Place
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        discount = self._wrapped.calculate_discount(subtotal, context)
+        self._logger.info(f"Strategy {self.name}: {subtotal} -> discount {discount}")
+        return discount
 
-```python
-# BAD: Client code selects strategy based on business rules
-class OrderService:
-    def calculate_price(self, order, user):
-        if user.is_premium and order.total > 1000:
-            strategy = PremiumBulkDiscount()
-        elif user.is_premium:
-            strategy = PremiumDiscount()
-        elif order.total > 1000:
-            strategy = BulkDiscount()
-        else:
-            strategy = StandardPricing()
+    def is_applicable(self, context: Dict[str, Any]) -> bool:
+        return self._wrapped.is_applicable(context)
 
-        return strategy.calculate(order.total)
 
-# GOOD: Engine handles selection
-class OrderService:
-    def __init__(self, pricing_engine: PricingEngine):
-        self.pricing_engine = pricing_engine
+class CappedDiscountDecorator(DiscountStrategy):
+    """Caps the maximum discount amount."""
 
-    def calculate_price(self, order, user):
-        context = {
-            "is_premium": user.is_premium,
-            "total": order.total,
-        }
-        return self.pricing_engine.calculate(order.total, context)
+    def __init__(self, wrapped: DiscountStrategy, max_discount: Decimal):
+        self._wrapped = wrapped
+        self._max_discount = max_discount
+
+    @property
+    def name(self) -> str:
+        return f"{self._wrapped.name} (max ${self._max_discount})"
+
+    def calculate_discount(self, subtotal: Decimal, context: Dict[str, Any]) -> Decimal:
+        discount = self._wrapped.calculate_discount(subtotal, context)
+        return min(discount, self._max_discount)
 ```
 
 ---
 
-## Interview Deep-Dive Questions
+## Interview Questions
 
-**For Senior/Staff Level:**
+### Basic Level
 
-1. "How would you implement a pricing system that supports A/B testing different discount strategies per user cohort?"
+**Q: What is the Strategy pattern and when would you use it?**
+A: Strategy encapsulates a family of algorithms in separate classes, making them interchangeable. Use it when you have multiple ways to do something and want to select the approach at runtime without modifying client code.
 
-2. "Describe a scenario where you combined Strategy with other patterns (Factory, Decorator, Composite). What were the tradeoffs?"
+**Q: What are the main components of Strategy pattern?**
+A: Context (uses a strategy), Strategy interface (defines the algorithm contract), Concrete Strategies (implement specific algorithms). The context delegates work to the current strategy.
 
-3. "How do you handle strategy selection that depends on data from multiple services? What about circular dependencies?"
+### Intermediate Level
 
-4. "Walk me through implementing strategy hot-reloading without service restart."
+**Q: How do you choose between Strategy and Template Method?**
+A: Use Strategy when algorithms are completely different and interchangeable (composition). Use Template Method when algorithms share structure but differ in specific steps (inheritance). Strategy is more flexible; Template Method ensures structure consistency.
 
-5. "How would you design a strategy system that supports gradual rollout (1% → 10% → 50% → 100%)?"
+**Q: How would you implement A/B testing with Strategy pattern?**
+A: Create an ABTestStrategy that wraps two strategies and routes to one based on user cohort:
+```python
+class ABTestStrategy(DiscountStrategy):
+    def __init__(self, control: Strategy, variant: Strategy, variant_percent: int):
+        self._control = control
+        self._variant = variant
+        self._variant_pct = variant_percent
+
+    def calculate_discount(self, subtotal, context):
+        user_bucket = hash(context["user_id"]) % 100
+        strategy = self._variant if user_bucket < self._variant_pct else self._control
+        return strategy.calculate_discount(subtotal, context)
+```
+
+### Advanced Level
+
+**Q: How do you handle strategy selection from a database or config file?**
+A: Use Factory pattern with Strategy. Store strategy type and parameters in DB, then reconstruct:
+```python
+def from_config(config: dict) -> DiscountStrategy:
+    strategy_type = config["type"]
+    if strategy_type == "percentage":
+        return PercentageDiscountStrategy(Decimal(config["percent"]))
+    elif strategy_type == "tiered":
+        return TieredDiscountStrategy(config["tiers"])
+    # ... more types
+```
+
+**Q: What are the performance implications of Strategy pattern?**
+A: Virtual dispatch (interface calls) adds slight overhead. For hot paths called millions of times, consider inlining or caching strategy selection. However, premature optimization is rarely warranted - the flexibility usually outweighs the microseconds.
+
+**Q: How do you version strategies for backward compatibility?**
+A: Include version in strategy metadata. Maintain a registry mapping version to implementation. Old calculations can use old strategy versions while new ones use updated logic.
+
+---
+
+## Common Mistakes
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
+  <div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem;">Common Implementation Mistakes</div>
+
+  <div style="margin-bottom: 1rem;">
+    <div style="font-weight: 600; color: #991b1b;">1. Strategy knowing about Context internals</div>
+    <div style="color: #7f1d1d; font-size: 0.9rem;">Strategies should receive only what they need via parameters, not reach into Context.</div>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <div style="font-weight: 600; color: #991b1b;">2. Too many strategies (class explosion)</div>
+    <div style="color: #7f1d1d; font-size: 0.9rem;">Parameterize strategies instead of creating Discount5Strategy, Discount10Strategy, etc.</div>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <div style="font-weight: 600; color: #991b1b;">3. Selection logic in wrong place</div>
+    <div style="color: #7f1d1d; font-size: 0.9rem;">Don't put complex if/else for strategy selection in client code. Use a selector/factory.</div>
+  </div>
+
+  <div>
+    <div style="font-weight: 600; color: #991b1b;">4. Stateful strategies</div>
+    <div style="color: #7f1d1d; font-size: 0.9rem;">Strategies should typically be stateless. If state is needed, pass it via context or make it explicit.</div>
+  </div>
+</div>
+
+---
+
+## Best Practices
+
+1. **Keep strategies focused** - One algorithm per strategy, single responsibility
+2. **Use dependency injection** - Pass strategies to Context via constructor or setter
+3. **Parameterize over proliferate** - Use constructor parameters instead of many subclasses
+4. **Consider null object** - NoOpStrategy instead of null checks
+5. **Document selection criteria** - When is each strategy appropriate?
+6. **Make strategies immutable** - Stateless strategies can be shared safely
+7. **Use descriptive names** - FastestRouteStrategy beats StrategyA
 
 ---
 
 ## Related Patterns
 
-- [State](/topic/design-patterns/state) - State-based behavior changes
-- [Template Method](/topic/design-patterns/template-method) - Algorithm skeleton with overridable steps
-- [Command](/topic/design-patterns/command) - Encapsulate requests as objects
-- [Factory Method](/topic/design-patterns/factory-method) - Create strategies dynamically
-- [Decorator](/topic/design-patterns/decorator) - Add behavior to strategies
+- **[State](/topic/design-patterns/state)** - Object changes behavior based on internal state
+- **[Template Method](/topic/design-patterns/template-method)** - Algorithm skeleton with customizable steps
+- **[Factory Method](/topic/design-patterns/factory-method)** - Create strategies dynamically
+- **[Decorator](/topic/design-patterns/decorator)** - Add behavior to strategies
+- **[Command](/topic/design-patterns/command)** - Encapsulate requests as objects

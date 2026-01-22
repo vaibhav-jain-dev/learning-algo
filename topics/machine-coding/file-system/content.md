@@ -1,753 +1,534 @@
-# In-Memory File System
+# In-Memory File System Design
 
 ## Problem Statement
 
-Design an in-memory file system that supports creating files and directories, reading/writing file contents, and navigating the directory structure.
+Design and implement an in-memory file system that supports common operations like creating directories, creating files, reading file contents, and navigating the file system hierarchy. This simulates a Unix-like file system with paths, permissions, and hierarchical organization.
 
-## Requirements
+This problem tests your understanding of tree data structures, path parsing, object-oriented design, and system design fundamentals. It appears frequently at companies like Google, Amazon, and Microsoft (LeetCode 588).
 
-- Create directories and files
-- Read and write file contents
-- List directory contents
-- Support path navigation (absolute and relative)
-- Handle file metadata (size, timestamps)
+---
 
-## Solution
+## Requirements Clarification
 
-### Python
+### Functional Requirements
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Core Operations</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **ls(path)**: List contents of a directory or return file name if path is a file
+- **mkdir(path)**: Create a new directory (and parent directories if needed)
+- **addContentToFile(path, content)**: Create or append content to a file
+- **readContentFromFile(path)**: Read the content of a file
+- **rm(path)**: Remove a file or directory (optional)
+- **mv(src, dst)**: Move or rename a file/directory (optional)
+
+</div>
+</div>
+
+### Non-Functional Requirements
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">System Constraints</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **In-memory storage**: All data resides in RAM
+- **Thread safety**: Handle concurrent access (optional)
+- **Path validation**: Handle invalid paths gracefully
+- **Case sensitivity**: Paths are case-sensitive (Unix-like)
+- **Special characters**: Handle paths with spaces, dots, etc.
+
+</div>
+</div>
+
+### Key Questions to Ask
+
+1. Should we support symbolic links?
+2. Do we need file permissions (read/write/execute)?
+3. What's the maximum path depth and file size?
+4. Should mkdir create parent directories automatically?
+5. How should we handle edge cases like root directory operations?
+
+---
+
+## Architecture Diagram
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px;">File System Tree Structure</h4>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<!-- Root Level -->
+<div style="display: flex; justify-content: center;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px 28px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 16px;">/</div>
+<div style="color: #3b82f6; font-size: 11px;">Root Directory</div>
+</div>
+</div>
+
+<!-- Connector -->
+<div style="display: flex; justify-content: center; gap: 100px;">
+<div style="color: #94a3b8; font-size: 20px;">|</div>
+</div>
+
+<!-- Level 1 -->
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 14px 24px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold;">home/</div>
+<div style="color: #22c55e; font-size: 10px;">Directory</div>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 14px 24px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold;">etc/</div>
+<div style="color: #22c55e; font-size: 10px;">Directory</div>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 14px 24px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold;">var/</div>
+<div style="color: #22c55e; font-size: 10px;">Directory</div>
+</div>
+</div>
+
+<!-- Node Detail -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px; text-align: center;">Node Structure</div>
+<div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; min-width: 200px;">
+<div style="color: #475569; font-weight: bold; font-size: 12px;">Directory Node</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 8px; font-family: monospace;">
+name: string<br>
+is_file: False<br>
+children: Dict[str, Node]<br>
+parent: Node
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; min-width: 200px;">
+<div style="color: #475569; font-weight: bold; font-size: 12px;">File Node</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 8px; font-family: monospace;">
+name: string<br>
+is_file: True<br>
+content: string<br>
+parent: Node
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+---
+
+## Class Design
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; font-size: 16px;">Class Hierarchy</h4>
+
+```
++------------------+          +------------------+
+|   FileSystemNode |          |    FileSystem    |
++------------------+          +------------------+
+| - name: str      |<-------->| - root: Node     |
+| - is_file: bool  |          +------------------+
+| - parent: Node   |          | + ls(path)       |
++------------------+          | + mkdir(path)    |
+        ^                     | + addContent()   |
+        |                     | + readContent()  |
++-------+-------+             | + rm(path)       |
+|               |             +------------------+
+v               v
++-----------+  +-----------+
+| Directory |  |   File    |
++-----------+  +-----------+
+| children: |  | content:  |
+| Dict[Node]|  | str       |
++-----------+  +-----------+
+```
+</div>
+
+### Design Patterns Used
+
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #eab308;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Applied Patterns</div>
+
+| Pattern | Usage | Benefit |
+|---------|-------|---------|
+| **Composite** | Files and directories share interface | Uniform tree traversal |
+| **Trie-like Structure** | Path components as trie levels | O(path_length) access |
+| **Factory** | Create files vs directories | Clean object creation |
+
+</div>
+
+---
+
+## API Design
+
+### Core Interface
 
 ```python
-from typing import Optional, List, Dict
-from datetime import datetime
-from abc import ABC, abstractmethod
+class FileSystem:
+    def ls(self, path: str) -> List[str]:
+        """
+        List directory contents or return file name.
+
+        Args:
+            path: Absolute path starting with '/'
+
+        Returns:
+            Sorted list of names if directory, [filename] if file
+
+        Raises:
+            FileNotFoundError: If path doesn't exist
+        """
+
+    def mkdir(self, path: str) -> None:
+        """
+        Create directory, including intermediate directories.
+
+        Args:
+            path: Absolute path for new directory
+
+        Raises:
+            FileExistsError: If file exists at path
+        """
+
+    def addContentToFile(self, path: str, content: str) -> None:
+        """
+        Create file or append content to existing file.
+
+        Args:
+            path: Absolute path to file
+            content: Content to write/append
+        """
+
+    def readContentFromFile(self, path: str) -> str:
+        """
+        Read file contents.
+
+        Args:
+            path: Absolute path to file
+
+        Returns:
+            File contents as string
+
+        Raises:
+            FileNotFoundError: If file doesn't exist
+            IsADirectoryError: If path is a directory
+        """
+```
+
+---
+
+## Code Implementation
+
+### Python Implementation
+
+```python
+from typing import List, Dict, Optional
+import threading
 
 
-class FileSystemNode(ABC):
-    def __init__(self, name: str, parent: 'Directory' = None):
+class FileSystemNode:
+    """Base class for file system nodes."""
+
+    def __init__(self, name: str, is_file: bool = False):
         self.name = name
-        self.parent = parent
-        self.created_at = datetime.now()
-        self.modified_at = datetime.now()
-
-    @abstractmethod
-    def is_directory(self) -> bool:
-        pass
-
-    def get_path(self) -> str:
-        if self.parent is None:
-            return "/"
-        parent_path = self.parent.get_path()
-        if parent_path == "/":
-            return f"/{self.name}"
-        return f"{parent_path}/{self.name}"
+        self.is_file = is_file
+        self.parent: Optional['FileSystemNode'] = None
 
 
 class File(FileSystemNode):
-    def __init__(self, name: str, parent: 'Directory' = None):
-        super().__init__(name, parent)
-        self._content = ""
+    """Represents a file with content."""
 
-    def is_directory(self) -> bool:
-        return False
-
-    def read(self) -> str:
-        return self._content
-
-    def write(self, content: str) -> None:
-        self._content = content
-        self.modified_at = datetime.now()
+    def __init__(self, name: str):
+        super().__init__(name, is_file=True)
+        self.content = ""
 
     def append(self, content: str) -> None:
-        self._content += content
-        self.modified_at = datetime.now()
+        self.content += content
 
-    @property
-    def size(self) -> int:
-        return len(self._content)
+    def read(self) -> str:
+        return self.content
 
 
 class Directory(FileSystemNode):
-    def __init__(self, name: str, parent: 'Directory' = None):
-        super().__init__(name, parent)
+    """Represents a directory containing other nodes."""
+
+    def __init__(self, name: str):
+        super().__init__(name, is_file=False)
         self.children: Dict[str, FileSystemNode] = {}
 
-    def is_directory(self) -> bool:
-        return True
-
     def add_child(self, node: FileSystemNode) -> None:
-        self.children[node.name] = node
         node.parent = self
-        self.modified_at = datetime.now()
-
-    def remove_child(self, name: str) -> Optional[FileSystemNode]:
-        if name in self.children:
-            node = self.children.pop(name)
-            node.parent = None
-            self.modified_at = datetime.now()
-            return node
-        return None
+        self.children[node.name] = node
 
     def get_child(self, name: str) -> Optional[FileSystemNode]:
         return self.children.get(name)
+
+    def remove_child(self, name: str) -> Optional[FileSystemNode]:
+        return self.children.pop(name, None)
 
     def list_children(self) -> List[str]:
         return sorted(self.children.keys())
 
 
 class FileSystem:
+    """
+    In-memory file system implementation.
+
+    Supports Unix-like operations: ls, mkdir, cat, rm.
+    Uses a tree structure with directories and files as nodes.
+    """
+
     def __init__(self):
         self.root = Directory("")
-        self.current_dir = self.root
+        self.lock = threading.RLock()
 
-    def _resolve_path(self, path: str) -> Optional[FileSystemNode]:
-        """Resolve a path to a FileSystemNode."""
-        if not path:
-            return self.current_dir
+    def _parse_path(self, path: str) -> List[str]:
+        """Parse path string into components."""
+        if not path or path == "/":
+            return []
+        return [p for p in path.split("/") if p]
 
-        # Absolute vs relative path
-        if path.startswith("/"):
-            node = self.root
-            parts = path.strip("/").split("/") if path != "/" else []
-        else:
-            node = self.current_dir
-            parts = path.split("/")
+    def _traverse(self, path: str, create_dirs: bool = False) -> Optional[FileSystemNode]:
+        """Traverse path and return the node."""
+        components = self._parse_path(path)
+        current = self.root
 
-        for part in parts:
-            if not part or part == ".":
-                continue
-            elif part == "..":
-                if node.parent:
-                    node = node.parent
-            elif isinstance(node, Directory):
-                child = node.get_child(part)
-                if child is None:
-                    return None
-                node = child
-            else:
+        for i, component in enumerate(components):
+            if current.is_file:
                 return None
 
-        return node
+            child = current.get_child(component)
 
-    def _get_parent_and_name(self, path: str) -> tuple:
-        """Split path into parent directory and name."""
-        path = path.rstrip("/")
-        if "/" not in path:
-            return self.current_dir, path
-
-        parts = path.rsplit("/", 1)
-        parent_path = parts[0] if parts[0] else "/"
-        name = parts[1]
-
-        parent = self._resolve_path(parent_path)
-        return parent, name
-
-    def mkdir(self, path: str) -> bool:
-        """Create a directory."""
-        parent, name = self._get_parent_and_name(path)
-
-        if not isinstance(parent, Directory):
-            print(f"Error: Parent path is not a directory")
-            return False
-
-        if parent.get_child(name):
-            print(f"Error: '{name}' already exists")
-            return False
-
-        new_dir = Directory(name, parent)
-        parent.add_child(new_dir)
-        return True
-
-    def mkdirp(self, path: str) -> bool:
-        """Create directory and all parent directories."""
-        if path.startswith("/"):
-            current = self.root
-            parts = path.strip("/").split("/")
-        else:
-            current = self.current_dir
-            parts = path.split("/")
-
-        for part in parts:
-            if not part:
-                continue
-            child = current.get_child(part)
             if child is None:
-                new_dir = Directory(part, current)
-                current.add_child(new_dir)
-                current = new_dir
-            elif isinstance(child, Directory):
-                current = child
+                if create_dirs and i < len(components) - 1:
+                    new_dir = Directory(component)
+                    current.add_child(new_dir)
+                    child = new_dir
+                else:
+                    return None
+
+            current = child
+
+        return current
+
+    def ls(self, path: str) -> List[str]:
+        """List directory contents or return file name."""
+        with self.lock:
+            node = self._traverse(path)
+
+            if node is None:
+                raise FileNotFoundError(f"Path not found: {path}")
+
+            if node.is_file:
+                return [node.name]
+            return node.list_children()
+
+    def mkdir(self, path: str) -> None:
+        """Create directory and all intermediate directories."""
+        with self.lock:
+            components = self._parse_path(path)
+            current = self.root
+
+            for component in components:
+                if current.is_file:
+                    raise NotADirectoryError(f"Not a directory: {current.name}")
+
+                child = current.get_child(component)
+
+                if child is None:
+                    new_dir = Directory(component)
+                    current.add_child(new_dir)
+                    current = new_dir
+                elif child.is_file:
+                    raise FileExistsError(f"File exists: {component}")
+                else:
+                    current = child
+
+    def addContentToFile(self, path: str, content: str) -> None:
+        """Create file or append content to existing file."""
+        with self.lock:
+            components = self._parse_path(path)
+            if not components:
+                raise ValueError("Cannot create file at root")
+
+            # Ensure parent directories exist
+            parent_path = "/" + "/".join(components[:-1])
+            if parent_path != "/":
+                self.mkdir(parent_path)
+
+            parent = self._traverse(parent_path) or self.root
+            filename = components[-1]
+
+            existing = parent.get_child(filename)
+
+            if existing is None:
+                new_file = File(filename)
+                new_file.append(content)
+                parent.add_child(new_file)
+            elif existing.is_file:
+                existing.append(content)
             else:
-                print(f"Error: '{part}' is a file")
-                return False
+                raise IsADirectoryError(f"Is a directory: {path}")
 
-        return True
-
-    def touch(self, path: str) -> bool:
-        """Create an empty file."""
-        parent, name = self._get_parent_and_name(path)
-
-        if not isinstance(parent, Directory):
-            print(f"Error: Parent path is not a directory")
-            return False
-
-        if parent.get_child(name):
-            print(f"Error: '{name}' already exists")
-            return False
-
-        new_file = File(name, parent)
-        parent.add_child(new_file)
-        return True
-
-    def write_file(self, path: str, content: str) -> bool:
-        """Write content to a file (creates if doesn't exist)."""
-        node = self._resolve_path(path)
-
-        if node is None:
-            # Create new file
-            parent, name = self._get_parent_and_name(path)
-            if not isinstance(parent, Directory):
-                print(f"Error: Parent path is not a directory")
-                return False
-            new_file = File(name, parent)
-            new_file.write(content)
-            parent.add_child(new_file)
-            return True
-        elif isinstance(node, File):
-            node.write(content)
-            return True
-        else:
-            print(f"Error: '{path}' is a directory")
-            return False
-
-    def read_file(self, path: str) -> Optional[str]:
+    def readContentFromFile(self, path: str) -> str:
         """Read content from a file."""
-        node = self._resolve_path(path)
+        with self.lock:
+            node = self._traverse(path)
 
-        if node is None:
-            print(f"Error: File not found")
-            return None
-        elif isinstance(node, File):
+            if node is None:
+                raise FileNotFoundError(f"File not found: {path}")
+
+            if not node.is_file:
+                raise IsADirectoryError(f"Is a directory: {path}")
+
             return node.read()
-        else:
-            print(f"Error: '{path}' is a directory")
-            return None
 
-    def rm(self, path: str) -> bool:
-        """Remove a file."""
-        parent, name = self._get_parent_and_name(path)
+    def rm(self, path: str, recursive: bool = False) -> bool:
+        """Remove a file or directory."""
+        with self.lock:
+            if path == "/":
+                raise PermissionError("Cannot remove root directory")
 
-        if not isinstance(parent, Directory):
-            return False
+            components = self._parse_path(path)
+            parent_path = "/" + "/".join(components[:-1])
+            parent = self._traverse(parent_path) or self.root
+            name = components[-1]
 
-        node = parent.get_child(name)
-        if node is None:
-            print(f"Error: '{path}' not found")
-            return False
+            if name not in parent.children:
+                raise FileNotFoundError(f"Path not found: {path}")
 
-        if isinstance(node, Directory) and node.children:
-            print(f"Error: Directory not empty")
-            return False
+            node = parent.get_child(name)
 
-        parent.remove_child(name)
-        return True
+            if not node.is_file and node.children and not recursive:
+                raise OSError(f"Directory not empty: {path}")
 
-    def rmrf(self, path: str) -> bool:
-        """Remove file or directory recursively."""
-        parent, name = self._get_parent_and_name(path)
-
-        if not isinstance(parent, Directory):
-            return False
-
-        if parent.get_child(name):
             parent.remove_child(name)
             return True
-        return False
-
-    def ls(self, path: str = "") -> List[str]:
-        """List directory contents."""
-        node = self._resolve_path(path) if path else self.current_dir
-
-        if isinstance(node, Directory):
-            return node.list_children()
-        elif isinstance(node, File):
-            return [node.name]
-        return []
-
-    def cd(self, path: str) -> bool:
-        """Change current directory."""
-        node = self._resolve_path(path)
-
-        if isinstance(node, Directory):
-            self.current_dir = node
-            return True
-
-        print(f"Error: Not a directory")
-        return False
-
-    def pwd(self) -> str:
-        """Print working directory."""
-        return self.current_dir.get_path()
-
-    def find(self, path: str, name: str) -> List[str]:
-        """Find files/directories by name."""
-        start = self._resolve_path(path)
-        if not isinstance(start, Directory):
-            return []
-
-        results = []
-        self._find_recursive(start, name, results)
-        return results
-
-    def _find_recursive(self, directory: Directory, name: str, results: List[str]):
-        for child_name, child in directory.children.items():
-            if name in child_name:
-                results.append(child.get_path())
-            if isinstance(child, Directory):
-                self._find_recursive(child, name, results)
-
-    def tree(self, path: str = "", indent: str = "") -> str:
-        """Display directory tree."""
-        node = self._resolve_path(path) if path else self.current_dir
-        if not isinstance(node, Directory):
-            return node.name
-
-        lines = [node.name + "/"]
-        children = list(node.children.values())
-        for i, child in enumerate(children):
-            is_last = i == len(children) - 1
-            prefix = "└── " if is_last else "├── "
-            if isinstance(child, Directory):
-                subtree = self._tree_recursive(child, "    " if is_last else "│   ")
-                lines.append(indent + prefix + subtree)
-            else:
-                lines.append(indent + prefix + child.name)
-
-        return "\n".join(lines)
-
-    def _tree_recursive(self, directory: Directory, indent: str) -> str:
-        lines = [directory.name + "/"]
-        children = list(directory.children.values())
-        for i, child in enumerate(children):
-            is_last = i == len(children) - 1
-            prefix = "└── " if is_last else "├── "
-            if isinstance(child, Directory):
-                subtree = self._tree_recursive(child, indent + ("    " if is_last else "│   "))
-                lines.append(indent + prefix + subtree)
-            else:
-                lines.append(indent + prefix + child.name)
-        return "\n".join(lines)
 
 
-# Usage
-fs = FileSystem()
+# Example usage
+if __name__ == "__main__":
+    fs = FileSystem()
 
-# Create directories
-fs.mkdir("/home")
-fs.mkdir("/home/user")
-fs.mkdirp("/var/log/app")
+    # Create directory structure
+    fs.mkdir("/home/user/documents")
+    fs.mkdir("/home/user/downloads")
 
-# Create and write files
-fs.touch("/home/user/notes.txt")
-fs.write_file("/home/user/notes.txt", "Hello, World!")
-fs.write_file("/var/log/app/server.log", "Server started\n")
+    # Create files
+    fs.addContentToFile("/home/user/documents/readme.txt", "Hello, World!\n")
+    fs.addContentToFile("/home/user/documents/readme.txt", "Line 2\n")
 
-# Navigate
-fs.cd("/home/user")
-print(f"PWD: {fs.pwd()}")
-
-# Read file
-content = fs.read_file("notes.txt")
-print(f"Content: {content}")
-
-# List contents
-print(f"Root contents: {fs.ls('/')}")
-
-# Display tree
-fs.cd("/")
-print("\nDirectory Tree:")
-print(fs.tree())
+    # List and read
+    print("ls /home/user:", fs.ls("/home/user"))
+    print("cat readme.txt:", fs.readContentFromFile("/home/user/documents/readme.txt"))
 ```
 
-### Go
+---
 
-```go
-package main
+## Edge Cases
 
-import (
-	"errors"
-	"fmt"
-	"sort"
-	"strings"
-	"sync"
-	"time"
-)
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Critical Edge Cases</div>
 
-type FileSystemNode interface {
-	Name() string
-	Path() string
-	IsDirectory() bool
-	Parent() *Directory
-	SetParent(d *Directory)
-	CreatedAt() time.Time
-	ModifiedAt() time.Time
-}
+| Scenario | Expected Behavior | Implementation |
+|----------|-------------------|----------------|
+| **Empty path or "/"** | Return root contents | Handle in _parse_path |
+| **Double slashes "//"** | Treat as single "/" | Filter empty components |
+| **Path with trailing slash** | Same as without slash | Strip trailing slashes |
+| **File as intermediate path** | Error - can't traverse | Check is_file in traverse |
+| **Creating file at root** | Should fail | Validate path components |
+| **Deleting non-empty directory** | Fail unless recursive | Check children before delete |
 
-type baseNode struct {
-	name       string
-	parent     *Directory
-	createdAt  time.Time
-	modifiedAt time.Time
-}
+</div>
 
-func (n *baseNode) Name() string          { return n.name }
-func (n *baseNode) Parent() *Directory    { return n.parent }
-func (n *baseNode) SetParent(d *Directory) { n.parent = d }
-func (n *baseNode) CreatedAt() time.Time  { return n.createdAt }
-func (n *baseNode) ModifiedAt() time.Time { return n.modifiedAt }
+---
 
-func (n *baseNode) Path() string {
-	if n.parent == nil {
-		return "/"
-	}
-	parentPath := n.parent.Path()
-	if parentPath == "/" {
-		return "/" + n.name
-	}
-	return parentPath + "/" + n.name
-}
+## Testing Approach
 
-type File struct {
-	baseNode
-	content string
-}
+### Unit Tests
 
-func NewFile(name string) *File {
-	now := time.Now()
-	return &File{
-		baseNode: baseNode{
-			name:       name,
-			createdAt:  now,
-			modifiedAt: now,
-		},
-	}
-}
+```python
+import unittest
 
-func (f *File) IsDirectory() bool { return false }
-func (f *File) Read() string      { return f.content }
-func (f *File) Size() int         { return len(f.content) }
 
-func (f *File) Write(content string) {
-	f.content = content
-	f.modifiedAt = time.Now()
-}
+class TestFileSystem(unittest.TestCase):
+    def setUp(self):
+        self.fs = FileSystem()
 
-func (f *File) Append(content string) {
-	f.content += content
-	f.modifiedAt = time.Now()
-}
+    def test_mkdir_and_ls(self):
+        self.fs.mkdir("/a/b/c")
+        self.assertEqual(self.fs.ls("/"), ["a"])
+        self.assertEqual(self.fs.ls("/a/b"), ["c"])
 
-type Directory struct {
-	baseNode
-	children map[string]FileSystemNode
-	mu       sync.RWMutex
-}
+    def test_create_and_read_file(self):
+        self.fs.addContentToFile("/test.txt", "Hello")
+        self.assertEqual(self.fs.readContentFromFile("/test.txt"), "Hello")
 
-func NewDirectory(name string) *Directory {
-	now := time.Now()
-	return &Directory{
-		baseNode: baseNode{
-			name:       name,
-			createdAt:  now,
-			modifiedAt: now,
-		},
-		children: make(map[string]FileSystemNode),
-	}
-}
+    def test_append_to_file(self):
+        self.fs.addContentToFile("/file.txt", "First ")
+        self.fs.addContentToFile("/file.txt", "Second")
+        self.assertEqual(self.fs.readContentFromFile("/file.txt"), "First Second")
 
-func (d *Directory) IsDirectory() bool { return true }
+    def test_ls_returns_sorted(self):
+        self.fs.mkdir("/z")
+        self.fs.mkdir("/a")
+        self.assertEqual(self.fs.ls("/"), ["a", "z"])
 
-func (d *Directory) AddChild(node FileSystemNode) {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	d.children[node.Name()] = node
-	node.SetParent(d)
-	d.modifiedAt = time.Now()
-}
+    def test_read_nonexistent_file(self):
+        with self.assertRaises(FileNotFoundError):
+            self.fs.readContentFromFile("/nonexistent.txt")
 
-func (d *Directory) RemoveChild(name string) FileSystemNode {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	if node, exists := d.children[name]; exists {
-		delete(d.children, name)
-		node.SetParent(nil)
-		d.modifiedAt = time.Now()
-		return node
-	}
-	return nil
-}
 
-func (d *Directory) GetChild(name string) FileSystemNode {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
-	return d.children[name]
-}
-
-func (d *Directory) ListChildren() []string {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
-	names := make([]string, 0, len(d.children))
-	for name := range d.children {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	return names
-}
-
-func (d *Directory) IsEmpty() bool {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
-	return len(d.children) == 0
-}
-
-type FileSystem struct {
-	root       *Directory
-	currentDir *Directory
-}
-
-func NewFileSystem() *FileSystem {
-	root := NewDirectory("")
-	return &FileSystem{
-		root:       root,
-		currentDir: root,
-	}
-}
-
-func (fs *FileSystem) resolvePath(path string) FileSystemNode {
-	if path == "" {
-		return fs.currentDir
-	}
-
-	var node FileSystemNode
-	var parts []string
-
-	if strings.HasPrefix(path, "/") {
-		node = fs.root
-		path = strings.Trim(path, "/")
-		if path == "" {
-			return fs.root
-		}
-		parts = strings.Split(path, "/")
-	} else {
-		node = fs.currentDir
-		parts = strings.Split(path, "/")
-	}
-
-	for _, part := range parts {
-		if part == "" || part == "." {
-			continue
-		}
-		if part == ".." {
-			if dir, ok := node.(*Directory); ok && dir.Parent() != nil {
-				node = dir.Parent()
-			}
-			continue
-		}
-
-		if dir, ok := node.(*Directory); ok {
-			child := dir.GetChild(part)
-			if child == nil {
-				return nil
-			}
-			node = child
-		} else {
-			return nil
-		}
-	}
-
-	return node
-}
-
-func (fs *FileSystem) getParentAndName(path string) (*Directory, string) {
-	path = strings.TrimRight(path, "/")
-	lastSlash := strings.LastIndex(path, "/")
-
-	if lastSlash == -1 {
-		return fs.currentDir, path
-	}
-
-	parentPath := path[:lastSlash]
-	if parentPath == "" {
-		parentPath = "/"
-	}
-	name := path[lastSlash+1:]
-
-	parent := fs.resolvePath(parentPath)
-	if dir, ok := parent.(*Directory); ok {
-		return dir, name
-	}
-	return nil, name
-}
-
-func (fs *FileSystem) Mkdir(path string) error {
-	parent, name := fs.getParentAndName(path)
-	if parent == nil {
-		return errors.New("parent path is not a directory")
-	}
-	if parent.GetChild(name) != nil {
-		return errors.New("already exists")
-	}
-
-	newDir := NewDirectory(name)
-	parent.AddChild(newDir)
-	return nil
-}
-
-func (fs *FileSystem) MkdirP(path string) error {
-	var current *Directory
-	var parts []string
-
-	if strings.HasPrefix(path, "/") {
-		current = fs.root
-		parts = strings.Split(strings.Trim(path, "/"), "/")
-	} else {
-		current = fs.currentDir
-		parts = strings.Split(path, "/")
-	}
-
-	for _, part := range parts {
-		if part == "" {
-			continue
-		}
-		child := current.GetChild(part)
-		if child == nil {
-			newDir := NewDirectory(part)
-			current.AddChild(newDir)
-			current = newDir
-		} else if dir, ok := child.(*Directory); ok {
-			current = dir
-		} else {
-			return errors.New("path component is a file")
-		}
-	}
-	return nil
-}
-
-func (fs *FileSystem) WriteFile(path, content string) error {
-	node := fs.resolvePath(path)
-
-	if node == nil {
-		parent, name := fs.getParentAndName(path)
-		if parent == nil {
-			return errors.New("parent directory doesn't exist")
-		}
-		newFile := NewFile(name)
-		newFile.Write(content)
-		parent.AddChild(newFile)
-		return nil
-	}
-
-	if file, ok := node.(*File); ok {
-		file.Write(content)
-		return nil
-	}
-
-	return errors.New("path is a directory")
-}
-
-func (fs *FileSystem) ReadFile(path string) (string, error) {
-	node := fs.resolvePath(path)
-	if node == nil {
-		return "", errors.New("file not found")
-	}
-	if file, ok := node.(*File); ok {
-		return file.Read(), nil
-	}
-	return "", errors.New("path is a directory")
-}
-
-func (fs *FileSystem) Rm(path string) error {
-	parent, name := fs.getParentAndName(path)
-	if parent == nil {
-		return errors.New("parent not found")
-	}
-
-	node := parent.GetChild(name)
-	if node == nil {
-		return errors.New("not found")
-	}
-
-	if dir, ok := node.(*Directory); ok && !dir.IsEmpty() {
-		return errors.New("directory not empty")
-	}
-
-	parent.RemoveChild(name)
-	return nil
-}
-
-func (fs *FileSystem) Ls(path string) []string {
-	var node FileSystemNode
-	if path == "" {
-		node = fs.currentDir
-	} else {
-		node = fs.resolvePath(path)
-	}
-
-	if dir, ok := node.(*Directory); ok {
-		return dir.ListChildren()
-	}
-	if node != nil {
-		return []string{node.Name()}
-	}
-	return nil
-}
-
-func (fs *FileSystem) Cd(path string) error {
-	node := fs.resolvePath(path)
-	if dir, ok := node.(*Directory); ok {
-		fs.currentDir = dir
-		return nil
-	}
-	return errors.New("not a directory")
-}
-
-func (fs *FileSystem) Pwd() string {
-	return fs.currentDir.Path()
-}
-
-func main() {
-	fs := NewFileSystem()
-
-	// Create directories
-	fs.Mkdir("/home")
-	fs.Mkdir("/home/user")
-	fs.MkdirP("/var/log/app")
-
-	// Create and write files
-	fs.WriteFile("/home/user/notes.txt", "Hello, World!")
-	fs.WriteFile("/var/log/app/server.log", "Server started\n")
-
-	// Navigate
-	fs.Cd("/home/user")
-	fmt.Println("PWD:", fs.Pwd())
-
-	// Read file
-	content, _ := fs.ReadFile("notes.txt")
-	fmt.Println("Content:", content)
-
-	// List contents
-	fmt.Println("Root contents:", fs.Ls("/"))
-	fmt.Println("/home/user contents:", fs.Ls("/home/user"))
-}
+if __name__ == "__main__":
+    unittest.main()
 ```
 
-## Design Patterns Used
-
-- **Composite Pattern**: Files and Directories share FileSystemNode interface
-- **Iterator Pattern**: Tree traversal for find/tree operations
+---
 
 ## Interview Tips
 
-- Explain the composite pattern for file/directory hierarchy
-- Discuss thread-safety for concurrent access
-- Consider path resolution (absolute vs relative)
-- Handle edge cases (symlinks, permissions)
+<div style="background: #f0f9ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 16px;">How to Approach This in an Interview</div>
+
+### Time Allocation (45 minutes)
+
+| Phase | Time | Focus |
+|-------|------|-------|
+| Requirements | 5 min | File vs directory, operations needed |
+| Data Structure | 10 min | Tree structure, node design |
+| API Design | 5 min | Define method signatures |
+| Core Implementation | 20 min | ls, mkdir, file operations |
+| Edge Cases | 5 min | Path parsing, error handling |
+
+### Key Points to Mention
+
+1. **Tree vs Trie**: Explain why tree structure (Trie-like for paths)
+2. **Composite Pattern**: Files and directories share base interface
+3. **Path Parsing**: Split on "/" handle edge cases
+4. **Thread Safety**: Mention locks for concurrent access
+5. **Error Handling**: Specific exceptions for different errors
+
+### Common Follow-up Questions
+
+- **How to add permissions?** Add permission bits to nodes, check on access
+- **How to implement symlinks?** Add SymLink node type with target path
+- **How to support wildcards?** Add glob pattern matching
+- **Persistence?** Serialize tree to JSON, load on startup
+
+### LeetCode Connection
+
+This is **LeetCode 588: Design In-Memory File System**.
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time Complexity | Space Complexity |
+|-----------|-----------------|------------------|
+| ls | O(path_length + children) | O(1) |
+| mkdir | O(path_length) | O(path_length) |
+| addContentToFile | O(path_length + content) | O(content) |
+| readContentFromFile | O(path_length) | O(content) |
+| rm | O(path_length) | O(1) |

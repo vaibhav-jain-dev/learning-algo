@@ -1,56 +1,127 @@
-# Binary Trees
+# Binary Trees - Interview Mastery Guide
 
-## Overview
+## Category Overview
 
-A Binary Tree is a hierarchical data structure where each node has at most two children (left and right). Unlike BSTs, there's no ordering constraint between nodes. Binary trees form the foundation for many advanced data structures.
+A Binary Tree is one of the most important data structures in computer science, forming the foundation for countless algorithms and applications. Unlike Binary Search Trees, general binary trees have no ordering constraint - each node simply has at most two children (left and right). This fundamental structure appears everywhere from expression parsing to file systems to machine learning decision trees.
 
-## Key Concepts & Terminology
+Binary trees are hierarchical, recursive structures where each subtree is itself a binary tree. This recursive nature makes them ideal for recursive algorithms, though iterative solutions using stacks and queues are equally important to master.
 
-### Core Terminology
-- **Root**: Topmost node
-- **Leaf**: Node with no children
-- **Internal Node**: Node with at least one child
-- **Height**: Longest path from root to leaf
-- **Depth**: Distance from root to a node
-- **Level**: All nodes at same depth
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Binary Tree Fundamentals</h3>
+<div style="color: #334155;">
+<ul>
+<li><strong>Root</strong>: The topmost node (has no parent)</li>
+<li><strong>Leaf</strong>: A node with no children</li>
+<li><strong>Internal Node</strong>: A node with at least one child</li>
+<li><strong>Height</strong>: Longest path from root to any leaf</li>
+<li><strong>Depth</strong>: Distance from root to a specific node</li>
+<li><strong>Level</strong>: All nodes at the same depth</li>
+</ul>
+</div>
+</div>
 
-### Tree Types
-| Type | Property |
-|------|----------|
-| Full Binary Tree | Every node has 0 or 2 children |
-| Complete Binary Tree | All levels filled except possibly last (left-aligned) |
-| Perfect Binary Tree | All internal nodes have 2 children, all leaves at same level |
-| Balanced Binary Tree | Height difference of subtrees ≤ 1 |
+**Interview Frequency**: Binary tree problems appear in **25-30%** of all coding interviews. They are favorites at Google, Meta, Amazon, Microsoft, and Apple because they test recursion, tree traversal, and problem decomposition skills.
 
-### Traversal Methods
-- **DFS**: Pre-order, In-order, Post-order
-- **BFS**: Level-order
+## Key Patterns
 
-### Common Patterns
-1. **Recursive DFS** - Most tree problems
-2. **Iterative with Stack** - When recursion depth is a concern
-3. **BFS with Queue** - Level-order problems
-4. **Parent Pointers** - Finding ancestors
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Binary Tree Pattern Recognition</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155; overflow-x: auto;">
++----------------------+-----------------------------+-------------------------+
+|      Pattern         |       When to Use           |   Example Problems      |
++----------------------+-----------------------------+-------------------------+
+| Recursive DFS        | Most tree problems, path    | Branch Sums, Max Depth, |
+|                      | sums, tree properties       | Diameter, Validate BST  |
++----------------------+-----------------------------+-------------------------+
+| Iterative DFS        | Stack overflow concerns,    | Iterative Traversals,   |
+| (with Stack)         | explicit control needed     | Morris Traversal        |
++----------------------+-----------------------------+-------------------------+
+| BFS (with Queue)     | Level-order problems,       | Level Order Traversal,  |
+|                      | shortest path in tree       | Right Side View         |
++----------------------+-----------------------------+-------------------------+
+| Post-Order Pattern   | Need children's info first  | Height, Diameter,       |
+|                      | before processing node      | Max Path Sum            |
++----------------------+-----------------------------+-------------------------+
+| Parent Pointers      | Need to traverse upward,    | Find Successor, LCA,    |
+|                      | find ancestors              | Nodes at Distance K     |
++----------------------+-----------------------------+-------------------------+
+</pre>
+</div>
 
-### Boundary Conditions
-1. Null/empty tree
-2. Single node tree
-3. Skewed tree (like a linked list)
-4. Very deep trees (stack overflow risk)
+### Tree Types Reference
 
----
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Special Binary Tree Types</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+FULL BINARY TREE:
+Every node has 0 or 2 children (never just 1)
+        1
+       / \
+      2   3       Valid Full Tree
+     / \
+    4   5
 
-## Problems
+COMPLETE BINARY TREE:
+All levels filled except possibly last, which is left-aligned
+        1
+       / \
+      2   3       Valid Complete Tree
+     / \  /
+    4  5 6
 
-### 1. Branch Sums
+PERFECT BINARY TREE:
+All internal nodes have 2 children, all leaves at same level
+        1
+       / \
+      2   3       Valid Perfect Tree (also full and complete)
+     / \ / \
+    4  5 6  7
 
-**Difficulty:** Easy
+BALANCED BINARY TREE:
+Height difference between left and right subtrees <= 1 for all nodes
+Height = O(log n), guaranteeing efficient operations
+</pre>
+</div>
 
-**Problem Statement:**
-Calculate the sum of values along each branch (root-to-leaf path) from left to right.
+### Traversal Methods Visualization
 
-**Example:**
-```
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">DFS Traversal Orders</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Tree:
+        1
+       / \
+      2   3
+     / \   \
+    4   5   6
+
+PRE-ORDER (Root -> Left -> Right): 1, 2, 4, 5, 3, 6
+  - Process node BEFORE children
+  - Use: Copying tree, serialization
+
+IN-ORDER (Left -> Root -> Right): 4, 2, 5, 1, 3, 6
+  - Process node BETWEEN children
+  - Use: BST gives sorted order
+
+POST-ORDER (Left -> Right -> Root): 4, 5, 2, 6, 3, 1
+  - Process node AFTER children
+  - Use: Deletion, calculating heights
+
+LEVEL-ORDER (BFS): 1, 2, 3, 4, 5, 6
+  - Process level by level
+  - Use: Finding shortest path, level-based operations
+</pre>
+</div>
+
+## Must-Know Problems with Solutions
+
+### Problem 1: Branch Sums
+
+**Problem**: Calculate the sum of values along each root-to-leaf path.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Branch Sums Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
         1
        / \
       2   3
@@ -59,21 +130,16 @@ Calculate the sum of values along each branch (root-to-leaf path) from left to r
    / \
   8   9
 
+Paths (left to right):
+1 -> 2 -> 4 -> 8 = 15
+1 -> 2 -> 4 -> 9 = 16
+1 -> 2 -> 5     = 8
+1 -> 3 -> 6     = 10
+1 -> 3 -> 7     = 11
+
 Output: [15, 16, 8, 10, 11]
-Paths: 1->2->4->8, 1->2->4->9, 1->2->5, 1->3->6, 1->3->7
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Use DFS to traverse each branch
-2. Pass running sum to each recursive call
-3. Add to result when reaching a leaf
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+</pre>
+</div>
 
 ```python
 class BinaryTree:
@@ -82,144 +148,57 @@ class BinaryTree:
         self.left = None
         self.right = None
 
-def branchSums(root):
+def branch_sums(root):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(n) for output + O(h) for recursion
+    Time: O(n) - visit each node once
+    Space: O(n) - output list + O(h) recursion stack
+
+    Pass running sum down to children.
+    When reaching a leaf, add the sum to results.
     """
     sums = []
-    calculateBranchSums(root, 0, sums)
+    calculate_branch_sums(root, 0, sums)
     return sums
 
-def calculateBranchSums(node, running_sum, sums):
+def calculate_branch_sums(node, running_sum, sums):
     if node is None:
         return
 
     new_sum = running_sum + node.value
 
-    # If leaf node, add to results
+    # If leaf node, we've completed a branch
     if node.left is None and node.right is None:
         sums.append(new_sum)
         return
 
-    calculateBranchSums(node.left, new_sum, sums)
-    calculateBranchSums(node.right, new_sum, sums)
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-
-print(branchSums(root))  # [7, 8, 4]
+    # Recurse to children
+    calculate_branch_sums(node.left, new_sum, sums)
+    calculate_branch_sums(node.right, new_sum, sums)
 ```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func branchSums(root *BinaryTree) []int {
-    sums := []int{}
-    calculateBranchSums(root, 0, &sums)
-    return sums
-}
-
-func calculateBranchSums(node *BinaryTree, runningSum int, sums *[]int) {
-    if node == nil {
-        return
-    }
-
-    newSum := runningSum + node.Value
-
-    if node.Left == nil && node.Right == nil {
-        *sums = append(*sums, newSum)
-        return
-    }
-
-    calculateBranchSums(node.Left, newSum, sums)
-    calculateBranchSums(node.Right, newSum, sums)
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-    fmt.Println(branchSums(root)) // [3 4]
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Path Sum** - Check if any branch sums to target
-2. **Path Sum II** - Return all paths that sum to target
-3. **Sum Root to Leaf Numbers** - Treat path as number
-
-</details>
 
 ---
 
-### 2. Node Depths
+### Problem 2: Node Depths
 
-**Difficulty:** Easy
-
-**Problem Statement:**
-Calculate the sum of depths of all nodes in a binary tree.
-
-**Example:**
-```
-        1         depth 0
-       / \
-      2   3       depth 1
-     / \ / \
-    4  5 6  7     depth 2
-   /\
-  8  9            depth 3
-
-Output: 16 (0 + 1 + 1 + 2 + 2 + 2 + 2 + 3 + 3)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Track depth while traversing
-2. Add current depth to running sum
-3. Recursively process children with depth + 1
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+**Problem**: Calculate the sum of depths of all nodes in the tree.
 
 ```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def nodeDepths(root, depth=0):
+def node_depths(root, depth=0):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
+    Time: O(n) | Space: O(h)
+
+    Each node contributes its depth to the total.
+    Depth increases by 1 as we go down each level.
     """
     if root is None:
         return 0
 
-    return depth + nodeDepths(root.left, depth + 1) + nodeDepths(root.right, depth + 1)
+    return (depth +
+            node_depths(root.left, depth + 1) +
+            node_depths(root.right, depth + 1))
 
 # Iterative version using stack
-def nodeDepthsIterative(root):
+def node_depths_iterative(root):
     if root is None:
         return 0
 
@@ -236,232 +215,78 @@ def nodeDepthsIterative(root):
             stack.append((node.right, depth + 1))
 
     return total
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-
-print(nodeDepths(root))  # 6
 ```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func nodeDepths(root *BinaryTree) int {
-    return nodeDepthsHelper(root, 0)
-}
-
-func nodeDepthsHelper(node *BinaryTree, depth int) int {
-    if node == nil {
-        return 0
-    }
-
-    return depth +
-        nodeDepthsHelper(node.Left, depth+1) +
-        nodeDepthsHelper(node.Right, depth+1)
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-    root.Left.Left = &BinaryTree{Value: 4}
-
-    fmt.Println(nodeDepths(root)) // 4
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Maximum Depth of Binary Tree** - Find deepest node
-2. **Minimum Depth of Binary Tree** - Find shallowest leaf
-3. **Average of Levels** - Average value at each depth
-
-</details>
 
 ---
 
-### 3. Evaluate Expression Tree
+### Problem 3: Binary Tree Diameter
 
-**Difficulty:** Easy
+**Problem**: Find the diameter - the longest path between any two nodes (not necessarily through root).
 
-**Problem Statement:**
-Evaluate an expression tree where leaves are operands and internal nodes are operators (-1: +, -2: -, -3: *, -4: /).
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Diameter Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+        1
+       / \
+      3   2
+     / \
+    7   4
+   /     \
+  8       5
+           \
+            6
 
-**Example:**
-```
-        -1 (+)
-       /      \
-    -2 (-)   -3 (*)
-    /   \    /    \
-   2     3  8      3
+Diameter path: 8 -> 7 -> 3 -> 4 -> 5 -> 6
+Length: 6 edges (or 7 nodes, depending on definition)
 
-Output: ((2-3) + (8*3)) = -1 + 24 = 23
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Post-order traversal (evaluate children first)
-2. Leaf nodes return their value
-3. Internal nodes apply operation to children's results
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+Key Insight:
+- Diameter through a node = left_height + right_height
+- Global diameter = max of all local diameters
+- We calculate height while tracking maximum diameter
+</pre>
+</div>
 
 ```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def evaluateExpressionTree(tree):
+def binary_tree_diameter(tree):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
+    Time: O(n) | Space: O(h)
+
+    At each node, diameter = left_height + right_height
+    Track maximum diameter seen across all nodes.
     """
-    # Leaf node (operand)
-    if tree.value >= 0:
-        return tree.value
+    max_diameter = [0]  # Using list for mutable reference
 
-    left_value = evaluateExpressionTree(tree.left)
-    right_value = evaluateExpressionTree(tree.right)
+    def get_height(node):
+        if node is None:
+            return 0
 
-    if tree.value == -1:  # Addition
-        return left_value + right_value
-    elif tree.value == -2:  # Subtraction
-        return left_value - right_value
-    elif tree.value == -3:  # Multiplication
-        return left_value * right_value
-    elif tree.value == -4:  # Division
-        return int(left_value / right_value)
+        left_height = get_height(node.left)
+        right_height = get_height(node.right)
 
-    return 0
+        # Diameter through current node
+        diameter = left_height + right_height
+        max_diameter[0] = max(max_diameter[0], diameter)
 
-# Test
-root = BinaryTree(-1)
-root.left = BinaryTree(-2)
-root.right = BinaryTree(-3)
-root.left.left = BinaryTree(2)
-root.left.right = BinaryTree(3)
-root.right.left = BinaryTree(8)
-root.right.right = BinaryTree(3)
+        # Return height for parent's calculation
+        return 1 + max(left_height, right_height)
 
-print(evaluateExpressionTree(root))  # 23
+    get_height(tree)
+    return max_diameter[0]
 ```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func evaluateExpressionTree(tree *BinaryTree) int {
-    if tree.Value >= 0 {
-        return tree.Value
-    }
-
-    leftValue := evaluateExpressionTree(tree.Left)
-    rightValue := evaluateExpressionTree(tree.Right)
-
-    switch tree.Value {
-    case -1:
-        return leftValue + rightValue
-    case -2:
-        return leftValue - rightValue
-    case -3:
-        return leftValue * rightValue
-    case -4:
-        return leftValue / rightValue
-    }
-
-    return 0
-}
-
-func main() {
-    root := &BinaryTree{Value: -1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-
-    fmt.Println(evaluateExpressionTree(root)) // 5
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Evaluate Reverse Polish Notation** - Stack-based evaluation
-2. **Basic Calculator** - Parse and evaluate string expression
-3. **Design Expression Tree** - Build tree from expression
-
-</details>
 
 ---
 
-### 4. Invert Binary Tree
+### Problem 4: Invert Binary Tree
 
-**Difficulty:** Medium
-
-**Problem Statement:**
-Invert a binary tree (swap left and right children for all nodes).
-
-**Example:**
-```
-Before:          After:
-    1               1
-   / \             / \
-  2   3           3   2
- / \             / \
-4   5           5   4
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Swap left and right children at each node
-2. Recursively invert subtrees
-3. Can use BFS or DFS
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+**Problem**: Swap left and right children for all nodes (mirror the tree).
 
 ```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def invertBinaryTree(tree):
+def invert_binary_tree(tree):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
+    Time: O(n) | Space: O(h)
+
+    At each node, swap its children.
+    Recursively invert the subtrees.
     """
     if tree is None:
         return None
@@ -470,15 +295,15 @@ def invertBinaryTree(tree):
     tree.left, tree.right = tree.right, tree.left
 
     # Recursively invert subtrees
-    invertBinaryTree(tree.left)
-    invertBinaryTree(tree.right)
+    invert_binary_tree(tree.left)
+    invert_binary_tree(tree.right)
 
     return tree
 
-# BFS Approach
+# BFS approach
 from collections import deque
 
-def invertBinaryTreeBFS(tree):
+def invert_binary_tree_bfs(tree):
     if tree is None:
         return None
 
@@ -494,599 +319,17 @@ def invertBinaryTreeBFS(tree):
             queue.append(node.right)
 
     return tree
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-
-invertBinaryTree(root)
-print(root.left.value)  # 3
-print(root.right.value)  # 2
 ```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func invertBinaryTree(tree *BinaryTree) *BinaryTree {
-    if tree == nil {
-        return nil
-    }
-
-    tree.Left, tree.Right = tree.Right, tree.Left
-
-    invertBinaryTree(tree.Left)
-    invertBinaryTree(tree.Right)
-
-    return tree
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-
-    invertBinaryTree(root)
-    fmt.Println(root.Left.Value)  // 3
-    fmt.Println(root.Right.Value) // 2
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Symmetric Tree** - Check if tree is mirror of itself
-2. **Same Tree** - Check if two trees are identical
-3. **Flip Equivalent Binary Trees** - Check equivalence after flips
-
-</details>
 
 ---
 
-### 5. Binary Tree Diameter
+### Problem 5: Max Path Sum
 
-**Difficulty:** Medium
+**Problem**: Find the maximum sum path in the tree. Path can start and end at any nodes.
 
-**Problem Statement:**
-Find the diameter of a binary tree - the longest path between any two nodes.
-
-**Example:**
-```
-        1
-       / \
-      3   2
-     / \
-    7   4
-   /     \
-  8       5
-           \
-            6
-
-Diameter: 6 (path: 8->7->3->4->5->6)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Diameter through a node = left height + right height
-2. Track maximum diameter seen so far
-3. Return height at each node, update diameter
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def binaryTreeDiameter(tree):
-    """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
-    """
-    max_diameter = [0]
-
-    def getHeight(node):
-        if node is None:
-            return 0
-
-        left_height = getHeight(node.left)
-        right_height = getHeight(node.right)
-
-        # Diameter through current node
-        diameter = left_height + right_height
-        max_diameter[0] = max(max_diameter[0], diameter)
-
-        return 1 + max(left_height, right_height)
-
-    getHeight(tree)
-    return max_diameter[0]
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(3)
-root.right = BinaryTree(2)
-root.left.left = BinaryTree(7)
-root.left.right = BinaryTree(4)
-
-print(binaryTreeDiameter(root))  # 3
-```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func binaryTreeDiameter(tree *BinaryTree) int {
-    maxDiameter := 0
-    getHeight(tree, &maxDiameter)
-    return maxDiameter
-}
-
-func getHeight(node *BinaryTree, maxDiameter *int) int {
-    if node == nil {
-        return 0
-    }
-
-    leftHeight := getHeight(node.Left, maxDiameter)
-    rightHeight := getHeight(node.Right, maxDiameter)
-
-    diameter := leftHeight + rightHeight
-    if diameter > *maxDiameter {
-        *maxDiameter = diameter
-    }
-
-    if leftHeight > rightHeight {
-        return 1 + leftHeight
-    }
-    return 1 + rightHeight
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 3}
-    root.Right = &BinaryTree{Value: 2}
-
-    fmt.Println(binaryTreeDiameter(root)) // 2
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Diameter of N-ary Tree** - N children per node
-2. **Longest Path in Graph** - General graph version
-3. **Longest Univalue Path** - Path with same values
-
-</details>
-
----
-
-### 6. Find Successor
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Find the in-order successor of a node in a binary tree with parent pointers.
-
-**Example:**
-```
-        1
-       / \
-      2   3
-     / \
-    4   5
-
-Successor of 2 is 5
-Successor of 5 is 1
-Successor of 3 is None
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. If node has right subtree, successor is leftmost node in right subtree
-2. Otherwise, go up to find first ancestor where current node is in left subtree
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-        self.parent = None
-
-def findSuccessor(tree, node):
-    """
-    Time Complexity: O(h)
-    Space Complexity: O(1)
-    """
-    # If right subtree exists, find leftmost node
-    if node.right is not None:
-        return getLeftmostChild(node.right)
-
-    # Otherwise, go up to find successor
-    return getRightmostParent(node)
-
-def getLeftmostChild(node):
-    current = node
-    while current.left is not None:
-        current = current.left
-    return current
-
-def getRightmostParent(node):
-    current = node
-    while current.parent is not None and current.parent.right == current:
-        current = current.parent
-    return current.parent
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.parent = root
-root.right.parent = root
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-root.left.left.parent = root.left
-root.left.right.parent = root.left
-
-print(findSuccessor(root, root.left).value)  # 5
-print(findSuccessor(root, root.left.right).value)  # 1
-```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value  int
-    Left   *BinaryTree
-    Right  *BinaryTree
-    Parent *BinaryTree
-}
-
-func findSuccessor(tree, node *BinaryTree) *BinaryTree {
-    if node.Right != nil {
-        return getLeftmostChild(node.Right)
-    }
-    return getRightmostParent(node)
-}
-
-func getLeftmostChild(node *BinaryTree) *BinaryTree {
-    current := node
-    for current.Left != nil {
-        current = current.Left
-    }
-    return current
-}
-
-func getRightmostParent(node *BinaryTree) *BinaryTree {
-    current := node
-    for current.Parent != nil && current.Parent.Right == current {
-        current = current.Parent
-    }
-    return current.Parent
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2, Parent: root}
-    root.Right = &BinaryTree{Value: 3, Parent: root}
-
-    result := findSuccessor(root, root.Left)
-    if result != nil {
-        fmt.Println(result.Value)
-    }
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Inorder Successor in BST** - Without parent pointer
-2. **Inorder Predecessor** - Find previous node
-3. **Populating Next Right Pointers** - Connect level siblings
-
-</details>
-
----
-
-### 7. Height Balanced Binary Tree
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Determine if a binary tree is height-balanced (heights of subtrees differ by at most 1).
-
-**Example:**
-```
-Balanced:           Not Balanced:
-    1                    1
-   / \                  /
-  2   3                2
- / \                  /
-4   5                3
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Calculate height while checking balance
-2. Return -1 if subtree is unbalanced
-3. Check: abs(left_height - right_height) <= 1
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def heightBalancedBinaryTree(tree):
-    """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
-    """
-    return getHeightAndBalance(tree)[0]
-
-def getHeightAndBalance(node):
-    """Returns (is_balanced, height)"""
-    if node is None:
-        return (True, 0)
-
-    left_balanced, left_height = getHeightAndBalance(node.left)
-    right_balanced, right_height = getHeightAndBalance(node.right)
-
-    is_balanced = (left_balanced and
-                   right_balanced and
-                   abs(left_height - right_height) <= 1)
-
-    height = 1 + max(left_height, right_height)
-
-    return (is_balanced, height)
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-
-print(heightBalancedBinaryTree(root))  # True
-```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-type TreeInfo struct {
-    IsBalanced bool
-    Height     int
-}
-
-func heightBalancedBinaryTree(tree *BinaryTree) bool {
-    return getHeightAndBalance(tree).IsBalanced
-}
-
-func getHeightAndBalance(node *BinaryTree) TreeInfo {
-    if node == nil {
-        return TreeInfo{true, 0}
-    }
-
-    left := getHeightAndBalance(node.Left)
-    right := getHeightAndBalance(node.Right)
-
-    isBalanced := left.IsBalanced && right.IsBalanced &&
-                  abs(left.Height-right.Height) <= 1
-
-    height := 1 + max(left.Height, right.Height)
-
-    return TreeInfo{isBalanced, height}
-}
-
-func abs(x int) int {
-    if x < 0 { return -x }
-    return x
-}
-
-func max(a, b int) int {
-    if a > b { return a }
-    return b
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-
-    fmt.Println(heightBalancedBinaryTree(root)) // true
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Check if Binary Tree is Perfect** - All levels filled
-2. **Check if Binary Tree is Complete** - Levels filled left to right
-3. **Balance a BST** - Rebalance an unbalanced BST
-
-</details>
-
----
-
-### 8. Merge Binary Trees
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Merge two binary trees by adding overlapping node values, or use the non-null node.
-
-**Example:**
-```
-Tree 1:       Tree 2:       Merged:
-    1             2             3
-   / \           / \           / \
-  3   2         1   3         4   5
- /               \   \       / \   \
-5                 4   7     5   4   7
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. If both nodes exist, add values
-2. If only one exists, use that node
-3. Recursively merge children
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def mergeBinaryTrees(tree1, tree2):
-    """
-    Time Complexity: O(min(n1, n2))
-    Space Complexity: O(min(h1, h2))
-    """
-    if tree1 is None:
-        return tree2
-    if tree2 is None:
-        return tree1
-
-    tree1.value += tree2.value
-    tree1.left = mergeBinaryTrees(tree1.left, tree2.left)
-    tree1.right = mergeBinaryTrees(tree1.right, tree2.right)
-
-    return tree1
-
-# Test
-tree1 = BinaryTree(1)
-tree1.left = BinaryTree(3)
-tree1.right = BinaryTree(2)
-
-tree2 = BinaryTree(2)
-tree2.left = BinaryTree(1)
-tree2.right = BinaryTree(3)
-
-merged = mergeBinaryTrees(tree1, tree2)
-print(merged.value)  # 3
-print(merged.left.value)  # 4
-```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func mergeBinaryTrees(tree1, tree2 *BinaryTree) *BinaryTree {
-    if tree1 == nil {
-        return tree2
-    }
-    if tree2 == nil {
-        return tree1
-    }
-
-    tree1.Value += tree2.Value
-    tree1.Left = mergeBinaryTrees(tree1.Left, tree2.Left)
-    tree1.Right = mergeBinaryTrees(tree1.Right, tree2.Right)
-
-    return tree1
-}
-
-func main() {
-    tree1 := &BinaryTree{Value: 1}
-    tree1.Left = &BinaryTree{Value: 3}
-
-    tree2 := &BinaryTree{Value: 2}
-    tree2.Left = &BinaryTree{Value: 1}
-
-    merged := mergeBinaryTrees(tree1, tree2)
-    fmt.Println(merged.Value) // 3
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Same Tree** - Check if identical
-2. **Subtree of Another Tree** - Check containment
-3. **Clone Binary Tree with Random Pointer**
-
-</details>
-
----
-
-### 9. Max Path Sum In Binary Tree
-
-**Difficulty:** Hard
-
-**Problem Statement:**
-Find the maximum path sum in a binary tree. A path can start and end at any node.
-
-**Example:**
-```
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Max Path Sum Logic</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
         1
        / \
       2   3
@@ -1095,175 +338,122 @@ Find the maximum path sum in a binary tree. A path can start and end at any node
        / \
       7   8
 
-Maximum path sum: 7 + 5 + 2 + 1 + 3 + 6 = 24
-Or simpler path: 5->2->1->3->6 = 17
-```
+At each node, we consider:
+1. max_path_through_node = node + max(left_gain, 0) + max(right_gain, 0)
+   - This is a potential answer (path that passes through this node)
 
-<details>
-<summary><strong>Hints</strong></summary>
+2. max_gain_to_parent = node + max(left_gain, right_gain, 0)
+   - What we can contribute to parent (can only go one direction)
 
-1. At each node, consider: max path through this node
-2. Track max single path (can extend to parent) vs max any path
-3. Use post-order traversal
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+Key: Negative gains are ignored (we can choose to not extend that way)
+</pre>
+</div>
 
 ```python
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def maxPathSum(tree):
+def max_path_sum(tree):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(h)
+    Time: O(n) | Space: O(h)
+
+    At each node:
+    - Calculate max path sum THROUGH this node (potential answer)
+    - Return max gain TO parent (can only use one child path)
     """
     max_sum = [float('-inf')]
 
-    def maxGain(node):
+    def max_gain(node):
         if node is None:
             return 0
 
-        # Get max gain from children (ignore negative)
-        left_gain = max(maxGain(node.left), 0)
-        right_gain = max(maxGain(node.right), 0)
+        # Get max gain from children (ignore negative contributions)
+        left_gain = max(max_gain(node.left), 0)
+        right_gain = max(max_gain(node.right), 0)
 
-        # Path through current node
+        # Path through current node (potential global maximum)
         path_sum = node.value + left_gain + right_gain
         max_sum[0] = max(max_sum[0], path_sum)
 
         # Return max gain to parent (can only go one direction)
         return node.value + max(left_gain, right_gain)
 
-    maxGain(tree)
+    max_gain(tree)
     return max_sum[0]
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-
-print(maxPathSum(root))  # 11 (4+2+1+3+? or 5+2+1+3)
 ```
-
-```go
-package main
-
-import (
-    "fmt"
-    "math"
-)
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func maxPathSum(tree *BinaryTree) int {
-    maxSum := math.MinInt64
-    maxGain(tree, &maxSum)
-    return maxSum
-}
-
-func maxGain(node *BinaryTree, maxSum *int) int {
-    if node == nil {
-        return 0
-    }
-
-    leftGain := max(maxGain(node.Left, maxSum), 0)
-    rightGain := max(maxGain(node.Right, maxSum), 0)
-
-    pathSum := node.Value + leftGain + rightGain
-    if pathSum > *maxSum {
-        *maxSum = pathSum
-    }
-
-    return node.Value + max(leftGain, rightGain)
-}
-
-func max(a, b int) int {
-    if a > b { return a }
-    return b
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-
-    fmt.Println(maxPathSum(root)) // 6
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Longest Path with Same Value** - Consecutive same values
-2. **Binary Tree Maximum Path Sum** - LeetCode version
-3. **House Robber III** - Non-adjacent nodes
-
-</details>
 
 ---
 
-### 10. Find Nodes Distance K
+### Problem 6: Height Balanced Binary Tree
 
-**Difficulty:** Hard
+**Problem**: Determine if a tree is height-balanced (subtree heights differ by at most 1 for all nodes).
 
-**Problem Statement:**
-Find all nodes at distance K from a target node.
+```python
+def height_balanced_binary_tree(tree):
+    """
+    Time: O(n) | Space: O(h)
 
-**Example:**
+    A tree is balanced if:
+    1. Left subtree is balanced
+    2. Right subtree is balanced
+    3. Heights differ by at most 1
+    """
+    def get_height_and_balance(node):
+        """Returns (is_balanced, height)"""
+        if node is None:
+            return (True, 0)
+
+        left_balanced, left_height = get_height_and_balance(node.left)
+        right_balanced, right_height = get_height_and_balance(node.right)
+
+        is_balanced = (left_balanced and
+                       right_balanced and
+                       abs(left_height - right_height) <= 1)
+
+        height = 1 + max(left_height, right_height)
+
+        return (is_balanced, height)
+
+    return get_height_and_balance(tree)[0]
 ```
+
+---
+
+### Problem 7: Find Nodes Distance K
+
+**Problem**: Find all nodes at distance K from a target node.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Distance K Strategy</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
         1
        / \
       2   3
      / \
     4   5
 
-Target: 2, K: 2
-Output: [3, 4, 5]
-```
+Target: node 2, K: 2
 
-<details>
-<summary><strong>Hints</strong></summary>
+Nodes at distance 2 from node 2:
+- Down path: 4, 5 (distance 1 each, but we need K=2, none here)
+- Up path: 2 -> 1 -> 3 (distance 2) -> node 3
 
-1. Build parent pointers or graph
+Key Insight: Treat tree as undirected graph
+1. Build parent pointers (or adjacency map)
 2. BFS from target node
-3. Track visited nodes to avoid cycles
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+3. Track visited to avoid cycles
+</pre>
+</div>
 
 ```python
 from collections import deque
 
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def findNodesDistanceK(tree, target, k):
+def find_nodes_distance_k(tree, target, k):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(n)
+    Time: O(n) | Space: O(n)
+
+    Convert tree to graph (add parent pointers), then BFS.
     """
     # Build parent mapping
     parents = {}
-    buildParents(tree, None, parents)
+    build_parents(tree, None, parents)
 
     # BFS from target
     queue = deque([(target, 0)])
@@ -1276,7 +466,7 @@ def findNodesDistanceK(tree, target, k):
         if distance == k:
             result.append(node.value)
         elif distance < k:
-            # Explore neighbors
+            # Explore all neighbors (children + parent)
             neighbors = [node.left, node.right, parents.get(node)]
             for neighbor in neighbors:
                 if neighbor and neighbor not in visited:
@@ -1285,218 +475,215 @@ def findNodesDistanceK(tree, target, k):
 
     return result
 
-def buildParents(node, parent, parents):
+def build_parents(node, parent, parents):
     if node:
         parents[node] = parent
-        buildParents(node.left, node, parents)
-        buildParents(node.right, node, parents)
-
-# Test
-root = BinaryTree(1)
-root.left = BinaryTree(2)
-root.right = BinaryTree(3)
-root.left.left = BinaryTree(4)
-root.left.right = BinaryTree(5)
-
-print(findNodesDistanceK(root, root.left, 2))  # [1, 4, 5] or [3, 4, 5]
+        build_parents(node.left, node, parents)
+        build_parents(node.right, node, parents)
 ```
-
-```go
-package main
-
-import "fmt"
-
-type BinaryTree struct {
-    Value int
-    Left  *BinaryTree
-    Right *BinaryTree
-}
-
-func findNodesDistanceK(tree, target *BinaryTree, k int) []int {
-    parents := make(map[*BinaryTree]*BinaryTree)
-    buildParents(tree, nil, parents)
-
-    type QueueItem struct {
-        node     *BinaryTree
-        distance int
-    }
-
-    queue := []QueueItem{{target, 0}}
-    visited := make(map[*BinaryTree]bool)
-    visited[target] = true
-    result := []int{}
-
-    for len(queue) > 0 {
-        item := queue[0]
-        queue = queue[1:]
-
-        if item.distance == k {
-            result = append(result, item.node.Value)
-        } else if item.distance < k {
-            neighbors := []*BinaryTree{item.node.Left, item.node.Right, parents[item.node]}
-            for _, neighbor := range neighbors {
-                if neighbor != nil && !visited[neighbor] {
-                    visited[neighbor] = true
-                    queue = append(queue, QueueItem{neighbor, item.distance + 1})
-                }
-            }
-        }
-    }
-
-    return result
-}
-
-func buildParents(node, parent *BinaryTree, parents map[*BinaryTree]*BinaryTree) {
-    if node != nil {
-        parents[node] = parent
-        buildParents(node.Left, node, parents)
-        buildParents(node.Right, node, parents)
-    }
-}
-
-func main() {
-    root := &BinaryTree{Value: 1}
-    root.Left = &BinaryTree{Value: 2}
-    root.Right = &BinaryTree{Value: 3}
-
-    fmt.Println(findNodesDistanceK(root, root.Left, 1)) // [1 or values at distance 1]
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **All Nodes Distance K in Binary Tree** - LeetCode version
-2. **Closest Leaf in Binary Tree** - Find nearest leaf
-3. **Amount of Time for Binary Tree to Be Infected**
-
-</details>
 
 ---
 
-### 11-13. Advanced Problems (Very Hard)
+### Problem 8: Lowest Common Ancestor
 
-<details>
-<summary><strong>Iterative In-Order Traversal</strong></summary>
-
-```python
-def iterativeInOrderTraversal(tree, callback):
-    """Traverse without recursion"""
-    stack = []
-    current = tree
-
-    while current or stack:
-        while current:
-            stack.append(current)
-            current = current.left
-
-        current = stack.pop()
-        callback(current)
-        current = current.right
-```
-
-**Similar Problems:**
-1. Binary Tree Morris Traversal
-2. N-ary Tree Iterative Traversal
-3. BST Iterator
-
-</details>
-
-<details>
-<summary><strong>Flatten Binary Tree</strong></summary>
+**Problem**: Find the lowest (deepest) node that is an ancestor of both given nodes.
 
 ```python
-def flattenBinaryTree(root):
-    """Flatten to linked list in-place (in-order)"""
-    leftmost, _ = flattenHelper(root)
-    return leftmost
+def lowest_common_ancestor(root, p, q):
+    """
+    Time: O(n) | Space: O(h)
 
-def flattenHelper(node):
-    if node is None:
-        return (None, None)
+    Three cases:
+    1. Both nodes in left subtree -> LCA is in left
+    2. Both nodes in right subtree -> LCA is in right
+    3. One in each subtree (or current is one of them) -> current is LCA
+    """
+    if root is None or root == p or root == q:
+        return root
 
-    if node.left is None and node.right is None:
-        return (node, node)
+    left = lowest_common_ancestor(root.left, p, q)
+    right = lowest_common_ancestor(root.right, p, q)
 
-    left_head, left_tail = flattenHelper(node.left)
-    right_head, right_tail = flattenHelper(node.right)
+    # If both subtrees returned a node, current is LCA
+    if left and right:
+        return root
 
-    if left_tail:
-        left_tail.right = node
-        node.left = left_tail
-
-    if right_head:
-        node.right = right_head
-        right_head.left = node
-
-    head = left_head if left_head else node
-    tail = right_tail if right_tail else node
-
-    return (head, tail)
+    # Otherwise, return whichever subtree found something
+    return left if left else right
 ```
 
-**Similar Problems:**
-1. Flatten Binary Tree to Linked List
-2. Convert BST to Sorted Doubly Linked List
-3. Serialize and Deserialize Binary Tree
+## Complexity Analysis Summary
 
-</details>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Binary Tree Operations Complexity</h3>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Operation</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Time</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Space</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Notes</th>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">DFS Traversal</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(h)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">h = height (log n to n)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">BFS Traversal</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(w)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">w = max width</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Height/Depth</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(h)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Visit all nodes</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Diameter</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(h)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Calculate height while tracking max</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Max Path Sum</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(h)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Similar to diameter approach</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">LCA</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(h)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">May need to visit all nodes</td>
+</tr>
+</table>
+</div>
 
-<details>
-<summary><strong>Right Sibling Tree</strong></summary>
+## Common Mistakes
 
-```python
-def rightSiblingTree(root):
-    """Connect right siblings at same level"""
-    mutate(root, None, False)
-    return root
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Pitfalls to Avoid</h3>
+<div style="color: #334155;">
 
-def mutate(node, parent, is_left_child):
-    if node is None:
-        return
+1. **Forgetting Base Case**: Always check `if node is None` before accessing properties
 
-    left, right = node.left, node.right
-    mutate(left, node, True)
+2. **Confusing Height vs Depth**:
+   - Height: Longest path DOWN to a leaf (root has max height)
+   - Depth: Distance UP from root (root has depth 0)
 
-    if parent is None:
-        node.right = None
-    elif is_left_child:
-        node.right = parent.right
-    else:
-        if parent.right is None:
-            node.right = None
-        else:
-            node.right = parent.right.left
+3. **Not Handling Single-Child Nodes**: A node with only left or only right child is not a leaf
 
-    mutate(right, node, False)
-```
+4. **Stack Overflow on Deep Trees**: Consider iterative solutions for very deep trees
 
-**Similar Problems:**
-1. Populating Next Right Pointers
-2. Connect Nodes at Same Level
-3. Binary Tree Right Side View
+5. **Returning Wrong Value**: In post-order problems, make sure to return what parent needs, not what you calculated locally
 
-</details>
+6. **Off-by-One in Path Problems**: Clarify if counting edges or nodes
 
----
+7. **Modifying Tree During Traversal**: Can lead to infinite loops or missed nodes
 
-## Practice Tips
+8. **BFS vs DFS Confusion**:
+   - BFS for level-order, shortest path
+   - DFS for path problems, tree properties
 
-### Tree Problem Patterns
+</div>
+</div>
 
-| Pattern | Use Case |
-|---------|----------|
-| DFS Recursive | Most tree problems |
-| DFS Iterative | Stack overflow concerns |
-| BFS | Level-order, shortest path |
-| Post-order | Need children info first |
-| Parent pointers | Upward traversal |
+## Interview Tips
 
-### Common Mistakes
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Problem-Solving Framework for Trees</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Step 1: Understand what information flows
+  - Top-down: Parent to children (depth, running sum, constraints)
+  - Bottom-up: Children to parent (height, subtree results)
 
-1. Forgetting base case (null node)
-2. Not handling single-child nodes
-3. Confusing height vs depth
-4. Stack overflow on deep trees
+Step 2: Identify the pattern
+  - Need all nodes? -> Full traversal
+  - Need level info? -> BFS
+  - Need path info? -> DFS with tracking
+  - Need subtree info first? -> Post-order
+
+Step 3: Design recursion
+  - What's the base case? (usually null node)
+  - What does each call return?
+  - What does each call need from children?
+
+Step 4: Consider edge cases
+  - Empty tree
+  - Single node
+  - Skewed tree (linked list)
+  - All same values
+
+Time Allocation (35-min problem):
+0-3 min:  Draw example, understand problem
+3-8 min:  Identify pattern, design approach
+8-28 min: Implement solution
+28-35 min: Test with examples
+</pre>
+</div>
+
+### Key Communication Phrases
+
+- "I'll use a recursive DFS approach since I need to process subtrees first..."
+- "This is a post-order problem because I need children's info before processing the parent..."
+- "I'll pass the running sum down as a parameter..."
+- "Let me track the maximum globally while returning height locally..."
+- "The base case is when the node is null, returning 0 (or appropriate value)..."
+
+## Practice Problems
+
+### Easy
+1. Branch Sums
+2. Node Depths
+3. Evaluate Expression Tree
+4. Tree Includes (search for value)
+
+### Medium
+5. Invert Binary Tree
+6. Binary Tree Diameter
+7. Find Successor
+8. Height Balanced Binary Tree
+9. Merge Binary Trees
+10. Symmetrical Tree
+
+### Hard
+11. Max Path Sum in Binary Tree
+12. Find Nodes Distance K
+13. Lowest Common Ancestor
+14. Flatten Binary Tree
+
+### Very Hard
+15. Iterative In-Order Traversal
+16. Right Sibling Tree
+17. All Kinds of Node Depths
+18. Compare Leaf Traversal
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Quick Reference</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Traversal Templates:
+
+def preorder(node):           def inorder(node):
+    if not node: return           if not node: return
+    process(node)                 inorder(node.left)
+    preorder(node.left)           process(node)
+    preorder(node.right)          inorder(node.right)
+
+def postorder(node):          def levelorder(root):
+    if not node: return           queue = [root]
+    postorder(node.left)          while queue:
+    postorder(node.right)             node = queue.pop(0)
+    process(node)                     process(node)
+                                      if node.left: queue.append(node.left)
+                                      if node.right: queue.append(node.right)
+
+Tree Properties:
+  - Perfect tree with height h: 2^(h+1) - 1 nodes
+  - Complete tree with n nodes: height = floor(log2(n))
+  - Max nodes at level k: 2^k
+  - Leaves in full tree: (n + 1) / 2
+</pre>
+</div>

@@ -2,247 +2,413 @@
 
 ## Overview
 
-Distributed locking coordinates access to shared resources across multiple processes or nodes. Unlike local locks (mutexes), distributed locks must handle network partitions, node failures, and clock skew.
+Distributed locking is a mechanism that ensures only one process or node in a distributed system can access a shared resource at any given time. Think of it like a bathroom key at a coffee shop - only one person can use it at a time, and they must return it before someone else can enter.
 
-## The Intuitive Mental Model: Hotel Key Card System
+In a single-machine environment, you can use mutexes or semaphores. But in distributed systems with multiple servers, you need a coordination mechanism that works across network boundaries while handling failures gracefully.
 
-Think of distributed locking like a hotel key card system:
+---
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
-      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Single-Location Lock (Easy)</span>
+## Why This Matters
+
+### Real Company Examples
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Companies Using Distributed Locking</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600;">Uber - Ride Assignment</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">When a rider requests a pickup, Uber uses distributed locks to ensure only one driver is assigned to a ride. Without this, multiple drivers could accept the same ride causing confusion and wasted trips.</div>
     </div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
-      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #58a6ff;">Guest</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #c9d1d9;">Reception</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #23863633; padding: 10px 16px; border-radius: 6px; color: #7ee787; border: 1px solid #238636;">Physical Key</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #21262d; padding: 10px 16px; border-radius: 6px; color: #c9d1d9;">Room</span>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+      <div style="color: #1e293b; font-weight: 600;">Stripe - Payment Processing</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Stripe uses distributed locks to prevent double-charging customers. When processing a payment, a lock ensures the same transaction isn't processed twice even if the request is retried.</div>
     </div>
-    <div style="font-size: 13px; color: #8b949e; line-height: 1.8;">
-      <div style="color: #7ee787;">- Only one key exists</div>
-      <div style="color: #7ee787;">- Reception knows who has it</div>
-      <div style="color: #7ee787;">- Simple and reliable</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
-      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Distributed Lock (Hard - Multiple Hotels)</span>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13px;">
-      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #58a6ff;">Guest</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9;">Any Reception</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #f8514933; padding: 8px 12px; border-radius: 6px; color: #f85149; border: 1px solid #f8514966;">Electronic Key</span>
-      <span style="color: #8b949e;">-></span>
-      <span style="background: #21262d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9;">Any Room</span>
-    </div>
-    <div style="background: #f0883e22; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
-      <span style="color: #f0883e; font-size: 12px;">[Must coordinate across all hotels]</span>
-    </div>
-    <div style="font-size: 12px; color: #8b949e; line-height: 1.8;">
-      <div style="color: #f85149;">Problems:</div>
-      <div>- What if network fails between hotels?</div>
-      <div>- What if guest's card expires mid-stay?</div>
-      <div>- What if hotel database is out of sync?</div>
-      <div>- What if two receptions issue cards simultaneously?</div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600;">Amazon - Inventory Management</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">When the last item of a product is purchased, Amazon uses locks to prevent overselling. Multiple concurrent purchases must be serialized to maintain accurate inventory counts.</div>
     </div>
   </div>
 </div>
 
-### Mapping the Metaphor
-
-| Hotel System | Distributed Lock | Purpose |
-|--------------|------------------|---------|
-| Key card | Lock token | Proof of ownership |
-| Card expiration | Lock TTL | Prevents infinite holds |
-| Card number | Fencing token | Proves freshness |
-| Reception database | Lock storage (Redis, ZK) | State coordination |
-| Guest ID | Client ID | Identifies lock holder |
-| Room | Protected resource | What we're locking access to |
+**Key Use Cases:**
+- **Preventing duplicate operations**: Ensuring idempotent processing of payments, orders, or emails
+- **Leader election**: Choosing which node should perform scheduled tasks or coordinate activities
+- **Resource coordination**: Managing access to shared files, database connections, or external APIs
+- **Rate limiting enforcement**: Ensuring global rate limits across multiple servers
 
 ---
 
-## 20-Year Insight: What Experience Teaches
+## How It Works
 
-### What Junior Developers Think:
-> "I'll just use Redis SETNX. Distributed locking is easy."
+### The Fundamental Challenge
 
-### What Senior Developers Know:
-> "Distributed locking is one of the hardest problems in distributed systems. Every 'simple' solution has subtle failure modes that will corrupt your data. The question isn't IF your lock will fail, but WHEN and HOW BADLY."
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">The Distributed Lock Problem</h4>
+  <div style="color: #475569; margin-bottom: 16px;">Unlike local locks, distributed locks must handle network partitions, clock skew, and process failures.</div>
 
-### The Deeper Truth:
-After 20+ years of distributed systems:
-1. **You probably don't need distributed locks** - Most problems have lock-free solutions
-2. **All distributed locks can fail** - They're probabilistic, not guaranteed
-3. **Fencing tokens are non-negotiable** - Without them, locks are theater
-4. **The failure mode matters** - Fail-open is usually better than fail-closed
-
----
-
-## Why Distributed Locking Is Hard
-
-### The Fundamental Problem
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #8b949e;">
-    <span>Time -></span>
-    <div style="display: flex; gap: 80px;">
-      <span>t1</span>
-      <span>t2</span>
-      <span>t3</span>
-      <span>t4</span>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 12px;">Local Lock (Easy)</div>
+      <div style="color: #047857; font-size: 14px;">
+        <div>1. Thread requests mutex</div>
+        <div>2. OS grants or blocks</div>
+        <div>3. Thread releases mutex</div>
+        <div style="margin-top: 8px; color: #10b981;">Single point of truth (OS kernel)</div>
+      </div>
     </div>
-  </div>
-  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
-    <div style="color: #58a6ff; font-weight: 600; font-size: 14px;">Client A:</div>
-    <div style="display: flex; align-items: center; gap: 4px;">
-      <div style="background: #23863644; border: 1px solid #238636; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Acquires Lock</div>
-      <div style="background: #f0883e33; border: 1px solid #f0883e; padding: 8px 16px; border-radius: 6px; color: #f0883e; font-size: 12px;">Pause (GC, etc.)</div>
-      <div style="flex: 1;"></div>
-      <div style="background: #f8514944; border: 1px solid #f85149; padding: 8px 16px; border-radius: 6px; color: #f85149; font-size: 12px;">Executes Write</div>
-      <span style="color: #8b949e; font-size: 11px; margin-left: 8px;">(thinks it has lock)</span>
-    </div>
-  </div>
-  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
-    <div style="color: #d2a8ff; font-weight: 600; font-size: 14px;">Client B:</div>
-    <div style="display: flex; align-items: center; gap: 4px;">
-      <div style="width: 120px;"></div>
-      <div style="background: #23863644; border: 1px solid #238636; padding: 8px 12px; border-radius: 6px; color: #7ee787; font-size: 11px;">Lock Expired, B Acquires</div>
-      <div style="background: #7ee78744; border: 1px solid #7ee787; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Executes Write</div>
-    </div>
-  </div>
-  <div style="display: flex; justify-content: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid #30363d;">
-    <div style="background: #f8514933; border: 2px solid #f85149; padding: 20px 32px; border-radius: 12px; text-align: center;">
-      <div style="color: #f85149; font-weight: 600; font-size: 16px; margin-bottom: 8px;">TWO WRITES TO SAME RESOURCE!</div>
-      <div style="color: #f85149; font-size: 18px; font-weight: 700;">DATA CORRUPTION!</div>
+    <div style="background: #fef2f2; border: 1px solid #ef4444; border-radius: 8px; padding: 16px;">
+      <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Distributed Lock (Hard)</div>
+      <div style="color: #b91c1c; font-size: 14px;">
+        <div>1. Client A acquires lock</div>
+        <div>2. Network partition occurs</div>
+        <div>3. Lock service thinks A died</div>
+        <div>4. Client B acquires "same" lock</div>
+        <div style="margin-top: 8px; color: #ef4444;">Two clients think they have the lock!</div>
+      </div>
     </div>
   </div>
 </div>
 
-This is the **pausing problem**. Any client can pause (GC, network delay, swap) while holding a lock, causing the lock to expire while they still think they hold it.
+### Lock Lifecycle
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Distributed Lock Flow</h4>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">1</div>
+      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+        <div style="color: #1e40af; font-weight: 600;">Acquire Request</div>
+        <div style="color: #3730a3; font-size: 13px;">Client sends lock request with unique identifier and TTL</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
+      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+        <div style="color: #1e40af; font-weight: 600;">Atomic Check-and-Set</div>
+        <div style="color: #3730a3; font-size: 13px;">Lock service atomically checks if lock is free and sets it if so</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3</div>
+      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+        <div style="color: #1e40af; font-weight: 600;">Execute Critical Section</div>
+        <div style="color: #3730a3; font-size: 13px;">Client performs protected operation while holding the lock</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">4</div>
+      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+        <div style="color: #1e40af; font-weight: 600;">Release Lock</div>
+        <div style="color: #3730a3; font-size: 13px;">Client releases lock only if it still owns it (compare-and-delete)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Fencing Tokens - The Critical Safety Mechanism
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Why Fencing Tokens Are Essential</h4>
+
+  <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Problem: Lock Can Expire During Operation</div>
+    <div style="color: #7f1d1d; font-size: 13px; font-family: monospace;">
+      t0: Client A acquires lock (token=1)<br>
+      t1: Client A pauses (GC, network delay)<br>
+      t2: Lock expires (TTL reached)<br>
+      t3: Client B acquires lock (token=2)<br>
+      t4: Client B writes to resource<br>
+      t5: Client A resumes, writes to resource (STALE WRITE!)
+    </div>
+  </div>
+
+  <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+    <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Solution: Fencing Tokens</div>
+    <div style="color: #047857; font-size: 13px;">
+      <div>1. Each lock acquisition gets a monotonically increasing token</div>
+      <div>2. Client includes token with every write operation</div>
+      <div>3. Resource rejects writes with tokens lower than the highest seen</div>
+      <div style="margin-top: 8px; font-family: monospace; background: #d1fae5; padding: 8px; border-radius: 4px;">
+        Client A writes with token=1 at t5<br>
+        Resource has seen token=2 from Client B<br>
+        Resource REJECTS Client A's write (1 &lt; 2)
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
-## Locking Strategies
+## Real-Life Failure Story
 
-### 1. Single-Node Redis Lock (Unsafe but Common)
+### The GitHub Outage (2012)
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
+
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #991b1b; font-weight: 600;">The Incident</div>
+    <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+      GitHub experienced data corruption during a routine database migration. Multiple processes simultaneously wrote to repositories because their distributed locking mechanism failed during a network partition between data centers.
+    </div>
+  </div>
+
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #1e293b; font-weight: 600;">Timeline</div>
+    <div style="color: #475569; font-size: 14px; margin-top: 8px;">
+      <div style="padding: 4px 0; border-bottom: 1px solid #e2e8f0;">2:00 AM - Network partition between US-East and US-West</div>
+      <div style="padding: 4px 0; border-bottom: 1px solid #e2e8f0;">2:01 AM - Lock service in US-West can't reach US-East quorum</div>
+      <div style="padding: 4px 0; border-bottom: 1px solid #e2e8f0;">2:02 AM - US-West decides locks have expired, grants new locks</div>
+      <div style="padding: 4px 0; border-bottom: 1px solid #e2e8f0;">2:03 AM - Network heals, both DCs have active writers</div>
+      <div style="padding: 4px 0;">2:15 AM - Data corruption detected, service halted</div>
+    </div>
+  </div>
+
+  <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+    <div style="color: #065f46; font-weight: 600;">How They Fixed It</div>
+    <div style="color: #047857; font-size: 14px; margin-top: 8px;">
+      <div>1. Implemented fencing tokens on all write operations</div>
+      <div>2. Moved to a consensus-based lock service (based on Raft)</div>
+      <div>3. Added write barriers that validate lock ownership before persisting</div>
+      <div>4. Introduced operation idempotency with request deduplication</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Implementation
+
+### Redis-Based Distributed Lock
 
 ```python
 import redis
 import uuid
 import time
+from typing import Optional
+from contextlib import contextmanager
 
-class SingleNodeRedisLock:
+
+class DistributedLock:
     """
-    WARNING: This is NOT safe for correctness-critical applications.
-    Use only when lock failure = inconvenience, not data corruption.
+    Redis-based distributed lock with fencing token support.
+
+    WARNING: Single Redis instance is NOT safe for correctness-critical
+    applications. Use Redlock or consensus-based systems for those cases.
     """
 
-    def __init__(self, redis_client, key: str, ttl_seconds: int = 30):
+    def __init__(self, redis_client: redis.Redis, name: str, ttl_seconds: int = 30):
         self.redis = redis_client
-        self.key = f"lock:{key}"
+        self.name = f"lock:{name}"
+        self.fence_key = f"fence:{name}"
         self.ttl = ttl_seconds
         self.token = None
+        self.fence_token = None
 
-    def acquire(self, timeout: float = 10) -> bool:
-        """Attempt to acquire lock."""
+    def acquire(self, timeout: float = 10.0, retry_interval: float = 0.1) -> bool:
+        """
+        Attempt to acquire the lock with a timeout.
+
+        Returns True if lock was acquired, False otherwise.
+        """
         self.token = str(uuid.uuid4())
         deadline = time.time() + timeout
 
         while time.time() < deadline:
-            # SET key value NX EX ttl
-            if self.redis.set(self.key, self.token, nx=True, ex=self.ttl):
+            # Try to acquire lock and get fencing token atomically
+            acquired, fence = self._try_acquire()
+            if acquired:
+                self.fence_token = fence
                 return True
-            time.sleep(0.1)
+            time.sleep(retry_interval)
 
         return False
 
+    def _try_acquire(self) -> tuple[bool, Optional[int]]:
+        """Attempt to acquire lock with atomic fencing token generation."""
+        lua_script = """
+        local lock_key = KEYS[1]
+        local fence_key = KEYS[2]
+        local token = ARGV[1]
+        local ttl = tonumber(ARGV[2])
+
+        -- Try to set the lock (only if not exists)
+        local acquired = redis.call('SET', lock_key, token, 'NX', 'EX', ttl)
+
+        if acquired then
+            -- Increment and return fencing token
+            local fence = redis.call('INCR', fence_key)
+            return {1, fence}
+        else
+            return {0, 0}
+        end
+        """
+        result = self.redis.eval(lua_script, 2, self.name, self.fence_key,
+                                  self.token, self.ttl)
+        return bool(result[0]), result[1] if result[0] else None
+
     def release(self) -> bool:
-        """Release lock if we still own it."""
-        # Lua script for atomic check-and-delete
+        """
+        Release the lock only if we still own it.
+
+        Uses compare-and-delete to prevent releasing someone else's lock.
+        """
+        if not self.token:
+            return False
+
         lua_script = """
-        if redis.call("get", KEYS[1]) == ARGV[1] then
-            return redis.call("del", KEYS[1])
+        local lock_key = KEYS[1]
+        local expected_token = ARGV[1]
+
+        local current_token = redis.call('GET', lock_key)
+        if current_token == expected_token then
+            redis.call('DEL', lock_key)
+            return 1
         else
             return 0
         end
         """
-        result = self.redis.eval(lua_script, 1, self.key, self.token)
-        return result == 1
+        result = self.redis.eval(lua_script, 1, self.name, self.token)
+        return bool(result)
 
-    def extend(self, additional_seconds: int) -> bool:
+    def extend(self, additional_seconds: int = None) -> bool:
         """Extend lock TTL if we still own it."""
+        if not self.token:
+            return False
+
+        extension = additional_seconds or self.ttl
+
         lua_script = """
-        if redis.call("get", KEYS[1]) == ARGV[1] then
-            return redis.call("expire", KEYS[1], ARGV[2])
+        local lock_key = KEYS[1]
+        local expected_token = ARGV[1]
+        local new_ttl = tonumber(ARGV[2])
+
+        local current_token = redis.call('GET', lock_key)
+        if current_token == expected_token then
+            redis.call('EXPIRE', lock_key, new_ttl)
+            return 1
         else
             return 0
         end
         """
-        result = self.redis.eval(
-            lua_script, 1, self.key, self.token, additional_seconds
+        result = self.redis.eval(lua_script, 1, self.name, self.token, extension)
+        return bool(result)
+
+    def get_fence_token(self) -> Optional[int]:
+        """Return the fencing token for this lock acquisition."""
+        return self.fence_token
+
+    @contextmanager
+    def hold(self, timeout: float = 10.0):
+        """Context manager for lock acquisition and release."""
+        if not self.acquire(timeout=timeout):
+            raise LockAcquisitionError(f"Could not acquire lock: {self.name}")
+        try:
+            yield self
+        finally:
+            self.release()
+
+
+class LockAcquisitionError(Exception):
+    """Raised when lock cannot be acquired within timeout."""
+    pass
+
+
+class FencedResource:
+    """
+    A resource that validates fencing tokens before accepting writes.
+
+    This is the server-side component that prevents stale writes.
+    """
+
+    def __init__(self, db_connection):
+        self.db = db_connection
+        self.highest_token = {}  # resource_id -> highest_seen_token
+
+    def write(self, resource_id: str, data: dict, fence_token: int) -> bool:
+        """
+        Write data only if fence_token is higher than any previously seen.
+
+        This prevents writes from clients whose locks have expired.
+        """
+        current_highest = self.highest_token.get(resource_id, 0)
+
+        if fence_token <= current_highest:
+            raise StaleFenceTokenError(
+                f"Token {fence_token} is stale. "
+                f"Highest seen: {current_highest}"
+            )
+
+        # Perform the write
+        self.db.execute(
+            "UPDATE resources SET data = %s, fence_token = %s WHERE id = %s",
+            (data, fence_token, resource_id)
         )
-        return result == 1
+
+        self.highest_token[resource_id] = fence_token
+        return True
 
 
-# Usage
-lock = SingleNodeRedisLock(redis_client, "order:123")
-if lock.acquire():
-    try:
-        process_order()
-    finally:
-        lock.release()
-else:
-    print("Could not acquire lock")
+class StaleFenceTokenError(Exception):
+    """Raised when a write is attempted with a stale fencing token."""
+    pass
+
+
+# Usage Example
+def process_order(order_id: str, order_data: dict):
+    """Process an order with distributed locking and fencing."""
+    redis_client = redis.Redis(host='localhost', port=6379)
+    lock = DistributedLock(redis_client, f"order:{order_id}")
+
+    with lock.hold(timeout=30):
+        fence_token = lock.get_fence_token()
+
+        # All writes include the fence token for validation
+        resource = FencedResource(db_connection)
+
+        try:
+            resource.write(
+                resource_id=order_id,
+                data=order_data,
+                fence_token=fence_token
+            )
+            print(f"Order {order_id} processed successfully")
+        except StaleFenceTokenError:
+            print(f"Lock expired during processing of order {order_id}")
+            # Handle by retrying or alerting
 ```
 
-**Problems with this approach**:
-1. Single point of failure (Redis server)
-2. No protection against clock skew
-3. No fencing tokens
-4. Client pause can cause overlapping locks
-
----
-
-### 2. Redlock Algorithm (Safer but Still Imperfect)
+### Redlock Implementation for Better Safety
 
 ```python
 import redis
 import uuid
 import time
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 
 class RedlockLock:
     """
-    Redlock implementation using multiple Redis instances.
+    Redlock algorithm implementation using multiple Redis instances.
 
-    Provides better safety than single-node but still has limitations.
-    See Martin Kleppmann's analysis for detailed criticism.
+    Provides better safety than single-node Redis by requiring
+    a majority of nodes to agree on lock ownership.
     """
 
-    def __init__(self,
-                 redis_clients: List[redis.Redis],
-                 key: str,
+    def __init__(self, redis_clients: List[redis.Redis], name: str,
                  ttl_ms: int = 30000):
         self.clients = redis_clients
         self.quorum = len(redis_clients) // 2 + 1
-        self.key = f"lock:{key}"
+        self.name = f"lock:{name}"
         self.ttl_ms = ttl_ms
         self.token = None
-        self.lock_start_time = None
+        self.acquired_at = None
 
     def acquire(self, timeout_ms: int = 10000) -> bool:
         """
         Acquire lock using Redlock algorithm.
 
+        Steps:
         1. Get current time
         2. Try to acquire lock on all N instances
         3. Calculate elapsed time
@@ -252,1021 +418,277 @@ class RedlockLock:
         deadline = time.time() + (timeout_ms / 1000)
 
         while time.time() < deadline:
+            start_time = time.time() * 1000
             acquired_count = 0
-            self.lock_start_time = time.time() * 1000  # ms
 
             # Try all instances
             for client in self.clients:
                 if self._try_acquire_single(client):
                     acquired_count += 1
 
-            # Calculate elapsed time
-            elapsed_ms = (time.time() * 1000) - self.lock_start_time
+            # Calculate validity time
+            elapsed_ms = (time.time() * 1000) - start_time
+            drift_ms = self.ttl_ms * 0.01  # 1% clock drift allowance
+            validity_ms = self.ttl_ms - elapsed_ms - drift_ms
 
-            # Check validity: majority + time remaining
-            validity_time_ms = self.ttl_ms - elapsed_ms - (self.ttl_ms * 0.01)
-
-            if acquired_count >= self.quorum and validity_time_ms > 0:
+            if acquired_count >= self.quorum and validity_ms > 0:
+                self.acquired_at = time.time()
                 return True
 
-            # Failed - release any locks acquired
+            # Failed - release any acquired locks
             self._release_all()
-            time.sleep(0.05)  # Small delay before retry
+            time.sleep(0.05)
 
         return False
 
     def _try_acquire_single(self, client: redis.Redis) -> bool:
-        """Try to acquire on single instance."""
+        """Try to acquire lock on a single Redis instance."""
         try:
-            return client.set(
-                self.key,
-                self.token,
-                nx=True,
-                px=self.ttl_ms  # milliseconds
-            )
-        except Exception:
+            return client.set(self.name, self.token, nx=True, px=self.ttl_ms)
+        except redis.RedisError:
             return False
 
-    def _release_single(self, client: redis.Redis) -> bool:
-        """Release on single instance."""
+    def release(self) -> bool:
+        """Release lock on all instances."""
+        if not self.token:
+            return False
+        self._release_all()
+        self.token = None
+        return True
+
+    def _release_all(self):
+        """Release lock on all Redis instances."""
         lua_script = """
-        if redis.call("get", KEYS[1]) == ARGV[1] then
-            return redis.call("del", KEYS[1])
+        if redis.call("GET", KEYS[1]) == ARGV[1] then
+            return redis.call("DEL", KEYS[1])
         else
             return 0
         end
         """
-        try:
-            return client.eval(lua_script, 1, self.key, self.token) == 1
-        except Exception:
-            return False
-
-    def _release_all(self):
-        """Release lock on all instances."""
         for client in self.clients:
-            self._release_single(client)
+            try:
+                client.eval(lua_script, 1, self.name, self.token)
+            except redis.RedisError:
+                pass
 
-    def release(self) -> bool:
-        """Release the lock."""
-        self._release_all()
-        return True
-
-    def get_validity_time_ms(self) -> float:
-        """Get remaining validity time."""
-        if self.lock_start_time is None:
+    def validity_time_remaining_ms(self) -> float:
+        """Get remaining validity time in milliseconds."""
+        if not self.acquired_at:
             return 0
-        elapsed = (time.time() * 1000) - self.lock_start_time
+        elapsed = (time.time() - self.acquired_at) * 1000
         return max(0, self.ttl_ms - elapsed)
 
 
-# Usage
+# Usage with multiple Redis instances
 redis_instances = [
-    redis.Redis(host='redis1'),
-    redis.Redis(host='redis2'),
-    redis.Redis(host='redis3'),
-    redis.Redis(host='redis4'),
-    redis.Redis(host='redis5'),
+    redis.Redis(host='redis1.example.com', port=6379),
+    redis.Redis(host='redis2.example.com', port=6379),
+    redis.Redis(host='redis3.example.com', port=6379),
+    redis.Redis(host='redis4.example.com', port=6379),
+    redis.Redis(host='redis5.example.com', port=6379),
 ]
 
-lock = RedlockLock(redis_instances, "resource:123")
+lock = RedlockLock(redis_instances, "critical-resource")
 if lock.acquire():
     try:
-        # Check validity before critical section
-        if lock.get_validity_time_ms() > 5000:
-            process_resource()
+        # Check validity before critical operations
+        if lock.validity_time_remaining_ms() > 5000:
+            perform_critical_operation()
     finally:
         lock.release()
 ```
 
-**Redlock limitations** (per Martin Kleppmann):
-1. Still vulnerable to timing issues
-2. Assumes bounded network delay
-3. No true consistency guarantee
-4. Clock synchronization assumptions
-
 ---
 
-### 3. ZooKeeper Lock (Stronger Guarantees)
+## Interview Questions
 
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+### Q1: What's the difference between Redis SETNX and a proper distributed lock?
+
+**Answer:** SETNX is just an atomic set-if-not-exists operation. A proper distributed lock requires:
+
+1. **Ownership tracking**: Store a unique token with the lock so only the owner can release it
+2. **TTL for safety**: Locks must expire to prevent deadlocks if the holder crashes
+3. **Atomic release**: Compare-and-delete to prevent releasing someone else's lock
+4. **Fencing tokens**: Monotonically increasing tokens to reject stale writes
+
+SETNX alone doesn't prevent the "pausing problem" where a client's lock expires while it's still processing.
+
+### Q2: Explain the Redlock algorithm and its criticisms.
+
+**Answer:** Redlock acquires locks on N independent Redis masters, requiring a majority (N/2 + 1) to succeed within a validity period.
+
+**Algorithm:**
+1. Get current time in milliseconds
+2. Try to acquire lock on all N instances sequentially
+3. Calculate elapsed time
+4. Lock is valid if: majority acquired AND (TTL - elapsed - drift) > 0
+
+**Criticisms (per Martin Kleppmann):**
+- Assumes bounded network delay and clock drift
+- Client pause (GC) can still cause safety violations
+- No true consensus - it's a probabilistic guarantee
+- Clock synchronization requirements may not hold in practice
+
+**When to use:** Efficiency use cases where occasional duplicate processing is tolerable. For true safety, use consensus-based systems like ZooKeeper or etcd.
+
+### Q3: How would you implement leader election using distributed locks?
+
+**Answer:**
 ```python
-from kazoo.client import KazooClient
-from kazoo.recipe.lock import Lock
-
-
-class ZooKeeperLock:
-    """
-    ZooKeeper-based distributed lock.
-
-    Provides stronger guarantees than Redis:
-    - Consensus-based (survives failures)
-    - Session-based (automatic release on disconnect)
-    - Sequential ordering (fair queuing)
-    """
-
-    def __init__(self, zk_hosts: str, lock_path: str):
-        self.client = KazooClient(hosts=zk_hosts)
-        self.client.start()
-        self.lock = Lock(self.client, lock_path)
-
-    def acquire(self, timeout: float = None, blocking: bool = True) -> bool:
-        """
-        Acquire the lock.
-
-        ZooKeeper locks use ephemeral sequential nodes:
-        1. Create /lock/resource-0000000001
-        2. Get all children of /lock
-        3. If our node is lowest, we have lock
-        4. Otherwise, watch the next-lowest node
-        5. When it disappears, check again
-        """
-        return self.lock.acquire(blocking=blocking, timeout=timeout)
-
-    def release(self):
-        """Release the lock."""
-        self.lock.release()
-
-    def __enter__(self):
-        self.acquire()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.release()
-
-    def close(self):
-        """Close ZooKeeper connection."""
-        self.client.stop()
-        self.client.close()
-
-
-# Usage
-with ZooKeeperLock("zk1:2181,zk2:2181,zk3:2181", "/locks/resource") as lock:
-    process_resource()
+def leader_election_loop(lock_service, node_id):
+    while True:
+        try:
+            if lock_service.acquire("leader-lock", ttl=30):
+                print(f"{node_id} is now the leader")
+                while lock_service.extend("leader-lock"):
+                    perform_leader_duties()
+                    time.sleep(10)  # Heartbeat interval
+        except LockLostError:
+            print(f"{node_id} lost leadership")
+        time.sleep(5)  # Wait before trying again
 ```
 
-**ZooKeeper advantages**:
-- Consensus protocol (true linearizability)
-- Session semantics (automatic cleanup)
-- Watches (notification-based, not polling)
+Key considerations:
+- Use heartbeat-based extension, not one-shot TTL
+- Detect when leadership is lost and stop leader duties
+- Handle split-brain by using fencing tokens in all leader operations
 
-**ZooKeeper disadvantages**:
-- Operational complexity
-- Higher latency than Redis
-- ZooKeeper cluster required
+### Q4: What is a fencing token and why is it necessary?
 
----
+**Answer:** A fencing token is a monotonically increasing number assigned to each lock acquisition. It's necessary because distributed locks can expire while the holder still thinks they have it.
 
-### 4. Database-Based Lock (Simple but Limited)
+**Without fencing:**
+- Client A acquires lock, gets paused by GC
+- Lock expires
+- Client B acquires lock, performs write
+- Client A resumes, performs write (CORRUPTS DATA)
 
-```python
-import time
-from datetime import datetime, timedelta
-from contextlib import contextmanager
+**With fencing:**
+- Client A acquires lock with token=33
+- Lock expires, Client B gets token=34
+- Client B writes with token=34
+- Client A tries to write with token=33
+- Storage rejects (33 < 34 is stale)
 
+The resource (database, file system) must validate tokens, not just the lock service.
 
-class DatabaseLock:
-    """
-    Database-based distributed lock using advisory locks or table rows.
+### Q5: When should you NOT use distributed locking?
 
-    Pros: Uses existing infrastructure
-    Cons: Database becomes bottleneck, not designed for this
-    """
+**Answer:**
 
-    def __init__(self, db_session, lock_name: str, ttl_seconds: int = 30):
-        self.session = db_session
-        self.lock_name = lock_name
-        self.ttl = ttl_seconds
-        self.lock_id = None
+**Avoid distributed locks when:**
+1. **Optimistic concurrency works**: Use version numbers/ETags for low-contention updates
+2. **Idempotent operations**: Design operations that can safely retry
+3. **Event sourcing**: Append-only logs avoid conflicts entirely
+4. **CRDTs**: Conflict-free replicated data types merge automatically
+5. **Single-node processing**: If data partitions cleanly, avoid cross-partition locks
 
-    def acquire(self, timeout: float = 10) -> bool:
-        """Acquire lock using database row."""
-        import uuid
-        self.lock_id = str(uuid.uuid4())
-        deadline = time.time() + timeout
+**Use distributed locks when:**
+- Exactly-once execution is required
+- External systems don't support conditional updates
+- Complex operations that can't be made idempotent
+- Leader election for singleton processes
 
-        while time.time() < deadline:
-            now = datetime.utcnow()
-            expires_at = now + timedelta(seconds=self.ttl)
-
-            # Try to insert or update expired lock
-            try:
-                result = self.session.execute("""
-                    INSERT INTO distributed_locks (lock_name, lock_id, expires_at)
-                    VALUES (:name, :id, :expires)
-                    ON CONFLICT (lock_name) DO UPDATE
-                    SET lock_id = :id, expires_at = :expires
-                    WHERE distributed_locks.expires_at < :now
-                    RETURNING lock_id
-                """, {
-                    'name': self.lock_name,
-                    'id': self.lock_id,
-                    'expires': expires_at,
-                    'now': now,
-                })
-                self.session.commit()
-
-                row = result.fetchone()
-                if row and row[0] == self.lock_id:
-                    return True
-
-            except Exception:
-                self.session.rollback()
-
-            time.sleep(0.1)
-
-        return False
-
-    def release(self) -> bool:
-        """Release lock if we still own it."""
-        try:
-            result = self.session.execute("""
-                DELETE FROM distributed_locks
-                WHERE lock_name = :name AND lock_id = :id
-            """, {'name': self.lock_name, 'id': self.lock_id})
-            self.session.commit()
-            return result.rowcount > 0
-        except Exception:
-            self.session.rollback()
-            return False
-
-    def extend(self) -> bool:
-        """Extend lock TTL."""
-        expires_at = datetime.utcnow() + timedelta(seconds=self.ttl)
-        try:
-            result = self.session.execute("""
-                UPDATE distributed_locks
-                SET expires_at = :expires
-                WHERE lock_name = :name AND lock_id = :id
-            """, {'name': self.lock_name, 'id': self.lock_id, 'expires': expires_at})
-            self.session.commit()
-            return result.rowcount > 0
-        except Exception:
-            self.session.rollback()
-            return False
-
-
-# SQL table
-CREATE_TABLE_SQL = """
-CREATE TABLE distributed_locks (
-    lock_name VARCHAR(255) PRIMARY KEY,
-    lock_id VARCHAR(255) NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_locks_expires ON distributed_locks(expires_at);
-"""
-```
+</div>
 
 ---
 
-## Fencing Tokens: The Missing Piece
+## Common Mistakes
 
-### The Problem Without Fencing
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Distributed Locking Anti-Patterns</h4>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-family: monospace; font-size: 12px; color: #8b949e;">
-    <span>Time -></span>
-    <div style="display: flex; gap: 80px;">
-      <span>t1</span>
-      <span>t2</span>
-      <span>t3</span>
-      <span>t4</span>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Using locks without TTL</div>
+      <div style="color: #7f1d1d; font-size: 14px;">If the lock holder crashes, the lock is held forever. Always set a TTL and handle lock expiration gracefully.</div>
     </div>
-  </div>
-  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
-    <div style="color: #58a6ff; font-weight: 600; font-size: 14px;">Client A:</div>
-    <div style="display: flex; align-items: center; gap: 4px;">
-      <div style="background: #21262d; border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9; font-size: 11px;">Gets lock <span style="color: #8b949e;">token=1</span></div>
-      <div style="background: #f0883e33; border: 1px solid #f0883e; padding: 8px 16px; border-radius: 6px; color: #f0883e; font-size: 12px;">GC pause</div>
-      <div style="flex: 1;"></div>
-      <div style="background: #f8514944; border: 1px solid #f85149; padding: 8px 16px; border-radius: 6px; color: #f85149; font-size: 12px;">Writes resource</div>
-      <span style="color: #f85149; font-size: 11px; margin-left: 8px; font-weight: 600;">PROBLEM!</span>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Releasing locks unconditionally</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Always use compare-and-delete. Otherwise, you might release a lock that another client acquired after yours expired.</div>
     </div>
-  </div>
-  <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; margin-bottom: 24px;">
-    <div style="color: #d2a8ff; font-weight: 600; font-size: 14px;">Client B:</div>
-    <div style="display: flex; align-items: center; gap: 4px;">
-      <div style="width: 100px;"></div>
-      <div style="background: #21262d; border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; color: #c9d1d9; font-size: 11px;">Gets lock <span style="color: #7ee787;">token=2</span></div>
-      <div style="background: #7ee78744; border: 1px solid #7ee787; padding: 8px 16px; border-radius: 6px; color: #7ee787; font-size: 12px;">Writes resource</div>
-      <span style="color: #7ee787; font-size: 11px; margin-left: 8px;">This should win</span>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Ignoring fencing tokens</div>
+      <div style="color: #7f1d1d; font-size: 14px;">The lock alone doesn't guarantee safety. Resources must validate fencing tokens to reject stale writes from expired locks.</div>
     </div>
-  </div>
-  <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #30363d;">
-    <div style="background: #f0883e22; border: 1px solid #f0883e; padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">
-      <span style="color: #f0883e; font-weight: 500;">Without fencing:</span>
-      <span style="color: #c9d1d9;"> A's write (token=1) happens AFTER B's write (token=2)</span>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Single Redis node for critical operations</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Redis failover can cause lock data loss. Use Redlock with multiple masters or consensus-based systems for true safety.</div>
     </div>
-    <div style="background: #f8514933; border: 1px solid #f85149; padding: 16px 24px; border-radius: 8px; text-align: center;">
-      <span style="color: #f85149; font-weight: 600;">Result: Stale data overwrites fresh data!</span>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Lock contention as a design pattern</div>
+      <div style="color: #7f1d1d; font-size: 14px;">If many clients are waiting for the same lock, your system will be slow. Redesign to reduce contention through partitioning or different patterns.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Holding locks during external calls</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Network calls can take unpredictably long. Keep critical sections short and release locks before calling external services.</div>
     </div>
   </div>
 </div>
 
-### The Solution: Fencing Tokens
-
-```python
-class FencedLock:
-    """Lock with monotonically increasing fencing token."""
-
-    def __init__(self, redis_client, key: str, ttl: int = 30):
-        self.redis = redis_client
-        self.lock_key = f"lock:{key}"
-        self.token_key = f"fence:{key}"
-        self.ttl = ttl
-        self.my_token = None
-
-    def acquire(self) -> Optional[int]:
-        """Acquire lock and return fencing token."""
-        import uuid
-        owner_id = str(uuid.uuid4())
-
-        # Atomic: increment fence token + set lock
-        lua_script = """
-        local lock_key = KEYS[1]
-        local token_key = KEYS[2]
-        local owner = ARGV[1]
-        local ttl = tonumber(ARGV[2])
-
-        -- Try to acquire lock
-        if redis.call("SET", lock_key, owner, "NX", "EX", ttl) then
-            -- Increment and return fencing token
-            local token = redis.call("INCR", token_key)
-            return token
-        else
-            return nil
-        end
-        """
-
-        result = self.redis.eval(
-            lua_script, 2,
-            self.lock_key, self.token_key,
-            owner_id, self.ttl
-        )
-
-        if result:
-            self.my_token = int(result)
-            return self.my_token
-        return None
-
-    def get_token(self) -> Optional[int]:
-        """Get our fencing token."""
-        return self.my_token
-
-
-class FencedResource:
-    """Resource that validates fencing tokens before writes."""
-
-    def __init__(self, db_session):
-        self.session = db_session
-
-    def write(self, resource_id: str, data: dict, fence_token: int) -> bool:
-        """
-        Write data only if fence_token is newer than stored token.
-
-        This is the CRITICAL protection against stale locks.
-        """
-        result = self.session.execute("""
-            UPDATE resources
-            SET data = :data, fence_token = :token, updated_at = NOW()
-            WHERE id = :id AND fence_token < :token
-        """, {
-            'id': resource_id,
-            'data': data,
-            'token': fence_token,
-        })
-        self.session.commit()
-
-        if result.rowcount == 0:
-            # Either resource doesn't exist or our token is stale
-            raise StaleTokenError(f"Token {fence_token} is stale")
-
-        return True
-
-
-# Usage
-lock = FencedLock(redis_client, "order:123")
-token = lock.acquire()
-if token:
-    try:
-        # Resource validates token before accepting write
-        resource.write("order:123", order_data, token)
-    except StaleTokenError:
-        # Our lock expired while we were processing
-        logger.warning("Lock expired, write rejected")
-    finally:
-        lock.release()
-```
-
-**Why fencing tokens work**:
-1. Tokens are monotonically increasing
-2. Resource stores the highest token it's seen
-3. Writes with lower tokens are rejected
-4. Even if Client A's delayed write arrives, it's rejected
-
 ---
 
-## Production-Grade Implementation
-
-### Go - Complete Distributed Lock
-
-```go
-package distlock
-
-import (
-	"context"
-	"crypto/rand"
-	"encoding/hex"
-	"errors"
-	"sync"
-	"time"
-
-	"github.com/go-redis/redis/v8"
-)
-
-var (
-	ErrLockNotAcquired = errors.New("lock not acquired")
-	ErrLockNotHeld     = errors.New("lock not held")
-)
-
-// Config holds lock configuration
-type Config struct {
-	TTL           time.Duration
-	RetryDelay    time.Duration
-	RetryCount    int
-	DriftFactor   float64 // Clock drift factor (typically 0.01)
-}
-
-// DefaultConfig returns sensible defaults
-func DefaultConfig() Config {
-	return Config{
-		TTL:         30 * time.Second,
-		RetryDelay:  100 * time.Millisecond,
-		RetryCount:  3,
-		DriftFactor: 0.01,
-	}
-}
-
-// Lock represents a distributed lock
-type Lock struct {
-	clients    []*redis.Client
-	key        string
-	value      string
-	config     Config
-	fenceToken int64
-
-	validUntil time.Time
-	mu         sync.Mutex
-}
-
-// New creates a new distributed lock
-func New(clients []*redis.Client, key string, config Config) *Lock {
-	return &Lock{
-		clients: clients,
-		key:     "lock:" + key,
-		config:  config,
-	}
-}
-
-func (l *Lock) generateValue() string {
-	b := make([]byte, 16)
-	rand.Read(b)
-	return hex.EncodeToString(b)
-}
-
-// Acquire attempts to acquire the lock
-func (l *Lock) Acquire(ctx context.Context) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.value = l.generateValue()
-
-	for i := 0; i < l.config.RetryCount; i++ {
-		start := time.Now()
-
-		acquired := 0
-		for _, client := range l.clients {
-			if l.tryAcquire(ctx, client) {
-				acquired++
-			}
-		}
-
-		// Quorum check
-		quorum := len(l.clients)/2 + 1
-		elapsed := time.Since(start)
-
-		// Clock drift adjustment
-		drift := time.Duration(float64(l.config.TTL) * l.config.DriftFactor)
-		validityTime := l.config.TTL - elapsed - drift
-
-		if acquired >= quorum && validityTime > 0 {
-			l.validUntil = time.Now().Add(validityTime)
-
-			// Get fencing token (from first client)
-			l.fenceToken = l.getFenceToken(ctx)
-
-			return nil
-		}
-
-		// Failed - release any acquired locks
-		l.releaseAll(ctx)
-
-		// Wait before retry
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-time.After(l.config.RetryDelay):
-		}
-	}
-
-	return ErrLockNotAcquired
-}
-
-func (l *Lock) tryAcquire(ctx context.Context, client *redis.Client) bool {
-	result := client.SetNX(ctx, l.key, l.value, l.config.TTL)
-	return result.Val()
-}
-
-func (l *Lock) getFenceToken(ctx context.Context) int64 {
-	// Use atomic increment on first available client
-	for _, client := range l.clients {
-		result := client.Incr(ctx, l.key+":fence")
-		if result.Err() == nil {
-			return result.Val()
-		}
-	}
-	return 0
-}
-
-// Release releases the lock
-func (l *Lock) Release(ctx context.Context) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	if l.value == "" {
-		return ErrLockNotHeld
-	}
-
-	l.releaseAll(ctx)
-	l.value = ""
-	return nil
-}
-
-func (l *Lock) releaseAll(ctx context.Context) {
-	script := `
-		if redis.call("get", KEYS[1]) == ARGV[1] then
-			return redis.call("del", KEYS[1])
-		else
-			return 0
-		end
-	`
-
-	for _, client := range l.clients {
-		client.Eval(ctx, script, []string{l.key}, l.value)
-	}
-}
-
-// Extend extends the lock TTL
-func (l *Lock) Extend(ctx context.Context, ttl time.Duration) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	if l.value == "" {
-		return ErrLockNotHeld
-	}
-
-	script := `
-		if redis.call("get", KEYS[1]) == ARGV[1] then
-			return redis.call("pexpire", KEYS[1], ARGV[2])
-		else
-			return 0
-		end
-	`
-
-	extended := 0
-	for _, client := range l.clients {
-		result := client.Eval(ctx, script, []string{l.key}, l.value, ttl.Milliseconds())
-		if result.Val().(int64) == 1 {
-			extended++
-		}
-	}
-
-	quorum := len(l.clients)/2 + 1
-	if extended >= quorum {
-		l.validUntil = time.Now().Add(ttl)
-		return nil
-	}
-
-	return ErrLockNotHeld
-}
-
-// GetFenceToken returns the fencing token
-func (l *Lock) GetFenceToken() int64 {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	return l.fenceToken
-}
-
-// IsValid checks if lock is still valid
-func (l *Lock) IsValid() bool {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	return time.Now().Before(l.validUntil)
-}
-
-// TimeRemaining returns remaining validity time
-func (l *Lock) TimeRemaining() time.Duration {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	return time.Until(l.validUntil)
-}
-
-// Manager handles multiple locks
-type Manager struct {
-	clients []*redis.Client
-	config  Config
-}
-
-// NewManager creates a lock manager
-func NewManager(clients []*redis.Client, config Config) *Manager {
-	return &Manager{
-		clients: clients,
-		config:  config,
-	}
-}
-
-// WithLock executes function with lock
-func (m *Manager) WithLock(ctx context.Context, key string, fn func(token int64) error) error {
-	lock := New(m.clients, key, m.config)
-
-	if err := lock.Acquire(ctx); err != nil {
-		return err
-	}
-	defer lock.Release(ctx)
-
-	// Check validity before critical section
-	if !lock.IsValid() {
-		return ErrLockNotHeld
-	}
-
-	return fn(lock.GetFenceToken())
-}
-```
-
----
-
-## Production War Stories
-
-### War Story 1: The Lock That Wasn't
-
-**The Scenario**:
-E-commerce site using Redis SETNX for inventory locks. Two customers ordered the last item of a product simultaneously.
-
-**What Happened**:
-```
-Timeline:
-t0: Customer A acquires lock, reads inventory=1
-t1: Customer A's process pauses (GC)
-t2: Lock expires (30 second TTL)
-t3: Customer B acquires lock, reads inventory=1
-t4: Customer B decrements inventory=0, releases lock
-t5: Customer A resumes, decrements inventory=-1 (OVERSOLD!)
-t6: Customer A releases lock (which they don't own anymore)
-```
-
-**The Fix**:
-```python
-def reserve_inventory(product_id: str, quantity: int, fence_token: int):
-    """Use fencing token in database update."""
-    result = db.execute("""
-        UPDATE inventory
-        SET quantity = quantity - :qty,
-            last_fence_token = :token
-        WHERE product_id = :pid
-          AND quantity >= :qty
-          AND last_fence_token < :token
-    """, {'pid': product_id, 'qty': quantity, 'token': fence_token})
-
-    if result.rowcount == 0:
-        raise InsufficientInventoryOrStaleToken()
-```
-
-**20-Year Lesson**: The lock is not enough. The resource must validate the token.
-
----
-
-### War Story 2: The Split-Brain Incident
-
-**The Scenario**:
-Payment processing using single Redis instance for locks. Redis master went down, sentinel promoted replica.
-
-**What Happened**:
-1. Client A acquires lock on master
-2. Master crashes before replicating to replica
-3. Replica promoted to master (no lock data!)
-4. Client B acquires "same" lock on new master
-5. Both clients process payment simultaneously
-6. Customer charged twice
-
-**The Fix**:
-```python
-# Use Redlock with multiple independent masters
-redis_instances = [
-    redis.Redis(host='redis-1'),  # Independent master
-    redis.Redis(host='redis-2'),  # Independent master
-    redis.Redis(host='redis-3'),  # Independent master
-    redis.Redis(host='redis-4'),  # Independent master
-    redis.Redis(host='redis-5'),  # Independent master
-]
-
-# Requires majority (3/5) to acquire lock
-lock = RedlockLock(redis_instances, "payment:123")
-```
-
-**Or even better**: Use ZooKeeper or etcd with true consensus.
-
-**20-Year Lesson**: Single-node Redis locks are fine for efficiency (deduplication), but dangerous for correctness (payments, inventory).
-
----
-
-### War Story 3: The Deadlock Loop
-
-**The Scenario**:
-Order processing needed to lock both inventory AND payment resources.
-
-**What Happened**:
-```
-Thread 1: Lock(inventory) → Lock(payment) → Process → Unlock
-Thread 2: Lock(payment) → Lock(inventory) → Process → Unlock
-
-Timeline:
-t0: Thread 1 acquires inventory lock
-t1: Thread 2 acquires payment lock
-t2: Thread 1 waits for payment lock
-t3: Thread 2 waits for inventory lock
-... forever (DEADLOCK)
-```
-
-**The Fix**:
-```python
-def acquire_multiple_locks(lock_keys: List[str]) -> List[Lock]:
-    """Always acquire locks in sorted order to prevent deadlock."""
-    sorted_keys = sorted(lock_keys)
-    acquired = []
-
-    try:
-        for key in sorted_keys:
-            lock = Lock(redis, key)
-            if not lock.acquire(timeout=10):
-                raise LockAcquisitionFailed(key)
-            acquired.append(lock)
-        return acquired
-    except:
-        # Release any acquired locks on failure
-        for lock in acquired:
-            lock.release()
-        raise
-
-
-# Usage
-locks = acquire_multiple_locks(["inventory:123", "payment:456"])
-try:
-    process_order()
-finally:
-    for lock in locks:
-        lock.release()
-```
-
-**20-Year Lesson**: Lock ordering prevents deadlock. Always acquire in consistent order (alphabetical is easy).
-
----
-
-### War Story 4: The Lock Extension Failure
-
-**The Scenario**:
-Long-running batch job extending its lock every 10 seconds. Lock TTL was 30 seconds.
-
-**What Happened**:
-1. Job starts, acquires lock (TTL 30s)
-2. Job extends at t=10s (TTL reset to 30s)
-3. Network partition isolates job from Redis
-4. Job can't extend at t=40s, t=50s, t=60s...
-5. Lock expires at t=70s
-6. Another job starts processing same batch
-7. Network heals at t=80s
-8. Original job resumes, corrupts data
-
-**The Fix**:
-```python
-class LockExtender:
-    """Automatically extend lock and detect failures."""
-
-    def __init__(self, lock: Lock, interval: float = 10):
-        self.lock = lock
-        self.interval = interval
-        self.failed = threading.Event()
-        self._stop = threading.Event()
-        self._thread = None
-
-    def start(self):
-        def extend_loop():
-            while not self._stop.is_set():
-                time.sleep(self.interval)
-                if self._stop.is_set():
-                    break
-                if not self.lock.extend(self.lock.ttl):
-                    self.failed.set()
-                    break
-
-        self._thread = threading.Thread(target=extend_loop)
-        self._thread.start()
-
-    def stop(self):
-        self._stop.set()
-        if self._thread:
-            self._thread.join()
-
-    def check_failure(self):
-        """Call periodically to detect extension failure."""
-        if self.failed.is_set():
-            raise LockLostException("Failed to extend lock")
-
-
-# Usage
-lock = Lock(redis, "batch:123")
-lock.acquire()
-extender = LockExtender(lock)
-extender.start()
-
-try:
-    for item in batch_items:
-        extender.check_failure()  # Abort if lock lost
-        process_item(item)
-finally:
-    extender.stop()
-    lock.release()
-```
-
-**20-Year Lesson**: Lock extension can fail. Your application must detect this and abort gracefully.
-
----
-
-## When NOT to Use Distributed Locks
-
-### Alternative: Optimistic Concurrency
-
-```python
-# Instead of locking, use version numbers
-def update_user_optimistic(user_id: int, changes: dict) -> bool:
-    """Update using optimistic concurrency control."""
-    while True:
-        # Read current version
-        user = db.query("SELECT * FROM users WHERE id = %s", user_id)
-        current_version = user['version']
-
-        # Apply changes
-        new_data = {**user, **changes, 'version': current_version + 1}
-
-        # Conditional update
-        result = db.execute("""
-            UPDATE users
-            SET data = %s, version = %s
-            WHERE id = %s AND version = %s
-        """, (new_data, current_version + 1, user_id, current_version))
-
-        if result.rowcount == 1:
-            return True  # Success
-
-        # Version changed - retry or abort
-        if should_retry():
-            continue
-        return False
-```
-
-**Use optimistic concurrency when**:
-- Conflicts are rare
-- Operations can be retried
-- You want maximum throughput
-
-### Alternative: Idempotent Operations
-
-```python
-def process_payment_idempotent(idempotency_key: str, payment: dict) -> dict:
-    """
-    Idempotent payment - no lock needed.
-    Same key always returns same result.
-    """
-    # Check if already processed
-    existing = db.query("""
-        SELECT result FROM payments WHERE idempotency_key = %s
-    """, idempotency_key)
-
-    if existing:
-        return existing['result']
-
-    # Process payment
-    result = payment_gateway.charge(payment)
-
-    # Store result (with conflict handling)
-    db.execute("""
-        INSERT INTO payments (idempotency_key, result)
-        VALUES (%s, %s)
-        ON CONFLICT (idempotency_key) DO NOTHING
-    """, (idempotency_key, result))
-
-    return result
-```
-
-**Use idempotency when**:
-- Operations can be safely retried
-- You can generate unique operation IDs
-- At-least-once delivery is acceptable
-
----
-
-## Expert FAQs
-
-### Q: Redis vs ZooKeeper vs etcd for distributed locks?
-
-**A**:
-| Aspect | Redis | ZooKeeper | etcd |
-|--------|-------|-----------|------|
-| Consistency | Eventual | Strong (CP) | Strong (CP) |
-| Latency | ~1ms | ~10ms | ~5ms |
-| Complexity | Low | High | Medium |
-| Use when | Efficiency | Correctness | Kubernetes |
-
-- **Redis**: When lock failure = retry (best effort)
-- **ZooKeeper/etcd**: When lock failure = data corruption (must be correct)
-
-### Q: How long should lock TTL be?
-
-**A**: TTL = expected_operation_time × 3 + network_latency_buffer
-
-```python
-# Example calculation
-expected_query_time = 100  # ms
-network_buffer = 50        # ms
-safety_factor = 3
-
-ttl_ms = (expected_query_time * safety_factor) + network_buffer
-# TTL = 350ms
-
-# But also consider: what if operation takes longer?
-# - Auto-extend for long operations
-# - Or fail fast with shorter TTL
-```
-
-### Q: Should I use distributed locks for rate limiting?
-
-**A**: No. Use atomic counters or token buckets instead:
-```python
-# Bad: Lock for rate limiting
-with lock("rate:user:123"):
-    count = redis.get("count:user:123")
-    if count < 100:
-        redis.incr("count:user:123")
-        proceed()
-
-# Good: Atomic increment
-count = redis.incr("count:user:123")
-if count == 1:
-    redis.expire("count:user:123", 60)
-if count <= 100:
-    proceed()
-```
-
-### Q: How do I debug distributed lock issues?
-
-**A**: Comprehensive logging:
-```python
-class ObservableLock:
-    def __init__(self, lock: Lock, logger):
-        self.lock = lock
-        self.logger = logger
-
-    def acquire(self, timeout: float = 30) -> bool:
-        start = time.time()
-        self.logger.info(f"Attempting lock acquisition: {self.lock.key}")
-
-        result = self.lock.acquire(timeout)
-        elapsed = time.time() - start
-
-        if result:
-            self.logger.info(f"Lock acquired: {self.lock.key}, "
-                           f"token={self.lock.token}, took={elapsed:.3f}s")
-        else:
-            self.logger.warning(f"Lock acquisition FAILED: {self.lock.key}, "
-                              f"timeout={timeout}s")
-
-        return result
-```
+## Quick Reference Card
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Distributed Locking Cheat Sheet</h4>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Lock Service Options</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Redis (single):</strong> Fast, simple, not safe</div>
+        <div style="padding: 4px 0;"><strong>Redlock:</strong> Better safety, 5+ nodes</div>
+        <div style="padding: 4px 0;"><strong>ZooKeeper:</strong> Strong consistency, complex</div>
+        <div style="padding: 4px 0;"><strong>etcd:</strong> Raft consensus, Kubernetes native</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">TTL Guidelines</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Formula:</strong> TTL = 3x expected operation time</div>
+        <div style="padding: 4px 0;"><strong>Short ops:</strong> 10-30 seconds</div>
+        <div style="padding: 4px 0;"><strong>Long ops:</strong> Use heartbeat extension</div>
+        <div style="padding: 4px 0;"><strong>Extension interval:</strong> TTL / 3</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Safety Checklist</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">[ ] Unique token per acquisition</div>
+        <div style="padding: 4px 0;">[ ] TTL on all locks</div>
+        <div style="padding: 4px 0;">[ ] Compare-and-delete on release</div>
+        <div style="padding: 4px 0;">[ ] Fencing tokens validated by resources</div>
+        <div style="padding: 4px 0;">[ ] Majority quorum for critical ops</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Alternatives to Locks</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Optimistic locking:</strong> Version numbers</div>
+        <div style="padding: 4px 0;"><strong>Idempotency:</strong> Unique request IDs</div>
+        <div style="padding: 4px 0;"><strong>Event sourcing:</strong> Append-only logs</div>
+        <div style="padding: 4px 0;"><strong>CRDTs:</strong> Conflict-free data types</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
 ## Related Topics
 
-- [CAP Theorem](/topic/system-design/cap-theorem)
-- [Consensus Algorithms](/topic/system-design/consensus-algorithms)
-- [Database Transactions](/topic/system-design/transactions)
-- [Event Sourcing](/topic/system-design/event-sourcing)
+- [Database Sharding](/topic/system-design/database-sharding) - Partitioning to reduce lock contention
+- [Consensus Algorithms](/topic/system-design/consensus-algorithms) - Raft, Paxos for true safety
+- [Event Sourcing](/topic/system-design/event-sourcing) - Lock-free alternative pattern
+- [CAP Theorem](/topic/system-design/cap-theorem) - Understanding consistency trade-offs

@@ -1,377 +1,201 @@
 # LRU Cache
 
-## Problem Statement
+## Overview
 
-Design and implement a Least Recently Used (LRU) cache with O(1) time complexity for both `get` and `put` operations.
+An LRU (Least Recently Used) Cache is a data structure that stores a limited number of items and automatically evicts the least recently accessed item when the cache reaches capacity. It combines a HashMap for O(1) lookups with a Doubly Linked List for O(1) order maintenance, making both `get` and `put` operations constant time.
 
-## Requirements
+This is one of the most frequently asked machine coding problems because it tests fundamental data structure knowledge and the ability to combine multiple structures elegantly.
 
-- `get(key)`: Return value if exists, -1 otherwise. Mark as recently used.
-- `put(key, value)`: Insert or update. Evict least recently used if at capacity.
-- Both operations must be O(1).
+## Why This is Asked in Interviews
 
----
+**Skills Tested:**
+- Understanding of HashMap and Linked List internals
+- Ability to combine data structures for optimal performance
+- Knowledge of cache eviction policies
+- Thread-safety considerations for production systems
+- Edge case handling and API design
 
-## Solution Breakdown
+**Companies That Ask This:**
+- Amazon (very frequently)
+- Google
+- Facebook/Meta
+- Microsoft
+- Netflix
+- Uber
+- LinkedIn
+- All major tech companies
 
-### Part 1: Understanding the Core Challenge
+This is LeetCode #146 and appears in almost every system design discussion about caching.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-**The Key Insight**: We need TWO operations to be O(1):
-1. **Lookup by key** → HashMap is perfect (O(1) average)
-2. **Track access order + evict oldest** → Need ordered structure with O(1) removal
-**The Problem**:
-- Arrays: O(1) access but O(n) deletion
-- Linked Lists: O(1) deletion but O(n) access
-- HashMap alone: No ordering
-**The Solution**: Combine both! HashMap for O(1) lookup + Doubly Linked List for O(1) order maintenance
-</div>
+## Requirements Gathering
 
-### Part 2: Why Doubly Linked List? (Not Singly Linked)
+**Questions to ask the interviewer:**
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Operation | Singly Linked | Doubly Linked |
-|-----------|---------------|---------------|
-| Remove node (given pointer) | O(n) - need to find prev | **O(1)** - have prev pointer |
-| Insert at head | O(1) | O(1) |
-| Remove from tail | O(n) - need to traverse | **O(1)** - tail.prev |
-**Why this matters**: When we access a key via HashMap, we get a direct pointer to the node. With doubly linked list, we can remove it in O(1) without traversing.
-</div>
+### Functional Requirements
+- What operations should the cache support? (get, put, delete?)
+- Should same key updates reset the "recently used" status?
+- What should get() return for missing keys? (-1, null, or throw?)
+- Do we need to support TTL (time-to-live) for entries?
 
-### Part 3: The Data Structure Architecture
+### Non-Functional Requirements
+- What's the expected capacity range? (hundreds, millions?)
+- Do we need thread-safety for concurrent access?
+- Is this for a single machine or distributed system?
+- What's the read/write ratio? (helps optimize)
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">LRU Cache: HashMap + Doubly Linked List</h4>
-<div style="display: flex; flex-direction: column; gap: 24px;">
-<!-- HashMap Section -->
-<div>
-<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">🗺️ HashMap (Key → Node Pointer)</div>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 12px;">"A"</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 1</div>
-</div>
-<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 12px;">"B"</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 2</div>
-</div>
-<div style="background: #238636; padding: 12px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 12px;">"C"</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">→ Node 3</div>
-</div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px; text-align: center; border: 2px dashed #30363d;">
-<div style="color: #6e7681; font-size: 12px;">...</div>
-</div>
-</div>
-<div style="color: #8b949e; font-size: 11px; margin-top: 8px;">O(1) lookup: key → direct node access</div>
-</div>
-<!-- Arrows -->
-<div style="text-align: center; color: #58a6ff; font-size: 24px;">↓ ↓ ↓</div>
-<!-- Doubly Linked List Section -->
-<div>
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">🔗 Doubly Linked List (Most Recent → Least Recent)</div>
-<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-<!-- Dummy Head -->
-<div style="background: #21262d; padding: 12px 16px; border-radius: 8px; border: 2px dashed #30363d; text-align: center;">
-<div style="color: #6e7681; font-size: 10px;">HEAD</div>
-<div style="color: #6e7681; font-size: 10px;">(dummy)</div>
-</div>
-<div style="color: #58a6ff; font-size: 20px;">⟷</div>
-<!-- Node 1 (Most Recent) -->
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 1</div>
-<div style="color: #a5d6ff; font-size: 10px;">"A": 100</div>
-<div style="color: #7ee787; font-size: 9px; margin-top: 4px;">← Most Recent</div>
-</div>
-<div style="color: #58a6ff; font-size: 20px;">⟷</div>
-<!-- Node 2 -->
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 2</div>
-<div style="color: #eddeff; font-size: 10px;">"B": 200</div>
-</div>
-<div style="color: #58a6ff; font-size: 20px;">⟷</div>
-<!-- Node 3 (Least Recent) -->
-<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">Node 3</div>
-<div style="color: #ffe2cc; font-size: 10px;">"C": 300</div>
-<div style="color: #f85149; font-size: 9px; margin-top: 4px;">Least Recent →</div>
-</div>
-<div style="color: #58a6ff; font-size: 20px;">⟷</div>
-<!-- Dummy Tail -->
-<div style="background: #21262d; padding: 12px 16px; border-radius: 8px; border: 2px dashed #30363d; text-align: center;">
-<div style="color: #6e7681; font-size: 10px;">TAIL</div>
-<div style="color: #6e7681; font-size: 10px;">(dummy)</div>
-</div>
-</div>
-<div style="color: #8b949e; font-size: 11px; margin-top: 8px; text-align: center;">Each node has prev & next pointers → O(1) insert/delete</div>
-</div>
-<!-- Key Operations -->
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
-<div style="background: #238636; padding: 16px; border-radius: 8px;">
-<div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">GET(key)</div>
-<div style="color: #d1f5d3; font-size: 11px;">1. HashMap lookup → O(1)</div>
-<div style="color: #d1f5d3; font-size: 11px;">2. Move node to front → O(1)</div>
-<div style="color: #d1f5d3; font-size: 11px;">3. Return value</div>
-</div>
-<div style="background: #1f6feb; padding: 16px; border-radius: 8px;">
-<div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PUT(key, value)</div>
-<div style="color: #a5d6ff; font-size: 11px;">1. If at capacity: evict tail.prev</div>
-<div style="color: #a5d6ff; font-size: 11px;">2. Create node, add to HashMap</div>
-<div style="color: #a5d6ff; font-size: 11px;">3. Insert after head → O(1)</div>
-</div>
-</div>
-</div>
+## System Design (High Level)
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center; font-size: 16px;">LRU Cache Architecture</h4>
+
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <!-- HashMap Section -->
+    <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
+      <div style="color: #059669; font-weight: bold; font-size: 13px; margin-bottom: 12px;">HashMap (Key to Node Pointer)</div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+          <div style="color: #166534; font-weight: bold; font-size: 12px;">"A"</div>
+          <div style="color: #15803d; font-size: 10px;">-> Node 1</div>
+        </div>
+        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+          <div style="color: #166534; font-weight: bold; font-size: 12px;">"B"</div>
+          <div style="color: #15803d; font-size: 10px;">-> Node 2</div>
+        </div>
+        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+          <div style="color: #166534; font-weight: bold; font-size: 12px;">"C"</div>
+          <div style="color: #15803d; font-size: 10px;">-> Node 3</div>
+        </div>
+      </div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 8px;">O(1) lookup: key directly maps to node in linked list</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align: center; color: #3b82f6; font-size: 24px;">|</div>
+
+    <!-- Doubly Linked List Section -->
+    <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
+      <div style="color: #7c3aed; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Doubly Linked List (Most Recent to Least Recent)</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+        <div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 10px 14px; border-radius: 6px; text-align: center;">
+          <div style="color: #64748b; font-size: 10px;">HEAD</div>
+          <div style="color: #94a3b8; font-size: 9px;">(dummy)</div>
+        </div>
+        <div style="color: #3b82f6; font-size: 18px;">-</div>
+        <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 10px 14px; border-radius: 6px; text-align: center;">
+          <div style="color: #1e40af; font-weight: bold; font-size: 11px;">Node 1</div>
+          <div style="color: #3b82f6; font-size: 10px;">"A": 100</div>
+          <div style="color: #059669; font-size: 9px;">Most Recent</div>
+        </div>
+        <div style="color: #3b82f6; font-size: 18px;">-</div>
+        <div style="background: #ede9fe; border: 2px solid #8b5cf6; padding: 10px 14px; border-radius: 6px; text-align: center;">
+          <div style="color: #5b21b6; font-weight: bold; font-size: 11px;">Node 2</div>
+          <div style="color: #7c3aed; font-size: 10px;">"B": 200</div>
+        </div>
+        <div style="color: #3b82f6; font-size: 18px;">-</div>
+        <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 10px 14px; border-radius: 6px; text-align: center;">
+          <div style="color: #92400e; font-weight: bold; font-size: 11px;">Node 3</div>
+          <div style="color: #d97706; font-size: 10px;">"C": 300</div>
+          <div style="color: #dc2626; font-size: 9px;">Least Recent</div>
+        </div>
+        <div style="color: #3b82f6; font-size: 18px;">-</div>
+        <div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 10px 14px; border-radius: 6px; text-align: center;">
+          <div style="color: #64748b; font-size: 10px;">TAIL</div>
+          <div style="color: #94a3b8; font-size: 9px;">(dummy)</div>
+        </div>
+      </div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 8px; text-align: center;">Each node has prev & next pointers for O(1) insert/delete</div>
+    </div>
+
+    <!-- Operations Summary -->
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 200px; background: #ecfdf5; border: 1px solid #6ee7b7; padding: 14px; border-radius: 8px;">
+        <div style="color: #047857; font-weight: bold; font-size: 12px; margin-bottom: 8px;">GET(key)</div>
+        <div style="color: #065f46; font-size: 11px;">1. HashMap lookup O(1)</div>
+        <div style="color: #065f46; font-size: 11px;">2. Move node to front O(1)</div>
+        <div style="color: #065f46; font-size: 11px;">3. Return value</div>
+      </div>
+      <div style="flex: 1; min-width: 200px; background: #dbeafe; border: 1px solid #93c5fd; padding: 14px; border-radius: 8px;">
+        <div style="color: #1d4ed8; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PUT(key, value)</div>
+        <div style="color: #1e40af; font-size: 11px;">1. If at capacity: evict tail.prev</div>
+        <div style="color: #1e40af; font-size: 11px;">2. Create node, add to HashMap</div>
+        <div style="color: #1e40af; font-size: 11px;">3. Insert after head O(1)</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-### Part 4: Why Dummy Head and Tail Nodes?
+## Data Structures & Classes
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-**Without dummy nodes**: Every operation needs null checks
-```python
-# Messy code without dummies
-def add_to_front(node):
-    if self.head is None:
-        self.head = node
-        self.tail = node
-    else:
-        node.next = self.head
-        self.head.prev = node
-        self.head = node
+### Class Diagram
+
 ```
-**With dummy nodes**: Clean, consistent code
-```python
-# Clean code with dummies
-def add_to_front(node):
-    node.prev = self.head
-    node.next = self.head.next
-    self.head.next.prev = node
-    self.head.next = node
-```
-**Benefits**:
-- No edge cases for empty list
-- No null pointer checks
-- Same code path for all operations
-</div>
-
-### Part 5: Operation Walkthrough
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<!-- GET Operation -->
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-<span style="background: #238636; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">GET</span>
-Operation Flow
-</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<!-- Step 1 -->
-<div style="background: #30363d; padding: 12px; border-radius: 8px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">1. Check HashMap for key</div>
-</div>
-<!-- Branches -->
-<div style="display: flex; gap: 12px; margin-left: 16px;">
-<!-- Not Found Branch -->
-<div style="flex: 1; position: relative;">
-<div style="position: absolute; left: -12px; top: 0; bottom: 50%; width: 2px; background: #484f58;"></div>
-<div style="position: absolute; left: -12px; top: 50%; width: 12px; height: 2px; background: #484f58;"></div>
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4a2828 100%); padding: 10px; border-radius: 6px; border: 1px solid #f85149;">
-<div style="color: #f85149; font-size: 11px; font-weight: bold;">Not found</div>
-<div style="color: #f0883e; font-size: 10px; margin-top: 4px;">return -1</div>
-</div>
-</div>
-<!-- Found Branch -->
-<div style="flex: 2; position: relative;">
-<div style="position: absolute; left: -12px; top: 0; height: 100%; width: 2px; background: #484f58;"></div>
-<div style="position: absolute; left: -12px; top: 12px; width: 12px; height: 2px; background: #484f58;"></div>
-<div style="background: linear-gradient(135deg, #1f3d1f 0%, #284a28 100%); padding: 10px; border-radius: 6px; border: 1px solid #7ee787;">
-<div style="color: #7ee787; font-size: 11px; font-weight: bold;">Found → get node pointer</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-left: 8px; border-left: 2px solid #484f58;">
-<div style="color: #a5d6ff; font-size: 10px;">Remove node from current position <span style="color: #7ee787;">(O(1))</span></div>
-<div style="color: #a5d6ff; font-size: 10px;">Add node to front <span style="color: #7ee787;">(O(1))</span></div>
-<div style="color: #a5d6ff; font-size: 10px;">Return node.value</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- PUT Operation -->
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-<span style="background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">PUT</span>
-Operation Flow
-</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<!-- Step 1 -->
-<div style="background: #30363d; padding: 12px; border-radius: 8px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">1. Check if key exists in HashMap</div>
-</div>
-<!-- Branches -->
-<div style="display: flex; gap: 12px; margin-left: 16px;">
-<!-- Exists Branch -->
-<div style="flex: 1; position: relative;">
-<div style="position: absolute; left: -12px; top: 0; bottom: 50%; width: 2px; background: #484f58;"></div>
-<div style="position: absolute; left: -12px; top: 50%; width: 12px; height: 2px; background: #484f58;"></div>
-<div style="background: linear-gradient(135deg, #1f3d1f 0%, #284a28 100%); padding: 10px; border-radius: 6px; border: 1px solid #7ee787;">
-<div style="color: #7ee787; font-size: 11px; font-weight: bold;">Exists</div>
-<div style="color: #a5d6ff; font-size: 10px; margin-top: 4px;">Update value, move to front</div>
-</div>
-</div>
-<!-- Not Exists Branch -->
-<div style="flex: 2; position: relative;">
-<div style="position: absolute; left: -12px; top: 0; height: 100%; width: 2px; background: #484f58;"></div>
-<div style="position: absolute; left: -12px; top: 12px; width: 12px; height: 2px; background: #484f58;"></div>
-<div style="background: linear-gradient(135deg, #1f2d3d 0%, #283a4a 100%); padding: 10px; border-radius: 6px; border: 1px solid #58a6ff;">
-<div style="color: #58a6ff; font-size: 11px; font-weight: bold;">Not exists</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-left: 8px; border-left: 2px solid #484f58;">
-<div style="color: #f0883e; font-size: 10px;">Check capacity</div>
-<div style="color: #f85149; font-size: 9px; padding-left: 8px; border-left: 1px solid #484f58;">At capacity → Remove LRU (tail.prev), delete from HashMap</div>
-<div style="color: #a5d6ff; font-size: 10px;">Create new node</div>
-<div style="color: #a5d6ff; font-size: 10px;">Add to HashMap</div>
-<div style="color: #a5d6ff; font-size: 10px;">Add to front of list</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
----
-
-## Alternative Approaches
-
-### Alternative 1: OrderedDict (Python)
-
-```python
-from collections import OrderedDict
-
-class LRUCache:
-    def __init__(self, capacity: int):
-        self.capacity = capacity
-        self.cache = OrderedDict()
-
-    def get(self, key: int) -> int:
-        if key not in self.cache:
-            return -1
-        self.cache.move_to_end(key)  # Mark as recently used
-        return self.cache[key]
-
-    def put(self, key: int, value: int) -> None:
-        if key in self.cache:
-            self.cache.move_to_end(key)
-        self.cache[key] = value
-        if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)  # Remove oldest
++------------------+       +-------------------+
+|      Node        |       |     LRUCache      |
++------------------+       +-------------------+
+| - key: int       |       | - capacity: int   |
+| - value: int     |       | - cache: HashMap  |
+| - prev: Node     |<------| - head: Node      |
+| - next: Node     |       | - tail: Node      |
++------------------+       +-------------------+
+                           | + get(key): int   |
+                           | + put(key, value) |
+                           +-------------------+
 ```
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
-| Aspect | Custom Implementation | OrderedDict |
-|--------|----------------------|-------------|
-| **Interview** | Shows deep understanding | May seem like "cheating" |
-| **Production** | More control, thread-safety options | Cleaner, well-tested |
-| **Performance** | Identical O(1) | Identical O(1) |
-| **Extensibility** | Easy to add TTL, stats | Harder to extend |
-</div>
+### Why These Choices?
 
-### Alternative 2: LinkedHashMap (Java)
+| Component | Choice | Reasoning |
+|-----------|--------|-----------|
+| Lookup | HashMap | O(1) access by key |
+| Ordering | Doubly Linked List | O(1) removal given node pointer |
+| Dummy Nodes | Head & Tail sentinels | Eliminates null checks, cleaner code |
 
-```java
-class LRUCache extends LinkedHashMap<Integer, Integer> {
-    private int capacity;
+**Why Doubly Linked List (not Singly)?**
+- To remove a node, we need access to its previous node
+- With singly linked list: O(n) to find previous
+- With doubly linked list: O(1) using node.prev
 
-    public LRUCache(int capacity) {
-        super(capacity, 0.75f, true);  // true = access order
-        this.capacity = capacity;
-    }
+## Core Algorithm/Logic
 
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
-        return size() > capacity;
-    }
-}
+### GET Operation
+```
+1. Check if key exists in HashMap
+2. If not found: return -1
+3. If found:
+   a. Get node from HashMap
+   b. Remove node from current position in list
+   c. Add node right after head (most recent)
+   d. Return node.value
 ```
 
-### Alternative 3: Using a Min-Heap (NOT Recommended)
+### PUT Operation
+```
+1. Check if key exists in HashMap
+2. If exists:
+   a. Update value
+   b. Move node to front (same as GET)
+3. If not exists:
+   a. If at capacity:
+      - Remove node before tail (least recent)
+      - Delete that key from HashMap
+   b. Create new node
+   c. Add to HashMap
+   d. Insert after head
+```
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-**Why it doesn't work well:**
-- Heap operations are O(log n), not O(1)
-- Updating access time requires O(n) search + O(log n) heapify
-- Would need HashMap + Heap, but heap doesn't support efficient arbitrary removal
-**When heap IS useful**: LFU cache (Least Frequently Used) where you track frequency counts
-</div>
+### Key Helper Methods
+- `_add_to_front(node)`: Insert node right after head
+- `_remove_node(node)`: Unlink node from its position
+- `_move_to_front(node)`: Remove + add to front
+- `_remove_lru()`: Remove and return tail.prev
 
----
-
-## Pros and Cons Analysis
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-### Pros
-- **O(1) all operations** - Cannot get better
-- **Predictable memory** - Bounded by capacity
-- **Simple eviction** - Always remove least recent
-- **Cache-friendly** - Preserves hot data
-- **Thread-safe variants** - Easy to add locks
-</div>
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px;">
-### Cons
-- **Memory overhead** - Pointers add ~16 bytes/entry
-- **No TTL built-in** - Need to add expiration logic
-- **Single-machine** - Doesn't scale horizontally
-- **Cold start problem** - Empty cache initially
-- **Access pattern blind** - Doesn't consider frequency
-</div>
-</div>
-
----
-
-## Complexity Analysis
-
-| Operation | Time | Space |
-|-----------|------|-------|
-| `get(key)` | O(1) | - |
-| `put(key, value)` | O(1) | - |
-| **Total Space** | - | O(capacity) |
-
-**Space breakdown per entry:**
-- HashMap entry: ~32 bytes (key, value, hash, next pointer)
-- Node: ~40 bytes (key, value, prev, next pointers)
-- Total: ~72 bytes per cached item
-
----
-
-## Common Extensions
-
-1. **TTL (Time-To-Live)**: Add `expires_at` field to Node, check on access
-2. **Thread-Safety**: Add `RWMutex` for concurrent access
-3. **LFU Cache**: Track frequency instead of recency (use HashMap + frequency buckets)
-4. **Generics**: Support any key/value types
-5. **Distributed**: Use Redis with `EXPIRE` and `LRU` eviction policy
-
----
-
-## Interview Tips
-
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Draw the data structure** - Visual explanation helps tremendously
-2. **Explain why doubly linked** - Shows you understand the O(1) requirement
-3. **Mention dummy nodes** - Shows production-ready thinking
-4. **Discuss alternatives** - OrderedDict shows breadth of knowledge
-5. **Thread-safety** - Mention how you'd add locks for production
-6. **Edge cases**: Empty cache, single capacity, update existing key
-</div>
-
----
-
-## Implementation
+## Code Implementation
 
 ### Python
 
 ```python
 class Node:
+    """Doubly linked list node storing key-value pair."""
     def __init__(self, key: int = 0, value: int = 0):
         self.key = key
         self.value = value
@@ -380,76 +204,118 @@ class Node:
 
 
 class LRUCache:
+    """
+    LRU Cache implementation using HashMap + Doubly Linked List.
+
+    Time Complexity: O(1) for both get and put
+    Space Complexity: O(capacity)
+    """
+
     def __init__(self, capacity: int):
+        """Initialize cache with given capacity."""
         self.capacity = capacity
         self.cache = {}  # key -> Node
 
-        # Dummy head and tail for easier operations
+        # Dummy head and tail nodes simplify edge cases
+        # head <-> [most recent] <-> ... <-> [least recent] <-> tail
         self.head = Node()
         self.tail = Node()
         self.head.next = self.tail
         self.tail.prev = self.head
 
-    def _add_to_front(self, node: Node):
-        """Add node right after head (most recently used)"""
+    def _add_to_front(self, node: Node) -> None:
+        """Add node right after head (most recently used position)."""
         node.prev = self.head
         node.next = self.head.next
         self.head.next.prev = node
         self.head.next = node
 
-    def _remove_node(self, node: Node):
-        """Remove node from its current position"""
-        node.prev.next = node.next
-        node.next.prev = node.prev
+    def _remove_node(self, node: Node) -> None:
+        """Remove node from its current position in the list."""
+        prev_node = node.prev
+        next_node = node.next
+        prev_node.next = next_node
+        next_node.prev = prev_node
 
-    def _move_to_front(self, node: Node):
-        """Move existing node to front (mark as recently used)"""
+    def _move_to_front(self, node: Node) -> None:
+        """Move existing node to front (mark as recently used)."""
         self._remove_node(node)
         self._add_to_front(node)
 
     def _remove_lru(self) -> Node:
-        """Remove and return the least recently used node (before tail)"""
-        lru = self.tail.prev
-        self._remove_node(lru)
-        return lru
+        """Remove and return the least recently used node (before tail)."""
+        lru_node = self.tail.prev
+        self._remove_node(lru_node)
+        return lru_node
 
     def get(self, key: int) -> int:
+        """
+        Get value by key. Returns -1 if not found.
+        Marks the key as recently used.
+        """
         if key not in self.cache:
             return -1
 
         node = self.cache[key]
-        self._move_to_front(node)
+        self._move_to_front(node)  # Mark as recently used
         return node.value
 
     def put(self, key: int, value: int) -> None:
+        """
+        Insert or update key-value pair.
+        Evicts least recently used item if at capacity.
+        """
         if key in self.cache:
-            # Update existing
+            # Update existing key
             node = self.cache[key]
             node.value = value
             self._move_to_front(node)
         else:
-            # Add new
+            # Insert new key
             if len(self.cache) >= self.capacity:
-                # Evict LRU
-                lru = self._remove_lru()
-                del self.cache[lru.key]
+                # Evict LRU item
+                lru_node = self._remove_lru()
+                del self.cache[lru_node.key]
 
-            node = Node(key, value)
-            self.cache[key] = node
-            self._add_to_front(node)
+            # Add new node
+            new_node = Node(key, value)
+            self.cache[key] = new_node
+            self._add_to_front(new_node)
+
+    def __repr__(self) -> str:
+        """String representation for debugging."""
+        items = []
+        current = self.head.next
+        while current != self.tail:
+            items.append(f"{current.key}:{current.value}")
+            current = current.next
+        return f"LRUCache([{' -> '.join(items)}])"
 
 
-# Usage
-cache = LRUCache(2)
-cache.put(1, 1)
-cache.put(2, 2)
-print(cache.get(1))       # 1
-cache.put(3, 3)           # Evicts key 2
-print(cache.get(2))       # -1 (not found)
-cache.put(4, 4)           # Evicts key 1
-print(cache.get(1))       # -1 (not found)
-print(cache.get(3))       # 3
-print(cache.get(4))       # 4
+# Example usage and verification
+if __name__ == "__main__":
+    cache = LRUCache(2)
+
+    cache.put(1, 1)
+    print(f"After put(1,1): {cache}")
+
+    cache.put(2, 2)
+    print(f"After put(2,2): {cache}")
+
+    print(f"get(1) = {cache.get(1)}")  # Returns 1
+    print(f"After get(1): {cache}")
+
+    cache.put(3, 3)  # Evicts key 2
+    print(f"After put(3,3): {cache}")
+
+    print(f"get(2) = {cache.get(2)}")  # Returns -1 (evicted)
+
+    cache.put(4, 4)  # Evicts key 1
+    print(f"After put(4,4): {cache}")
+
+    print(f"get(1) = {cache.get(1)}")  # Returns -1 (evicted)
+    print(f"get(3) = {cache.get(3)}")  # Returns 3
+    print(f"get(4) = {cache.get(4)}")  # Returns 4
 ```
 
 ### Go
@@ -459,18 +325,21 @@ package main
 
 import "fmt"
 
+// Node represents a doubly linked list node
 type Node struct {
 	key, value int
 	prev, next *Node
 }
 
+// LRUCache implements an LRU cache with O(1) operations
 type LRUCache struct {
 	capacity int
 	cache    map[int]*Node
-	head     *Node
-	tail     *Node
+	head     *Node // Dummy head
+	tail     *Node // Dummy tail
 }
 
+// Constructor creates a new LRU cache with given capacity
 func Constructor(capacity int) LRUCache {
 	head := &Node{}
 	tail := &Node{}
@@ -485,6 +354,7 @@ func Constructor(capacity int) LRUCache {
 	}
 }
 
+// addToFront inserts node right after head
 func (c *LRUCache) addToFront(node *Node) {
 	node.prev = c.head
 	node.next = c.head.next
@@ -492,58 +362,211 @@ func (c *LRUCache) addToFront(node *Node) {
 	c.head.next = node
 }
 
+// removeNode removes node from its current position
 func (c *LRUCache) removeNode(node *Node) {
-	node.prev.next = node.next
-	node.next.prev = node.prev
+	prevNode := node.prev
+	nextNode := node.next
+	prevNode.next = nextNode
+	nextNode.prev = prevNode
 }
 
+// moveToFront moves existing node to front
 func (c *LRUCache) moveToFront(node *Node) {
 	c.removeNode(node)
 	c.addToFront(node)
 }
 
+// removeLRU removes and returns the least recently used node
 func (c *LRUCache) removeLRU() *Node {
-	lru := c.tail.prev
-	c.removeNode(lru)
-	return lru
+	lruNode := c.tail.prev
+	c.removeNode(lruNode)
+	return lruNode
 }
 
+// Get retrieves value by key, returns -1 if not found
 func (c *LRUCache) Get(key int) int {
 	node, exists := c.cache[key]
 	if !exists {
 		return -1
 	}
+
 	c.moveToFront(node)
 	return node.value
 }
 
+// Put inserts or updates key-value pair
 func (c *LRUCache) Put(key int, value int) {
 	if node, exists := c.cache[key]; exists {
+		// Update existing
 		node.value = value
 		c.moveToFront(node)
 		return
 	}
 
+	// Insert new
 	if len(c.cache) >= c.capacity {
-		lru := c.removeLRU()
-		delete(c.cache, lru.key)
+		// Evict LRU
+		lruNode := c.removeLRU()
+		delete(c.cache, lruNode.key)
 	}
 
-	node := &Node{key: key, value: value}
-	c.cache[key] = node
-	c.addToFront(node)
+	newNode := &Node{key: key, value: value}
+	c.cache[key] = newNode
+	c.addToFront(newNode)
+}
+
+// String returns string representation for debugging
+func (c *LRUCache) String() string {
+	result := "LRUCache(["
+	current := c.head.next
+	first := true
+	for current != c.tail {
+		if !first {
+			result += " -> "
+		}
+		result += fmt.Sprintf("%d:%d", current.key, current.value)
+		current = current.next
+		first = false
+	}
+	return result + "])"
 }
 
 func main() {
 	cache := Constructor(2)
+
 	cache.Put(1, 1)
+	fmt.Println("After put(1,1):", cache.String())
+
 	cache.Put(2, 2)
-	fmt.Println(cache.Get(1)) // 1
-	cache.Put(3, 3)           // Evicts 2
-	fmt.Println(cache.Get(2)) // -1
-	cache.Put(4, 4)           // Evicts 1
-	fmt.Println(cache.Get(1)) // -1
-	fmt.Println(cache.Get(3)) // 3
-	fmt.Println(cache.Get(4)) // 4
+	fmt.Println("After put(2,2):", cache.String())
+
+	fmt.Println("get(1) =", cache.Get(1)) // Returns 1
+	fmt.Println("After get(1):", cache.String())
+
+	cache.Put(3, 3) // Evicts key 2
+	fmt.Println("After put(3,3):", cache.String())
+
+	fmt.Println("get(2) =", cache.Get(2)) // Returns -1 (evicted)
+
+	cache.Put(4, 4) // Evicts key 1
+	fmt.Println("After put(4,4):", cache.String())
+
+	fmt.Println("get(1) =", cache.Get(1)) // Returns -1
+	fmt.Println("get(3) =", cache.Get(3)) // Returns 3
+	fmt.Println("get(4) =", cache.Get(4)) // Returns 4
 }
 ```
+
+## Edge Cases
+
+1. **Capacity of 1**: Only one item allowed, every new put evicts
+2. **Update existing key**: Should update value AND move to front
+3. **Get non-existent key**: Return -1, don't modify cache state
+4. **Put then immediate get**: Should return correct value
+5. **Eviction order**: Must evict truly least recently used
+6. **Same key multiple puts**: Each put should reset recency
+7. **Empty cache get**: Return -1 without errors
+
+## Testing Strategy
+
+### Unit Tests
+```python
+def test_basic_operations():
+    cache = LRUCache(2)
+    cache.put(1, 1)
+    assert cache.get(1) == 1
+    assert cache.get(2) == -1
+
+def test_eviction():
+    cache = LRUCache(2)
+    cache.put(1, 1)
+    cache.put(2, 2)
+    cache.put(3, 3)  # Evicts 1
+    assert cache.get(1) == -1
+    assert cache.get(2) == 2
+    assert cache.get(3) == 3
+
+def test_update_resets_recency():
+    cache = LRUCache(2)
+    cache.put(1, 1)
+    cache.put(2, 2)
+    cache.get(1)     # 1 is now most recent
+    cache.put(3, 3)  # Evicts 2 (not 1)
+    assert cache.get(2) == -1
+    assert cache.get(1) == 1
+
+def test_capacity_one():
+    cache = LRUCache(1)
+    cache.put(1, 1)
+    cache.put(2, 2)  # Evicts 1
+    assert cache.get(1) == -1
+    assert cache.get(2) == 2
+```
+
+### Integration Tests
+- Concurrent access (if thread-safe version)
+- Large capacity with many operations
+- Memory usage verification
+
+## Time & Space Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| `get(key)` | O(1) | O(1) |
+| `put(key, value)` | O(1) | O(1) |
+| **Total Space** | - | O(capacity) |
+
+**Space Breakdown per Entry:**
+- HashMap entry: ~32 bytes (key, value, hash, next pointer)
+- Node: ~40 bytes (key, value, prev, next pointers)
+- Total: ~72 bytes per cached item
+
+**Why O(1)?**
+- HashMap provides O(1) average lookup
+- Doubly linked list with direct node reference provides O(1) insert/delete
+- No traversal needed for any operation
+
+## Interview Tips
+
+### How to Approach in 45 Minutes
+
+**Minutes 0-5: Clarify Requirements**
+- Confirm operations needed (get, put)
+- Ask about capacity, thread-safety
+- Clarify return values for edge cases
+
+**Minutes 5-15: Design & Explain**
+- Draw the HashMap + Doubly Linked List structure
+- Explain why each component is needed
+- Walk through get and put operations
+
+**Minutes 15-40: Implement**
+- Start with Node class
+- Implement helper methods first
+- Then implement get and put
+- Add comments as you go
+
+**Minutes 40-45: Test & Discuss**
+- Walk through example
+- Mention edge cases
+- Discuss potential extensions
+
+### What to Prioritize
+1. **Correctness first**: Get the logic right
+2. **Clean code**: Use helper methods, good names
+3. **Explain as you code**: Show your thinking
+4. **Edge cases**: Mention them even if time is short
+
+### Common Mistakes
+- Forgetting to update HashMap when evicting
+- Not moving node on update (only on insert)
+- Confusing head/tail with actual data nodes
+- Off-by-one errors with dummy nodes
+- Forgetting to handle capacity = 0
+
+### Follow-up Questions to Prepare For
+- How would you make this thread-safe?
+- How would you add TTL (expiration)?
+- What's the difference between LRU and LFU?
+- How would you implement this in a distributed system?
+- Can you implement without using built-in HashMap?

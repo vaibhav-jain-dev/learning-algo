@@ -1,689 +1,478 @@
-# Dynamic Programming
+# Dynamic Programming - Interview Mastery Guide
 
-## Overview
+## Category Overview
 
-Dynamic Programming (DP) is an optimization technique that solves complex problems by breaking them into simpler overlapping subproblems. It stores solutions to subproblems to avoid redundant computation, trading space for time.
+Dynamic Programming (DP) is an algorithmic paradigm that solves complex problems by breaking them into simpler overlapping subproblems. It stores the results of subproblems to avoid redundant computation, transforming exponential time complexity into polynomial time. DP is one of the most powerful techniques in algorithmic problem-solving and a favorite topic in technical interviews.
 
-## Key Concepts & Terminology
+The key insight of DP is the **optimal substructure** property: the optimal solution to a problem can be constructed from optimal solutions of its subproblems. Combined with **overlapping subproblems**, DP can dramatically reduce computational complexity.
 
-### Core Principles
-- **Optimal Substructure**: Optimal solution contains optimal solutions to subproblems
-- **Overlapping Subproblems**: Same subproblems solved multiple times
-- **Memoization**: Top-down approach, cache recursive results
-- **Tabulation**: Bottom-up approach, fill table iteratively
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Two Approaches to DP</h3>
+<div style="color: #334155;">
+<ul>
+<li><strong>Top-Down (Memoization)</strong>: Start from the main problem, recursively solve subproblems, cache results</li>
+<li><strong>Bottom-Up (Tabulation)</strong>: Start from smallest subproblems, iteratively build up to the main problem</li>
+</ul>
+<table style="width: 100%; margin-top: 16px;">
+<tr>
+<th style="padding: 8px; background: #e2e8f0; text-align: left;">Aspect</th>
+<th style="padding: 8px; background: #e2e8f0; text-align: left;">Top-Down</th>
+<th style="padding: 8px; background: #e2e8f0; text-align: left;">Bottom-Up</th>
+</tr>
+<tr>
+<td style="padding: 8px;">Implementation</td>
+<td style="padding: 8px;">Recursion + Cache</td>
+<td style="padding: 8px;">Iteration + Table</td>
+</tr>
+<tr>
+<td style="padding: 8px;">Pros</td>
+<td style="padding: 8px;">More intuitive, only computes needed states</td>
+<td style="padding: 8px;">No recursion overhead, can optimize space</td>
+</tr>
+<tr>
+<td style="padding: 8px;">Cons</td>
+<td style="padding: 8px;">Stack overflow risk, function call overhead</td>
+<td style="padding: 8px;">Must compute all states, order matters</td>
+</tr>
+</table>
+</div>
+</div>
 
-### DP Approaches
-| Approach | Description | Space |
-|----------|-------------|-------|
-| Top-Down (Memoization) | Recursive + caching | O(n) cache |
-| Bottom-Up (Tabulation) | Iterative table filling | O(n) or O(1) |
-| Space-Optimized | Keep only needed states | O(1) often |
+**Interview Frequency**: DP problems appear in **20-25%** of coding interviews, especially at Google, Amazon, Meta, and quantitative trading firms. They test algorithmic thinking, optimization skills, and ability to identify patterns.
 
-### Problem Recognition Patterns
-1. **Counting problems**: "How many ways..."
-2. **Optimization**: "Find minimum/maximum..."
-3. **Decision making**: "Is it possible to..."
-4. **Sequence problems**: Subsequences, subarrays
-5. **Grid problems**: Paths, coins, etc.
+## Key Patterns
 
-### Common DP Patterns
-- **1D DP**: Single array/sequence
-- **2D DP**: Two sequences, grid
-- **Interval DP**: Subarray ranges
-- **State Machine DP**: Multiple states
-- **Bitmask DP**: Subset enumeration
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">DP Pattern Recognition Guide</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155; overflow-x: auto;">
++------------------------+-------------------------------+---------------------------+
+|       Pattern          |        Characteristics        |     Example Problems      |
++------------------------+-------------------------------+---------------------------+
+| 1D DP                  | Linear sequence, choices at   | Fibonacci, Climbing Stairs|
+|                        | each position                 | House Robber, Coin Change |
++------------------------+-------------------------------+---------------------------+
+| 2D DP                  | Two sequences/dimensions,     | LCS, Edit Distance,       |
+|                        | grid problems                 | Unique Paths, Knapsack    |
++------------------------+-------------------------------+---------------------------+
+| Interval DP            | Optimal way to merge/split    | Matrix Chain, Burst       |
+|                        | intervals                     | Balloons, Palindrome Part |
++------------------------+-------------------------------+---------------------------+
+| State Machine DP       | Finite states with            | Stock Trading, Best Team, |
+|                        | transitions                   | Paint House               |
++------------------------+-------------------------------+---------------------------+
+| Knapsack Variants      | Select items with constraint  | 0/1 Knapsack, Unbounded,  |
+|                        | (weight/capacity)             | Subset Sum, Target Sum    |
++------------------------+-------------------------------+---------------------------+
+| String DP              | Pattern matching, string      | Regex Match, Wildcard,    |
+|                        | transformations               | Distinct Subsequences     |
++------------------------+-------------------------------+---------------------------+
+</pre>
+</div>
 
-### Steps to Solve DP Problems
-1. Define state (what does dp[i] represent?)
-2. Find recurrence relation
-3. Identify base cases
-4. Determine traversal order
-5. Optimize space if possible
+### Pattern 1: 1D Dynamic Programming
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">1D DP Visualization - Climbing Stairs</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Problem: Count ways to climb n stairs, taking 1 or 2 steps at a time.
+
+Recurrence: dp[i] = dp[i-1] + dp[i-2]
+           (ways to reach step i from step i-1 OR step i-2)
+
+Stairs:  0    1    2    3    4    5
+Ways:    1    1    2    3    5    8
+               |    |    |    |
+               |    |    |    |
+               |    |    |    +-- dp[3] + dp[4] = 3 + 5
+               |    |    +------ dp[2] + dp[3] = 2 + 3
+               |    +---------- dp[1] + dp[2] = 1 + 2
+               +-------------- dp[0] + dp[1] = 1 + 1
+
+Visualization of paths to step 4:
+From step 3 (3 ways): +1 each = 3 ways ending with 1-step
+From step 2 (2 ways): +2 each = 2 ways ending with 2-step
+Total: 5 ways
+</pre>
+</div>
+
+### Pattern 2: 2D DP - Grid Problems
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">2D DP Visualization - Unique Paths</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Problem: Count paths from top-left to bottom-right (only right/down moves)
+
+Grid (m=3, n=4):
+    +-----+-----+-----+-----+
+    |  1  |  1  |  1  |  1  |
+    +-----+-----+-----+-----+
+    |  1  |  2  |  3  |  4  |
+    +-----+-----+-----+-----+
+    |  1  |  3  |  6  | 10  |  <- Answer: 10
+    +-----+-----+-----+-----+
+
+Recurrence: dp[i][j] = dp[i-1][j] + dp[i][j-1]
+           (paths from above + paths from left)
+
+dp[2][3] = dp[1][3] + dp[2][2] = 4 + 6 = 10
+
+Key: First row and column are all 1s (only one way to reach)
+</pre>
+</div>
+
+### Pattern 3: Longest Common Subsequence (LCS)
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">LCS Table Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Strings: "ABCDE" and "ACE"
+
+       ""   A   C   E
+    +----+---+---+---+
+ "" |  0 | 0 | 0 | 0 |
+    +----+---+---+---+
+  A |  0 | 1 | 1 | 1 |  <- A matches A
+    +----+---+---+---+
+  B |  0 | 1 | 1 | 1 |
+    +----+---+---+---+
+  C |  0 | 1 | 2 | 2 |  <- C matches C
+    +----+---+---+---+
+  D |  0 | 1 | 2 | 2 |
+    +----+---+---+---+
+  E |  0 | 1 | 2 | 3 |  <- E matches E, LCS = 3
+    +----+---+---+---+
+
+Recurrence:
+  If chars match: dp[i][j] = dp[i-1][j-1] + 1
+  Else:          dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+LCS = "ACE" (length 3)
+</pre>
+</div>
+
+## Must-Know Problems with Solutions
+
+### Problem 1: Maximum Subarray (Kadane's Algorithm)
+
+**Problem**: Find the contiguous subarray with the largest sum.
+
+```python
+def max_subarray(nums):
+    """
+    Time: O(n) | Space: O(1)
+
+    State: dp[i] = max subarray sum ending at index i
+    Transition: dp[i] = max(nums[i], dp[i-1] + nums[i])
+    Decision: Start fresh or extend previous subarray
+    """
+    max_sum = nums[0]
+    current_sum = nums[0]
+
+    for i in range(1, len(nums)):
+        # Either start new subarray or extend existing
+        current_sum = max(nums[i], current_sum + nums[i])
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
+
+# Example
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print(max_subarray(nums))  # 6 ([4, -1, 2, 1])
+```
 
 ---
 
-## Problems
+### Problem 2: Longest Increasing Subsequence (LIS)
 
-### 1. Max Subset Sum No Adjacent
+**Problem**: Find the length of the longest strictly increasing subsequence.
 
-**Difficulty:** Medium
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">LIS Approaches</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Array: [10, 9, 2, 5, 3, 7, 101, 18]
 
-**Problem Statement:**
-Find the maximum sum of non-adjacent elements in an array.
+O(n^2) DP Approach:
+dp[i] = length of LIS ending at index i
+dp[0] = 1 (just 10)
+dp[1] = 1 (just 9)
+dp[2] = 1 (just 2)
+dp[3] = 2 (2, 5)
+dp[4] = 2 (2, 3)
+dp[5] = 3 (2, 5, 7) or (2, 3, 7)
+dp[6] = 4 (2, 5, 7, 101) or (2, 3, 7, 101)
+dp[7] = 4 (2, 5, 7, 18) or (2, 3, 7, 18)
 
-**Example:**
-```
-Input: [75, 105, 120, 75, 90, 135]
-Output: 330 (75 + 120 + 135)
-```
+Answer: max(dp) = 4
 
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[i] = max sum ending at or before index i
-2. Either include current element or not
-3. dp[i] = max(dp[i-1], dp[i-2] + arr[i])
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+O(n log n) Binary Search Approach:
+Maintain smallest tail for LIS of each length
+tails = [2, 3, 7, 18]
+Length = 4
+</pre>
+</div>
 
 ```python
-def maxSubsetSumNoAdjacent(array):
+def lis_dp(nums):
     """
-    Time Complexity: O(n)
-    Space Complexity: O(1)
+    O(n^2) DP Solution
+    dp[i] = length of LIS ending at nums[i]
     """
-    if not array:
+    if not nums:
         return 0
-    if len(array) == 1:
-        return array[0]
 
-    # prev2 = max sum two positions back
-    # prev1 = max sum one position back
-    prev2, prev1 = array[0], max(array[0], array[1])
-
-    for i in range(2, len(array)):
-        current = max(prev1, prev2 + array[i])
-        prev2, prev1 = prev1, current
-
-    return prev1
-
-# Test
-array = [75, 105, 120, 75, 90, 135]
-print(maxSubsetSumNoAdjacent(array))  # 330
-```
-
-```go
-package main
-
-import "fmt"
-
-func maxSubsetSumNoAdjacent(array []int) int {
-    if len(array) == 0 {
-        return 0
-    }
-    if len(array) == 1 {
-        return array[0]
-    }
-
-    prev2 := array[0]
-    prev1 := max(array[0], array[1])
-
-    for i := 2; i < len(array); i++ {
-        current := max(prev1, prev2+array[i])
-        prev2, prev1 = prev1, current
-    }
-
-    return prev1
-}
-
-func max(a, b int) int {
-    if a > b { return a }
-    return b
-}
-
-func main() {
-    array := []int{75, 105, 120, 75, 90, 135}
-    fmt.Println(maxSubsetSumNoAdjacent(array)) // 330
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **House Robber** - LeetCode version
-2. **House Robber II** - Circular array
-3. **Delete and Earn** - Similar selection pattern
-
-</details>
-
----
-
-### 2. Number Of Ways To Make Change
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Given an array of coin denominations and a target amount, find the number of ways to make change.
-
-**Example:**
-```
-Input: n = 6, denoms = [1, 5]
-Output: 2 (1+1+1+1+1+1 or 1+5)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[amount] = number of ways to make amount
-2. For each coin, add ways to make (amount - coin)
-3. Order matters: iterate coins first to avoid counting permutations
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def numberOfWaysToMakeChange(n, denoms):
-    """
-    Time Complexity: O(n * d) where d = number of denominations
-    Space Complexity: O(n)
-    """
-    dp = [0] * (n + 1)
-    dp[0] = 1  # One way to make 0
-
-    for coin in denoms:
-        for amount in range(coin, n + 1):
-            dp[amount] += dp[amount - coin]
-
-    return dp[n]
-
-# Test
-print(numberOfWaysToMakeChange(6, [1, 5]))  # 2
-print(numberOfWaysToMakeChange(10, [1, 5, 10, 25]))  # 4
-```
-
-```go
-package main
-
-import "fmt"
-
-func numberOfWaysToMakeChange(n int, denoms []int) int {
-    dp := make([]int, n+1)
-    dp[0] = 1
-
-    for _, coin := range denoms {
-        for amount := coin; amount <= n; amount++ {
-            dp[amount] += dp[amount-coin]
-        }
-    }
-
-    return dp[n]
-}
-
-func main() {
-    fmt.Println(numberOfWaysToMakeChange(6, []int{1, 5})) // 2
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Coin Change 2** - LeetCode version
-2. **Combination Sum IV** - Count permutations
-3. **Target Sum** - Plus/minus operations
-
-</details>
-
----
-
-### 3. Min Coins For Change
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Find the minimum number of coins needed to make exact change. Return -1 if impossible.
-
-**Example:**
-```
-Input: n = 7, denoms = [1, 5, 10]
-Output: 3 (5 + 1 + 1)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[amount] = minimum coins to make amount
-2. dp[i] = min(dp[i], dp[i-coin] + 1) for each coin
-3. Initialize with infinity (impossible)
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def minNumberOfCoinsForChange(n, denoms):
-    """
-    Time Complexity: O(n * d)
-    Space Complexity: O(n)
-    """
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0
-
-    for coin in denoms:
-        for amount in range(coin, n + 1):
-            if dp[amount - coin] != float('inf'):
-                dp[amount] = min(dp[amount], dp[amount - coin] + 1)
-
-    return dp[n] if dp[n] != float('inf') else -1
-
-# Test
-print(minNumberOfCoinsForChange(7, [1, 5, 10]))  # 3
-print(minNumberOfCoinsForChange(11, [1, 5, 10]))  # 2 (10 + 1)
-```
-
-```go
-package main
-
-import (
-    "fmt"
-    "math"
-)
-
-func minNumberOfCoinsForChange(n int, denoms []int) int {
-    dp := make([]int, n+1)
-    for i := range dp {
-        dp[i] = math.MaxInt32
-    }
-    dp[0] = 0
-
-    for _, coin := range denoms {
-        for amount := coin; amount <= n; amount++ {
-            if dp[amount-coin] != math.MaxInt32 {
-                if dp[amount-coin]+1 < dp[amount] {
-                    dp[amount] = dp[amount-coin] + 1
-                }
-            }
-        }
-    }
-
-    if dp[n] == math.MaxInt32 {
-        return -1
-    }
-    return dp[n]
-}
-
-func main() {
-    fmt.Println(minNumberOfCoinsForChange(7, []int{1, 5, 10})) // 3
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Coin Change** - LeetCode version
-2. **Perfect Squares** - Sum of squares
-3. **Integer Break** - Maximum product
-
-</details>
-
----
-
-### 4. Levenshtein Distance
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Find the minimum number of edit operations (insert, delete, replace) to transform one string into another.
-
-**Example:**
-```
-Input: str1 = "abc", str2 = "yabd"
-Output: 2 (insert 'y' at start, replace 'c' with 'd')
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. 2D DP: dp[i][j] = edit distance for str1[0:i] and str2[0:j]
-2. If chars match: dp[i][j] = dp[i-1][j-1]
-3. Otherwise: 1 + min(insert, delete, replace)
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def levenshteinDistance(str1, str2):
-    """
-    Time Complexity: O(m * n)
-    Space Complexity: O(min(m, n)) optimized
-    """
-    # Make str1 the shorter string for space optimization
-    if len(str1) > len(str2):
-        str1, str2 = str2, str1
-
-    # Only need two rows
-    prev = list(range(len(str1) + 1))
-    curr = [0] * (len(str1) + 1)
-
-    for j in range(1, len(str2) + 1):
-        curr[0] = j
-        for i in range(1, len(str1) + 1):
-            if str1[i-1] == str2[j-1]:
-                curr[i] = prev[i-1]
-            else:
-                curr[i] = 1 + min(
-                    prev[i],      # delete from str1
-                    curr[i-1],    # insert into str1
-                    prev[i-1]     # replace
-                )
-        prev, curr = curr, prev
-
-    return prev[len(str1)]
-
-# Test
-print(levenshteinDistance("abc", "yabd"))  # 2
-print(levenshteinDistance("horse", "ros"))  # 3
-```
-
-```go
-package main
-
-import "fmt"
-
-func levenshteinDistance(str1, str2 string) int {
-    if len(str1) > len(str2) {
-        str1, str2 = str2, str1
-    }
-
-    prev := make([]int, len(str1)+1)
-    curr := make([]int, len(str1)+1)
-
-    for i := range prev {
-        prev[i] = i
-    }
-
-    for j := 1; j <= len(str2); j++ {
-        curr[0] = j
-        for i := 1; i <= len(str1); i++ {
-            if str1[i-1] == str2[j-1] {
-                curr[i] = prev[i-1]
-            } else {
-                curr[i] = 1 + min(prev[i], min(curr[i-1], prev[i-1]))
-            }
-        }
-        prev, curr = curr, prev
-    }
-
-    return prev[len(str1)]
-}
-
-func min(a, b int) int {
-    if a < b { return a }
-    return b
-}
-
-func main() {
-    fmt.Println(levenshteinDistance("abc", "yabd")) // 2
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Edit Distance** - LeetCode version
-2. **Delete Operation for Two Strings** - Only deletions
-3. **Minimum ASCII Delete Sum** - Weighted deletions
-
-</details>
-
----
-
-### 5. Ways To Traverse Graph
-
-**Difficulty:** Medium
-
-**Problem Statement:**
-Count the number of ways to traverse a grid from top-left to bottom-right, moving only right or down.
-
-**Example:**
-```
-Input: width = 4, height = 3
-Output: 10
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[i][j] = ways to reach cell (i, j)
-2. dp[i][j] = dp[i-1][j] + dp[i][j-1]
-3. Base case: first row and column are all 1s
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def waysToTraverseGraph(width, height):
-    """
-    Time Complexity: O(w * h)
-    Space Complexity: O(w)
-    """
-    dp = [1] * width
-
-    for _ in range(1, height):
-        for j in range(1, width):
-            dp[j] += dp[j-1]
-
-    return dp[width - 1]
-
-# Mathematical solution using combinations
-def waysToTraverseGraphMath(width, height):
-    """
-    Total moves: (width-1) right + (height-1) down
-    Choose (width-1) positions for right moves
-    """
-    from math import factorial
-    return factorial(width + height - 2) // (factorial(width - 1) * factorial(height - 1))
-
-# Test
-print(waysToTraverseGraph(4, 3))  # 10
-```
-
-```go
-package main
-
-import "fmt"
-
-func waysToTraverseGraph(width, height int) int {
-    dp := make([]int, width)
-    for i := range dp {
-        dp[i] = 1
-    }
-
-    for i := 1; i < height; i++ {
-        for j := 1; j < width; j++ {
-            dp[j] += dp[j-1]
-        }
-    }
-
-    return dp[width-1]
-}
-
-func main() {
-    fmt.Println(waysToTraverseGraph(4, 3)) // 10
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Unique Paths** - LeetCode version
-2. **Unique Paths II** - With obstacles
-3. **Minimum Path Sum** - Find minimum cost path
-
-</details>
-
----
-
-### 6. Max Sum Increasing Subsequence
-
-**Difficulty:** Hard
-
-**Problem Statement:**
-Find the maximum sum of increasing subsequence and the subsequence itself.
-
-**Example:**
-```
-Input: [10, 70, 20, 30, 50, 11, 30]
-Output: [110, [10, 20, 30, 50]]
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[i] = max sum of increasing subsequence ending at i
-2. Track previous index to reconstruct path
-3. For each i, check all j < i where arr[j] < arr[i]
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def maxSumIncreasingSubsequence(array):
-    """
-    Time Complexity: O(n²)
-    Space Complexity: O(n)
-    """
-    n = len(array)
-    dp = array[:]  # dp[i] = max sum ending at i
-    prev = [None] * n  # For reconstruction
-
-    max_idx = 0
+    n = len(nums)
+    dp = [1] * n  # Each element is an LIS of length 1
 
     for i in range(1, n):
         for j in range(i):
-            if array[j] < array[i] and dp[j] + array[i] > dp[i]:
-                dp[i] = dp[j] + array[i]
-                prev[i] = j
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
 
-        if dp[i] > dp[max_idx]:
-            max_idx = i
+    return max(dp)
 
-    # Reconstruct sequence
-    sequence = []
-    idx = max_idx
-    while idx is not None:
-        sequence.append(array[idx])
-        idx = prev[idx]
+def lis_binary_search(nums):
+    """
+    O(n log n) Binary Search Solution
+    tails[i] = smallest ending element for LIS of length i+1
+    """
+    from bisect import bisect_left
 
-    return [dp[max_idx], sequence[::-1]]
+    tails = []
+    for num in nums:
+        pos = bisect_left(tails, num)
+        if pos == len(tails):
+            tails.append(num)
+        else:
+            tails[pos] = num
 
-# Test
-array = [10, 70, 20, 30, 50, 11, 30]
-print(maxSumIncreasingSubsequence(array))  # [110, [10, 20, 30, 50]]
+    return len(tails)
+
+# Example
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+print(lis_dp(nums))  # 4
+print(lis_binary_search(nums))  # 4
 ```
-
-```go
-package main
-
-import "fmt"
-
-func maxSumIncreasingSubsequence(array []int) (int, []int) {
-    n := len(array)
-    dp := make([]int, n)
-    prev := make([]int, n)
-
-    copy(dp, array)
-    for i := range prev {
-        prev[i] = -1
-    }
-
-    maxIdx := 0
-
-    for i := 1; i < n; i++ {
-        for j := 0; j < i; j++ {
-            if array[j] < array[i] && dp[j]+array[i] > dp[i] {
-                dp[i] = dp[j] + array[i]
-                prev[i] = j
-            }
-        }
-        if dp[i] > dp[maxIdx] {
-            maxIdx = i
-        }
-    }
-
-    // Reconstruct
-    sequence := []int{}
-    for idx := maxIdx; idx != -1; idx = prev[idx] {
-        sequence = append([]int{array[idx]}, sequence...)
-    }
-
-    return dp[maxIdx], sequence
-}
-
-func main() {
-    array := []int{10, 70, 20, 30, 50, 11, 30}
-    sum, seq := maxSumIncreasingSubsequence(array)
-    fmt.Println(sum, seq) // 110 [10 20 30 50]
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Longest Increasing Subsequence** - Length instead of sum
-2. **Russian Doll Envelopes** - 2D LIS
-3. **Number of Longest Increasing Subsequence** - Count LIS
-
-</details>
 
 ---
 
-### 7. Longest Common Subsequence
+### Problem 3: 0/1 Knapsack
 
-**Difficulty:** Hard
+**Problem**: Given items with weights and values, find maximum value that fits in capacity.
 
-**Problem Statement:**
-Find the longest common subsequence of two strings.
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Knapsack Table Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Items: [(weight=1, value=1), (w=2, v=4), (w=3, v=5), (w=2, v=3)]
+Capacity: 5
 
-**Example:**
-```
-Input: str1 = "ZXVVYZW", str2 = "XKYKZPW"
-Output: ["XYZW"]
-```
+          Capacity
+          0   1   2   3   4   5
+       +---+---+---+---+---+---+
+Item 0 | 0 | 1 | 1 | 1 | 1 | 1 |
+       +---+---+---+---+---+---+
+Item 1 | 0 | 1 | 4 | 5 | 5 | 5 |
+       +---+---+---+---+---+---+
+Item 2 | 0 | 1 | 4 | 5 | 6 | 9 |
+       +---+---+---+---+---+---+
+Item 3 | 0 | 1 | 4 | 5 | 7 | 9 |  <- Max value: 9
+       +---+---+---+---+---+---+
 
-<details>
-<summary><strong>Hints</strong></summary>
+Recurrence:
+  dp[i][w] = max(
+    dp[i-1][w],                    // Don't take item i
+    dp[i-1][w-weight[i]] + value[i] // Take item i (if fits)
+  )
 
-1. 2D DP: dp[i][j] = LCS length for str1[0:i], str2[0:j]
-2. If match: dp[i][j] = 1 + dp[i-1][j-1]
-3. Else: max(dp[i-1][j], dp[i][j-1])
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
+Answer: 9 (items 1 and 2: value=4+5, weight=2+3=5)
+</pre>
+</div>
 
 ```python
-def longestCommonSubsequence(str1, str2):
+def knapsack_01(values, weights, capacity):
     """
-    Time Complexity: O(m * n)
-    Space Complexity: O(m * n)
+    Time: O(n * capacity) | Space: O(n * capacity)
+
+    dp[i][c] = max value using items 0..i with capacity c
+    """
+    n = len(values)
+    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        for c in range(capacity + 1):
+            # Don't take item i
+            dp[i][c] = dp[i-1][c]
+
+            # Take item i (if it fits)
+            if weights[i-1] <= c:
+                dp[i][c] = max(dp[i][c],
+                               dp[i-1][c - weights[i-1]] + values[i-1])
+
+    return dp[n][capacity]
+
+def knapsack_01_optimized(values, weights, capacity):
+    """
+    Space-Optimized: O(capacity)
+    Process backwards to avoid using updated values
+    """
+    dp = [0] * (capacity + 1)
+
+    for i in range(len(values)):
+        for c in range(capacity, weights[i] - 1, -1):  # Backward!
+            dp[c] = max(dp[c], dp[c - weights[i]] + values[i])
+
+    return dp[capacity]
+
+# Example
+values = [1, 4, 5, 3]
+weights = [1, 2, 3, 2]
+print(knapsack_01(values, weights, 5))  # 9
+```
+
+---
+
+### Problem 4: Coin Change
+
+**Problem**: Find minimum coins needed to make a target amount.
+
+```python
+def coin_change(coins, amount):
+    """
+    Time: O(amount * len(coins)) | Space: O(amount)
+
+    dp[a] = minimum coins needed for amount a
+    Unbounded knapsack variant (can use coins multiple times)
+    """
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0  # 0 coins needed for amount 0
+
+    for a in range(1, amount + 1):
+        for coin in coins:
+            if coin <= a and dp[a - coin] != float('inf'):
+                dp[a] = min(dp[a], dp[a - coin] + 1)
+
+    return dp[amount] if dp[amount] != float('inf') else -1
+
+def coin_change_ways(coins, amount):
+    """
+    Count number of ways to make change (order doesn't matter)
+    """
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+
+    for coin in coins:  # Process by coin first to avoid counting permutations
+        for a in range(coin, amount + 1):
+            dp[a] += dp[a - coin]
+
+    return dp[amount]
+
+# Examples
+print(coin_change([1, 2, 5], 11))  # 3 (5+5+1)
+print(coin_change_ways([1, 2, 5], 5))  # 4 ways
+```
+
+---
+
+### Problem 5: Edit Distance (Levenshtein)
+
+**Problem**: Find minimum operations (insert, delete, replace) to transform one string to another.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Edit Distance Table</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Strings: "abc" -> "yabd"
+
+       ""   y   a   b   d
+    +----+---+---+---+---+
+ "" |  0 | 1 | 2 | 3 | 4 |  <- Insert all
+    +----+---+---+---+---+
+  a |  1 | 1 | 1 | 2 | 3 |  <- a matches a at [1][2]
+    +----+---+---+---+---+
+  b |  2 | 2 | 2 | 1 | 2 |  <- b matches b at [2][3]
+    +----+---+---+---+---+
+  c |  3 | 3 | 3 | 2 | 2 |  <- c != d, min of ops + 1
+    +----+---+---+---+---+
+
+Recurrence:
+  If chars match: dp[i][j] = dp[i-1][j-1]
+  Else: dp[i][j] = 1 + min(
+    dp[i-1][j],    // Delete from str1
+    dp[i][j-1],    // Insert into str1
+    dp[i-1][j-1]   // Replace in str1
+  )
+
+Answer: 2 (insert 'y' at start, replace 'c' with 'd')
+</pre>
+</div>
+
+```python
+def edit_distance(str1, str2):
+    """
+    Time: O(m * n) | Space: O(m * n)
+
+    dp[i][j] = min operations to convert str1[0:i] to str2[0:j]
     """
     m, n = len(str1), len(str2)
     dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    # Fill DP table
+    # Base cases
+    for i in range(m + 1):
+        dp[i][0] = i  # Delete all from str1
+    for j in range(n + 1):
+        dp[0][j] = j  # Insert all to str1
+
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             if str1[i-1] == str2[j-1]:
-                dp[i][j] = 1 + dp[i-1][j-1]
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = 1 + min(
+                    dp[i-1][j],    # Delete
+                    dp[i][j-1],    # Insert
+                    dp[i-1][j-1]   # Replace
+                )
+
+    return dp[m][n]
+
+# Example
+print(edit_distance("abc", "yabd"))  # 2
+```
+
+---
+
+### Problem 6: Longest Common Subsequence
+
+```python
+def longest_common_subsequence(str1, str2):
+    """
+    Time: O(m * n) | Space: O(m * n)
+
+    dp[i][j] = LCS length of str1[0:i] and str2[0:j]
+    """
+    m, n = len(str1), len(str2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if str1[i-1] == str2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # Reconstruct LCS
+    return dp[m][n]
+
+def get_lcs_string(str1, str2):
+    """Also reconstruct the actual LCS"""
+    m, n = len(str1), len(str2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if str1[i-1] == str2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+    # Backtrack to find LCS
     lcs = []
     i, j = m, n
     while i > 0 and j > 0:
@@ -696,429 +485,186 @@ def longestCommonSubsequence(str1, str2):
         else:
             j -= 1
 
-    return [''.join(reversed(lcs))]
+    return ''.join(reversed(lcs))
 
-# Test
-print(longestCommonSubsequence("ZXVVYZW", "XKYKZPW"))  # ['XYZW']
+# Example
+print(longest_common_subsequence("ABCDE", "ACE"))  # 3
+print(get_lcs_string("ABCDE", "ACE"))  # "ACE"
 ```
 
-```go
-package main
-
-import "fmt"
-
-func longestCommonSubsequence(str1, str2 string) []string {
-    m, n := len(str1), len(str2)
-    dp := make([][]int, m+1)
-    for i := range dp {
-        dp[i] = make([]int, n+1)
-    }
-
-    for i := 1; i <= m; i++ {
-        for j := 1; j <= n; j++ {
-            if str1[i-1] == str2[j-1] {
-                dp[i][j] = 1 + dp[i-1][j-1]
-            } else {
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-            }
-        }
-    }
-
-    // Reconstruct
-    lcs := []byte{}
-    i, j := m, n
-    for i > 0 && j > 0 {
-        if str1[i-1] == str2[j-1] {
-            lcs = append([]byte{str1[i-1]}, lcs...)
-            i--
-            j--
-        } else if dp[i-1][j] > dp[i][j-1] {
-            i--
-        } else {
-            j--
-        }
-    }
-
-    return []string{string(lcs)}
-}
-
-func max(a, b int) int {
-    if a > b { return a }
-    return b
-}
-
-func main() {
-    fmt.Println(longestCommonSubsequence("ZXVVYZW", "XKYKZPW"))
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Longest Common Substring** - Contiguous
-2. **Shortest Common Supersequence** - Merge strings
-3. **Delete Operation for Two Strings**
-
-</details>
-
----
-
-### 8. Min Number Of Jumps
-
-**Difficulty:** Hard
-
-**Problem Statement:**
-Find minimum jumps to reach the end. Each element is max jump length from that position.
-
-**Example:**
-```
-Input: [3, 4, 2, 1, 2, 3, 7, 1, 1, 1, 3]
-Output: 4 (3->4->2->7->end)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. Greedy approach: track farthest reachable
-2. Jump when reaching current boundary
-3. Update boundary to farthest reachable
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def minNumberOfJumps(array):
-    """
-    Time Complexity: O(n)
-    Space Complexity: O(1)
-    """
-    if len(array) == 1:
-        return 0
-
-    jumps = 0
-    current_end = 0
-    farthest = 0
-
-    for i in range(len(array) - 1):
-        farthest = max(farthest, i + array[i])
-
-        if i == current_end:
-            jumps += 1
-            current_end = farthest
-
-            if current_end >= len(array) - 1:
-                break
-
-    return jumps
-
-# Test
-array = [3, 4, 2, 1, 2, 3, 7, 1, 1, 1, 3]
-print(minNumberOfJumps(array))  # 4
-```
-
-```go
-package main
-
-import "fmt"
-
-func minNumberOfJumps(array []int) int {
-    if len(array) == 1 {
-        return 0
-    }
-
-    jumps := 0
-    currentEnd := 0
-    farthest := 0
-
-    for i := 0; i < len(array)-1; i++ {
-        if i+array[i] > farthest {
-            farthest = i + array[i]
-        }
-
-        if i == currentEnd {
-            jumps++
-            currentEnd = farthest
-
-            if currentEnd >= len(array)-1 {
-                break
-            }
-        }
-    }
-
-    return jumps
-}
-
-func main() {
-    array := []int{3, 4, 2, 1, 2, 3, 7, 1, 1, 1, 3}
-    fmt.Println(minNumberOfJumps(array)) // 4
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **Jump Game** - Can you reach end?
-2. **Jump Game II** - LeetCode version
-3. **Frog Jump** - Specific jump sizes
-
-</details>
-
----
-
-### 9. Knapsack Problem
-
-**Difficulty:** Hard
-
-**Problem Statement:**
-Given items with weights and values, find maximum value that fits in capacity.
-
-**Example:**
-```
-Input: items = [[1,2], [4,3], [5,6], [6,7]], capacity = 10
-Output: [10, [1,3]] (items at indices 1 and 3)
-```
-
-<details>
-<summary><strong>Hints</strong></summary>
-
-1. dp[i][c] = max value with first i items and capacity c
-2. Either include item i or not
-3. Track choices for reconstruction
-
-</details>
-
-<details>
-<summary><strong>Solution</strong></summary>
-
-```python
-def knapsackProblem(items, capacity):
-    """
-    Time Complexity: O(n * c)
-    Space Complexity: O(n * c)
-    """
-    n = len(items)
-    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
-
-    for i in range(1, n + 1):
-        value, weight = items[i-1]
-        for c in range(capacity + 1):
-            if weight > c:
-                dp[i][c] = dp[i-1][c]
-            else:
-                dp[i][c] = max(dp[i-1][c], value + dp[i-1][c-weight])
-
-    # Reconstruct
-    selected = []
-    c = capacity
-    for i in range(n, 0, -1):
-        if dp[i][c] != dp[i-1][c]:
-            selected.append(i-1)
-            c -= items[i-1][1]
-
-    return [dp[n][capacity], selected[::-1]]
-
-# Test
-items = [[1,2], [4,3], [5,6], [6,7]]
-print(knapsackProblem(items, 10))  # [10, [1, 3]]
-```
-
-```go
-package main
-
-import "fmt"
-
-func knapsackProblem(items [][]int, capacity int) (int, []int) {
-    n := len(items)
-    dp := make([][]int, n+1)
-    for i := range dp {
-        dp[i] = make([]int, capacity+1)
-    }
-
-    for i := 1; i <= n; i++ {
-        value, weight := items[i-1][0], items[i-1][1]
-        for c := 0; c <= capacity; c++ {
-            if weight > c {
-                dp[i][c] = dp[i-1][c]
-            } else {
-                dp[i][c] = max(dp[i-1][c], value+dp[i-1][c-weight])
-            }
-        }
-    }
-
-    // Reconstruct
-    selected := []int{}
-    c := capacity
-    for i := n; i > 0; i-- {
-        if dp[i][c] != dp[i-1][c] {
-            selected = append([]int{i - 1}, selected...)
-            c -= items[i-1][1]
-        }
-    }
-
-    return dp[n][capacity], selected
-}
-
-func max(a, b int) int {
-    if a > b { return a }
-    return b
-}
-
-func main() {
-    items := [][]int{{1, 2}, {4, 3}, {5, 6}, {6, 7}}
-    value, selected := knapsackProblem(items, 10)
-    fmt.Println(value, selected) // 10 [1 3]
-}
-```
-
-</details>
-
-<details>
-<summary><strong>Similar Problems</strong></summary>
-
-1. **0/1 Knapsack** - Classic version
-2. **Unbounded Knapsack** - Unlimited items
-3. **Partition Equal Subset Sum** - Subset sum variant
-
-</details>
-
----
-
-### 10-15. More Hard/Very Hard Problems
-
-<details>
-<summary><strong>Disk Stacking</strong></summary>
-
-Stack disks where each must be strictly smaller in all dimensions.
-
-```python
-def diskStacking(disks):
-    """Sort by height, then LIS-style DP"""
-    disks.sort(key=lambda x: x[2])  # Sort by height
-    dp = [d[2] for d in disks]  # Heights
-    prev = [None] * len(disks)
-
-    max_idx = 0
-    for i in range(1, len(disks)):
-        for j in range(i):
-            if canStack(disks[j], disks[i]):
-                if dp[j] + disks[i][2] > dp[i]:
-                    dp[i] = dp[j] + disks[i][2]
-                    prev[i] = j
-        if dp[i] > dp[max_idx]:
-            max_idx = i
-
-    # Reconstruct
-    result = []
-    while max_idx is not None:
-        result.append(disks[max_idx])
-        max_idx = prev[max_idx]
-    return result[::-1]
-
-def canStack(below, above):
-    return below[0] < above[0] and below[1] < above[1] and below[2] < above[2]
-```
-
-</details>
-
-<details>
-<summary><strong>Numbers In Pi</strong></summary>
-
-Minimum spaces to split Pi digits into dictionary words.
-
-```python
-def numbersInPi(pi, numbers):
-    numbersSet = set(numbers)
-    cache = {}
-
-    def minSpaces(idx):
-        if idx == len(pi):
-            return -1  # No space after last
-        if idx in cache:
-            return cache[idx]
-
-        minCount = float('inf')
-        for i in range(idx, len(pi)):
-            prefix = pi[idx:i+1]
-            if prefix in numbersSet:
-                spacesAfter = minSpaces(i + 1)
-                if spacesAfter != float('inf'):
-                    minCount = min(minCount, spacesAfter + 1)
-
-        cache[idx] = minCount
-        return minCount
-
-    result = minSpaces(0)
-    return result if result != float('inf') else -1
-```
-
-</details>
-
-<details>
-<summary><strong>Longest Increasing Subsequence O(n log n)</strong></summary>
-
-```python
-import bisect
-
-def longestIncreasingSubsequence(array):
-    """
-    Time: O(n log n)
-    Space: O(n)
-    """
-    if not array:
-        return []
-
-    # tails[i] = smallest tail of LIS of length i+1
-    tails = []
-    prev = [-1] * len(array)
-    indices = []
-
-    for i, num in enumerate(array):
-        pos = bisect.bisect_left(tails, num)
-
-        if pos == len(tails):
-            tails.append(num)
-            indices.append(i)
-        else:
-            tails[pos] = num
-            indices[pos] = i
-
-        prev[i] = indices[pos - 1] if pos > 0 else -1
-
-    # Reconstruct
-    result = []
-    idx = indices[-1]
-    while idx != -1:
-        result.append(array[idx])
-        idx = prev[idx]
-    return result[::-1]
-```
-
-</details>
-
----
-
-## Practice Tips
-
-### DP Identification Checklist
-- [ ] Can the problem be broken into subproblems?
-- [ ] Are there overlapping subproblems?
-- [ ] Does optimal solution use optimal subproblem solutions?
-- [ ] Can you define a clear state and recurrence?
-
-### Common Transitions
-| Pattern | Transition |
-|---------|------------|
-| Linear | dp[i] depends on dp[i-1], dp[i-2], etc. |
-| 2D Grid | dp[i][j] depends on dp[i-1][j], dp[i][j-1] |
-| LCS/Edit | dp[i][j] depends on dp[i-1][j-1], dp[i-1][j], dp[i][j-1] |
-| Knapsack | dp[i][w] depends on dp[i-1][w], dp[i-1][w-weight] |
-
-### Space Optimization
-- Often can reduce from O(n²) to O(n) or O(n) to O(1)
-- Keep only rows/states needed for next computation
+## Complexity Analysis Summary
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">DP Problems Complexity Reference</h3>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Problem</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Time</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Space</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Optimized Space</th>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Fibonacci</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(1)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">LIS</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n^2) / O(n log n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">-</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">0/1 Knapsack</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n * W)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n * W)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(W)</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Coin Change</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n * amount)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(amount)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">-</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">LCS</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m * n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m * n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(min(m, n))</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Edit Distance</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m * n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m * n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(min(m, n))</td>
+</tr>
+</table>
+</div>
+
+## Common Mistakes
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Pitfalls to Avoid</h3>
+<div style="color: #334155;">
+
+1. **Wrong Base Case**: Forgetting to initialize dp[0] properly - causes cascading errors
+
+2. **Off-by-One in Indices**: String problems often use 1-indexed dp with 0 as base case
+
+3. **Wrong Iteration Order**:
+   - Bottom-up: Must process dependencies first
+   - Space optimization: May need reverse iteration
+
+4. **Not Recognizing DP**: Signs: optimal substructure, overlapping subproblems, counting/min/max
+
+5. **Overcounting**: In coin change for combinations (not permutations), iterate coins first
+
+6. **Unbounded vs Bounded**: 0/1 Knapsack (each item once) vs Unbounded (unlimited use)
+
+7. **Memoization Key Errors**: Using mutable objects or missing state in cache key
+
+8. **Not Considering All States**: Missing dimensions in state (e.g., "last element used")
+
+</div>
+</div>
+
+## Interview Tips
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">DP Problem-Solving Framework</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Step 1: Identify DP applicability
+  - Can problem be broken into subproblems?
+  - Do subproblems overlap?
+  - Is there optimal substructure?
+
+Step 2: Define state
+  - What information do I need at each step?
+  - What does dp[i] or dp[i][j] represent?
+  - Make state as small as possible
+
+Step 3: Define recurrence
+  - How do I get dp[i] from smaller subproblems?
+  - What are my choices at each step?
+  - Write the recurrence relation
+
+Step 4: Identify base cases
+  - What are the smallest subproblems?
+  - What do I know without computation?
+
+Step 5: Determine iteration order
+  - What must be computed before what?
+  - Can I optimize space by reusing?
+
+Time Allocation (45-min problem):
+0-5 min:  Understand, identify as DP
+5-15 min: Define state, recurrence, base cases
+15-35 min: Implement solution
+35-45 min: Test, optimize if needed
+</pre>
+</div>
+
+### Key Communication Phrases
+
+- "This has optimal substructure because the optimal solution uses optimal solutions to subproblems..."
+- "I'll define dp[i] as... and the recurrence is..."
+- "The base case is dp[0] = ... because..."
+- "I can optimize space because I only need the previous row/state..."
+- "Let me trace through a small example to verify the recurrence..."
+
+## Practice Problems
+
+### Easy
+1. Fibonacci
+2. Climbing Stairs
+3. Maximum Subarray (Kadane's)
+4. House Robber
+
+### Medium
+5. Coin Change
+6. Longest Increasing Subsequence
+7. Longest Common Subsequence
+8. 0/1 Knapsack
+9. Min Number of Coins for Change
+10. Unique Paths
+11. Edit Distance
+12. Max Subset Sum No Adjacent
+
+### Hard
+13. Max Sum Increasing Subsequence
+14. Longest Palindromic Subsequence
+15. Water Area
+16. Knapsack Problem
+17. Disk Stacking
+
+### Very Hard
+18. Longest String Chain
+19. Square of Zeroes
+20. Palindrome Partitioning Min Cuts
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Quick Reference - Common Recurrences</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Fibonacci:    dp[i] = dp[i-1] + dp[i-2]
+
+LIS:          dp[i] = max(dp[j] + 1) for j < i where arr[j] < arr[i]
+
+0/1 Knapsack: dp[i][w] = max(dp[i-1][w], dp[i-1][w-wt[i]] + val[i])
+
+Unbounded:    dp[w] = max(dp[w], dp[w-wt[i]] + val[i])
+
+LCS:          dp[i][j] = dp[i-1][j-1] + 1        if match
+                       = max(dp[i-1][j], dp[i][j-1]) otherwise
+
+Edit Dist:    dp[i][j] = dp[i-1][j-1]            if match
+                       = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+
+Unique Paths: dp[i][j] = dp[i-1][j] + dp[i][j-1]
+
+Space Optimization Pattern:
+  - If only need previous row: use 2 rows, alternate
+  - If only need previous element: use single variable
+  - Process backward for 0/1 choices (prevent double-use)
+</pre>
+</div>

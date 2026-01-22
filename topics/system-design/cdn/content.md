@@ -2,605 +2,680 @@
 
 ## Overview
 
-A Content Delivery Network (CDN) is a geographically distributed network of proxy servers that cache content closer to end users. CDNs reduce latency, decrease origin server load, and improve availability for static and dynamic content.
+A Content Delivery Network (CDN) is a geographically distributed network of servers that caches content closer to end users. By serving content from nearby edge locations instead of a distant origin server, CDNs dramatically reduce latency, decrease bandwidth costs, and improve availability.
 
-## Key Concepts
-
-### How CDN Works
-
-<div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div>
-    <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 0.75rem;">Without CDN</div>
-    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">🇯🇵 User (Tokyo)</div>
-      <div style="flex: 1; min-width: 100px; height: 2px; background: linear-gradient(90deg, #ff6b6b, #ff6b6b); position: relative;">
-        <span style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #ff6b6b; font-size: 0.8rem;">~200ms latency</span>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">HOW CDN IMPROVES PERFORMANCE</h3>
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    <div>
+      <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Without CDN:</div>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; border: 2px solid #3b82f6;">
+          <div style="color: #1e40af; font-weight: 600;">User (Tokyo)</div>
+        </div>
+        <div style="flex: 1; min-width: 100px; max-width: 200px; text-align: center;">
+          <div style="background: #fef2f2; height: 4px; border-radius: 2px;"></div>
+          <div style="color: #dc2626; font-size: 12px; margin-top: 4px;">~200ms latency</div>
+        </div>
+        <div style="background: #f3e8ff; padding: 12px 20px; border-radius: 8px; border: 2px solid #a855f7;">
+          <div style="color: #6b21a8; font-weight: 600;">Origin (New York)</div>
+        </div>
       </div>
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white;">🇺🇸 Origin (New York)</div>
+    </div>
+    <div>
+      <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">With CDN:</div>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; border: 2px solid #3b82f6;">
+          <div style="color: #1e40af; font-weight: 600;">User (Tokyo)</div>
+        </div>
+        <div style="text-align: center; min-width: 60px;">
+          <div style="background: #dcfce7; height: 4px; border-radius: 2px;"></div>
+          <div style="color: #16a34a; font-size: 12px; margin-top: 4px;">~20ms</div>
+        </div>
+        <div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; border: 2px solid #22c55e;">
+          <div style="color: #166534; font-weight: 600;">Edge (Tokyo)</div>
+        </div>
+        <div style="text-align: center; min-width: 60px;">
+          <div style="color: #64748b; font-size: 11px;">cache miss only</div>
+        </div>
+        <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <div style="color: #64748b; font-weight: 600;">Origin</div>
+        </div>
+      </div>
     </div>
   </div>
-  <div>
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 0.75rem;">With CDN</div>
-    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">🇯🇵 User (Tokyo)</div>
-      <div style="color: #4ecdc4;">→<br><span style="font-size: 0.75rem;">~20ms</span></div>
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">⚡ Edge (Tokyo)</div>
-      <div style="color: #a0aec0;">→<br><span style="font-size: 0.7rem;">cache miss only</span></div>
-      <div style="background: #2d3748; border-radius: 8px; padding: 0.75rem 1.25rem; color: #a0aec0;">Origin (New York)</div>
+  <div style="background: #dcfce7; border-radius: 8px; padding: 12px 20px; margin-top: 20px; text-align: center;">
+    <span style="color: #166534; font-weight: 600;">Result: 10x faster page loads for global users</span>
+  </div>
+</div>
+
+**The Simple Explanation**: Think of a CDN like a chain of local warehouses for an online retailer. Instead of shipping every order from a central warehouse in New York, Amazon pre-stocks popular items at local fulfillment centers near customers. When you order, it ships from the nearest warehouse, arriving much faster.
+
+---
+
+## Why It Matters: Real Company Examples
+
+Every major internet company relies on CDNs as critical infrastructure:
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CDN IN PRODUCTION</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+    <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+      <div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">Netflix</div>
+      <div style="color: #7f1d1d; font-size: 13px;">Serves 15% of global internet traffic. Open Connect CDN caches video content at ISP locations to avoid network congestion.</div>
+    </div>
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Shopify</div>
+      <div style="color: #1d4ed8; font-size: 13px;">Uses Cloudflare to serve millions of storefronts. Fast page loads directly impact conversion rates - every 100ms delay costs 1% in sales.</div>
+    </div>
+    <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+      <div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Airbnb</div>
+      <div style="color: #047857; font-size: 13px;">CDN serves listing images globally. Image optimization at the edge reduces bandwidth by 40% while maintaining quality.</div>
+    </div>
+    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">GitHub</div>
+      <div style="color: #b45309; font-size: 13px;">Fastly CDN delivers assets and provides DDoS protection. Instant cache purging enables rapid deployments.</div>
     </div>
   </div>
 </div>
 
-### CDN Architecture
+**Interview Insight**: CDN questions frequently appear in system design interviews. "How would you design a video streaming service?" or "How would you serve static assets for a global e-commerce site?" both require understanding CDN architecture.
 
-<div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-    <div style="font-weight: 700; font-size: 1.1rem;">Origin Server</div>
-    <div style="font-size: 0.8rem; opacity: 0.9;">Primary content source</div>
+---
+
+## How It Works: CDN Architecture
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CDN ARCHITECTURE</h3>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+    <div style="background: #f3e8ff; padding: 20px 40px; border-radius: 12px; border: 2px solid #a855f7; text-align: center;">
+      <div style="color: #6b21a8; font-weight: 700; font-size: 16px;">Origin Server</div>
+      <div style="color: #7c3aed; font-size: 12px;">Primary content source</div>
+    </div>
+    <div style="color: #64748b; font-size: 20px;">|</div>
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <div style="background: #dcfce7; padding: 16px 24px; border-radius: 10px; border: 2px solid #22c55e; text-align: center;">
+          <div style="color: #166534; font-weight: 600;">Edge PoP</div>
+          <div style="color: #15803d; font-size: 12px;">North America</div>
+        </div>
+        <div style="color: #22c55e; font-size: 12px;">|</div>
+        <div style="color: #64748b; font-size: 12px;">US Users</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <div style="background: #dcfce7; padding: 16px 24px; border-radius: 10px; border: 2px solid #22c55e; text-align: center;">
+          <div style="color: #166534; font-weight: 600;">Edge PoP</div>
+          <div style="color: #15803d; font-size: 12px;">Europe</div>
+        </div>
+        <div style="color: #22c55e; font-size: 12px;">|</div>
+        <div style="color: #64748b; font-size: 12px;">EU Users</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <div style="background: #dcfce7; padding: 16px 24px; border-radius: 10px; border: 2px solid #22c55e; text-align: center;">
+          <div style="color: #166534; font-weight: 600;">Edge PoP</div>
+          <div style="color: #15803d; font-size: 12px;">Asia Pacific</div>
+        </div>
+        <div style="color: #22c55e; font-size: 12px;">|</div>
+        <div style="color: #64748b; font-size: 12px;">APAC Users</div>
+      </div>
+    </div>
   </div>
-  <div style="color: #667eea; font-size: 1.5rem;">↓ ↓ ↓</div>
-  <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
-        <div style="font-weight: 600;">Edge PoP</div>
-        <div style="font-size: 0.8rem; opacity: 0.9;">🇺🇸 USA</div>
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 12px 20px; margin-top: 20px; text-align: center;">
+    <span style="color: #475569;">PoP = Point of Presence (edge data center with cache servers)</span>
+  </div>
+</div>
+
+### Request Flow
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">CDN REQUEST LIFECYCLE</h3>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+        <div style="color: #1e293b; font-weight: 600;">User requests cdn.example.com/image.jpg</div>
+        <div style="color: #64748b; font-size: 12px;">DNS resolves to nearest edge server</div>
       </div>
-      <div style="color: #38ef7d;">↓</div>
-      <div style="color: #a0aec0; font-size: 0.85rem;">Users USA</div>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
-        <div style="font-weight: 600;">Edge PoP</div>
-        <div style="font-size: 0.8rem; opacity: 0.9;">🇪🇺 Europe</div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+        <div style="color: #1e293b; font-weight: 600;">Edge server checks local cache</div>
+        <div style="color: #64748b; font-size: 12px;">Cache HIT? Return immediately (fast!)</div>
       </div>
-      <div style="color: #38ef7d;">↓</div>
-      <div style="color: #a0aec0; font-size: 0.85rem;">Users EU</div>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center;">
-        <div style="font-weight: 600;">Edge PoP</div>
-        <div style="font-size: 0.8rem; opacity: 0.9;">🌏 Asia</div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+        <div style="color: #1e293b; font-weight: 600;">Cache MISS: Fetch from origin</div>
+        <div style="color: #64748b; font-size: 12px;">Store in cache for future requests</div>
       </div>
-      <div style="color: #38ef7d;">↓</div>
-      <div style="color: #a0aec0; font-size: 0.85rem;">Users Asia</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
+      <div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px;">
+        <div style="color: #166534; font-weight: 600;">Return content to user</div>
+        <div style="color: #15803d; font-size: 12px;">Next request serves from cache</div>
+      </div>
     </div>
   </div>
 </div>
 
-### CDN Benefits
-
-1. **Reduced Latency**: Content served from nearby edge servers
-2. **Decreased Bandwidth Costs**: Cache reduces origin traffic
-3. **Increased Availability**: Distributed infrastructure handles failures
-4. **DDoS Protection**: Edge absorbs attack traffic
-5. **Improved SEO**: Faster sites rank better
+---
 
 ## Caching Strategies
 
-### Pull CDN
+### Pull CDN (Lazy Loading)
 
-Edge servers fetch content from origin on demand.
+Content is fetched from origin on first request, then cached at the edge.
 
-```python
-class PullCDN:
-    def __init__(self, origin_url):
-        self.origin_url = origin_url
-        self.cache = {}
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">PULL CDN</h3>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <span style="color: #1e293b; min-width: 100px;">First request:</span>
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #dbeafe; padding: 4px 12px; border-radius: 4px; color: #1e40af; font-size: 13px;">User</span>
+        <span style="color: #64748b;">-></span>
+        <span style="background: #fef3c7; padding: 4px 12px; border-radius: 4px; color: #92400e; font-size: 13px;">Edge (MISS)</span>
+        <span style="color: #64748b;">-></span>
+        <span style="background: #f3e8ff; padding: 4px 12px; border-radius: 4px; color: #6b21a8; font-size: 13px;">Origin</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <span style="color: #1e293b; min-width: 100px;">Next requests:</span>
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #dbeafe; padding: 4px 12px; border-radius: 4px; color: #1e40af; font-size: 13px;">User</span>
+        <span style="color: #64748b;">-></span>
+        <span style="background: #dcfce7; padding: 4px 12px; border-radius: 4px; color: #166534; font-size: 13px;">Edge (HIT)</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <div style="color: #16a34a; font-size: 13px;">+ Simple setup</div>
+    <div style="color: #16a34a; font-size: 13px;">+ Only caches popular content</div>
+    <div style="color: #dc2626; font-size: 13px;">- First request is slow</div>
+  </div>
+</div>
 
-    def get(self, path):
-        cache_key = path
+**Best for**: Most websites, APIs, dynamic content with varying popularity
 
-        # Check cache
-        if cache_key in self.cache:
-            entry = self.cache[cache_key]
-            if not entry.is_expired():
-                return entry.content
+### Push CDN (Proactive Loading)
 
-        # Fetch from origin
-        response = requests.get(f"{self.origin_url}{path}")
+Origin proactively uploads content to edge servers before any requests.
 
-        # Cache response
-        ttl = self.parse_cache_control(response.headers)
-        self.cache[cache_key] = CacheEntry(
-            content=response.content,
-            expires_at=time.time() + ttl
-        )
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">PUSH CDN</h3>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <span style="color: #1e293b; min-width: 100px;">Deploy time:</span>
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #f3e8ff; padding: 4px 12px; border-radius: 4px; color: #6b21a8; font-size: 13px;">Origin</span>
+        <span style="color: #64748b;">-> push -></span>
+        <span style="background: #dcfce7; padding: 4px 12px; border-radius: 4px; color: #166534; font-size: 13px;">All Edges</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+      <span style="color: #1e293b; min-width: 100px;">All requests:</span>
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <span style="background: #dbeafe; padding: 4px 12px; border-radius: 4px; color: #1e40af; font-size: 13px;">User</span>
+        <span style="color: #64748b;">-></span>
+        <span style="background: #dcfce7; padding: 4px 12px; border-radius: 4px; color: #166534; font-size: 13px;">Edge (HIT)</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 16px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <div style="color: #16a34a; font-size: 13px;">+ Every request is fast</div>
+    <div style="color: #16a34a; font-size: 13px;">+ Predictable latency</div>
+    <div style="color: #dc2626; font-size: 13px;">- More storage needed</div>
+    <div style="color: #dc2626; font-size: 13px;">- Complex deployment</div>
+  </div>
+</div>
 
-        return response.content
+**Best for**: Video streaming (Netflix), large file downloads, content you know will be popular
 
-    def parse_cache_control(self, headers):
-        cc = headers.get('Cache-Control', '')
-        if 'max-age=' in cc:
-            return int(cc.split('max-age=')[1].split(',')[0])
-        return 3600  # Default 1 hour
-```
+---
 
-### Push CDN
+## Cache Control Headers
 
-Origin proactively pushes content to edge servers.
-
-```python
-class PushCDN:
-    def __init__(self, edge_servers):
-        self.edge_servers = edge_servers
-
-    def publish(self, path, content, ttl=3600):
-        """Push content to all edge servers"""
-        for edge in self.edge_servers:
-            edge.store(path, content, ttl)
-
-    def invalidate(self, path):
-        """Remove content from all edges"""
-        for edge in self.edge_servers:
-            edge.delete(path)
-
-    def purge_all(self):
-        """Clear all cached content"""
-        for edge in self.edge_servers:
-            edge.clear()
-```
-
-## Cache Headers
-
-### Cache-Control
+Understanding HTTP cache headers is essential for CDN configuration:
 
 ```http
-# Cache for 1 hour, allow CDN caching
+# Cache publicly for 1 hour
 Cache-Control: public, max-age=3600
 
-# Cache for 1 day, but revalidate
-Cache-Control: public, max-age=86400, must-revalidate
+# Cache for 1 day, CDN can cache longer than browser
+Cache-Control: public, max-age=60, s-maxage=86400
 
-# Private cache only (browser, not CDN)
+# Private cache only (user-specific, not CDN)
 Cache-Control: private, max-age=600
 
 # No caching at all
 Cache-Control: no-store
 
-# CDN can cache for longer than browser
-Cache-Control: public, max-age=60, s-maxage=3600
+# Serve stale while revalidating in background
+Cache-Control: public, max-age=60, stale-while-revalidate=300
 ```
 
-### ETags for Validation
+<div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">CACHE HEADER CHEATSHEET</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <div style="background: #dcfce7; padding: 16px; border-radius: 8px;">
+      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">public</div>
+      <div style="color: #15803d; font-size: 13px;">CDN and browser can cache</div>
+    </div>
+    <div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">private</div>
+      <div style="color: #b45309; font-size: 13px;">Only browser caches (user data)</div>
+    </div>
+    <div style="background: #dbeafe; padding: 16px; border-radius: 8px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">max-age</div>
+      <div style="color: #1d4ed8; font-size: 13px;">Seconds until cache expires</div>
+    </div>
+    <div style="background: #f3e8ff; padding: 16px; border-radius: 8px;">
+      <div style="color: #6b21a8; font-weight: 600; margin-bottom: 8px;">s-maxage</div>
+      <div style="color: #7c3aed; font-size: 13px;">CDN-specific max-age</div>
+    </div>
+    <div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
+      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">no-store</div>
+      <div style="color: #b91c1c; font-size: 13px;">Never cache this response</div>
+    </div>
+    <div style="background: #ecfdf5; padding: 16px; border-radius: 8px;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">stale-while-revalidate</div>
+      <div style="color: #047857; font-size: 13px;">Serve stale, update in background</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Cache Invalidation Strategies
+
+Cache invalidation is famously one of the two hard problems in computer science. Here are the main approaches:
+
+### 1. Time-Based Expiration (TTL)
+
+```python
+# Set TTL based on content type
+def get_cache_ttl(content_type: str) -> int:
+    ttl_map = {
+        "static_assets": 31536000,  # 1 year (versioned files)
+        "images": 86400,            # 1 day
+        "api_responses": 300,       # 5 minutes
+        "html_pages": 3600,         # 1 hour
+    }
+    return ttl_map.get(content_type, 3600)
+```
+
+### 2. Versioned URLs (Cache Busting)
 
 ```python
 import hashlib
 
-class ContentServer:
-    def serve(self, request, content):
-        etag = hashlib.md5(content).hexdigest()
+def get_versioned_url(file_path: str) -> str:
+    """Include content hash in URL - no purging needed!"""
+    with open(file_path, 'rb') as f:
+        content_hash = hashlib.md5(f.read()).hexdigest()[:8]
 
-        # Check if client has current version
-        if_none_match = request.headers.get('If-None-Match')
-        if if_none_match == etag:
-            return Response(status=304)  # Not Modified
+    # /static/app.js -> /static/app.a1b2c3d4.js
+    name, ext = file_path.rsplit('.', 1)
+    return f"{name}.{content_hash}.{ext}"
 
-        return Response(
-            content=content,
-            headers={
-                'ETag': etag,
-                'Cache-Control': 'public, max-age=3600'
-            }
-        )
+# When file changes, URL changes -> new cache entry
+# Old cached version naturally expires
 ```
 
-## Cache Invalidation
-
-### Purge by URL
+### 3. Cache Tags (Surrogate Keys)
 
 ```python
 class CDNClient:
-    def __init__(self, cdn_api_key):
-        self.api_key = cdn_api_key
-        self.api_url = "https://api.cdn.example.com"
+    def serve_product_page(self, product_id: int):
+        product = get_product(product_id)
 
-    def purge_url(self, url):
-        """Purge specific URL from cache"""
-        response = requests.post(
-            f"{self.api_url}/purge",
-            headers={"Authorization": f"Bearer {self.api_key}"},
-            json={"url": url}
+        return Response(
+            content=render_product(product),
+            headers={
+                "Cache-Control": "public, max-age=3600",
+                "Cache-Tag": f"product-{product_id}, category-{product.category_id}"
+            }
         )
-        return response.ok
 
-    def purge_pattern(self, pattern):
-        """Purge URLs matching pattern"""
-        response = requests.post(
-            f"{self.api_url}/purge",
-            headers={"Authorization": f"Bearer {self.api_key}"},
-            json={"pattern": pattern}  # e.g., "/images/*"
-        )
-        return response.ok
-
-    def purge_tag(self, tag):
-        """Purge all content with cache tag"""
-        response = requests.post(
-            f"{self.api_url}/purge",
-            headers={"Authorization": f"Bearer {self.api_key}"},
-            json={"tag": tag}  # e.g., "product-123"
-        )
-        return response.ok
+    def on_product_update(self, product_id: int):
+        """Purge all pages containing this product."""
+        self.cdn_api.purge_tag(f"product-{product_id}")
 ```
 
-### Cache Tags
+---
+
+## Code Examples
+
+### Python - Edge Caching Logic
 
 ```python
-# When serving content, add cache tags
-def serve_product_page(product_id):
-    product = get_product(product_id)
-    category = get_category(product.category_id)
+import time
+import hashlib
+from dataclasses import dataclass
+from typing import Optional, Dict
+import requests
 
-    return Response(
-        content=render_template('product.html', product=product),
-        headers={
-            'Cache-Control': 'public, max-age=3600',
-            'Cache-Tag': f'product-{product_id}, category-{category.id}'
+@dataclass
+class CacheEntry:
+    content: bytes
+    content_type: str
+    etag: str
+    expires_at: float
+    cache_tags: list
+
+class EdgeServer:
+    """Simulates CDN edge server behavior."""
+
+    def __init__(self, origin_url: str):
+        self.origin_url = origin_url
+        self.cache: Dict[str, CacheEntry] = {}
+
+    def handle_request(self, path: str, headers: dict) -> tuple:
+        """Handle incoming request with caching logic."""
+        cache_key = path
+
+        # Check if we have a valid cached entry
+        if cache_key in self.cache:
+            entry = self.cache[cache_key]
+
+            # Check expiration
+            if time.time() < entry.expires_at:
+                # Check ETag for conditional request
+                if headers.get("If-None-Match") == entry.etag:
+                    return 304, None, {"X-Cache": "HIT"}
+
+                return 200, entry.content, {
+                    "Content-Type": entry.content_type,
+                    "ETag": entry.etag,
+                    "X-Cache": "HIT",
+                    "Cache-Control": f"max-age={int(entry.expires_at - time.time())}"
+                }
+
+        # Cache miss - fetch from origin
+        response = requests.get(f"{self.origin_url}{path}")
+
+        # Parse cache control
+        ttl = self._parse_cache_control(response.headers.get("Cache-Control", ""))
+
+        if ttl > 0:
+            # Calculate ETag
+            etag = hashlib.md5(response.content).hexdigest()
+
+            # Store in cache
+            self.cache[cache_key] = CacheEntry(
+                content=response.content,
+                content_type=response.headers.get("Content-Type", ""),
+                etag=etag,
+                expires_at=time.time() + ttl,
+                cache_tags=self._parse_cache_tags(response.headers)
+            )
+
+        return response.status_code, response.content, {
+            "Content-Type": response.headers.get("Content-Type", ""),
+            "X-Cache": "MISS"
         }
-    )
 
-# When product is updated, purge by tag
-def update_product(product_id, data):
-    save_product(product_id, data)
-    cdn.purge_tag(f'product-{product_id}')
+    def _parse_cache_control(self, header: str) -> int:
+        """Extract max-age from Cache-Control header."""
+        if "no-store" in header or "private" in header:
+            return 0
+
+        for directive in header.split(","):
+            directive = directive.strip()
+            if directive.startswith("s-maxage="):
+                return int(directive.split("=")[1])
+            if directive.startswith("max-age="):
+                return int(directive.split("=")[1])
+
+        return 0
+
+    def _parse_cache_tags(self, headers: dict) -> list:
+        """Extract cache tags for invalidation."""
+        tags = headers.get("Cache-Tag", "")
+        return [t.strip() for t in tags.split(",") if t.strip()]
+
+    def purge_by_tag(self, tag: str):
+        """Invalidate all entries with given tag."""
+        keys_to_remove = [
+            key for key, entry in self.cache.items()
+            if tag in entry.cache_tags
+        ]
+        for key in keys_to_remove:
+            del self.cache[key]
+        return len(keys_to_remove)
+
+    def purge_by_path(self, path: str):
+        """Invalidate specific path."""
+        if path in self.cache:
+            del self.cache[path]
+            return True
+        return False
 ```
-
-### Versioned URLs
-
-```python
-# Include version in URL - no purging needed
-def get_asset_url(path):
-    version = get_file_hash(path)[:8]
-    return f"/static/{path}?v={version}"
-
-# Or use content hash in filename
-def get_asset_url(path):
-    content = read_file(path)
-    hash = hashlib.md5(content).hexdigest()[:8]
-    name, ext = os.path.splitext(path)
-    return f"/static/{name}.{hash}{ext}"
-```
-
-## Edge Computing
-
-### Edge Functions
-
-```javascript
-// Cloudflare Worker example
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
-
-async function handleRequest(request) {
-  const url = new URL(request.url)
-
-  // A/B testing at edge
-  const variant = request.headers.get('Cookie')?.includes('variant=b') ? 'b' : 'a'
-  url.pathname = `/variants/${variant}${url.pathname}`
-
-  // Fetch from origin with modified URL
-  const response = await fetch(url.toString())
-
-  // Modify response headers
-  const newResponse = new Response(response.body, response)
-  newResponse.headers.set('X-Variant', variant)
-
-  return newResponse
-}
-```
-
-### Dynamic Content at Edge
-
-```javascript
-// Personalization at edge
-async function handleRequest(request) {
-  const country = request.headers.get('CF-IPCountry')
-  const cache = caches.default
-
-  // Try country-specific cache
-  const cacheKey = `${request.url}:${country}`
-  let response = await cache.match(cacheKey)
-
-  if (!response) {
-    // Fetch and customize for country
-    response = await fetch(request)
-    const html = await response.text()
-
-    const customized = html.replace(
-      '{{currency}}',
-      getCurrency(country)
-    )
-
-    response = new Response(customized, response)
-    response.headers.set('Cache-Control', 'public, max-age=3600')
-
-    await cache.put(cacheKey, response.clone())
-  }
-
-  return response
-}
-```
-
-## Implementation Example
 
 ### Go - CDN Edge Server
 
 ```go
-package main
+package cdn
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"io"
-	"net/http"
-	"sync"
-	"time"
+    "crypto/md5"
+    "encoding/hex"
+    "io"
+    "net/http"
+    "strings"
+    "sync"
+    "time"
 )
 
 type CacheEntry struct {
-	Content     []byte
-	ContentType string
-	ETag        string
-	ExpiresAt   time.Time
+    Content     []byte
+    ContentType string
+    ETag        string
+    ExpiresAt   time.Time
+    CacheTags   []string
 }
 
 type EdgeServer struct {
-	cache     map[string]*CacheEntry
-	mu        sync.RWMutex
-	originURL string
+    cache     map[string]*CacheEntry
+    mu        sync.RWMutex
+    originURL string
+    client    *http.Client
 }
 
 func NewEdgeServer(originURL string) *EdgeServer {
-	edge := &EdgeServer{
-		cache:     make(map[string]*CacheEntry),
-		originURL: originURL,
-	}
-
-	// Background cleanup
-	go edge.cleanup()
-
-	return edge
+    return &EdgeServer{
+        cache:     make(map[string]*CacheEntry),
+        originURL: originURL,
+        client: &http.Client{
+            Timeout: 30 * time.Second,
+        },
+    }
 }
 
 func (e *EdgeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+    path := r.URL.Path
 
-	// Check cache
-	e.mu.RLock()
-	entry, exists := e.cache[path]
-	e.mu.RUnlock()
+    // Check cache
+    e.mu.RLock()
+    entry, exists := e.cache[path]
+    e.mu.RUnlock()
 
-	if exists && time.Now().Before(entry.ExpiresAt) {
-		// Check If-None-Match for 304
-		if r.Header.Get("If-None-Match") == entry.ETag {
-			w.WriteHeader(http.StatusNotModified)
-			return
-		}
+    if exists && time.Now().Before(entry.ExpiresAt) {
+        // Cache HIT
+        if r.Header.Get("If-None-Match") == entry.ETag {
+            w.WriteHeader(http.StatusNotModified)
+            return
+        }
 
-		w.Header().Set("Content-Type", entry.ContentType)
-		w.Header().Set("ETag", entry.ETag)
-		w.Header().Set("X-Cache", "HIT")
-		w.Header().Set("Cache-Control", "public, max-age=3600")
-		w.Write(entry.Content)
-		return
-	}
+        w.Header().Set("Content-Type", entry.ContentType)
+        w.Header().Set("ETag", entry.ETag)
+        w.Header().Set("X-Cache", "HIT")
+        w.Write(entry.Content)
+        return
+    }
 
-	// Fetch from origin
-	resp, err := http.Get(e.originURL + path)
-	if err != nil {
-		http.Error(w, "Origin unavailable", http.StatusBadGateway)
-		return
-	}
-	defer resp.Body.Close()
+    // Cache MISS - fetch from origin
+    resp, err := e.client.Get(e.originURL + path)
+    if err != nil {
+        http.Error(w, "Origin unavailable", http.StatusBadGateway)
+        return
+    }
+    defer resp.Body.Close()
 
-	content, _ := io.ReadAll(resp.Body)
+    content, _ := io.ReadAll(resp.Body)
 
-	// Calculate ETag
-	hash := md5.Sum(content)
-	etag := hex.EncodeToString(hash[:])
+    // Calculate ETag
+    hash := md5.Sum(content)
+    etag := hex.EncodeToString(hash[:])
 
-	// Parse Cache-Control
-	ttl := e.parseTTL(resp.Header.Get("Cache-Control"))
+    // Parse TTL and cache if allowed
+    ttl := e.parseTTL(resp.Header.Get("Cache-Control"))
+    if ttl > 0 {
+        e.mu.Lock()
+        e.cache[path] = &CacheEntry{
+            Content:     content,
+            ContentType: resp.Header.Get("Content-Type"),
+            ETag:        etag,
+            ExpiresAt:   time.Now().Add(ttl),
+            CacheTags:   e.parseCacheTags(resp.Header.Get("Cache-Tag")),
+        }
+        e.mu.Unlock()
+    }
 
-	// Store in cache
-	e.mu.Lock()
-	e.cache[path] = &CacheEntry{
-		Content:     content,
-		ContentType: resp.Header.Get("Content-Type"),
-		ETag:        etag,
-		ExpiresAt:   time.Now().Add(ttl),
-	}
-	e.mu.Unlock()
-
-	// Serve response
-	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
-	w.Header().Set("ETag", etag)
-	w.Header().Set("X-Cache", "MISS")
-	w.Header().Set("Cache-Control", resp.Header.Get("Cache-Control"))
-	w.Write(content)
+    w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
+    w.Header().Set("ETag", etag)
+    w.Header().Set("X-Cache", "MISS")
+    w.Write(content)
 }
 
 func (e *EdgeServer) parseTTL(cacheControl string) time.Duration {
-	// Simplified parsing
-	return time.Hour // Default 1 hour
-}
+    if strings.Contains(cacheControl, "no-store") {
+        return 0
+    }
+    if strings.Contains(cacheControl, "private") {
+        return 0
+    }
 
-func (e *EdgeServer) cleanup() {
-	ticker := time.NewTicker(5 * time.Minute)
-	for range ticker.C {
-		e.mu.Lock()
-		now := time.Now()
-		for key, entry := range e.cache {
-			if now.After(entry.ExpiresAt) {
-				delete(e.cache, key)
-			}
-		}
-		e.mu.Unlock()
-	}
-}
-
-func (e *EdgeServer) Purge(path string) {
-	e.mu.Lock()
-	delete(e.cache, path)
-	e.mu.Unlock()
-}
-
-func main() {
-	edge := NewEdgeServer("https://origin.example.com")
-
-	// Purge endpoint
-	http.HandleFunc("/cdn-purge/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
-		path := r.URL.Path[len("/cdn-purge"):]
-		edge.Purge(path)
-		w.WriteHeader(http.StatusOK)
-	})
-
-	// Serve content
-	http.Handle("/", edge)
-
-	http.ListenAndServe(":8080", nil)
-}
-```
-
-### Python - CDN Configuration Manager
-
-```python
-from dataclasses import dataclass
-from typing import Dict, List, Optional
-import re
-
-@dataclass
-class CacheRule:
-    pattern: str
-    ttl: int  # seconds
-    cache_key_include: List[str] = None  # query params to include in cache key
-    cache_key_exclude: List[str] = None
-    headers_to_cache: List[str] = None
-
-class CDNConfiguration:
-    def __init__(self):
-        self.rules: List[CacheRule] = []
-        self.default_ttl = 3600
-        self.origin_url = ""
-        self.custom_headers: Dict[str, str] = {}
-
-    def add_rule(self, rule: CacheRule):
-        self.rules.append(rule)
-
-    def get_cache_config(self, path: str, query_params: Dict[str, str]) -> dict:
-        for rule in self.rules:
-            if re.match(rule.pattern, path):
-                cache_key = self._build_cache_key(path, query_params, rule)
-                return {
-                    'ttl': rule.ttl,
-                    'cache_key': cache_key,
-                    'headers': rule.headers_to_cache or []
-                }
-
-        return {
-            'ttl': self.default_ttl,
-            'cache_key': path,
-            'headers': []
+    // Parse s-maxage or max-age
+    for _, directive := range strings.Split(cacheControl, ",") {
+        directive = strings.TrimSpace(directive)
+        if strings.HasPrefix(directive, "s-maxage=") {
+            seconds := parseSeconds(directive[9:])
+            return time.Duration(seconds) * time.Second
         }
+        if strings.HasPrefix(directive, "max-age=") {
+            seconds := parseSeconds(directive[8:])
+            return time.Duration(seconds) * time.Second
+        }
+    }
 
-    def _build_cache_key(self, path: str, params: Dict, rule: CacheRule) -> str:
-        cache_key = path
+    return time.Hour // Default
+}
 
-        if rule.cache_key_include:
-            relevant_params = {k: v for k, v in params.items() if k in rule.cache_key_include}
-        elif rule.cache_key_exclude:
-            relevant_params = {k: v for k, v in params.items() if k not in rule.cache_key_exclude}
-        else:
-            relevant_params = {}
+func (e *EdgeServer) PurgeByTag(tag string) int {
+    e.mu.Lock()
+    defer e.mu.Unlock()
 
-        if relevant_params:
-            sorted_params = sorted(relevant_params.items())
-            cache_key += '?' + '&'.join(f'{k}={v}' for k, v in sorted_params)
-
-        return cache_key
-
-
-# Usage
-config = CDNConfiguration()
-config.origin_url = "https://origin.example.com"
-
-# Static assets - long cache
-config.add_rule(CacheRule(
-    pattern=r'^/static/.*\.(js|css|png|jpg)$',
-    ttl=31536000,  # 1 year
-))
-
-# API responses - short cache, vary by auth
-config.add_rule(CacheRule(
-    pattern=r'^/api/products.*$',
-    ttl=300,  # 5 minutes
-    cache_key_include=['category', 'sort'],
-    headers_to_cache=['Authorization']
-))
-
-# HTML pages - medium cache
-config.add_rule(CacheRule(
-    pattern=r'^/.*\.html$',
-    ttl=3600,
-    cache_key_exclude=['utm_source', 'utm_medium']
-))
-
-# Get config for request
-cache_config = config.get_cache_config(
-    '/api/products',
-    {'category': 'electronics', 'page': '1', 'utm_source': 'google'}
-)
-print(cache_config)
-# {'ttl': 300, 'cache_key': '/api/products?category=electronics', 'headers': ['Authorization']}
+    count := 0
+    for key, entry := range e.cache {
+        for _, t := range entry.CacheTags {
+            if t == tag {
+                delete(e.cache, key)
+                count++
+                break
+            }
+        }
+    }
+    return count
+}
 ```
 
-## Popular CDN Providers
+---
 
-| Provider | Best For | Notable Features |
-|----------|----------|------------------|
-| **Cloudflare** | General use, security | Edge computing, DDoS protection |
-| **AWS CloudFront** | AWS integration | Lambda@Edge, S3 origin |
-| **Akamai** | Enterprise, media | Largest network, video streaming |
-| **Fastly** | Real-time purging | Instant purge, VCL customization |
-| **Google Cloud CDN** | GCP integration | Global load balancing |
+## Common Pitfalls
 
-## Common Interview Questions
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Caching User-Specific Content</div>
+  <div style="color: #7f1d1d; font-size: 14px;">Never cache responses that contain user-specific data (profiles, shopping carts) without proper Vary headers. One user could see another user's data!</div>
+</div>
 
-1. **How do you handle cache invalidation for dynamic content?**
-   - Short TTLs with stale-while-revalidate
-   - Cache tags for group invalidation
-   - Versioned URLs for assets
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Forgetting Query String Variations</div>
+  <div style="color: #7f1d1d; font-size: 14px;">/page.html and /page.html?utm_source=google are often cached separately. This can bloat cache and reduce hit rates. Configure which query params to include in cache key.</div>
+</div>
 
-2. **How does a CDN handle origin server failure?**
-   - Serve stale content (stale-if-error)
-   - Failover to secondary origin
-   - Edge caching extends availability
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. Long TTL Without Versioning</div>
+  <div style="color: #7f1d1d; font-size: 14px;">Setting max-age=31536000 (1 year) is great for performance but makes updates impossible unless you version URLs. Always use content hashes in filenames for static assets.</div>
+</div>
 
-3. **How do you decide what to cache at the edge?**
-   - Static assets: Always cache
-   - Dynamic public content: Short TTL
-   - Personalized content: Don't cache or use edge computing
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. Not Testing Cache Behavior</div>
+  <div style="color: #7f1d1d; font-size: 14px;">Check X-Cache headers in responses. Many developers assume caching is working but never verify. A misconfigured Vary header can cause 0% cache hit rate.</div>
+</div>
 
-4. **How do you handle regional content differences?**
-   - Vary header by country
-   - Separate cache keys per region
-   - Edge functions for customization
+---
 
-## Best Practices
+## Interview Questions
 
-1. **Set appropriate cache headers** - Be explicit about cacheability
-2. **Use versioned assets** - Avoid purging for static files
-3. **Implement cache tags** - Simplify invalidation logic
-4. **Monitor cache hit rates** - Target 90%+ for static content
-5. **Use stale-while-revalidate** - Better performance during updates
-6. **Compress at edge** - Gzip/Brotli for text content
+### Conceptual Questions
+
+**Q1: What is the difference between Push and Pull CDN?**
+
+A: Pull CDN fetches content from origin on first request (lazy loading). Push CDN requires you to upload content proactively before requests arrive. Pull is simpler but has cold cache penalty. Push guarantees fast first requests but requires more operational complexity.
+
+**Q2: How do you handle cache invalidation for frequently updated content?**
+
+A: Multiple strategies depending on use case:
+- **Versioned URLs**: For static assets, include content hash in filename
+- **Short TTL + stale-while-revalidate**: For API responses
+- **Cache tags**: For content that changes when related data changes
+- **Instant purge**: For critical updates (news sites, pricing)
+
+**Q3: What happens when a CDN edge server goes down?**
+
+A: Modern CDNs use Anycast routing - multiple edge servers share the same IP. DNS automatically routes to the next closest healthy server. Users experience momentary increase in latency but no downtime.
+
+### Design Questions
+
+**Q4: "Design a video streaming service like Netflix. How would you use CDN?"**
+
+Key points:
+- Use Push CDN to pre-position popular content at edges before premiere
+- Implement adaptive bitrate streaming (HLS/DASH) with multiple quality levels cached
+- Use regional origin shields to reduce load on main origin
+- Implement predictive caching based on viewing patterns
+- Consider putting CDN servers inside ISP networks (like Netflix Open Connect)
+
+**Q5: "Your e-commerce site is slow for international users. How do you fix it?"**
+
+Answer framework:
+1. Add CDN for static assets (images, CSS, JS) - immediate win
+2. Cache product catalog API responses at edge with short TTL
+3. Use edge computing for personalization (A/B testing, geo-pricing)
+4. Consider multi-region origin deployment for truly dynamic content
+5. Implement connection pre-warming and HTTP/2 server push
+
+---
+
+## CDN Provider Comparison
+
+| Provider | Strength | Best For | Notable Feature |
+|----------|----------|----------|-----------------|
+| **Cloudflare** | Security, Workers | General purpose | Free tier, DDoS protection |
+| **AWS CloudFront** | AWS integration | AWS users | Lambda@Edge |
+| **Fastly** | Instant purge | Real-time content | VCL customization |
+| **Akamai** | Global reach | Enterprise, media | Largest network |
+| **Bunny CDN** | Price | Cost-sensitive | Simple pricing |
+
+---
 
 ## Related Topics
 
-- [Caching](/topic/system-design/caching)
+- [Caching Strategies](/topic/system-design/caching)
 - [Load Balancing](/topic/system-design/load-balancing)
-- [API Gateway](/topic/system-design/api-gateway)
+- [DNS](/topic/system-design/dns)
+- [HTTP Protocol](/topic/system-design/http-protocol)

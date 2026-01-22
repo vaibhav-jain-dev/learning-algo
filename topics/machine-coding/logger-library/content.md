@@ -1,35 +1,217 @@
-# Logger Library
+# Logger Library Design
 
 ## Problem Statement
 
-Design a flexible logging library that supports multiple log levels, formatters, handlers (console, file, network), and filtering. Similar to Python's logging module or Log4j.
+Design a flexible logging library that supports multiple log levels, configurable formatters, multiple output handlers (console, file, network), and filtering capabilities. This should be similar to Python's logging module or Java's Log4j.
 
-## Requirements
+This problem tests your understanding of the Strategy pattern, Chain of Responsibility, and designing extensible APIs. It's commonly asked at companies that value clean architecture and system design skills.
 
-- Multiple log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- Configurable formatters
-- Multiple output handlers (console, file, rotating file)
-- Log filtering and context
-- Thread-safe operations
+---
 
-## Solution
+## Requirements Clarification
 
-### Python
+### Functional Requirements
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Core Features</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **Log Levels**: DEBUG, INFO, WARNING, ERROR, CRITICAL
+- **Multiple Handlers**: Console, File, Rotating File, Network
+- **Formatters**: Plain text, JSON, custom formats
+- **Filtering**: By level, by logger name, by message content
+- **Logger Hierarchy**: Child loggers inherit parent configuration
+- **Context Support**: Add extra fields to log records
+
+</div>
+</div>
+
+### Non-Functional Requirements
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">System Constraints</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **Thread Safety**: Safe for concurrent logging
+- **Performance**: Minimal overhead when level is disabled
+- **Extensibility**: Easy to add new handlers/formatters
+- **Configurability**: Programmatic and file-based configuration
+- **Async Support**: Non-blocking logging option
+
+</div>
+</div>
+
+### Key Questions to Ask
+
+1. Should logging be synchronous or asynchronous?
+2. Do we need structured logging (JSON)?
+3. What's the expected log volume?
+4. Should we support log rotation?
+5. Do we need remote logging (syslog, HTTP)?
+
+---
+
+## Architecture Diagram
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Logger Architecture</h4>
+
+<div style="display: flex; flex-direction: column; gap: 24px;">
+
+<!-- Log Flow -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Log Message Flow</div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 11px;">Application</div>
+<div style="color: #3b82f6; font-size: 10px;">logger.info()</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 11px;">Logger</div>
+<div style="color: #22c55e; font-size: 10px;">Level check</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 11px;">Filter</div>
+<div style="color: #d97706; font-size: 10px;">Pass/Block</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #f3e8ff; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 11px;">Formatter</div>
+<div style="color: #a855f7; font-size: 10px;">Format message</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #fee2e2; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #991b1b; font-weight: bold; font-size: 11px;">Handler</div>
+<div style="color: #dc2626; font-size: 10px;">Output</div>
+</div>
+</div>
+</div>
+
+<!-- Handlers -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Output Handlers</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #ecfdf5; border: 2px solid #6ee7b7; padding: 14px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">Console</div>
+<div style="color: #22c55e; font-size: 10px;">stdout/stderr</div>
+</div>
+<div style="background: #eff6ff; border: 2px solid #93c5fd; padding: 14px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">File</div>
+<div style="color: #3b82f6; font-size: 10px;">app.log</div>
+</div>
+<div style="background: #fefce8; border: 2px solid #fcd34d; padding: 14px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #854d0e; font-weight: bold; font-size: 12px;">Rotating</div>
+<div style="color: #eab308; font-size: 10px;">size/time</div>
+</div>
+<div style="background: #fdf2f8; border: 2px solid #f9a8d4; padding: 14px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #9d174d; font-weight: bold; font-size: 12px;">HTTP</div>
+<div style="color: #ec4899; font-size: 10px;">remote</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+---
+
+## Class Design
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; font-size: 16px;">Class Hierarchy</h4>
+
+```
++------------------+       +------------------+       +------------------+
+|    LogLevel      |       |    LogRecord     |       |     Filter       |
++------------------+       +------------------+       +------------------+
+| DEBUG = 10       |       | level: LogLevel  |       | + filter(record) |
+| INFO = 20        |       | message: str     |       +------------------+
+| WARNING = 30     |       | logger_name: str |               ^
+| ERROR = 40       |       | timestamp: time  |               |
+| CRITICAL = 50    |       | extra: dict      |       +-------+-------+
++------------------+       +------------------+       |               |
+                                                  LevelFilter   NameFilter
+
++------------------+       +------------------+
+|    Formatter     |       |     Handler      |
++------------------+       +------------------+
+| + format(record) |       | level: LogLevel  |
++------------------+       | formatter: Fmt   |
+        ^                  | filters: List    |
+        |                  +------------------+
++-------+-------+          | + emit(record)   |
+|               |          +------------------+
+TextFormatter  JsonFmt             ^
+                                   |
+                          +--------+--------+
+                          |        |        |
+                    Console    File    Rotating
+```
+</div>
+
+### Design Patterns Used
+
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #eab308;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Applied Patterns</div>
+
+| Pattern | Usage | Benefit |
+|---------|-------|---------|
+| **Strategy** | Formatters and Handlers | Interchangeable algorithms |
+| **Chain of Responsibility** | Filter chain | Flexible filtering |
+| **Singleton** | LogManager | Global logger registry |
+| **Template Method** | Handler.emit() | Common structure, custom output |
+| **Observer** | Logger -> Handlers | Decouple logging from output |
+
+</div>
+
+---
+
+## API Design
+
+### Core Interface
 
 ```python
-import os
+# Getting a logger
+logger = LogManager.get_logger("myapp.module")
+
+# Logging methods
+logger.debug("Debug message")
+logger.info("User %s logged in", username)
+logger.warning("Low memory: %d MB", available_mb)
+logger.error("Failed to connect", exc_info=True)
+logger.critical("System shutdown")
+
+# With extra context
+logger.info("Order placed", extra={"order_id": 12345, "user": "alice"})
+
+# Configuration
+logger.set_level(LogLevel.DEBUG)
+logger.add_handler(FileHandler("app.log"))
+logger.add_filter(LevelFilter(LogLevel.WARNING))
+```
+
+---
+
+## Code Implementation
+
+### Python Implementation
+
+```python
 import sys
-import threading
+import os
 import json
+import threading
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import IntEnum
 from typing import Optional, Dict, Any, List, Callable
 from dataclasses import dataclass, field
-from collections import deque
 
 
 class LogLevel(IntEnum):
+    """Log severity levels."""
     DEBUG = 10
     INFO = 20
     WARNING = 30
@@ -39,6 +221,7 @@ class LogLevel(IntEnum):
 
 @dataclass
 class LogRecord:
+    """Represents a single log event."""
     level: LogLevel
     message: str
     logger_name: str
@@ -48,108 +231,198 @@ class LogRecord:
 
     def to_dict(self) -> dict:
         return {
-            'level': self.level.name,
-            'message': self.message,
-            'logger': self.logger_name,
-            'timestamp': self.timestamp.isoformat(),
-            'extra': self.extra
+            "level": self.level.name,
+            "message": self.message,
+            "logger": self.logger_name,
+            "timestamp": self.timestamp.isoformat(),
+            **self.extra
         }
 
 
+# ==================== Filters ====================
+
+class Filter(ABC):
+    """Base class for log filters."""
+
+    @abstractmethod
+    def filter(self, record: LogRecord) -> bool:
+        """Return True if record should be logged."""
+        pass
+
+
+class LevelFilter(Filter):
+    """Filter by minimum log level."""
+
+    def __init__(self, min_level: LogLevel):
+        self.min_level = min_level
+
+    def filter(self, record: LogRecord) -> bool:
+        return record.level >= self.min_level
+
+
+class NameFilter(Filter):
+    """Filter by logger name pattern."""
+
+    def __init__(self, name_pattern: str):
+        self.pattern = name_pattern
+
+    def filter(self, record: LogRecord) -> bool:
+        return record.logger_name.startswith(self.pattern)
+
+
+class CallableFilter(Filter):
+    """Filter using a custom function."""
+
+    def __init__(self, func: Callable[[LogRecord], bool]):
+        self.func = func
+
+    def filter(self, record: LogRecord) -> bool:
+        return self.func(record)
+
+
+# ==================== Formatters ====================
+
 class Formatter(ABC):
+    """Base class for log formatters."""
+
     @abstractmethod
     def format(self, record: LogRecord) -> str:
         pass
 
 
-class SimpleFormatter(Formatter):
-    def __init__(self, fmt: str = "%(timestamp)s [%(level)s] %(name)s: %(message)s"):
-        self.fmt = fmt
+class TextFormatter(Formatter):
+    """Plain text formatter with customizable template."""
+
+    DEFAULT_FORMAT = "[{timestamp}] {level:8} {logger} - {message}"
+
+    def __init__(self, fmt: str = None):
+        self.fmt = fmt or self.DEFAULT_FORMAT
 
     def format(self, record: LogRecord) -> str:
-        values = {
-            'timestamp': record.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            'level': record.level.name,
-            'name': record.logger_name,
-            'message': record.message
-        }
-        values.update(record.extra)
-
-        result = self.fmt
-        for key, value in values.items():
-            result = result.replace(f'%({key})s', str(value))
-
-        return result
+        return self.fmt.format(
+            timestamp=record.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            level=record.level.name,
+            logger=record.logger_name,
+            message=record.message,
+            **record.extra
+        )
 
 
 class JsonFormatter(Formatter):
-    def format(self, record: LogRecord) -> str:
-        return json.dumps(record.to_dict())
+    """JSON formatter for structured logging."""
 
+    def __init__(self, indent: int = None):
+        self.indent = indent
+
+    def format(self, record: LogRecord) -> str:
+        return json.dumps(record.to_dict(), indent=self.indent, default=str)
+
+
+class ColoredFormatter(Formatter):
+    """Colored console output."""
+
+    COLORS = {
+        LogLevel.DEBUG: "\033[36m",     # Cyan
+        LogLevel.INFO: "\033[32m",      # Green
+        LogLevel.WARNING: "\033[33m",   # Yellow
+        LogLevel.ERROR: "\033[31m",     # Red
+        LogLevel.CRITICAL: "\033[35m",  # Magenta
+    }
+    RESET = "\033[0m"
+
+    def __init__(self, base_formatter: Formatter = None):
+        self.base = base_formatter or TextFormatter()
+
+    def format(self, record: LogRecord) -> str:
+        color = self.COLORS.get(record.level, "")
+        text = self.base.format(record)
+        return f"{color}{text}{self.RESET}"
+
+
+# ==================== Handlers ====================
 
 class Handler(ABC):
+    """Base class for log handlers."""
+
     def __init__(self, level: LogLevel = LogLevel.DEBUG):
         self.level = level
-        self.formatter: Formatter = SimpleFormatter()
-        self.filters: List[Callable[[LogRecord], bool]] = []
+        self.formatter: Formatter = TextFormatter()
+        self.filters: List[Filter] = []
         self.lock = threading.Lock()
 
-    def set_formatter(self, formatter: Formatter):
+    def set_formatter(self, formatter: Formatter) -> 'Handler':
         self.formatter = formatter
+        return self
 
-    def add_filter(self, filter_func: Callable[[LogRecord], bool]):
-        self.filters.append(filter_func)
+    def add_filter(self, filter_obj: Filter) -> 'Handler':
+        self.filters.append(filter_obj)
+        return self
 
     def should_handle(self, record: LogRecord) -> bool:
+        """Check if this handler should process the record."""
         if record.level < self.level:
             return False
-        return all(f(record) for f in self.filters)
+        return all(f.filter(record) for f in self.filters)
+
+    def handle(self, record: LogRecord) -> None:
+        """Process a log record."""
+        if self.should_handle(record):
+            formatted = self.formatter.format(record)
+            with self.lock:
+                self.emit(formatted, record)
 
     @abstractmethod
-    def emit(self, record: LogRecord):
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        """Output the formatted log message."""
         pass
 
-    def handle(self, record: LogRecord):
-        if self.should_handle(record):
-            with self.lock:
-                self.emit(record)
+    def close(self) -> None:
+        """Clean up handler resources."""
+        pass
 
 
 class ConsoleHandler(Handler):
-    def __init__(self, level: LogLevel = LogLevel.DEBUG, stream=None):
+    """Output logs to console (stdout/stderr)."""
+
+    def __init__(self, stream=None, level: LogLevel = LogLevel.DEBUG):
         super().__init__(level)
         self.stream = stream or sys.stdout
 
-    def emit(self, record: LogRecord):
-        message = self.formatter.format(record)
-        self.stream.write(message + '\n')
-        self.stream.flush()
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        # Use stderr for ERROR and above
+        stream = sys.stderr if record.level >= LogLevel.ERROR else self.stream
+        stream.write(formatted + "\n")
+        stream.flush()
 
 
 class FileHandler(Handler):
-    def __init__(self, filename: str, level: LogLevel = LogLevel.DEBUG, mode: str = 'a'):
+    """Output logs to a file."""
+
+    def __init__(self, filename: str, mode: str = "a", level: LogLevel = LogLevel.DEBUG):
         super().__init__(level)
         self.filename = filename
         self.mode = mode
         self.file = None
-
-    def _open(self):
-        if self.file is None:
-            self.file = open(self.filename, self.mode)
-
-    def emit(self, record: LogRecord):
         self._open()
-        message = self.formatter.format(record)
-        self.file.write(message + '\n')
-        self.file.flush()
 
-    def close(self):
+    def _open(self) -> None:
+        os.makedirs(os.path.dirname(self.filename) or ".", exist_ok=True)
+        self.file = open(self.filename, self.mode)
+
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        if self.file:
+            self.file.write(formatted + "\n")
+            self.file.flush()
+
+    def close(self) -> None:
         if self.file:
             self.file.close()
             self.file = None
 
 
 class RotatingFileHandler(Handler):
+    """File handler with rotation based on size."""
+
     def __init__(self, filename: str, max_bytes: int = 10*1024*1024,
                  backup_count: int = 5, level: LogLevel = LogLevel.DEBUG):
         super().__init__(level)
@@ -157,630 +430,325 @@ class RotatingFileHandler(Handler):
         self.max_bytes = max_bytes
         self.backup_count = backup_count
         self.file = None
-        self.current_size = 0
+        self._open()
 
-    def _open(self):
-        if self.file is None:
-            self.file = open(self.filename, 'a')
-            self.current_size = os.path.getsize(self.filename) if os.path.exists(self.filename) else 0
+    def _open(self) -> None:
+        os.makedirs(os.path.dirname(self.filename) or ".", exist_ok=True)
+        self.file = open(self.filename, "a")
 
-    def _rotate(self):
-        if self.file:
-            self.file.close()
+    def _rotate(self) -> None:
+        """Rotate log files."""
+        self.file.close()
 
-        # Rotate existing files
+        # Shift existing backups
         for i in range(self.backup_count - 1, 0, -1):
             src = f"{self.filename}.{i}"
             dst = f"{self.filename}.{i + 1}"
             if os.path.exists(src):
-                if os.path.exists(dst):
-                    os.remove(dst)
                 os.rename(src, dst)
 
-        # Rename current file
+        # Rename current to .1
         if os.path.exists(self.filename):
             os.rename(self.filename, f"{self.filename}.1")
 
-        self.file = open(self.filename, 'w')
-        self.current_size = 0
-
-    def emit(self, record: LogRecord):
         self._open()
-        message = self.formatter.format(record)
-        message_bytes = len(message.encode('utf-8')) + 1
 
-        if self.current_size + message_bytes > self.max_bytes:
-            self._rotate()
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        if self.file:
+            self.file.write(formatted + "\n")
+            self.file.flush()
 
-        self.file.write(message + '\n')
-        self.file.flush()
-        self.current_size += message_bytes
+            # Check if rotation needed
+            if self.file.tell() >= self.max_bytes:
+                self._rotate()
+
+    def close(self) -> None:
+        if self.file:
+            self.file.close()
+            self.file = None
 
 
-class MemoryHandler(Handler):
-    """Handler that stores logs in memory for testing."""
-    def __init__(self, capacity: int = 1000, level: LogLevel = LogLevel.DEBUG):
-        super().__init__(level)
-        self.records: deque = deque(maxlen=capacity)
-
-    def emit(self, record: LogRecord):
-        self.records.append(record)
-
-    def get_records(self) -> List[LogRecord]:
-        return list(self.records)
-
-    def clear(self):
-        self.records.clear()
-
+# ==================== Logger ====================
 
 class Logger:
-    _loggers: Dict[str, 'Logger'] = {}
-    _lock = threading.Lock()
+    """
+    Main logger class.
+
+    Supports hierarchical names (e.g., "app.module.submodule"),
+    multiple handlers, and filtering.
+    """
 
     def __init__(self, name: str, level: LogLevel = LogLevel.DEBUG):
         self.name = name
         self.level = level
         self.handlers: List[Handler] = []
-        self.parent: Optional[Logger] = None
+        self.filters: List[Filter] = []
+        self.parent: Optional['Logger'] = None
         self.propagate = True
-        self.context: Dict[str, Any] = {}
 
-    @classmethod
-    def get_logger(cls, name: str) -> 'Logger':
-        with cls._lock:
-            if name not in cls._loggers:
-                logger = Logger(name)
-                cls._loggers[name] = logger
-
-                # Set parent logger
-                if '.' in name:
-                    parent_name = name.rsplit('.', 1)[0]
-                    logger.parent = cls.get_logger(parent_name)
-
-            return cls._loggers[name]
-
-    def add_handler(self, handler: Handler):
-        self.handlers.append(handler)
-
-    def remove_handler(self, handler: Handler):
-        self.handlers.remove(handler)
-
-    def set_level(self, level: LogLevel):
+    def set_level(self, level: LogLevel) -> 'Logger':
         self.level = level
+        return self
 
-    def add_context(self, **kwargs):
-        self.context.update(kwargs)
+    def add_handler(self, handler: Handler) -> 'Logger':
+        self.handlers.append(handler)
+        return self
 
-    def _log(self, level: LogLevel, message: str, *args, exc_info=None, **kwargs):
-        if level < self.level:
+    def add_filter(self, filter_obj: Filter) -> 'Logger':
+        self.filters.append(filter_obj)
+        return self
+
+    def _should_log(self, level: LogLevel) -> bool:
+        """Check if a message at this level should be logged."""
+        return level >= self.level
+
+    def _create_record(self, level: LogLevel, message: str,
+                       extra: dict = None, exc_info: tuple = None) -> LogRecord:
+        return LogRecord(
+            level=level,
+            message=message,
+            logger_name=self.name,
+            extra=extra or {},
+            exc_info=exc_info
+        )
+
+    def _log(self, level: LogLevel, message: str, *args,
+             extra: dict = None, exc_info: bool = False) -> None:
+        """Internal logging method."""
+        if not self._should_log(level):
             return
 
         # Format message with args
         if args:
             message = message % args
 
-        # Create record
-        extra = {**self.context, **kwargs}
-        record = LogRecord(
-            level=level,
-            message=message,
-            logger_name=self.name,
-            extra=extra,
-            exc_info=exc_info
-        )
+        # Get exception info if requested
+        exc = sys.exc_info() if exc_info else None
 
-        # Handle in this logger and propagate to parents
-        self._handle(record)
+        record = self._create_record(level, message, extra, exc)
 
-    def _handle(self, record: LogRecord):
+        # Check filters
+        if not all(f.filter(record) for f in self.filters):
+            return
+
+        # Handle locally
         for handler in self.handlers:
             handler.handle(record)
 
+        # Propagate to parent
         if self.propagate and self.parent:
-            self.parent._handle(record)
+            self.parent._log(level, message, extra=extra)
 
-    def debug(self, message: str, *args, **kwargs):
+    def debug(self, message: str, *args, **kwargs) -> None:
         self._log(LogLevel.DEBUG, message, *args, **kwargs)
 
-    def info(self, message: str, *args, **kwargs):
+    def info(self, message: str, *args, **kwargs) -> None:
         self._log(LogLevel.INFO, message, *args, **kwargs)
 
-    def warning(self, message: str, *args, **kwargs):
+    def warning(self, message: str, *args, **kwargs) -> None:
         self._log(LogLevel.WARNING, message, *args, **kwargs)
 
-    def error(self, message: str, *args, **kwargs):
+    def error(self, message: str, *args, **kwargs) -> None:
         self._log(LogLevel.ERROR, message, *args, **kwargs)
 
-    def critical(self, message: str, *args, **kwargs):
+    def critical(self, message: str, *args, **kwargs) -> None:
         self._log(LogLevel.CRITICAL, message, *args, **kwargs)
 
-    def exception(self, message: str, *args, **kwargs):
-        self._log(LogLevel.ERROR, message, *args, exc_info=sys.exc_info(), **kwargs)
+
+# ==================== LogManager ====================
+
+class LogManager:
+    """
+    Global logger registry and factory.
+
+    Manages logger hierarchy and provides get_logger() method.
+    """
+
+    _loggers: Dict[str, Logger] = {}
+    _root: Logger = None
+    _lock = threading.Lock()
+
+    @classmethod
+    def get_logger(cls, name: str = "root") -> Logger:
+        """Get or create a logger by name."""
+        with cls._lock:
+            if name in cls._loggers:
+                return cls._loggers[name]
+
+            # Create new logger
+            logger = Logger(name)
+
+            # Set up hierarchy
+            if name != "root":
+                parent_name = name.rsplit(".", 1)[0] if "." in name else "root"
+                logger.parent = cls.get_logger(parent_name)
+
+            cls._loggers[name] = logger
+            return logger
+
+    @classmethod
+    def get_root(cls) -> Logger:
+        """Get the root logger."""
+        return cls.get_logger("root")
+
+    @classmethod
+    def configure(cls, config: dict) -> None:
+        """Configure logging from a dictionary."""
+        root = cls.get_root()
+        root.set_level(LogLevel[config.get("level", "DEBUG")])
+
+        for handler_config in config.get("handlers", []):
+            handler_type = handler_config.pop("type")
+            if handler_type == "console":
+                handler = ConsoleHandler(**handler_config)
+            elif handler_type == "file":
+                handler = FileHandler(**handler_config)
+            elif handler_type == "rotating":
+                handler = RotatingFileHandler(**handler_config)
+
+            formatter_config = handler_config.get("formatter", {})
+            if formatter_config.get("type") == "json":
+                handler.set_formatter(JsonFormatter())
+            else:
+                handler.set_formatter(TextFormatter())
+
+            root.add_handler(handler)
 
 
-# Convenience function
-def get_logger(name: str) -> Logger:
-    return Logger.get_logger(name)
+# Example usage
+if __name__ == "__main__":
+    # Basic setup
+    root = LogManager.get_root()
+    root.add_handler(
+        ConsoleHandler()
+        .set_formatter(ColoredFormatter())
+    )
+    root.add_handler(
+        FileHandler("logs/app.log")
+        .set_formatter(JsonFormatter())
+    )
 
+    # Get module logger
+    logger = LogManager.get_logger("myapp.module")
+    logger.set_level(LogLevel.DEBUG)
 
-# Usage
-# Configure root logger
-root_logger = get_logger('app')
-root_logger.set_level(LogLevel.DEBUG)
+    # Log messages
+    logger.debug("Starting application")
+    logger.info("User %s logged in", "alice")
+    logger.warning("Low memory: %d MB remaining", 512)
+    logger.error("Connection failed", exc_info=True)
 
-# Add console handler
-console_handler = ConsoleHandler(LogLevel.INFO)
-console_handler.set_formatter(SimpleFormatter(
-    "%(timestamp)s [%(level)s] %(name)s: %(message)s"
-))
-root_logger.add_handler(console_handler)
+    # With extra context
+    logger.info("Order placed", extra={"order_id": 12345, "total": 99.99})
 
-# Add file handler with rotation
-file_handler = RotatingFileHandler(
-    'app.log',
-    max_bytes=1024*1024,  # 1MB
-    backup_count=3
-)
-file_handler.set_formatter(JsonFormatter())
-file_handler.level = LogLevel.DEBUG
-root_logger.add_handler(file_handler)
-
-# Create child logger
-db_logger = get_logger('app.database')
-db_logger.add_context(component='database')
-
-# Log messages
-root_logger.info("Application started")
-root_logger.debug("Debug message - won't show in console")
-
-db_logger.info("Connected to database", host='localhost', port=5432)
-db_logger.warning("Slow query detected", query_time=2.5)
-
-try:
-    raise ValueError("Something went wrong")
-except:
-    db_logger.exception("An error occurred")
+    print("\n=== Log file content ===")
+    with open("logs/app.log") as f:
+        print(f.read())
 ```
 
-### Go
+---
 
-```go
-package main
+## Edge Cases
 
-import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
-	"sync"
-	"time"
-)
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Critical Edge Cases</div>
 
-type LogLevel int
+| Scenario | Expected Behavior | Implementation |
+|----------|-------------------|----------------|
+| **Logging before setup** | No crash, message lost | Check handlers before emit |
+| **File permission error** | Log to stderr, continue | Try/except in FileHandler |
+| **Circular logger reference** | Prevent infinite loop | Check propagate flag |
+| **Thread concurrent logging** | No interleaved output | Lock in Handler.handle() |
+| **Format string with no args** | Use message as-is | Check args before % |
+| **Unicode in message** | Handle encoding | UTF-8 in file handler |
 
-const (
-	DEBUG LogLevel = iota * 10
-	INFO
-	WARNING
-	ERROR
-	CRITICAL
-)
+</div>
 
-func (l LogLevel) String() string {
-	names := map[LogLevel]string{
-		DEBUG:    "DEBUG",
-		INFO:     "INFO",
-		WARNING:  "WARNING",
-		ERROR:    "ERROR",
-		CRITICAL: "CRITICAL",
-	}
-	return names[l]
-}
+---
 
-type LogRecord struct {
-	Level      LogLevel
-	Message    string
-	LoggerName string
-	Timestamp  time.Time
-	Extra      map[string]interface{}
-}
+## Testing Approach
 
-type Formatter interface {
-	Format(record *LogRecord) string
-}
+### Unit Tests
 
-type SimpleFormatter struct {
-	Pattern string
-}
+```python
+import unittest
+from io import StringIO
 
-func NewSimpleFormatter(pattern string) *SimpleFormatter {
-	if pattern == "" {
-		pattern = "%s [%s] %s: %s"
-	}
-	return &SimpleFormatter{Pattern: pattern}
-}
 
-func (f *SimpleFormatter) Format(record *LogRecord) string {
-	return fmt.Sprintf(f.Pattern,
-		record.Timestamp.Format("2006-01-02 15:04:05"),
-		record.Level.String(),
-		record.LoggerName,
-		record.Message,
-	)
-}
+class TestLogger(unittest.TestCase):
+    def setUp(self):
+        self.logger = Logger("test")
+        self.output = StringIO()
+        handler = ConsoleHandler(stream=self.output)
+        handler.set_formatter(TextFormatter("{level}: {message}"))
+        self.logger.add_handler(handler)
 
-type JsonFormatter struct{}
+    def test_log_levels(self):
+        self.logger.set_level(LogLevel.WARNING)
+        self.logger.info("Should not appear")
+        self.logger.warning("Should appear")
+        output = self.output.getvalue()
+        self.assertNotIn("Should not appear", output)
+        self.assertIn("Should appear", output)
 
-func (f *JsonFormatter) Format(record *LogRecord) string {
-	data := map[string]interface{}{
-		"level":     record.Level.String(),
-		"message":   record.Message,
-		"logger":    record.LoggerName,
-		"timestamp": record.Timestamp.Format(time.RFC3339),
-		"extra":     record.Extra,
-	}
-	bytes, _ := json.Marshal(data)
-	return string(bytes)
-}
+    def test_message_formatting(self):
+        self.logger.info("User %s has %d items", "Alice", 5)
+        self.assertIn("User Alice has 5 items", self.output.getvalue())
 
-type Handler interface {
-	Handle(record *LogRecord)
-	SetLevel(level LogLevel)
-	SetFormatter(formatter Formatter)
-}
+    def test_filter(self):
+        self.logger.add_filter(LevelFilter(LogLevel.ERROR))
+        self.logger.warning("Filtered out")
+        self.logger.error("Passes filter")
+        output = self.output.getvalue()
+        self.assertNotIn("Filtered out", output)
+        self.assertIn("Passes filter", output)
 
-type BaseHandler struct {
-	Level     LogLevel
-	Formatter Formatter
-	mu        sync.Mutex
-}
 
-func (h *BaseHandler) SetLevel(level LogLevel) {
-	h.Level = level
-}
-
-func (h *BaseHandler) SetFormatter(formatter Formatter) {
-	h.Formatter = formatter
-}
-
-func (h *BaseHandler) ShouldHandle(record *LogRecord) bool {
-	return record.Level >= h.Level
-}
-
-type ConsoleHandler struct {
-	BaseHandler
-	Writer io.Writer
-}
-
-func NewConsoleHandler(level LogLevel) *ConsoleHandler {
-	return &ConsoleHandler{
-		BaseHandler: BaseHandler{
-			Level:     level,
-			Formatter: NewSimpleFormatter(""),
-		},
-		Writer: os.Stdout,
-	}
-}
-
-func (h *ConsoleHandler) Handle(record *LogRecord) {
-	if !h.ShouldHandle(record) {
-		return
-	}
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	fmt.Fprintln(h.Writer, h.Formatter.Format(record))
-}
-
-type FileHandler struct {
-	BaseHandler
-	Filename string
-	file     *os.File
-}
-
-func NewFileHandler(filename string, level LogLevel) *FileHandler {
-	return &FileHandler{
-		BaseHandler: BaseHandler{
-			Level:     level,
-			Formatter: NewSimpleFormatter(""),
-		},
-		Filename: filename,
-	}
-}
-
-func (h *FileHandler) open() error {
-	if h.file == nil {
-		f, err := os.OpenFile(h.Filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return err
-		}
-		h.file = f
-	}
-	return nil
-}
-
-func (h *FileHandler) Handle(record *LogRecord) {
-	if !h.ShouldHandle(record) {
-		return
-	}
-	h.mu.Lock()
-	defer h.mu.Unlock()
-
-	if err := h.open(); err != nil {
-		return
-	}
-	fmt.Fprintln(h.file, h.Formatter.Format(record))
-}
-
-func (h *FileHandler) Close() {
-	if h.file != nil {
-		h.file.Close()
-		h.file = nil
-	}
-}
-
-type RotatingFileHandler struct {
-	BaseHandler
-	Filename    string
-	MaxBytes    int64
-	BackupCount int
-	file        *os.File
-	currentSize int64
-}
-
-func NewRotatingFileHandler(filename string, maxBytes int64, backupCount int, level LogLevel) *RotatingFileHandler {
-	return &RotatingFileHandler{
-		BaseHandler: BaseHandler{
-			Level:     level,
-			Formatter: NewSimpleFormatter(""),
-		},
-		Filename:    filename,
-		MaxBytes:    maxBytes,
-		BackupCount: backupCount,
-	}
-}
-
-func (h *RotatingFileHandler) open() error {
-	if h.file == nil {
-		f, err := os.OpenFile(h.Filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return err
-		}
-		h.file = f
-
-		info, err := f.Stat()
-		if err == nil {
-			h.currentSize = info.Size()
-		}
-	}
-	return nil
-}
-
-func (h *RotatingFileHandler) rotate() error {
-	if h.file != nil {
-		h.file.Close()
-		h.file = nil
-	}
-
-	// Rotate files
-	for i := h.BackupCount - 1; i > 0; i-- {
-		src := fmt.Sprintf("%s.%d", h.Filename, i)
-		dst := fmt.Sprintf("%s.%d", h.Filename, i+1)
-		os.Rename(src, dst)
-	}
-
-	if _, err := os.Stat(h.Filename); err == nil {
-		os.Rename(h.Filename, h.Filename+".1")
-	}
-
-	h.currentSize = 0
-	return h.open()
-}
-
-func (h *RotatingFileHandler) Handle(record *LogRecord) {
-	if !h.ShouldHandle(record) {
-		return
-	}
-	h.mu.Lock()
-	defer h.mu.Unlock()
-
-	if err := h.open(); err != nil {
-		return
-	}
-
-	message := h.Formatter.Format(record)
-	messageSize := int64(len(message) + 1)
-
-	if h.currentSize+messageSize > h.MaxBytes {
-		h.rotate()
-	}
-
-	fmt.Fprintln(h.file, message)
-	h.currentSize += messageSize
-}
-
-type Logger struct {
-	Name      string
-	Level     LogLevel
-	Handlers  []Handler
-	Parent    *Logger
-	Propagate bool
-	Context   map[string]interface{}
-	mu        sync.RWMutex
-}
-
-var (
-	loggers = make(map[string]*Logger)
-	loggerMu sync.RWMutex
-)
-
-func GetLogger(name string) *Logger {
-	loggerMu.Lock()
-	defer loggerMu.Unlock()
-
-	if logger, exists := loggers[name]; exists {
-		return logger
-	}
-
-	logger := &Logger{
-		Name:      name,
-		Level:     DEBUG,
-		Handlers:  make([]Handler, 0),
-		Propagate: true,
-		Context:   make(map[string]interface{}),
-	}
-
-	// Set parent
-	if dir := filepath.Dir(name); dir != "." && dir != name {
-		logger.Parent = GetLogger(dir)
-	}
-
-	loggers[name] = logger
-	return logger
-}
-
-func (l *Logger) AddHandler(handler Handler) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.Handlers = append(l.Handlers, handler)
-}
-
-func (l *Logger) SetLevel(level LogLevel) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.Level = level
-}
-
-func (l *Logger) AddContext(key string, value interface{}) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.Context[key] = value
-}
-
-func (l *Logger) log(level LogLevel, message string, extra map[string]interface{}) {
-	l.mu.RLock()
-	if level < l.Level {
-		l.mu.RUnlock()
-		return
-	}
-
-	// Merge context
-	allExtra := make(map[string]interface{})
-	for k, v := range l.Context {
-		allExtra[k] = v
-	}
-	for k, v := range extra {
-		allExtra[k] = v
-	}
-	l.mu.RUnlock()
-
-	record := &LogRecord{
-		Level:      level,
-		Message:    message,
-		LoggerName: l.Name,
-		Timestamp:  time.Now(),
-		Extra:      allExtra,
-	}
-
-	l.handle(record)
-}
-
-func (l *Logger) handle(record *LogRecord) {
-	l.mu.RLock()
-	handlers := l.Handlers
-	propagate := l.Propagate
-	parent := l.Parent
-	l.mu.RUnlock()
-
-	for _, handler := range handlers {
-		handler.Handle(record)
-	}
-
-	if propagate && parent != nil {
-		parent.handle(record)
-	}
-}
-
-func (l *Logger) Debug(message string, extra ...map[string]interface{}) {
-	e := mergeExtra(extra)
-	l.log(DEBUG, message, e)
-}
-
-func (l *Logger) Info(message string, extra ...map[string]interface{}) {
-	e := mergeExtra(extra)
-	l.log(INFO, message, e)
-}
-
-func (l *Logger) Warning(message string, extra ...map[string]interface{}) {
-	e := mergeExtra(extra)
-	l.log(WARNING, message, e)
-}
-
-func (l *Logger) Error(message string, extra ...map[string]interface{}) {
-	e := mergeExtra(extra)
-	l.log(ERROR, message, e)
-}
-
-func (l *Logger) Critical(message string, extra ...map[string]interface{}) {
-	e := mergeExtra(extra)
-	l.log(CRITICAL, message, e)
-}
-
-func mergeExtra(extra []map[string]interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
-	for _, m := range extra {
-		for k, v := range m {
-			result[k] = v
-		}
-	}
-	return result
-}
-
-func main() {
-	// Configure logger
-	logger := GetLogger("app")
-	logger.SetLevel(DEBUG)
-
-	// Console handler
-	consoleHandler := NewConsoleHandler(INFO)
-	logger.AddHandler(consoleHandler)
-
-	// File handler
-	fileHandler := NewRotatingFileHandler("app.log", 1024*1024, 3, DEBUG)
-	fileHandler.SetFormatter(&JsonFormatter{})
-	logger.AddHandler(fileHandler)
-
-	// Child logger
-	dbLogger := GetLogger("app/database")
-	dbLogger.AddContext("component", "database")
-
-	// Log messages
-	logger.Info("Application started")
-	logger.Debug("Debug message")
-
-	dbLogger.Info("Connected to database", map[string]interface{}{
-		"host": "localhost",
-		"port": 5432,
-	})
-	dbLogger.Warning("Slow query", map[string]interface{}{
-		"query_time": 2.5,
-	})
-}
+if __name__ == "__main__":
+    unittest.main()
 ```
 
-## Key Components
-
-| Component | Purpose |
-|-----------|---------|
-| LogRecord | Contains log data |
-| Formatter | Converts record to string |
-| Handler | Outputs formatted log |
-| Logger | API for logging calls |
-| Filter | Decides if record is logged |
+---
 
 ## Interview Tips
 
-- Explain the handler hierarchy and propagation
-- Discuss thread-safety requirements
-- Consider performance (buffered writing, async handlers)
-- Mention structured logging benefits
+<div style="background: #f0f9ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 16px;">How to Approach This in an Interview</div>
+
+### Time Allocation (45 minutes)
+
+| Phase | Time | Focus |
+|-------|------|-------|
+| Requirements | 5 min | Levels, handlers, formatters |
+| Class Design | 10 min | Logger, Handler, Formatter interfaces |
+| Core Implementation | 20 min | Logger, ConsoleHandler, TextFormatter |
+| Extensions | 5 min | FileHandler, JsonFormatter |
+| Testing | 5 min | Edge cases, thread safety |
+
+### Key Points to Mention
+
+1. **Strategy Pattern**: Handlers and Formatters as strategies
+2. **Chain of Responsibility**: Filter chain
+3. **Logger Hierarchy**: dot-separated names with propagation
+4. **Thread Safety**: Locks in handlers
+5. **Lazy Evaluation**: Skip formatting if level disabled
+
+### Common Follow-up Questions
+
+- **Async logging?** Queue + background thread
+- **Structured logging?** JsonFormatter with extra fields
+- **Log aggregation?** HTTP handler to ELK/Splunk
+- **Performance?** Ring buffer, sampling, async I/O
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time Complexity | Space Complexity |
+|-----------|-----------------|------------------|
+| log() | O(h * f) handlers * filters | O(1) |
+| format() | O(m) message length | O(m) |
+| emit() | O(1) for console | O(1) |
+| rotate() | O(b) backup count | O(1) |

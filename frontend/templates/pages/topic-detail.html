@@ -769,53 +769,705 @@
     transition: transform 0.2s;
 }
 
-/* Diagram visibility - ensure all diagrams are readable */
+/* ============================================
+   LIGHT THEME DIAGRAMS - READABLE & MOBILE-FRIENDLY
+   ============================================ */
+
+/* Base diagram styling */
 .topic-content svg,
 .topic-content .diagram,
 .topic-content .mermaid {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    margin: 0.75rem 0;
-    max-width: 100%;
-    overflow-x: auto;
+    background: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    margin: 1rem 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
 }
 
-/* For SVGs with dark content, ensure text is visible */
 .topic-content svg text {
     fill: #1e293b !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* Override dark inline styled divs to ensure readability */
+/* ===========================================
+   FORCE LIGHT BACKGROUNDS ON ALL CONTAINERS
+   =========================================== */
+
+/* Override ALL dark backgrounds to light - comprehensive list */
 .topic-content div[style*="background: linear-gradient"],
 .topic-content div[style*="background:linear-gradient"],
+.topic-content div[style*="background: #0"],
+.topic-content div[style*="background: #1"],
+.topic-content div[style*="background: #2"],
+.topic-content div[style*="background:#0"],
+.topic-content div[style*="background:#1"],
+.topic-content div[style*="background:#2"],
 .topic-content div[style*="#0d1117"],
 .topic-content div[style*="#161b22"],
-.topic-content div[style*="#1a1a2e"] {
-    background: #1e293b !important;
-    border: 1px solid #475569 !important;
+.topic-content div[style*="#1a1a2e"],
+.topic-content div[style*="#0f0f23"],
+.topic-content div[style*="#16213e"],
+.topic-content div[style*="#1e3a5f"],
+.topic-content div[style*="#2d1f3d"],
+.topic-content div[style*="#1a472a"],
+.topic-content div[style*="#21262d"],
+.topic-content div[style*="#2d3748"],
+.topic-content div[style*="#0c2461"],
+.topic-content div[style*="#1e3799"],
+.topic-content div[style*="#2d3436"],
+.topic-content div[style*="#000000"],
+.topic-content div[style*="#1e3c72"],
+.topic-content div[style*="#134e5e"],
+.topic-content div[style*="#11998e"],
+.topic-content div[style*="#0f3460"],
+.topic-content div[style*="#1a1a40"],
+.topic-content div[style*="#141414"],
+.topic-content div[style*="#1f1f1f"],
+.topic-content div[style*="#252525"],
+.topic-content div[style*="#2a2a2a"],
+.topic-content div[style*="#333333"],
+.topic-content div[style*="#3d3d3d"] {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Ensure text inside dark containers is visible */
-.topic-content div[style*="background"] pre,
-.topic-content div[style*="background"] code,
+/* NUCLEAR OPTION: Force ALL divs with inline background styles to be light */
+.topic-content div[style*="background"] {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+/* Except for light/pastel backgrounds - keep them */
+.topic-content div[style*="#f"],
+.topic-content div[style*="#e"],
+.topic-content div[style*="#d"],
+.topic-content div[style*="rgb(2"],
+.topic-content div[style*="rgba(2"] {
+    background: inherit;
+}
+
+/* ALL text inside ANY container should be dark and readable */
+.topic-content div[style] *,
+.topic-content div[style*="background"] *,
+.topic-content div[style*="linear-gradient"] * {
+    color: #1e293b !important;
+}
+
+/* Headings in containers - dark blue for emphasis */
 .topic-content div[style*="background"] h3,
 .topic-content div[style*="background"] h4,
-.topic-content div[style*="background"] p {
-    color: #e2e8f0 !important;
+.topic-content div[style] h3,
+.topic-content div[style] h4 {
+    color: #1e40af !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
 }
 
-/* ASCII art / code blocks inside dark containers */
-.topic-content div[style*="background"] pre {
-    background: transparent !important;
-    border: none !important;
-    color: #e2e8f0 !important;
+/* Paragraphs and list items - dark gray for readability */
+.topic-content div[style*="background"] p,
+.topic-content div[style*="background"] li,
+.topic-content div[style*="background"] span,
+.topic-content div[style] p,
+.topic-content div[style] li,
+.topic-content div[style] span {
+    color: #334155 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.7 !important;
 }
 
-.topic-content div[style*="background"] pre code {
-    color: #e2e8f0 !important;
+/* Strong/bold text - even darker */
+.topic-content div[style*="background"] strong,
+.topic-content div[style] strong {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+/* ===========================================
+   CODE BLOCKS - LIGHT THEME WITH SYNTAX COLORS
+   =========================================== */
+
+.topic-content pre {
+    background: #f8fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    color: #1e293b !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    overflow-x: auto !important;
+}
+
+.topic-content pre code {
+    color: #1e293b !important;
     background: transparent !important;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
+}
+
+.topic-content div[style*="background"] pre,
+.topic-content div[style] pre {
+    background: #ffffff !important;
+    border: 2px solid #cbd5e1 !important;
+}
+
+.topic-content div[style*="background"] pre code,
+.topic-content div[style] pre code {
+    color: #1e293b !important;
+}
+
+/* Inline code - subtle background */
+.topic-content code:not(pre code),
+.topic-content div[style*="background"] code:not(pre code),
+.topic-content div[style] code:not(pre code) {
+    background: #e2e8f0 !important;
+    color: #be185d !important;
+    padding: 0.2em 0.5em !important;
+    border-radius: 4px !important;
+    font-size: 0.9em !important;
+    font-weight: 500 !important;
+}
+
+/* ===========================================
+   TABLES - CLEAN LIGHT DESIGN
+   =========================================== */
+
+.topic-content table,
+.topic-content div[style*="background"] table,
+.topic-content div[style] table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 1rem 0 !important;
+    background: #ffffff !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.topic-content th,
+.topic-content div[style*="background"] th {
+    background: #f1f5f9 !important;
+    color: #1e40af !important;
+    font-weight: 700 !important;
+    padding: 0.875rem 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    text-align: left !important;
+    font-size: 0.9rem !important;
+}
+
+.topic-content td,
+.topic-content div[style*="background"] td {
+    color: #334155 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 0.9rem !important;
+}
+
+.topic-content tr:nth-child(even) td,
+.topic-content div[style*="background"] tr:nth-child(even) td {
+    background: #f8fafc !important;
+}
+
+.topic-content tr:hover td,
+.topic-content div[style*="background"] tr:hover td {
+    background: #e0f2fe !important;
+}
+
+/* ===========================================
+   COLORED BOXES - LIGHT PASTEL VERSIONS
+   =========================================== */
+
+/* Green boxes (success, healthy) */
+.topic-content div[style*="#238636"],
+.topic-content div[style*="#2ea043"],
+.topic-content div[style*="#10b981"],
+.topic-content div[style*="#7ee787"] {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%) !important;
+    border: 2px solid #22c55e !important;
+    color: #166534 !important;
+}
+
+.topic-content div[style*="#238636"] *,
+.topic-content div[style*="#2ea043"] *,
+.topic-content div[style*="#10b981"] *,
+.topic-content div[style*="#7ee787"] * {
+    color: #166534 !important;
+}
+
+/* Blue boxes (info, primary) */
+.topic-content div[style*="#1f6feb"],
+.topic-content div[style*="#388bfd"],
+.topic-content div[style*="#58a6ff"],
+.topic-content div[style*="#3b82f6"] {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%) !important;
+    border: 2px solid #3b82f6 !important;
+    color: #1e40af !important;
+}
+
+.topic-content div[style*="#1f6feb"] *,
+.topic-content div[style*="#388bfd"] *,
+.topic-content div[style*="#58a6ff"] *,
+.topic-content div[style*="#3b82f6"] * {
+    color: #1e40af !important;
+}
+
+/* Purple boxes */
+.topic-content div[style*="#8957e5"],
+.topic-content div[style*="#a371f7"] {
+    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%) !important;
+    border: 2px solid #a855f7 !important;
+    color: #6b21a8 !important;
+}
+
+.topic-content div[style*="#8957e5"] *,
+.topic-content div[style*="#a371f7"] * {
+    color: #6b21a8 !important;
+}
+
+/* Orange/Yellow boxes (warning) */
+.topic-content div[style*="#f0883e"],
+.topic-content div[style*="#f59e0b"] {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    border: 2px solid #f59e0b !important;
+    color: #92400e !important;
+}
+
+.topic-content div[style*="#f0883e"] *,
+.topic-content div[style*="#f59e0b"] * {
+    color: #92400e !important;
+}
+
+/* Red boxes (error, danger) */
+.topic-content div[style*="#f85149"],
+.topic-content div[style*="#ef4444"],
+.topic-content div[style*="#e94560"] {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%) !important;
+    border: 2px solid #ef4444 !important;
+    color: #991b1b !important;
+}
+
+.topic-content div[style*="#f85149"] *,
+.topic-content div[style*="#ef4444"] *,
+.topic-content div[style*="#e94560"] * {
+    color: #991b1b !important;
+}
+
+/* ===========================================
+   DIAGRAM COMPONENT STYLING
+   =========================================== */
+
+/* Flow lines - visible on light background */
+.topic-content div[style*="height: 2px"],
+.topic-content div[style*="height:2px"] {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+}
+
+/* Circle/ring elements */
+.topic-content div[style*="border-radius: 50%"] {
+    border-width: 3px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Arrow styling */
+.topic-content span[style*="→"],
+.topic-content div[style*="→"] {
+    color: #3b82f6 !important;
+    font-weight: bold !important;
+    font-size: 1.25rem !important;
+}
+
+/* ===========================================
+   READABLE FONTS & TYPOGRAPHY
+   =========================================== */
+
+.topic-content {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+    color: #1e293b !important;
+}
+
+.topic-content h2 {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    font-size: 1.5rem !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.topic-content h3 {
+    color: #1e40af !important;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    margin-top: 1.5rem !important;
+}
+
+.topic-content h4 {
+    color: #334155 !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+}
+
+.topic-content p {
+    color: #334155 !important;
+    margin-bottom: 1rem !important;
+}
+
+.topic-content li {
+    color: #334155 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.topic-content strong {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+/* ===========================================
+   MOBILE RESPONSIVE DIAGRAMS
+   =========================================== */
+
+@media screen and (max-width: 768px) {
+    .topic-content div[style*="display: grid"],
+    .topic-content div[style*="display:grid"],
+    .topic-content div[style*="grid-template-columns"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+
+    .topic-content div[style*="display: flex"],
+    .topic-content div[style*="display:flex"] {
+        flex-wrap: wrap !important;
+        gap: 0.75rem !important;
+    }
+
+    .topic-content div[style*="min-width"],
+    .topic-content div[style*="width: 200px"],
+    .topic-content div[style*="width:200px"] {
+        min-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .topic-content pre {
+        font-size: 0.8rem !important;
+        padding: 0.75rem !important;
+    }
+
+    .topic-content table {
+        font-size: 0.85rem !important;
+    }
+
+    .topic-content th,
+    .topic-content td {
+        padding: 0.5rem !important;
+    }
+}
+
+/* ============================================
+   CSS ANIMATIONS
+   ============================================ */
+
+/* Keyframe animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+}
+
+@keyframes slideRight {
+    0% { transform: translateX(-5px); opacity: 0.5; }
+    50% { transform: translateX(5px); opacity: 1; }
+    100% { transform: translateX(-5px); opacity: 0.5; }
+}
+
+@keyframes colorShift {
+    0% { color: #58a6ff; }
+    33% { color: #7ee787; }
+    66% { color: #f0883e; }
+    100% { color: #58a6ff; }
+}
+
+/* Apply animations to diagram elements */
+.topic-content .diagram-section,
+.topic-content .circuit-diagram,
+.topic-content .state-diagram,
+.topic-content .lb-architecture {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Animated arrows */
+.diagram-arrow,
+.lb-arrow,
+.topic-content div[style*="→"] {
+    animation: slideRight 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* Pulsing state indicators */
+.state-box.state-closed::before,
+.server-box.healthy::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.state-box.state-open::before,
+.server-box.unhealthy::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* Hover glow effects */
+.diagram-box:hover,
+.state-box:hover,
+.client-box:hover,
+.server-box:hover {
+    animation: glow 1.5s ease-in-out infinite;
+}
+
+/* Flow animation for progress bars in diagrams */
+.topic-content div[style*="height: 2px"],
+.topic-content div[style*="height:2px"] {
+    background-size: 200% 100% !important;
+    animation: flow 3s linear infinite !important;
+}
+
+/* Animated code blocks on hover */
+.code-block-wrapper:hover pre {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Transition transitions */
+.state-transition {
+    position: relative;
+    overflow: hidden;
+}
+
+.state-transition::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ============================================
+   ENHANCED DIAGRAM VISUAL STYLING
+   ============================================ */
+
+/* Better looking connection lines */
+.topic-content div[style*="flex: 1; height: 2px"],
+.topic-content div[style*="flex:1;height:2px"] {
+    position: relative;
+    border-radius: 2px;
+}
+
+.topic-content div[style*="flex: 1; height: 2px"]::after,
+.topic-content div[style*="flex:1;height:2px"]::after {
+    content: '→';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: inherit;
+    font-size: 14px;
+}
+
+/* Visual cards with better shadows */
+.topic-content div[style*="border-radius: 12px"],
+.topic-content div[style*="border-radius:12px"],
+.topic-content div[style*="border-radius: 16px"],
+.topic-content div[style*="border-radius:16px"] {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.topic-content div[style*="border-radius: 12px"]:hover,
+.topic-content div[style*="border-radius:12px"]:hover,
+.topic-content div[style*="border-radius: 16px"]:hover,
+.topic-content div[style*="border-radius:16px"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Interactive element highlights */
+.topic-content div[style*="padding: 8px"],
+.topic-content div[style*="padding:8px"],
+.topic-content div[style*="padding: 6px"],
+.topic-content div[style*="padding:6px"] {
+    transition: all 0.2s ease !important;
+}
+
+.topic-content div[style*="padding: 8px"]:hover,
+.topic-content div[style*="padding:8px"]:hover {
+    transform: scale(1.02) !important;
+}
+
+/* Color-coded status indicators */
+.topic-content span[style*="#7ee787"],
+.topic-content span[style*="color: #7ee787"] {
+    text-shadow: 0 0 10px rgba(126, 231, 135, 0.5);
+}
+
+.topic-content span[style*="#f85149"],
+.topic-content span[style*="color: #f85149"] {
+    text-shadow: 0 0 10px rgba(248, 81, 73, 0.5);
+}
+
+.topic-content span[style*="#58a6ff"],
+.topic-content span[style*="color: #58a6ff"] {
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+}
+
+/* Ring/Circle diagram enhancements */
+.topic-content div[style*="border-radius: 50%"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.topic-content div[style*="border-radius: 50%"]:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 0 15px currentColor !important;
+}
+
+/* Better blockquotes for insights */
+.topic-content blockquote {
+    position: relative;
+    border-left: 4px solid var(--accent-color);
+    margin: 1.5rem 0;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+}
+
+.topic-content blockquote::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 4rem;
+    color: rgba(59, 130, 246, 0.2);
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.topic-content blockquote p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+}
+
+/* War Stories / Case Study styling */
+.topic-content h3:has(+ div[style*="background"]),
+.topic-content h3[id*="war-story"],
+.topic-content h3[id*="case-study"] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.topic-content h3[id*="war-story"]::before {
+    content: '⚔️';
+}
+
+.topic-content h3[id*="case-study"]::before {
+    content: '📋';
+}
+
+/* FAQ section styling */
+.topic-content h3:has(strong:first-child) {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #f59e0b;
+    margin-top: 1.5rem;
+}
+
+/* Pros/Cons visual indicators */
+.topic-content strong:contains("Pros"),
+.topic-content strong:contains("Advantages") {
+    color: #10b981 !important;
+}
+
+.topic-content strong:contains("Cons"),
+.topic-content strong:contains("Disadvantages") {
+    color: #ef4444 !important;
+}
+
+/* ============================================
+   SYNTAX HIGHLIGHTING - LIGHT THEME
+   ============================================ */
+
+/* Light theme code syntax colors - high contrast for readability */
+.topic-content pre code .hljs-keyword { color: #d63384 !important; font-weight: 600; }
+.topic-content pre code .hljs-built_in { color: #0d6efd !important; }
+.topic-content pre code .hljs-type { color: #0d6efd !important; }
+.topic-content pre code .hljs-literal { color: #0d6efd !important; }
+.topic-content pre code .hljs-number { color: #0891b2 !important; }
+.topic-content pre code .hljs-string { color: #059669 !important; }
+.topic-content pre code .hljs-comment { color: #6b7280 !important; font-style: italic; }
+.topic-content pre code .hljs-function { color: #7c3aed !important; }
+.topic-content pre code .hljs-title { color: #7c3aed !important; font-weight: 600; }
+.topic-content pre code .hljs-params { color: #1e293b !important; }
+.topic-content pre code .hljs-variable { color: #ea580c !important; }
+.topic-content pre code .hljs-attr { color: #0d6efd !important; }
+.topic-content pre code .hljs-class { color: #ca8a04 !important; font-weight: 600; }
+.topic-content pre code .hljs-meta { color: #6b7280 !important; }
+.topic-content pre code .hljs-name { color: #0891b2 !important; }
+.topic-content pre code .hljs-selector-class { color: #7c3aed !important; }
+.topic-content pre code .hljs-selector-id { color: #0d6efd !important; }
+
+/* Line numbers styling - light theme */
+.topic-content pre code .hljs-ln-numbers {
+    color: #94a3b8 !important;
+    border-right: 1px solid #e2e8f0 !important;
+    padding-right: 0.75rem !important;
+    margin-right: 0.75rem !important;
 }
 
 /* Mobile responsive styles */
@@ -967,7 +1619,7 @@
 
 {{if .HasContent}}
 <script>
-// Initialize topic content with collapsible sections and code blocks
+// Initialize topic content with collapsible sections, code blocks, and animations
 (function() {
     var content = document.getElementById('topic-content');
     if (!content) return;
@@ -1017,13 +1669,30 @@
                 el.style.display = 'none';
             });
 
-            // Toggle on click
+            // Toggle on click with smooth animation
             heading.addEventListener('click', function() {
                 var isHidden = contentEls.length > 0 && contentEls[0].style.display === 'none';
                 contentEls.forEach(function(el) {
-                    el.style.display = isHidden ? '' : 'none';
+                    if (isHidden) {
+                        el.style.display = '';
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(-10px)';
+                        setTimeout(function() {
+                            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            el.style.opacity = '1';
+                            el.style.transform = 'translateY(0)';
+                        }, 10);
+                    } else {
+                        el.style.opacity = '0';
+                        el.style.transform = 'translateY(-10px)';
+                        setTimeout(function() {
+                            el.style.display = 'none';
+                            el.style.transition = '';
+                        }, 300);
+                    }
                 });
                 icon.textContent = isHidden ? '▼' : '▶';
+                icon.style.transition = 'transform 0.2s ease';
             });
         }
     });
@@ -1043,12 +1712,18 @@
         // Copy button
         var copyBtn = document.createElement('button');
         copyBtn.className = 'code-copy-btn';
-        copyBtn.innerHTML = 'Copy';
+        copyBtn.innerHTML = '📋 Copy';
         copyBtn.onclick = function(e) {
             e.stopPropagation();
             navigator.clipboard.writeText(block.textContent).then(function() {
-                copyBtn.innerHTML = 'Copied!';
-                setTimeout(function() { copyBtn.innerHTML = 'Copy'; }, 2000);
+                copyBtn.innerHTML = '✓ Copied!';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.color = 'white';
+                setTimeout(function() {
+                    copyBtn.innerHTML = '📋 Copy';
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
+                }, 2000);
             });
         };
         wrapper.appendChild(copyBtn);
@@ -1059,6 +1734,133 @@
         content.querySelectorAll('pre code').forEach(function(block) {
             hljs.highlightElement(block);
         });
+    }
+
+    // ============================================
+    // DIAGRAM ANIMATIONS
+    // ============================================
+
+    // Animate diagrams on scroll into view
+    var diagramElements = content.querySelectorAll('.diagram-section, .circuit-diagram, .state-diagram, .lb-architecture, div[style*="border-radius: 12px"], div[style*="border-radius: 16px"]');
+
+    var observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    var diagramObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    diagramElements.forEach(function(el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        diagramObserver.observe(el);
+    });
+
+    // Animate flow arrows in diagrams
+    var arrows = content.querySelectorAll('.diagram-arrow, .lb-arrow');
+    arrows.forEach(function(arrow) {
+        arrow.style.animation = 'slideRight 2s ease-in-out infinite';
+    });
+
+    // Add interactive tooltips to diagram boxes
+    var diagramBoxes = content.querySelectorAll('.diagram-box, .state-box, .client-box, .server-box');
+    diagramBoxes.forEach(function(box) {
+        box.style.cursor = 'pointer';
+        box.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.05)';
+            this.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.2)';
+        });
+        box.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+
+    // Animate state transitions on hover
+    var stateTransitions = content.querySelectorAll('.state-transition');
+    stateTransitions.forEach(function(trans) {
+        trans.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+        });
+        trans.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+
+    // Add reading progress indicator
+    var progressBar = document.createElement('div');
+    progressBar.className = 'reading-progress';
+    progressBar.style.cssText = 'position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); width: 0%; z-index: 1000; transition: width 0.1s ease-out;';
+    document.body.appendChild(progressBar);
+
+    window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+    });
+
+    // Smooth scroll for internal links
+    content.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Table of contents generation for long content
+    var h2s = content.querySelectorAll('h2');
+    if (h2s.length > 4) {
+        var toc = document.createElement('div');
+        toc.className = 'table-of-contents';
+        toc.innerHTML = '<h4 style="margin: 0 0 0.75rem 0; color: var(--text-primary);">📚 Contents</h4>';
+        var tocList = document.createElement('ul');
+        tocList.style.cssText = 'list-style: none; padding: 0; margin: 0;';
+
+        h2s.forEach(function(h2, index) {
+            var id = 'section-' + index;
+            h2.id = id;
+            var li = document.createElement('li');
+            li.style.cssText = 'margin-bottom: 0.5rem;';
+            var link = document.createElement('a');
+            link.href = '#' + id;
+            link.textContent = h2.textContent.replace('▶', '').replace('▼', '').trim();
+            link.style.cssText = 'color: var(--accent-color); text-decoration: none; font-size: 0.9rem; display: block; padding: 0.25rem 0; border-left: 2px solid transparent; padding-left: 0.75rem; transition: all 0.2s;';
+            link.addEventListener('mouseenter', function() {
+                this.style.borderLeftColor = 'var(--accent-color)';
+                this.style.paddingLeft = '1rem';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.borderLeftColor = 'transparent';
+                this.style.paddingLeft = '0.75rem';
+            });
+            li.appendChild(link);
+            tocList.appendChild(li);
+        });
+
+        toc.appendChild(tocList);
+        toc.style.cssText = 'background: var(--bg-secondary); padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border-color);';
+
+        // Insert TOC after first h2 or at the start
+        var firstH2 = content.querySelector('h2');
+        if (firstH2) {
+            content.insertBefore(toc, firstH2);
+        }
     }
 })();
 </script>
