@@ -153,6 +153,13 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* Smooth scrolling for all scrollable containers */
+* {
+    -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -1949,8 +1956,8 @@ a:hover {
     }
 
     .header {
-        padding: 0 var(--space-4);
-        gap: var(--space-4);
+        padding: 0 var(--space-3);
+        gap: var(--space-2);
         flex-wrap: wrap;
         height: auto;
         min-height: var(--header-height);
@@ -1966,13 +1973,25 @@ a:hover {
         order: 2;
         width: 100%;
         justify-content: flex-start;
-        gap: var(--space-2);
-        padding-bottom: var(--space-2);
+        gap: var(--space-1);
+        padding-bottom: var(--space-1);
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .nav::-webkit-scrollbar {
+        display: none;
     }
 
     .nav-pill {
         padding: var(--space-2);
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .nav-pill span:not(.nav-icon) {
@@ -1984,7 +2003,7 @@ a:hover {
     }
 
     .main {
-        padding: var(--space-4);
+        padding: var(--space-3);
     }
 
     /* Practice Page Mobile */
@@ -2043,9 +2062,26 @@ a:hover {
     }
 
     .unified-dashboard .sidebar {
-        max-height: 250px;
+        max-height: 200px;
         border-right: none;
         border-bottom: 1px solid var(--dash-border);
+        padding: var(--space-2);
+    }
+
+    .unified-dashboard .dashboard-header {
+        padding: var(--space-3);
+    }
+
+    .unified-dashboard .dashboard-header h1 {
+        font-size: var(--text-lg);
+    }
+
+    .unified-dashboard .query-section {
+        padding: var(--space-2);
+    }
+
+    .unified-dashboard .results-section {
+        padding: var(--space-2);
     }
 
     /* Lessons Mobile */
@@ -2054,13 +2090,40 @@ a:hover {
     }
 
     .unified-lessons .sidebar {
-        max-height: 250px;
+        max-height: 200px;
         border-right: none;
         border-bottom: 1px solid var(--lesson-border);
     }
 
+    .unified-lessons .sidebar-header {
+        padding: var(--space-3);
+    }
+
     .unified-lessons .content {
-        padding: var(--space-4);
+        padding: var(--space-3);
+    }
+
+    .unified-lessons .lesson h1 {
+        font-size: var(--text-xl);
+    }
+
+    .unified-lessons .lesson h2 {
+        font-size: var(--text-lg);
+    }
+
+    .unified-lessons .code-example {
+        margin: var(--space-3) 0;
+    }
+
+    .unified-lessons .code-example .code-content,
+    .unified-lessons .code-example .output-content {
+        font-size: var(--text-xs);
+        padding: var(--space-2);
+    }
+
+    .unified-lessons .key-points {
+        padding: var(--space-3) var(--space-4);
+        margin: var(--space-3) 0;
     }
 
     /* PDF Modal Mobile */
@@ -2096,15 +2159,15 @@ a:hover {
     }
 
     .header {
-        padding: 0 var(--space-3);
+        padding: 0 var(--space-2);
     }
 
     .logo-text {
-        font-size: var(--text-lg);
+        font-size: var(--text-base);
     }
 
     .main {
-        padding: var(--space-3);
+        padding: var(--space-2);
     }
 
     .tab {
@@ -2113,15 +2176,16 @@ a:hover {
     }
 
     #description-tab {
-        padding: var(--space-4);
+        padding: var(--space-3);
     }
 
     .topic-page h1 {
-        font-size: var(--text-2xl);
+        font-size: var(--text-xl);
     }
 
     .page-description {
-        font-size: var(--text-base);
+        font-size: var(--text-sm);
+        margin-bottom: var(--space-4);
     }
 
     /* Mobile code font sizing - prevent horizontal scroll */
@@ -2131,7 +2195,7 @@ a:hover {
     }
 
     pre {
-        padding: var(--space-3) !important;
+        padding: var(--space-2) !important;
         max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -2151,13 +2215,102 @@ a:hover {
 
     /* Topic card mobile adjustments */
     .topic-card {
-        padding: var(--space-4);
+        padding: var(--space-3);
     }
 
     .topic-card-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.125rem;
+        margin-bottom: var(--space-2);
+    }
+
+    .topic-card h3 {
+        font-size: var(--text-base);
+    }
+
+    .topic-card p {
+        font-size: var(--text-xs);
+        margin-bottom: var(--space-2);
+    }
+
+    /* Card mobile adjustments */
+    .card {
+        padding: var(--space-3);
+        gap: var(--space-3);
+    }
+
+    .card-icon {
         width: 40px;
         height: 40px;
-        font-size: 1.25rem;
+        font-size: var(--text-xl);
+    }
+
+    .card h2 {
+        font-size: var(--text-base);
+    }
+
+    .card p {
+        font-size: var(--text-xs);
+    }
+
+    /* Feature grid mobile */
+    .feature-grid {
+        gap: var(--space-3);
+    }
+
+    .feature {
+        padding: var(--space-2);
+    }
+
+    /* Topic grid single column */
+    .topic-grid {
+        gap: var(--space-3);
+    }
+
+    /* Home cards single column */
+    .home .cards {
+        gap: var(--space-3);
+    }
+
+    /* Section titles */
+    .section-title {
+        font-size: var(--text-lg);
+        margin-top: var(--space-4);
+        margin-bottom: var(--space-3);
+    }
+
+    /* Buttons touch-friendly */
+    .btn {
+        min-height: 44px;
+        padding: var(--space-2) var(--space-4);
+    }
+
+    .btn-sm {
+        min-height: 36px;
+    }
+}
+
+/* Extra small screens (360px) */
+@media (max-width: 360px) {
+    .main {
+        padding: var(--space-1);
+    }
+
+    .header {
+        padding: 0 var(--space-1);
+    }
+
+    .logo-text {
+        font-size: var(--text-sm);
+    }
+
+    .topic-card {
+        padding: var(--space-2);
+    }
+
+    .card {
+        padding: var(--space-2);
     }
 }
 
