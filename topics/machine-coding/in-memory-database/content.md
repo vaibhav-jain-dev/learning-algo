@@ -1,28 +1,214 @@
-# In-Memory Database
+# In-Memory Database Design
 
 ## Problem Statement
 
-Design an in-memory key-value database with support for transactions, TTL (time-to-live), and basic data types like strings, lists, and hashes.
+Design an in-memory key-value database with support for transactions, TTL (time-to-live), and basic data types. This system should provide Redis-like functionality with GET, SET, DELETE operations, plus transaction support with BEGIN, COMMIT, and ROLLBACK.
 
-## Requirements
+This is a popular interview question at companies like Amazon, Google, and database companies. It tests your understanding of data structures, transaction management, and concurrent programming.
 
-- GET, SET, DELETE operations
-- TTL support for keys
-- Transaction support (BEGIN, COMMIT, ROLLBACK)
-- Multiple data types
-- Thread-safe operations
+---
 
-## Solution
+## Requirements Clarification
 
-### Python
+### Functional Requirements
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Core Operations</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **GET(key)**: Retrieve value by key
+- **SET(key, value, ttl?)**: Store key-value pair with optional TTL
+- **DELETE(key)**: Remove a key
+- **BEGIN**: Start a new transaction
+- **COMMIT**: Save transaction changes
+- **ROLLBACK**: Discard transaction changes
+- **Multiple data types**: Strings, Lists, Hashes, Sets
+
+</div>
+</div>
+
+### Non-Functional Requirements
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">System Constraints</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+- **Thread safety**: Support concurrent access
+- **O(1) operations**: GET/SET should be constant time
+- **Nested transactions**: Support transaction within transaction
+- **Automatic expiration**: Clean up expired keys
+- **Memory efficient**: Don't store expired data
+
+</div>
+</div>
+
+### Key Questions to Ask
+
+1. Do we need persistence (save to disk)?
+2. Should transactions be isolated from each other?
+3. What happens to TTL during transactions?
+4. Maximum number of keys to support?
+5. Should we support pub/sub?
+
+---
+
+## Architecture Diagram
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Database Architecture</h4>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<!-- Main Storage -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Main Storage Layer</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Data Store</div>
+<div style="color: #3b82f6; font-size: 11px;">Dict[key, Entry]</div>
+</div>
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">TTL Index</div>
+<div style="color: #22c55e; font-size: 11px;">Heap[expiry, key]</div>
+</div>
+<div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 12px;">Type Index</div>
+<div style="color: #d97706; font-size: 11px;">Dict[key, type]</div>
+</div>
+</div>
+</div>
+
+<!-- Transaction Layer -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Transaction Layer</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #f3e8ff; border: 2px solid #c084fc; padding: 14px; border-radius: 8px; text-align: center;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 12px;">Transaction Stack</div>
+<div style="color: #a855f7; font-size: 10px;">Nested transactions</div>
+</div>
+<div style="background: #fce7f3; border: 2px solid #f472b6; padding: 14px; border-radius: 8px; text-align: center;">
+<div style="color: #be185d; font-weight: bold; font-size: 12px;">Snapshot Store</div>
+<div style="color: #ec4899; font-size: 10px;">Original values</div>
+</div>
+<div style="background: #fee2e2; border: 2px solid #fca5a5; padding: 14px; border-radius: 8px; text-align: center;">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px;">Operations Log</div>
+<div style="color: #dc2626; font-size: 10px;">For rollback</div>
+</div>
+</div>
+</div>
+
+<!-- Data Types -->
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Supported Data Types</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #ecfdf5; padding: 10px 16px; border-radius: 6px;">
+<div style="color: #166534; font-weight: bold; font-size: 11px;">STRING</div>
+</div>
+<div style="background: #eff6ff; padding: 10px 16px; border-radius: 6px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 11px;">LIST</div>
+</div>
+<div style="background: #fefce8; padding: 10px 16px; border-radius: 6px;">
+<div style="color: #854d0e; font-weight: bold; font-size: 11px;">HASH</div>
+</div>
+<div style="background: #fdf2f8; padding: 10px 16px; border-radius: 6px;">
+<div style="color: #9d174d; font-weight: bold; font-size: 11px;">SET</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+---
+
+## Class Design
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; font-size: 16px;">Class Structure</h4>
+
+```
++-------------------+       +------------------+       +-------------------+
+|     DataType      |       |      Entry       |       |   Transaction     |
++-------------------+       +------------------+       +-------------------+
+| STRING            |       | value: Any       |       | operations: List  |
+| LIST              |       | data_type: Enum  |       | snapshot: Dict    |
+| HASH              |       | expires_at: float|       +-------------------+
+| SET               |       +------------------+       | + record()        |
++-------------------+       | + is_expired()   |       | + rollback()      |
+                            +------------------+       +-------------------+
+                                    |
+                                    v
++------------------------------------------------------------------------+
+|                           InMemoryDB                                    |
++------------------------------------------------------------------------+
+| - data: Dict[str, Entry]      - transactions: List[Transaction]        |
+| - lock: RLock                 - ttl_heap: List                         |
++------------------------------------------------------------------------+
+| + get(key) -> Any             + begin() -> None                        |
+| + set(key, value, ttl)        + commit() -> bool                       |
+| + delete(key) -> bool         + rollback() -> bool                     |
+| + lpush/rpush/lpop/rpop       + hset/hget/hgetall                      |
++------------------------------------------------------------------------+
+```
+</div>
+
+---
+
+## API Design
+
+### Core Operations
+
+```python
+class InMemoryDB:
+    # String operations
+    def get(self, key: str) -> Optional[Any]:
+        """Get value by key. Returns None if not found or expired."""
+
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+        """Set key-value pair with optional TTL in seconds."""
+
+    def delete(self, key: str) -> bool:
+        """Delete key. Returns True if key existed."""
+
+    # Transaction operations
+    def begin(self) -> None:
+        """Start a new transaction (can be nested)."""
+
+    def commit(self) -> bool:
+        """Commit current transaction. Returns False if no active transaction."""
+
+    def rollback(self) -> bool:
+        """Rollback current transaction. Returns False if no active transaction."""
+
+    # List operations
+    def lpush(self, key: str, *values) -> int:
+        """Push values to the left of list. Returns new length."""
+
+    def rpop(self, key: str) -> Optional[Any]:
+        """Pop from right of list."""
+
+    # Hash operations
+    def hset(self, key: str, field: str, value: Any) -> bool:
+        """Set field in hash."""
+
+    def hget(self, key: str, field: str) -> Optional[Any]:
+        """Get field from hash."""
+```
+
+---
+
+## Code Implementation
+
+### Python Implementation
 
 ```python
 import time
 import threading
-from typing import Any, Optional, Dict, List
-from collections import defaultdict
+import heapq
+from typing import Any, Optional, Dict, List, Set
 from dataclasses import dataclass, field
 from enum import Enum
+from collections import defaultdict
 
 
 class DataType(Enum):
@@ -34,6 +220,7 @@ class DataType(Enum):
 
 @dataclass
 class Entry:
+    """Represents a database entry with value and metadata."""
     value: Any
     data_type: DataType
     expires_at: Optional[float] = None
@@ -45,701 +232,459 @@ class Entry:
 
 
 class Transaction:
+    """Represents an active transaction with snapshot for rollback."""
+
     def __init__(self):
-        self.operations: List[tuple] = []  # (operation, key, value, old_value)
-        self.snapshot: Dict[str, Entry] = {}
+        self.operations: List[tuple] = []  # (op_type, key, old_value)
+        self.snapshot: Dict[str, Optional[Entry]] = {}
+
+    def record(self, op_type: str, key: str, old_value: Optional[Entry]):
+        """Record an operation for potential rollback."""
+        # Only record first change to each key
+        if key not in self.snapshot:
+            self.snapshot[key] = old_value
+        self.operations.append((op_type, key, old_value))
 
 
 class InMemoryDB:
+    """
+    In-memory key-value database with transactions and TTL support.
+
+    Features:
+    - O(1) GET/SET/DELETE operations
+    - Nested transaction support
+    - TTL with lazy expiration
+    - Multiple data types (string, list, hash, set)
+    """
+
     def __init__(self):
         self.data: Dict[str, Entry] = {}
+        self.transactions: List[Transaction] = []
         self.lock = threading.RLock()
-        self.transactions: Dict[int, Transaction] = {}  # thread_id -> Transaction
+        self.ttl_heap: List[tuple] = []  # (expires_at, key)
 
-        # Start cleanup thread for expired keys
-        self._start_cleanup_thread()
-
-    def _start_cleanup_thread(self):
-        def cleanup():
-            while True:
-                time.sleep(1)
-                self._cleanup_expired()
-
-        thread = threading.Thread(target=cleanup, daemon=True)
-        thread.start()
-
-    def _cleanup_expired(self):
-        with self.lock:
-            expired_keys = [k for k, v in self.data.items() if v.is_expired()]
-            for key in expired_keys:
-                del self.data[key]
-
-    def _get_entry(self, key: str) -> Optional[Entry]:
+    def _is_expired(self, key: str) -> bool:
+        """Check if key is expired and clean up if so."""
         entry = self.data.get(key)
         if entry and entry.is_expired():
             del self.data[key]
-            return None
-        return entry
+            return True
+        return False
 
-    def _current_transaction(self) -> Optional[Transaction]:
-        thread_id = threading.current_thread().ident
-        return self.transactions.get(thread_id)
+    def _cleanup_expired(self):
+        """Lazy cleanup of expired keys from TTL heap."""
+        current_time = time.time()
+        while self.ttl_heap and self.ttl_heap[0][0] <= current_time:
+            _, key = heapq.heappop(self.ttl_heap)
+            if key in self.data and self.data[key].is_expired():
+                del self.data[key]
 
-    # String operations
-    def set(self, key: str, value: str, ttl: Optional[int] = None) -> bool:
+    def _record_operation(self, op_type: str, key: str):
+        """Record operation for active transaction."""
+        if self.transactions:
+            old_value = self.data.get(key)
+            self.transactions[-1].record(op_type, key, old_value)
+
+    # ==================== String Operations ====================
+
+    def get(self, key: str) -> Optional[Any]:
+        """Get value by key."""
         with self.lock:
-            expires_at = time.time() + ttl if ttl else None
-            old_entry = self._get_entry(key)
+            if self._is_expired(key):
+                return None
+            entry = self.data.get(key)
+            return entry.value if entry else None
 
-            txn = self._current_transaction()
-            if txn:
-                txn.operations.append(('SET', key, value, old_entry))
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+        """Set key-value with optional TTL in seconds."""
+        with self.lock:
+            self._record_operation("SET", key)
 
-            self.data[key] = Entry(value, DataType.STRING, expires_at)
+            expires_at = None
+            if ttl is not None:
+                expires_at = time.time() + ttl
+                heapq.heappush(self.ttl_heap, (expires_at, key))
+
+            self.data[key] = Entry(
+                value=value,
+                data_type=DataType.STRING,
+                expires_at=expires_at
+            )
             return True
 
-    def get(self, key: str) -> Optional[str]:
-        with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.STRING:
-                return entry.value
-            return None
-
     def delete(self, key: str) -> bool:
+        """Delete key."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry:
-                txn = self._current_transaction()
-                if txn:
-                    txn.operations.append(('DELETE', key, None, entry))
-                del self.data[key]
-                return True
-            return False
+            if key not in self.data or self._is_expired(key):
+                return False
+
+            self._record_operation("DELETE", key)
+            del self.data[key]
+            return True
 
     def exists(self, key: str) -> bool:
+        """Check if key exists."""
         with self.lock:
-            return self._get_entry(key) is not None
-
-    def expire(self, key: str, ttl: int) -> bool:
-        with self.lock:
-            entry = self._get_entry(key)
-            if entry:
-                entry.expires_at = time.time() + ttl
-                return True
-            return False
+            return key in self.data and not self._is_expired(key)
 
     def ttl(self, key: str) -> int:
+        """Get remaining TTL in seconds. Returns -1 if no TTL, -2 if not found."""
         with self.lock:
-            entry = self._get_entry(key)
-            if not entry:
-                return -2  # Key doesn't exist
+            entry = self.data.get(key)
+            if not entry or self._is_expired(key):
+                return -2
             if entry.expires_at is None:
-                return -1  # No expiration
+                return -1
             return max(0, int(entry.expires_at - time.time()))
 
-    # List operations
-    def lpush(self, key: str, *values) -> int:
+    # ==================== Transaction Operations ====================
+
+    def begin(self) -> None:
+        """Start a new transaction (supports nesting)."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry is None:
-                self.data[key] = Entry(list(values), DataType.LIST)
-                return len(values)
-            elif entry.data_type == DataType.LIST:
-                entry.value = list(values) + entry.value
-                return len(entry.value)
-            raise TypeError("Value is not a list")
+            self.transactions.append(Transaction())
+
+    def commit(self) -> bool:
+        """Commit current transaction."""
+        with self.lock:
+            if not self.transactions:
+                return False
+
+            # Simply remove the transaction - changes are already in data
+            completed = self.transactions.pop()
+
+            # If there's a parent transaction, merge snapshots
+            if self.transactions:
+                parent = self.transactions[-1]
+                for key, old_value in completed.snapshot.items():
+                    if key not in parent.snapshot:
+                        parent.snapshot[key] = old_value
+
+            return True
+
+    def rollback(self) -> bool:
+        """Rollback current transaction."""
+        with self.lock:
+            if not self.transactions:
+                return False
+
+            transaction = self.transactions.pop()
+
+            # Restore original values
+            for key, old_entry in transaction.snapshot.items():
+                if old_entry is None:
+                    # Key didn't exist before
+                    self.data.pop(key, None)
+                else:
+                    # Restore original value
+                    self.data[key] = old_entry
+
+            return True
+
+    def in_transaction(self) -> bool:
+        """Check if currently in a transaction."""
+        return len(self.transactions) > 0
+
+    # ==================== List Operations ====================
+
+    def lpush(self, key: str, *values) -> int:
+        """Push values to left of list."""
+        with self.lock:
+            self._record_operation("LPUSH", key)
+
+            if key not in self.data:
+                self.data[key] = Entry(value=[], data_type=DataType.LIST)
+            elif self.data[key].data_type != DataType.LIST:
+                raise TypeError(f"Key {key} is not a list")
+
+            for value in values:
+                self.data[key].value.insert(0, value)
+
+            return len(self.data[key].value)
 
     def rpush(self, key: str, *values) -> int:
+        """Push values to right of list."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry is None:
-                self.data[key] = Entry(list(values), DataType.LIST)
-                return len(values)
-            elif entry.data_type == DataType.LIST:
-                entry.value.extend(values)
-                return len(entry.value)
-            raise TypeError("Value is not a list")
+            self._record_operation("RPUSH", key)
 
-    def lpop(self, key: str) -> Optional[str]:
+            if key not in self.data:
+                self.data[key] = Entry(value=[], data_type=DataType.LIST)
+            elif self.data[key].data_type != DataType.LIST:
+                raise TypeError(f"Key {key} is not a list")
+
+            self.data[key].value.extend(values)
+            return len(self.data[key].value)
+
+    def lpop(self, key: str) -> Optional[Any]:
+        """Pop from left of list."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.LIST and entry.value:
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.LIST:
+                return None
+
+            self._record_operation("LPOP", key)
+            if entry.value:
                 return entry.value.pop(0)
             return None
 
-    def rpop(self, key: str) -> Optional[str]:
+    def rpop(self, key: str) -> Optional[Any]:
+        """Pop from right of list."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.LIST and entry.value:
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.LIST:
+                return None
+
+            self._record_operation("RPOP", key)
+            if entry.value:
                 return entry.value.pop()
             return None
 
-    def lrange(self, key: str, start: int, stop: int) -> List:
+    def lrange(self, key: str, start: int, stop: int) -> List[Any]:
+        """Get range of elements from list."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.LIST:
-                return entry.value[start:stop + 1]
-            return []
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.LIST:
+                return []
+            return entry.value[start:stop + 1]
 
-    def llen(self, key: str) -> int:
-        with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.LIST:
-                return len(entry.value)
-            return 0
+    # ==================== Hash Operations ====================
 
-    # Hash operations
-    def hset(self, key: str, field: str, value: str) -> int:
+    def hset(self, key: str, field: str, value: Any) -> bool:
+        """Set field in hash."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry is None:
-                self.data[key] = Entry({field: value}, DataType.HASH)
-                return 1
-            elif entry.data_type == DataType.HASH:
-                is_new = field not in entry.value
-                entry.value[field] = value
-                return 1 if is_new else 0
-            raise TypeError("Value is not a hash")
+            self._record_operation("HSET", key)
 
-    def hget(self, key: str, field: str) -> Optional[str]:
-        with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.HASH:
-                return entry.value.get(field)
-            return None
+            if key not in self.data:
+                self.data[key] = Entry(value={}, data_type=DataType.HASH)
+            elif self.data[key].data_type != DataType.HASH:
+                raise TypeError(f"Key {key} is not a hash")
 
-    def hgetall(self, key: str) -> Dict[str, str]:
-        with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.HASH:
-                return dict(entry.value)
-            return {}
+            is_new = field not in self.data[key].value
+            self.data[key].value[field] = value
+            return is_new
 
-    def hdel(self, key: str, field: str) -> int:
+    def hget(self, key: str, field: str) -> Optional[Any]:
+        """Get field from hash."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.HASH:
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.HASH:
+                return None
+            return entry.value.get(field)
+
+    def hgetall(self, key: str) -> Dict[str, Any]:
+        """Get all fields from hash."""
+        with self.lock:
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.HASH:
+                return {}
+            return dict(entry.value)
+
+    def hdel(self, key: str, *fields) -> int:
+        """Delete fields from hash. Returns number deleted."""
+        with self.lock:
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.HASH:
+                return 0
+
+            self._record_operation("HDEL", key)
+            deleted = 0
+            for field in fields:
                 if field in entry.value:
                     del entry.value[field]
-                    return 1
-            return 0
+                    deleted += 1
+            return deleted
 
-    # Set operations
+    # ==================== Set Operations ====================
+
     def sadd(self, key: str, *members) -> int:
+        """Add members to set. Returns number added."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry is None:
-                self.data[key] = Entry(set(members), DataType.SET)
-                return len(members)
-            elif entry.data_type == DataType.SET:
-                before = len(entry.value)
-                entry.value.update(members)
-                return len(entry.value) - before
-            raise TypeError("Value is not a set")
+            self._record_operation("SADD", key)
 
-    def smembers(self, key: str) -> set:
+            if key not in self.data:
+                self.data[key] = Entry(value=set(), data_type=DataType.SET)
+            elif self.data[key].data_type != DataType.SET:
+                raise TypeError(f"Key {key} is not a set")
+
+            before = len(self.data[key].value)
+            self.data[key].value.update(members)
+            return len(self.data[key].value) - before
+
+    def smembers(self, key: str) -> Set[Any]:
+        """Get all members of set."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.SET:
-                return set(entry.value)
-            return set()
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.SET:
+                return set()
+            return set(entry.value)
 
-    def sismember(self, key: str, member: str) -> bool:
+    def sismember(self, key: str, member: Any) -> bool:
+        """Check if member exists in set."""
         with self.lock:
-            entry = self._get_entry(key)
-            if entry and entry.data_type == DataType.SET:
-                return member in entry.value
-            return False
-
-    # Transaction operations
-    def begin(self):
-        thread_id = threading.current_thread().ident
-        with self.lock:
-            self.transactions[thread_id] = Transaction()
-
-    def commit(self) -> bool:
-        thread_id = threading.current_thread().ident
-        with self.lock:
-            if thread_id in self.transactions:
-                del self.transactions[thread_id]
-                return True
-            return False
-
-    def rollback(self) -> bool:
-        thread_id = threading.current_thread().ident
-        with self.lock:
-            txn = self.transactions.get(thread_id)
-            if txn:
-                # Reverse operations
-                for op, key, value, old_entry in reversed(txn.operations):
-                    if op == 'SET':
-                        if old_entry:
-                            self.data[key] = old_entry
-                        else:
-                            del self.data[key]
-                    elif op == 'DELETE':
-                        if old_entry:
-                            self.data[key] = old_entry
-                del self.transactions[thread_id]
-                return True
-            return False
-
-    # Utility
-    def keys(self, pattern: str = "*") -> List[str]:
-        import fnmatch
-        with self.lock:
-            return [k for k in self.data.keys()
-                    if not self.data[k].is_expired() and fnmatch.fnmatch(k, pattern)]
-
-    def dbsize(self) -> int:
-        with self.lock:
-            return len([k for k in self.data.keys() if not self.data[k].is_expired()])
+            entry = self.data.get(key)
+            if not entry or entry.data_type != DataType.SET:
+                return False
+            return member in entry.value
 
 
-# Usage
-db = InMemoryDB()
+# Example usage
+if __name__ == "__main__":
+    db = InMemoryDB()
 
-# String operations
-db.set("name", "Alice")
-db.set("session", "abc123", ttl=60)
-print(f"name: {db.get('name')}")
-print(f"session TTL: {db.ttl('session')}s")
+    # String operations
+    print("=== String Operations ===")
+    db.set("name", "Alice")
+    db.set("age", 30, ttl=5)  # Expires in 5 seconds
+    print(f"name: {db.get('name')}")
+    print(f"age TTL: {db.ttl('age')} seconds")
 
-# List operations
-db.rpush("queue", "task1", "task2", "task3")
-print(f"queue: {db.lrange('queue', 0, -1)}")
-print(f"popped: {db.lpop('queue')}")
+    # Transaction example
+    print("\n=== Transaction Demo ===")
+    db.set("balance", 100)
+    print(f"Initial balance: {db.get('balance')}")
 
-# Hash operations
-db.hset("user:1", "name", "Bob")
-db.hset("user:1", "email", "bob@example.com")
-print(f"user:1: {db.hgetall('user:1')}")
+    db.begin()
+    db.set("balance", 50)
+    print(f"During transaction: {db.get('balance')}")
+    db.rollback()
+    print(f"After rollback: {db.get('balance')}")
 
-# Set operations
-db.sadd("tags", "python", "redis", "database")
-print(f"tags: {db.smembers('tags')}")
+    # List operations
+    print("\n=== List Operations ===")
+    db.rpush("tasks", "task1", "task2", "task3")
+    print(f"Tasks: {db.lrange('tasks', 0, -1)}")
+    print(f"Pop: {db.lpop('tasks')}")
 
-# Transaction
-db.begin()
-db.set("counter", "1")
-db.set("temp", "value")
-db.rollback()
-print(f"counter after rollback: {db.get('counter')}")
-
-db.begin()
-db.set("counter", "1")
-db.commit()
-print(f"counter after commit: {db.get('counter')}")
+    # Hash operations
+    print("\n=== Hash Operations ===")
+    db.hset("user:1", "name", "Bob")
+    db.hset("user:1", "email", "bob@example.com")
+    print(f"User: {db.hgetall('user:1')}")
 ```
 
-### Go
-
-```go
-package main
-
-import (
-	"fmt"
-	"strings"
-	"sync"
-	"time"
-)
-
-type DataType int
-
-const (
-	TypeString DataType = iota
-	TypeList
-	TypeHash
-	TypeSet
-)
-
-type Entry struct {
-	Value     interface{}
-	Type      DataType
-	ExpiresAt *time.Time
-}
-
-func (e *Entry) IsExpired() bool {
-	if e.ExpiresAt == nil {
-		return false
-	}
-	return time.Now().After(*e.ExpiresAt)
-}
-
-type Transaction struct {
-	Operations []Operation
-}
-
-type Operation struct {
-	Op       string
-	Key      string
-	Value    interface{}
-	OldEntry *Entry
-}
-
-type InMemoryDB struct {
-	data         map[string]*Entry
-	transactions map[int64]*Transaction
-	mu           sync.RWMutex
-}
-
-func NewInMemoryDB() *InMemoryDB {
-	db := &InMemoryDB{
-		data:         make(map[string]*Entry),
-		transactions: make(map[int64]*Transaction),
-	}
-	go db.cleanupLoop()
-	return db
-}
-
-func (db *InMemoryDB) cleanupLoop() {
-	ticker := time.NewTicker(time.Second)
-	for range ticker.C {
-		db.cleanupExpired()
-	}
-}
-
-func (db *InMemoryDB) cleanupExpired() {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	for key, entry := range db.data {
-		if entry.IsExpired() {
-			delete(db.data, key)
-		}
-	}
-}
-
-func (db *InMemoryDB) getEntry(key string) *Entry {
-	entry, exists := db.data[key]
-	if !exists {
-		return nil
-	}
-	if entry.IsExpired() {
-		delete(db.data, key)
-		return nil
-	}
-	return entry
-}
-
-// String operations
-func (db *InMemoryDB) Set(key, value string, ttl time.Duration) bool {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	var expiresAt *time.Time
-	if ttl > 0 {
-		t := time.Now().Add(ttl)
-		expiresAt = &t
-	}
-
-	db.data[key] = &Entry{
-		Value:     value,
-		Type:      TypeString,
-		ExpiresAt: expiresAt,
-	}
-	return true
-}
-
-func (db *InMemoryDB) Get(key string) (string, bool) {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeString {
-		return "", false
-	}
-	return entry.Value.(string), true
-}
-
-func (db *InMemoryDB) Delete(key string) bool {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	if _, exists := db.data[key]; exists {
-		delete(db.data, key)
-		return true
-	}
-	return false
-}
-
-func (db *InMemoryDB) Exists(key string) bool {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-	return db.getEntry(key) != nil
-}
-
-func (db *InMemoryDB) TTL(key string) int {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil {
-		return -2
-	}
-	if entry.ExpiresAt == nil {
-		return -1
-	}
-	return int(time.Until(*entry.ExpiresAt).Seconds())
-}
-
-// List operations
-func (db *InMemoryDB) RPush(key string, values ...string) int {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	entry := db.getEntry(key)
-	if entry == nil {
-		db.data[key] = &Entry{
-			Value: values,
-			Type:  TypeList,
-		}
-		return len(values)
-	}
-
-	if entry.Type != TypeList {
-		return -1
-	}
-
-	list := entry.Value.([]string)
-	list = append(list, values...)
-	entry.Value = list
-	return len(list)
-}
-
-func (db *InMemoryDB) LPop(key string) (string, bool) {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeList {
-		return "", false
-	}
-
-	list := entry.Value.([]string)
-	if len(list) == 0 {
-		return "", false
-	}
-
-	value := list[0]
-	entry.Value = list[1:]
-	return value, true
-}
-
-func (db *InMemoryDB) LRange(key string, start, stop int) []string {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeList {
-		return nil
-	}
-
-	list := entry.Value.([]string)
-	if start < 0 {
-		start = len(list) + start
-	}
-	if stop < 0 {
-		stop = len(list) + stop
-	}
-	if start < 0 {
-		start = 0
-	}
-	if stop >= len(list) {
-		stop = len(list) - 1
-	}
-	if start > stop {
-		return nil
-	}
-
-	return list[start : stop+1]
-}
-
-// Hash operations
-func (db *InMemoryDB) HSet(key, field, value string) int {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	entry := db.getEntry(key)
-	if entry == nil {
-		db.data[key] = &Entry{
-			Value: map[string]string{field: value},
-			Type:  TypeHash,
-		}
-		return 1
-	}
-
-	if entry.Type != TypeHash {
-		return -1
-	}
-
-	hash := entry.Value.(map[string]string)
-	_, exists := hash[field]
-	hash[field] = value
-	if exists {
-		return 0
-	}
-	return 1
-}
-
-func (db *InMemoryDB) HGet(key, field string) (string, bool) {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeHash {
-		return "", false
-	}
-
-	hash := entry.Value.(map[string]string)
-	value, exists := hash[field]
-	return value, exists
-}
-
-func (db *InMemoryDB) HGetAll(key string) map[string]string {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeHash {
-		return nil
-	}
-
-	hash := entry.Value.(map[string]string)
-	result := make(map[string]string)
-	for k, v := range hash {
-		result[k] = v
-	}
-	return result
-}
-
-// Set operations
-func (db *InMemoryDB) SAdd(key string, members ...string) int {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-
-	entry := db.getEntry(key)
-	if entry == nil {
-		set := make(map[string]struct{})
-		for _, m := range members {
-			set[m] = struct{}{}
-		}
-		db.data[key] = &Entry{
-			Value: set,
-			Type:  TypeSet,
-		}
-		return len(members)
-	}
-
-	if entry.Type != TypeSet {
-		return -1
-	}
-
-	set := entry.Value.(map[string]struct{})
-	added := 0
-	for _, m := range members {
-		if _, exists := set[m]; !exists {
-			set[m] = struct{}{}
-			added++
-		}
-	}
-	return added
-}
-
-func (db *InMemoryDB) SMembers(key string) []string {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	entry := db.getEntry(key)
-	if entry == nil || entry.Type != TypeSet {
-		return nil
-	}
-
-	set := entry.Value.(map[string]struct{})
-	result := make([]string, 0, len(set))
-	for m := range set {
-		result = append(result, m)
-	}
-	return result
-}
-
-// Utility
-func (db *InMemoryDB) Keys(pattern string) []string {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	var result []string
-	for key, entry := range db.data {
-		if !entry.IsExpired() && matchPattern(pattern, key) {
-			result = append(result, key)
-		}
-	}
-	return result
-}
-
-func matchPattern(pattern, key string) bool {
-	if pattern == "*" {
-		return true
-	}
-	pattern = strings.ReplaceAll(pattern, "*", "")
-	return strings.Contains(key, pattern)
-}
-
-func (db *InMemoryDB) DBSize() int {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-
-	count := 0
-	for _, entry := range db.data {
-		if !entry.IsExpired() {
-			count++
-		}
-	}
-	return count
-}
-
-func main() {
-	db := NewInMemoryDB()
-
-	// String operations
-	db.Set("name", "Alice", 0)
-	db.Set("session", "abc123", 60*time.Second)
-	name, _ := db.Get("name")
-	fmt.Printf("name: %s\n", name)
-	fmt.Printf("session TTL: %ds\n", db.TTL("session"))
-
-	// List operations
-	db.RPush("queue", "task1", "task2", "task3")
-	fmt.Printf("queue: %v\n", db.LRange("queue", 0, -1))
-	popped, _ := db.LPop("queue")
-	fmt.Printf("popped: %s\n", popped)
-
-	// Hash operations
-	db.HSet("user:1", "name", "Bob")
-	db.HSet("user:1", "email", "bob@example.com")
-	fmt.Printf("user:1: %v\n", db.HGetAll("user:1"))
-
-	// Set operations
-	db.SAdd("tags", "go", "redis", "database")
-	fmt.Printf("tags: %v\n", db.SMembers("tags"))
-
-	fmt.Printf("DB size: %d\n", db.DBSize())
-}
+---
+
+## Edge Cases
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Critical Edge Cases</div>
+
+| Scenario | Expected Behavior | Implementation |
+|----------|-------------------|----------------|
+| **Get expired key** | Return None | Check expiry in get() |
+| **Rollback without begin** | Return False | Check transactions list |
+| **Nested transactions** | Support with proper commit/rollback | Stack of transactions |
+| **Type mismatch** | Raise TypeError | Validate data_type in operations |
+| **TTL on non-existent key** | Return -2 | Check existence first |
+| **Commit empty transaction** | Success, no-op | Allow empty commits |
+
+</div>
+
+---
+
+## Testing Approach
+
+### Unit Tests
+
+```python
+import unittest
+import time
+
+
+class TestInMemoryDB(unittest.TestCase):
+    def setUp(self):
+        self.db = InMemoryDB()
+
+    def test_basic_set_get(self):
+        self.db.set("key", "value")
+        self.assertEqual(self.db.get("key"), "value")
+
+    def test_delete(self):
+        self.db.set("key", "value")
+        self.assertTrue(self.db.delete("key"))
+        self.assertIsNone(self.db.get("key"))
+
+    def test_ttl_expiration(self):
+        self.db.set("key", "value", ttl=1)
+        self.assertEqual(self.db.get("key"), "value")
+        time.sleep(1.1)
+        self.assertIsNone(self.db.get("key"))
+
+    def test_transaction_commit(self):
+        self.db.set("x", 10)
+        self.db.begin()
+        self.db.set("x", 20)
+        self.db.commit()
+        self.assertEqual(self.db.get("x"), 20)
+
+    def test_transaction_rollback(self):
+        self.db.set("x", 10)
+        self.db.begin()
+        self.db.set("x", 20)
+        self.db.rollback()
+        self.assertEqual(self.db.get("x"), 10)
+
+    def test_nested_transactions(self):
+        self.db.set("x", 1)
+        self.db.begin()
+        self.db.set("x", 2)
+        self.db.begin()
+        self.db.set("x", 3)
+        self.db.rollback()  # Inner rollback
+        self.assertEqual(self.db.get("x"), 2)
+        self.db.commit()  # Outer commit
+        self.assertEqual(self.db.get("x"), 2)
+
+
+if __name__ == "__main__":
+    unittest.main()
 ```
 
-## Data Structure Summary
-
-| Type | Operations | Use Case |
-|------|-----------|----------|
-| String | GET, SET, INCR | Counters, cache |
-| List | LPUSH, RPUSH, LPOP, RPOP | Queues, logs |
-| Hash | HSET, HGET, HGETALL | Objects, user profiles |
-| Set | SADD, SMEMBERS, SINTER | Tags, unique items |
+---
 
 ## Interview Tips
 
-- Explain HashMap + LinkedList for O(1) operations
-- Discuss memory management and eviction policies
-- Consider persistence options (AOF, RDB)
-- Handle concurrent access with proper locking
-- Mention Redis as production reference
+<div style="background: #f0f9ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 16px;">How to Approach This in an Interview</div>
+
+### Time Allocation (45 minutes)
+
+| Phase | Time | Focus |
+|-------|------|-------|
+| Requirements | 5 min | Operations, transaction semantics |
+| Data Structure | 10 min | Entry class, transaction design |
+| Core Operations | 15 min | GET/SET/DELETE with TTL |
+| Transactions | 10 min | BEGIN/COMMIT/ROLLBACK |
+| Edge Cases | 5 min | Expiration, type checking |
+
+### Key Points to Mention
+
+1. **Hash Map for O(1)**: Core data store is a dictionary
+2. **Snapshot for Rollback**: Save original values on first write
+3. **Lazy Expiration**: Check TTL on access, not background thread
+4. **Nested Transactions**: Use stack to support BEGIN inside BEGIN
+5. **Thread Safety**: RLock for reentrant operations
+
+### Common Follow-up Questions
+
+- **How to handle persistence?** Write-ahead log (WAL), periodic snapshots
+- **Distributed version?** Consistent hashing, Raft consensus
+- **Memory pressure?** LRU eviction, memory limits
+- **Concurrent transactions?** MVCC (Multi-Version Concurrency Control)
+
+</div>
+
+---
+
+## Complexity Analysis
+
+| Operation | Time Complexity | Space Complexity |
+|-----------|-----------------|------------------|
+| GET | O(1) | O(1) |
+| SET | O(log n) for TTL heap | O(1) |
+| DELETE | O(1) | O(1) |
+| BEGIN | O(1) | O(1) |
+| COMMIT | O(k) where k = modified keys | O(1) |
+| ROLLBACK | O(k) where k = modified keys | O(k) |
+| LPUSH/RPUSH | O(1) amortized | O(1) |
+| HSET/HGET | O(1) | O(1) |
