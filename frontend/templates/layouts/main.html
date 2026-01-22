@@ -76,7 +76,10 @@
             <span class="logo-icon">&lt;/&gt;</span>
             <span class="logo-text">DSAlgo</span>
         </a>
-        <nav class="nav">
+        <button class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
+            <span class="hamburger-icon">&#9776;</span>
+        </button>
+        <nav class="nav" id="main-nav">
             <a href="/practice" class="nav-pill" data-path="/practice">
                 <span class="nav-icon">&#9654;</span>
                 <span>Practice</span>
@@ -137,6 +140,13 @@
                 }
             });
         })();
+        // Mobile nav toggle
+        function toggleMobileNav() {
+            var nav = document.getElementById('main-nav');
+            var btn = document.querySelector('.mobile-menu-btn');
+            nav.classList.toggle('mobile-open');
+            btn.classList.toggle('active');
+        }
     </script>
     <main class="main">
         {{embed}}
