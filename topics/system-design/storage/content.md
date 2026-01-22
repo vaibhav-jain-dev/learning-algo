@@ -1,698 +1,903 @@
 # Storage
 
-## Introduction
+## Overview
 
-Storage is one of the most critical components in system design. The way data is stored, organized, and accessed directly impacts system performance, scalability, reliability, and cost. Understanding different storage types, database paradigms, and data modeling strategies is essential for designing robust systems.
+Storage is the foundation of every software system - it determines how your data is organized, accessed, and protected. The choice of storage technology affects your system's performance, scalability, cost, and reliability. Understanding storage options is essential for making informed architectural decisions.
 
----
-
-## Storage Hierarchy
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #0f3460;">
-<h3 style="color: #e94560; margin-top: 0; font-size: 1.3em;">Memory & Storage Pyramid</h3>
-<div style="display: grid; gap: 8px; font-family: monospace; font-size: 0.85em;">
-<div style="background: linear-gradient(90deg, #ff6b6b, #ee5a5a); color: white; padding: 10px 20px; border-radius: 6px; text-align: center; width: 30%; margin: 0 auto;">
-<strong>CPU Registers</strong><br>
-<span style="font-size: 0.8em;">~1ns | KB | $$$$</span>
-</div>
-<div style="background: linear-gradient(90deg, #ffa502, #ff7f50); color: white; padding: 10px 20px; border-radius: 6px; text-align: center; width: 45%; margin: 0 auto;">
-<strong>L1/L2/L3 Cache</strong><br>
-<span style="font-size: 0.8em;">1-10ns | MB | $$$</span>
-</div>
-<div style="background: linear-gradient(90deg, #7bed9f, #2ed573); color: #1a1a2e; padding: 10px 20px; border-radius: 6px; text-align: center; width: 60%; margin: 0 auto;">
-<strong>RAM (Memory)</strong><br>
-<span style="font-size: 0.8em;">~100ns | GB | $$</span>
-</div>
-<div style="background: linear-gradient(90deg, #70a1ff, #5352ed); color: white; padding: 10px 20px; border-radius: 6px; text-align: center; width: 75%; margin: 0 auto;">
-<strong>SSD (Solid State Drive)</strong><br>
-<span style="font-size: 0.8em;">~100μs | TB | $</span>
-</div>
-<div style="background: linear-gradient(90deg, #a29bfe, #6c5ce7); color: white; padding: 10px 20px; border-radius: 6px; text-align: center; width: 90%; margin: 0 auto;">
-<strong>HDD (Hard Disk Drive)</strong><br>
-<span style="font-size: 0.8em;">~10ms | TB | $</span>
-</div>
-<div style="background: linear-gradient(90deg, #636e72, #2d3436); color: white; padding: 10px 20px; border-radius: 6px; text-align: center; width: 100%; margin: 0 auto;">
-<strong>Network Storage / Cloud</strong><br>
-<span style="font-size: 0.8em;">10-100ms | PB | Variable</span>
-</div>
-</div>
-<p style="color: #a0a0a0; font-size: 0.85em; margin-top: 15px; text-align: center;">↑ Faster, Smaller, More Expensive | ↓ Slower, Larger, Cheaper</p>
-</div>
-
-### Key Latency Numbers Every Developer Should Know
-
-| Operation | Latency |
-|-----------|---------|
-| L1 cache reference | 0.5 ns |
-| L2 cache reference | 7 ns |
-| Main memory reference | 100 ns |
-| SSD random read | 150 μs |
-| HDD seek | 10 ms |
-| Network round trip (same datacenter) | 0.5 ms |
-| Network round trip (cross-continent) | 150 ms |
+Think of storage like different types of containers for your belongings: a filing cabinet (relational database), a warehouse with labeled bins (key-value store), or a library with books organized by subject (document store). Each serves different purposes and access patterns.
 
 ---
 
-## Types of Storage Systems
+## Why This Matters
 
-### 1. Block Storage
+### Real Company Examples
 
-Block storage divides data into fixed-size blocks and stores them with unique identifiers.
-
-<div style="background: linear-gradient(135deg, #2d3436 0%, #000000 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #636e72;">
-<h4 style="color: #74b9ff; margin-top: 0;">Block Storage Architecture</h4>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-family: monospace; font-size: 0.8em;">
-<div style="background: #0984e3; color: white; padding: 15px; border-radius: 6px; text-align: center;">
-Block 001<br>
-<span style="font-size: 0.8em;">4KB</span>
-</div>
-<div style="background: #0984e3; color: white; padding: 15px; border-radius: 6px; text-align: center;">
-Block 002<br>
-<span style="font-size: 0.8em;">4KB</span>
-</div>
-<div style="background: #0984e3; color: white; padding: 15px; border-radius: 6px; text-align: center;">
-Block 003<br>
-<span style="font-size: 0.8em;">4KB</span>
-</div>
-<div style="background: #0984e3; color: white; padding: 15px; border-radius: 6px; text-align: center;">
-Block 004<br>
-<span style="font-size: 0.8em;">4KB</span>
-</div>
-</div>
-<p style="color: #b2bec3; font-size: 0.85em; margin-top: 15px;">
-<strong>Use Cases:</strong> Databases, VMs, High-performance applications<br>
-<strong>Examples:</strong> AWS EBS, Azure Managed Disks, SAN
-</p>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Companies and Their Storage Choices</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600;">Netflix - Cassandra for Viewing History</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Netflix uses Cassandra to store billions of viewing records. The wide-column store handles their write-heavy workload (every play, pause, seek) while providing fast reads for "Continue Watching" across 230+ million subscribers.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+      <div style="color: #1e293b; font-weight: 600;">Uber - PostgreSQL + Redis Hybrid</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Uber uses PostgreSQL for transactional data (rides, payments) requiring ACID compliance, and Redis for real-time driver location caching. The hybrid approach balances consistency needs with low-latency requirements.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600;">Airbnb - S3 for Images + Elasticsearch for Search</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Airbnb stores millions of property images in S3 (object storage) for cost and scalability, while using Elasticsearch for fast full-text search across listings with complex filters and geo-queries.</div>
+    </div>
+  </div>
 </div>
 
-**Characteristics:**
-- Low latency, high IOPS
-- No metadata or file system overhead
-- Requires a file system on top
-- Excellent for databases and VMs
+**Key Storage Decisions:**
+- **Performance vs Cost**: SSDs are faster but costlier than HDDs
+- **Consistency vs Availability**: CAP theorem trade-offs
+- **Scalability**: Vertical (bigger machine) vs horizontal (more machines)
+- **Query patterns**: Read-heavy vs write-heavy workloads
+- **Data structure**: Structured (SQL) vs semi-structured (JSON) vs unstructured (files)
 
-### 2. File Storage
+---
 
-File storage organizes data in a hierarchical structure of files and folders.
+## How It Works
 
-<div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #3498db;">
-<h4 style="color: #f39c12; margin-top: 0;">File System Hierarchy</h4>
-<pre style="color: #ecf0f1; font-size: 0.85em; margin: 0; line-height: 1.6;">
-/root
-├── /home
-│   ├── /user1
-│   │   ├── documents/
-│   │   └── pictures/
-│   └── /user2
-│       └── projects/
-├── /var
-│   └── /logs
-│       └── app.log
-└── /etc
-    └── config.yaml
-</pre>
-<p style="color: #bdc3c7; font-size: 0.85em; margin-top: 15px;">
-<strong>Use Cases:</strong> Shared storage, content management, home directories<br>
-<strong>Examples:</strong> AWS EFS, Azure Files, NFS, CIFS/SMB
-</p>
+### Storage Hierarchy
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Memory and Storage Pyramid</h4>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+    <div style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; width: 150px; text-align: center;">
+      <div style="font-weight: 600;">CPU Cache</div>
+      <div style="font-size: 12px;">~1ns | KB | $$$$</div>
+    </div>
+    <div style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; width: 200px; text-align: center;">
+      <div style="font-weight: 600;">RAM</div>
+      <div style="font-size: 12px;">~100ns | GB | $$$</div>
+    </div>
+    <div style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; width: 250px; text-align: center;">
+      <div style="font-weight: 600;">SSD</div>
+      <div style="font-size: 12px;">~100us | TB | $$</div>
+    </div>
+    <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; width: 300px; text-align: center;">
+      <div style="font-weight: 600;">HDD</div>
+      <div style="font-size: 12px;">~10ms | TB | $</div>
+    </div>
+    <div style="background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; width: 350px; text-align: center;">
+      <div style="font-weight: 600;">Network/Cloud Storage</div>
+      <div style="font-size: 12px;">10-100ms | PB | Variable</div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px;">
+    Faster and smaller at top, slower and larger at bottom
+  </div>
 </div>
 
-**Characteristics:**
-- Human-readable path structure
-- Built-in metadata (permissions, timestamps)
-- Easy sharing via network protocols
-- Good for unstructured data
+### Latency Numbers Every Developer Should Know
 
-### 3. Object Storage
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Latency Reference</h4>
 
-Object storage manages data as objects with metadata and unique identifiers.
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Operation</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Latency</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Notes</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">L1 cache reference</td>
+        <td style="padding: 12px; color: #10b981; font-weight: 600;">0.5 ns</td>
+        <td style="padding: 12px; color: #64748b;">Fastest possible</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">L2 cache reference</td>
+        <td style="padding: 12px; color: #10b981; font-weight: 600;">7 ns</td>
+        <td style="padding: 12px; color: #64748b;">14x L1</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">RAM access</td>
+        <td style="padding: 12px; color: #f59e0b; font-weight: 600;">100 ns</td>
+        <td style="padding: 12px; color: #64748b;">In-memory databases</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">SSD random read</td>
+        <td style="padding: 12px; color: #f59e0b; font-weight: 600;">150 us</td>
+        <td style="padding: 12px; color: #64748b;">1500x RAM</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">HDD seek</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">10 ms</td>
+        <td style="padding: 12px; color: #64748b;">Physical movement</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">Network same DC</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">0.5 ms</td>
+        <td style="padding: 12px; color: #64748b;">Redis, databases</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #1e293b;">Network cross-continent</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">150 ms</td>
+        <td style="padding: 12px; color: #64748b;">Speed of light limit</td>
+      </tr>
+    </table>
+  </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #27ae60;">
-<h4 style="color: #f1c40f; margin-top: 0;">Object Storage Structure</h4>
-<div style="display: grid; gap: 15px; font-family: monospace; font-size: 0.85em;">
-<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #f1c40f;">
-<strong style="color: #f1c40f;">Object: user-profile-12345.jpg</strong><br>
-<span style="color: #ecf0f1;">Data: [Binary image data...]</span><br>
-<span style="color: #95a5a6;">Metadata: {content-type: image/jpeg, size: 2.4MB, created: 2024-01-15}</span><br>
-<span style="color: #3498db;">Key: s3://bucket/users/profiles/user-profile-12345.jpg</span>
-</div>
-<div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #e74c3c;">
-<strong style="color: #e74c3c;">Object: backup-2024-01-15.tar.gz</strong><br>
-<span style="color: #ecf0f1;">Data: [Compressed backup data...]</span><br>
-<span style="color: #95a5a6;">Metadata: {content-type: application/gzip, size: 50GB, encrypted: true}</span><br>
-<span style="color: #3498db;">Key: s3://bucket/backups/daily/backup-2024-01-15.tar.gz</span>
-</div>
-</div>
-<p style="color: #bdc3c7; font-size: 0.85em; margin-top: 15px;">
-<strong>Use Cases:</strong> Static assets, backups, data lakes, media storage<br>
-<strong>Examples:</strong> AWS S3, Azure Blob, Google Cloud Storage, MinIO
-</p>
-</div>
+### Storage Types
 
-**Characteristics:**
-- Virtually unlimited scalability
-- Rich metadata support
-- HTTP/REST API access
-- Eventual consistency (often)
-- Cost-effective for large data
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Block vs File vs Object Storage</h4>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+    <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Block Storage</div>
+      <div style="color: #1e3a8a; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Fixed-size blocks with IDs</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Databases</div>
+        <div>- Virtual machines</div>
+        <div>- High IOPS workloads</div>
+        <div style="margin-top: 8px; font-size: 12px; color: #3b82f6;">AWS EBS, Azure Disk</div>
+      </div>
+    </div>
+
+    <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">File Storage</div>
+      <div style="color: #047857; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Hierarchical directory structure</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Shared file access</div>
+        <div>- Content management</div>
+        <div>- Home directories</div>
+        <div style="margin-top: 8px; font-size: 12px; color: #10b981;">AWS EFS, NFS, SMB</div>
+      </div>
+    </div>
+
+    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Object Storage</div>
+      <div style="color: #78350f; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Objects with metadata and keys</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Static assets (images)</div>
+        <div>- Backups, archives</div>
+        <div>- Data lakes</div>
+        <div style="margin-top: 8px; font-size: 12px; color: #f59e0b;">AWS S3, Azure Blob, GCS</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
 ## Database Types
 
-### Relational Databases (SQL)
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">When to Use Which Database</h4>
 
-<div style="background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #3867d6;">
-<h4 style="color: #fed330; margin-top: 0;">Relational Database Model</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-<div>
-<h5 style="color: #45aaf2; margin-bottom: 10px;">Users Table</h5>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.8em;">
-<tr style="background: #3867d6;">
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">id</th>
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">name</th>
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">email</th>
-</tr>
-<tr style="background: rgba(255,255,255,0.1);">
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">1</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">Alice</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">alice@ex.com</td>
-</tr>
-<tr style="background: rgba(255,255,255,0.05);">
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">2</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">Bob</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">bob@ex.com</td>
-</tr>
-</table>
-</div>
-<div>
-<h5 style="color: #45aaf2; margin-bottom: 10px;">Orders Table</h5>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.8em;">
-<tr style="background: #3867d6;">
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">id</th>
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">user_id</th>
-<th style="padding: 8px; color: white; border: 1px solid #4a69bd;">total</th>
-</tr>
-<tr style="background: rgba(255,255,255,0.1);">
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">101</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">1</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">$150</td>
-</tr>
-<tr style="background: rgba(255,255,255,0.05);">
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">102</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">1</td>
-<td style="padding: 8px; color: #ecf0f1; border: 1px solid #4a69bd;">$75</td>
-</tr>
-</table>
-</div>
-</div>
-<p style="color: #a0a0a0; font-size: 0.85em; margin-top: 15px; text-align: center;">
-Foreign Key Relationship: Orders.user_id → Users.id
-</p>
-</div>
-
-**ACID Properties:**
-- **Atomicity**: All or nothing transactions
-- **Consistency**: Data always in valid state
-- **Isolation**: Concurrent transactions don't interfere
-- **Durability**: Committed data survives failures
-
-**Examples:** PostgreSQL, MySQL, Oracle, SQL Server
-
-**Best For:**
-- Complex queries and joins
-- Transactions requiring ACID
-- Structured, predictable data
-- Financial systems, ERP, CRM
-
-### NoSQL Databases
-
-#### Document Databases
-
-<div style="background: linear-gradient(135deg, #2d3436 0%, #636e72 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #b2bec3;">
-<h4 style="color: #00b894; margin-top: 0;">Document Store (MongoDB-style)</h4>
-<pre style="color: #dfe6e9; font-size: 0.85em; margin: 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
-{
-  "_id": ObjectId("507f1f77bcf86cd799439011"),
-  "name": "Alice Johnson",
-  "email": "alice@example.com",
-  "profile": {
-    "age": 28,
-    "city": "San Francisco",
-    "interests": ["coding", "hiking", "photography"]
-  },
-  "orders": [
-    {"id": 101, "total": 150, "items": ["laptop_stand", "mouse"]},
-    {"id": 102, "total": 75, "items": ["keyboard"]}
-  ]
-}
-</pre>
-<p style="color: #b2bec3; font-size: 0.85em; margin-top: 15px;">
-<strong>Examples:</strong> MongoDB, CouchDB, Amazon DocumentDB
-</p>
-</div>
-
-**Best For:**
-- Flexible, evolving schemas
-- Content management systems
-- Catalogs and user profiles
-- Real-time analytics
-
-#### Key-Value Stores
-
-<div style="background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e74c3c;">
-<h4 style="color: #f1c40f; margin-top: 0;">Key-Value Store (Redis-style)</h4>
-<div style="display: grid; gap: 10px; font-family: monospace; font-size: 0.85em;">
-<div style="display: flex; background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden;">
-<span style="background: #f1c40f; color: #2d3436; padding: 10px 15px; min-width: 180px;">session:user:12345</span>
-<span style="color: white; padding: 10px 15px;">{"userId": 12345, "token": "abc...", "expiry": 3600}</span>
-</div>
-<div style="display: flex; background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden;">
-<span style="background: #f1c40f; color: #2d3436; padding: 10px 15px; min-width: 180px;">cache:product:789</span>
-<span style="color: white; padding: 10px 15px;">{"name": "Laptop", "price": 999, "stock": 50}</span>
-</div>
-<div style="display: flex; background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden;">
-<span style="background: #f1c40f; color: #2d3436; padding: 10px 15px; min-width: 180px;">rate:api:client:42</span>
-<span style="color: white; padding: 10px 15px;">150</span>
-</div>
-</div>
-<p style="color: #fadbd8; font-size: 0.85em; margin-top: 15px;">
-<strong>Examples:</strong> Redis, Memcached, Amazon DynamoDB, etcd
-</p>
-</div>
-
-**Best For:**
-- Caching
-- Session management
-- Real-time leaderboards
-- Rate limiting
-- Pub/Sub messaging
-
-#### Column-Family Databases
-
-<div style="background: linear-gradient(135deg, #5b2c6f 0%, #8e44ad 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #9b59b6;">
-<h4 style="color: #f5b041; margin-top: 0;">Wide-Column Store (Cassandra-style)</h4>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 10px;">
-<tr>
-<th style="padding: 10px; background: #6c3483; color: white; border: 1px solid #8e44ad;">Row Key</th>
-<th style="padding: 10px; background: #6c3483; color: white; border: 1px solid #8e44ad;">Column Family: Profile</th>
-<th style="padding: 10px; background: #6c3483; color: white; border: 1px solid #8e44ad;">Column Family: Activity</th>
-</tr>
-<tr>
-<td style="padding: 10px; background: rgba(255,255,255,0.1); color: #f5b041; border: 1px solid #8e44ad;">user:1001</td>
-<td style="padding: 10px; background: rgba(255,255,255,0.1); color: #ecf0f1; border: 1px solid #8e44ad;">name: Alice<br>email: alice@ex.com</td>
-<td style="padding: 10px; background: rgba(255,255,255,0.1); color: #ecf0f1; border: 1px solid #8e44ad;">last_login: 2024-01-15<br>actions: 1547</td>
-</tr>
-<tr>
-<td style="padding: 10px; background: rgba(255,255,255,0.05); color: #f5b041; border: 1px solid #8e44ad;">user:1002</td>
-<td style="padding: 10px; background: rgba(255,255,255,0.05); color: #ecf0f1; border: 1px solid #8e44ad;">name: Bob<br>city: NYC</td>
-<td style="padding: 10px; background: rgba(255,255,255,0.05); color: #ecf0f1; border: 1px solid #8e44ad;">last_login: 2024-01-14</td>
-</tr>
-</table>
-<p style="color: #d7bde2; font-size: 0.85em; margin-top: 15px;">
-<strong>Examples:</strong> Apache Cassandra, HBase, ScyllaDB
-</p>
-</div>
-
-**Best For:**
-- Time-series data
-- IoT sensor data
-- Write-heavy workloads
-- High availability requirements
-
-#### Graph Databases
-
-<div style="background: linear-gradient(135deg, #1a5276 0%, #2e86ab 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #3498db;">
-<h4 style="color: #f39c12; margin-top: 0;">Graph Database Model</h4>
-<div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; padding: 20px;">
-<div style="background: #e74c3c; color: white; padding: 15px 20px; border-radius: 50%; text-align: center; min-width: 70px;">
-<strong>Alice</strong><br>
-<span style="font-size: 0.7em;">User</span>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<span style="color: #f1c40f; font-size: 0.8em;">FRIENDS_WITH</span>
-<span style="color: #f1c40f;">→→→→→→</span>
-</div>
-<div style="background: #27ae60; color: white; padding: 15px 20px; border-radius: 50%; text-align: center; min-width: 70px;">
-<strong>Bob</strong><br>
-<span style="font-size: 0.7em;">User</span>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<span style="color: #3498db; font-size: 0.8em;">WORKS_AT</span>
-<span style="color: #3498db;">→→→→→→</span>
-</div>
-<div style="background: #9b59b6; color: white; padding: 15px 20px; border-radius: 8px; text-align: center; min-width: 70px;">
-<strong>TechCo</strong><br>
-<span style="font-size: 0.7em;">Company</span>
-</div>
-</div>
-<p style="color: #aed6f1; font-size: 0.85em; text-align: center;">
-<strong>Examples:</strong> Neo4j, Amazon Neptune, JanusGraph
-</p>
-</div>
-
-**Best For:**
-- Social networks
-- Recommendation engines
-- Fraud detection
-- Knowledge graphs
-
----
-
-## Database Comparison
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #0f3460;">
-<h4 style="color: #e94560; margin-top: 0;">When to Use Which Database?</h4>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">
-<tr style="background: #0f3460;">
-<th style="padding: 12px; color: #e94560; text-align: left; border-bottom: 2px solid #e94560;">Use Case</th>
-<th style="padding: 12px; color: #e94560; text-align: left; border-bottom: 2px solid #e94560;">Recommended DB</th>
-<th style="padding: 12px; color: #e94560; text-align: left; border-bottom: 2px solid #e94560;">Why</th>
-</tr>
-<tr style="border-bottom: 1px solid #0f3460;">
-<td style="padding: 12px; color: #a0a0a0;">E-commerce transactions</td>
-<td style="padding: 12px; color: #4fc3f7;">PostgreSQL/MySQL</td>
-<td style="padding: 12px; color: #a0a0a0;">ACID compliance, complex joins</td>
-</tr>
-<tr style="border-bottom: 1px solid #0f3460;">
-<td style="padding: 12px; color: #a0a0a0;">User sessions/caching</td>
-<td style="padding: 12px; color: #4fc3f7;">Redis</td>
-<td style="padding: 12px; color: #a0a0a0;">Sub-ms latency, in-memory</td>
-</tr>
-<tr style="border-bottom: 1px solid #0f3460;">
-<td style="padding: 12px; color: #a0a0a0;">Product catalog</td>
-<td style="padding: 12px; color: #4fc3f7;">MongoDB</td>
-<td style="padding: 12px; color: #a0a0a0;">Flexible schema, nested data</td>
-</tr>
-<tr style="border-bottom: 1px solid #0f3460;">
-<td style="padding: 12px; color: #a0a0a0;">IoT time-series</td>
-<td style="padding: 12px; color: #4fc3f7;">Cassandra/TimescaleDB</td>
-<td style="padding: 12px; color: #a0a0a0;">Write-optimized, partitioning</td>
-</tr>
-<tr style="border-bottom: 1px solid #0f3460;">
-<td style="padding: 12px; color: #a0a0a0;">Social connections</td>
-<td style="padding: 12px; color: #4fc3f7;">Neo4j</td>
-<td style="padding: 12px; color: #a0a0a0;">Efficient graph traversal</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #a0a0a0;">Full-text search</td>
-<td style="padding: 12px; color: #4fc3f7;">Elasticsearch</td>
-<td style="padding: 12px; color: #a0a0a0;">Inverted index, fuzzy matching</td>
-</tr>
-</table>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Type</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Examples</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Trade-offs</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Relational (SQL)</td>
+        <td style="padding: 12px; color: #475569;">PostgreSQL, MySQL</td>
+        <td style="padding: 12px; color: #475569;">Transactions, complex queries, joins</td>
+        <td style="padding: 12px; color: #475569;">Harder to scale horizontally</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Document</td>
+        <td style="padding: 12px; color: #475569;">MongoDB, CouchDB</td>
+        <td style="padding: 12px; color: #475569;">Flexible schemas, nested data</td>
+        <td style="padding: 12px; color: #475569;">Weaker transactions</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Key-Value</td>
+        <td style="padding: 12px; color: #475569;">Redis, DynamoDB</td>
+        <td style="padding: 12px; color: #475569;">Caching, sessions, simple lookups</td>
+        <td style="padding: 12px; color: #475569;">No complex queries</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Wide-Column</td>
+        <td style="padding: 12px; color: #475569;">Cassandra, HBase</td>
+        <td style="padding: 12px; color: #475569;">Time-series, write-heavy workloads</td>
+        <td style="padding: 12px; color: #475569;">Limited query flexibility</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Graph</td>
+        <td style="padding: 12px; color: #475569;">Neo4j, Neptune</td>
+        <td style="padding: 12px; color: #475569;">Social networks, recommendations</td>
+        <td style="padding: 12px; color: #475569;">Specialized use cases</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Search</td>
+        <td style="padding: 12px; color: #475569;">Elasticsearch, Solr</td>
+        <td style="padding: 12px; color: #475569;">Full-text search, analytics</td>
+        <td style="padding: 12px; color: #475569;">Not a primary data store</td>
+      </tr>
+    </table>
+  </div>
 </div>
 
 ---
 
-## Replication Strategies
+## Real-Life Failure Story
 
-### Single-Leader (Master-Slave)
+### The Instagram Migration (2012)
 
-<div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #7f8c8d;">
-<h4 style="color: #1abc9c; margin-top: 0;">Single-Leader Replication</h4>
-<div style="display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap;">
-<div style="text-align: center;">
-<div style="background: #e74c3c; color: white; padding: 20px; border-radius: 8px; min-width: 100px;">
-<strong>Leader</strong><br>
-<span style="font-size: 0.8em;">(Read/Write)</span>
-</div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 10px;">
-<span style="color: #3498db;">──→ Async Replication ──→</span>
-<span style="color: #3498db;">──→ Async Replication ──→</span>
-</div>
-<div style="display: flex; flex-direction: column; gap: 10px;">
-<div style="background: #3498db; color: white; padding: 15px; border-radius: 8px; text-align: center;">
-<strong>Follower 1</strong><br>
-<span style="font-size: 0.8em;">(Read Only)</span>
-</div>
-<div style="background: #3498db; color: white; padding: 15px; border-radius: 8px; text-align: center;">
-<strong>Follower 2</strong><br>
-<span style="font-size: 0.8em;">(Read Only)</span>
-</div>
-</div>
-</div>
-<p style="color: #95a5a6; font-size: 0.85em; margin-top: 15px; text-align: center;">
-<strong>Pros:</strong> Simple, no write conflicts | <strong>Cons:</strong> Single point of failure for writes
-</p>
-</div>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">How Instagram Scaled Their Storage</h4>
 
-### Multi-Leader
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #991b1b; font-weight: 600;">The Challenge</div>
+    <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+      Instagram grew from 0 to 14 million users in one year with just 3 engineers. Their initial PostgreSQL setup couldn't handle the write load from millions of photo uploads and likes. Database replication lag grew to minutes, and users saw inconsistent data.
+    </div>
+  </div>
 
-<div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #3498db;">
-<h4 style="color: #f39c12; margin-top: 0;">Multi-Leader Replication</h4>
-<div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
-<div style="text-align: center;">
-<div style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px;">
-<strong>Leader A</strong><br>
-<span style="font-size: 0.8em;">US-East</span>
-</div>
-</div>
-<div style="color: #f1c40f; font-size: 1.5em;">⟷</div>
-<div style="text-align: center;">
-<div style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px;">
-<strong>Leader B</strong><br>
-<span style="font-size: 0.8em;">EU-West</span>
-</div>
-</div>
-<div style="color: #f1c40f; font-size: 1.5em;">⟷</div>
-<div style="text-align: center;">
-<div style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px;">
-<strong>Leader C</strong><br>
-<span style="font-size: 0.8em;">AP-Tokyo</span>
-</div>
-</div>
-</div>
-<p style="color: #aed6f1; font-size: 0.85em; margin-top: 15px; text-align: center;">
-<strong>Pros:</strong> Geographic distribution, write availability | <strong>Cons:</strong> Conflict resolution complexity
-</p>
-</div>
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #1e293b; font-weight: 600;">Original Architecture Problems</div>
+    <div style="color: #475569; font-size: 14px; margin-top: 8px;">
+      <div style="padding: 4px 0;">Single PostgreSQL master for all writes</div>
+      <div style="padding: 4px 0;">Photos stored in filesystem, metadata in DB</div>
+      <div style="padding: 4px 0;">No caching layer - every read hit the database</div>
+      <div style="padding: 4px 0;">Vertical scaling limits reached</div>
+    </div>
+  </div>
 
-### Leaderless (Peer-to-Peer)
-
-<div style="background: linear-gradient(135deg, #0a3d62 0%, #1e5f74 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #3c6382;">
-<h4 style="color: #f8c291; margin-top: 0;">Leaderless Replication (Dynamo-style)</h4>
-<div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; padding: 20px;">
-<div style="background: #78e08f; color: #1e272e; padding: 15px; border-radius: 50%; text-align: center; min-width: 80px;">
-<strong>Node 1</strong>
-</div>
-<div style="background: #78e08f; color: #1e272e; padding: 15px; border-radius: 50%; text-align: center; min-width: 80px;">
-<strong>Node 2</strong>
-</div>
-<div style="background: #78e08f; color: #1e272e; padding: 15px; border-radius: 50%; text-align: center; min-width: 80px;">
-<strong>Node 3</strong>
-</div>
-</div>
-<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-top: 10px;">
-<p style="color: #f8c291; margin: 0; font-size: 0.9em;"><strong>Quorum Formula: W + R > N</strong></p>
-<p style="color: #a0a0a0; margin: 5px 0 0 0; font-size: 0.85em;">
-W=2, R=2, N=3 → Write to 2 nodes, Read from 2 nodes, guarantees consistency
-</p>
-</div>
+  <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+    <div style="color: #065f46; font-weight: 600;">Solution: Multi-Layer Storage Architecture</div>
+    <div style="color: #047857; font-size: 14px; margin-top: 8px;">
+      <div>1. <strong>Photos:</strong> Moved to S3 with CDN (CloudFront)</div>
+      <div>2. <strong>Caching:</strong> Added Redis for sessions and frequently accessed data</div>
+      <div>3. <strong>Database:</strong> Sharded PostgreSQL by user ID</div>
+      <div>4. <strong>Feed:</strong> Precomputed and cached in Redis</div>
+      <div style="margin-top: 8px; font-weight: 600;">Result: Handled 300M+ users with same small team</div>
+    </div>
+  </div>
 </div>
 
 ---
 
-## Partitioning (Sharding)
-
-### Horizontal Partitioning
-
-<div style="background: linear-gradient(135deg, #355c7d 0%, #6c5b7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #c06c84;">
-<h4 style="color: #f8b500; margin-top: 0;">Sharding Strategies</h4>
-<div style="display: grid; gap: 15px;">
-<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-<h5 style="color: #f67280; margin: 0 0 10px 0;">Range-Based Sharding</h5>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.85em;">
-<div style="background: #e74c3c; color: white; padding: 10px; border-radius: 4px; text-align: center;">
-Shard 1<br>
-<span style="font-size: 0.8em;">Users A-H</span>
-</div>
-<div style="background: #f39c12; color: white; padding: 10px; border-radius: 4px; text-align: center;">
-Shard 2<br>
-<span style="font-size: 0.8em;">Users I-P</span>
-</div>
-<div style="background: #27ae60; color: white; padding: 10px; border-radius: 4px; text-align: center;">
-Shard 3<br>
-<span style="font-size: 0.8em;">Users Q-Z</span>
-</div>
-</div>
-</div>
-<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-<h5 style="color: #f67280; margin: 0 0 10px 0;">Hash-Based Sharding</h5>
-<div style="color: #ecf0f1; font-family: monospace; font-size: 0.85em;">
-shard_id = hash(user_id) % num_shards
-</div>
-</div>
-<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-<h5 style="color: #f67280; margin: 0 0 10px 0;">Directory-Based Sharding</h5>
-<div style="color: #ecf0f1; font-size: 0.85em;">
-Lookup service maps keys → shards (flexible but adds latency)
-</div>
-</div>
-</div>
-</div>
-
-### Consistent Hashing
-
-<div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #5b4e8d;">
-<h4 style="color: #00d9ff; margin-top: 0;">Consistent Hashing Ring</h4>
-<div style="text-align: center; padding: 20px;">
-<div style="position: relative; width: 200px; height: 200px; margin: 0 auto; border: 3px solid #00d9ff; border-radius: 50%;">
-<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8em;">Node A</div>
-<div style="position: absolute; top: 50%; right: -40px; transform: translateY(-50%); background: #27ae60; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8em;">Node B</div>
-<div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8em;">Node C</div>
-<div style="position: absolute; top: 50%; left: -40px; transform: translateY(-50%); background: #9b59b6; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8em;">Node D</div>
-</div>
-</div>
-<p style="color: #a0a0a0; font-size: 0.85em; text-align: center; margin-top: 15px;">
-Keys are hashed to positions on the ring → Assigned to next node clockwise<br>
-Adding/removing nodes only affects neighboring keys
-</p>
-</div>
-
----
-
-## Data Modeling Patterns
-
-### Denormalization
-
-```
-NORMALIZED (3NF):                    DENORMALIZED:
-┌─────────┐    ┌─────────┐          ┌─────────────────────────────┐
-│ Orders  │    │ Users   │          │ Orders                      │
-├─────────┤    ├─────────┤          ├─────────────────────────────┤
-│ id      │───→│ id      │   →→→    │ id                          │
-│ user_id │    │ name    │          │ user_id                     │
-│ total   │    │ email   │          │ user_name  (denormalized)   │
-└─────────┘    └─────────┘          │ user_email (denormalized)   │
-                                    │ total                       │
-       Requires JOIN                └─────────────────────────────┘
-                                          No JOIN needed
-```
-
-### Event Sourcing
-
-<div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #636e72;">
-<h4 style="color: #00cec9; margin-top: 0;">Event Sourcing Pattern</h4>
-<div style="display: flex; align-items: center; gap: 15px; overflow-x: auto; padding: 10px 0;">
-<div style="background: #0984e3; color: white; padding: 10px 15px; border-radius: 6px; min-width: 120px; text-align: center; font-size: 0.85em;">
-AccountCreated<br>
-<span style="font-size: 0.8em; opacity: 0.8;">balance: $0</span>
-</div>
-<span style="color: #74b9ff;">→</span>
-<div style="background: #00b894; color: white; padding: 10px 15px; border-radius: 6px; min-width: 120px; text-align: center; font-size: 0.85em;">
-MoneyDeposited<br>
-<span style="font-size: 0.8em; opacity: 0.8;">amount: $100</span>
-</div>
-<span style="color: #74b9ff;">→</span>
-<div style="background: #e17055; color: white; padding: 10px 15px; border-radius: 6px; min-width: 120px; text-align: center; font-size: 0.85em;">
-MoneyWithdrawn<br>
-<span style="font-size: 0.8em; opacity: 0.8;">amount: $30</span>
-</div>
-<span style="color: #74b9ff;">→</span>
-<div style="background: #6c5ce7; color: white; padding: 10px 15px; border-radius: 6px; min-width: 120px; text-align: center; font-size: 0.85em;">
-Current State<br>
-<span style="font-size: 0.8em; opacity: 0.8;">balance: $70</span>
-</div>
-</div>
-<p style="color: #b2bec3; font-size: 0.85em; margin-top: 15px;">
-Store events, not state. Replay events to rebuild current state. Perfect audit trail.
-</p>
-</div>
-
-### CQRS (Command Query Responsibility Segregation)
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #0f3460;">
-<h4 style="color: #e94560; margin-top: 0;">CQRS Architecture</h4>
-<div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
-<div style="text-align: center;">
-<div style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-<strong>Write Model</strong><br>
-<span style="font-size: 0.8em;">Commands</span>
-</div>
-<div style="background: #c0392b; color: white; padding: 10px; border-radius: 6px; font-size: 0.85em;">
-Normalized DB<br>
-(PostgreSQL)
-</div>
-</div>
-<div style="text-align: center; color: #f39c12;">
-<div>Events</div>
-<div style="font-size: 1.5em;">⟷</div>
-<div style="font-size: 0.8em;">Event Bus</div>
-</div>
-<div style="text-align: center;">
-<div style="background: #27ae60; color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-<strong>Read Model</strong><br>
-<span style="font-size: 0.8em;">Queries</span>
-</div>
-<div style="background: #229954; color: white; padding: 10px; border-radius: 6px; font-size: 0.85em;">
-Denormalized DB<br>
-(Elasticsearch)
-</div>
-</div>
-</div>
-</div>
-
----
-
-## Storage Best Practices
+## Implementation
 
 ### Choosing the Right Storage
 
-1. **Understand access patterns first**
-   - Read-heavy vs write-heavy?
-   - Random vs sequential access?
-   - Query complexity?
+```python
+from dataclasses import dataclass
+from enum import Enum
+from typing import List, Optional
 
-2. **Consider consistency requirements**
-   - Strong consistency needed? → RDBMS
-   - Eventual consistency OK? → NoSQL
 
-3. **Plan for scale**
-   - Will you need horizontal scaling?
-   - What's your data growth rate?
+class DataCharacteristic(Enum):
+    """Characteristics that influence storage choice."""
+    STRUCTURED = "structured"           # Fixed schema
+    SEMI_STRUCTURED = "semi_structured" # JSON, XML
+    UNSTRUCTURED = "unstructured"       # Files, images
 
-4. **Don't over-optimize early**
-   - Start simple (often PostgreSQL)
-   - Add caching layer when needed
-   - Shard only when necessary
+    READ_HEAVY = "read_heavy"
+    WRITE_HEAVY = "write_heavy"
+    BALANCED = "balanced"
 
-### Common Anti-Patterns to Avoid
+    TRANSACTIONAL = "transactional"     # ACID required
+    EVENTUAL_OK = "eventual_ok"         # Eventual consistency acceptable
 
-<div style="background: linear-gradient(135deg, #b71540 0%, #e74c3c 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #c0392b;">
-<h4 style="color: #f1c40f; margin-top: 0;">Storage Anti-Patterns</h4>
-<ul style="color: #fadbd8; margin: 0; padding-left: 20px; line-height: 1.8;">
-<li><strong>Storing blobs in databases</strong> - Use object storage instead</li>
-<li><strong>Over-normalization</strong> - Causes excessive JOINs</li>
-<li><strong>Under-indexing</strong> - Leads to full table scans</li>
-<li><strong>Over-indexing</strong> - Slows down writes</li>
-<li><strong>Ignoring connection pooling</strong> - Connection overhead kills performance</li>
-<li><strong>No backup strategy</strong> - Data loss is catastrophic</li>
-<li><strong>Premature sharding</strong> - Adds complexity before needed</li>
-</ul>
+    RELATIONAL = "relational"           # Need JOINs
+    HIERARCHICAL = "hierarchical"       # Nested data
+    GRAPH = "graph"                     # Relationships are key
+
+
+@dataclass
+class StorageRequirements:
+    """Capture requirements to recommend storage."""
+    data_type: DataCharacteristic
+    access_pattern: DataCharacteristic
+    consistency: DataCharacteristic
+    structure: DataCharacteristic
+    estimated_size_gb: float
+    queries_per_second: int
+    latency_requirement_ms: float
+
+
+def recommend_storage(requirements: StorageRequirements) -> List[str]:
+    """
+    Recommend storage solutions based on requirements.
+
+    Returns list of recommended technologies with reasoning.
+    """
+    recommendations = []
+
+    # Check for transactional requirements
+    if requirements.consistency == DataCharacteristic.TRANSACTIONAL:
+        if requirements.structure == DataCharacteristic.RELATIONAL:
+            recommendations.append(
+                "PostgreSQL - ACID compliance with complex queries"
+            )
+        else:
+            recommendations.append(
+                "PostgreSQL with JSONB - Transactions + flexible schema"
+            )
+
+    # High write throughput needs
+    if requirements.access_pattern == DataCharacteristic.WRITE_HEAVY:
+        if requirements.estimated_size_gb > 1000:
+            recommendations.append(
+                "Cassandra - Distributed write-optimized storage"
+            )
+        else:
+            recommendations.append(
+                "TimescaleDB - Time-series optimized PostgreSQL"
+            )
+
+    # Low latency requirements
+    if requirements.latency_requirement_ms < 10:
+        recommendations.append(
+            "Redis - In-memory caching layer"
+        )
+
+    # Large unstructured data
+    if requirements.data_type == DataCharacteristic.UNSTRUCTURED:
+        recommendations.append(
+            "S3/Object Storage - Scalable blob storage"
+        )
+
+    # Graph relationships
+    if requirements.structure == DataCharacteristic.GRAPH:
+        recommendations.append(
+            "Neo4j - Native graph database"
+        )
+
+    # Semi-structured with flexible queries
+    if requirements.data_type == DataCharacteristic.SEMI_STRUCTURED:
+        if requirements.consistency == DataCharacteristic.EVENTUAL_OK:
+            recommendations.append(
+                "MongoDB - Flexible document storage"
+            )
+
+    # Default recommendation
+    if not recommendations:
+        recommendations.append(
+            "PostgreSQL - Versatile, well-supported default choice"
+        )
+
+    return recommendations
+
+
+# Usage Example
+requirements = StorageRequirements(
+    data_type=DataCharacteristic.STRUCTURED,
+    access_pattern=DataCharacteristic.READ_HEAVY,
+    consistency=DataCharacteristic.TRANSACTIONAL,
+    structure=DataCharacteristic.RELATIONAL,
+    estimated_size_gb=100,
+    queries_per_second=1000,
+    latency_requirement_ms=50
+)
+
+recommendations = recommend_storage(requirements)
+for rec in recommendations:
+    print(f"- {rec}")
+```
+
+### Database Connection Pooling
+
+```python
+import contextlib
+from typing import Optional
+import psycopg2
+from psycopg2 import pool
+import redis
+from dataclasses import dataclass
+
+
+@dataclass
+class PoolConfig:
+    """Connection pool configuration."""
+    min_connections: int = 5
+    max_connections: int = 20
+    connection_timeout: float = 30.0
+
+
+class DatabasePool:
+    """
+    PostgreSQL connection pool manager.
+
+    Connection pooling is critical for performance:
+    - Creating connections is expensive (~10-100ms)
+    - Connections consume server memory
+    - Too many connections overwhelm the database
+    """
+
+    def __init__(self, dsn: str, config: PoolConfig = None):
+        self.config = config or PoolConfig()
+        self.pool = pool.ThreadedConnectionPool(
+            minconn=self.config.min_connections,
+            maxconn=self.config.max_connections,
+            dsn=dsn
+        )
+
+    @contextlib.contextmanager
+    def get_connection(self):
+        """
+        Get a connection from the pool.
+
+        Use as context manager to ensure connection is returned.
+        """
+        conn = None
+        try:
+            conn = self.pool.getconn()
+            yield conn
+            conn.commit()
+        except Exception:
+            if conn:
+                conn.rollback()
+            raise
+        finally:
+            if conn:
+                self.pool.putconn(conn)
+
+    def execute(self, query: str, params: tuple = None):
+        """Execute a query and return results."""
+        with self.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, params)
+                if cursor.description:
+                    return cursor.fetchall()
+                return None
+
+    def close(self):
+        """Close all connections in the pool."""
+        self.pool.closeall()
+
+
+class CacheLayer:
+    """
+    Redis caching layer for frequently accessed data.
+
+    Caching reduces database load and improves latency:
+    - Redis: ~0.1ms latency
+    - PostgreSQL: ~1-10ms latency
+    """
+
+    def __init__(self, host: str = 'localhost', port: int = 6379):
+        self.redis = redis.Redis(
+            host=host,
+            port=port,
+            decode_responses=True
+        )
+
+    def get(self, key: str) -> Optional[str]:
+        """Get value from cache."""
+        return self.redis.get(key)
+
+    def set(self, key: str, value: str, ttl_seconds: int = 3600):
+        """Set value in cache with TTL."""
+        self.redis.setex(key, ttl_seconds, value)
+
+    def delete(self, key: str):
+        """Delete key from cache."""
+        self.redis.delete(key)
+
+    def get_or_compute(self, key: str, compute_fn, ttl_seconds: int = 3600):
+        """
+        Cache-aside pattern: get from cache or compute and cache.
+        """
+        value = self.get(key)
+        if value is not None:
+            return value
+
+        value = compute_fn()
+        self.set(key, value, ttl_seconds)
+        return value
+
+
+class DataAccessLayer:
+    """
+    Combined data access with caching.
+
+    Implements common patterns:
+    - Cache-aside for reads
+    - Write-through for writes
+    """
+
+    def __init__(self, db: DatabasePool, cache: CacheLayer):
+        self.db = db
+        self.cache = cache
+
+    def get_user(self, user_id: int) -> Optional[dict]:
+        """Get user with caching."""
+        cache_key = f"user:{user_id}"
+
+        # Try cache first
+        cached = self.cache.get(cache_key)
+        if cached:
+            import json
+            return json.loads(cached)
+
+        # Cache miss - query database
+        result = self.db.execute(
+            "SELECT id, name, email FROM users WHERE id = %s",
+            (user_id,)
+        )
+
+        if not result:
+            return None
+
+        user = {
+            'id': result[0][0],
+            'name': result[0][1],
+            'email': result[0][2]
+        }
+
+        # Cache for future requests
+        import json
+        self.cache.set(cache_key, json.dumps(user), ttl_seconds=300)
+
+        return user
+
+    def update_user(self, user_id: int, name: str, email: str):
+        """Update user with cache invalidation."""
+        # Update database
+        self.db.execute(
+            "UPDATE users SET name = %s, email = %s WHERE id = %s",
+            (name, email, user_id)
+        )
+
+        # Invalidate cache
+        cache_key = f"user:{user_id}"
+        self.cache.delete(cache_key)
+```
+
+### Data Sharding Strategy
+
+```python
+import hashlib
+from typing import List, Any
+from abc import ABC, abstractmethod
+
+
+class ShardingStrategy(ABC):
+    """Base class for sharding strategies."""
+
+    @abstractmethod
+    def get_shard(self, key: Any) -> int:
+        """Determine which shard contains the key."""
+        pass
+
+
+class HashSharding(ShardingStrategy):
+    """
+    Hash-based sharding for even distribution.
+
+    Pros: Even distribution, simple
+    Cons: Resharding is expensive
+    """
+
+    def __init__(self, num_shards: int):
+        self.num_shards = num_shards
+
+    def get_shard(self, key: Any) -> int:
+        key_bytes = str(key).encode()
+        hash_value = int(hashlib.md5(key_bytes).hexdigest(), 16)
+        return hash_value % self.num_shards
+
+
+class RangeSharding(ShardingStrategy):
+    """
+    Range-based sharding for ordered access.
+
+    Pros: Range queries stay on single shard
+    Cons: Potential hotspots
+    """
+
+    def __init__(self, ranges: List[tuple]):
+        # ranges: [(0, 'shard0'), (1000, 'shard1'), (2000, 'shard2')]
+        self.ranges = sorted(ranges, key=lambda x: x[0])
+
+    def get_shard(self, key: int) -> int:
+        for i, (boundary, _) in enumerate(self.ranges):
+            if key < boundary:
+                return max(0, i - 1)
+        return len(self.ranges) - 1
+
+
+class ConsistentHashing(ShardingStrategy):
+    """
+    Consistent hashing for minimal reshuffling.
+
+    When adding/removing nodes, only K/n keys need to move
+    (K = total keys, n = number of nodes).
+    """
+
+    def __init__(self, nodes: List[str], virtual_nodes: int = 150):
+        self.ring = {}
+        self.sorted_keys = []
+        self.virtual_nodes = virtual_nodes
+
+        for node in nodes:
+            self.add_node(node)
+
+    def _hash(self, key: str) -> int:
+        return int(hashlib.md5(key.encode()).hexdigest(), 16)
+
+    def add_node(self, node: str):
+        """Add a node with virtual nodes for better distribution."""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:{i}"
+            hash_value = self._hash(virtual_key)
+            self.ring[hash_value] = node
+            self.sorted_keys.append(hash_value)
+
+        self.sorted_keys.sort()
+
+    def remove_node(self, node: str):
+        """Remove a node and its virtual nodes."""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:{i}"
+            hash_value = self._hash(virtual_key)
+            del self.ring[hash_value]
+            self.sorted_keys.remove(hash_value)
+
+    def get_shard(self, key: Any) -> str:
+        """Find the node responsible for this key."""
+        if not self.ring:
+            return None
+
+        hash_value = self._hash(str(key))
+
+        # Find first node with hash >= key hash
+        for node_hash in self.sorted_keys:
+            if node_hash >= hash_value:
+                return self.ring[node_hash]
+
+        # Wrap around to first node
+        return self.ring[self.sorted_keys[0]]
+
+
+class ShardedDatabase:
+    """
+    Database client with sharding support.
+    """
+
+    def __init__(self, shard_connections: dict, strategy: ShardingStrategy):
+        self.shards = shard_connections
+        self.strategy = strategy
+
+    def get(self, key: Any):
+        """Get value from appropriate shard."""
+        shard = self.strategy.get_shard(key)
+        return self.shards[shard].get(key)
+
+    def set(self, key: Any, value: Any):
+        """Set value in appropriate shard."""
+        shard = self.strategy.get_shard(key)
+        return self.shards[shard].set(key, value)
+
+    def scatter_gather(self, query_fn):
+        """
+        Execute query on all shards and combine results.
+
+        Use for queries that can't be routed to single shard.
+        """
+        results = []
+        for shard in self.shards.values():
+            results.extend(query_fn(shard))
+        return results
+```
+
+---
+
+## Interview Questions
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+### Q1: How would you design storage for a social media feed?
+
+**Answer:**
+
+Use a **hybrid approach**:
+
+1. **User profiles**: PostgreSQL (ACID for account data)
+2. **Posts content**: PostgreSQL or MongoDB
+3. **Feed**: Precomputed in Redis (fan-out on write)
+4. **Images/Videos**: S3 with CDN
+5. **Search**: Elasticsearch
+
+Feed generation strategies:
+- **Fan-out on write**: Push to followers' feeds when posting (good for users with few followers)
+- **Fan-out on read**: Compute feed on request (good for celebrity accounts)
+- **Hybrid**: Push for regular users, pull for celebrities
+
+### Q2: SQL vs NoSQL - how do you decide?
+
+**Answer:**
+
+**Choose SQL when:**
+- Need ACID transactions (financial systems)
+- Complex queries with JOINs
+- Data has clear relationships
+- Schema is well-defined and stable
+
+**Choose NoSQL when:**
+- Flexible/evolving schema needed
+- Horizontal scaling is priority
+- Simple access patterns (key-value, document)
+- Eventual consistency is acceptable
+
+**Common pattern:** Start with PostgreSQL, add specialized stores as needed:
+- Redis for caching
+- Elasticsearch for search
+- S3 for files
+
+### Q3: How do you handle database scaling?
+
+**Answer:**
+
+**Vertical scaling (scale up):**
+- More CPU, RAM, faster SSDs
+- Simple but has limits
+- Good for: Small to medium workloads
+
+**Horizontal scaling (scale out):**
+
+1. **Read replicas**: Route reads to replicas, writes to primary
+2. **Sharding**: Partition data across multiple databases
+3. **Caching**: Reduce database load with Redis/Memcached
+
+**Sharding strategies:**
+- **Hash-based**: Even distribution, hard to range query
+- **Range-based**: Good for time-series, potential hotspots
+- **Directory-based**: Flexible but adds lookup latency
+
+### Q4: What is the CAP theorem and how does it affect storage choices?
+
+**Answer:**
+
+CAP theorem states you can only have 2 of 3:
+- **Consistency**: All nodes see same data
+- **Availability**: Every request gets a response
+- **Partition tolerance**: System works despite network failures
+
+**In practice (CP vs AP):**
+
+| Database | Type | Trade-off |
+|----------|------|-----------|
+| PostgreSQL | CP | Consistency over availability |
+| MongoDB | CP (default) | Consistency, configurable |
+| Cassandra | AP | Availability, eventual consistency |
+| DynamoDB | Configurable | Choose per operation |
+
+**Real-world:** Most systems need partition tolerance, so the choice is really between consistency and availability.
+
+### Q5: How do you design for disaster recovery?
+
+**Answer:**
+
+**RPO (Recovery Point Objective)**: How much data can you lose?
+**RTO (Recovery Time Objective)**: How fast must you recover?
+
+**Strategies by RPO/RTO:**
+
+| RPO | RTO | Strategy |
+|-----|-----|----------|
+| Days | Hours | Daily backups to S3 |
+| Hours | Minutes | Streaming replication |
+| Minutes | Seconds | Synchronous replication |
+| Zero | Zero | Multi-region active-active |
+
+**Implementation:**
+1. Regular automated backups
+2. Cross-region replication
+3. Periodic recovery testing
+4. Runbook documentation
+
 </div>
 
 ---
 
-## Summary
+## Common Mistakes
 
-<div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #5b4e8d;">
-<h4 style="color: #00d9ff; margin-top: 0;">Key Takeaways</h4>
-<div style="display: grid; gap: 10px; color: #a0a0a0;">
-<div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;">
-<strong style="color: #00d9ff;">Storage Types:</strong> Block (VMs, DBs), File (shared), Object (scalable, cheap)
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Anti-Patterns</h4>
+
+  <div style="display: grid; gap: 12px;">
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Storing blobs in the database</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Large files (images, videos) should go in object storage (S3), not in PostgreSQL. Database storage is expensive and slows down queries.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Premature sharding</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Sharding adds complexity (cross-shard queries, distributed transactions). Exhaust vertical scaling and read replicas first. Most apps never need sharding.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">No connection pooling</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Creating new database connections is expensive (10-100ms). Use connection pools (PgBouncer, HikariCP) to reuse connections.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Missing indexes on query columns</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Queries without indexes cause full table scans. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">No backup testing</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Backups that haven't been tested might not work when needed. Regularly restore backups to verify they're valid and practice recovery procedures.</div>
+    </div>
+
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Using database as a queue</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Polling tables for jobs is inefficient. Use purpose-built queues (Redis, RabbitMQ, SQS) for job processing.</div>
+    </div>
+  </div>
 </div>
-<div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;">
-<strong style="color: #00d9ff;">SQL vs NoSQL:</strong> ACID + complex queries vs flexibility + scale
+
+---
+
+## Quick Reference Card
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Selection Cheat Sheet</h4>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">By Use Case</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Transactions:</strong> PostgreSQL</div>
+        <div style="padding: 4px 0;"><strong>Caching:</strong> Redis</div>
+        <div style="padding: 4px 0;"><strong>Search:</strong> Elasticsearch</div>
+        <div style="padding: 4px 0;"><strong>Time-series:</strong> TimescaleDB, InfluxDB</div>
+        <div style="padding: 4px 0;"><strong>Files:</strong> S3, GCS</div>
+        <div style="padding: 4px 0;"><strong>Graph:</strong> Neo4j</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Scaling Strategies</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">1. Add caching layer (Redis)</div>
+        <div style="padding: 4px 0;">2. Add read replicas</div>
+        <div style="padding: 4px 0;">3. Vertical scaling (bigger machine)</div>
+        <div style="padding: 4px 0;">4. Shard by tenant/user ID</div>
+        <div style="padding: 4px 0;">5. Move to distributed DB</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Performance Checklist</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">[ ] Connection pooling enabled</div>
+        <div style="padding: 4px 0;">[ ] Indexes on query columns</div>
+        <div style="padding: 4px 0;">[ ] Caching for hot data</div>
+        <div style="padding: 4px 0;">[ ] Query plans analyzed</div>
+        <div style="padding: 4px 0;">[ ] Monitoring in place</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Reliability Checklist</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">[ ] Automated backups</div>
+        <div style="padding: 4px 0;">[ ] Backup restoration tested</div>
+        <div style="padding: 4px 0;">[ ] Replication configured</div>
+        <div style="padding: 4px 0;">[ ] Failover tested</div>
+        <div style="padding: 4px 0;">[ ] Monitoring alerts set</div>
+      </div>
+    </div>
+  </div>
 </div>
-<div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;">
-<strong style="color: #00d9ff;">Replication:</strong> Single-leader (simple), Multi-leader (geo), Leaderless (availability)
-</div>
-<div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;">
-<strong style="color: #00d9ff;">Sharding:</strong> Range, Hash, or Directory-based partitioning
-</div>
-<div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px;">
-<strong style="color: #00d9ff;">Patterns:</strong> Denormalization, Event Sourcing, CQRS for specific use cases
-</div>
-</div>
-</div>
+
+---
+
+## Related Topics
+
+- [Database Sharding](/topic/system-design/database-sharding) - Horizontal partitioning
+- [Caching](/topic/system-design/caching) - Reducing database load
+- [CAP Theorem](/topic/system-design/cap-theorem) - Consistency trade-offs
+- [Replication](/topic/system-design/replication) - Data durability
