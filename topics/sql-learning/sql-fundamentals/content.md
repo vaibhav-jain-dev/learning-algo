@@ -2,22 +2,50 @@
 
 ## Overview
 
-SQL (Structured Query Language) is the standard language for interacting with relational databases. This guide covers the core concepts from basic queries to advanced operations.
+SQL (Structured Query Language) is the standard language for interacting with relational databases, enabling you to query, insert, update, and delete data. Mastering SQL fundamentals is essential for any developer working with data-driven applications and is a critical skill tested in technical interviews.
 
-**Tags:** SQL, Database, Queries, CRUD
+## Why This Matters
 
----
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">Real-World Importance</div>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li>Every web application uses databases</li>
+<li>Data analysis and reporting depend on SQL</li>
+<li>Backend development requires SQL proficiency</li>
+<li>ETL pipelines and data engineering use SQL heavily</li>
+</ul>
+</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+<div style="color: #047857; font-weight: bold; margin-bottom: 8px;">Interview Frequency</div>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li>Asked in 90%+ of backend interviews</li>
+<li>Common in data engineering roles</li>
+<li>Tested in full-stack positions</li>
+<li>Essential for data analyst interviews</li>
+</ul>
+</div>
+</div>
+</div>
 
-## The SELECT Statement
+## Core Concepts
 
-The SELECT statement retrieves data from one or more tables.
+### Query Execution Order
 
-### Basic SELECT Syntax
+Understanding the logical order of SQL execution is crucial for writing correct queries:
+
+```
+FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
+```
+
+This explains why you cannot use column aliases from SELECT in WHERE (WHERE executes before SELECT).
+
+### The SELECT Statement
+
+The SELECT statement retrieves data from tables.
 
 ```sql
--- Select all columns
-SELECT * FROM users;
-
 -- Select specific columns
 SELECT id, name, email FROM users;
 
@@ -27,32 +55,32 @@ SELECT
     name AS user_name,
     email AS user_email
 FROM users;
+
+-- Select with expressions
+SELECT
+    name,
+    price,
+    price * 0.9 AS discounted_price
+FROM products;
 ```
 
 ### Filtering with WHERE
 
 ```sql
--- Equal comparison
-SELECT * FROM users WHERE status = 'active';
+-- Basic comparison operators
+SELECT * FROM users WHERE age >= 18;
+SELECT * FROM users WHERE status != 'deleted';
 
--- Multiple conditions (AND)
-SELECT * FROM users
-WHERE status = 'active' AND age >= 18;
-
--- Multiple conditions (OR)
-SELECT * FROM users
-WHERE role = 'admin' OR role = 'moderator';
-
--- NULL checking
-SELECT * FROM users WHERE deleted_at IS NULL;
+-- NULL checking (common interview question!)
+SELECT * FROM users WHERE phone IS NULL;
 SELECT * FROM users WHERE phone IS NOT NULL;
 
 -- Pattern matching with LIKE
-SELECT * FROM users WHERE email LIKE '%@gmail.com';
-SELECT * FROM users WHERE name LIKE 'John%';  -- starts with John
-SELECT * FROM users WHERE name LIKE '%son';   -- ends with son
+SELECT * FROM users WHERE email LIKE '%@gmail.com';  -- ends with
+SELECT * FROM users WHERE name LIKE 'John%';         -- starts with
+SELECT * FROM users WHERE name LIKE '%son%';         -- contains
 
--- Range with BETWEEN
+-- Range with BETWEEN (inclusive)
 SELECT * FROM orders
 WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31';
 
@@ -60,81 +88,28 @@ WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31';
 SELECT * FROM users
 WHERE country IN ('USA', 'Canada', 'UK');
 
--- NOT conditions
-SELECT * FROM users WHERE status != 'deleted';
-SELECT * FROM users WHERE role NOT IN ('banned', 'suspended');
-```
-
-### Ordering Results
-
-```sql
--- Ascending order (default)
-SELECT * FROM users ORDER BY created_at;
-
--- Descending order
-SELECT * FROM users ORDER BY created_at DESC;
-
--- Multiple columns
+-- Combining conditions
 SELECT * FROM users
-ORDER BY status ASC, created_at DESC;
-
--- Using column position (not recommended)
-SELECT name, age FROM users ORDER BY 2 DESC;
+WHERE (status = 'active' OR status = 'pending')
+  AND created_at > '2024-01-01';
 ```
 
-### Limiting Results
+### Aggregation Functions
 
 ```sql
--- First N rows
-SELECT * FROM users LIMIT 10;
-
--- Skip and take (pagination)
-SELECT * FROM users LIMIT 10 OFFSET 20;
-
--- PostgreSQL alternative
-SELECT * FROM users LIMIT 10 OFFSET 20;
-
--- MySQL alternative
-SELECT * FROM users LIMIT 20, 10;  -- offset, limit
-```
-
----
-
-## Aggregation Functions
-
-### COUNT, SUM, AVG, MIN, MAX
-
-```sql
--- Count all rows
-SELECT COUNT(*) FROM orders;
-
--- Count non-null values
-SELECT COUNT(email) FROM users;
-
--- Count distinct values
-SELECT COUNT(DISTINCT country) FROM users;
-
--- Sum
-SELECT SUM(amount) FROM orders WHERE status = 'completed';
-
--- Average
-SELECT AVG(age) FROM users;
-
--- Min and Max
-SELECT MIN(price), MAX(price) FROM products;
-
--- Combined
+-- COUNT, SUM, AVG, MIN, MAX
 SELECT
     COUNT(*) as total_orders,
+    COUNT(DISTINCT customer_id) as unique_customers,
     SUM(amount) as total_revenue,
     AVG(amount) as avg_order_value,
-    MIN(amount) as min_order,
-    MAX(amount) as max_order
+    MIN(amount) as smallest_order,
+    MAX(amount) as largest_order
 FROM orders
 WHERE status = 'completed';
 ```
 
-### GROUP BY
+### GROUP BY and HAVING
 
 ```sql
 -- Group by single column
@@ -143,394 +118,395 @@ FROM users
 GROUP BY country;
 
 -- Group by multiple columns
-SELECT country, status, COUNT(*) as user_count
+SELECT
+    country,
+    status,
+    COUNT(*) as user_count
 FROM users
 GROUP BY country, status;
 
--- Group with aggregates
-SELECT
-    DATE(created_at) as order_date,
-    COUNT(*) as order_count,
-    SUM(amount) as daily_revenue
-FROM orders
-GROUP BY DATE(created_at)
-ORDER BY order_date DESC;
-```
-
-### HAVING (filter groups)
-
-```sql
--- Filter groups with HAVING
-SELECT country, COUNT(*) as user_count
-FROM users
-GROUP BY country
-HAVING COUNT(*) > 100;
-
--- HAVING with aggregate condition
-SELECT
-    customer_id,
-    SUM(amount) as total_spent
-FROM orders
-GROUP BY customer_id
-HAVING SUM(amount) > 1000
-ORDER BY total_spent DESC;
-
--- WHERE vs HAVING
--- WHERE filters rows BEFORE grouping
--- HAVING filters groups AFTER grouping
+-- HAVING filters groups (after aggregation)
+-- WHERE filters rows (before aggregation)
 SELECT
     category,
     AVG(price) as avg_price
 FROM products
-WHERE status = 'active'        -- filters rows
+WHERE status = 'active'     -- filters rows BEFORE grouping
 GROUP BY category
-HAVING AVG(price) > 50;        -- filters groups
+HAVING AVG(price) > 50;     -- filters groups AFTER grouping
 ```
 
----
+## Visual Explanation
 
-## INSERT, UPDATE, DELETE
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">SQL QUERY EXECUTION ORDER</h4>
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #3b82f6; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">1. FROM</div>
+<span style="color: #64748b; font-size: 14px;">Tables are identified and joined</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #8b5cf6; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">2. WHERE</div>
+<span style="color: #64748b; font-size: 14px;">Individual rows are filtered</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #ec4899; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">3. GROUP BY</div>
+<span style="color: #64748b; font-size: 14px;">Rows are organized into groups</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #f59e0b; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">4. HAVING</div>
+<span style="color: #64748b; font-size: 14px;">Groups are filtered</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #10b981; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">5. SELECT</div>
+<span style="color: #64748b; font-size: 14px;">Columns are selected and computed</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #06b6d4; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">6. ORDER BY</div>
+<span style="color: #64748b; font-size: 14px;">Results are sorted</span>
+</div>
+<div style="text-align: center; color: #3b82f6; font-size: 20px;">&#8595;</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #64748b; color: #fff; padding: 10px 20px; border-radius: 8px; min-width: 140px; text-align: center; font-weight: bold;">7. LIMIT</div>
+<span style="color: #64748b; font-size: 14px;">Result set is limited</span>
+</div>
+</div>
+</div>
 
-### INSERT
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">WHERE vs HAVING</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; font-size: 16px; margin-bottom: 12px;">WHERE</div>
+<div style="color: #475569; font-size: 14px; margin-bottom: 12px;">Filters individual rows BEFORE grouping</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
+SELECT category, COUNT(*)<br/>
+FROM products<br/>
+<span style="color: #3b82f6; font-weight: bold;">WHERE price > 100</span><br/>
+GROUP BY category;
+</div>
+</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #b45309; font-weight: bold; font-size: 16px; margin-bottom: 12px;">HAVING</div>
+<div style="color: #475569; font-size: 14px; margin-bottom: 12px;">Filters groups AFTER aggregation</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
+SELECT category, COUNT(*)<br/>
+FROM products<br/>
+GROUP BY category<br/>
+<span style="color: #f59e0b; font-weight: bold;">HAVING COUNT(*) > 10</span>;
+</div>
+</div>
+</div>
+</div>
 
-```sql
--- Insert single row
-INSERT INTO users (name, email, age)
-VALUES ('John Doe', 'john@example.com', 25);
+## SQL Examples
 
--- Insert multiple rows
-INSERT INTO users (name, email, age) VALUES
-    ('Jane Doe', 'jane@example.com', 28),
-    ('Bob Smith', 'bob@example.com', 32),
-    ('Alice Johnson', 'alice@example.com', 24);
-
--- Insert from SELECT
-INSERT INTO archived_orders (id, customer_id, amount, created_at)
-SELECT id, customer_id, amount, created_at
-FROM orders
-WHERE created_at < '2023-01-01';
-
--- Insert with RETURNING (PostgreSQL)
-INSERT INTO users (name, email)
-VALUES ('New User', 'new@example.com')
-RETURNING id, name, created_at;
-```
-
-### UPDATE
-
-```sql
--- Update single column
-UPDATE users
-SET status = 'inactive'
-WHERE id = 123;
-
--- Update multiple columns
-UPDATE users
-SET
-    status = 'verified',
-    verified_at = NOW(),
-    updated_at = NOW()
-WHERE email_verified = true AND status = 'pending';
-
--- Update with calculation
-UPDATE products
-SET price = price * 1.1  -- 10% increase
-WHERE category = 'electronics';
-
--- Update with subquery
-UPDATE orders
-SET customer_name = (
-    SELECT name FROM customers WHERE customers.id = orders.customer_id
-)
-WHERE customer_name IS NULL;
-
--- Update with RETURNING (PostgreSQL)
-UPDATE users
-SET last_login = NOW()
-WHERE id = 123
-RETURNING id, name, last_login;
-```
-
-### DELETE
-
-```sql
--- Delete specific rows
-DELETE FROM users WHERE status = 'deleted';
-
--- Delete with subquery
-DELETE FROM orders
-WHERE customer_id IN (
-    SELECT id FROM customers WHERE status = 'banned'
-);
-
--- Delete all rows (careful!)
-DELETE FROM temp_logs;
-
--- Truncate (faster for all rows, resets auto-increment)
-TRUNCATE TABLE temp_logs;
-
--- Delete with RETURNING (PostgreSQL)
-DELETE FROM sessions
-WHERE expires_at < NOW()
-RETURNING id, user_id;
-```
-
----
-
-## DISTINCT and CASE
-
-### DISTINCT
+### Basic Level
 
 ```sql
--- Distinct single column
-SELECT DISTINCT country FROM users;
-
--- Distinct multiple columns
-SELECT DISTINCT country, city FROM users;
-
--- Distinct with ORDER BY
-SELECT DISTINCT country
+-- 1. Simple SELECT with filtering
+SELECT name, email, created_at
 FROM users
-ORDER BY country;
-
--- Count distinct
-SELECT COUNT(DISTINCT email) FROM users;
-```
-
-### CASE Expressions
-
-```sql
--- Simple CASE
-SELECT
-    name,
-    status,
-    CASE status
-        WHEN 'active' THEN 'Active User'
-        WHEN 'inactive' THEN 'Inactive User'
-        WHEN 'pending' THEN 'Pending Verification'
-        ELSE 'Unknown'
-    END as status_label
-FROM users;
-
--- Searched CASE (with conditions)
-SELECT
-    name,
-    age,
-    CASE
-        WHEN age < 18 THEN 'Minor'
-        WHEN age BETWEEN 18 AND 65 THEN 'Adult'
-        ELSE 'Senior'
-    END as age_group
-FROM users;
-
--- CASE in aggregation
-SELECT
-    COUNT(CASE WHEN status = 'active' THEN 1 END) as active_count,
-    COUNT(CASE WHEN status = 'inactive' THEN 1 END) as inactive_count,
-    COUNT(*) as total
-FROM users;
-
--- CASE in ORDER BY
-SELECT * FROM orders
-ORDER BY
-    CASE status
-        WHEN 'urgent' THEN 1
-        WHEN 'high' THEN 2
-        WHEN 'normal' THEN 3
-        ELSE 4
-    END;
-```
-
----
-
-## NULL Handling
-
-### Understanding NULL
-
-```sql
--- NULL is not equal to anything (even NULL)
-SELECT * FROM users WHERE email = NULL;      -- Wrong! Returns nothing
-SELECT * FROM users WHERE email IS NULL;     -- Correct
-
--- NULL in comparisons
-SELECT * FROM users WHERE age > 18;  -- excludes NULL ages
-
--- NULL in math
-SELECT 10 + NULL;  -- Returns NULL
-SELECT NULL = NULL;  -- Returns NULL (not true!)
-```
-
-### COALESCE and NULLIF
-
-```sql
--- COALESCE: first non-null value
-SELECT
-    name,
-    COALESCE(nickname, name) as display_name
-FROM users;
-
--- COALESCE with multiple fallbacks
-SELECT
-    COALESCE(phone_mobile, phone_home, phone_work, 'No phone') as phone
-FROM contacts;
-
--- NULLIF: returns NULL if values equal
-SELECT
-    amount / NULLIF(quantity, 0) as unit_price  -- prevents division by zero
-FROM order_items;
-
--- Practical example
-SELECT
-    name,
-    COALESCE(
-        NULLIF(bio, ''),  -- treat empty string as NULL
-        'No bio provided'
-    ) as bio
-FROM users;
-```
-
----
-
-## String Functions
-
-```sql
--- Concatenation
-SELECT first_name || ' ' || last_name as full_name FROM users;  -- PostgreSQL
-SELECT CONCAT(first_name, ' ', last_name) as full_name FROM users;  -- MySQL
-
--- Length
-SELECT name, LENGTH(name) as name_length FROM users;
-
--- Case conversion
-SELECT UPPER(name), LOWER(email) FROM users;
-
--- Trim whitespace
-SELECT TRIM(name), LTRIM(name), RTRIM(name) FROM users;
-
--- Substring
-SELECT SUBSTRING(phone, 1, 3) as area_code FROM users;
-
--- Replace
-SELECT REPLACE(phone, '-', '') as clean_phone FROM users;
-
--- Position/Find
-SELECT POSITION('@' IN email) as at_position FROM users;
-
--- Split (PostgreSQL)
-SELECT SPLIT_PART(email, '@', 2) as domain FROM users;
-```
-
----
-
-## Date Functions
-
-```sql
--- Current date/time
-SELECT
-    CURRENT_DATE,
-    CURRENT_TIME,
-    CURRENT_TIMESTAMP,
-    NOW();
-
--- Extract parts
-SELECT
-    created_at,
-    EXTRACT(YEAR FROM created_at) as year,
-    EXTRACT(MONTH FROM created_at) as month,
-    EXTRACT(DAY FROM created_at) as day,
-    EXTRACT(HOUR FROM created_at) as hour
-FROM orders;
-
--- Date arithmetic
-SELECT
-    created_at,
-    created_at + INTERVAL '7 days' as one_week_later,
-    created_at - INTERVAL '1 month' as one_month_ago
-FROM orders;
-
--- Date difference
-SELECT
-    created_at,
-    NOW() - created_at as age,
-    EXTRACT(DAY FROM NOW() - created_at) as days_ago
-FROM orders;
-
--- Formatting (PostgreSQL)
-SELECT
-    created_at,
-    TO_CHAR(created_at, 'YYYY-MM-DD') as date_str,
-    TO_CHAR(created_at, 'Month DD, YYYY') as formatted
-FROM orders;
-
--- Truncate to date parts
-SELECT
-    DATE_TRUNC('month', created_at) as month_start,
-    DATE_TRUNC('year', created_at) as year_start
-FROM orders;
-```
-
----
-
-## Common Patterns
-
-### Pagination
-
-```sql
--- Basic pagination
-SELECT * FROM products
+WHERE status = 'active'
 ORDER BY created_at DESC
-LIMIT 20 OFFSET 0;   -- Page 1
+LIMIT 10;
 
-SELECT * FROM products
-ORDER BY created_at DESC
-LIMIT 20 OFFSET 20;  -- Page 2
+-- 2. Basic aggregation
+SELECT COUNT(*) as total_users
+FROM users
+WHERE created_at >= '2024-01-01';
 
--- With total count
+-- 3. GROUP BY basics
+SELECT country, COUNT(*) as user_count
+FROM users
+GROUP BY country
+ORDER BY user_count DESC;
+```
+
+### Intermediate Level
+
+```sql
+-- 4. Multiple aggregations with HAVING
 SELECT
-    (SELECT COUNT(*) FROM products) as total,
-    *
+    category,
+    COUNT(*) as product_count,
+    AVG(price) as avg_price,
+    SUM(stock) as total_stock
 FROM products
-ORDER BY created_at DESC
-LIMIT 20 OFFSET 0;
+WHERE status = 'active'
+GROUP BY category
+HAVING COUNT(*) >= 5
+ORDER BY avg_price DESC;
 
--- Cursor-based pagination (more efficient for large datasets)
-SELECT * FROM products
-WHERE id > 12345  -- last seen ID
-ORDER BY id
-LIMIT 20;
+-- 5. CASE expressions for conditional logic
+SELECT
+    name,
+    price,
+    CASE
+        WHEN price < 10 THEN 'Budget'
+        WHEN price < 50 THEN 'Standard'
+        WHEN price < 100 THEN 'Premium'
+        ELSE 'Luxury'
+    END as price_tier
+FROM products;
+
+-- 6. Conditional aggregation
+SELECT
+    COUNT(*) as total_orders,
+    COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed,
+    COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+    COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled
+FROM orders;
 ```
 
-### Existence Checks
+### Advanced Level
 
 ```sql
--- Check if row exists
-SELECT EXISTS(SELECT 1 FROM users WHERE email = 'test@example.com');
+-- 7. NULL handling with COALESCE
+SELECT
+    name,
+    COALESCE(phone, email, 'No contact') as contact_info,
+    COALESCE(discount_pct, 0) as discount
+FROM customers;
 
--- Conditional insert
-INSERT INTO users (email, name)
-SELECT 'test@example.com', 'Test User'
-WHERE NOT EXISTS (
-    SELECT 1 FROM users WHERE email = 'test@example.com'
-);
+-- 8. Complex filtering with subquery
+SELECT *
+FROM products
+WHERE price > (SELECT AVG(price) FROM products)
+  AND category IN (SELECT DISTINCT category FROM featured_products);
 
--- Upsert (INSERT ON CONFLICT - PostgreSQL)
-INSERT INTO users (email, name, login_count)
-VALUES ('test@example.com', 'Test User', 1)
-ON CONFLICT (email)
+-- 9. Date operations and grouping
+SELECT
+    DATE_TRUNC('month', created_at) as month,
+    COUNT(*) as order_count,
+    SUM(amount) as total_revenue,
+    AVG(amount) as avg_order_value
+FROM orders
+WHERE created_at >= NOW() - INTERVAL '12 months'
+GROUP BY DATE_TRUNC('month', created_at)
+ORDER BY month DESC;
+
+-- 10. UPSERT (INSERT ON CONFLICT)
+INSERT INTO user_metrics (user_id, login_count, last_login)
+VALUES (123, 1, NOW())
+ON CONFLICT (user_id)
 DO UPDATE SET
-    login_count = users.login_count + 1,
+    login_count = user_metrics.login_count + 1,
     last_login = NOW();
 ```
 
----
+## Common Interview Questions
 
-## Interview Tips
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="margin-bottom: 24px;">
+<div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Easy</div>
+<ul style="margin: 0; padding-left: 20px; color: #334155;">
+<li><strong>What is the difference between WHERE and HAVING?</strong><br/>
+<em>WHERE filters rows before grouping, HAVING filters groups after aggregation.</em></li>
+<li><strong>What is the difference between DELETE and TRUNCATE?</strong><br/>
+<em>DELETE removes specific rows and can be rolled back; TRUNCATE removes all rows faster and resets auto-increment.</em></li>
+<li><strong>How do you find duplicate records?</strong><br/>
+<em>Use GROUP BY with HAVING COUNT(*) > 1.</em></li>
+</ul>
+</div>
 
-1. **Always use parameterized queries** - Never concatenate user input into SQL strings
-2. **Understand execution order** - FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
-3. **NULL awareness** - Remember NULL behavior in comparisons and aggregations
-4. **Index awareness** - Know when your queries can use indexes
-5. **Practice explaining** - Be ready to walk through how a complex query executes
+<div style="margin-bottom: 24px;">
+<div style="background: #fef3c7; color: #92400e; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Medium</div>
+<ul style="margin: 0; padding-left: 20px; color: #334155;">
+<li><strong>Why can't you use a column alias in WHERE clause?</strong><br/>
+<em>Because WHERE executes before SELECT in the logical query order.</em></li>
+<li><strong>What happens when comparing NULL with = operator?</strong><br/>
+<em>Returns NULL (unknown), not TRUE or FALSE. Use IS NULL instead.</em></li>
+<li><strong>Write a query to find the second highest salary.</strong></li>
+</ul>
+</div>
+
+<div>
+<div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Hard</div>
+<ul style="margin: 0; padding-left: 20px; color: #334155;">
+<li><strong>Explain query execution order and why it matters for optimization.</strong></li>
+<li><strong>How would you handle NULL values in NOT IN subqueries?</strong><br/>
+<em>NOT IN returns no results if subquery contains NULL. Use NOT EXISTS instead.</em></li>
+<li><strong>Write a query to calculate running totals without window functions.</strong></li>
+</ul>
+</div>
+</div>
+
+## Performance Considerations
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Optimization Tips</h4>
+<div style="display: grid; gap: 12px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+<div style="color: #047857; font-weight: bold; margin-bottom: 8px;">Select Only Needed Columns</div>
+<div style="color: #475569; font-size: 14px;">Avoid SELECT * in production. Specify exact columns to reduce I/O and memory usage.</div>
+</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">Use Indexes on WHERE Columns</div>
+<div style="color: #475569; font-size: 14px;">Create indexes on columns used in WHERE, ORDER BY, and GROUP BY clauses.</div>
+</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="color: #b45309; font-weight: bold; margin-bottom: 8px;">Avoid Functions on Indexed Columns</div>
+<div style="color: #475569; font-size: 14px;">WHERE YEAR(date_col) = 2024 cannot use index. Use range: WHERE date_col >= '2024-01-01' AND date_col < '2025-01-01'</div>
+</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #ec4899;">
+<div style="color: #be185d; font-weight: bold; margin-bottom: 8px;">Use LIMIT for Large Results</div>
+<div style="color: #475569; font-size: 14px;">Always paginate large result sets. Consider cursor-based pagination for better performance.</div>
+</div>
+</div>
+</div>
+
+### Indexing Implications
+
+```sql
+-- Index-friendly queries
+SELECT * FROM users WHERE email = 'test@example.com';  -- Uses index on email
+SELECT * FROM orders WHERE created_at > '2024-01-01' ORDER BY created_at;  -- Uses index
+
+-- NOT index-friendly (avoid these patterns)
+SELECT * FROM users WHERE LOWER(email) = 'test@example.com';  -- Function prevents index use
+SELECT * FROM users WHERE email LIKE '%@gmail.com';  -- Leading wildcard cannot use index
+SELECT * FROM orders WHERE YEAR(created_at) = 2024;  -- Function on indexed column
+```
+
+## Practice Problems
+
+### Problem 1: Find Duplicate Emails
+```sql
+-- Given: users table with (id, name, email)
+-- Find all duplicate email addresses
+
+SELECT email, COUNT(*) as count
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;
+```
+
+### Problem 2: Second Highest Salary
+```sql
+-- Given: employees table with (id, name, salary)
+-- Find the second highest salary
+
+-- Solution 1: Using OFFSET
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+-- Solution 2: Using subquery
+SELECT MAX(salary) as second_highest
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+```
+
+### Problem 3: Calculate Percentage of Total
+```sql
+-- Given: sales table with (id, category, amount)
+-- Show each category's percentage of total sales
+
+SELECT
+    category,
+    SUM(amount) as category_total,
+    ROUND(
+        100.0 * SUM(amount) / (SELECT SUM(amount) FROM sales),
+        2
+    ) as percentage
+FROM sales
+GROUP BY category
+ORDER BY percentage DESC;
+```
+
+### Problem 4: Find Customers with No Orders
+```sql
+-- Given: customers (id, name) and orders (id, customer_id, amount)
+-- Find customers who have never placed an order
+
+-- Solution 1: LEFT JOIN with NULL check
+SELECT c.id, c.name
+FROM customers c
+LEFT JOIN orders o ON c.id = o.customer_id
+WHERE o.id IS NULL;
+
+-- Solution 2: NOT EXISTS (preferred)
+SELECT c.id, c.name
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1 FROM orders o WHERE o.customer_id = c.id
+);
+```
+
+### Problem 5: Consecutive Date Analysis
+```sql
+-- Given: logins table with (user_id, login_date)
+-- Find users who logged in for 3+ consecutive days
+
+WITH login_groups AS (
+    SELECT
+        user_id,
+        login_date,
+        login_date - ROW_NUMBER() OVER (
+            PARTITION BY user_id ORDER BY login_date
+        )::int AS grp
+    FROM (SELECT DISTINCT user_id, login_date FROM logins) t
+)
+SELECT DISTINCT user_id
+FROM login_groups
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 3;
+```
+
+## Quick Reference Card
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div>
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Basic Syntax</h4>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+SELECT columns<br/>
+FROM table<br/>
+WHERE condition<br/>
+GROUP BY columns<br/>
+HAVING condition<br/>
+ORDER BY columns<br/>
+LIMIT n OFFSET m;
+</div>
+</div>
+<div>
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Common Operators</h4>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; font-size: 13px;">
+<code>=, !=, <>, <, >, <=, >=</code><br/>
+<code>AND, OR, NOT</code><br/>
+<code>IN, NOT IN</code><br/>
+<code>BETWEEN ... AND ...</code><br/>
+<code>LIKE, ILIKE</code><br/>
+<code>IS NULL, IS NOT NULL</code>
+</div>
+</div>
+<div>
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Aggregate Functions</h4>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; font-size: 13px;">
+<code>COUNT(*), COUNT(col), COUNT(DISTINCT col)</code><br/>
+<code>SUM(col), AVG(col)</code><br/>
+<code>MIN(col), MAX(col)</code><br/>
+<code>STRING_AGG(col, ',')</code>
+</div>
+</div>
+<div>
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">NULL Handling</h4>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; font-size: 13px;">
+<code>COALESCE(a, b, c)</code> - First non-null<br/>
+<code>NULLIF(a, b)</code> - NULL if a = b<br/>
+<code>IS NULL / IS NOT NULL</code><br/>
+<code>NULL = NULL</code> returns NULL!
+</div>
+</div>
+</div>
+</div>
 
 ---
 
@@ -540,3 +516,4 @@ DO UPDATE SET
 - [Subqueries and CTEs](/topic/sql-learning/subqueries-ctes)
 - [Window Functions](/topic/sql-learning/window-functions)
 - [Database Indexing](/topic/sql-learning/indexing-deep-dive)
+- [Query Optimization](/topic/sql-learning/query-optimization)
