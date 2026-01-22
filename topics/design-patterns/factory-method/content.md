@@ -4,1214 +4,656 @@
 
 The Factory Method pattern defines an interface for creating objects, but lets subclasses decide which class to instantiate. It promotes loose coupling by eliminating the need to bind application-specific classes into your code.
 
-**Difficulty:** Intermediate (Often misunderstood, frequently misused)
+**Difficulty:** Intermediate
 **Category:** Creational Pattern
-**First Documented:** GoF (1994), but concept predates it
+**First Documented:** GoF (1994)
 
 ---
 
-## Intuitive Understanding
+## Simple Explanation: The Restaurant Analogy
 
-<div class="metaphor-card">
-  <div class="metaphor-icon">🍕</div>
-  <div class="metaphor-title">Think of a Pizza Restaurant Franchise</div>
-  <div class="metaphor-description">
-    Imagine you own a pizza chain. Each location (NYC, Chicago, California) makes pizza differently.
-    The headquarters defines WHAT a pizza is (dough, sauce, toppings) and the general process (prepare, bake, box).
-    But each location DECIDES HOW to make it - NYC style thin crust, Chicago deep dish, California with avocado.
-    The "Factory Method" is like telling each franchise: "You implement your own createPizza() - headquarters doesn't care HOW you make it, just that you deliver a Pizza object we can work with."
-  </div>
-  <div class="metaphor-mapping">
-    <div class="mapping-item">
-      <span class="real">Pizza HQ (abstract process)</span>
-      <span class="arrow">→</span>
-      <span class="concept">Creator interface</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">NYC/Chicago store</span>
-      <span class="arrow">→</span>
-      <span class="concept">ConcreteCreator</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">createPizza() at each store</span>
-      <span class="arrow">→</span>
-      <span class="concept">factoryMethod()</span>
-    </div>
-    <div class="mapping-item">
-      <span class="real">The actual pizza made</span>
-      <span class="arrow">→</span>
-      <span class="concept">Product</span>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of a Restaurant Franchise</h3>
+
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+Imagine you own a burger franchise with locations in New York, Texas, and California. Each location serves burgers, but with regional variations:
+</p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
+<div style="background: #dbeafe; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700;">New York</div>
+<div style="color: #1e3a8a; font-size: 0.9rem;">Classic thin patty with deli pickles</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 12px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700;">Texas</div>
+<div style="color: #14532d; font-size: 0.9rem;">Thick patty with jalapenos and BBQ</div>
+</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700;">California</div>
+<div style="color: #78350f; font-size: 0.9rem;">Plant-based option with avocado</div>
+</div>
 </div>
 
-### The 20-Year Insight
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<strong>The headquarters (Creator)</strong> defines WHAT a burger is and the general process (take order, make burger, serve).
+<strong>Each location (ConcreteCreator)</strong> decides HOW to make the burger by implementing <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">createBurger()</code>.
+</p>
 
-After decades of building systems, here's what separates novice from expert understanding:
-
-**Novice thinks:** "Factory Method creates objects so I don't have to use `new`"
-
-**Expert knows:** "Factory Method is about **deferring instantiation decisions** to subclasses while maintaining a consistent algorithm in the superclass. The real power is in the **Template Method collaboration** - the superclass controls WHEN creation happens, subclasses control WHAT gets created."
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #4ecdc4; margin-top: 0;">Expert Mental Model: Factory Method is HALF of the story</h4>
-<div style="background: #252540; padding: 16px; border-radius: 8px; font-family: monospace;">
-<code style="color: #dcdcaa;">Creator.someOperation()</code> {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;product = <code style="color: #4ecdc4;">this.factoryMethod()</code> <span style="color: #6a9955;">← Factory Method (varies)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;product.doSomething() <span style="color: #6a9955;">← Uses the product</span><br>
-}
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">The Key Insight:</strong>
+<span style="color: #334155;"> The franchise system works without headquarters knowing the specific burger recipe each location uses. They just know they'll get a Burger object back.</span>
 </div>
-<p style="color: #ddd; margin-top: 16px; margin-bottom: 0;">The <strong style="color: #4ecdc4;">COMBINATION</strong> of fixed algorithm + varying creation is where the real power lies.</p>
 </div>
 
 ---
 
-## Mental Model: When Your Brain Should Fire "Factory Method"
+## Real Company Usage
 
-<div class="decision-flowchart">
-  <div class="decision-node start">Do you need to create objects?</div>
-  <div class="decision-branch">
-    <div class="decision-node">Is the exact type unknown at compile time?</div>
-    <div class="decision-branch">
-      <div class="decision-node">Will subclasses need different types?</div>
-      <div class="decision-branch">
-        <div class="decision-node result yes">✅ Factory Method</div>
-        <div class="decision-node result maybe">Maybe Simple Factory</div>
-      </div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+
+| Company | How They Use Factory Method |
+|---------|----------------------------|
+| **Netflix** | Creates different video encoders based on device type (mobile, TV, web) |
+| **Stripe** | Payment processor factory creates region-specific handlers (US, EU, APAC) |
+| **AWS SDK** | Service client factories create appropriate clients for each AWS service |
+| **Django** | Form field factories create different input widgets based on field type |
+| **React** | createElement is essentially a factory method for creating components |
+| **Kubernetes** | Controller factories create appropriate controllers for different resource types |
+
 </div>
-
-### The Decision Matrix
-
-| Situation | Use Factory Method? | Better Alternative |
-|-----------|--------------------|--------------------|
-| Need object creation in base class, type varies by subclass | ✅ Yes | - |
-| Multiple related products need creation | ❌ No | Abstract Factory |
-| Object requires complex multi-step construction | ❌ No | Builder |
-| Need exact clone of existing object | ❌ No | Prototype |
-| Just want to hide `new` keyword | ❌ No | Simple Factory function |
-| Configuration-driven object selection | ⚠️ Maybe | Registry + Factory |
-| DI container handles creation | ❌ No | Just use DI |
 
 ---
 
-## Key Concepts
+## Pattern Structure
 
-### When to Use (Real Scenarios)
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Factory Method Pattern Structure</h4>
 
-1. **Framework/Library Development**
-   - Your code defines the algorithm skeleton
-   - Users extend to provide specific implementations
-   - Example: Web frameworks where you override `createController()`
+<div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin: 24px 0;">
 
-2. **Plugin Systems**
-   - Core system doesn't know what plugins exist
-   - Each plugin factory creates its own components
-
-3. **Cross-Platform Applications**
-   - Same logic, different platform-specific implementations
-   - macOS creates Cocoa buttons, Windows creates Win32 buttons
-
-4. **Testing Infrastructure**
-   - Production factory creates real services
-   - Test factory creates mocks
-
-### When NOT to Use (The Traps)
-
-<div class="warning-box">
-  <div class="warning-title">⚠️ Over-Engineering Alert</div>
-  <div class="warning-content">
-    <p><strong>Don't use Factory Method when:</strong></p>
-    <ul>
-      <li>You only have ONE concrete class (YAGNI - You Ain't Gonna Need It)</li>
-      <li>The "product" is just data, not behavior</li>
-      <li>A simple function would suffice</li>
-      <li>You're trying to hide constructors for no reason</li>
-      <li>Your DI container already handles this</li>
-    </ul>
-  </div>
-</div>
-
-### Structure
-
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #4ecdc4; margin-top: 0; text-align: center;">Factory Method Pattern Structure</h4>
-<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px;">
-<!-- Creator side -->
+<!-- Creator Side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-<div style="background: #252540; border: 2px solid #569cd6; border-radius: 8px; width: 180px;">
-<div style="background: #569cd6; color: white; padding: 8px; font-weight: bold; text-align: center;">Creator</div>
-<div style="padding: 12px;">
-<code style="color: #dcdcaa;">+ factoryMethod()</code><br>
-<code style="color: #dcdcaa;">+ someOperation()</code>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Creator</div>
+<div style="padding: 16px; color: #1e3a8a; font-size: 0.9rem;">
+<code>+ factoryMethod()</code><br>
+<code>+ someOperation()</code>
 </div>
 </div>
-<div style="color: #569cd6;">△</div>
-<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 180px;">
-<div style="background: #666; color: white; padding: 8px; font-weight: bold; text-align: center;">ConcreteCreatorA</div>
-<div style="padding: 12px;">
-<code style="color: #dcdcaa;">+ factoryMethod()</code>
+
+<div style="color: #3b82f6; font-size: 1.5rem;">&#9651;</div>
+
+<div style="background: #f1f5f9; border: 2px solid #64748b; border-radius: 12px; width: 200px;">
+<div style="background: #64748b; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">ConcreteCreatorA</div>
+<div style="padding: 16px; color: #334155; font-size: 0.9rem;">
+<code>+ factoryMethod()</code>
 </div>
 </div>
 </div>
+
 <!-- Arrow -->
-<div style="display: flex; align-items: center; color: #888; font-size: 24px;">→</div>
-<!-- Product side -->
+<div style="display: flex; align-items: center; color: #64748b; font-size: 2rem; padding-top: 20px;">
+&#8594;
+<span style="font-size: 0.7rem; margin-left: 8px;">creates</span>
+</div>
+
+<!-- Product Side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-<div style="background: #252540; border: 2px solid #4ecdc4; border-radius: 8px; width: 160px;">
-<div style="background: #4ecdc4; color: #1a1a2e; padding: 8px; font-weight: bold; text-align: center;">Product</div>
-<div style="padding: 12px;">
-<code style="color: #dcdcaa;">+ operation()</code>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 180px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
+<div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Product</div>
+<div style="padding: 16px; color: #166534; font-size: 0.9rem;">
+<code>+ operation()</code>
 </div>
 </div>
-<div style="color: #4ecdc4;">△</div>
+
+<div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
+
 <div style="display: flex; gap: 12px;">
-<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 100px; text-align: center; padding: 12px;">
-<span style="color: #ddd;">ProductA</span>
+<div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px 16px; color: #166534; font-size: 0.85rem; text-align: center;">
+ProductA
 </div>
-<div style="background: #252540; border: 2px solid #888; border-radius: 8px; width: 100px; text-align: center; padding: 12px;">
-<span style="color: #ddd;">ProductB</span>
+<div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px 16px; color: #166534; font-size: 0.85rem; text-align: center;">
+ProductB
 </div>
 </div>
 </div>
+
+</div>
+
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">Flow:</strong>
+<span style="color: #334155;"> Client calls <code>someOperation()</code> on Creator, which internally calls <code>factoryMethod()</code> to get a Product, then uses that Product.</span>
 </div>
 </div>
 
 ---
 
-## Implementation
+## When to Use Factory Method
 
-### Python - Basic Factory Method
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+
+### Good Use Cases
+
+1. **Framework/Library Development** - Your code defines the algorithm, users extend to provide implementations
+2. **Plugin Systems** - Core system doesn't know what plugins exist at compile time
+3. **Cross-Platform Applications** - Same logic, different platform-specific implementations
+4. **Testing Infrastructure** - Production factory creates real services, test factory creates mocks
+5. **Database Connections** - Create appropriate connection objects based on database type
+
+</div>
+
+---
+
+## Anti-Patterns: When NOT to Use
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+
+### Common Mistakes
+
+1. **Over-Engineering** - Using factory method when you only have ONE concrete class
+2. **Hiding Simple Construction** - Using factory just to avoid the `new` keyword
+3. **When DI is Available** - If your DI container handles creation, don't duplicate logic
+4. **Data Objects** - Factory method is for objects with behavior, not plain data transfer objects
+5. **Confusing with Simple Factory** - A static method that returns objects is NOT the Factory Method pattern
+
+</div>
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
+
+### The YAGNI Trap
 
 ```python
-from abc import ABC, abstractmethod
-
-# Product interface
-class Button(ABC):
-    @abstractmethod
-    def render(self) -> str:
-        pass
-
-    @abstractmethod
-    def on_click(self, callback) -> None:
-        pass
-
-
-# Concrete products
-class WindowsButton(Button):
-    def render(self) -> str:
-        return "<button class='windows'>Click me</button>"
-
-    def on_click(self, callback) -> None:
-        print("Windows button clicked")
-        callback()
-
-
-class MacButton(Button):
-    def render(self) -> str:
-        return "<button class='mac'>Click me</button>"
-
-    def on_click(self, callback) -> None:
-        print("Mac button clicked")
-        callback()
-
-
-class WebButton(Button):
-    def render(self) -> str:
-        return "<button class='web'>Click me</button>"
-
-    def on_click(self, callback) -> None:
-        print("Web button clicked")
-        callback()
-
-
-# Creator interface
-class Dialog(ABC):
+# BAD: Over-engineering with factory method for single type
+class ButtonFactory(ABC):
     @abstractmethod
     def create_button(self) -> Button:
         pass
 
-    def render(self) -> str:
-        button = self.create_button()
-        return f"<dialog>{button.render()}</dialog>"
-
-
-# Concrete creators
-class WindowsDialog(Dialog):
-    def create_button(self) -> Button:
-        return WindowsButton()
-
-
-class MacDialog(Dialog):
-    def create_button(self) -> Button:
-        return MacButton()
-
-
-class WebDialog(Dialog):
+class WebButtonFactory(ButtonFactory):  # Only implementation!
     def create_button(self) -> Button:
         return WebButton()
 
+# GOOD: Just create the object directly
+button = WebButton()
 
-# Client code
-def get_dialog(platform: str) -> Dialog:
-    if platform == "windows":
-        return WindowsDialog()
-    elif platform == "mac":
-        return MacDialog()
-    else:
-        return WebDialog()
-
-
-# Usage
-dialog = get_dialog("windows")
-print(dialog.render())
-# <dialog><button class='windows'>Click me</button></dialog>
+# Use factory method ONLY when you genuinely have multiple types
 ```
 
-### Python - Parameterized Factory with Registry
+</div>
+
+---
+
+## Python Implementation
+
+### Basic Factory Method
 
 ```python
 from abc import ABC, abstractmethod
-from typing import Dict, Type, Any, Callable
+from typing import Dict, Any
+
+
+# Product interface - what all products must implement
+class Notification(ABC):
+    @abstractmethod
+    def send(self, recipient: str, message: str) -> bool:
+        """Send notification and return success status."""
+        pass
+
+    @abstractmethod
+    def get_cost(self) -> float:
+        """Return cost per notification."""
+        pass
+
+
+# Concrete Products
+class EmailNotification(Notification):
+    def __init__(self, smtp_server: str = "smtp.gmail.com"):
+        self.smtp_server = smtp_server
+
+    def send(self, recipient: str, message: str) -> bool:
+        print(f"Sending EMAIL to {recipient}: {message}")
+        return True
+
+    def get_cost(self) -> float:
+        return 0.001  # Very cheap
+
+
+class SMSNotification(Notification):
+    def __init__(self, gateway: str = "twilio"):
+        self.gateway = gateway
+
+    def send(self, recipient: str, message: str) -> bool:
+        print(f"Sending SMS via {self.gateway} to {recipient}: {message}")
+        return True
+
+    def get_cost(self) -> float:
+        return 0.05  # More expensive
+
+
+class PushNotification(Notification):
+    def __init__(self, service: str = "firebase"):
+        self.service = service
+
+    def send(self, recipient: str, message: str) -> bool:
+        print(f"Sending PUSH via {self.service} to {recipient}: {message}")
+        return True
+
+    def get_cost(self) -> float:
+        return 0.0  # Free
+
+
+# Creator - defines the factory method
+class NotificationService(ABC):
+    @abstractmethod
+    def create_notification(self) -> Notification:
+        """Factory method - subclasses decide what to create."""
+        pass
+
+    def notify_user(self, user_id: str, message: str) -> Dict[str, Any]:
+        """
+        Template method that uses the factory method.
+        This is where the real power of factory method lies.
+        """
+        notification = self.create_notification()
+
+        # Business logic that works with any notification type
+        success = notification.send(user_id, message)
+        cost = notification.get_cost()
+
+        return {
+            "success": success,
+            "cost": cost,
+            "type": type(notification).__name__
+        }
+
+
+# Concrete Creators
+class EmailNotificationService(NotificationService):
+    def __init__(self, smtp_server: str = "smtp.gmail.com"):
+        self.smtp_server = smtp_server
+
+    def create_notification(self) -> Notification:
+        return EmailNotification(self.smtp_server)
+
+
+class SMSNotificationService(NotificationService):
+    def __init__(self, gateway: str = "twilio"):
+        self.gateway = gateway
+
+    def create_notification(self) -> Notification:
+        return SMSNotification(self.gateway)
+
+
+class PushNotificationService(NotificationService):
+    def create_notification(self) -> Notification:
+        return PushNotification()
+
+
+# Usage - client code works with creator interface
+def send_alert(service: NotificationService, user: str, message: str):
+    """Client code doesn't know which notification type will be used."""
+    result = service.notify_user(user, message)
+    print(f"Sent: {result}")
+    return result
+
+
+# Runtime selection
+email_service = EmailNotificationService()
+sms_service = SMSNotificationService()
+push_service = PushNotificationService()
+
+send_alert(email_service, "user@example.com", "Your order shipped!")
+send_alert(sms_service, "+1234567890", "Your code is 123456")
+send_alert(push_service, "device_token_abc", "New message received")
+```
+
+### Production-Grade Factory with Registry
+
+```python
+from abc import ABC, abstractmethod
+from typing import Dict, Type, Callable, Optional, Any
+from dataclasses import dataclass
+from enum import Enum
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class Document(ABC):
-    """Abstract product defining document interface."""
+class PaymentStatus(Enum):
+    SUCCESS = "success"
+    FAILED = "failed"
+    PENDING = "pending"
 
+
+@dataclass
+class PaymentResult:
+    status: PaymentStatus
+    transaction_id: str
+    amount: float
+    provider: str
+    metadata: Dict[str, Any] = None
+
+
+# Product interface
+class PaymentProcessor(ABC):
     @abstractmethod
-    def open(self) -> str:
+    def process(self, amount: float, currency: str) -> PaymentResult:
         pass
 
     @abstractmethod
-    def save(self) -> str:
+    def refund(self, transaction_id: str, amount: float) -> PaymentResult:
         pass
 
     @abstractmethod
-    def export(self, format: str) -> bytes:
+    def health_check(self) -> bool:
         pass
 
 
-class PDFDocument(Document):
-    def __init__(self, config: Dict[str, Any] = None):
-        self.config = config or {}
-        self._content = None
+# Concrete Products
+class StripeProcessor(PaymentProcessor):
+    def __init__(self, api_key: str):
+        self.api_key = api_key
 
-    def open(self) -> str:
-        return "Opening PDF document"
+    def process(self, amount: float, currency: str) -> PaymentResult:
+        # In production: actual Stripe API call
+        return PaymentResult(
+            status=PaymentStatus.SUCCESS,
+            transaction_id=f"stripe_{amount}",
+            amount=amount,
+            provider="stripe"
+        )
 
-    def save(self) -> str:
-        return "Saving PDF document"
+    def refund(self, transaction_id: str, amount: float) -> PaymentResult:
+        return PaymentResult(
+            status=PaymentStatus.SUCCESS,
+            transaction_id=f"refund_{transaction_id}",
+            amount=amount,
+            provider="stripe"
+        )
 
-    def export(self, format: str) -> bytes:
-        return f"PDF exported as {format}".encode()
-
-
-class WordDocument(Document):
-    def __init__(self, config: Dict[str, Any] = None):
-        self.config = config or {}
-
-    def open(self) -> str:
-        return "Opening Word document"
-
-    def save(self) -> str:
-        return "Saving Word document"
-
-    def export(self, format: str) -> bytes:
-        return f"Word exported as {format}".encode()
+    def health_check(self) -> bool:
+        return True
 
 
-class DocumentFactory:
+class PayPalProcessor(PaymentProcessor):
+    def __init__(self, client_id: str, client_secret: str):
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+    def process(self, amount: float, currency: str) -> PaymentResult:
+        return PaymentResult(
+            status=PaymentStatus.SUCCESS,
+            transaction_id=f"paypal_{amount}",
+            amount=amount,
+            provider="paypal"
+        )
+
+    def refund(self, transaction_id: str, amount: float) -> PaymentResult:
+        return PaymentResult(
+            status=PaymentStatus.SUCCESS,
+            transaction_id=f"refund_{transaction_id}",
+            amount=amount,
+            provider="paypal"
+        )
+
+    def health_check(self) -> bool:
+        return True
+
+
+# Factory with Registry Pattern
+class PaymentProcessorFactory:
     """
     Production-grade factory with:
     - Dynamic registration
-    - Validation hooks
-    - Logging
-    - Graceful fallbacks
+    - Health checks
+    - Fallback handling
+    - Metrics tracking
     """
 
-    _creators: Dict[str, Type[Document]] = {}
-    _validators: Dict[str, Callable[[Dict], bool]] = {}
-    _default_type: str = None
+    _registry: Dict[str, Callable[[], PaymentProcessor]] = {}
+    _instances: Dict[str, PaymentProcessor] = {}
+    _fallback: Optional[str] = None
 
     @classmethod
     def register(
         cls,
-        doc_type: str,
-        creator: Type[Document],
-        validator: Callable[[Dict], bool] = None,
-        is_default: bool = False
+        name: str,
+        creator: Callable[[], PaymentProcessor],
+        is_fallback: bool = False
     ):
-        """Register a document type with optional validator."""
-        cls._creators[doc_type.lower()] = creator
-        if validator:
-            cls._validators[doc_type.lower()] = validator
-        if is_default:
-            cls._default_type = doc_type.lower()
-        logger.info(f"Registered document type: {doc_type}")
+        """Register a payment processor creator."""
+        cls._registry[name.lower()] = creator
+        if is_fallback:
+            cls._fallback = name.lower()
+        logger.info(f"Registered processor: {name}")
 
     @classmethod
-    def unregister(cls, doc_type: str) -> bool:
-        """Remove a document type from registry."""
-        doc_type = doc_type.lower()
-        if doc_type in cls._creators:
-            del cls._creators[doc_type]
-            cls._validators.pop(doc_type, None)
-            logger.info(f"Unregistered document type: {doc_type}")
-            return True
-        return False
+    def create(cls, name: str) -> PaymentProcessor:
+        """Create or return cached processor instance."""
+        name = name.lower()
 
-    @classmethod
-    def create(cls, doc_type: str, config: Dict[str, Any] = None) -> Document:
-        """
-        Create a document with validation and fallback.
+        # Return cached instance if exists
+        if name in cls._instances:
+            return cls._instances[name]
 
-        Raises:
-            ValueError: If doc_type unknown and no default set
-            ValidationError: If config fails validation
-        """
-        doc_type = doc_type.lower()
-        config = config or {}
+        # Try to create from registry
+        creator = cls._registry.get(name)
 
-        # Try exact match first
-        creator = cls._creators.get(doc_type)
-
-        # Fall back to default if configured
-        if not creator and cls._default_type:
-            logger.warning(
-                f"Unknown type '{doc_type}', falling back to '{cls._default_type}'"
-            )
-            creator = cls._creators.get(cls._default_type)
-            doc_type = cls._default_type
+        if not creator and cls._fallback:
+            logger.warning(f"Unknown processor '{name}', using fallback")
+            creator = cls._registry.get(cls._fallback)
+            name = cls._fallback
 
         if not creator:
-            available = list(cls._creators.keys())
             raise ValueError(
-                f"Unknown document type: {doc_type}. "
-                f"Available: {available}"
+                f"Unknown processor: {name}. "
+                f"Available: {list(cls._registry.keys())}"
             )
 
-        # Run validator if present
-        validator = cls._validators.get(doc_type)
-        if validator and not validator(config):
-            raise ValueError(f"Invalid config for {doc_type}: {config}")
+        # Create and validate
+        instance = creator()
+        if not instance.health_check():
+            raise RuntimeError(f"Processor '{name}' failed health check")
 
-        logger.debug(f"Creating {doc_type} document with config: {config}")
-        return creator(config)
+        # Cache and return
+        cls._instances[name] = instance
+        return instance
 
     @classmethod
-    def list_types(cls) -> list:
-        """Return all registered document types."""
-        return list(cls._creators.keys())
+    def list_processors(cls) -> list:
+        return list(cls._registry.keys())
 
 
-# Registration with validators
-def validate_pdf_config(config: Dict) -> bool:
-    """PDFs require encryption setting in production."""
-    return True  # Simplified
-
-DocumentFactory.register("pdf", PDFDocument, validate_pdf_config, is_default=True)
-DocumentFactory.register("word", WordDocument)
-
-# Usage
-doc = DocumentFactory.create("pdf", {"encryption": "AES-256"})
-print(doc.open())
-```
-
-### Go - Factory Method
-
-```go
-package main
-
-import "fmt"
-
-// Product interface
-type Transport interface {
-	Deliver() string
-	GetCost() float64
-}
-
-// Concrete products
-type Truck struct {
-	capacity int
-}
-
-func (t *Truck) Deliver() string {
-	return fmt.Sprintf("Delivering by truck (capacity: %d tons)", t.capacity)
-}
-
-func (t *Truck) GetCost() float64 {
-	return 10.0 * float64(t.capacity)
-}
-
-type Ship struct {
-	containers int
-}
-
-func (s *Ship) Deliver() string {
-	return fmt.Sprintf("Delivering by ship (%d containers)", s.containers)
-}
-
-func (s *Ship) GetCost() float64 {
-	return 50.0 * float64(s.containers)
-}
-
-type Plane struct {
-	packages int
-}
-
-func (p *Plane) Deliver() string {
-	return fmt.Sprintf("Delivering by plane (%d packages)", p.packages)
-}
-
-func (p *Plane) GetCost() float64 {
-	return 100.0 * float64(p.packages)
-}
-
-// Creator interface
-type Logistics interface {
-	CreateTransport() Transport
-	PlanDelivery() string
-}
-
-// Concrete creators
-type RoadLogistics struct {
-	capacity int
-}
-
-func (r *RoadLogistics) CreateTransport() Transport {
-	return &Truck{capacity: r.capacity}
-}
-
-func (r *RoadLogistics) PlanDelivery() string {
-	transport := r.CreateTransport()
-	return fmt.Sprintf("Road delivery planned: %s, Cost: $%.2f",
-		transport.Deliver(), transport.GetCost())
-}
-
-type SeaLogistics struct {
-	containers int
-}
-
-func (s *SeaLogistics) CreateTransport() Transport {
-	return &Ship{containers: s.containers}
-}
-
-func (s *SeaLogistics) PlanDelivery() string {
-	transport := s.CreateTransport()
-	return fmt.Sprintf("Sea delivery planned: %s, Cost: $%.2f",
-		transport.Deliver(), transport.GetCost())
-}
-
-type AirLogistics struct {
-	packages int
-}
-
-func (a *AirLogistics) CreateTransport() Transport {
-	return &Plane{packages: a.packages}
-}
-
-func (a *AirLogistics) PlanDelivery() string {
-	transport := a.CreateTransport()
-	return fmt.Sprintf("Air delivery planned: %s, Cost: $%.2f",
-		transport.Deliver(), transport.GetCost())
-}
-
-// Factory function
-func GetLogistics(logType string, param int) Logistics {
-	switch logType {
-	case "road":
-		return &RoadLogistics{capacity: param}
-	case "sea":
-		return &SeaLogistics{containers: param}
-	case "air":
-		return &AirLogistics{packages: param}
-	default:
-		return &RoadLogistics{capacity: param}
-	}
-}
-
-func main() {
-	logistics := GetLogistics("sea", 5)
-	fmt.Println(logistics.PlanDelivery())
-	// Sea delivery planned: Delivering by ship (5 containers), Cost: $250.00
-}
-```
-
-### Go - Production-Grade Factory with Registration
-
-```go
-package main
-
-import (
-	"fmt"
-	"sync"
-	"time"
+# Registration (usually done at startup)
+PaymentProcessorFactory.register(
+    "stripe",
+    lambda: StripeProcessor("sk_live_xxx"),
+    is_fallback=True
 )
 
-// ============================================================
-// PRODUCTION-GRADE FACTORY PATTERN
-// Features:
-// - Thread-safe registration
-// - Metrics collection
-// - Health checks
-// - Graceful degradation
-// ============================================================
+PaymentProcessorFactory.register(
+    "paypal",
+    lambda: PayPalProcessor("client_id", "secret")
+)
 
-// Product interface
-type PaymentProcessor interface {
-	Process(amount float64) (*PaymentResult, error)
-	GetFee(amount float64) float64
-	HealthCheck() bool
-	Name() string
-}
 
-type PaymentResult struct {
-	Success       bool
-	TransactionID string
-	Message       string
-	ProcessedAt   time.Time
-}
-
-// Concrete products with production features
-type CreditCardProcessor struct {
-	apiKey    string
-	timeout   time.Duration
-	retries   int
-}
-
-func NewCreditCardProcessor(apiKey string) *CreditCardProcessor {
-	return &CreditCardProcessor{
-		apiKey:  apiKey,
-		timeout: 30 * time.Second,
-		retries: 3,
-	}
-}
-
-func (c *CreditCardProcessor) Name() string { return "credit_card" }
-
-func (c *CreditCardProcessor) Process(amount float64) (*PaymentResult, error) {
-	// Production: Would include retry logic, circuit breaker, etc.
-	return &PaymentResult{
-		Success:       true,
-		TransactionID: fmt.Sprintf("CC-%d", time.Now().UnixNano()),
-		Message:       fmt.Sprintf("Charged $%.2f via Credit Card", amount),
-		ProcessedAt:   time.Now(),
-	}, nil
-}
-
-func (c *CreditCardProcessor) GetFee(amount float64) float64 {
-	return amount*0.029 + 0.30 // 2.9% + $0.30
-}
-
-func (c *CreditCardProcessor) HealthCheck() bool {
-	// Production: Would ping the payment gateway
-	return true
-}
-
-type PayPalProcessor struct {
-	clientID     string
-	clientSecret string
-}
-
-func NewPayPalProcessor(clientID, clientSecret string) *PayPalProcessor {
-	return &PayPalProcessor{clientID: clientID, clientSecret: clientSecret}
-}
-
-func (p *PayPalProcessor) Name() string { return "paypal" }
-
-func (p *PayPalProcessor) Process(amount float64) (*PaymentResult, error) {
-	return &PaymentResult{
-		Success:       true,
-		TransactionID: fmt.Sprintf("PP-%d", time.Now().UnixNano()),
-		Message:       fmt.Sprintf("Charged $%.2f via PayPal", amount),
-		ProcessedAt:   time.Now(),
-	}, nil
-}
-
-func (p *PayPalProcessor) GetFee(amount float64) float64 {
-	return amount*0.034 + 0.49
-}
-
-func (p *PayPalProcessor) HealthCheck() bool {
-	return true
-}
-
-// ============================================================
-// FACTORY WITH PRODUCTION FEATURES
-// ============================================================
-
-type ProcessorCreator func() PaymentProcessor
-
-type PaymentFactory struct {
-	mu           sync.RWMutex
-	creators     map[string]ProcessorCreator
-	instances    map[string]PaymentProcessor  // Singleton instances
-	metrics      *FactoryMetrics
-	fallbackName string
-}
-
-type FactoryMetrics struct {
-	mu             sync.Mutex
-	CreationCounts map[string]int64
-	FailureCounts  map[string]int64
-	LastHealthy    map[string]time.Time
-}
-
-func NewPaymentFactory() *PaymentFactory {
-	return &PaymentFactory{
-		creators:  make(map[string]ProcessorCreator),
-		instances: make(map[string]PaymentProcessor),
-		metrics: &FactoryMetrics{
-			CreationCounts: make(map[string]int64),
-			FailureCounts:  make(map[string]int64),
-			LastHealthy:    make(map[string]time.Time),
-		},
-	}
-}
-
-func (f *PaymentFactory) Register(name string, creator ProcessorCreator) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-	f.creators[name] = creator
-}
-
-func (f *PaymentFactory) SetFallback(name string) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-	f.fallbackName = name
-}
-
-func (f *PaymentFactory) Create(name string) (PaymentProcessor, error) {
-	f.mu.RLock()
-
-	// Check for cached instance first (singleton behavior)
-	if instance, exists := f.instances[name]; exists {
-		f.mu.RUnlock()
-		return instance, nil
-	}
-
-	creator, exists := f.creators[name]
-	if !exists {
-		// Try fallback
-		if f.fallbackName != "" && f.fallbackName != name {
-			creator, exists = f.creators[f.fallbackName]
-			if exists {
-				fmt.Printf("Warning: Unknown processor '%s', using fallback '%s'\n",
-					name, f.fallbackName)
-			}
-		}
-	}
-	f.mu.RUnlock()
-
-	if !exists {
-		f.recordFailure(name)
-		return nil, fmt.Errorf("unknown processor: %s", name)
-	}
-
-	// Create instance
-	instance := creator()
-
-	// Health check before returning
-	if !instance.HealthCheck() {
-		f.recordFailure(name)
-		return nil, fmt.Errorf("processor '%s' failed health check", name)
-	}
-
-	// Cache the instance
-	f.mu.Lock()
-	f.instances[name] = instance
-	f.mu.Unlock()
-
-	f.recordCreation(name)
-	return instance, nil
-}
-
-func (f *PaymentFactory) recordCreation(name string) {
-	f.metrics.mu.Lock()
-	defer f.metrics.mu.Unlock()
-	f.metrics.CreationCounts[name]++
-	f.metrics.LastHealthy[name] = time.Now()
-}
-
-func (f *PaymentFactory) recordFailure(name string) {
-	f.metrics.mu.Lock()
-	defer f.metrics.mu.Unlock()
-	f.metrics.FailureCounts[name]++
-}
-
-func (f *PaymentFactory) GetMetrics() map[string]interface{} {
-	f.metrics.mu.Lock()
-	defer f.metrics.mu.Unlock()
-
-	return map[string]interface{}{
-		"creation_counts": f.metrics.CreationCounts,
-		"failure_counts":  f.metrics.FailureCounts,
-		"last_healthy":    f.metrics.LastHealthy,
-	}
-}
-
-func (f *PaymentFactory) ListProcessors() []string {
-	f.mu.RLock()
-	defer f.mu.RUnlock()
-
-	names := make([]string, 0, len(f.creators))
-	for name := range f.creators {
-		names = append(names, name)
-	}
-	return names
-}
-
-// ============================================================
-// USAGE
-// ============================================================
-
-func main() {
-	factory := NewPaymentFactory()
-
-	// Register processors with lazy initialization
-	factory.Register("credit_card", func() PaymentProcessor {
-		return NewCreditCardProcessor("sk_live_xxx")
-	})
-	factory.Register("paypal", func() PaymentProcessor {
-		return NewPayPalProcessor("client_id", "client_secret")
-	})
-
-	// Set fallback for graceful degradation
-	factory.SetFallback("credit_card")
-
-	// Use factory
-	processor, err := factory.Create("credit_card")
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		return
-	}
-
-	result, _ := processor.Process(100.0)
-	fmt.Printf("Result: %+v\n", result)
-	fmt.Printf("Fee: $%.2f\n", processor.GetFee(100.0))
-
-	// View metrics
-	fmt.Printf("Metrics: %+v\n", factory.GetMetrics())
-}
+# Usage
+processor = PaymentProcessorFactory.create("stripe")
+result = processor.process(99.99, "USD")
+print(f"Payment: {result}")
 ```
 
 ---
 
-## Production War Stories
+## Factory Method vs Related Patterns
 
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">💥</span>
-    <span class="war-story-title">The $2M Factory Method Bug</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>Company:</strong> Large e-commerce platform</p>
-    <p><strong>The Setup:</strong> Payment processor factory selected processors based on order value. Orders over $10K used a "premium" processor with better rates.</p>
-    <p><strong>The Bug:</strong> The factory checked <code>amount > 10000</code> but the amount was in cents, not dollars. So orders over $100 went to the premium processor which had higher minimums and rejected small orders.</p>
-    <p><strong>The Impact:</strong> 3 hours of failed payments, ~$2M in abandoned carts</p>
-    <p><strong>The Fix:</strong></p>
-```python
-# BEFORE (Bug)
-def create_processor(amount: int) -> PaymentProcessor:
-    if amount > 10000:  # BUG: amount is in cents!
-        return PremiumProcessor()
-    return StandardProcessor()
-# AFTER (Fixed with explicit types)
-@dataclass
-class Money:
-    cents: int
-    @property
-    def dollars(self) -> Decimal:
-        return Decimal(self.cents) / 100
-    def __gt__(self, other: 'Money') -> bool:
-        return self.cents > other.cents
-PREMIUM_THRESHOLD = Money(cents=1_000_000)  # $10,000
-def create_processor(amount: Money) -> PaymentProcessor:
-    if amount > PREMIUM_THRESHOLD:
-        return PremiumProcessor()
-    return StandardProcessor()
-```
-    <p><strong>Lesson:</strong> Never use primitive types for money. Use value objects with explicit units.</p>
-  </div>
-</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-<div class="war-story">
-  <div class="war-story-header">
-    <span class="war-story-icon">🔥</span>
-    <span class="war-story-title">The Memory Leak That Killed Black Friday</span>
-  </div>
-  <div class="war-story-content">
-    <p><strong>The Setup:</strong> Factory created new database connection pools for each "type" of query.</p>
-    <p><strong>The Problem:</strong> The "type" was accidentally derived from user input (query parameters), creating thousands of unique pools.</p>
-```go
-// PROBLEMATIC CODE
-func (f *QueryFactory) GetPool(queryType string) *sql.DB {
-    f.mu.Lock()
-    defer f.mu.Unlock()
-    if pool, exists := f.pools[queryType]; exists {
-        return pool
-    }
-    // Creates new pool for EVERY unique queryType!
-    pool := createPool()
-    f.pools[queryType] = pool  // Memory leak: pools never cleaned up
-    return pool
-}
-// Called with user input:
-// queryType = request.URL.Query().Get("type")  // Oops!
-```
-    <p><strong>The Fix:</strong> Validate and normalize factory keys</p>
-```go
-var validQueryTypes = map[string]bool{
-    "read": true, "write": true, "analytics": true,
-}
-func (f *QueryFactory) GetPool(queryType string) (*sql.DB, error) {
-    // Validate input
-    if !validQueryTypes[queryType] {
-        return nil, fmt.Errorf("invalid query type: %s", queryType)
-    }
-    // ... rest of logic
-}
-```
-  </div>
-</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
----
-
-## Deep Dive: Factory Method vs Simple Factory vs Abstract Factory
-
-This is the most common source of confusion. Here's the definitive breakdown:
-
-### Simple Factory (Not a GoF Pattern)
-
-```python
-# Just a function that creates objects
-def create_button(type: str) -> Button:
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Simple Factory</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Just a function/method that creates objects. NOT a GoF pattern.</p>
+<pre style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #1e3a8a;">def create_button(type):
     if type == "windows":
         return WindowsButton()
-    elif type == "mac":
-        return MacButton()
-    return WebButton()
-```
+    return WebButton()</code></pre>
+<p style="color: #3b82f6; font-size: 0.85rem; margin-bottom: 0;"><strong>When:</strong> One-off creation without extension</p>
+</div>
 
-**When to use:** When you need to centralize object creation but don't need subclass customization.
-
-### Factory Method (This Pattern)
-
-```python
-class Dialog(ABC):
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Factory Method</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Subclasses decide what to create. Uses inheritance.</p>
+<pre style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #166534;">class Dialog(ABC):
     @abstractmethod
-    def create_button(self) -> Button:  # Subclasses decide
-        pass
+    def create_button(self): pass
 
-    def render(self):  # Template method uses the factory
-        button = self.create_button()
-        return button.render()
+    def render(self):
+        btn = self.create_button()
+        return btn.render()</code></pre>
+<p style="color: #22c55e; font-size: 0.85rem; margin-bottom: 0;"><strong>When:</strong> Algorithm fixed, creation varies</p>
+</div>
 
-class WindowsDialog(Dialog):
-    def create_button(self) -> Button:
-        return WindowsButton()
-```
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">Abstract Factory</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Creates families of related objects. Uses composition.</p>
+<pre style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #78350f;">class GUIFactory(ABC):
+    def create_button(self): pass
+    def create_checkbox(self): pass
+    def create_input(self): pass</code></pre>
+<p style="color: #f59e0b; font-size: 0.85rem; margin-bottom: 0;"><strong>When:</strong> Multiple related products</p>
+</div>
 
-**When to use:** When a superclass needs to delegate object creation to subclasses while maintaining the algorithm.
-
-### Abstract Factory
-
-```python
-class GUIFactory(ABC):
-    @abstractmethod
-    def create_button(self) -> Button:
-        pass
-
-    @abstractmethod
-    def create_checkbox(self) -> Checkbox:
-        pass
-
-    @abstractmethod
-    def create_textfield(self) -> TextField:
-        pass
-
-class WindowsFactory(GUIFactory):
-    def create_button(self) -> Button:
-        return WindowsButton()
-
-    def create_checkbox(self) -> Checkbox:
-        return WindowsCheckbox()
-
-    def create_textfield(self) -> TextField:
-        return WindowsTextField()
-```
-
-**When to use:** When you need to create **families** of related objects that must be used together.
-
-### The Relationship Diagram
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #30363d;">
-<!-- Title -->
-<div style="text-align: center; margin-bottom: 24px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 16px;">Object Creation Patterns</div>
-<div style="width: 2px; height: 20px; background: #58a6ff; margin: 12px auto;"></div>
-</div>
-<!-- Three branches -->
-<div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
-<div style="width: 120px; height: 2px; background: linear-gradient(90deg, transparent 0%, #7ee787 100%);"></div>
-<div style="width: 2px; height: 2px; background: #58a6ff;"></div>
-<div style="width: 120px; height: 2px; background: linear-gradient(90deg, #7ee787 0%, transparent 100%);"></div>
-</div>
-<!-- Vertical connectors -->
-<div style="display: flex; justify-content: space-around; margin-bottom: 16px;">
-<div style="width: 2px; height: 16px; background: #7ee787;"></div>
-<div style="width: 2px; height: 16px; background: #58a6ff;"></div>
-<div style="width: 2px; height: 16px; background: #a371f7;"></div>
-</div>
-<!-- Pattern cards -->
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-<!-- Simple Factory -->
-<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #7ee787; text-align: center;">
-<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Simple Factory</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
-<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(function)</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
-<div style="color: #e6edf3; font-size: 11px;">One product</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
-<div style="color: #7ee787; font-size: 11px;">Centralized creation</div>
-</div>
-</div>
-</div>
-<!-- Factory Method -->
-<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #58a6ff; text-align: center;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Factory Method</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
-<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(inheritance)</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
-<div style="color: #e6edf3; font-size: 11px;">One product</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
-<div style="color: #58a6ff; font-size: 11px;">Deferred to subclasses</div>
-</div>
-</div>
-</div>
-<!-- Abstract Factory -->
-<div style="background: #21262d; border-radius: 12px; padding: 16px; border-top: 3px solid #a371f7; text-align: center;">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Abstract Factory</div>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Type</div>
-<div style="color: #f0883e; font-size: 12px; font-weight: bold;">(composition)</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Products</div>
-<div style="color: #e6edf3; font-size: 11px;">Multiple products</div>
-</div>
-<div style="background: #30363d; padding: 8px; border-radius: 6px;">
-<div style="color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Approach</div>
-<div style="color: #a371f7; font-size: 11px;">Families of related products</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 
 ---
 
-## Expert-Level FAQs
+## Interview Questions
 
-<details>
-<summary><strong>Q: How does Factory Method relate to Dependency Injection?</strong></summary>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-**A:** They solve similar problems differently:
+### Conceptual Questions
 
-- **Factory Method:** Subclass decides what to create; compile-time polymorphism
-- **DI:** External container decides what to inject; runtime configuration
-
-**In modern apps, prefer DI** unless you specifically need the inheritance-based customization Factory Method provides.
-
-```python
-# Factory Method approach
-class OrderService:
-    def create_payment_processor(self) -> PaymentProcessor:
-        raise NotImplementedError
-
-class USOrderService(OrderService):
-    def create_payment_processor(self) -> PaymentProcessor:
-        return StripeProcessor()
-
-# DI approach (usually better)
-class OrderService:
-    def __init__(self, payment_processor: PaymentProcessor):
-        self.payment_processor = payment_processor
-
-# Container configures what to inject
-container.register(PaymentProcessor, StripeProcessor)
-```
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What's the difference between Factory Method and Simple Factory?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Simple Factory:</strong> A single method/function that creates objects based on parameters. It's not a GoF pattern - just a good practice.
+<br><br>
+<strong>Factory Method:</strong> Uses inheritance where subclasses override the creation method. The key is that the superclass defines an algorithm that uses the factory method, and subclasses customize what gets created.
+<br><br>
+<strong>Key difference:</strong> Factory Method involves polymorphism and is extensible without modifying existing code (Open/Closed Principle).
+</div>
 </details>
 
-<details>
-<summary><strong>Q: What's the performance impact of factories?</strong></summary>
-
-**A:** Generally negligible, but be aware of:
-
-1. **Reflection-based factories** can be 10-100x slower than direct construction
-2. **Registry lookups** add HashMap overhead (usually O(1), but cache misses matter at scale)
-3. **Object pooling** can turn factories into performance optimizations
-
-```go
-// Benchmark results (Go, Apple M1):
-// Direct construction:      ~15ns/op
-// Simple factory:           ~20ns/op  (+33%)
-// Registry factory:         ~45ns/op  (+200%)
-// Reflection factory:       ~500ns/op (+3200%)
-
-// For hot paths, consider:
-var cachedProcessor PaymentProcessor // Pre-create in init
-
-func GetProcessor() PaymentProcessor {
-    if cachedProcessor != nil {
-        return cachedProcessor
-    }
-    return factory.Create("default")
-}
-```
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: Why is Factory Method often used with Template Method?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+Factory Method provides the "hook" for Template Method. The superclass defines an algorithm (template) that includes creating objects. The factory method is the step that subclasses customize.
+<br><br>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
+def process_order(self):           # Template Method
+    item = self.create_item()       # Factory Method
+    self.validate(item)             # Fixed step
+    self.ship(item)                 # Fixed step
+</pre>
+</div>
 </details>
 
-<details>
-<summary><strong>Q: How do I test code that uses Factory Method?</strong></summary>
-
-**A:** Three approaches:
-
-**1. Override in test subclass:**
-```python
-class TestableDialog(Dialog):
-    def create_button(self) -> Button:
-        return MockButton()
-
-def test_dialog():
-    dialog = TestableDialog()
-    # Test with mock button
-```
-
-**2. Inject factory:**
-```python
-class Dialog:
-    def __init__(self, button_factory: Callable[[], Button] = None):
-        self._button_factory = button_factory or self._default_factory
-
-    def _default_factory(self) -> Button:
-        return RealButton()
-
-def test_dialog():
-    dialog = Dialog(button_factory=lambda: MockButton())
-```
-
-**3. Use test double of the factory itself:**
-```python
-def test_order_processing(mocker):
-    mock_factory = mocker.patch('payments.ProcessorFactory')
-    mock_factory.create.return_value = MockProcessor()
-```
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How does Factory Method relate to Dependency Injection?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+Both solve the problem of decoupling object creation from usage, but differently:
+<br><br>
+<strong>Factory Method:</strong> Uses inheritance - subclasses decide what to create at compile time.
+<br><br>
+<strong>DI:</strong> Uses composition - an external container injects dependencies at runtime.
+<br><br>
+<strong>Modern preference:</strong> DI is often preferred because it's more flexible and testable. Use Factory Method when you specifically need the inheritance-based extension mechanism.
+</div>
 </details>
 
-<details>
-<summary><strong>Q: Factory Method in a microservices architecture?</strong></summary>
+### Coding Questions
 
-**A:** In microservices, Factory Method often appears in:
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a document parser factory that handles PDF, Word, and Excel files</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
+from abc import ABC, abstractmethod
 
-1. **Service client factories:** Create appropriate client based on target service
-2. **Message handler factories:** Create handlers based on message type
-3. **Strategy factories:** Select algorithms based on context
+class DocumentParser(ABC):
+    @abstractmethod
+    def parse(self, content: bytes) -> dict:
+        pass
 
-```python
-class ServiceClientFactory:
-    """
-    Creates clients with appropriate:
-    - Circuit breakers
-    - Retry policies
-    - Authentication
-    - Metrics collection
-    """
+class PDFParser(DocumentParser):
+    def parse(self, content: bytes) -> dict:
+        return {"type": "pdf", "pages": 10}
 
-    def create_client(self, service_name: str) -> ServiceClient:
-        config = self.get_config(service_name)
+class ParserFactory(ABC):
+    @abstractmethod
+    def create_parser(self) -> DocumentParser:
+        pass
 
-        client = HttpClient(
-            base_url=config.url,
-            timeout=config.timeout,
-        )
+    def process_document(self, content: bytes) -> dict:
+        parser = self.create_parser()
+        return parser.parse(content)
 
-        # Wrap with production concerns
-        client = CircuitBreakerWrapper(client, config.circuit_breaker)
-        client = RetryWrapper(client, config.retry_policy)
-        client = MetricsWrapper(client, service_name)
-
-        return client
-```
-
-**Caution:** Don't over-engineer. If you're creating simple HTTP clients, a function is fine. Use Factory Method when you need the inheritance-based extension point.
+class PDFParserFactory(ParserFactory):
+    def create_parser(self) -> DocumentParser:
+        return PDFParser()
+</pre>
+</div>
 </details>
 
-<details>
-<summary><strong>Q: How do I version factories for backward compatibility?</strong></summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: What would you change to make this factory thread-safe?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+Key considerations:
+<ul>
+<li>Use thread-safe data structures (e.g., threading.Lock in Python)</li>
+<li>Consider double-checked locking for singleton instances</li>
+<li>Make factory methods idempotent</li>
+<li>Use atomic operations for registry updates</li>
+</ul>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
+import threading
 
-**A:** This is a real production concern. Strategies:
+class ThreadSafeFactory:
+    _lock = threading.Lock()
+    _instances = {}
 
-```python
-class ProcessorFactory:
-    """
-    Versioned factory supporting backward compatibility.
-    """
-
-    def create(
-        self,
-        processor_type: str,
-        version: str = "v2"
-    ) -> PaymentProcessor:
-        # Version-specific creation
-        creator_key = f"{processor_type}_{version}"
-
-        if creator_key in self._creators:
-            return self._creators[creator_key]()
-
-        # Fallback to latest if version unknown
-        latest_key = f"{processor_type}_v2"
-        if latest_key in self._creators:
-            logger.warning(f"Unknown version {version}, using latest")
-            return self._creators[latest_key]()
-
-        raise ValueError(f"Unknown processor: {processor_type}")
-```
+    @classmethod
+    def create(cls, name: str):
+        with cls._lock:
+            if name not in cls._instances:
+                cls._instances[name] = cls._create_new(name)
+            return cls._instances[name]
+</pre>
+</div>
 </details>
+
+</div>
 
 ---
 
-## Common Mistakes and Anti-Patterns
+## Common Mistakes
 
-### Mistake 1: Factory That Knows Too Much
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+
+### Mistake 1: Factory That Does Too Much
 
 ```python
 # BAD: Factory has business logic
 class OrderFactory:
     def create_order(self, customer_id: str) -> Order:
-        customer = self.customer_repo.get(customer_id)  # BAD
-        if customer.is_premium:                          # BAD
-            discount = self.discount_service.calculate() # BAD
+        customer = self.db.get(customer_id)  # Fetching data!
+        if customer.is_premium:              # Business logic!
+            discount = self.calc_discount()  # More logic!
             return PremiumOrder(discount=discount)
         return StandardOrder()
 
-# GOOD: Factory only creates, doesn't fetch or calculate
+# GOOD: Factory only creates
 class OrderFactory:
     def create_order(self, order_type: str, **kwargs) -> Order:
         return self._creators[order_type](**kwargs)
@@ -1224,128 +666,40 @@ class OrderFactory:
 class AnimalFactory:
     def create(self, type: str):
         if type == "dog":
-            return Dog()  # Has bark()
-        return Fish()     # Has swim() - different interface!
+            return Dog()   # Has bark()
+        return Fish()      # Has swim() - different!
 
 # GOOD: All products implement same interface
 class AnimalFactory:
     def create(self, type: str) -> Animal:
-        # All return Animal with common interface
-        return self._creators[type]()
+        return self._creators[type]()  # All have make_sound()
 ```
 
-### Mistake 3: Factory Singleton Abuse
-
-```python
-# BAD: Global mutable singleton factory
-class ProcessorFactory:
-    _instance = None
-    _processors = {}
-
-    @classmethod
-    def instance(cls):
-        if cls._instance is None:
-            cls._instance = cls()
-        return cls._instance
-
-    def register(self, name, creator):
-        self._processors[name] = creator  # Global mutable state!
-
-# Tests interfere with each other, can't run in parallel
-
-# GOOD: Inject factory or use per-test instances
-def test_processing():
-    factory = ProcessorFactory()  # Fresh instance
-    factory.register("test", MockProcessor)
-    # Test in isolation
-```
+</div>
 
 ---
 
-## Modern Alternatives
+## Key Takeaways
 
-### Functional Factory (Python 3.10+)
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
-```python
-from typing import Protocol, Callable
-from functools import partial
+1. **Factory Method = Inheritance + Template Method** - The superclass defines the algorithm, subclasses customize creation
 
-class Processor(Protocol):
-    def process(self, data: bytes) -> bytes: ...
+2. **Not just about hiding `new`** - The pattern is about deferring instantiation decisions to subclasses
 
-# Factories are just functions
-def create_gzip_processor(level: int = 9) -> Processor:
-    return GzipProcessor(level=level)
+3. **Know when NOT to use it** - If you have only one concrete type, just create it directly
 
-def create_lz4_processor(block_size: int = 64) -> Processor:
-    return LZ4Processor(block_size=block_size)
+4. **Consider DI first** - In modern applications, dependency injection often provides more flexibility
 
-# Registry is just a dict
-processors: dict[str, Callable[[], Processor]] = {
-    "gzip": create_gzip_processor,
-    "gzip_fast": partial(create_gzip_processor, level=1),
-    "lz4": create_lz4_processor,
-}
+5. **Products must share interface** - All created objects must be usable through the same abstraction
 
-# Usage
-processor = processors["gzip_fast"]()
-```
-
-### Go Generics Factory (Go 1.18+)
-
-```go
-type Factory[T any] struct {
-    creators map[string]func() T
-}
-
-func NewFactory[T any]() *Factory[T] {
-    return &Factory[T]{
-        creators: make(map[string]func() T),
-    }
-}
-
-func (f *Factory[T]) Register(name string, creator func() T) {
-    f.creators[name] = creator
-}
-
-func (f *Factory[T]) Create(name string) (T, error) {
-    creator, ok := f.creators[name]
-    if !ok {
-        var zero T
-        return zero, fmt.Errorf("unknown type: %s", name)
-    }
-    return creator(), nil
-}
-
-// Usage
-processorFactory := NewFactory[PaymentProcessor]()
-processorFactory.Register("stripe", func() PaymentProcessor {
-    return &StripeProcessor{}
-})
-```
-
----
-
-## Interview Deep-Dive Questions
-
-**For Senior/Staff Level:**
-
-1. "Walk me through a production system where you used Factory Method. What alternatives did you consider?"
-
-2. "How would you implement a factory that needs to create objects requiring async initialization (database connections, API clients)?"
-
-3. "Describe a scenario where Factory Method would be worse than simple `if/else` construction. Why?"
-
-4. "How do you handle factory evolution when new product types require additional constructor parameters?"
-
-5. "In a distributed system, how would you implement a factory that creates clients for different service versions?"
+</div>
 
 ---
 
 ## Related Patterns
 
 - [Abstract Factory](/topic/design-patterns/abstract-factory) - Creates families of products
-- [Prototype](/topic/design-patterns/prototype) - Clone existing instances
 - [Builder](/topic/design-patterns/builder) - Complex object construction
+- [Prototype](/topic/design-patterns/prototype) - Clone existing instances
 - [Singleton](/topic/design-patterns/singleton) - Often combined with Factory
-- [Strategy](/topic/design-patterns/strategy) - Factories often create strategies

@@ -2,486 +2,482 @@
 
 ## Overview
 
-Load balancing is a technique used to distribute incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. It improves application availability, scalability, and performance.
+Load balancing is the process of distributing incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. Think of it like a traffic officer directing cars at a busy intersection - without proper direction, all cars would pile up in one lane while others remain empty.
 
-## Key Concepts
+At its core, a load balancer sits between clients and servers, acting as a reverse proxy that decides which server should handle each incoming request. This simple concept enables some of the most critical capabilities in modern systems: high availability, horizontal scaling, and fault tolerance.
 
-### Why Load Balancing?
+---
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
-1. **High Availability**: If one server fails, traffic is redirected to healthy servers
-2. **Scalability**: Easily add or remove servers based on demand
-3. **Performance**: Distribute load to prevent any single server from becoming a bottleneck
-4. **Redundancy**: Eliminates single points of failure
+## Why Load Balancing Matters
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Real-World Impact</h4>
+<div style="color: #1e293b;">
+
+**Netflix** handles over 400 million streaming hours daily using load balancers to distribute requests across thousands of servers globally. Without load balancing, a single popular show release could crash their entire service.
+
+**Amazon** reported that every 100ms of latency costs them 1% in sales. Load balancing helps maintain sub-100ms response times by routing requests to the fastest available server.
+
+**GitHub** uses load balancing to handle millions of git operations daily. During peak hours, their load balancers distribute traffic across multiple data centers to maintain availability.
+
+</div>
+</div>
+
+### Key Benefits
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
+<h5 style="color: #1e40af; margin: 0 0 8px 0;">High Availability</h5>
+<p style="color: #1e293b; margin: 0; font-size: 14px;">If one server fails, traffic automatically routes to healthy servers. Users never notice the failure.</p>
+</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Horizontal Scaling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 14px;">Add more servers to handle increased load. Scale out is often cheaper than scale up.</p>
+</div>
+<div style="background: #fefce8; padding: 16px; border-radius: 8px;">
+<h5 style="color: #854d0e; margin: 0 0 8px 0;">Performance</h5>
+<p style="color: #1e293b; margin: 0; font-size: 14px;">Distribute load evenly to prevent any single server from becoming a bottleneck.</p>
+</div>
+<div style="background: #fdf4ff; padding: 16px; border-radius: 8px;">
+<h5 style="color: #86198f; margin: 0 0 8px 0;">Flexibility</h5>
+<p style="color: #1e293b; margin: 0; font-size: 14px;">Perform maintenance on servers without downtime by draining connections gracefully.</p>
+</div>
+</div>
+</div>
+
+---
+
+## How Load Balancing Works
+
+### High-Level Architecture
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Load Balancer Architecture</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="display: flex; gap: 12px;">
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Client 1</div>
+</div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Client 2</div>
+</div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Client 3</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 24px;">|</div>
+<div style="background: #fef3c7; padding: 20px 40px; border-radius: 12px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; text-align: center;">Load Balancer</div>
+<div style="color: #78716c; font-size: 12px; text-align: center; margin-top: 4px;">Health Checks | Routing | SSL</div>
+</div>
+<div style="color: #64748b; font-size: 24px;">|</div>
+<div style="display: flex; gap: 12px;">
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: 600;">Server 1</div>
+<div style="color: #16a34a; font-size: 11px;">Healthy</div>
+</div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: 600;">Server 2</div>
+<div style="color: #16a34a; font-size: 11px;">Healthy</div>
+</div>
+<div style="background: #fee2e2; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #991b1b; font-weight: 600;">Server 3</div>
+<div style="color: #dc2626; font-size: 11px;">Unhealthy</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Types of Load Balancers
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px;">
-#### Hardware LB
-- Dedicated physical devices (F5, Citrix)
-- High performance but expensive
-- Less flexible for cloud
-</div>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px;">
-#### Software LB
-- Run on commodity hardware
-- HAProxy, Nginx, Envoy
-- More flexible & cost-effective
-</div>
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-#### Cloud LB
-- AWS ELB/ALB, GCP, Azure
-- Fully managed, auto-scaling
-- Pay-per-use pricing
-</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<table style="width: 100%; border-collapse: collapse;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #cbd5e1;">Type</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #cbd5e1;">Examples</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #cbd5e1;">Best For</th>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Hardware</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">F5 BIG-IP, Citrix ADC</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">High performance, enterprise</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Software</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">HAProxy, Nginx, Envoy</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Flexibility, cost-effective</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b;"><strong>Cloud</strong></td>
+<td style="padding: 12px; color: #475569;">AWS ALB/NLB, GCP LB</td>
+<td style="padding: 12px; color: #475569;">Managed, auto-scaling</td>
+</tr>
+</table>
 </div>
 
 ---
 
 ## Load Balancing Algorithms
 
-### High-Level Architecture
-
-<div class="diagram-section">
-  <div class="lb-architecture">
-    <div class="lb-clients">
-      <div class="client-box">👤 Client 1</div>
-      <div class="client-box">👤 Client 2</div>
-      <div class="client-box">👤 Client 3</div>
-      <div class="client-box">...</div>
-    </div>
-    <div class="lb-arrow">↓</div>
-    <div class="lb-balancer">
-      <div class="balancer-title">⚖️ Load Balancer</div>
-      <div class="balancer-features">
-        <div class="feature">Health Checks</div>
-        <div class="feature">Session Mgmt</div>
-        <div class="feature">SSL Term.</div>
-        <div class="feature">Routing</div>
-      </div>
-    </div>
-    <div class="lb-arrow">↓</div>
-    <div class="lb-servers">
-      <div class="server-box healthy">
-        <div class="server-icon">🖥️</div>
-        <div class="server-name">Server 1</div>
-        <div class="server-status">✓ Healthy</div>
-      </div>
-      <div class="server-box healthy">
-        <div class="server-icon">🖥️</div>
-        <div class="server-name">Server 2</div>
-        <div class="server-status">✓ Healthy</div>
-      </div>
-      <div class="server-box healthy">
-        <div class="server-icon">🖥️</div>
-        <div class="server-name">Server 3</div>
-        <div class="server-status">✓ Healthy</div>
-      </div>
-      <div class="server-box unhealthy">
-        <div class="server-icon">🖥️</div>
-        <div class="server-name">Server 4</div>
-        <div class="server-status">✗ Down</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 ### Algorithm Comparison
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Algorithm | How It Works | Best For | Drawback |
-|-----------|--------------|----------|----------|
-| **Round Robin** | Sequential distribution | Equal capacity servers | Ignores server load |
-| **Weighted Round Robin** | Based on server capacity | Mixed capacity | Static weights |
-| **Least Connections** | Fewest active connections | Long-lived connections | More computation |
-| **IP Hash** | Hash of client IP | Session persistence | Uneven if IPs cluster |
-| **Consistent Hashing** | Minimal redistribution | Distributed caches | Complex setup |
-| **Random** | Random selection | Simple scenarios | Can cause imbalance |
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; color: #1e293b;">Algorithm</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">How It Works</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Best For</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Drawback</th>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Round Robin</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Sequential distribution</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Equal capacity servers</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">Ignores server load</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Weighted Round Robin</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Based on server capacity</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Mixed capacity servers</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">Static weights</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Least Connections</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Fewest active connections</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Long-lived connections</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">More computation</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>IP Hash</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Hash of client IP</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Session persistence</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">Uneven if IPs cluster</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b;"><strong>Consistent Hashing</strong></td>
+<td style="padding: 12px; color: #475569;">Minimal redistribution</td>
+<td style="padding: 12px; color: #475569;">Distributed caches</td>
+<td style="padding: 12px; color: #dc2626;">Complex setup</td>
+</tr>
+</table>
 </div>
 
-### 1. Round Robin Visualization
+### Round Robin Visualization
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">Round Robin Distribution</h3>
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: rgba(88, 166, 255, 0.2); border: 1px solid #58a6ff; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
-        <span style="color: #58a6ff; font-size: 13px;">Request 1</span>
-      </div>
-      <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #58a6ff, #238636);"></div>
-      <span style="color: #58a6ff;">→</span>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 20px; border-radius: 6px;">
-        <span style="color: white; font-weight: 600;">Server A</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: rgba(88, 166, 255, 0.2); border: 1px solid #58a6ff; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
-        <span style="color: #58a6ff; font-size: 13px;">Request 2</span>
-      </div>
-      <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #58a6ff, #1f6feb);"></div>
-      <span style="color: #58a6ff;">→</span>
-      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 8px 20px; border-radius: 6px;">
-        <span style="color: white; font-weight: 600;">Server B</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: rgba(88, 166, 255, 0.2); border: 1px solid #58a6ff; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
-        <span style="color: #58a6ff; font-size: 13px;">Request 3</span>
-      </div>
-      <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #58a6ff, #8957e5);"></div>
-      <span style="color: #58a6ff;">→</span>
-      <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 8px 20px; border-radius: 6px;">
-        <span style="color: white; font-weight: 600;">Server C</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: rgba(240, 136, 62, 0.2); border: 1px solid #f0883e; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
-        <span style="color: #f0883e; font-size: 13px;">Request 4</span>
-      </div>
-      <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #f0883e, #238636);"></div>
-      <span style="color: #f0883e;">→</span>
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 20px; border-radius: 6px;">
-        <span style="color: white; font-weight: 600;">Server A</span>
-      </div>
-      <span style="color: #8b949e; font-size: 12px; font-style: italic;">(cycle repeats)</span>
-    </div>
-  </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Round Robin Distribution</h4>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
+<span style="color: #1e40af; font-size: 13px;">Request 1</span>
+</div>
+<div style="flex: 1; height: 2px; background: linear-gradient(90deg, #3b82f6, #22c55e);"></div>
+<div style="background: #dcfce7; padding: 8px 20px; border-radius: 6px; border: 1px solid #22c55e;">
+<span style="color: #166534; font-weight: 600;">Server A</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
+<span style="color: #1e40af; font-size: 13px;">Request 2</span>
+</div>
+<div style="flex: 1; height: 2px; background: linear-gradient(90deg, #3b82f6, #3b82f6);"></div>
+<div style="background: #dbeafe; padding: 8px 20px; border-radius: 6px; border: 1px solid #3b82f6;">
+<span style="color: #1e40af; font-weight: 600;">Server B</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
+<span style="color: #1e40af; font-size: 13px;">Request 3</span>
+</div>
+<div style="flex: 1; height: 2px; background: linear-gradient(90deg, #3b82f6, #a855f7);"></div>
+<div style="background: #f3e8ff; padding: 8px 20px; border-radius: 6px; border: 1px solid #a855f7;">
+<span style="color: #7c3aed; font-weight: 600;">Server C</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center;">
+<span style="color: #92400e; font-size: 13px;">Request 4</span>
+</div>
+<div style="flex: 1; height: 2px; background: linear-gradient(90deg, #f59e0b, #22c55e);"></div>
+<div style="background: #dcfce7; padding: 8px 20px; border-radius: 6px; border: 1px solid #22c55e;">
+<span style="color: #166534; font-weight: 600;">Server A</span>
+</div>
+<span style="color: #64748b; font-size: 12px; font-style: italic;">(cycle repeats)</span>
+</div>
+</div>
 </div>
 
-**Pros**: Simple, even distribution
-**Cons**: Doesn't consider server load or capacity
+### Consistent Hashing
 
-### 2. Weighted Round Robin
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">Weighted Distribution</h3>
-  <div style="color: #8b949e; text-align: center; margin-bottom: 24px; font-size: 14px;">A=3, B=2, C=1</div>
-  <div style="display: flex; flex-direction: column; gap: 20px;">
-    <!-- Server A -->
-    <div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-        <span style="color: #7ee787; font-weight: 600;">Server A (weight: 3)</span>
-        <span style="color: #7ee787;">50% of traffic</span>
-      </div>
-      <div style="background: #21262d; border-radius: 8px; height: 24px; overflow: hidden;">
-        <div style="background: linear-gradient(90deg, #238636, #2ea043); width: 100%; height: 100%; border-radius: 8px;"></div>
-      </div>
-    </div>
-    <!-- Server B -->
-    <div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-        <span style="color: #58a6ff; font-weight: 600;">Server B (weight: 2)</span>
-        <span style="color: #58a6ff;">33% of traffic</span>
-      </div>
-      <div style="background: #21262d; border-radius: 8px; height: 24px; overflow: hidden;">
-        <div style="background: linear-gradient(90deg, #1f6feb, #388bfd); width: 66%; height: 100%; border-radius: 8px;"></div>
-      </div>
-    </div>
-    <!-- Server C -->
-    <div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-        <span style="color: #a371f7; font-weight: 600;">Server C (weight: 1)</span>
-        <span style="color: #a371f7;">17% of traffic</span>
-      </div>
-      <div style="background: #21262d; border-radius: 8px; height: 24px; overflow: hidden;">
-        <div style="background: linear-gradient(90deg, #8957e5, #a371f7); width: 33%; height: 100%; border-radius: 8px;"></div>
-      </div>
-    </div>
-  </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Consistent Hashing Ring</h4>
+<div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
+<div style="position: relative; width: 200px; height: 200px;">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid #cbd5e1; border-radius: 50%;"></div>
+<div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 12px;">0</div>
+<div style="position: absolute; top: 50%; right: -25px; transform: translateY(-50%); color: #64748b; font-size: 12px;">90</div>
+<div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 12px;">180</div>
+<div style="position: absolute; top: 50%; left: -30px; transform: translateY(-50%); color: #64748b; font-size: 12px;">270</div>
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #22c55e; width: 12px; height: 12px; border-radius: 50%;"></div>
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(20px); color: #166534; font-size: 11px;">Server A</div>
+<div style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #3b82f6; width: 12px; height: 12px; border-radius: 50%;"></div>
+<div style="position: absolute; top: 50%; right: -50px; transform: translateY(-50%); color: #1e40af; font-size: 11px;">Server B</div>
+<div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #a855f7; width: 12px; height: 12px; border-radius: 50%;"></div>
+<div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(20px); color: #7c3aed; font-size: 11px;">Server C</div>
 </div>
-
-### 3. Least Connections
-
-Routes to server with fewest active connections - best for **long-lived connections** and **varying request complexity**.
-
-### 4. IP Hash
-
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-```
-server_index = hash(client_ip) % num_servers
-```
-**Best for**: Session persistence without cookies
-- Same client always hits same server
-- No session state sharing needed
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 16px;">
+<div style="color: #1e293b; font-size: 13px;">Key <span style="color: #ea580c;">"user:123"</span> hashes to 45</div>
+<div style="color: #1e40af; font-size: 13px; margin-top: 4px;">Routes to <span style="font-weight: 600;">Server B</span></div>
 </div>
-
-### 5. Consistent Hashing
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">Consistent Hashing Ring</h3>
-  <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
-    <!-- Ring visualization -->
-    <div style="position: relative; width: 200px; height: 200px;">
-      <!-- Circle -->
-      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid #30363d; border-radius: 50%;"></div>
-      <!-- Degree markers -->
-      <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 12px;">0</div>
-      <div style="position: absolute; top: 50%; right: -25px; transform: translateY(-50%); color: #8b949e; font-size: 12px;">90</div>
-      <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); color: #8b949e; font-size: 12px;">180</div>
-      <div style="position: absolute; top: 50%; left: -30px; transform: translateY(-50%); color: #8b949e; font-size: 12px;">270</div>
-      <!-- Server nodes -->
-      <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #238636; width: 12px; height: 12px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 10px; left: 50%; transform: translateX(20px); color: #7ee787; font-size: 11px;">Server A</div>
-      <div style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #1f6feb; width: 12px; height: 12px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 50%; right: -50px; transform: translateY(-50%); color: #58a6ff; font-size: 11px;">Server B</div>
-      <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #8957e5; width: 12px; height: 12px; border-radius: 50%;"></div>
-      <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(20px); color: #a371f7; font-size: 11px;">Server C</div>
-      <div style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: #f0883e; width: 12px; height: 12px; border-radius: 50%;"></div>
-      <div style="position: absolute; top: 50%; left: -50px; transform: translateY(-50%); color: #f0883e; font-size: 11px;">Server D</div>
-    </div>
-    <!-- Key routing examples -->
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #c9d1d9; font-size: 13px;">Key <span style="color: #f0883e;">"user:123"</span> hashes to 45</div>
-        <div style="color: #58a6ff; font-size: 13px; margin-top: 4px;">→ Routes to <span style="font-weight: 600;">Server B</span></div>
-      </div>
-      <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #c9d1d9; font-size: 13px;">Key <span style="color: #a371f7;">"user:456"</span> hashes to 200</div>
-        <div style="color: #f0883e; font-size: 13px; margin-top: 4px;">→ Routes to <span style="font-weight: 600;">Server D</span></div>
-      </div>
-      <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid rgba(126, 231, 135, 0.3); border-radius: 8px; padding: 12px 16px;">
-        <div style="color: #7ee787; font-weight: 600; font-size: 13px; margin-bottom: 4px;">When Server B removed:</div>
-        <div style="color: #c9d1d9; font-size: 12px;">- Only keys between A and B move to C</div>
-        <div style="color: #c9d1d9; font-size: 12px;">- Other keys stay put!</div>
-      </div>
-    </div>
-  </div>
+<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px;">
+<div style="color: #166534; font-weight: 600; font-size: 13px;">When Server B removed:</div>
+<div style="color: #1e293b; font-size: 12px; margin-top: 4px;">Only keys between A and B move to C</div>
+<div style="color: #1e293b; font-size: 12px;">Other keys stay put!</div>
 </div>
-
-**Best for**: Distributed caches, databases - minimizes redistribution when nodes change
+</div>
+</div>
+</div>
 
 ---
 
 ## Layer 4 vs Layer 7 Load Balancing
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">LAYER 4 vs LAYER 7 LOAD BALANCING</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Layer 4 -->
-    <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #58a6ff; margin: 0 0 16px 0; font-size: 16px;">LAYER 4 (Transport)</h4>
-      <div style="margin-bottom: 16px;">
-        <div style="color: #c9d1d9; font-weight: 600; margin-bottom: 8px; font-size: 13px;">Routes based on:</div>
-        <div style="color: #8b949e; font-size: 13px;">- IP address</div>
-        <div style="color: #8b949e; font-size: 13px;">- TCP/UDP port</div>
-      </div>
-      <!-- TCP Packet visualization -->
-      <div style="background: #21262d; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
-        <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px;">TCP Packet</div>
-        <div style="background: rgba(126, 231, 135, 0.2); border: 1px solid #7ee787; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px;">
-          <span style="color: #7ee787; font-size: 12px;">IP:Port</span>
-          <span style="color: #7ee787; font-size: 10px; margin-left: 8px;">← Looks here</span>
-        </div>
-        <div style="background: rgba(248, 81, 73, 0.2); border: 1px solid #f85149; padding: 6px 10px; border-radius: 4px;">
-          <span style="color: #f85149; font-size: 12px;">Payload</span>
-          <span style="color: #f85149; font-size: 10px; margin-left: 8px;">X Can't see</span>
-        </div>
-      </div>
-      <div style="margin-bottom: 12px;">
-        <div style="color: #8b949e; font-size: 12px;">Examples: AWS NLB, HAProxy TCP</div>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
-        <div>
-          <div style="color: #7ee787; font-weight: 600; margin-bottom: 4px;">Pros:</div>
-          <div style="color: #8b949e;">- Very fast</div>
-          <div style="color: #8b949e;">- Low latency</div>
-          <div style="color: #8b949e;">- Simple</div>
-        </div>
-        <div>
-          <div style="color: #f85149; font-weight: 600; margin-bottom: 4px;">Cons:</div>
-          <div style="color: #8b949e;">- No content inspection</div>
-          <div style="color: #8b949e;">- Limited routing</div>
-        </div>
-      </div>
-    </div>
-    <!-- Layer 7 -->
-    <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #a371f7; margin: 0 0 16px 0; font-size: 16px;">LAYER 7 (Application)</h4>
-      <div style="margin-bottom: 16px;">
-        <div style="color: #c9d1d9; font-weight: 600; margin-bottom: 8px; font-size: 13px;">Routes based on:</div>
-        <div style="color: #8b949e; font-size: 13px;">- URL path, HTTP headers</div>
-        <div style="color: #8b949e; font-size: 13px;">- Cookies, Request content</div>
-      </div>
-      <!-- HTTP Request visualization -->
-      <div style="background: #21262d; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-family: monospace; font-size: 11px;">
-        <div style="color: #7ee787;">GET /api/users HTTP/1.1</div>
-        <div style="color: #58a6ff;">Host: example.com</div>
-        <div style="color: #f0883e;">Cookie: session=abc123</div>
-        <div style="color: #8b949e; margin: 4px 0;">---</div>
-        <div style="color: #a371f7;">{"user_id": 42}</div>
-        <div style="color: #7ee787; font-size: 10px; margin-top: 6px;">↑ Looks at everything</div>
-      </div>
-      <div style="margin-bottom: 12px;">
-        <div style="color: #8b949e; font-size: 12px;">Examples: AWS ALB, Nginx, HAProxy HTTP</div>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
-        <div>
-          <div style="color: #7ee787; font-weight: 600; margin-bottom: 4px;">Pros:</div>
-          <div style="color: #8b949e;">- Content-aware</div>
-          <div style="color: #8b949e;">- SSL termination</div>
-          <div style="color: #8b949e;">- A/B testing</div>
-        </div>
-        <div>
-          <div style="color: #f85149; font-weight: 600; margin-bottom: 4px;">Cons:</div>
-          <div style="color: #8b949e;">- Higher latency</div>
-          <div style="color: #8b949e;">- More resources</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Layer 4 vs Layer 7 Comparison</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px;">
+<h5 style="color: #1e40af; margin: 0 0 16px 0;">Layer 4 (Transport)</h5>
+<div style="margin-bottom: 16px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; font-size: 13px;">Routes based on:</div>
+<div style="color: #475569; font-size: 13px;">- IP address</div>
+<div style="color: #475569; font-size: 13px;">- TCP/UDP port</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+<div style="color: #64748b; font-size: 12px; margin-bottom: 8px;">TCP Packet:</div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px;">
+<span style="color: #166534; font-size: 12px;">IP:Port - Looks here</span>
+</div>
+<div style="background: #fee2e2; border: 1px solid #ef4444; padding: 6px 10px; border-radius: 4px;">
+<span style="color: #991b1b; font-size: 12px;">Payload - Cannot see</span>
+</div>
+</div>
+<div style="color: #64748b; font-size: 12px; margin-bottom: 12px;">Examples: AWS NLB, HAProxy TCP</div>
+<div style="font-size: 12px;">
+<div style="color: #166534; margin-bottom: 4px;">+ Very fast, low latency</div>
+<div style="color: #991b1b;">- No content inspection</div>
+</div>
+</div>
+<div style="background: #f3e8ff; border: 1px solid #d8b4fe; border-radius: 12px; padding: 20px;">
+<h5 style="color: #7c3aed; margin: 0 0 16px 0;">Layer 7 (Application)</h5>
+<div style="margin-bottom: 16px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; font-size: 13px;">Routes based on:</div>
+<div style="color: #475569; font-size: 13px;">- URL path, HTTP headers</div>
+<div style="color: #475569; font-size: 13px;">- Cookies, Request content</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-family: monospace; font-size: 11px;">
+<div style="color: #166534;">GET /api/users HTTP/1.1</div>
+<div style="color: #1e40af;">Host: example.com</div>
+<div style="color: #ea580c;">Cookie: session=abc123</div>
+<div style="color: #7c3aed;">{"user_id": 42}</div>
+</div>
+<div style="color: #64748b; font-size: 12px; margin-bottom: 12px;">Examples: AWS ALB, Nginx</div>
+<div style="font-size: 12px;">
+<div style="color: #166534; margin-bottom: 4px;">+ Content-aware routing</div>
+<div style="color: #991b1b;">- Higher latency</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Layer 7 Routing Example
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
-```
-/api/*     → API Servers (high CPU)
-/static/*  → CDN/Static Servers (high bandwidth)
-/admin/*   → Admin Servers (restricted access)
-/ws/*      → WebSocket Servers (persistent connections)
-```
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border: 1px solid #bbf7d0;">
+<pre style="margin: 0; color: #166534; font-size: 14px;">
+/api/*     --> API Servers (high CPU)
+/static/*  --> CDN/Static Servers (high bandwidth)
+/admin/*   --> Admin Servers (restricted access)
+/ws/*      --> WebSocket Servers (persistent connections)
+</pre>
 </div>
 
 ---
 
 ## Health Checks
 
-Load balancers continuously monitor server health:
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">HEALTH CHECK FLOW</h3>
-  <!-- Flow diagram -->
-  <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 32px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600;">Load Balancer</div>
-      <div style="color: rgba(255,255,255,0.7); font-size: 11px; margin-top: 4px;">Every 5s: GET /health</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center;">
-      <span style="color: #7ee787; font-size: 20px;">← → → →</span>
-      <span style="color: #8b949e; font-size: 11px;">Response</span>
-    </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
-      <div style="color: white; font-weight: 600;">Server</div>
-      <div style="color: rgba(255,255,255,0.7); font-size: 11px; margin-top: 4px;">Status</div>
-    </div>
-  </div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <!-- Health Check Types -->
-    <div>
-      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px;">Health Check Types:</div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 8px; padding: 12px;">
-          <div style="color: #7ee787; font-weight: 600; font-size: 13px;">1. TCP Check</div>
-          <div style="color: #8b949e; font-size: 12px; margin-top: 4px;">→ Can establish TCP connection?</div>
-          <div style="color: #7ee787; font-size: 12px; margin-left: 16px;">→ Yes = Healthy</div>
-        </div>
-        <div style="background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 8px; padding: 12px;">
-          <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">2. HTTP Check</div>
-          <div style="color: #8b949e; font-size: 12px; margin-top: 4px;">→ Returns 2xx/3xx status?</div>
-          <div style="color: #7ee787; font-size: 12px; margin-left: 16px;">→ GET /health → 200 OK = Healthy</div>
-        </div>
-        <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 8px; padding: 12px;">
-          <div style="color: #a371f7; font-weight: 600; font-size: 13px;">3. Custom Check</div>
-          <div style="color: #8b949e; font-size: 12px; margin-top: 4px;">→ Application-specific endpoint</div>
-          <div style="color: #8b949e; font-size: 12px; margin-left: 16px;">→ Check DB, disk space, etc.</div>
-        </div>
-      </div>
-    </div>
-    <!-- Failure Handling -->
-    <div>
-      <div style="color: #f0883e; font-weight: 600; margin-bottom: 16px;">Failure Handling:</div>
-      <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.3); border-radius: 8px; padding: 16px;">
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="background: #f85149; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">fail=3</span>
-            <span style="color: #c9d1d9; font-size: 13px;">Mark unhealthy after 3 failed checks</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="background: #238636; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">rise=2</span>
-            <span style="color: #c9d1d9; font-size: 13px;">Mark healthy after 2 successful checks</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="background: #1f6feb; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">interval=5s</span>
-            <span style="color: #c9d1d9; font-size: 13px;">Check every 5 seconds</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Health Check Flow</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 32px;">
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 10px; text-align: center; border: 1px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 600;">Load Balancer</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 4px;">Every 5s: GET /health</div>
+</div>
+<div style="color: #22c55e; font-size: 20px;">----></div>
+<div style="background: #dcfce7; padding: 16px 24px; border-radius: 10px; text-align: center; border: 1px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Server</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 4px;">Returns status</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 16px;">Health Check Types:</div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px;">
+<div style="color: #166534; font-weight: 600; font-size: 13px;">1. TCP Check</div>
+<div style="color: #475569; font-size: 12px; margin-top: 4px;">Can establish TCP connection? Yes = Healthy</div>
+</div>
+<div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px;">
+<div style="color: #1e40af; font-weight: 600; font-size: 13px;">2. HTTP Check</div>
+<div style="color: #475569; font-size: 12px; margin-top: 4px;">GET /health returns 200 OK = Healthy</div>
+</div>
+<div style="background: #f3e8ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 12px;">
+<div style="color: #7c3aed; font-weight: 600; font-size: 13px;">3. Custom Check</div>
+<div style="color: #475569; font-size: 12px; margin-top: 4px;">Application-specific (DB, disk space)</div>
+</div>
+</div>
+</div>
+<div>
+<div style="color: #ea580c; font-weight: 600; margin-bottom: 16px;">Configuration:</div>
+<div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">fail=3</span>
+<span style="color: #1e293b; font-size: 13px;">Mark unhealthy after 3 failures</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<span style="background: #22c55e; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">rise=2</span>
+<span style="color: #1e293b; font-size: 13px;">Mark healthy after 2 successes</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<span style="background: #3b82f6; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">interval=5s</span>
+<span style="color: #1e293b; font-size: 13px;">Check every 5 seconds</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
 
 ## Session Persistence (Sticky Sessions)
 
-Ensures a user's requests go to the same server:
-
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-| Method | How It Works | Pros | Cons |
-|--------|--------------|------|------|
-| **Cookie-based** | LB sets `SERVERID` cookie | Most reliable | Requires cookies |
-| **IP-based** | Route by client IP | No cookies needed | NAT issues |
-| **Application** | App manages session ID | Full control | More complex |
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; color: #1e293b;">Method</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">How It Works</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Pros</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Cons</th>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Cookie-based</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">LB sets SERVERID cookie</td>
+<td style="padding: 12px; color: #166534; border-bottom: 1px solid #e2e8f0;">Most reliable</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">Requires cookies</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>IP-based</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Route by client IP</td>
+<td style="padding: 12px; color: #166534; border-bottom: 1px solid #e2e8f0;">No cookies needed</td>
+<td style="padding: 12px; color: #dc2626; border-bottom: 1px solid #e2e8f0;">NAT issues</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b;"><strong>Application</strong></td>
+<td style="padding: 12px; color: #475569;">App manages session ID</td>
+<td style="padding: 12px; color: #166534;">Full control</td>
+<td style="padding: 12px; color: #dc2626;">More complex</td>
+</tr>
+</table>
 </div>
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
-**Better Alternative**: Externalize sessions to Redis/Memcached
-- Any server can handle any request
-- True horizontal scaling
-- No sticky session issues
-</div>
-
----
-
-## Common Interview Questions
-
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **How would you design a load balancer for a global application?**
-   - Use DNS-based load balancing (GeoDNS) for global distribution
-   - Regional load balancers for local traffic
-   - Consider latency-based routing
-2. **How do you handle session state with load balancing?**
-   - Externalize sessions (Redis, Memcached)
-   - Sticky sessions (less preferred)
-   - Stateless architecture with JWT tokens
-3. **What happens when a server fails during a request?**
-   - Connection timeout → retry on another server
-   - Implement circuit breakers
-   - Graceful degradation
-4. **How do you scale a load balancer itself?**
-   - DNS round robin across multiple load balancers
-   - Active-passive failover
-   - Cloud managed load balancers (auto-scale)
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<h5 style="color: #991b1b; margin: 0 0 8px 0;">Better Alternative: Externalize Sessions</h5>
+<p style="color: #1e293b; margin: 0;">Store sessions in Redis/Memcached so any server can handle any request. This enables true horizontal scaling without sticky session problems.</p>
 </div>
 
 ---
 
-## Best Practices
+## Common Pitfalls
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-1. **Use health checks** - Configure appropriate check intervals and thresholds
-2. **Enable connection draining** - Allow existing connections to complete before removing servers
-3. **Configure timeouts properly** - Balance between user experience and server protection
-4. **Monitor and log** - Track metrics like latency, error rates, connection counts
-5. **Plan for failure** - Have multiple load balancers in different availability zones
-6. **Use SSL termination** - Offload SSL processing to the load balancer
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; color: #1e293b;">
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Single Load Balancer:</strong> Your LB becomes a single point of failure. Always deploy in pairs with failover.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>No Health Checks:</strong> Without health checks, traffic routes to dead servers causing user errors.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Ignoring Connection Draining:</strong> Removing servers without draining connections drops active requests.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>Wrong Algorithm Choice:</strong> Using round robin for WebSocket connections ignores server load entirely.
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong>No Monitoring:</strong> Without metrics on latency and error rates, you cannot detect degradation.
+</div>
+</div>
 </div>
 
 ---
 
-## Related Topics
+## Interview Questions
 
-- [Caching](/topic/system-design/caching)
-- [CDN](/topic/system-design/cdn)
-- [Rate Limiting](/topic/system-design/rate-limiting)
+<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Common Interview Questions</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; color: #1e293b;">
+
+<div>
+<strong>1. How would you design a load balancer for a global application?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Use DNS-based load balancing (GeoDNS) for global distribution</li>
+<li>Regional load balancers for local traffic distribution</li>
+<li>Consider latency-based routing to nearest healthy region</li>
+<li>Implement anycast for automatic failover</li>
+</ul>
+</div>
+
+<div>
+<strong>2. How do you handle session state with load balancing?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Externalize sessions to Redis/Memcached (preferred)</li>
+<li>Use sticky sessions via cookies or IP hash</li>
+<li>Implement stateless architecture with JWT tokens</li>
+<li>Store session in encrypted cookies client-side</li>
+</ul>
+</div>
+
+<div>
+<strong>3. What happens when a server fails during a request?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>Connection timeout triggers retry on another server</li>
+<li>Implement circuit breakers to prevent cascade failures</li>
+<li>Use idempotency keys for safe retries</li>
+<li>Configure appropriate timeout values</li>
+</ul>
+</div>
+
+<div>
+<strong>4. How do you scale the load balancer itself?</strong>
+<ul style="margin: 8px 0 0 0; color: #475569;">
+<li>DNS round robin across multiple load balancers</li>
+<li>Active-passive failover with health monitoring</li>
+<li>Cloud managed load balancers auto-scale</li>
+<li>Use anycast to distribute to nearest LB</li>
+</ul>
+</div>
+
+</div>
+</div>
 
 ---
 
-## Implementation
+## Code Examples
 
-### Python - Simple Round Robin Load Balancer
+### Python - Round Robin Load Balancer
 
 ```python
 import itertools
@@ -536,112 +532,162 @@ response = lb.forward_request("/api/users")
 print(response.json())
 ```
 
-### Go - Load Balancer with Least Connections
+### Go - Least Connections Load Balancer
 
 ```go
 package main
 
 import (
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"sync"
-	"sync/atomic"
+    "net/http"
+    "net/http/httputil"
+    "net/url"
+    "sync"
+    "sync/atomic"
 )
 
 type Server struct {
-	URL         *url.URL
-	Alive       bool
-	Connections int64
-	mux         sync.RWMutex
-	ReverseProxy *httputil.ReverseProxy
+    URL          *url.URL
+    Alive        bool
+    Connections  int64
+    mux          sync.RWMutex
+    ReverseProxy *httputil.ReverseProxy
 }
 
 func (s *Server) IsAlive() bool {
-	s.mux.RLock()
-	defer s.mux.RUnlock()
-	return s.Alive
-}
-
-func (s *Server) SetAlive(alive bool) {
-	s.mux.Lock()
-	defer s.mux.Unlock()
-	s.Alive = alive
+    s.mux.RLock()
+    defer s.mux.RUnlock()
+    return s.Alive
 }
 
 type LoadBalancer struct {
-	servers []*Server
+    servers []*Server
 }
 
 func NewLoadBalancer(serverURLs []string) *LoadBalancer {
-	var servers []*Server
-	for _, serverURL := range serverURLs {
-		u, _ := url.Parse(serverURL)
-		proxy := httputil.NewSingleHostReverseProxy(u)
-		servers = append(servers, &Server{
-			URL:          u,
-			Alive:        true,
-			ReverseProxy: proxy,
-		})
-	}
-	return &LoadBalancer{servers: servers}
+    var servers []*Server
+    for _, serverURL := range serverURLs {
+        u, _ := url.Parse(serverURL)
+        proxy := httputil.NewSingleHostReverseProxy(u)
+        servers = append(servers, &Server{
+            URL:          u,
+            Alive:        true,
+            ReverseProxy: proxy,
+        })
+    }
+    return &LoadBalancer{servers: servers}
 }
 
 // LeastConnections returns server with minimum active connections
 func (lb *LoadBalancer) LeastConnections() *Server {
-	var selected *Server
-	minConns := int64(^uint64(0) >> 1) // Max int64
+    var selected *Server
+    minConns := int64(^uint64(0) >> 1)
 
-	for _, server := range lb.servers {
-		if server.IsAlive() && server.Connections < minConns {
-			minConns = server.Connections
-			selected = server
-		}
-	}
-	return selected
+    for _, server := range lb.servers {
+        if server.IsAlive() && server.Connections < minConns {
+            minConns = server.Connections
+            selected = server
+        }
+    }
+    return selected
 }
 
 func (lb *LoadBalancer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	server := lb.LeastConnections()
-	if server == nil {
-		http.Error(w, "No servers available", http.StatusServiceUnavailable)
-		return
-	}
+    server := lb.LeastConnections()
+    if server == nil {
+        http.Error(w, "No servers available", http.StatusServiceUnavailable)
+        return
+    }
 
-	atomic.AddInt64(&server.Connections, 1)
-	defer atomic.AddInt64(&server.Connections, -1)
+    atomic.AddInt64(&server.Connections, 1)
+    defer atomic.AddInt64(&server.Connections, -1)
 
-	server.ReverseProxy.ServeHTTP(w, r)
+    server.ReverseProxy.ServeHTTP(w, r)
 }
 
 func main() {
-	lb := NewLoadBalancer([]string{
-		"http://localhost:8081",
-		"http://localhost:8082",
-		"http://localhost:8083",
-	})
+    lb := NewLoadBalancer([]string{
+        "http://localhost:8081",
+        "http://localhost:8082",
+        "http://localhost:8083",
+    })
 
-	http.ListenAndServe(":8080", lb)
+    http.ListenAndServe(":8080", lb)
 }
 ```
 
-### HAProxy Configuration Example
-
-```yaml
-# HAProxy health check example
-backend servers
-    option httpchk GET /health
-    server web1 192.168.1.1:80 check inter 5s fall 3 rise 2
-    server web2 192.168.1.2:80 check inter 5s fall 3 rise 2
-```
-
-### Nginx Sticky Session Config
+### Nginx Configuration
 
 ```nginx
-# Nginx sticky session
 upstream backend {
-    ip_hash;
-    server backend1.example.com;
-    server backend2.example.com;
+    least_conn;
+    server backend1.example.com:8080 weight=3;
+    server backend2.example.com:8080 weight=2;
+    server backend3.example.com:8080 weight=1;
+
+    keepalive 32;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        # Health check
+        health_check interval=5s fails=3 passes=2;
+    }
 }
 ```
+
+---
+
+## Best Practices
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
+<h4 style="color: #166534; margin-top: 0;">Production Checklist</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: #1e293b;">
+<div>
+<strong style="color: #166534;">Health Checks</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Configure appropriate intervals</li>
+<li>Set reasonable thresholds</li>
+<li>Include deep health checks</li>
+</ul>
+</div>
+<div>
+<strong style="color: #166534;">Connection Draining</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Allow existing connections to complete</li>
+<li>Set appropriate drain timeout</li>
+</ul>
+</div>
+<div>
+<strong style="color: #166534;">Monitoring</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Track latency percentiles</li>
+<li>Monitor error rates</li>
+<li>Alert on anomalies</li>
+</ul>
+</div>
+<div>
+<strong style="color: #166534;">SSL/TLS</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+<li>Terminate SSL at load balancer</li>
+<li>Use modern cipher suites</li>
+</ul>
+</div>
+</div>
+</div>
+
+---
+
+## Related Topics
+
+- [Caching](/topic/system-design/caching)
+- [CDN](/topic/system-design/cdn)
+- [Rate Limiting](/topic/system-design/rate-limiting)
+- [Microservices](/topic/system-design/microservices)

@@ -1,66 +1,64 @@
 # Arrays - Interview Mastery Guide
 
-## Overview
+## Category Overview
 
-Arrays are the most fundamental data structure in computer science, storing elements in contiguous memory locations with O(1) index-based access. They form the foundation for understanding more complex data structures and are the **most commonly tested topic** in coding interviews.
+Arrays are the most fundamental data structure in computer science, serving as the building blocks for nearly every other data structure and algorithm. An array stores elements in contiguous memory locations, enabling O(1) random access by index. This simple yet powerful structure appears in approximately **40-50% of all coding interview questions**, making it the most frequently tested topic.
 
-An array provides:
-- **Random Access**: Access any element by index in O(1) time
-- **Cache Efficiency**: Contiguous memory means better cache performance
-- **Simple Structure**: Building block for stacks, queues, heaps, and more
+Understanding arrays deeply means understanding memory layout, cache efficiency, and how modern CPUs optimize sequential access patterns. Arrays provide the foundation for stacks, queues, heaps, hash tables, and even more complex structures like segment trees and suffix arrays.
 
-## Why This Matters for Interviews
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Why Arrays Dominate Interviews</h3>
+<div style="color: #334155;">
+<ul>
+<li><strong>Universal Foundation</strong>: Every programmer knows arrays, creating equal footing</li>
+<li><strong>Multiple Solutions</strong>: Most problems have brute force to optimal progressions</li>
+<li><strong>Pattern Recognition</strong>: Tests ability to identify and apply known techniques</li>
+<li><strong>Optimization Skills</strong>: Shows how candidates improve time/space complexity</li>
+<li><strong>Edge Case Handling</strong>: Reveals attention to boundary conditions</li>
+</ul>
+</div>
+</div>
 
-**Frequency**: Arrays appear in **40-50%** of all coding interview questions
+**Companies that heavily test arrays**: Google (sliding window, two pointers), Amazon (subarray problems), Meta (optimization), Microsoft (matrix operations), Apple (in-place modifications).
 
-**Companies that heavily test arrays**:
-- Google (sliding window, two pointers)
-- Amazon (subarray problems, sorting)
-- Meta (optimization problems)
-- Microsoft (matrix operations)
-- Apple (in-place modifications)
+## Key Patterns
 
-**Why interviewers love array problems**:
-1. Easy to understand problem statements
-2. Multiple solution approaches (brute force to optimal)
-3. Tests fundamental algorithmic thinking
-4. Reveals optimization skills
+Mastering array problems requires recognizing these fundamental patterns:
 
-## Core Patterns
-
-The main patterns to recognize and master:
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Pattern Recognition Guide</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155; overflow-x: auto;">
++------------------+-------------------------+---------------------------+
+|     Pattern      |      When to Use        |     Example Problems      |
++------------------+-------------------------+---------------------------+
+| Two Pointers     | Sorted arrays, pairs,   | Two Sum, Three Sum,       |
+|                  | partitioning            | Container With Most Water |
++------------------+-------------------------+---------------------------+
+| Sliding Window   | Contiguous subarrays,   | Max Subarray Sum,         |
+|                  | fixed/variable window   | Longest Substring         |
++------------------+-------------------------+---------------------------+
+| Hash Map/Set     | Finding pairs, counting | Two Sum, First Duplicate, |
+|                  | duplicates, lookups     | Subarray Sum Equals K     |
++------------------+-------------------------+---------------------------+
+| Prefix Sum       | Range queries, subarray | Zero Sum Subarray,        |
+|                  | sums, cumulative ops    | Contiguous Array          |
++------------------+-------------------------+---------------------------+
+| Binary Search    | Sorted arrays, finding  | Search Insert Position,   |
+|                  | boundaries, rotated     | Find First and Last       |
++------------------+-------------------------+---------------------------+
+| In-Place Modify  | O(1) space constraint,  | Move Zeroes, Dutch Flag,  |
+|                  | marking visited         | First Duplicate Value     |
++------------------+-------------------------+---------------------------+
+</pre>
+</div>
 
 ### Pattern 1: Two Pointers
-**When to use**: Sorted arrays, finding pairs, palindrome checking, partitioning
-**Example problems**: Two Sum (sorted), Three Sum, Container With Most Water
+The two-pointer technique uses two indices that move toward each other or in the same direction. It transforms O(n^2) brute force into O(n) solutions.
 
-### Pattern 2: Sliding Window
-**When to use**: Contiguous subarrays, substring problems, fixed or variable window
-**Example problems**: Maximum Subarray Sum, Longest Substring Without Repeating
-
-### Pattern 3: Hash Map/Set
-**When to use**: Finding pairs, counting occurrences, checking duplicates
-**Example problems**: Two Sum, First Duplicate, Subarray Sum Equals K
-
-### Pattern 4: Prefix Sum
-**When to use**: Range sum queries, subarray sums
-**Example problems**: Zero Sum Subarray, Contiguous Array
-
-### Pattern 5: In-Place Modification
-**When to use**: O(1) space requirement, marking visited elements
-**Example problems**: Move Zeroes, First Duplicate Value
-
-### Pattern 6: Binary Search
-**When to use**: Sorted arrays, searching, finding boundaries
-**Example problems**: Search Insert Position, Find First and Last Position
-
-## Visual Explanation
-
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h3 style="color: #1e293b; margin-top: 0;">Two Pointers Pattern</h3>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Two Pointers Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Sorted Array: [1, 2, 3, 4, 6, 8, 9, 14, 15]
-Target Sum: 13
+Finding pair with target sum = 13 in sorted array:
 
 Step 1:  L                          R
          [1, 2, 3, 4, 6, 8, 9, 14, 15]
@@ -84,64 +82,80 @@ Step 5:        L           R
 
 Step 6:           L        R
          [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 4 + 9 = 13 = target! Found!
+         Sum = 4 + 9 = 13 = target! FOUND!
+
+Key Insight: Each step eliminates either the smallest or largest
+remaining element, guaranteeing O(n) time complexity.
 </pre>
 </div>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h3 style="color: #1e293b; margin-top: 0;">Sliding Window Pattern</h3>
+### Pattern 2: Sliding Window
+Sliding window maintains a contiguous subset of elements, expanding or shrinking based on conditions. It's optimal for substring and subarray problems.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Sliding Window Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Find max sum of subarray of size 3:
+Find maximum sum of subarray with size k=3:
 Array: [2, 1, 5, 1, 3, 2]
 
 Window 1: [2, 1, 5] 1, 3, 2    Sum = 8
-Window 2:  2 [1, 5, 1] 3, 2    Sum = 7  (subtract 2, add 1)
-Window 3:  2, 1 [5, 1, 3] 2    Sum = 9  (subtract 1, add 3) MAX!
-Window 4:  2, 1, 5 [1, 3, 2]   Sum = 6  (subtract 5, add 2)
+           -------
+Window 2:  2 [1, 5, 1] 3, 2    Sum = 7  (remove 2, add 1)
+              -------
+Window 3:  2, 1 [5, 1, 3] 2    Sum = 9  (remove 1, add 3) MAX!
+                 -------
+Window 4:  2, 1, 5 [1, 3, 2]   Sum = 6  (remove 5, add 2)
+                    -------
 
 Answer: 9
 
-Key insight: Instead of recalculating sum each time O(k),
-slide the window by subtracting left, adding right O(1)
+Optimization: Instead of recalculating sum O(k) each time,
+              slide window by subtracting left, adding right O(1)
+              Total: O(n) instead of O(n*k)
 </pre>
 </div>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h3 style="color: #1e293b; margin-top: 0;">Prefix Sum Pattern</h3>
+### Pattern 3: Prefix Sum
+Prefix sums precompute cumulative totals, enabling O(1) range sum queries after O(n) preprocessing.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Prefix Sum Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Array:      [3, 1, 2, 5, 4]
-Prefix Sum: [3, 4, 6, 11, 15]
+Original:    [3,  1,  2,  5,  4]
+Index:        0   1   2   3   4
+Prefix Sum:  [3,  4,  6, 11, 15]
 
-To find sum from index 1 to 3:
-  prefix[3] - prefix[0] = 11 - 3 = 8
-  Verify: 1 + 2 + 5 = 8
+Range Sum Query: sum(index 1 to 3)
+  = prefix[3] - prefix[0]
+  = 11 - 3 = 8
+  Verify: 1 + 2 + 5 = 8 ✓
 
-Zero Sum Subarray Detection:
-Array:      [4, 2, -3, 1, 6]
-Prefix Sum: [4, 6,  3, 4, 10]
-                       ^
-Same prefix sum (4) appears twice!
-Subarray between indices sums to 0: [2, -3, 1] = 0
+Zero-Sum Subarray Detection:
+Array:       [4,  2, -3,  1,  6]
+Prefix Sum:  [4,  6,  3,  4, 10]
+                         ^
+Same prefix sum (4) at index 0 and 3!
+Subarray [2, -3, 1] between indices 1-3 sums to 0.
+
+Key Insight: If prefix[i] == prefix[j], then sum(i+1, j) = 0
 </pre>
 </div>
 
-## Must-Know Problems
+## Must-Know Problems with Solutions
 
 ### Problem 1: Two Number Sum
 
 **Problem**: Find two numbers in an array that add up to a target sum.
 
-**Approach 1 - Hash Set (Optimal)**:
-- For each number, check if (target - number) exists in set
-- Time: O(n), Space: O(n)
-
-**Approach 2 - Two Pointers (if sorted)**:
-- Sort array, use left/right pointers
-- Time: O(n log n), Space: O(1)
+**Approaches**:
+1. **Brute Force**: Check all pairs - O(n^2) time, O(1) space
+2. **Hash Set**: Store complements - O(n) time, O(n) space
+3. **Two Pointers**: If sorted - O(n log n) time, O(1) space
 
 ```python
 def two_number_sum(array, target_sum):
     """
+    Hash Set Approach
     Time: O(n) | Space: O(n)
     """
     seen = set()
@@ -150,6 +164,24 @@ def two_number_sum(array, target_sum):
         if complement in seen:
             return [complement, num]
         seen.add(num)
+    return []
+
+def two_number_sum_sorted(array, target_sum):
+    """
+    Two Pointers (requires sorted array)
+    Time: O(n) | Space: O(1)
+    """
+    array.sort()  # O(n log n) if not already sorted
+    left, right = 0, len(array) - 1
+
+    while left < right:
+        current_sum = array[left] + array[right]
+        if current_sum == target_sum:
+            return [array[left], array[right]]
+        elif current_sum < target_sum:
+            left += 1
+        else:
+            right -= 1
     return []
 
 # Example
@@ -161,21 +193,23 @@ print(two_number_sum(array, 10))  # [-1, 11]
 
 ### Problem 2: Three Number Sum
 
-**Problem**: Find all unique triplets that sum to a target.
+**Problem**: Find all unique triplets that sum to a target value.
 
-**Approach**: Sort + Two Pointers
-- Fix one element, use two pointers for remaining two
-- Time: O(n^2), Space: O(n) for output
+**Approach**: Sort array, fix first element, use two pointers for remaining two.
 
 ```python
 def three_number_sum(array, target_sum):
     """
-    Time: O(n^2) | Space: O(n)
+    Time: O(n^2) | Space: O(n) for output
     """
     array.sort()
     triplets = []
 
     for i in range(len(array) - 2):
+        # Skip duplicates for first element
+        if i > 0 and array[i] == array[i-1]:
+            continue
+
         left = i + 1
         right = len(array) - 1
 
@@ -184,6 +218,11 @@ def three_number_sum(array, target_sum):
 
             if current_sum == target_sum:
                 triplets.append([array[i], array[left], array[right]])
+                # Skip duplicates
+                while left < right and array[left] == array[left + 1]:
+                    left += 1
+                while left < right and array[right] == array[right - 1]:
+                    right -= 1
                 left += 1
                 right -= 1
             elif current_sum < target_sum:
@@ -204,8 +243,27 @@ print(three_number_sum(array, 0))  # [[-8, 2, 6], [-8, 3, 5], [-6, 1, 5]]
 
 **Problem**: Find the contiguous subarray with the largest sum.
 
-**Approach**: Track current sum, reset if negative
-- Time: O(n), Space: O(1)
+**Approach**: Track running sum, reset when it becomes negative.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Kadane's Algorithm Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+Index:   0   1   2   3   4   5   6   7   8
+Value:  -2   1  -3   4  -1   2   1  -5   4
+Current:-2   1  -2   4   3   5   6   1   5
+MaxSum: -2   1   1   4   4   5   6   6   6
+                     ↑           ↑
+              Reset to 4    Maximum found!
+
+Decision at each step:
+- Current = max(array[i], current + array[i])
+- "Should I extend the previous subarray or start fresh?"
+
+Answer: 6 (subarray [4, -1, 2, 1])
+</pre>
+</div>
 
 ```python
 def max_subarray_sum(array):
@@ -213,64 +271,72 @@ def max_subarray_sum(array):
     Kadane's Algorithm
     Time: O(n) | Space: O(1)
     """
+    if not array:
+        return 0
+
     max_sum = array[0]
     current_sum = array[0]
 
     for i in range(1, len(array)):
-        # Either extend current subarray or start new
+        # Either extend current subarray or start new one
         current_sum = max(array[i], current_sum + array[i])
         max_sum = max(max_sum, current_sum)
 
     return max_sum
 
+def max_subarray_with_indices(array):
+    """Extended version that returns the subarray indices"""
+    max_sum = array[0]
+    current_sum = array[0]
+    start = end = 0
+    temp_start = 0
+
+    for i in range(1, len(array)):
+        if array[i] > current_sum + array[i]:
+            current_sum = array[i]
+            temp_start = i
+        else:
+            current_sum += array[i]
+
+        if current_sum > max_sum:
+            max_sum = current_sum
+            start = temp_start
+            end = i
+
+    return max_sum, start, end
+
 # Example
 array = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-print(max_subarray_sum(array))  # 6 (subarray [4, -1, 2, 1])
+print(max_subarray_sum(array))  # 6
 ```
 
 ---
 
-### Problem 4: Move Element To End
+### Problem 4: Merge Overlapping Intervals
 
-**Problem**: Move all instances of a target to the end of array in-place.
+**Problem**: Given a collection of intervals, merge all overlapping intervals.
 
-**Approach**: Two pointers from both ends
-- Time: O(n), Space: O(1)
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Interval Merging Visualization</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Input intervals (sorted by start):
+[1,2]  [3,5]  [4,7]  [6,8]  [9,10]
 
-```python
-def move_element_to_end(array, to_move):
-    """
-    Time: O(n) | Space: O(1)
-    """
-    left = 0
-    right = len(array) - 1
+Timeline:
+1---2     No overlap with previous
+    3-----5
+       4--------7  Overlaps! Merge [3,5] + [4,7] = [3,7]
+          6--------8  Overlaps! Merge [3,7] + [6,8] = [3,8]
+                  9---10  No overlap
 
-    while left < right:
-        # Find next target from right that's not to_move
-        while left < right and array[right] == to_move:
-            right -= 1
+Result: [1,2], [3,8], [9,10]
 
-        # If left has target, swap with right
-        if array[left] == to_move:
-            array[left], array[right] = array[right], array[left]
-
-        left += 1
-
-    return array
-
-# Example
-array = [2, 1, 2, 2, 2, 3, 4, 2]
-print(move_element_to_end(array, 2))  # [4, 1, 3, 2, 2, 2, 2, 2]
-```
-
----
-
-### Problem 5: Merge Overlapping Intervals
-
-**Problem**: Given intervals, merge all overlapping ones.
-
-**Approach**: Sort by start, merge greedily
-- Time: O(n log n), Space: O(n)
+Merge Logic:
+- Sort by start time
+- If current.start <= last.end: extend last.end
+- Otherwise: add new interval
+</pre>
+</div>
 
 ```python
 def merge_overlapping_intervals(intervals):
@@ -301,27 +367,26 @@ print(merge_overlapping_intervals(intervals))  # [[1, 2], [3, 8], [9, 10]]
 
 ---
 
-### Problem 6: First Duplicate Value
+### Problem 5: First Duplicate Value
 
-**Problem**: Find the first duplicate in an array of integers 1 to n.
+**Problem**: Find the first duplicate value in an array containing integers 1 to n.
 
-**Approach**: Use array as hash map (negate values as markers)
-- Time: O(n), Space: O(1)
+**Approach**: Use array values as indices, negate to mark visited.
 
 ```python
 def first_duplicate_value(array):
     """
     Time: O(n) | Space: O(1)
-    Uses array values as indices (values are 1 to n)
+    Uses the array itself as a hash map
     """
     for value in array:
         abs_value = abs(value)
-        index = abs_value - 1
+        index = abs_value - 1  # Convert 1-indexed to 0-indexed
 
-        if array[index] < 0:
+        if array[index] < 0:  # Already visited
             return abs_value
 
-        array[index] *= -1
+        array[index] *= -1  # Mark as visited
 
     return -1
 
@@ -332,12 +397,34 @@ print(first_duplicate_value(array))  # 2
 
 ---
 
-### Problem 7: Spiral Matrix Traversal
+### Problem 6: Spiral Matrix Traversal
 
-**Problem**: Return all elements in spiral order.
+**Problem**: Return all elements of a matrix in spiral order.
 
-**Approach**: Track four boundaries (top, bottom, left, right)
-- Time: O(n), Space: O(n)
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Spiral Traversal Pattern</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Matrix:
+    ┌──→──→──→──┐
+    ↑  1  2  3  4  ↓
+    ↑ 12 13 14  5  ↓
+    ↑ 11 16 15  6  ↓
+    └──←──←──←──┘
+       10  9  8  7
+
+Order: 1→2→3→4→5→6→7→8→9→10→11→12→13→14→15→16
+
+Boundaries:
+- top (row), bottom (row)
+- left (col), right (col)
+
+After each direction:
+- Right traversal: top++
+- Down traversal: right--
+- Left traversal: bottom--
+- Up traversal: left++
+</pre>
+</div>
 
 ```python
 def spiral_traverse(matrix):
@@ -362,13 +449,13 @@ def spiral_traverse(matrix):
             result.append(matrix[row][right])
         right -= 1
 
-        # Traverse left (if rows remain)
+        # Traverse left (check if rows remain)
         if top <= bottom:
             for col in range(right, left - 1, -1):
                 result.append(matrix[bottom][col])
             bottom -= 1
 
-        # Traverse up (if columns remain)
+        # Traverse up (check if columns remain)
         if left <= right:
             for row in range(bottom, top - 1, -1):
                 result.append(matrix[row][left])
@@ -386,115 +473,156 @@ matrix = [
 print(spiral_traverse(matrix))  # [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 ```
 
+## Complexity Analysis Summary
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Time and Space Complexity Reference</h3>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Problem</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Time</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Space</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Key Technique</th>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Two Sum</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Hash Set</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Three Sum</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n^2)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Sort + Two Pointers</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Max Subarray</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(1)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Kadane's Algorithm</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Merge Intervals</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n log n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Sort + Greedy Merge</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">First Duplicate</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(1)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Index as Hash</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Spiral Matrix</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m*n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">O(m*n)</td>
+<td style="padding: 10px; border: 1px solid #e2e8f0;">Boundary Tracking</td>
+</tr>
+</table>
+</div>
+
 ## Common Mistakes
 
-1. **Off-by-one errors**: Forgetting that arrays are 0-indexed
-2. **Not handling empty arrays**: Always check `if not array` first
-3. **Modifying array while iterating**: Use indices or iterate over copy
-4. **Integer overflow**: Large sums may overflow in some languages
-5. **Forgetting to sort**: Two-pointer on unsorted array doesn't work
-6. **Not considering negatives**: Affects min/max logic in Kadane's
-7. **Using wrong comparison**: `<=` vs `<` in boundary conditions
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Pitfalls to Avoid</h3>
+<div style="color: #334155;">
+
+1. **Off-by-One Errors**: Arrays are 0-indexed; `array[len(array)]` causes IndexError
+2. **Empty Array Handling**: Always check `if not array` before accessing elements
+3. **Modifying While Iterating**: Use indices or iterate over a copy
+4. **Integer Overflow**: Large sums may overflow in languages without arbitrary precision
+5. **Forgetting to Sort**: Two-pointer on unsorted arrays doesn't work correctly
+6. **Negative Numbers**: Affects min/max logic, especially in Kadane's algorithm
+7. **Wrong Comparison Operators**: `<=` vs `<` in boundary conditions changes behavior
+8. **Not Handling Duplicates**: Three Sum needs duplicate skipping for unique triplets
+
+</div>
+</div>
 
 ## Interview Tips
 
-### How to approach unknown array problems:
+### Problem-Solving Framework
 
-1. **Clarify constraints**: Size of array? Range of values? Sorted? Duplicates?
-2. **Start with brute force**: Explain O(n^2) or O(n^3) approach first
-3. **Identify the pattern**: Two pointers? Hash map? Sliding window?
-4. **Optimize step by step**: Show your thought process
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">The UMPIRE Method</h4>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+U - Understand the problem (ask clarifying questions)
+M - Match to known patterns (two pointers? sliding window?)
+P - Plan your approach (pseudocode)
+I - Implement the solution
+R - Review and test with examples
+E - Evaluate complexity (time and space)
 
-### Time management:
-- **0-5 min**: Understand problem, ask questions
-- **5-10 min**: Discuss approaches, pick optimal
-- **10-30 min**: Implement solution
-- **30-35 min**: Test with examples, edge cases
+Time Allocation (45-minute interview):
+0-5 min:  Understand problem, ask questions
+5-10 min: Discuss approaches, identify pattern
+10-35 min: Implement solution
+35-45 min: Test with examples, optimize if time
+</pre>
+</div>
 
-### Communication tips:
-- "Let me think about the brute force first..."
-- "I notice this is sorted, so two pointers might work..."
-- "To optimize from O(n^2) to O(n), I can use a hash map..."
-- "Let me trace through this example to verify..."
+### Communication Phrases
 
-## Practice Problems (Easy to Hard)
+- "Let me start with the brute force approach to establish a baseline..."
+- "I notice the array is sorted, so two pointers might optimize this..."
+- "To improve from O(n^2) to O(n), I can trade space for time with a hash map..."
+- "Let me trace through this example to verify my logic..."
+- "The edge cases I need to handle are: empty array, single element, all duplicates..."
+
+## Practice Problems
 
 ### Easy
 1. Two Number Sum
 2. Validate Subsequence
 3. Sorted Squared Array
 4. Tournament Winner
+5. Non-Constructible Change
 
 ### Medium
-5. Three Number Sum
-6. Smallest Difference
-7. Move Element To End
-8. Monotonic Array
-9. Spiral Traverse
-10. Longest Peak
-11. Array Of Products
-12. First Duplicate Value
-13. Merge Overlapping Intervals
-14. Zero Sum Subarray
+6. Three Number Sum
+7. Smallest Difference
+8. Move Element To End
+9. Monotonic Array
+10. Spiral Traverse
+11. Longest Peak
+12. Array Of Products
+13. First Duplicate Value
+14. Merge Overlapping Intervals
+15. Zero Sum Subarray
 
 ### Hard
-15. Four Number Sum
-16. Subarray Sort
-17. Largest Range
-18. Min Rewards
-19. Zigzag Traverse
+16. Four Number Sum
+17. Subarray Sort
+18. Largest Range
+19. Min Rewards
+20. Zigzag Traverse
+21. Longest Subarray With Sum
 
 ### Very Hard
-20. Apartment Hunting
-21. Calendar Matching
-22. Waterfall Streams
+22. Apartment Hunting
+23. Calendar Matching
+24. Waterfall Streams
+25. Minimum Area Rectangle
 
-## Quick Reference Card
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e293b; margin-top: 0;">Quick Reference Formulas</h3>
+<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
+Kadane's Algorithm:
+  current = max(arr[i], current + arr[i])
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h3 style="color: #1e293b; margin-top: 0;">Array Cheat Sheet</h3>
-<table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Pattern</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Time</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">When to Use</th>
-</tr>
-<tr>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Two Pointers</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n)</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Sorted array, pairs, partitioning</td>
-</tr>
-<tr>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Sliding Window</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n)</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Contiguous subarray, fixed/variable size</td>
-</tr>
-<tr>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Hash Map</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n)</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Find pairs, count occurrences</td>
-</tr>
-<tr>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Prefix Sum</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n) + O(1) query</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Range sum queries</td>
-</tr>
-<tr>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Sort First</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n log n)</td>
-<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Finding pairs, intervals, greedy</td>
-</tr>
-<tr>
-<td style="padding: 12px;">Binary Search</td>
-<td style="padding: 12px;">O(log n)</td>
-<td style="padding: 12px;">Sorted array, finding boundary</td>
-</tr>
-</table>
+Prefix Sum:
+  prefix[i] = prefix[i-1] + arr[i]
 
-<h4 style="color: #1e293b; margin-top: 20px;">Key Formulas</h4>
-<ul style="color: #334155;">
-<li><strong>Kadane's</strong>: current = max(arr[i], current + arr[i])</li>
-<li><strong>Prefix Sum</strong>: prefix[i] = prefix[i-1] + arr[i]</li>
-<li><strong>Range Sum</strong>: sum(i,j) = prefix[j] - prefix[i-1]</li>
-</ul>
+Range Sum Query:
+  sum(i, j) = prefix[j] - prefix[i-1]
+
+Two Pointers (sorted):
+  if sum < target: left++
+  if sum > target: right--
+
+Sliding Window (fixed size k):
+  window_sum = window_sum - arr[i-k] + arr[i]
+</pre>
 </div>
