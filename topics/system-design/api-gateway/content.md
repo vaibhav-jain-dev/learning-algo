@@ -2,676 +2,776 @@
 
 ## Overview
 
-An API Gateway is a server that acts as a single entry point for all client requests to backend services. It handles cross-cutting concerns like authentication, rate limiting, request routing, and protocol translation.
+An API Gateway is a single entry point that sits between clients and backend services. Think of it as a smart receptionist in a large office building - instead of visitors wandering around trying to find different departments, they check in at one desk that directs them appropriately, handles security, and ensures they follow the rules.
 
-## Key Concepts
+In simple terms: **API Gateway = Router + Bouncer + Translator + Observer**
 
-### Why API Gateway?
-
-<div style="display: flex; flex-direction: column; gap: 2rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div>
-    <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 1rem;">Without Gateway (Complex Client)</div>
-    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-        <div style="font-weight: 700;">Client</div>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.5rem 1rem; color: #4ecdc4; font-size: 0.9rem;">User Service</div></div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 8px; padding: 0.5rem 1rem; color: #f093fb; font-size: 0.9rem;">Order Service</div></div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #667eea;">→</span><div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.5rem 1rem; color: #ffd93d; font-size: 0.9rem;">Product Service</div></div>
-      </div>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">What API Gateway Does</h4>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+      <strong style="color: #1e293b;">Request Routing</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Directs traffic to the right service based on path, headers, or content</p>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; border-left: 4px solid #10b981;">
+      <strong style="color: #1e293b;">Authentication</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Validates tokens, API keys, and user credentials before forwarding</p>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+      <strong style="color: #1e293b;">Rate Limiting</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Protects services from abuse and ensures fair usage</p>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+      <strong style="color: #1e293b;">Observability</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Centralized logging, metrics, and tracing for all API traffic</p>
     </div>
   </div>
-  <div>
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 1rem;">With Gateway (Simplified)</div>
-    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-        <div style="font-weight: 700;">Client</div>
+</div>
+
+---
+
+## Why This Matters
+
+### Real Company Examples
+
+**Netflix** processes over 2 billion API requests daily through their Zuul gateway. Without it, their mobile apps would need to know the addresses of hundreds of microservices and handle authentication logic themselves.
+
+**Amazon** uses API Gateway to expose their internal services to third-party sellers. The gateway handles authentication, throttling, and transforms internal data formats to public API contracts.
+
+**Uber** routes millions of ride requests through their API Gateway, which decides whether to send traffic to their pricing service, matching service, or payment service based on the request type.
+
+**Stripe** uses API Gateway to version their APIs, allowing them to maintain backward compatibility while evolving their internal systems.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Without vs With API Gateway</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Without Gateway</div>
+      <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca;">
+        <ul style="color: #1e293b; margin: 0; padding-left: 20px; font-size: 14px;">
+          <li>Client must know all service URLs</li>
+          <li>Auth logic duplicated everywhere</li>
+          <li>No centralized rate limiting</li>
+          <li>Hard to change service topology</li>
+          <li>CORS handled per service</li>
+        </ul>
       </div>
-      <span style="color: #667eea; font-size: 1.5rem;">→</span>
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
-        <div style="font-weight: 700;">API Gateway</div>
-        <div style="font-size: 0.8rem; opacity: 0.9;">Single entry point</div>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">User Service</div></div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">Order Service</div></div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #38ef7d;">→</span><div style="background: #2d3748; border-radius: 6px; padding: 0.4rem 0.75rem; color: #a0aec0; font-size: 0.85rem;">Product Service</div></div>
+    </div>
+    <div>
+      <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">With Gateway</div>
+      <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
+        <ul style="color: #1e293b; margin: 0; padding-left: 20px; font-size: 14px;">
+          <li>Single URL for all APIs</li>
+          <li>Centralized authentication</li>
+          <li>Unified rate limiting</li>
+          <li>Services can move freely</li>
+          <li>CORS handled once</li>
+        </ul>
       </div>
     </div>
   </div>
 </div>
 
-### Core Functions
+---
 
-1. **Request Routing**: Route requests to appropriate services
-2. **Authentication/Authorization**: Validate tokens, check permissions
-3. **Rate Limiting**: Prevent abuse, ensure fair usage
-4. **Load Balancing**: Distribute traffic across instances
-5. **Caching**: Cache responses to reduce backend load
-6. **Request/Response Transformation**: Modify headers, body
-7. **Circuit Breaking**: Handle service failures gracefully
-8. **Logging/Monitoring**: Centralized observability
+## How It Works
 
-## Gateway Patterns
+### Request Flow Through API Gateway
 
-### 1. Simple Reverse Proxy
-
-```python
-from flask import Flask, request
-import requests
-
-app = Flask(__name__)
-
-SERVICES = {
-    '/users': 'http://user-service:8080',
-    '/orders': 'http://order-service:8080',
-    '/products': 'http://product-service:8080'
-}
-
-@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def proxy(path):
-    # Find matching service
-    for prefix, service_url in SERVICES.items():
-        if f'/{path}'.startswith(prefix):
-            target_url = f"{service_url}/{path}"
-
-            # Forward request
-            response = requests.request(
-                method=request.method,
-                url=target_url,
-                headers={k: v for k, v in request.headers if k != 'Host'},
-                data=request.get_data(),
-                params=request.args
-            )
-
-            return response.content, response.status_code, response.headers.items()
-
-    return {'error': 'Service not found'}, 404
-```
-
-### 2. Backend for Frontend (BFF)
-
-Different gateways for different clients.
-
-<div style="display: flex; align-items: center; gap: 1.5rem; margin: 1.5rem 0; font-family: system-ui, sans-serif; flex-wrap: wrap;">
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #1e3a5f; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4;">📱 Mobile App</div>
-      <span style="color: #4ecdc4;">→</span>
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">Mobile BFF</div>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Step-by-Step Request Processing</h4>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Request Arrives</strong>
+        <span style="color: #475569; font-size: 14px;"> - Client sends HTTPS request to gateway endpoint</span>
+      </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #1e3a5f; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb;">🌐 Web App</div>
-      <span style="color: #f093fb;">→</span>
-      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 0.75rem 1.25rem; color: white; font-weight: 600;">Web BFF</div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Authentication</strong>
+        <span style="color: #475569; font-size: 14px;"> - Gateway validates JWT token or API key</span>
+      </div>
     </div>
-  </div>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-    <span style="color: #ffd93d; font-size: 1.5rem;">⟶</span>
-  </div>
-  <div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 10px; padding: 1.25rem; color: #ffd93d; text-align: center;">
-    <div style="font-weight: 700;">Backend Services</div>
-    <div style="font-size: 0.8rem; opacity: 0.8;">Shared microservices</div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Rate Limiting</strong>
+        <span style="color: #475569; font-size: 14px;"> - Check if client has exceeded their quota</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Request Routing</strong>
+        <span style="color: #475569; font-size: 14px;"> - Match path/method to backend service</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">5</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Request Transform</strong>
+        <span style="color: #475569; font-size: 14px;"> - Add headers, modify body, translate protocols</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">6</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Forward to Service</strong>
+        <span style="color: #475569; font-size: 14px;"> - Send request to backend (with circuit breaker)</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">7</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Response Transform</strong>
+        <span style="color: #475569; font-size: 14px;"> - Modify response, add CORS headers</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">8</div>
+      <div style="flex: 1; background: #eff6ff; padding: 12px 16px; border-radius: 8px;">
+        <strong style="color: #1e293b;">Log & Return</strong>
+        <span style="color: #475569; font-size: 14px;"> - Record metrics and send response to client</span>
+      </div>
+    </div>
   </div>
 </div>
 
-```python
-# Mobile BFF - Optimized for mobile
-class MobileBFF:
-    def get_dashboard(self, user_id):
-        # Aggregate data for mobile with minimal payload
-        user = user_service.get_user(user_id)
-        orders = order_service.get_recent(user_id, limit=5)
+### Gateway Patterns
 
-        return {
-            'user': {'name': user['name'], 'avatar': user['avatar_small']},
-            'recent_orders': [{'id': o['id'], 'total': o['total']} for o in orders]
-        }
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">Common Gateway Patterns</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px;">
+      <strong style="color: #1e293b;">Backend for Frontend (BFF)</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Separate gateways for mobile, web, and third-party APIs. Each gateway is optimized for its client type.</p>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px;">
+      <strong style="color: #1e293b;">Aggregation Gateway</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Combines multiple service calls into a single response. Reduces client round trips.</p>
+    </div>
+    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px;">
+      <strong style="color: #1e293b;">Edge Gateway</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Deployed at CDN edge locations for geographic distribution and reduced latency.</p>
+    </div>
+  </div>
+</div>
 
-# Web BFF - Full data for desktop
-class WebBFF:
-    def get_dashboard(self, user_id):
-        user = user_service.get_user(user_id)
-        orders = order_service.get_all(user_id)
-        recommendations = product_service.get_recommendations(user_id)
+---
 
-        return {
-            'user': user,
-            'orders': orders,
-            'recommendations': recommendations
-        }
-```
+## Real-Life Failure Story
 
-### 3. Aggregation Gateway
+### The Netflix Zuul Outage (2015)
 
-Combine multiple service calls into single response.
+**What Happened:** Netflix's API Gateway (Zuul) became the single point of failure when a memory leak caused cascading failures across all services.
+
+**The Timeline:**
+1. A code change introduced a memory leak in the request logging module
+2. Gateway instances started running out of heap memory
+3. Garbage collection pauses caused request timeouts
+4. Health checks failed, causing instances to be killed
+5. New instances launched but immediately hit the same memory issue
+6. All streaming traffic was affected for 45 minutes
+
+**Root Cause:** The logging middleware was storing entire request bodies in memory for debugging, without size limits.
+
+**How They Fixed It:**
+1. **Immediate:** Rolled back the logging change
+2. **Short-term:** Added memory limits and circuit breakers in the gateway
+3. **Long-term:** Implemented "chaos engineering" to regularly test gateway failures
+
+**Key Lesson:** The gateway must be the most reliable component. If it goes down, everything goes down.
+
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #92400e; margin-top: 0;">Warning Signs They Missed</h4>
+  <ul style="color: #78350f; margin: 0; padding-left: 20px;">
+    <li>Memory usage trending upward over days</li>
+    <li>GC pause times increasing gradually</li>
+    <li>Request latency P99 creeping higher</li>
+    <li>No load testing with production-size payloads</li>
+  </ul>
+</div>
+
+---
+
+## Implementation
+
+### Python - Production API Gateway
 
 ```python
 import asyncio
 import aiohttp
-
-class AggregationGateway:
-    async def get_order_details(self, order_id):
-        async with aiohttp.ClientSession() as session:
-            # Parallel requests to multiple services
-            order_task = self.fetch(session, f'/orders/{order_id}')
-
-            order = await order_task
-
-            # Get related data in parallel
-            user_task = self.fetch(session, f'/users/{order["user_id"]}')
-            products_task = self.fetch_products(session, order['items'])
-
-            user, products = await asyncio.gather(user_task, products_task)
-
-            # Aggregate response
-            return {
-                'order': order,
-                'customer': {
-                    'name': user['name'],
-                    'email': user['email']
-                },
-                'products': products
-            }
-
-    async def fetch(self, session, path):
-        async with session.get(f'http://internal{path}') as resp:
-            return await resp.json()
-
-    async def fetch_products(self, session, items):
-        tasks = [self.fetch(session, f'/products/{item["product_id"]}') for item in items]
-        return await asyncio.gather(*tasks)
-```
-
-## Implementation Features
-
-### Authentication Middleware
-
-```python
-from functools import wraps
-import jwt
-
-def require_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization', '').replace('Bearer ', '')
-
-        if not token:
-            return {'error': 'No token provided'}, 401
-
-        try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-            request.user = payload
-        except jwt.ExpiredSignatureError:
-            return {'error': 'Token expired'}, 401
-        except jwt.InvalidTokenError:
-            return {'error': 'Invalid token'}, 401
-
-        return f(*args, **kwargs)
-    return decorated
-
-@app.route('/api/orders')
-@require_auth
-def get_orders():
-    user_id = request.user['sub']
-    return order_service.get_orders(user_id)
-```
-
-### Rate Limiting
-
-```python
 import time
+import hashlib
+import jwt
+from dataclasses import dataclass
+from typing import Dict, Optional, List, Callable
 from collections import defaultdict
+from functools import wraps
+import logging
 
-class RateLimiter:
-    def __init__(self, requests_per_minute=60):
-        self.requests_per_minute = requests_per_minute
-        self.requests = defaultdict(list)
+logger = logging.getLogger(__name__)
 
-    def is_allowed(self, client_id):
+
+@dataclass
+class Route:
+    """Route configuration for API Gateway."""
+    path_prefix: str
+    service_url: str
+    methods: List[str]
+    require_auth: bool = True
+    rate_limit: int = 100  # requests per minute
+    timeout: float = 30.0
+    cache_ttl: int = 0  # seconds, 0 = no cache
+
+
+@dataclass
+class RateLimitInfo:
+    """Rate limit tracking info."""
+    count: int
+    window_start: float
+
+
+class TokenBucketRateLimiter:
+    """Token bucket rate limiter with Redis-like interface."""
+
+    def __init__(self, rate: int, capacity: int):
+        self.rate = rate  # tokens per second
+        self.capacity = capacity
+        self.buckets: Dict[str, tuple] = {}  # key -> (tokens, last_update)
+
+    def is_allowed(self, key: str) -> tuple[bool, int]:
+        """Check if request is allowed. Returns (allowed, remaining)."""
         now = time.time()
-        minute_ago = now - 60
 
-        # Clean old requests
-        self.requests[client_id] = [
-            t for t in self.requests[client_id] if t > minute_ago
-        ]
+        if key not in self.buckets:
+            self.buckets[key] = (self.capacity - 1, now)
+            return True, self.capacity - 1
 
-        if len(self.requests[client_id]) >= self.requests_per_minute:
+        tokens, last_update = self.buckets[key]
+        elapsed = now - last_update
+
+        # Add tokens based on elapsed time
+        tokens = min(self.capacity, tokens + elapsed * self.rate)
+
+        if tokens >= 1:
+            self.buckets[key] = (tokens - 1, now)
+            return True, int(tokens - 1)
+
+        self.buckets[key] = (tokens, now)
+        return False, 0
+
+
+class CircuitBreaker:
+    """Circuit breaker for backend services."""
+
+    def __init__(self, failure_threshold: int = 5,
+                 recovery_timeout: float = 30.0):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.failures: Dict[str, int] = defaultdict(int)
+        self.last_failure_time: Dict[str, float] = {}
+        self.state: Dict[str, str] = defaultdict(lambda: "closed")
+
+    def is_open(self, service: str) -> bool:
+        """Check if circuit is open (blocking requests)."""
+        if self.state[service] == "closed":
             return False
 
-        self.requests[client_id].append(now)
-        return True
+        if self.state[service] == "open":
+            # Check if recovery timeout has passed
+            if time.time() - self.last_failure_time[service] > self.recovery_timeout:
+                self.state[service] = "half-open"
+                return False
+            return True
 
-rate_limiter = RateLimiter(requests_per_minute=100)
+        return False  # half-open allows one request
 
-@app.before_request
-def check_rate_limit():
-    client_id = request.headers.get('X-API-Key') or request.remote_addr
+    def record_success(self, service: str):
+        """Record successful request."""
+        self.failures[service] = 0
+        self.state[service] = "closed"
 
-    if not rate_limiter.is_allowed(client_id):
-        return {'error': 'Rate limit exceeded'}, 429
-```
+    def record_failure(self, service: str):
+        """Record failed request."""
+        self.failures[service] += 1
+        self.last_failure_time[service] = time.time()
 
-### Request Transformation
+        if self.failures[service] >= self.failure_threshold:
+            self.state[service] = "open"
+            logger.warning(f"Circuit opened for service: {service}")
 
-```python
-class RequestTransformer:
-    def transform_request(self, request, route_config):
-        # Add internal headers
-        headers = dict(request.headers)
-        headers['X-Request-ID'] = str(uuid.uuid4())
-        headers['X-Forwarded-For'] = request.remote_addr
-
-        # Transform body if needed
-        body = request.get_json()
-        if route_config.get('transform'):
-            body = self.apply_transform(body, route_config['transform'])
-
-        return headers, body
-
-    def transform_response(self, response, route_config):
-        # Remove internal headers
-        headers = {k: v for k, v in response.headers.items()
-                   if not k.startswith('X-Internal-')}
-
-        # Transform response body
-        body = response.json()
-        if route_config.get('response_transform'):
-            body = self.apply_transform(body, route_config['response_transform'])
-
-        return headers, body
-```
-
-### Caching
-
-```python
-import hashlib
-import redis
 
 class ResponseCache:
-    def __init__(self, redis_client):
-        self.redis = redis_client
+    """Simple in-memory response cache."""
 
-    def cache_key(self, request):
-        key_parts = [
-            request.method,
-            request.path,
-            str(sorted(request.args.items()))
-        ]
-        return hashlib.md5('|'.join(key_parts).encode()).hexdigest()
+    def __init__(self):
+        self.cache: Dict[str, tuple] = {}  # key -> (response, expiry)
 
-    def get(self, request):
-        if request.method != 'GET':
-            return None
-
-        key = self.cache_key(request)
-        cached = self.redis.get(f"cache:{key}")
-
-        if cached:
-            return json.loads(cached)
+    def get(self, key: str) -> Optional[dict]:
+        """Get cached response if not expired."""
+        if key in self.cache:
+            response, expiry = self.cache[key]
+            if time.time() < expiry:
+                return response
+            del self.cache[key]
         return None
 
-    def set(self, request, response, ttl=60):
-        if request.method != 'GET':
-            return
+    def set(self, key: str, response: dict, ttl: int):
+        """Cache response with TTL."""
+        if ttl > 0:
+            self.cache[key] = (response, time.time() + ttl)
 
-        key = self.cache_key(request)
-        self.redis.setex(f"cache:{key}", ttl, json.dumps(response))
+    def make_key(self, method: str, path: str, query: str) -> str:
+        """Generate cache key."""
+        return hashlib.md5(f"{method}:{path}:{query}".encode()).hexdigest()
 
-cache = ResponseCache(redis.Redis())
 
-@app.route('/<path:path>')
-def proxy(path):
-    # Check cache first
-    cached = cache.get(request)
-    if cached:
-        return cached
+class APIGateway:
+    """Production-ready API Gateway implementation."""
 
-    # Forward request
-    response = forward_request(path)
+    def __init__(self, routes: List[Route], jwt_secret: str):
+        self.routes = routes
+        self.jwt_secret = jwt_secret
+        self.rate_limiters: Dict[str, TokenBucketRateLimiter] = {}
+        self.circuit_breaker = CircuitBreaker()
+        self.cache = ResponseCache()
+        self.metrics = defaultdict(int)
 
-    # Cache response
-    cache.set(request, response)
+        # Initialize rate limiters for each route
+        for route in routes:
+            rate_per_second = route.rate_limit / 60
+            self.rate_limiters[route.path_prefix] = TokenBucketRateLimiter(
+                rate=rate_per_second,
+                capacity=route.rate_limit
+            )
 
-    return response
+    def find_route(self, path: str) -> Optional[Route]:
+        """Find matching route for path."""
+        for route in self.routes:
+            if path.startswith(route.path_prefix):
+                return route
+        return None
+
+    def authenticate(self, auth_header: Optional[str]) -> Optional[dict]:
+        """Validate JWT token and return user claims."""
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return None
+
+        token = auth_header[7:]  # Remove "Bearer " prefix
+
+        try:
+            payload = jwt.decode(token, self.jwt_secret, algorithms=["HS256"])
+            return payload
+        except jwt.ExpiredSignatureError:
+            logger.warning("Expired token received")
+            return None
+        except jwt.InvalidTokenError as e:
+            logger.warning(f"Invalid token: {e}")
+            return None
+
+    def check_rate_limit(self, route: Route, client_id: str) -> tuple[bool, int]:
+        """Check if request passes rate limit."""
+        key = f"{client_id}:{route.path_prefix}"
+        limiter = self.rate_limiters[route.path_prefix]
+        return limiter.is_allowed(key)
+
+    async def forward_request(
+        self,
+        route: Route,
+        method: str,
+        path: str,
+        headers: dict,
+        body: Optional[bytes],
+        query_string: str
+    ) -> dict:
+        """Forward request to backend service."""
+
+        # Check circuit breaker
+        if self.circuit_breaker.is_open(route.service_url):
+            self.metrics["circuit_breaker_rejections"] += 1
+            return {
+                "status": 503,
+                "body": {"error": "Service temporarily unavailable"},
+                "headers": {}
+            }
+
+        # Build target URL
+        backend_path = path[len(route.path_prefix):]
+        target_url = f"{route.service_url}{backend_path}"
+        if query_string:
+            target_url += f"?{query_string}"
+
+        # Prepare headers (remove hop-by-hop headers)
+        forward_headers = {
+            k: v for k, v in headers.items()
+            if k.lower() not in ["host", "connection", "keep-alive"]
+        }
+        forward_headers["X-Request-ID"] = str(time.time_ns())
+        forward_headers["X-Forwarded-For"] = headers.get("X-Real-IP", "unknown")
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.request(
+                    method=method,
+                    url=target_url,
+                    headers=forward_headers,
+                    data=body,
+                    timeout=aiohttp.ClientTimeout(total=route.timeout)
+                ) as response:
+                    response_body = await response.json()
+
+                    self.circuit_breaker.record_success(route.service_url)
+                    self.metrics["successful_requests"] += 1
+
+                    return {
+                        "status": response.status,
+                        "body": response_body,
+                        "headers": dict(response.headers)
+                    }
+
+        except asyncio.TimeoutError:
+            self.circuit_breaker.record_failure(route.service_url)
+            self.metrics["timeout_errors"] += 1
+            return {
+                "status": 504,
+                "body": {"error": "Gateway timeout"},
+                "headers": {}
+            }
+        except Exception as e:
+            self.circuit_breaker.record_failure(route.service_url)
+            self.metrics["backend_errors"] += 1
+            logger.error(f"Backend error: {e}")
+            return {
+                "status": 502,
+                "body": {"error": "Bad gateway"},
+                "headers": {}
+            }
+
+    async def handle_request(
+        self,
+        method: str,
+        path: str,
+        headers: dict,
+        body: Optional[bytes] = None,
+        query_string: str = ""
+    ) -> dict:
+        """Main request handler."""
+        start_time = time.time()
+        self.metrics["total_requests"] += 1
+
+        # Find route
+        route = self.find_route(path)
+        if not route:
+            return {"status": 404, "body": {"error": "Not found"}, "headers": {}}
+
+        # Check method
+        if method not in route.methods:
+            return {"status": 405, "body": {"error": "Method not allowed"}, "headers": {}}
+
+        # Authentication
+        user = None
+        if route.require_auth:
+            user = self.authenticate(headers.get("Authorization"))
+            if not user:
+                self.metrics["auth_failures"] += 1
+                return {"status": 401, "body": {"error": "Unauthorized"}, "headers": {}}
+
+        # Rate limiting
+        client_id = user.get("sub") if user else headers.get("X-Real-IP", "unknown")
+        allowed, remaining = self.check_rate_limit(route, client_id)
+
+        rate_headers = {
+            "X-RateLimit-Limit": str(route.rate_limit),
+            "X-RateLimit-Remaining": str(remaining)
+        }
+
+        if not allowed:
+            self.metrics["rate_limit_rejections"] += 1
+            return {
+                "status": 429,
+                "body": {"error": "Rate limit exceeded"},
+                "headers": rate_headers
+            }
+
+        # Check cache for GET requests
+        if method == "GET" and route.cache_ttl > 0:
+            cache_key = self.cache.make_key(method, path, query_string)
+            cached = self.cache.get(cache_key)
+            if cached:
+                self.metrics["cache_hits"] += 1
+                cached["headers"].update(rate_headers)
+                cached["headers"]["X-Cache"] = "HIT"
+                return cached
+
+        # Forward request
+        response = await self.forward_request(
+            route, method, path, headers, body, query_string
+        )
+
+        # Cache successful GET responses
+        if method == "GET" and response["status"] == 200 and route.cache_ttl > 0:
+            cache_key = self.cache.make_key(method, path, query_string)
+            self.cache.set(cache_key, response, route.cache_ttl)
+
+        # Add gateway headers
+        response["headers"].update(rate_headers)
+        response["headers"]["X-Response-Time"] = f"{(time.time() - start_time) * 1000:.2f}ms"
+
+        return response
+
+    def get_metrics(self) -> dict:
+        """Return gateway metrics."""
+        return dict(self.metrics)
+
+
+# Example usage and routes configuration
+def create_gateway() -> APIGateway:
+    routes = [
+        Route(
+            path_prefix="/api/users",
+            service_url="http://user-service:8080",
+            methods=["GET", "POST", "PUT", "DELETE"],
+            require_auth=True,
+            rate_limit=100
+        ),
+        Route(
+            path_prefix="/api/products",
+            service_url="http://product-service:8080",
+            methods=["GET"],
+            require_auth=False,
+            rate_limit=1000,
+            cache_ttl=300  # 5 minutes
+        ),
+        Route(
+            path_prefix="/api/orders",
+            service_url="http://order-service:8080",
+            methods=["GET", "POST"],
+            require_auth=True,
+            rate_limit=50
+        ),
+        Route(
+            path_prefix="/public",
+            service_url="http://static-service:8080",
+            methods=["GET"],
+            require_auth=False,
+            rate_limit=10000,
+            cache_ttl=3600  # 1 hour
+        ),
+    ]
+
+    return APIGateway(routes=routes, jwt_secret="your-secret-key")
+
+
+# ASGI application wrapper (for use with uvicorn)
+async def app(scope, receive, send):
+    """ASGI application for the API Gateway."""
+    if scope["type"] != "http":
+        return
+
+    gateway = create_gateway()
+
+    # Read request body
+    body = b""
+    while True:
+        message = await receive()
+        body += message.get("body", b"")
+        if not message.get("more_body"):
+            break
+
+    # Handle request
+    response = await gateway.handle_request(
+        method=scope["method"],
+        path=scope["path"],
+        headers={k.decode(): v.decode() for k, v in scope["headers"]},
+        body=body if body else None,
+        query_string=scope["query_string"].decode()
+    )
+
+    # Send response
+    await send({
+        "type": "http.response.start",
+        "status": response["status"],
+        "headers": [(k.encode(), str(v).encode()) for k, v in response["headers"].items()]
+    })
+
+    import json
+    await send({
+        "type": "http.response.body",
+        "body": json.dumps(response["body"]).encode()
+    })
 ```
 
-## Complete Implementation
+---
 
-### Go - Production API Gateway
+## Interview Questions
 
-```go
-package main
+### Q1: What's the difference between API Gateway and Load Balancer?
 
-import (
-	"context"
-	"encoding/json"
-	"log"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
-	"sync"
-	"time"
+**Answer:**
+- **Load Balancer** distributes traffic across identical server instances. It operates at Layer 4 (TCP) or Layer 7 (HTTP) but doesn't understand API semantics.
+- **API Gateway** understands API structure and provides features like authentication, rate limiting, request transformation, and routing to different services based on path/content.
 
-	"github.com/gorilla/mux"
-	"golang.org/x/time/rate"
-)
+Think of it this way: Load balancer asks "which server should handle this?", while API Gateway asks "what kind of request is this, is it allowed, and which service owns this functionality?"
 
-// Route configuration
-type Route struct {
-	Path        string
-	ServiceURL  string
-	Methods     []string
-	RateLimit   int
-	CacheTTL    time.Duration
-	RequireAuth bool
-}
+### Q2: How do you handle API Gateway being a single point of failure?
 
-// Rate limiter per client
-type ClientRateLimiter struct {
-	limiters map[string]*rate.Limiter
-	mu       sync.RWMutex
-	rate     rate.Limit
-	burst    int
-}
+**Answer:**
+1. **Multiple instances** behind a load balancer
+2. **Health checks** with automatic instance replacement
+3. **Stateless design** - no session data in gateway
+4. **Circuit breakers** to prevent cascade failures
+5. **Rate limiting** stored in distributed cache (Redis)
+6. **Graceful degradation** - return cached responses when backend fails
 
-func NewClientRateLimiter(rps int) *ClientRateLimiter {
-	return &ClientRateLimiter{
-		limiters: make(map[string]*rate.Limiter),
-		rate:     rate.Limit(rps),
-		burst:    rps * 2,
-	}
-}
+### Q3: How would you implement request aggregation?
 
-func (c *ClientRateLimiter) GetLimiter(clientID string) *rate.Limiter {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+**Answer:**
+```python
+async def aggregate_order_details(order_id: str) -> dict:
+    """Aggregate data from multiple services into single response."""
+    async with aiohttp.ClientSession() as session:
+        # Parallel requests
+        order_task = fetch(session, f"/orders/{order_id}")
 
-	limiter, exists := c.limiters[clientID]
-	if !exists {
-		limiter = rate.NewLimiter(c.rate, c.burst)
-		c.limiters[clientID] = limiter
-	}
+        order = await order_task
 
-	return limiter
-}
+        # Dependent parallel requests
+        user_task = fetch(session, f"/users/{order['user_id']}")
+        products_task = fetch_many(session,
+            [f"/products/{item['product_id']}" for item in order['items']])
 
-// Cache
-type Cache struct {
-	data map[string]CacheEntry
-	mu   sync.RWMutex
-}
+        user, products = await asyncio.gather(user_task, products_task)
 
-type CacheEntry struct {
-	Response  []byte
-	Headers   http.Header
-	ExpiresAt time.Time
-}
-
-func NewCache() *Cache {
-	return &Cache{data: make(map[string]CacheEntry)}
-}
-
-func (c *Cache) Get(key string) (CacheEntry, bool) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	entry, exists := c.data[key]
-	if !exists || time.Now().After(entry.ExpiresAt) {
-		return CacheEntry{}, false
-	}
-	return entry, true
-}
-
-func (c *Cache) Set(key string, entry CacheEntry) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.data[key] = entry
-}
-
-// API Gateway
-type APIGateway struct {
-	routes      []Route
-	rateLimiter *ClientRateLimiter
-	cache       *Cache
-}
-
-func NewAPIGateway(routes []Route) *APIGateway {
-	return &APIGateway{
-		routes:      routes,
-		rateLimiter: NewClientRateLimiter(100),
-		cache:       NewCache(),
-	}
-}
-
-func (gw *APIGateway) findRoute(path string) *Route {
-	for _, route := range gw.routes {
-		if len(path) >= len(route.Path) && path[:len(route.Path)] == route.Path {
-			return &route
-		}
-	}
-	return nil
-}
-
-// Middleware: Logging
-func (gw *APIGateway) loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		next.ServeHTTP(w, r)
-		log.Printf("[%s] %s %s %v", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
-	})
-}
-
-// Middleware: Rate Limiting
-func (gw *APIGateway) rateLimitMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		clientID := r.Header.Get("X-API-Key")
-		if clientID == "" {
-			clientID = r.RemoteAddr
-		}
-
-		limiter := gw.rateLimiter.GetLimiter(clientID)
-		if !limiter.Allow() {
-			http.Error(w, `{"error": "Rate limit exceeded"}`, http.StatusTooManyRequests)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-// Middleware: Authentication
-func (gw *APIGateway) authMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		route := gw.findRoute(r.URL.Path)
-		if route == nil || !route.RequireAuth {
-			next.ServeHTTP(w, r)
-			return
-		}
-
-		token := r.Header.Get("Authorization")
-		if token == "" {
-			http.Error(w, `{"error": "Unauthorized"}`, http.StatusUnauthorized)
-			return
-		}
-
-		// Validate token (simplified)
-		if !validateToken(token) {
-			http.Error(w, `{"error": "Invalid token"}`, http.StatusUnauthorized)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func validateToken(token string) bool {
-	// Implement JWT validation
-	return len(token) > 10
-}
-
-// Middleware: Caching
-func (gw *APIGateway) cacheMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			next.ServeHTTP(w, r)
-			return
-		}
-
-		cacheKey := r.URL.String()
-		if entry, found := gw.cache.Get(cacheKey); found {
-			for k, v := range entry.Headers {
-				w.Header()[k] = v
-			}
-			w.Header().Set("X-Cache", "HIT")
-			w.Write(entry.Response)
-			return
-		}
-
-		// Capture response
-		rec := &responseRecorder{ResponseWriter: w, body: []byte{}}
-		next.ServeHTTP(rec, r)
-
-		// Cache successful responses
-		if rec.statusCode == http.StatusOK {
-			route := gw.findRoute(r.URL.Path)
-			ttl := time.Minute
-			if route != nil && route.CacheTTL > 0 {
-				ttl = route.CacheTTL
-			}
-
-			gw.cache.Set(cacheKey, CacheEntry{
-				Response:  rec.body,
-				Headers:   rec.Header(),
-				ExpiresAt: time.Now().Add(ttl),
-			})
-		}
-	})
-}
-
-type responseRecorder struct {
-	http.ResponseWriter
-	statusCode int
-	body       []byte
-}
-
-func (r *responseRecorder) WriteHeader(code int) {
-	r.statusCode = code
-	r.ResponseWriter.WriteHeader(code)
-}
-
-func (r *responseRecorder) Write(b []byte) (int, error) {
-	r.body = append(r.body, b...)
-	return r.ResponseWriter.Write(b)
-}
-
-// Main handler
-func (gw *APIGateway) proxyHandler(w http.ResponseWriter, r *http.Request) {
-	route := gw.findRoute(r.URL.Path)
-	if route == nil {
-		http.Error(w, `{"error": "Not found"}`, http.StatusNotFound)
-		return
-	}
-
-	targetURL, _ := url.Parse(route.ServiceURL)
-	proxy := httputil.NewSingleHostReverseProxy(targetURL)
-
-	// Add headers
-	r.Header.Set("X-Request-ID", generateRequestID())
-	r.Header.Set("X-Forwarded-For", r.RemoteAddr)
-
-	proxy.ServeHTTP(w, r)
-}
-
-func generateRequestID() string {
-	return time.Now().Format("20060102150405.000000")
-}
-
-// Health check
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(map[string]string{"status": "healthy"})
-}
-
-func main() {
-	routes := []Route{
-		{Path: "/users", ServiceURL: "http://user-service:8080", RequireAuth: true},
-		{Path: "/orders", ServiceURL: "http://order-service:8080", RequireAuth: true},
-		{Path: "/products", ServiceURL: "http://product-service:8080", CacheTTL: 5 * time.Minute},
-		{Path: "/public", ServiceURL: "http://content-service:8080", CacheTTL: time.Hour},
-	}
-
-	gw := NewAPIGateway(routes)
-
-	r := mux.NewRouter()
-	r.HandleFunc("/health", healthHandler)
-	r.PathPrefix("/").HandlerFunc(gw.proxyHandler)
-
-	// Apply middleware chain
-	handler := gw.loggingMiddleware(
-		gw.rateLimitMiddleware(
-			gw.authMiddleware(
-				gw.cacheMiddleware(r),
-			),
-		),
-	)
-
-	srv := &http.Server{
-		Addr:         ":8080",
-		Handler:      handler,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-	}
-
-	log.Println("API Gateway starting on :8080")
-	log.Fatal(srv.ListenAndServe())
-}
+        return {
+            "order": order,
+            "customer": {"name": user["name"], "email": user["email"]},
+            "products": products
+        }
 ```
 
-## Popular API Gateway Solutions
+### Q4: API Gateway vs Service Mesh - when to use each?
 
-| Gateway | Type | Best For |
-|---------|------|----------|
-| **Kong** | Open Source | Full-featured, plugin ecosystem |
-| **Nginx** | Open Source | High performance, simple routing |
-| **AWS API Gateway** | Managed | AWS integration, serverless |
-| **Envoy** | Open Source | Service mesh, gRPC support |
-| **Traefik** | Open Source | Container-native, auto-discovery |
-| **Azure API Management** | Managed | Azure ecosystem |
+**Answer:**
+- **API Gateway**: North-South traffic (external clients to services). Handles authentication, external rate limiting, protocol translation.
+- **Service Mesh** (like Istio): East-West traffic (service-to-service). Handles mTLS, internal load balancing, observability between services.
 
-## Common Interview Questions
+Many systems use both: Gateway at the edge, service mesh internally.
 
-1. **How do you handle service discovery in API Gateway?**
-   - DNS-based discovery
-   - Service registry (Consul, etcd)
-   - Kubernetes services
+### Q5: How do you version APIs through a gateway?
 
-2. **How do you ensure high availability of the gateway?**
-   - Multiple gateway instances
-   - Load balancer in front
-   - Health checks and auto-scaling
+**Answer:**
+Three common approaches:
+1. **URL versioning**: `/v1/users`, `/v2/users` - route to different services
+2. **Header versioning**: `Accept: application/vnd.api+json;version=2` - transform requests
+3. **Query param**: `/users?version=2` - flexible but less clean
 
-3. **How do you handle large file uploads through the gateway?**
-   - Streaming (don't buffer entire file)
-   - Direct upload to storage (presigned URLs)
-   - Chunked uploads
+The gateway can transform v1 requests to v2 format if the underlying service only supports v2.
 
-4. **What's the difference between API Gateway and Service Mesh?**
-   - Gateway: Edge proxy (north-south traffic)
-   - Mesh: Service-to-service (east-west traffic)
+---
 
-## Best Practices
+## Common Mistakes
 
-1. **Keep gateway stateless** - Scale horizontally
-2. **Implement circuit breakers** - Handle downstream failures
-3. **Use async for long operations** - Don't block on slow requests
-4. **Centralize logging** - Correlation IDs across services
-5. **Version your APIs** - Support multiple versions
-6. **Monitor latency** - Gateway shouldn't add significant delay
+<div style="background: #fef2f2; border: 2px solid #fecaca; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Putting business logic in gateway</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Gateway should only handle cross-cutting concerns, not domain logic</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">No circuit breaker</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">One slow service can exhaust gateway connections and affect all services</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Buffering large payloads</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Stream large file uploads directly to storage service</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Synchronous service calls</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Use async I/O to handle many concurrent connections</p>
+    </div>
+    <div style="background: white; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
+      <strong style="color: #1e293b;">Tight coupling to backend contracts</strong>
+      <p style="color: #475569; margin: 4px 0 0 0; font-size: 14px;">Use transformation layer to decouple public API from internal services</p>
+    </div>
+  </div>
+</div>
+
+---
+
+## Quick Reference Card
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #1e293b; margin-top: 0;">API Gateway Cheat Sheet</h4>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <h5 style="color: #334155; margin-bottom: 8px;">Core Functions</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li>Request routing</li>
+        <li>Authentication/Authorization</li>
+        <li>Rate limiting</li>
+        <li>Request/Response transformation</li>
+        <li>Caching</li>
+        <li>Circuit breaking</li>
+        <li>Logging & monitoring</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color: #334155; margin-bottom: 8px;">Popular Solutions</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li><strong>Kong</strong> - Plugin ecosystem</li>
+        <li><strong>AWS API Gateway</strong> - Serverless</li>
+        <li><strong>Nginx</strong> - High performance</li>
+        <li><strong>Envoy</strong> - Service mesh ready</li>
+        <li><strong>Traefik</strong> - Container native</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+    <h5 style="color: #334155; margin-bottom: 8px;">Key Metrics to Monitor</h5>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 13px;">
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Latency</strong><br>
+        <span style="color: #64748b;">P50, P95, P99</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Error Rate</strong><br>
+        <span style="color: #64748b;">4xx, 5xx %</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Throughput</strong><br>
+        <span style="color: #64748b;">RPS</span>
+      </div>
+      <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; text-align: center;">
+        <strong style="color: #1e293b;">Saturation</strong><br>
+        <span style="color: #64748b;">CPU, Connections</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+    <h5 style="color: #334155; margin-bottom: 8px;">Golden Rules</h5>
+    <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+      <li>Keep gateway stateless for horizontal scaling</li>
+      <li>Implement circuit breakers for all backend calls</li>
+      <li>Use correlation IDs for distributed tracing</li>
+      <li>Set aggressive timeouts (fail fast)</li>
+      <li>Gateway latency should be &lt;10ms overhead</li>
+    </ol>
+  </div>
+</div>
+
+---
 
 ## Related Topics
 
-- [Microservices](/topic/system-design/microservices)
-- [Load Balancing](/topic/system-design/load-balancing)
 - [Rate Limiting](/topic/system-design/rate-limiting)
+- [Load Balancing](/topic/system-design/load-balancing)
+- [Circuit Breaker](/topic/design-patterns/circuit-breaker)
+- [Microservices](/topic/system-design/microservices)
