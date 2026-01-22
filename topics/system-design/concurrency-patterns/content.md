@@ -2,326 +2,408 @@
 
 ## Overview
 
-Concurrency patterns help manage multiple tasks executing simultaneously. Understanding these patterns is critical for writing scalable, deadlock-free, and race-condition-free code.
+Concurrency patterns are battle-tested solutions for managing multiple tasks executing simultaneously. They help you write code that is fast, safe, and doesn't crash at 3 AM when two threads try to modify the same data.
 
-## The Intuitive Mental Model: Restaurant Kitchen
+Think of concurrency as a busy kitchen with multiple chefs. Without coordination, they'll bump into each other, grab the same ingredients, and create chaos. Concurrency patterns are the kitchen rules that keep everyone in sync.
 
-Think of concurrency like a restaurant kitchen:
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #30363d;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #8b949e; border-radius: 50%;"></div>
-      <span style="color: #c9d1d9; font-weight: 600; font-size: 16px;">Single-Threaded (One Chef)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px; line-height: 2;">
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Order 1</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
-      </div>
-      <div style="color: #8b949e; text-align: center; font-size: 16px;">|</div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Order 2</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
-      </div>
-      <div style="color: #8b949e; text-align: center; font-size: 16px;">|</div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Order 3</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px;">The Core Challenge</div>
+  <div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <div style="background: #dbeafe; border-radius: 12px; padding: 16px 24px; border: 2px solid #3b82f6;">
+        <div style="color: #1e40af; font-weight: 600;">Multiple Threads</div>
+        <div style="color: #64748b; font-size: 13px;">Running simultaneously</div>
       </div>
     </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
-      <div style="color: #8b949e;">Total time: <span style="color: #f85149;">30 minutes</span> (10 min x 3)</div>
-      <div style="color: #f85149; margin-top: 8px;">Problem: Orders wait in queue</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
-      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">Multi-Threaded (Multiple Chefs)</span>
-    </div>
-    <div style="font-family: monospace; font-size: 13px; line-height: 2;">
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #d2a8ff;">Chef 1:</span> <span style="color: #58a6ff;">Order 1</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #d2a8ff;">Chef 2:</span> <span style="color: #58a6ff;">Order 2</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span> <span style="color: #7ee787; font-size: 11px;">(parallel!)</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #d2a8ff;">Chef 3:</span> <span style="color: #58a6ff;">Order 3</span> <span style="color: #8b949e;">-></span> Prep <span style="color: #8b949e;">-></span> Cook <span style="color: #8b949e;">-></span> Plate <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Done</span> <span style="color: #7ee787; font-size: 11px;">(parallel!)</span>
+    <div style="display: flex; align-items: center; color: #64748b; font-size: 24px;">+</div>
+    <div style="text-align: center;">
+      <div style="background: #fef3c7; border-radius: 12px; padding: 16px 24px; border: 2px solid #f59e0b;">
+        <div style="color: #92400e; font-weight: 600;">Shared Resources</div>
+        <div style="color: #64748b; font-size: 13px;">Data, connections, files</div>
       </div>
     </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
-      <div style="color: #8b949e;">Total time: <span style="color: #7ee787;">10 minutes</span> (all run simultaneously)</div>
-      <div style="color: #f0883e; margin-top: 12px; font-weight: 500;">New problems:</div>
-      <div style="color: #8b949e; margin-top: 4px; font-size: 12px;">- Who uses the single oven? <span style="color: #f0883e;">(Resource contention)</span></div>
-      <div style="color: #8b949e; font-size: 12px;">- Don't use the same knife simultaneously! <span style="color: #f85149;">(Race condition)</span></div>
-      <div style="color: #8b949e; font-size: 12px;">- Chef A waits for B's pan, B waits for A's knife <span style="color: #f85149;">(Deadlock)</span></div>
+    <div style="display: flex; align-items: center; color: #64748b; font-size: 24px;">=</div>
+    <div style="text-align: center;">
+      <div style="background: #fee2e2; border-radius: 12px; padding: 16px 24px; border: 2px solid #ef4444;">
+        <div style="color: #991b1b; font-weight: 600;">Potential Chaos</div>
+        <div style="color: #64748b; font-size: 13px;">Race conditions, deadlocks</div>
+      </div>
     </div>
   </div>
 </div>
 
-### Mapping the Metaphor
-
-| Kitchen | Concurrency | Purpose |
-|---------|-------------|---------|
-| Chef | Thread/Worker | Executor of work |
-| Order | Task/Job | Work to be done |
-| Kitchen station | Thread pool | Fixed number of workers |
-| Shared oven | Shared resource | Needs synchronization |
-| Recipe | Function | Instructions to execute |
-| Order queue | Work queue | Pending tasks |
-| Head chef | Scheduler | Assigns work |
-
 ---
 
-## 20-Year Insight: What Experience Teaches
+## Why This Matters
 
-### What Junior Developers Think:
-> "I'll just add threads to make it faster."
+### Real Company Examples
 
-### What Senior Developers Know:
-> "Concurrency makes code harder to reason about, test, and debug. The performance gain must justify the complexity cost. Often, the simplest concurrent code is no concurrent code at all—batch instead."
-
-### The Deeper Truth:
-After 20+ years of debugging production concurrency issues:
-1. **Locks are the enemy** - The more locks, the more deadlocks
-2. **Share nothing** - Isolated workers > shared state
-3. **Message passing > shared memory** - Channels and queues are safer
-4. **Concurrency bugs are Heisenbugs** - They disappear when you observe them
-
----
-
-## Thread Pool Pattern
-
-### Why Thread Pools?
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0;">
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #f8514933;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #f85149; border-radius: 50%;"></div>
-      <span style="color: #f85149; font-weight: 600; font-size: 16px;">Without Pool (create/destroy threads)</span>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #bbf7d0;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 8px;">Netflix</div>
+      <div style="color: #334155; font-size: 14px;">Uses thread pools to handle millions of concurrent video streams. Each pool is tuned for specific workloads (API calls, encoding, recommendations).</div>
     </div>
-    <div style="font-family: monospace; font-size: 13px; line-height: 2.2;">
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 1</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 2</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 3</span> <span style="color: #8b949e;">-></span> <span style="color: #f0883e;">Create Thread</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #f85149;">Destroy Thread</span>
-      </div>
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 8px;">Discord</div>
+      <div style="color: #334155; font-size: 14px;">Handles 19 million concurrent users with lock-free data structures and message passing to avoid contention on chat updates.</div>
     </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
-      <div style="color: #8b949e;">Thread creation: <span style="color: #f0883e;">~1ms each</span></div>
-      <div style="color: #f85149; margin-top: 8px; font-weight: 500;">1000 requests = 1000ms of overhead!</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; border: 1px solid #7ee78733;">
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 12px; height: 12px; background: #7ee787; border-radius: 50%;"></div>
-      <span style="color: #7ee787; font-weight: 600; font-size: 16px;">With Pool (reuse threads)</span>
-    </div>
-    <div style="background: #21262d; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
-      <span style="color: #8b949e; font-size: 12px;">Pool:</span>
-      <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread1</span>
-        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread2</span>
-        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread3</span>
-        <span style="background: #238636; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Thread4</span>
-      </div>
-    </div>
-    <div style="font-family: monospace; font-size: 12px; line-height: 2;">
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 1</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread1 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 2</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread2 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px; color: #c9d1d9;">
-        <span style="color: #58a6ff;">Request 3</span> <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Thread3 (from pool)</span> <span style="color: #8b949e;">-></span> Execute <span style="color: #8b949e;">-></span> <span style="color: #7ee787;">Return</span>
-      </div>
-    </div>
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #30363d; font-size: 13px;">
-      <div style="color: #8b949e;">Thread creation: <span style="color: #7ee787;">0ms</span> (already created)</div>
-      <div style="color: #7ee787; margin-top: 8px; font-weight: 500;">Overhead eliminated!</div>
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 8px;">Uber</div>
+      <div style="color: #334155; font-size: 14px;">Uses read-write locks for location data: many drivers reading nearby riders, few writes when positions update.</div>
     </div>
   </div>
 </div>
 
-### Python - Production Thread Pool
+---
+
+## Core Concepts
+
+### The Restaurant Kitchen Analogy
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 4px;">Chef = Thread</div>
+      <div style="color: #64748b; font-size: 13px;">Worker that executes tasks</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #8b5cf6;">
+      <div style="color: #5b21b6; font-weight: 600; margin-bottom: 4px;">Order = Task</div>
+      <div style="color: #64748b; font-size: 13px;">Work to be completed</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 4px;">Oven = Shared Resource</div>
+      <div style="color: #64748b; font-size: 13px;">Needs coordination to use</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #10b981;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 4px;">Kitchen Stations = Thread Pool</div>
+      <div style="color: #64748b; font-size: 13px;">Fixed number of workers</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #ec4899;">
+      <div style="color: #9d174d; font-weight: 600; margin-bottom: 4px;">Order Queue = Work Queue</div>
+      <div style="color: #64748b; font-size: 13px;">Pending tasks waiting</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #06b6d4;">
+      <div style="color: #0e7490; font-weight: 600; margin-bottom: 4px;">Lock = "Occupied" Sign</div>
+      <div style="color: #64748b; font-size: 13px;">Only one at a time</div>
+    </div>
+  </div>
+</div>
+
+### The Three Deadly Problems
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #fecaca;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f87171;">
+      <div style="color: #b91c1c; font-weight: 700; font-size: 16px; margin-bottom: 8px;">1. Race Condition</div>
+      <div style="color: #334155; font-size: 14px; margin-bottom: 12px;">Two threads modify the same data simultaneously, causing corruption.</div>
+      <div style="background: #fef2f2; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #991b1b;">
+        Thread A: balance = 100<br/>
+        Thread B: balance = 100<br/>
+        Both: balance -= 50<br/>
+        Result: 50 (should be 0!)
+      </div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f87171;">
+      <div style="color: #b91c1c; font-weight: 700; font-size: 16px; margin-bottom: 8px;">2. Deadlock</div>
+      <div style="color: #334155; font-size: 14px; margin-bottom: 12px;">Threads wait forever for each other's resources.</div>
+      <div style="background: #fef2f2; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #991b1b;">
+        Thread A: holds Lock1, wants Lock2<br/>
+        Thread B: holds Lock2, wants Lock1<br/>
+        Both: waiting forever...
+      </div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f87171;">
+      <div style="color: #b91c1c; font-weight: 700; font-size: 16px; margin-bottom: 8px;">3. Starvation</div>
+      <div style="color: #334155; font-size: 14px; margin-bottom: 12px;">Some threads never get a chance to run.</div>
+      <div style="background: #fef2f2; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #991b1b;">
+        High-priority threads: always running<br/>
+        Low-priority thread: waiting...<br/>
+        Still waiting... forever...
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## How It Works
+
+### Pattern 1: Thread Pool
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="text-align: center; color: #1e293b; font-size: 16px; font-weight: 600; margin-bottom: 20px;">Thread Pool: Reuse Workers Instead of Creating New Ones</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: #fee2e2; border-radius: 12px; padding: 20px; border: 2px solid #fca5a5;">
+      <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Without Pool</div>
+      <div style="font-family: monospace; font-size: 12px; color: #334155; line-height: 1.8;">
+        Request 1 -> Create Thread -> Execute -> Destroy<br/>
+        Request 2 -> Create Thread -> Execute -> Destroy<br/>
+        Request 3 -> Create Thread -> Execute -> Destroy<br/>
+      </div>
+      <div style="margin-top: 12px; color: #991b1b; font-size: 13px; font-weight: 500;">Overhead: ~1ms per thread creation</div>
+    </div>
+    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #86efac;">
+      <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">With Pool</div>
+      <div style="font-family: monospace; font-size: 12px; color: #334155; line-height: 1.8;">
+        Request 1 -> Borrow Thread -> Execute -> Return<br/>
+        Request 2 -> Borrow Thread -> Execute -> Return<br/>
+        Request 3 -> Borrow Thread -> Execute -> Return<br/>
+      </div>
+      <div style="margin-top: 12px; color: #166534; font-size: 13px; font-weight: 500;">Overhead: ~0ms (threads already exist)</div>
+    </div>
+  </div>
+</div>
+
+### Pattern 2: Producer-Consumer
+
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #bfdbfe;">
+  <div style="text-align: center; color: #1e40af; font-size: 16px; font-weight: 600; margin-bottom: 20px;">Producers Create Work, Consumers Process It</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <div style="background: #dbeafe; border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #3b82f6;">
+      <div style="color: #1e40af; font-weight: 600;">Producers</div>
+      <div style="color: #64748b; font-size: 12px;">Generate tasks</div>
+    </div>
+    <div style="color: #3b82f6; font-size: 24px;">-></div>
+    <div style="background: #fef3c7; border-radius: 12px; padding: 16px 32px; text-align: center; border: 2px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600;">Queue</div>
+      <div style="color: #64748b; font-size: 12px;">[Task][Task][Task]</div>
+    </div>
+    <div style="color: #3b82f6; font-size: 24px;">-></div>
+    <div style="background: #dcfce7; border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
+      <div style="color: #166534; font-weight: 600;">Consumers</div>
+      <div style="color: #64748b; font-size: 12px;">Process tasks</div>
+    </div>
+  </div>
+  <div style="margin-top: 16px; text-align: center; color: #334155; font-size: 13px;">
+    Queue acts as a buffer - producers don't wait for consumers, consumers don't wait for producers
+  </div>
+</div>
+
+### Pattern 3: Read-Write Lock
+
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e9d5ff;">
+  <div style="text-align: center; color: #7c3aed; font-size: 16px; font-weight: 600; margin-bottom: 20px;">Multiple Readers OR Single Writer</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #a78bfa;">
+      <div style="color: #5b21b6; font-weight: 600; margin-bottom: 12px;">Read Mode</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; color: #1e40af; font-size: 12px;">Reader 1</div>
+        <div style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; color: #1e40af; font-size: 12px;">Reader 2</div>
+        <div style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; color: #1e40af; font-size: 12px;">Reader 3</div>
+      </div>
+      <div style="margin-top: 8px; color: #64748b; font-size: 12px;">All readers can access simultaneously</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #a78bfa;">
+      <div style="color: #5b21b6; font-weight: 600; margin-bottom: 12px;">Write Mode</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div style="background: #fef3c7; padding: 8px 12px; border-radius: 6px; color: #92400e; font-size: 12px;">Writer 1</div>
+        <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; color: #94a3b8; font-size: 12px;">Blocked</div>
+        <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; color: #94a3b8; font-size: 12px;">Blocked</div>
+      </div>
+      <div style="margin-top: 8px; color: #64748b; font-size: 12px;">Only one writer, everyone else waits</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Real-Life Failure Story
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 2px solid #fca5a5;">
+  <div style="color: #991b1b; font-weight: 700; font-size: 18px; margin-bottom: 16px;">The Knight Capital Disaster ($440 Million in 45 Minutes)</div>
+
+  <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">What Happened:</div>
+    <div style="color: #334155; font-size: 14px; line-height: 1.7;">
+      On August 1, 2012, Knight Capital deployed new trading software. A race condition caused the system to execute millions of unintended trades. Old code was accidentally activated on one server, while new code ran on others. The inconsistency caused the system to buy high and sell low repeatedly.
+    </div>
+  </div>
+
+  <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">The Concurrency Bug:</div>
+    <div style="color: #334155; font-size: 14px; line-height: 1.7;">
+      A feature flag was repurposed without removing old code. When the flag was set, some servers ran legacy "power peg" code that was never meant for production. The lack of proper synchronization between deployment and feature flags created a race condition that cascaded into disaster.
+    </div>
+  </div>
+
+  <div style="background: #dcfce7; border-radius: 12px; padding: 16px; border: 1px solid #86efac;">
+    <div style="color: #166534; font-weight: 600; margin-bottom: 4px;">The Lesson:</div>
+    <div style="color: #334155; font-size: 14px;">Always ensure atomic deployments. Use proper feature flag management with kill switches. Test concurrent scenarios in staging that mirror production topology.</div>
+  </div>
+</div>
+
+---
+
+## What to Watch Out For
+
+<div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #fde68a;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Lock Granularity</div>
+      <div style="color: #334155; font-size: 13px;">Too coarse = poor performance. Too fine = complex and bug-prone. Start coarse, optimize with metrics.</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Hidden Shared State</div>
+      <div style="color: #334155; font-size: 13px;">Static variables, singletons, global caches - all need synchronization you might forget.</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Lock Ordering</div>
+      <div style="color: #334155; font-size: 13px;">Always acquire locks in the same order everywhere. Document it. Enforce it in code review.</div>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Testing Blindness</div>
+      <div style="color: #334155; font-size: 13px;">Race conditions often don't appear in tests. Use thread sanitizers and stress tests with randomized timing.</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Interview Deep Dive
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="margin-bottom: 24px;">
+    <div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 12px;">Q: How do you choose between threads, async/await, and multiprocessing?</div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0;">
+      <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 8px; color: #1e293b; font-weight: 600;">Threads</td>
+          <td style="padding: 8px; color: #334155;">I/O-bound work (network, disk). Shared memory. Limited by GIL in Python.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 8px; color: #1e293b; font-weight: 600;">Async/Await</td>
+          <td style="padding: 8px; color: #334155;">Many concurrent I/O operations. Single thread, no parallelism. Great for high-concurrency servers.</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; color: #1e293b; font-weight: 600;">Multiprocessing</td>
+          <td style="padding: 8px; color: #334155;">CPU-bound work. True parallelism. Higher memory overhead (separate memory spaces).</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 24px;">
+    <div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 12px;">Q: How many threads should a thread pool have?</div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; color: #334155; font-size: 14px;">
+      <div style="margin-bottom: 8px;"><strong>CPU-bound:</strong> threads = number of CPU cores</div>
+      <div style="margin-bottom: 8px;"><strong>I/O-bound:</strong> threads = CPU cores x (1 + wait_time / compute_time)</div>
+      <div><strong>Mixed:</strong> Start with 2x CPU cores, then benchmark and adjust</div>
+    </div>
+  </div>
+
+  <div>
+    <div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 12px;">Q: How do you prevent deadlocks?</div>
+    <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; color: #334155; font-size: 14px;">
+      <div style="margin-bottom: 8px;"><strong>1. Lock ordering:</strong> Always acquire locks in consistent order (e.g., alphabetically by resource name)</div>
+      <div style="margin-bottom: 8px;"><strong>2. Timeout:</strong> Use try-lock with timeout, back off and retry</div>
+      <div style="margin-bottom: 8px;"><strong>3. Lock hierarchy:</strong> Assign levels to locks, only acquire lower-to-higher</div>
+      <div><strong>4. Avoid holding locks:</strong> Keep critical sections small, don't call external code while holding locks</div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Code Implementation
+
+### Thread Pool with Metrics
 
 ```python
 import threading
 import queue
 import time
-import logging
-from concurrent.futures import ThreadPoolExecutor, Future
 from dataclasses import dataclass, field
 from typing import Callable, Any, Optional, List
 from contextlib import contextmanager
-import traceback
+import logging
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class Task:
-    """A task to be executed by the thread pool."""
+    """A unit of work for the thread pool."""
     func: Callable
     args: tuple = ()
     kwargs: dict = field(default_factory=dict)
     callback: Optional[Callable] = None
     error_callback: Optional[Callable] = None
-    priority: int = 0
+    priority: int = 0  # Lower = higher priority
     created_at: float = field(default_factory=time.time)
-    id: str = ""
 
     def __lt__(self, other):
-        # For priority queue (lower = higher priority)
         return self.priority < other.priority
-
-
-@dataclass
-class PoolMetrics:
-    """Thread pool metrics for monitoring."""
-    tasks_submitted: int = 0
-    tasks_completed: int = 0
-    tasks_failed: int = 0
-    active_threads: int = 0
-    queue_size: int = 0
-    avg_wait_time_ms: float = 0.0
-    avg_execution_time_ms: float = 0.0
 
 
 class ThreadPool:
     """
-    Production-grade thread pool with:
-    - Bounded queue (backpressure)
-    - Priority support
+    Production-ready thread pool with:
+    - Priority queue support
     - Graceful shutdown
-    - Comprehensive metrics
-    - Error handling
+    - Metrics collection
+    - Auto-scaling (min/max workers)
     """
 
     def __init__(
         self,
-        name: str,
+        name: str = "pool",
         min_workers: int = 2,
         max_workers: int = 10,
-        queue_size: int = 1000,
-        idle_timeout: float = 60.0,
+        queue_size: int = 1000
     ):
         self.name = name
         self.min_workers = min_workers
         self.max_workers = max_workers
-        self.idle_timeout = idle_timeout
 
-        # Use priority queue for task prioritization
-        self.task_queue: queue.PriorityQueue = queue.PriorityQueue(maxsize=queue_size)
-
+        self.task_queue = queue.PriorityQueue(maxsize=queue_size)
         self.workers: List[threading.Thread] = []
-        self.active_count = 0
-        self.metrics = PoolMetrics()
-
-        self._lock = threading.Lock()
         self._shutdown = threading.Event()
-        self._wait_times: List[float] = []
-        self._exec_times: List[float] = []
+        self._lock = threading.Lock()
+
+        # Metrics
+        self.tasks_submitted = 0
+        self.tasks_completed = 0
+        self.tasks_failed = 0
 
         # Start minimum workers
-        self._ensure_workers()
-
-    def _ensure_workers(self):
-        """Ensure minimum workers are running."""
-        with self._lock:
-            while len(self.workers) < self.min_workers:
-                self._start_worker()
+        for _ in range(min_workers):
+            self._start_worker()
 
     def _start_worker(self):
         """Start a new worker thread."""
         worker = threading.Thread(
             target=self._worker_loop,
-            name=f"{self.name}-worker-{len(self.workers)}",
             daemon=True,
+            name=f"{self.name}-worker-{len(self.workers)}"
         )
         worker.start()
         self.workers.append(worker)
-        logger.debug(f"Started worker: {worker.name}")
 
     def _worker_loop(self):
-        """Main worker loop."""
+        """Main worker loop - fetch and execute tasks."""
         while not self._shutdown.is_set():
             try:
-                # Wait for task with timeout (allows checking shutdown)
-                try:
-                    priority, task = self.task_queue.get(timeout=1.0)
-                except queue.Empty:
-                    # Check if we should scale down
-                    with self._lock:
-                        if (len(self.workers) > self.min_workers and
-                            self.active_count < len(self.workers) // 2):
-                            # Remove self from workers list
-                            self.workers = [w for w in self.workers
-                                          if w is not threading.current_thread()]
-                            return
-                    continue
+                # Block for 1 second, then check shutdown flag
+                priority, task = self.task_queue.get(timeout=1.0)
+            except queue.Empty:
+                continue
 
-                # Execute task
-                with self._lock:
-                    self.active_count += 1
-                    self.metrics.active_threads = self.active_count
+            try:
+                result = task.func(*task.args, **task.kwargs)
+                self.tasks_completed += 1
 
-                wait_time = time.time() - task.created_at
-                self._wait_times.append(wait_time * 1000)
-
-                start_time = time.time()
-                try:
-                    result = task.func(*task.args, **task.kwargs)
-                    exec_time = (time.time() - start_time) * 1000
-                    self._exec_times.append(exec_time)
-
-                    self.metrics.tasks_completed += 1
-
-                    if task.callback:
-                        try:
-                            task.callback(result)
-                        except Exception as e:
-                            logger.error(f"Callback error: {e}")
-
-                except Exception as e:
-                    self.metrics.tasks_failed += 1
-                    logger.error(f"Task {task.id} failed: {e}\n{traceback.format_exc()}")
-
-                    if task.error_callback:
-                        try:
-                            task.error_callback(e)
-                        except Exception as cb_error:
-                            logger.error(f"Error callback failed: {cb_error}")
-
-                finally:
-                    with self._lock:
-                        self.active_count -= 1
-                        self.metrics.active_threads = self.active_count
-
-                    self.task_queue.task_done()
-                    self._update_metrics()
+                if task.callback:
+                    task.callback(result)
 
             except Exception as e:
-                logger.error(f"Worker error: {e}")
+                self.tasks_failed += 1
+                logger.error(f"Task failed: {e}")
 
-    def _update_metrics(self):
-        """Update rolling metrics."""
-        # Keep last 100 measurements
-        if len(self._wait_times) > 100:
-            self._wait_times = self._wait_times[-100:]
-        if len(self._exec_times) > 100:
-            self._exec_times = self._exec_times[-100:]
-
-        if self._wait_times:
-            self.metrics.avg_wait_time_ms = sum(self._wait_times) / len(self._wait_times)
-        if self._exec_times:
-            self.metrics.avg_execution_time_ms = sum(self._exec_times) / len(self._exec_times)
-
-        self.metrics.queue_size = self.task_queue.qsize()
+                if task.error_callback:
+                    task.error_callback(e)
+            finally:
+                self.task_queue.task_done()
 
     def submit(
         self,
@@ -330,13 +412,11 @@ class ThreadPool:
         priority: int = 0,
         callback: Callable = None,
         error_callback: Callable = None,
-        timeout: float = None,
-        **kwargs,
+        **kwargs
     ) -> bool:
         """
         Submit a task to the pool.
-
-        Returns True if task was queued, False if queue is full.
+        Returns True if queued, False if queue is full.
         """
         if self._shutdown.is_set():
             raise RuntimeError("Pool is shut down")
@@ -347,797 +427,93 @@ class ThreadPool:
             kwargs=kwargs,
             callback=callback,
             error_callback=error_callback,
-            priority=priority,
-            id=f"{self.name}-{self.metrics.tasks_submitted}",
+            priority=priority
         )
 
         try:
-            self.task_queue.put((priority, task), timeout=timeout)
-            self.metrics.tasks_submitted += 1
+            self.task_queue.put_nowait((priority, task))
+            self.tasks_submitted += 1
 
-            # Scale up if needed
+            # Auto-scale if needed
             with self._lock:
-                if (self.task_queue.qsize() > len(self.workers) and
-                    len(self.workers) < self.max_workers):
+                if (self.task_queue.qsize() > len(self.workers)
+                    and len(self.workers) < self.max_workers):
                     self._start_worker()
 
             return True
-
         except queue.Full:
-            logger.warning(f"Pool {self.name}: Queue full, task rejected")
             return False
 
     def map(self, func: Callable, items: list, timeout: float = None) -> List[Any]:
-        """Execute function for each item and collect results."""
+        """Execute func for each item and collect results."""
         results = [None] * len(items)
-        errors = [None] * len(items)
         completed = threading.Event()
-        pending = [len(items)]
+        remaining = [len(items)]
         lock = threading.Lock()
 
         def on_complete(idx, result):
             results[idx] = result
             with lock:
-                pending[0] -= 1
-                if pending[0] == 0:
-                    completed.set()
-
-        def on_error(idx, error):
-            errors[idx] = error
-            with lock:
-                pending[0] -= 1
-                if pending[0] == 0:
+                remaining[0] -= 1
+                if remaining[0] == 0:
                     completed.set()
 
         for i, item in enumerate(items):
             self.submit(
-                func,
-                item,
-                callback=lambda r, i=i: on_complete(i, r),
-                error_callback=lambda e, i=i: on_error(i, e),
+                func, item,
+                callback=lambda r, i=i: on_complete(i, r)
             )
 
         completed.wait(timeout=timeout)
-
-        # Check for errors
-        for i, error in enumerate(errors):
-            if error:
-                raise RuntimeError(f"Task {i} failed: {error}")
-
         return results
 
     def get_metrics(self) -> dict:
-        """Get current pool metrics."""
-        with self._lock:
-            return {
-                "name": self.name,
-                "workers": len(self.workers),
-                "active_threads": self.metrics.active_threads,
-                "queue_size": self.task_queue.qsize(),
-                "tasks_submitted": self.metrics.tasks_submitted,
-                "tasks_completed": self.metrics.tasks_completed,
-                "tasks_failed": self.metrics.tasks_failed,
-                "avg_wait_time_ms": round(self.metrics.avg_wait_time_ms, 2),
-                "avg_execution_time_ms": round(self.metrics.avg_execution_time_ms, 2),
-            }
+        """Return current pool metrics."""
+        return {
+            "workers": len(self.workers),
+            "queue_size": self.task_queue.qsize(),
+            "tasks_submitted": self.tasks_submitted,
+            "tasks_completed": self.tasks_completed,
+            "tasks_failed": self.tasks_failed,
+        }
 
     def shutdown(self, wait: bool = True, timeout: float = 30.0):
-        """Shutdown the pool."""
-        logger.info(f"Shutting down pool {self.name}")
+        """Gracefully shut down the pool."""
         self._shutdown.set()
 
         if wait:
-            # Wait for queue to drain
             deadline = time.time() + timeout
-            while not self.task_queue.empty() and time.time() < deadline:
-                time.sleep(0.1)
-
-            # Wait for workers
             for worker in self.workers:
                 remaining = deadline - time.time()
                 if remaining > 0:
                     worker.join(timeout=remaining)
 
-        logger.info(f"Pool {self.name} shut down")
 
+# === Thread-Safe Counter ===
 
-# ============ Usage Examples ============
-
-# Create pool
-pool = ThreadPool(
-    name="worker-pool",
-    min_workers=4,
-    max_workers=16,
-    queue_size=1000,
-)
-
-# Submit single task
-def process_item(item):
-    time.sleep(0.1)  # Simulate work
-    return item * 2
-
-pool.submit(process_item, 42, callback=print)
-
-# Submit with priority (lower = higher priority)
-pool.submit(process_item, 100, priority=0)  # High priority
-pool.submit(process_item, 200, priority=10)  # Low priority
-
-# Map over items
-results = pool.map(process_item, [1, 2, 3, 4, 5])
-
-# Shutdown
-pool.shutdown(wait=True)
-```
-
-### Go - Worker Pool
-
-```go
-package workerpool
-
-import (
-	"context"
-	"fmt"
-	"sync"
-	"sync/atomic"
-	"time"
-)
-
-// Task represents a unit of work
-type Task struct {
-	ID       string
-	Func     func() (interface{}, error)
-	Callback func(interface{}, error)
-	Priority int
-	Created  time.Time
-}
-
-// Metrics holds pool metrics
-type Metrics struct {
-	TasksSubmitted int64
-	TasksCompleted int64
-	TasksFailed    int64
-	ActiveWorkers  int64
-	QueueSize      int64
-}
-
-// Pool is a worker pool
-type Pool struct {
-	name       string
-	minWorkers int
-	maxWorkers int
-	tasks      chan *Task
-	metrics    Metrics
-	wg         sync.WaitGroup
-	ctx        context.Context
-	cancel     context.CancelFunc
-	mu         sync.Mutex
-	workers    int32
-}
-
-// New creates a new worker pool
-func New(name string, minWorkers, maxWorkers, queueSize int) *Pool {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	p := &Pool{
-		name:       name,
-		minWorkers: minWorkers,
-		maxWorkers: maxWorkers,
-		tasks:      make(chan *Task, queueSize),
-		ctx:        ctx,
-		cancel:     cancel,
-	}
-
-	// Start minimum workers
-	for i := 0; i < minWorkers; i++ {
-		p.startWorker()
-	}
-
-	return p
-}
-
-func (p *Pool) startWorker() {
-	atomic.AddInt32(&p.workers, 1)
-	p.wg.Add(1)
-
-	go func() {
-		defer p.wg.Done()
-		defer atomic.AddInt32(&p.workers, -1)
-
-		for {
-			select {
-			case <-p.ctx.Done():
-				return
-			case task, ok := <-p.tasks:
-				if !ok {
-					return
-				}
-				p.executeTask(task)
-			}
-		}
-	}()
-}
-
-func (p *Pool) executeTask(task *Task) {
-	atomic.AddInt64(&p.metrics.ActiveWorkers, 1)
-	defer atomic.AddInt64(&p.metrics.ActiveWorkers, -1)
-
-	result, err := task.Func()
-
-	if err != nil {
-		atomic.AddInt64(&p.metrics.TasksFailed, 1)
-	} else {
-		atomic.AddInt64(&p.metrics.TasksCompleted, 1)
-	}
-
-	if task.Callback != nil {
-		task.Callback(result, err)
-	}
-}
-
-// Submit adds a task to the pool
-func (p *Pool) Submit(task *Task) error {
-	select {
-	case <-p.ctx.Done():
-		return fmt.Errorf("pool is shut down")
-	default:
-	}
-
-	task.Created = time.Now()
-	atomic.AddInt64(&p.metrics.TasksSubmitted, 1)
-
-	// Try to scale up if queue is growing
-	queueLen := len(p.tasks)
-	workers := atomic.LoadInt32(&p.workers)
-	if queueLen > int(workers) && int(workers) < p.maxWorkers {
-		p.startWorker()
-	}
-
-	select {
-	case p.tasks <- task:
-		return nil
-	default:
-		return fmt.Errorf("queue is full")
-	}
-}
-
-// SubmitFunc is a convenience method
-func (p *Pool) SubmitFunc(fn func() (interface{}, error)) error {
-	return p.Submit(&Task{Func: fn})
-}
-
-// GetMetrics returns current metrics
-func (p *Pool) GetMetrics() Metrics {
-	return Metrics{
-		TasksSubmitted: atomic.LoadInt64(&p.metrics.TasksSubmitted),
-		TasksCompleted: atomic.LoadInt64(&p.metrics.TasksCompleted),
-		TasksFailed:    atomic.LoadInt64(&p.metrics.TasksFailed),
-		ActiveWorkers:  atomic.LoadInt64(&p.metrics.ActiveWorkers),
-		QueueSize:      int64(len(p.tasks)),
-	}
-}
-
-// Shutdown gracefully shuts down the pool
-func (p *Pool) Shutdown(timeout time.Duration) {
-	p.cancel()
-	close(p.tasks)
-
-	done := make(chan struct{})
-	go func() {
-		p.wg.Wait()
-		close(done)
-	}()
-
-	select {
-	case <-done:
-	case <-time.After(timeout):
-		fmt.Println("Pool shutdown timed out")
-	}
-}
-```
-
----
-
-## Race Conditions
-
-### What is a Race Condition?
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 24px; font-family: monospace; font-size: 13px;">
-    <div>
-      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Thread A</div>
-      <div style="line-height: 2.2;">
-        <div style="color: #c9d1d9;">Read counter (= 0)</div>
-        <div style="color: #30363d;">.</div>
-        <div style="color: #d2a8ff;">Increment (local = 1)</div>
-        <div style="color: #30363d;">.</div>
-        <div style="color: #7ee787;">Write counter (= 1)</div>
-        <div style="color: #30363d;">.</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #d2a8ff; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Thread B</div>
-      <div style="line-height: 2.2;">
-        <div style="color: #30363d;">.</div>
-        <div style="color: #c9d1d9;">Read counter (= 0)</div>
-        <div style="color: #30363d;">.</div>
-        <div style="color: #d2a8ff;">Increment (local = 1)</div>
-        <div style="color: #30363d;">.</div>
-        <div style="color: #7ee787;">Write counter (= 1)</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #8b949e; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d;">Counter</div>
-      <div style="line-height: 2.2; text-align: center;">
-        <div style="color: #8b949e;">0</div>
-        <div style="color: #8b949e;">0</div>
-        <div style="color: #8b949e;">0</div>
-        <div style="color: #8b949e;">0</div>
-        <div style="color: #f0883e;">1</div>
-        <div style="color: #f85149; font-weight: 600;">1</div>
-      </div>
-    </div>
-  </div>
-  <div style="display: flex; justify-content: center; gap: 40px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #30363d;">
-    <div style="text-align: center;">
-      <div style="color: #8b949e; font-size: 12px;">Expected</div>
-      <div style="color: #7ee787; font-size: 24px; font-weight: 600;">2</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="color: #8b949e; font-size: 12px;">Actual</div>
-      <div style="color: #f85149; font-size: 24px; font-weight: 600;">1</div>
-    </div>
-    <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 24px; border-radius: 8px; color: #f85149; font-weight: 600; display: flex; align-items: center;">
-      RACE CONDITION!
-    </div>
-  </div>
-</div>
-
-### Fixing Race Conditions
-
-```python
-import threading
-from threading import Lock
-from dataclasses import dataclass
-
-
-# BAD: Race condition
-class UnsafeCounter:
-    def __init__(self):
-        self.count = 0
-
-    def increment(self):
-        # Not atomic! Read + Increment + Write
-        self.count += 1
-
-
-# GOOD: Thread-safe with lock
 class SafeCounter:
-    def __init__(self):
-        self.count = 0
-        self._lock = Lock()
-
-    def increment(self):
-        with self._lock:
-            self.count += 1
-
-    def get(self) -> int:
-        with self._lock:
-            return self.count
-
-
-# BETTER: Use atomic operations where possible
-import threading
-
-class AtomicCounter:
-    """Counter using atomic operations (Python 3.12+)."""
+    """Thread-safe counter using a lock."""
 
     def __init__(self):
-        self._count = 0
+        self._value = 0
         self._lock = threading.Lock()
 
     def increment(self) -> int:
         with self._lock:
-            self._count += 1
-            return self._count
+            self._value += 1
+            return self._value
 
-
-# Test for race conditions
-def test_counter(counter_class, iterations: int = 10000, threads: int = 10):
-    counter = counter_class()
-
-    def worker():
-        for _ in range(iterations):
-            counter.increment()
-
-    thread_list = [threading.Thread(target=worker) for _ in range(threads)]
-    for t in thread_list:
-        t.start()
-    for t in thread_list:
-        t.join()
-
-    expected = iterations * threads
-    actual = counter.count if hasattr(counter, 'count') else counter.get()
-    print(f"{counter_class.__name__}: Expected {expected}, Got {actual}, "
-          f"{'PASS' if expected == actual else 'FAIL'}")
-
-
-# UnsafeCounter will fail, SafeCounter will pass
-```
-
-### Common Race Condition Patterns
-
-```python
-# Pattern 1: Check-then-act
-# BAD
-if key not in cache:      # Thread A checks
-    cache[key] = compute()  # Thread B also checks before A writes
-# Both threads compute!
-
-# GOOD
-with lock:
-    if key not in cache:
-        cache[key] = compute()
-
-
-# Pattern 2: Read-modify-write
-# BAD
-balance = get_balance()    # Thread A reads 100
-balance -= 50              # Thread B also reads 100
-save_balance(balance)      # Both write 50, but should be 0
-
-# GOOD
-with lock:
-    balance = get_balance()
-    balance -= 50
-    save_balance(balance)
-
-
-# Pattern 3: Lazy initialization
-# BAD
-class Singleton:
-    _instance = None
-
-    @classmethod
-    def get(cls):
-        if cls._instance is None:  # Race: both threads see None
-            cls._instance = cls()
-        return cls._instance
-
-# GOOD
-class Singleton:
-    _instance = None
-    _lock = Lock()
-
-    @classmethod
-    def get(cls):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:  # Double-checked locking
-                    cls._instance = cls()
-        return cls._instance
-```
-
----
-
-## Deadlocks
-
-### What is a Deadlock?
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; font-family: monospace; font-size: 14px;">
-    <div style="text-align: center;">
-      <div style="color: #58a6ff; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #30363d;">Thread A</div>
-      <div style="background: #23863633; border: 1px solid #238636; padding: 12px 20px; border-radius: 8px; color: #7ee787; margin-bottom: 16px;">Acquires Lock 1</div>
-      <div style="color: #8b949e; margin-bottom: 16px;">|</div>
-      <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 20px; border-radius: 8px; color: #f85149;">Waits for Lock 2</div>
-      <div style="color: #f85149; margin-top: 16px; font-size: 18px;">|</div>
-      <div style="background: #f85149; color: #fff; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-weight: 600;">BLOCKED</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="color: #d2a8ff; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #30363d;">Thread B</div>
-      <div style="background: #23863633; border: 1px solid #238636; padding: 12px 20px; border-radius: 8px; color: #7ee787; margin-bottom: 16px;">Acquires Lock 2</div>
-      <div style="color: #8b949e; margin-bottom: 16px;">|</div>
-      <div style="background: #f8514933; border: 1px solid #f85149; padding: 12px 20px; border-radius: 8px; color: #f85149;">Waits for Lock 1</div>
-      <div style="color: #f85149; margin-top: 16px; font-size: 18px;">|</div>
-      <div style="background: #f85149; color: #fff; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-weight: 600;">BLOCKED</div>
-    </div>
-  </div>
-  <div style="display: flex; justify-content: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #30363d;">
-    <div style="background: #f8514933; border: 2px solid #f85149; padding: 16px 32px; border-radius: 12px; text-align: center;">
-      <div style="color: #f85149; font-weight: 600; font-size: 18px;">Both threads wait forever = DEADLOCK</div>
-    </div>
-  </div>
-</div>
-
-### The Four Conditions for Deadlock
-
-1. **Mutual Exclusion**: Resources can't be shared
-2. **Hold and Wait**: Holding one resource while waiting for another
-3. **No Preemption**: Can't forcibly take resources
-4. **Circular Wait**: A → B → C → A chain of waiting
-
-### Preventing Deadlocks
-
-```python
-import threading
-from contextlib import contextmanager
-from typing import List
-
-
-# Strategy 1: Lock ordering (prevent circular wait)
-class OrderedLocks:
-    """Always acquire locks in consistent order."""
-
-    def __init__(self):
-        self.lock_a = threading.Lock()
-        self.lock_b = threading.Lock()
-
-    @contextmanager
-    def acquire_both(self):
-        # Always acquire in alphabetical order
-        with self.lock_a:
-            with self.lock_b:
-                yield
-
-
-# Strategy 2: Try-lock with timeout
-class TimeoutLocks:
-    """Use timeouts to detect potential deadlocks."""
-
-    def __init__(self):
-        self.lock_a = threading.Lock()
-        self.lock_b = threading.Lock()
-
-    def acquire_both(self, timeout: float = 5.0) -> bool:
-        deadline = time.time() + timeout
-
-        while time.time() < deadline:
-            if self.lock_a.acquire(timeout=0.1):
-                try:
-                    if self.lock_b.acquire(timeout=0.1):
-                        return True
-                    # Couldn't get B, release A and retry
-                finally:
-                    if not self.lock_b.locked():
-                        self.lock_a.release()
-
-            time.sleep(0.01)  # Small delay before retry
-
-        return False  # Timeout - potential deadlock detected
-
-
-# Strategy 3: Lock hierarchy
-class HierarchicalLock:
-    """Enforce lock acquisition order via hierarchy."""
-
-    _lock_order = {}
-    _thread_locks = threading.local()
-
-    def __init__(self, name: str, level: int):
-        self.name = name
-        self.level = level
-        self._lock = threading.Lock()
-        HierarchicalLock._lock_order[name] = level
-
-    def acquire(self):
-        if not hasattr(self._thread_locks, 'held'):
-            self._thread_locks.held = []
-
-        # Check hierarchy
-        for held_lock in self._thread_locks.held:
-            if held_lock.level >= self.level:
-                raise RuntimeError(
-                    f"Lock hierarchy violation: {held_lock.name} "
-                    f"(level {held_lock.level}) held while acquiring "
-                    f"{self.name} (level {self.level})"
-                )
-
-        self._lock.acquire()
-        self._thread_locks.held.append(self)
-
-    def release(self):
-        self._lock.release()
-        self._thread_locks.held.remove(self)
-
-
-# Usage
-db_lock = HierarchicalLock("database", level=1)
-cache_lock = HierarchicalLock("cache", level=2)
-
-# This works (lower to higher)
-db_lock.acquire()
-cache_lock.acquire()
-cache_lock.release()
-db_lock.release()
-
-# This raises exception (higher to lower)
-# cache_lock.acquire()
-# db_lock.acquire()  # RuntimeError!
-```
-
-### Deadlock Detection
-
-```python
-import threading
-import time
-from typing import Dict, Set
-
-
-class DeadlockDetector:
-    """Detect potential deadlocks by tracking lock ownership."""
-
-    def __init__(self):
-        self._owners: Dict[int, Set[str]] = {}  # thread_id -> held locks
-        self._waiters: Dict[int, str] = {}  # thread_id -> waiting for lock
-        self._lock = threading.Lock()
-
-    def acquired(self, lock_name: str):
-        thread_id = threading.current_thread().ident
+    def get(self) -> int:
         with self._lock:
-            if thread_id not in self._owners:
-                self._owners[thread_id] = set()
-            self._owners[thread_id].add(lock_name)
-            if thread_id in self._waiters:
-                del self._waiters[thread_id]
-
-    def released(self, lock_name: str):
-        thread_id = threading.current_thread().ident
-        with self._lock:
-            if thread_id in self._owners:
-                self._owners[thread_id].discard(lock_name)
-
-    def waiting_for(self, lock_name: str):
-        thread_id = threading.current_thread().ident
-        with self._lock:
-            self._waiters[thread_id] = lock_name
-            self._check_deadlock()
-
-    def _check_deadlock(self):
-        """Check for circular wait conditions."""
-        # Build wait graph
-        # If cycle exists, we have a deadlock
-        # This is a simplified check
-        for waiter_id, wanted_lock in self._waiters.items():
-            # Find who holds the wanted lock
-            for holder_id, held_locks in self._owners.items():
-                if wanted_lock in held_locks:
-                    # Check if holder is waiting for something we hold
-                    if holder_id in self._waiters:
-                        holder_wants = self._waiters[holder_id]
-                        if waiter_id in self._owners:
-                            if holder_wants in self._owners[waiter_id]:
-                                print(f"DEADLOCK DETECTED!")
-                                print(f"Thread {waiter_id} holds locks "
-                                      f"{self._owners[waiter_id]} and wants {wanted_lock}")
-                                print(f"Thread {holder_id} holds locks "
-                                      f"{held_locks} and wants {holder_wants}")
+            return self._value
 
 
-# Monitored lock wrapper
-class MonitoredLock:
-    detector = DeadlockDetector()
-
-    def __init__(self, name: str):
-        self.name = name
-        self._lock = threading.Lock()
-
-    def acquire(self, timeout: float = -1):
-        MonitoredLock.detector.waiting_for(self.name)
-        result = self._lock.acquire(timeout=timeout if timeout >= 0 else None)
-        if result:
-            MonitoredLock.detector.acquired(self.name)
-        return result
-
-    def release(self):
-        self._lock.release()
-        MonitoredLock.detector.released(self.name)
-
-    def __enter__(self):
-        self.acquire()
-        return self
-
-    def __exit__(self, *args):
-        self.release()
-```
-
----
-
-## Producer-Consumer Pattern
-
-```python
-import threading
-import queue
-import time
-from typing import Any, Callable, Optional
-
-
-class ProducerConsumer:
-    """
-    Classic producer-consumer pattern with bounded buffer.
-    """
-
-    def __init__(self, buffer_size: int = 100, num_consumers: int = 4):
-        self.buffer = queue.Queue(maxsize=buffer_size)
-        self.num_consumers = num_consumers
-        self.consumers: list = []
-        self._shutdown = threading.Event()
-
-    def start(self, handler: Callable[[Any], None]):
-        """Start consumer threads."""
-        for i in range(self.num_consumers):
-            t = threading.Thread(
-                target=self._consumer_loop,
-                args=(handler,),
-                name=f"consumer-{i}",
-                daemon=True,
-            )
-            t.start()
-            self.consumers.append(t)
-
-    def _consumer_loop(self, handler: Callable):
-        while not self._shutdown.is_set():
-            try:
-                item = self.buffer.get(timeout=1.0)
-                try:
-                    handler(item)
-                except Exception as e:
-                    print(f"Handler error: {e}")
-                finally:
-                    self.buffer.task_done()
-            except queue.Empty:
-                continue
-
-    def produce(self, item: Any, timeout: float = None) -> bool:
-        """Add item to buffer. Returns False if buffer is full."""
-        try:
-            self.buffer.put(item, timeout=timeout)
-            return True
-        except queue.Full:
-            return False
-
-    def wait_completion(self):
-        """Wait for all items to be processed."""
-        self.buffer.join()
-
-    def shutdown(self, wait: bool = True):
-        """Shutdown consumers."""
-        self._shutdown.set()
-        if wait:
-            for c in self.consumers:
-                c.join(timeout=5.0)
-
-
-# Usage
-def process_item(item):
-    print(f"Processing: {item}")
-    time.sleep(0.1)
-
-pc = ProducerConsumer(buffer_size=50, num_consumers=4)
-pc.start(process_item)
-
-# Produce items
-for i in range(100):
-    pc.produce(i)
-
-# Wait for completion
-pc.wait_completion()
-pc.shutdown()
-```
-
----
-
-## Read-Write Lock Pattern
-
-```python
-import threading
-from contextlib import contextmanager
-
+# === Read-Write Lock ===
 
 class ReadWriteLock:
     """
     Allow multiple readers OR single writer.
-
-    Useful when reads are much more common than writes.
+    Writers have priority to prevent starvation.
     """
 
     def __init__(self):
@@ -1148,9 +524,8 @@ class ReadWriteLock:
 
     @contextmanager
     def read_lock(self):
-        """Acquire read lock (allows concurrent reads)."""
+        """Acquire read lock (shared access)."""
         with self._read_ready:
-            # Wait if writer is active or waiting
             while self._writer_active or self._writers_waiting > 0:
                 self._read_ready.wait()
             self._readers += 1
@@ -1183,256 +558,73 @@ class ReadWriteLock:
                 self._read_ready.notify_all()
 
 
-# Usage
-class ThreadSafeCache:
-    def __init__(self):
-        self._data = {}
-        self._lock = ReadWriteLock()
+# === Usage Example ===
 
-    def get(self, key: str) -> Any:
-        with self._lock.read_lock():
-            return self._data.get(key)
+if __name__ == "__main__":
+    # Create thread pool
+    pool = ThreadPool(name="demo", min_workers=4, max_workers=16)
 
-    def set(self, key: str, value: Any):
-        with self._lock.write_lock():
-            self._data[key] = value
+    def process(x):
+        time.sleep(0.1)  # Simulate work
+        return x * 2
 
-    def get_many(self, keys: list) -> dict:
-        with self._lock.read_lock():
-            return {k: self._data.get(k) for k in keys}
+    # Submit tasks
+    for i in range(20):
+        pool.submit(process, i, callback=lambda r: print(f"Result: {r}"))
+
+    time.sleep(3)
+    print(pool.get_metrics())
+    pool.shutdown()
 ```
 
 ---
 
-## Production War Stories
+## Quick Reference Card
 
-### War Story 1: The Silent Corruption
-
-**The Scenario**:
-User balance updates in a fintech app. Multiple services could update balance.
-
-**What Happened**:
-```python
-# The bug
-def transfer(from_user, to_user, amount):
-    from_balance = get_balance(from_user)
-    to_balance = get_balance(to_user)
-
-    if from_balance >= amount:
-        set_balance(from_user, from_balance - amount)
-        set_balance(to_user, to_balance + amount)
-```
-
-Two simultaneous transfers created money out of thin air due to race condition.
-
-**The Fix**:
-```python
-def transfer(from_user, to_user, amount):
-    # Order locks to prevent deadlock
-    users = sorted([from_user, to_user])
-
-    with user_lock(users[0]):
-        with user_lock(users[1]):
-            from_balance = get_balance(from_user)
-            to_balance = get_balance(to_user)
-
-            if from_balance >= amount:
-                set_balance(from_user, from_balance - amount)
-                set_balance(to_user, to_balance + amount)
-```
-
-**20-Year Lesson**: Financial operations need serializable transactions. Never trust read-then-write patterns.
-
----
-
-### War Story 2: The Memory Leak Thread Pool
-
-**The Scenario**:
-Thread pool for processing background jobs. Pool size was 100 threads.
-
-**What Happened**:
-1. Jobs took 1-5 seconds each
-2. Traffic spike: 10,000 jobs/second
-3. Jobs queued up (unbounded queue)
-4. Queue grew to 1 million items
-5. OOM crash
-
-**The Fix**:
-```python
-# Use bounded queue with backpressure
-pool = ThreadPool(
-    max_workers=100,
-    queue_size=1000,  # BOUNDED!
-)
-
-# Callers must handle rejection
-if not pool.submit(job):
-    # Queue full - apply backpressure
-    return {"status": "busy", "retry_after": 60}
-```
-
-**20-Year Lesson**: Unbounded queues are memory leaks waiting to happen. Always bound your queues.
-
----
-
-### War Story 3: The Deadlock That Only Happened on Tuesdays
-
-**The Scenario**:
-Weekly report generation deadlocked, but only on Tuesdays.
-
-**What Happened**:
-1. Report A locked resource 1, then resource 2
-2. Report B locked resource 2, then resource 1
-3. On Tuesdays, both reports ran at the same time (cron collision)
-4. Classic deadlock
-
-**The Fix**:
-```python
-# Enforce consistent lock ordering
-def generate_reports():
-    # Always lock in alphabetical order
-    resources = sorted(['resource_1', 'resource_2'])
-
-    with acquire_locks(resources):
-        generate_report_a()
-        generate_report_b()
-```
-
-**20-Year Lesson**: Deadlocks often depend on timing. They hide in production until conditions align.
-
----
-
-## Expert FAQs
-
-### Q: Threads vs Async/Await vs Multiprocessing?
-
-**A**:
-| Approach | Best For | Limitation |
-|----------|----------|------------|
-| Threads | I/O-bound (network, disk) | GIL in Python |
-| Async/Await | Many concurrent I/O ops | No CPU parallelism |
-| Multiprocessing | CPU-bound | Memory overhead |
-
-```python
-# I/O-bound: Use threads or async
-import asyncio
-
-async def fetch_all(urls):
-    async with aiohttp.ClientSession() as session:
-        tasks = [session.get(url) for url in urls]
-        return await asyncio.gather(*tasks)
-
-# CPU-bound: Use multiprocessing
-from multiprocessing import Pool
-
-def process_all(items):
-    with Pool(processes=8) as pool:
-        return pool.map(cpu_intensive_function, items)
-```
-
-### Q: How many threads should my pool have?
-
-**A**:
-- **CPU-bound work**: threads = CPU cores
-- **I/O-bound work**: threads = CPU cores × (1 + wait_time/compute_time)
-- **Mixed work**: Start with 2 × CPU cores, benchmark
-
-```python
-import os
-
-cpu_count = os.cpu_count()
-
-# CPU-bound
-cpu_pool = ThreadPool(max_workers=cpu_count)
-
-# I/O-bound (assume 90% wait, 10% compute)
-io_pool = ThreadPool(max_workers=cpu_count * 10)
-
-# Mixed (start conservative)
-mixed_pool = ThreadPool(max_workers=cpu_count * 2)
-```
-
-### Q: How do I test concurrent code?
-
-**A**:
-```python
-import threading
-import random
-import time
-
-
-def stress_test_concurrent(func, args_list, num_threads=100, iterations=1000):
-    """Stress test for race conditions."""
-    errors = []
-
-    def worker():
-        for _ in range(iterations):
-            args = random.choice(args_list)
-            try:
-                func(*args)
-            except Exception as e:
-                errors.append(e)
-
-    threads = [threading.Thread(target=worker) for _ in range(num_threads)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-
-    return errors
-
-
-# Test thread-safe counter
-counter = SafeCounter()
-errors = stress_test_concurrent(
-    counter.increment,
-    [()],  # No args
-    num_threads=50,
-    iterations=1000,
-)
-
-expected = 50 * 1000
-actual = counter.get()
-print(f"Expected: {expected}, Actual: {actual}")
-```
-
-### Q: When should I use locks vs lock-free data structures?
-
-**A**:
-- **Use locks when**: Simple, low contention, correctness matters most
-- **Use lock-free when**: High contention, performance critical, expert implementer
-
-```python
-# Lock-free counter using atomic operations (simplified)
-from threading import Lock
-
-
-class LockFreeCounter:
-    """
-    Note: Python doesn't have true atomic operations,
-    this is illustrative. Use `threading.Lock` in practice.
-    """
-
-    def __init__(self):
-        self._value = 0
-        self._lock = Lock()  # In practice, still need this in Python
-
-    def increment(self):
-        # In languages with CAS (Compare-and-Swap), this would be:
-        # while True:
-        #     old = self._value
-        #     new = old + 1
-        #     if CAS(self._value, old, new):
-        #         break
-        with self._lock:
-            self._value += 1
-```
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div>
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Pattern Selection</div>
+      <div style="background: white; border-radius: 8px; padding: 12px; font-size: 13px; color: #334155;">
+        <div style="margin-bottom: 6px;"><strong>Thread Pool:</strong> Fixed number of tasks, reuse threads</div>
+        <div style="margin-bottom: 6px;"><strong>Producer-Consumer:</strong> Decouple generation from processing</div>
+        <div style="margin-bottom: 6px;"><strong>Read-Write Lock:</strong> Many readers, few writers</div>
+        <div><strong>Mutex:</strong> Simple exclusive access</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Common Pitfalls</div>
+      <div style="background: white; border-radius: 8px; padding: 12px; font-size: 13px; color: #334155;">
+        <div style="margin-bottom: 6px;">Forgetting to release locks in error paths</div>
+        <div style="margin-bottom: 6px;">Unbounded queues causing OOM</div>
+        <div style="margin-bottom: 6px;">Nested locks without consistent ordering</div>
+        <div>Shared mutable state in closures</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Thread Pool Sizing</div>
+      <div style="background: white; border-radius: 8px; padding: 12px; font-size: 13px; color: #334155;">
+        <div style="margin-bottom: 6px;"><strong>CPU-bound:</strong> N = CPU cores</div>
+        <div style="margin-bottom: 6px;"><strong>I/O-bound:</strong> N = cores x (1 + W/C)</div>
+        <div><strong>Mixed:</strong> Start at 2x cores, benchmark</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Deadlock Prevention</div>
+      <div style="background: white; border-radius: 8px; padding: 12px; font-size: 13px; color: #334155;">
+        <div style="margin-bottom: 6px;">1. Consistent lock ordering</div>
+        <div style="margin-bottom: 6px;">2. Timeout on lock acquisition</div>
+        <div style="margin-bottom: 6px;">3. Lock hierarchy levels</div>
+        <div>4. Minimize lock scope</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
 ## Related Topics
 
-- [Thread Pool Pattern](/topic/design-patterns/thread-pool)
-- [Producer-Consumer](/topic/design-patterns/producer-consumer)
-- [Distributed Locking](/topic/system-design/distributed-locking)
+- [Connection Pooling](/topic/system-design/connection-pooling)
 - [Message Queues](/topic/system-design/message-queues)
+- [Distributed Locking](/topic/system-design/distributed-locking)
