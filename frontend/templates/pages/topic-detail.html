@@ -34,6 +34,20 @@
 </div>
 
 <style>
+/* Define CSS variables that match what the template uses */
+:root {
+    --accent-color: #3b82f6;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: #e2e8f0;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+}
+
 .topic-detail-page {
     max-width: 900px;
     margin: 0 auto;
@@ -61,11 +75,12 @@
 .topic-badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
-    background: var(--accent-color);
-    color: white;
+    background: #3b82f6;
+    color: #ffffff;
     border-radius: 1rem;
     font-size: 0.75rem;
     margin-bottom: 0.25rem;
+    font-weight: 600;
 }
 
 .topic-header h1 {
@@ -754,12 +769,12 @@
     transition: transform 0.2s;
 }
 
-/* Dark diagram improvements - make them visible on light backgrounds */
+/* Diagram visibility - ensure all diagrams are readable */
 .topic-content svg,
 .topic-content .diagram,
-.topic-content [class*="architecture"],
 .topic-content .mermaid {
-    background: #1e293b;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: var(--radius-md);
     padding: 1rem;
     margin: 0.75rem 0;
@@ -767,14 +782,40 @@
     overflow-x: auto;
 }
 
-/* Improve SVG text visibility */
+/* For SVGs with dark content, ensure text is visible */
 .topic-content svg text {
-    fill: #e2e8f0 !important;
+    fill: #1e293b !important;
 }
 
-.topic-content svg rect,
-.topic-content svg path {
-    stroke: #64748b;
+/* Override dark inline styled divs to ensure readability */
+.topic-content div[style*="background: linear-gradient"],
+.topic-content div[style*="background:linear-gradient"],
+.topic-content div[style*="#0d1117"],
+.topic-content div[style*="#161b22"],
+.topic-content div[style*="#1a1a2e"] {
+    background: #1e293b !important;
+    border: 1px solid #475569 !important;
+}
+
+/* Ensure text inside dark containers is visible */
+.topic-content div[style*="background"] pre,
+.topic-content div[style*="background"] code,
+.topic-content div[style*="background"] h3,
+.topic-content div[style*="background"] h4,
+.topic-content div[style*="background"] p {
+    color: #e2e8f0 !important;
+}
+
+/* ASCII art / code blocks inside dark containers */
+.topic-content div[style*="background"] pre {
+    background: transparent !important;
+    border: none !important;
+    color: #e2e8f0 !important;
+}
+
+.topic-content div[style*="background"] pre code {
+    color: #e2e8f0 !important;
+    background: transparent !important;
 }
 
 /* Mobile responsive styles */
