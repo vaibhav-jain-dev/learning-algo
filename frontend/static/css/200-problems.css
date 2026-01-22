@@ -1527,3 +1527,169 @@ li.CodeMirror-hint-active {
     font-family: var(--font-mono);
     color: var(--color-text-secondary, #475569);
 }
+
+/* ============================================
+   FILTER BUTTONS & READ STATUS
+   ============================================ */
+.panel-filter-buttons {
+    display: flex;
+    gap: var(--space-2, 0.5rem);
+    margin-left: auto;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-medium, 500);
+    color: var(--color-text-secondary, #475569);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border-color: var(--color-border-strong, #cbd5e1);
+}
+
+.filter-btn.active {
+    background: var(--color-brand-primary, #3b82f6);
+    border-color: var(--color-brand-primary, #3b82f6);
+    color: white;
+}
+
+.filter-btn svg {
+    flex-shrink: 0;
+}
+
+/* Read Status Checkmark */
+.problem-read-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-success, #10b981);
+    color: white;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.problem-read-status.unread {
+    background: transparent;
+    border: 2px solid var(--color-border, #e2e8f0);
+}
+
+/* Mark as Read Button */
+.mark-read-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+    background: var(--color-success, #10b981);
+    border: none;
+    border-radius: var(--radius-md, 8px);
+    font-size: var(--text-sm, 0.875rem);
+    font-weight: var(--font-medium, 500);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mark-read-btn:hover {
+    background: var(--color-success-hover, #059669);
+    transform: translateY(-1px);
+}
+
+.mark-read-btn.is-read {
+    background: var(--color-bg-secondary, #f8fafc);
+    color: var(--color-text-secondary, #475569);
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.mark-read-btn.is-read:hover {
+    background: var(--color-bg-tertiary, #f1f5f9);
+}
+
+/* Problem Card Read State */
+.problem-card.is-read {
+    opacity: 0.7;
+    background: var(--color-bg-secondary, #f8fafc) !important;
+}
+
+.problem-card.is-read:hover {
+    opacity: 1;
+}
+
+/* Problem Title with checkmark */
+.problem-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    flex: 1;
+}
+
+.problem-checkmark {
+    color: var(--color-success, #10b981);
+    font-size: 1rem;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+@media (max-width: 768px) {
+    .panel-header {
+        flex-wrap: wrap;
+        gap: var(--space-3, 0.75rem);
+    }
+    
+    .panel-filter-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+        padding: var(--space-3, 0.75rem);
+    }
+    
+    .filter-btn span {
+        display: none;
+    }
+    
+    .mark-read-btn {
+        width: 100%;
+        justify-content: center;
+        padding: var(--space-3, 0.75rem);
+    }
+    
+    .problem-card {
+        padding: var(--space-3, 0.75rem) !important;
+    }
+    
+    .panel-content > div {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-btn {
+        min-width: unset;
+        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+        font-size: var(--text-xs, 0.75rem);
+    }
+    
+    .panel-title {
+        font-size: var(--text-lg, 1.125rem) !important;
+    }
+}

@@ -326,6 +326,20 @@
                 Back to Categories
             </button>
             <h2 class="panel-title" id="panel-title">Arrays</h2>
+            <div class="panel-filter-buttons" id="panel-filter-buttons">
+                <button class="filter-btn active" id="filter-all-btn" onclick="window.filterProblems('all')">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                    </svg>
+                    View All
+                </button>
+                <button class="filter-btn" id="filter-unread-btn" onclick="window.filterProblems('unread')">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                    </svg>
+                    Hide Read
+                </button>
+            </div>
         </div>
         <div class="panel-content" id="panel-content">
             <!-- Problems will be loaded here -->
@@ -343,6 +357,12 @@
             </button>
             <h2 class="problem-title" id="problem-title">Problem Name</h2>
             <span class="problem-difficulty" id="problem-difficulty">Medium</span>
+            <button class="mark-read-btn" id="mark-read-btn" onclick="window.toggleReadStatus()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                </svg>
+                Mark as Read
+            </button>
         </div>
 
         <div class="editor-layout">

@@ -16,6 +16,110 @@
     let currentExamples = [];
     let selectedExampleIndex = 0;
 
+    // Read status storage key
+    const READ_STATUS_KEY = 'dsalgo_read_problems';
+    let currentFilter = 'all'; // 'all' or 'unread'
+
+    // Get read problems from localStorage
+    function getReadProblems() {
+        try {
+            return JSON.parse(localStorage.getItem(READ_STATUS_KEY) || '{}');
+        } catch (e) {
+            return {};
+        }
+    }
+
+    // Check if a problem is read
+    function isProblemRead(category, problemId) {
+        var readProblems = getReadProblems();
+        var key = category + '/' + problemId;
+        return readProblems[key] === true;
+    }
+
+    // Mark a problem as read/unread
+    window.markProblemRead = function(category, problemId, isRead) {
+        var readProblems = getReadProblems();
+        var key = category + '/' + problemId;
+        if (isRead) {
+            readProblems[key] = true;
+        } else {
+            delete readProblems[key];
+        }
+        localStorage.setItem(READ_STATUS_KEY, JSON.stringify(readProblems));
+
+        // Update UI
+        updateReadStatusUI(category, problemId, isRead);
+        updateCategoryProgress();
+    };
+
+    // Toggle read status for current problem
+    window.toggleReadStatus = function() {
+        if (!currentProblem) return;
+        var isCurrentlyRead = isProblemRead(currentProblem.category, currentProblem.id);
+        window.markProblemRead(currentProblem.category, currentProblem.id, !isCurrentlyRead);
+    };
+
+    // Update read status UI elements
+    function updateReadStatusUI(category, problemId, isRead) {
+        // Update mark-as-read button if visible
+        var markReadBtn = document.getElementById('mark-read-btn');
+        if (markReadBtn) {
+            if (isRead) {
+                markReadBtn.classList.add('is-read');
+                markReadBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Completed';
+            } else {
+                markReadBtn.classList.remove('is-read');
+                markReadBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Mark as Read';
+            }
+        }
+
+        // Refresh problem list if category panel is open
+        if (currentCategory && document.getElementById('problem-panel').classList.contains('active')) {
+            window.showCategory(currentCategory);
+        }
+    }
+
+    // Update category progress bars
+    function updateCategoryProgress() {
+        var readProblems = getReadProblems();
+        var categories = ['arrays', 'binary-search-trees', 'binary-trees', 'dynamic-programming', 'graphs', 'linked-lists', 'recursion', 'famous-algorithms'];
+
+        categories.forEach(function(cat) {
+            var problems = problemsData[cat] || [];
+            var readCount = 0;
+            problems.forEach(function(p) {
+                if (readProblems[cat + '/' + p.id]) readCount++;
+            });
+
+            // Update progress bar in category card
+            var progressFill = document.querySelector('.category-card[onclick*="' + cat + '"] .progress-fill');
+            var progressText = document.querySelector('.category-card[onclick*="' + cat + '"] .progress-text');
+            if (progressFill && progressText) {
+                var percent = problems.length > 0 ? (readCount / problems.length * 100) : 0;
+                progressFill.style.width = percent + '%';
+                progressText.textContent = readCount + '/' + problems.length + ' completed';
+            }
+        });
+    }
+
+    // Filter problems
+    window.filterProblems = function(filter) {
+        currentFilter = filter;
+
+        // Update button states
+        var allBtn = document.getElementById('filter-all-btn');
+        var unreadBtn = document.getElementById('filter-unread-btn');
+        if (allBtn && unreadBtn) {
+            allBtn.classList.toggle('active', filter === 'all');
+            unreadBtn.classList.toggle('active', filter === 'unread');
+        }
+
+        // Refresh the problem list
+        if (currentCategory) {
+            window.showCategory(currentCategory);
+        }
+    };
+
     // Store embedded visualization config from problem.md script tag
     let vizConfig = null;
 
@@ -4284,15 +4388,22 @@
         title.textContent = categoryNames[category] || category;
 
         var problems = problemsData[category] || [];
+        var readProblems = getReadProblems();
 
         // Group problems by difficulty
         var grouped = { easy: [], medium: [], hard: [], 'very-hard': [] };
         problems.forEach(function(p, idx) {
             var diff = p.difficulty.toLowerCase().replace(' ', '-');
+            var isRead = readProblems[category + '/' + p.id] === true;
+
+            // Apply filter
+            if (currentFilter === 'unread' && isRead) return;
+
+            var problemObj = { ...p, originalIndex: idx + 1, isRead: isRead };
             if (grouped[diff]) {
-                grouped[diff].push({ ...p, originalIndex: idx + 1 });
+                grouped[diff].push(problemObj);
             } else {
-                grouped['medium'].push({ ...p, originalIndex: idx + 1 });
+                grouped['medium'].push(problemObj);
             }
         });
 
@@ -4325,12 +4436,30 @@
                     var problemData = window.ProblemRenderer ? window.ProblemRenderer.get(fullId) : null;
                     var hasSimilar = problemData && problemData.similar && problemData.similar.length > 0;
 
-                    html += '<div class="problem-card" style="background: white; border-radius: 8px; padding: 0.75rem; border: 1px solid ' + config.border + '; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.1)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">';
+                    // Check read status for similar problems
+                    var readSimilarCount = 0;
+                    var totalSimilar = 0;
+                    if (hasSimilar) {
+                        totalSimilar = problemData.similar.length;
+                        problemData.similar.forEach(function(sim) {
+                            if (readProblems[category + '/' + sim.id]) readSimilarCount++;
+                        });
+                    }
+
+                    var cardClass = 'problem-card' + (p.isRead ? ' is-read' : '');
+                    html += '<div class="' + cardClass + '" style="background: white; border-radius: 8px; padding: 0.75rem; border: 1px solid ' + config.border + '; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.1)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">';
                     html += '<div style="display: flex; align-items: center; gap: 0.5rem;" onclick="window.openProblem(\'' + category + '\', \'' + p.id + '\')">';
+
+                    // Read status checkmark
+                    if (p.isRead) {
+                        html += '<span style="color: #10b981; font-size: 1rem;" title="Completed">✓</span>';
+                    }
+
                     html += '<span style="color: ' + config.color + '; font-weight: 700; font-size: 0.8rem; min-width: 24px;">' + p.originalIndex + '</span>';
                     html += '<span style="color: #1f2937; font-weight: 500; font-size: 0.9rem; flex: 1;">' + p.name + '</span>';
                     if (hasSimilar) {
-                        html += '<span onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: ' + config.color + '; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">−' + problemData.similar.length + '</span>';
+                        var similarBadgeText = readSimilarCount > 0 ? readSimilarCount + '/' + totalSimilar : totalSimilar;
+                        html += '<span onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: ' + config.color + '; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">−' + similarBadgeText + '</span>';
                     }
                     html += '</div>';
 
@@ -4338,8 +4467,20 @@
                     if (hasSimilar) {
                         html += '<div id="similar-list-' + p.id + '" style="display: block; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed ' + config.border + ';">';
                         problemData.similar.forEach(function(sim, simIdx) {
-                            html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; cursor: pointer; font-size: 0.8rem;" onmouseover="this.style.color=\'' + config.color + '\'" onmouseout="this.style.color=\'#6b7280\'">';
-                            html += '<span style="color: #9ca3af;">↳</span>';
+                            var simIsRead = readProblems[category + '/' + sim.id] === true;
+
+                            // Apply filter for similar problems
+                            if (currentFilter === 'unread' && simIsRead) return;
+
+                            html += '<div onclick="window.openProblem(\'' + category + '\', \'' + sim.id + '\')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; cursor: pointer; font-size: 0.8rem;' + (simIsRead ? ' opacity: 0.6;' : '') + '" onmouseover="this.style.color=\'' + config.color + '\'" onmouseout="this.style.color=\'#6b7280\'">';
+
+                            // Read status for similar problem
+                            if (simIsRead) {
+                                html += '<span style="color: #10b981; font-size: 0.8rem;">✓</span>';
+                            } else {
+                                html += '<span style="color: #9ca3af;">↳</span>';
+                            }
+
                             html += '<span style="color: inherit;">' + sim.name + '</span>';
                             html += '<span style="background: #f3f4f6; color: #6b7280; padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.65rem;">' + sim.difficulty + '</span>';
                             html += '</div>';
@@ -4395,6 +4536,19 @@
 
         currentProblem = { category: category, id: problemId, similarIdx: similarIdx || null };
         var editorView = document.getElementById('editor-view');
+
+        // Update Mark as Read button state
+        var isRead = isProblemRead(category, problemId);
+        var markReadBtn = document.getElementById('mark-read-btn');
+        if (markReadBtn) {
+            if (isRead) {
+                markReadBtn.classList.add('is-read');
+                markReadBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Completed';
+            } else {
+                markReadBtn.classList.remove('is-read');
+                markReadBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Mark as Read';
+            }
+        }
 
         // Update URL with history API
         var urlPath = '/200-problems/' + problemId;
@@ -9624,6 +9778,10 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         console.log('200 Problems UI initialized with ' + Object.keys(problemsData).length + ' categories');
+
+        // Update category progress bars based on read status
+        updateCategoryProgress();
+
         // Check URL for direct problem link
         parseUrlAndOpenProblem();
     });
