@@ -795,9 +795,15 @@
    FORCE LIGHT BACKGROUNDS ON ALL CONTAINERS
    =========================================== */
 
-/* Override ALL dark gradient backgrounds to light */
+/* Override ALL dark backgrounds to light - comprehensive list */
 .topic-content div[style*="background: linear-gradient"],
 .topic-content div[style*="background:linear-gradient"],
+.topic-content div[style*="background: #0"],
+.topic-content div[style*="background: #1"],
+.topic-content div[style*="background: #2"],
+.topic-content div[style*="background:#0"],
+.topic-content div[style*="background:#1"],
+.topic-content div[style*="background:#2"],
 .topic-content div[style*="#0d1117"],
 .topic-content div[style*="#161b22"],
 .topic-content div[style*="#1a1a2e"],
@@ -806,25 +812,55 @@
 .topic-content div[style*="#1e3a5f"],
 .topic-content div[style*="#2d1f3d"],
 .topic-content div[style*="#1a472a"],
-.topic-content div[style*="#21262d"] {
+.topic-content div[style*="#21262d"],
+.topic-content div[style*="#2d3748"],
+.topic-content div[style*="#0c2461"],
+.topic-content div[style*="#1e3799"],
+.topic-content div[style*="#2d3436"],
+.topic-content div[style*="#000000"],
+.topic-content div[style*="#1e3c72"],
+.topic-content div[style*="#134e5e"],
+.topic-content div[style*="#11998e"],
+.topic-content div[style*="#0f3460"],
+.topic-content div[style*="#1a1a40"],
+.topic-content div[style*="#141414"],
+.topic-content div[style*="#1f1f1f"],
+.topic-content div[style*="#252525"],
+.topic-content div[style*="#2a2a2a"],
+.topic-content div[style*="#333333"],
+.topic-content div[style*="#3d3d3d"] {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
     border: 2px solid #e2e8f0 !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* ALL text inside containers should be dark and readable */
+/* NUCLEAR OPTION: Force ALL divs with inline background styles to be light */
+.topic-content div[style*="background"] {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+/* Except for light/pastel backgrounds - keep them */
+.topic-content div[style*="#f"],
+.topic-content div[style*="#e"],
+.topic-content div[style*="#d"],
+.topic-content div[style*="rgb(2"],
+.topic-content div[style*="rgba(2"] {
+    background: inherit;
+}
+
+/* ALL text inside ANY container should be dark and readable */
+.topic-content div[style] *,
 .topic-content div[style*="background"] *,
-.topic-content div[style*="linear-gradient"] *,
-.topic-content div[style*="#0d1117"] *,
-.topic-content div[style*="#161b22"] *,
-.topic-content div[style*="#1a1a2e"] * {
+.topic-content div[style*="linear-gradient"] * {
     color: #1e293b !important;
 }
 
 /* Headings in containers - dark blue for emphasis */
 .topic-content div[style*="background"] h3,
-.topic-content div[style*="background"] h4 {
+.topic-content div[style*="background"] h4,
+.topic-content div[style] h3,
+.topic-content div[style] h4 {
     color: #1e40af !important;
     font-weight: 700 !important;
     font-size: 1.1rem !important;
@@ -833,14 +869,18 @@
 /* Paragraphs and list items - dark gray for readability */
 .topic-content div[style*="background"] p,
 .topic-content div[style*="background"] li,
-.topic-content div[style*="background"] span {
+.topic-content div[style*="background"] span,
+.topic-content div[style] p,
+.topic-content div[style] li,
+.topic-content div[style] span {
     color: #334155 !important;
     font-size: 0.95rem !important;
     line-height: 1.7 !important;
 }
 
 /* Strong/bold text - even darker */
-.topic-content div[style*="background"] strong {
+.topic-content div[style*="background"] strong,
+.topic-content div[style] strong {
     color: #0f172a !important;
     font-weight: 700 !important;
 }
@@ -865,18 +905,21 @@
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace !important;
 }
 
-.topic-content div[style*="background"] pre {
+.topic-content div[style*="background"] pre,
+.topic-content div[style] pre {
     background: #ffffff !important;
     border: 2px solid #cbd5e1 !important;
 }
 
-.topic-content div[style*="background"] pre code {
+.topic-content div[style*="background"] pre code,
+.topic-content div[style] pre code {
     color: #1e293b !important;
 }
 
 /* Inline code - subtle background */
 .topic-content code:not(pre code),
-.topic-content div[style*="background"] code:not(pre code) {
+.topic-content div[style*="background"] code:not(pre code),
+.topic-content div[style] code:not(pre code) {
     background: #e2e8f0 !important;
     color: #be185d !important;
     padding: 0.2em 0.5em !important;
@@ -890,7 +933,8 @@
    =========================================== */
 
 .topic-content table,
-.topic-content div[style*="background"] table {
+.topic-content div[style*="background"] table,
+.topic-content div[style] table {
     border-collapse: collapse !important;
     width: 100% !important;
     margin: 1rem 0 !important;
