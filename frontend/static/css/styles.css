@@ -206,13 +206,14 @@ a:hover {
     z-index: var(--z-sticky);
     background: var(--color-bg-primary);
     border-bottom: 1px solid var(--color-border);
-    min-height: var(--header-height);
+    height: var(--header-height);
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
+    gap: var(--space-2);
+    padding: 0 var(--space-3);
     box-shadow: var(--shadow-sm);
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 
 /* Logo */
@@ -248,10 +249,20 @@ a:hover {
 /* Navigation */
 .nav {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    gap: 4px;
+    flex-wrap: nowrap;
     align-items: center;
     flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: var(--space-1) 0;
+}
+
+.nav::-webkit-scrollbar {
+    display: none;
 }
 
 /* Nav Pill */
@@ -1361,13 +1372,13 @@ a:hover {
    UNIFIED DASHBOARD STYLES
    ============================================ */
 .unified-dashboard {
-    --dash-bg-primary: #0f172a;
-    --dash-bg-secondary: #1e293b;
-    --dash-bg-tertiary: #334155;
-    --dash-border: #475569;
+    --dash-bg-primary: #1e293b;
+    --dash-bg-secondary: #334155;
+    --dash-bg-tertiary: #475569;
+    --dash-border: #64748b;
     --dash-text-primary: #f1f5f9;
-    --dash-text-secondary: #94a3b8;
-    --dash-text-muted: #64748b;
+    --dash-text-secondary: #cbd5e1;
+    --dash-text-muted: #94a3b8;
 }
 
 .unified-dashboard.theme-elasticsearch {
@@ -1570,12 +1581,12 @@ a:hover {
    UNIFIED LESSONS STYLES
    ============================================ */
 .unified-lessons {
-    --lesson-bg-primary: #0f172a;
-    --lesson-bg-secondary: #1e293b;
-    --lesson-bg-tertiary: #334155;
-    --lesson-border: #475569;
+    --lesson-bg-primary: #1e293b;
+    --lesson-bg-secondary: #334155;
+    --lesson-bg-tertiary: #475569;
+    --lesson-border: #64748b;
     --lesson-text-primary: #f1f5f9;
-    --lesson-text-secondary: #94a3b8;
+    --lesson-text-secondary: #cbd5e1;
 }
 
 .unified-lessons.theme-elasticsearch {
@@ -1951,47 +1962,39 @@ a:hover {
 /* Tablet and below (768px) */
 @media (max-width: 768px) {
     :root {
-        --header-height: 56px;
+        --header-height: 48px;
         --sidebar-width: 100%;
     }
 
+    /* Single-row horizontal scrollable header */
     .header {
-        padding: 0 var(--space-3);
+        padding: 0 var(--space-2);
         gap: var(--space-2);
-        flex-wrap: wrap;
-        height: auto;
-        min-height: var(--header-height);
-        padding-top: var(--space-2);
-        padding-bottom: var(--space-2);
+        flex-wrap: nowrap;
+        height: var(--header-height);
+        overflow: hidden;
     }
 
     .logo {
-        order: 1;
+        flex-shrink: 0;
     }
 
-    .nav {
-        order: 2;
-        width: 100%;
-        justify-content: flex-start;
-        gap: var(--space-1);
-        padding-bottom: var(--space-1);
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .nav::-webkit-scrollbar {
+    .logo-text {
         display: none;
     }
 
+    .nav {
+        flex: 1;
+        gap: 2px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
     .nav-pill {
-        padding: var(--space-2);
-        min-width: 44px;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding: 6px 8px;
+        min-width: 36px;
+        min-height: 36px;
+        flex-shrink: 0;
     }
 
     .nav-pill span:not(.nav-icon) {
@@ -1999,11 +2002,11 @@ a:hover {
     }
 
     .nav-pill .nav-icon {
-        font-size: var(--text-lg);
+        font-size: 1rem;
     }
 
     .main {
-        padding: var(--space-3);
+        padding: var(--space-2);
     }
 
     /* Practice Page Mobile */
@@ -2057,23 +2060,30 @@ a:hover {
     }
 
     /* Dashboard Mobile */
+    .unified-dashboard {
+        display: flex;
+        flex-direction: column;
+    }
+
     .unified-dashboard .dashboard-layout {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .unified-dashboard .sidebar {
-        max-height: 200px;
-        border-right: none;
-        border-bottom: 1px solid var(--dash-border);
-        padding: var(--space-2);
+        display: none; /* Hide sidebar on mobile */
     }
 
     .unified-dashboard .dashboard-header {
-        padding: var(--space-3);
+        padding: var(--space-2);
     }
 
     .unified-dashboard .dashboard-header h1 {
-        font-size: var(--text-lg);
+        font-size: var(--text-base);
+    }
+
+    .unified-dashboard .dashboard-header p {
+        font-size: var(--text-xs);
     }
 
     .unified-dashboard .query-section {
@@ -2084,46 +2094,60 @@ a:hover {
         padding: var(--space-2);
     }
 
+    .unified-dashboard .main-content {
+        flex: 1;
+    }
+
     /* Lessons Mobile */
     .unified-lessons {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .unified-lessons .sidebar {
-        max-height: 200px;
-        border-right: none;
-        border-bottom: 1px solid var(--lesson-border);
-    }
-
-    .unified-lessons .sidebar-header {
-        padding: var(--space-3);
+        display: none; /* Hide sidebar on mobile */
     }
 
     .unified-lessons .content {
-        padding: var(--space-3);
+        padding: var(--space-2);
+        flex: 1;
+    }
+
+    .unified-lessons .lesson {
+        max-width: 100%;
     }
 
     .unified-lessons .lesson h1 {
-        font-size: var(--text-xl);
-    }
-
-    .unified-lessons .lesson h2 {
         font-size: var(--text-lg);
     }
 
+    .unified-lessons .lesson h2 {
+        font-size: var(--text-base);
+        margin-top: var(--space-4);
+    }
+
+    .unified-lessons .lesson p {
+        font-size: var(--text-sm);
+    }
+
     .unified-lessons .code-example {
-        margin: var(--space-3) 0;
+        margin: var(--space-2) 0;
+        border-radius: var(--radius-md);
     }
 
     .unified-lessons .code-example .code-content,
     .unified-lessons .code-example .output-content {
-        font-size: var(--text-xs);
+        font-size: 0.7rem;
         padding: var(--space-2);
     }
 
     .unified-lessons .key-points {
-        padding: var(--space-3) var(--space-4);
-        margin: var(--space-3) 0;
+        padding: var(--space-2) var(--space-3);
+        margin: var(--space-2) 0;
+    }
+
+    .unified-lessons .key-points ul {
+        padding-left: var(--space-4);
     }
 
     /* PDF Modal Mobile */
@@ -2155,43 +2179,60 @@ a:hover {
 /* Small Mobile (480px) */
 @media (max-width: 480px) {
     :root {
-        --text-base: 0.9375rem;
+        --text-base: 0.875rem;
     }
 
     .header {
-        padding: 0 var(--space-2);
+        padding: 0 var(--space-1);
+        height: 44px;
     }
 
     .logo-text {
-        font-size: var(--text-base);
+        display: none;
+    }
+
+    .nav-pill {
+        min-width: 32px;
+        min-height: 32px;
+        padding: 4px;
+    }
+
+    .nav-pill .nav-icon {
+        font-size: 0.9rem;
     }
 
     .main {
-        padding: var(--space-2);
+        padding: var(--space-1);
     }
 
     .tab {
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--text-xs);
+        padding: var(--space-1) var(--space-2);
+        font-size: 0.7rem;
     }
 
     #description-tab {
-        padding: var(--space-3);
+        padding: var(--space-2);
+    }
+
+    .topic-page {
+        padding: 0;
     }
 
     .topic-page h1 {
-        font-size: var(--text-xl);
+        font-size: var(--text-lg);
+        padding: 0 var(--space-2);
     }
 
     .page-description {
-        font-size: var(--text-sm);
-        margin-bottom: var(--space-4);
+        font-size: var(--text-xs);
+        margin-bottom: var(--space-3);
+        padding: 0 var(--space-2);
     }
 
-    /* Mobile code font sizing - prevent horizontal scroll */
+    /* Mobile code font sizing - smaller for better fit */
     pre, code, .code-example pre code {
-        font-size: 0.75rem !important;
-        line-height: 1.5;
+        font-size: 0.65rem !important;
+        line-height: 1.4;
     }
 
     pre {
@@ -2199,45 +2240,46 @@ a:hover {
         max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        border-radius: var(--radius-md) !important;
     }
 
     .problem-description pre,
     .code-block-wrapper pre,
     .code-example pre {
-        font-size: 0.75rem !important;
+        font-size: 0.65rem !important;
     }
 
     .problem-description code,
     .topic-block code {
-        font-size: 0.8em !important;
+        font-size: 0.75em !important;
         word-break: break-word;
     }
 
     /* Topic card mobile adjustments */
     .topic-card {
-        padding: var(--space-3);
+        padding: var(--space-2);
     }
 
     .topic-card-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.125rem;
-        margin-bottom: var(--space-2);
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        margin-bottom: var(--space-1);
     }
 
     .topic-card h3 {
-        font-size: var(--text-base);
+        font-size: var(--text-sm);
     }
 
     .topic-card p {
-        font-size: var(--text-xs);
-        margin-bottom: var(--space-2);
+        font-size: 0.7rem;
+        margin-bottom: var(--space-1);
     }
 
     /* Card mobile adjustments */
     .card {
-        padding: var(--space-3);
-        gap: var(--space-3);
+        padding: var(--space-2);
+        gap: var(--space-2);
     }
 
     .card-icon {
