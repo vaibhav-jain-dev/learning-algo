@@ -6,7 +6,7 @@
     padding: 1.5rem;
     max-width: 1400px;
     margin: 0 auto;
-    background: #0d1117;
+    background: #1e293b;
     min-height: 100vh;
 }
 
@@ -14,10 +14,10 @@
 .learn-hero {
     text-align: center;
     padding: 3rem 2rem;
-    background: linear-gradient(135deg, #1a1f35 0%, #0d1117 100%);
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
     border-radius: 16px;
     margin-bottom: 2rem;
-    border: 1px solid #30363d;
+    border: 1px solid #475569;
 }
 
 .learn-hero .hero-badge {
@@ -51,10 +51,10 @@
     display: flex;
     gap: 0.5rem;
     padding: 1rem;
-    background: #161b22;
+    background: #2d3a47;
     border-radius: 12px;
     margin-bottom: 2rem;
-    border: 1px solid #30363d;
+    border: 1px solid #4d5560;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -85,9 +85,9 @@
 .subject-section {
     margin-bottom: 3rem;
     padding: 2rem;
-    background: #161b22;
+    background: #2d3a47;
     border-radius: 16px;
-    border: 1px solid #30363d;
+    border: 1px solid #4d5560;
 }
 
 .section-title {
@@ -114,7 +114,7 @@
     font-size: 1.25rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #4d5560;
 }
 
 .algorithm-cards {
@@ -124,8 +124,8 @@
 }
 
 .algo-card {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 1.25rem;
     cursor: pointer;
@@ -212,7 +212,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #30363d;
+    background: #4d5560;
     color: #f0f6fc;
     font-weight: 600;
     font-size: 0.9rem;
@@ -235,8 +235,8 @@
 }
 
 .ds-card {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
@@ -270,7 +270,7 @@
 .ds-concepts li {
     color: #8b949e;
     padding: 0.4rem 0;
-    border-bottom: 1px solid #21262d;
+    border-bottom: 1px solid #3d4652;
     font-size: 0.9rem;
 }
 
@@ -287,8 +287,8 @@
 }
 
 .approach-step {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 1.5rem;
     position: relative;
@@ -340,8 +340,8 @@
 
 /* Terminology Box */
 .terminology-box {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 1.5rem;
 }
@@ -361,9 +361,9 @@
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    background: #161b22;
+    background: #2d3a47;
     border-radius: 8px;
-    border: 1px solid #21262d;
+    border: 1px solid #3d4652;
 }
 
 .term-name {
@@ -388,8 +388,8 @@
 
 .domain-tab {
     padding: 0.6rem 1.25rem;
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 8px;
     color: #8b949e;
     cursor: pointer;
@@ -434,8 +434,8 @@
 
 /* Brain Diagram */
 .brain-diagram {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 2rem;
 }
@@ -461,8 +461,8 @@
 }
 
 .branch {
-    background: #161b22;
-    border: 1px solid #30363d;
+    background: #2d3a47;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     padding: 1.25rem;
 }
@@ -472,7 +472,7 @@
     font-size: 1rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #4d5560;
 }
 
 .branch ul {
@@ -503,8 +503,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2rem;
-    background: #21262d;
-    border: 1px solid #30363d;
+    background: #3d4652;
+    border: 1px solid #4d5560;
     border-radius: 12px;
     color: #f0f6fc;
     text-decoration: none;
@@ -513,7 +513,7 @@
 }
 
 .back-btn:hover {
-    background: #30363d;
+    background: #4d5560;
     border-color: #58a6ff;
 }
 
@@ -678,8 +678,8 @@
 
 .modal-content {
     position: relative;
-    background: #161b22;
-    border: 1px solid #30363d;
+    background: #2d3a47;
+    border: 1px solid #4d5560;
     border-radius: 16px;
     max-width: 900px;
     width: 90%;
@@ -693,8 +693,8 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: #21262d;
-    border: 1px solid #30363d;
+    background: #3d4652;
+    border: 1px solid #4d5560;
     color: #f0f6fc;
     width: 36px;
     height: 36px;
@@ -752,7 +752,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #4d5560;
     padding-bottom: 0.5rem;
 }
 
@@ -772,8 +772,8 @@
 }
 
 .modal-section .code-block {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #1e293b;
+    border: 1px solid #4d5560;
     border-radius: 8px;
     padding: 1rem;
     overflow-x: auto;
@@ -827,11 +827,11 @@
 .complexity-table td {
     padding: 0.75rem 1rem;
     text-align: left;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #4d5560;
 }
 
 .complexity-table th {
-    background: #21262d;
+    background: #3d4652;
     color: #f0f6fc;
     font-weight: 600;
 }

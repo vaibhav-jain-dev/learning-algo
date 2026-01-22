@@ -803,9 +803,10 @@ li.CodeMirror-hint-active {
     }
 
     .editor-layout {
-        grid-template-columns: 1fr;
-        padding: var(--space-1, 0.25rem);
-        gap: var(--space-1, 0.25rem);
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0;
+        gap: 0;
     }
 
     .categories-grid {
@@ -815,13 +816,15 @@ li.CodeMirror-hint-active {
 
     .description-panel {
         max-height: 35vh;
-        min-height: 200px;
-        border-radius: var(--radius-md, 8px);
+        min-height: 180px;
+        border-radius: 0;
+        flex-shrink: 0;
     }
 
     .code-panel {
-        min-height: 45vh;
-        border-radius: var(--radius-md, 8px);
+        flex: 1;
+        min-height: 50vh;
+        border-radius: 0;
     }
 
     .output-panel {
@@ -831,52 +834,53 @@ li.CodeMirror-hint-active {
 
 @media (max-width: 768px) {
     .must-solve-page {
-        padding: var(--space-2, 0.5rem);
+        padding: 0;
     }
 
     .hero-section {
-        padding: var(--space-2, 0.5rem) 0;
-        margin-bottom: var(--space-4, 1rem);
+        padding: var(--space-2, 0.5rem);
+        margin-bottom: var(--space-3, 0.75rem);
     }
 
     .hero-content h1 {
-        font-size: var(--text-xl, 1.25rem);
+        font-size: var(--text-lg, 1.125rem);
         margin: var(--space-2, 0.5rem) 0;
     }
 
     .hero-subtitle {
-        font-size: var(--text-sm, 0.875rem);
-        margin: var(--space-2, 0.5rem) 0 var(--space-3, 0.75rem) 0;
+        font-size: var(--text-xs, 0.75rem);
+        margin: var(--space-1, 0.25rem) 0 var(--space-2, 0.5rem) 0;
     }
 
     .hero-badge {
-        font-size: var(--text-xs, 0.75rem);
-        padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+        font-size: 0.65rem;
+        padding: 2px var(--space-2, 0.5rem);
     }
 
     .hero-stats {
         flex-direction: row;
         flex-wrap: wrap;
-        gap: var(--space-4, 1rem);
-        margin: var(--space-3, 0.75rem) 0;
+        gap: var(--space-3, 0.75rem);
+        margin: var(--space-2, 0.5rem) 0;
     }
 
     .stat {
-        flex: 1 1 80px;
-        min-width: 80px;
+        flex: 1 1 60px;
+        min-width: 60px;
     }
 
     .stat-number {
-        font-size: var(--text-xl, 1.25rem);
+        font-size: var(--text-lg, 1.125rem);
     }
 
     .stat-label {
-        font-size: var(--text-xs, 0.75rem);
+        font-size: 0.65rem;
     }
 
     .categories-grid {
         grid-template-columns: 1fr;
         gap: var(--space-2, 0.5rem);
+        padding: 0 var(--space-2, 0.5rem);
     }
 
     .hero-visual {
@@ -884,77 +888,88 @@ li.CodeMirror-hint-active {
     }
 
     .difficulty-legend {
-        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-        gap: var(--space-2, 0.5rem);
-        margin-bottom: var(--space-3, 0.75rem);
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        gap: var(--space-1, 0.25rem);
+        margin-bottom: var(--space-2, 0.5rem);
     }
 
     .legend-title {
-        font-size: var(--text-sm, 0.875rem);
+        font-size: var(--text-xs, 0.75rem);
         width: 100%;
-        margin-bottom: var(--space-1, 0.25rem);
+        margin-bottom: 0;
     }
 
     .diff-badge {
-        font-size: var(--text-xs, 0.75rem);
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: 0.65rem;
+        padding: 2px var(--space-2, 0.5rem);
     }
 
     /* Editor view mobile optimization */
     .editor-view {
-        background: var(--color-bg-primary, #ffffff);
+        background: var(--color-bg-secondary, #f8fafc);
     }
 
     .editor-header-bar {
         padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-        gap: var(--space-2, 0.5rem);
-        min-height: 44px;
+        gap: var(--space-1, 0.25rem);
+        min-height: 40px;
+        flex-wrap: nowrap;
     }
 
     .back-btn {
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-        font-size: var(--text-xs, 0.75rem);
-        min-height: 36px;
+        padding: 4px 8px;
+        font-size: 0.65rem;
+        min-height: 32px;
+    }
+
+    .back-btn svg {
+        width: 14px;
+        height: 14px;
     }
 
     .problem-title {
-        font-size: var(--text-sm, 0.875rem);
+        font-size: var(--text-xs, 0.75rem);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 150px;
+        flex: 1;
+        min-width: 0;
     }
 
     .problem-difficulty {
-        font-size: var(--text-xs, 0.75rem);
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: 0.65rem;
+        padding: 2px 8px;
+        flex-shrink: 0;
     }
 
+    /* Force vertical stacking */
     .editor-layout {
+        display: flex !important;
+        flex-direction: column !important;
         padding: 0;
         gap: 0;
     }
 
     .description-panel {
-        max-height: 30vh;
-        min-height: 150px;
+        max-height: 28vh;
+        min-height: 120px;
         border-radius: 0;
-        border-left: none;
-        border-right: none;
+        border: none;
+        border-bottom: 1px solid var(--color-border, #e2e8f0);
     }
 
     .code-panel {
-        min-height: 40vh;
+        flex: 1;
+        min-height: 45vh;
         border-radius: 0;
-        border-left: none;
-        border-right: none;
-        border-top: none;
+        border: none;
     }
 
     .description-tabs {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        flex-wrap: nowrap;
     }
 
     .description-tabs::-webkit-scrollbar {
@@ -962,36 +977,36 @@ li.CodeMirror-hint-active {
     }
 
     .desc-tab {
-        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-        font-size: var(--text-xs, 0.75rem);
-        min-height: 40px;
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        min-height: 32px;
         white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .description-content {
-        padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-        font-size: var(--text-xs, 0.75rem);
-        line-height: 1.6;
+        padding: var(--space-2, 0.5rem);
+        font-size: 0.75rem;
+        line-height: 1.5;
     }
 
     .code-header {
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-        gap: var(--space-1, 0.25rem);
+        padding: 4px 8px;
+        gap: 4px;
     }
 
     .language-selector {
-        flex: 1;
-        justify-content: flex-start;
+        flex-shrink: 0;
         padding: 1px;
     }
 
     .lang-btn {
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-        font-size: var(--text-xs, 0.75rem);
-        min-height: 32px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        min-height: 28px;
     }
 
     .code-actions {
