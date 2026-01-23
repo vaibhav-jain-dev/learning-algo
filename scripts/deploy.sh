@@ -46,6 +46,29 @@ DEPLOY_START_TIME=""
 TOTAL_STEPS=0
 COMPLETED_STEPS=0
 
+# ==========================================
+# Environment Variable Normalization
+# ==========================================
+# Normalizes ENV_VARS to proper format:
+# - Splits comma-separated KEY=VALUE pairs
+# - Removes 'export ' prefix (will be added by deploy.sh)
+# - Preserves quoted values with special characters
+# - One variable per line
+normalize_env_vars() {
+    local input="$1"
+    # Remove 'export ' prefix if present
+    input="$(printf '%s' "$input" | sed 's/^[[:space:]]*export[[:space:]]*//g')"
+    # Split on commas that are NOT inside quotes, output one var per line
+    printf '%s' "$input" | awk -F',' '{
+        for (i=1; i<=NF; i++) {
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $i)
+            if ($i ~ /^[A-Za-z_][A-Za-z0-9_]*=/) {
+                print $i
+            }
+        }
+    }'
+}
+
 # Format duration in human-readable format
 format_duration() {
     local seconds=$1
@@ -279,6 +302,25 @@ else
     HAS_ENV_FILE=false
 fi
 
+echo "[Checking] ENV_VARS..."
+# Allow ENV_VARS to be provided via base64 (GitHub Actions compatibility)
+if [ -z "${ENV_VARS:-}" ] && [ -n "${ENV_VARS_B64:-}" ]; then
+    ENV_VARS="$(printf "%s" "$ENV_VARS_B64" | base64 -d)"
+    echo -e "  ${GREEN}✓${NC} ENV_VARS: Decoded from base64 (will override .env)"
+    HAS_ENV_VARS=true
+elif [ -n "${ENV_VARS:-}" ]; then
+    echo -e "  ${GREEN}✓${NC} ENV_VARS: Provided (will override .env)"
+    HAS_ENV_VARS=true
+else
+    echo -e "  ${GREEN}○${NC} ENV_VARS: Not configured (optional)"
+    HAS_ENV_VARS=false
+fi
+
+# Normalize ENV_VARS if present (converts comma-separated to newline-separated)
+if [ "$HAS_ENV_VARS" = "true" ]; then
+    ENV_VARS_NORMALIZED="$(normalize_env_vars "$ENV_VARS")"
+fi
+
 echo ""
 echo "=========================================="
 
@@ -329,12 +371,18 @@ if [ "$DRY_RUN" = "true" ]; then
     exit 0
 fi
 
-# Confirmation
-read -p "Continue with deployment? [y/N] " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Deployment cancelled."
-    exit 0
+# Confirmation (skip in CI environments or non-interactive shells)
+if [ -t 0 ]; then
+    # Interactive terminal - ask for confirmation
+    read -p "Continue with deployment? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Deployment cancelled."
+        exit 0
+    fi
+else
+    # Non-interactive (e.g., GitHub Actions SSH) - auto-proceed
+    echo -e "${BLUE}ℹ${NC} Running in non-interactive mode (auto-proceeding)"
 fi
 
 # ==========================================
@@ -385,45 +433,24 @@ run_ssh() {
         "$SSH_USERNAME@$SSH_HOST" "$@"
 }
 
-# Deploy ENV_FILE if exists (Step 2 - can run in parallel with directory setup)
+# Setup directory and environment (Step 2)
 print_step 2 $TOTAL_STEPS "Setup Directory & Environment"
 step_start "Setup Directory"
 
+print_substep "start" "Creating project directory"
+run_ssh "mkdir -p $PROJECT_PATH" 2>/dev/null
+print_substep "done" "Project directory ready"
+
 if [ "$HAS_ENV_FILE" = "true" ]; then
-    print_substep "parallel" "Creating project directory + Deploying .env file"
-
-    # Create temp dir for parallel job outputs
-    PARALLEL_DIR=$(mktemp -d)
-    trap "rm -rf $PARALLEL_DIR" EXIT
-
-    # Job 1: Create project directory
-    (
-        run_ssh "mkdir -p $PROJECT_PATH" > "$PARALLEL_DIR/mkdir.out" 2>&1
-        echo $? > "$PARALLEL_DIR/mkdir.exit"
-    ) &
-    PID_MKDIR=$!
-
-    # Job 2: Copy env file (needs directory to exist, so we wait)
-    wait $PID_MKDIR
-    if [ "$(cat $PARALLEL_DIR/mkdir.exit)" -eq 0 ]; then
-        print_substep "done" "Project directory created"
-    else
-        print_substep "error" "Failed to create directory"
-    fi
-
     print_substep "start" "Deploying .env file via SCP"
     scp -o StrictHostKeyChecking=no \
         -i "$SSH_PRIVATE_KEY" \
         -P "$SSH_PORT" \
         "$ENV_FILE" \
         "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
-
     run_ssh "chmod 600 $PROJECT_PATH/.env" 2>/dev/null
     print_substep "done" ".env file deployed (permissions: 600)"
 else
-    print_substep "start" "Creating project directory"
-    run_ssh "mkdir -p $PROJECT_PATH" 2>/dev/null
-    print_substep "done" "Project directory ready"
     print_substep "skip" "No .env file configured"
 fi
 
@@ -436,24 +463,19 @@ step_start "Sync Code"
 print_substep "start" "Checking repository status"
 SYNC_OUTPUT=$(run_ssh << SYNC_SCRIPT
 set -e
+cd "$PROJECT_PATH"
 
-PROJECT_BASE=\$(dirname "$PROJECT_PATH")
-if [ ! -d "\$PROJECT_BASE" ]; then
-    sudo mkdir -p "\$PROJECT_BASE"
-    sudo chown \$USER:\$USER "\$PROJECT_BASE"
-fi
-
-if [ ! -d "$PROJECT_PATH/.git" ]; then
+if [ ! -d ".git" ]; then
     echo "CLONE"
-    git clone --branch "$CURRENT_BRANCH" "$REPO_URL" "$PROJECT_PATH" 2>&1
-    cd "$PROJECT_PATH"
+    # Repo not yet cloned - this shouldn't happen if GitHub Actions did checkout
+    # But we support it for compatibility with local deployments
+    git clone --branch "$CURRENT_BRANCH" "$REPO_URL" . 2>&1
 else
     echo "UPDATE"
-    cd "$PROJECT_PATH"
+    # Repo already exists - update to latest
     git fetch origin 2>&1
     git checkout "$CURRENT_BRANCH" 2>&1
     git reset --hard "origin/$CURRENT_BRANCH" 2>&1
-    git pull origin "$CURRENT_BRANCH" 2>&1
 fi
 
 echo "COMMIT:\$(git rev-parse --short HEAD)"
@@ -482,6 +504,24 @@ if [ "$ENV_STATUS" = "exists" ]; then
 else
     print_substep "skip" "No environment file"
 fi
+
+# Apply ENV_VARS_NORMALIZED if present (creates/overwrites .env.override)
+if [ "$HAS_ENV_VARS" = "true" ]; then
+    print_substep "start" "Applying environment variable overrides"
+    # Base64 encode locally for safe transport (handles newlines, $, backticks, etc.)
+    ENV_VARS_B64_REMOTE=$(printf "%s" "$ENV_VARS_NORMALIZED" | base64 -w0)
+    run_ssh << ENV_OVERRIDE_SCRIPT
+cd "$PROJECT_PATH"
+# Decode and write normalized env vars to .env.override
+printf "%s" "$ENV_VARS_B64_REMOTE" | base64 -d > .env.override
+chmod 600 .env.override
+echo "Created .env.override with normalized variables"
+ENV_OVERRIDE_SCRIPT
+    print_substep "done" ".env.override created with normalized variables"
+else
+    print_substep "skip" "No environment variable overrides"
+fi
+
 step_end "Configure Env" "success"
 
 # Docker operations (Step 5) - with parallel pull/build
