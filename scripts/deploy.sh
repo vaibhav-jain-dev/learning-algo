@@ -599,15 +599,56 @@ fi
 
 print_substep "start" "Synchronizing repository"
 
-# Simple git clone/update logic
-# Remove directory completely and clone fresh, or just update if git exists
-SYNC_OUTPUT=$(run_ssh "cd /projects && if [ ! -d learning-algo/.git ]; then rm -rf learning-algo 2>/dev/null; mkdir -p learning-algo; cd learning-algo; git clone $REPO_URL . 2>&1; else cd learning-algo && git fetch origin 2>&1 && git checkout $CURRENT_BRANCH 2>&1 && git reset --hard origin/$CURRENT_BRANCH 2>&1; fi; echo 'COMMIT:'\$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'); echo 'MSG:'\$(git log -1 --pretty=%B 2>/dev/null | head -1 || echo 'No message')" 2>&1)
+# Extract base directory and repo name from PROJECT_PATH
+PROJECT_BASE=$(dirname "$PROJECT_PATH")
+PROJECT_DIR=$(basename "$PROJECT_PATH")
 
-if echo "$SYNC_OUTPUT" | grep -q "COMMIT:"; then
+# Robust git clone/update logic with proper error handling
+SYNC_OUTPUT=$(run_ssh "
+set -e
+
+# Ensure base project directory exists
+mkdir -p '$PROJECT_BASE'
+
+cd '$PROJECT_BASE'
+
+# Check if repo already exists
+if [ -d '$PROJECT_DIR/.git' ]; then
+    echo 'STATUS:updating'
+    cd '$PROJECT_DIR'
+    git fetch origin 2>&1 || { echo 'ERROR:fetch_failed'; exit 1; }
+    git checkout '$CURRENT_BRANCH' 2>&1 || git checkout -b '$CURRENT_BRANCH' origin/'$CURRENT_BRANCH' 2>&1 || { echo 'ERROR:checkout_failed'; exit 1; }
+    git reset --hard origin/'$CURRENT_BRANCH' 2>&1 || { echo 'ERROR:reset_failed'; exit 1; }
+else
+    echo 'STATUS:cloning'
+    # Remove any partial directory
+    rm -rf '$PROJECT_DIR' 2>/dev/null || true
+
+    # Clone fresh
+    git clone '$REPO_URL' '$PROJECT_DIR' 2>&1 || { echo 'ERROR:clone_failed'; exit 1; }
+    cd '$PROJECT_DIR'
+    git checkout '$CURRENT_BRANCH' 2>&1 || git checkout -b '$CURRENT_BRANCH' origin/'$CURRENT_BRANCH' 2>&1 || true
+fi
+
+# Output commit info
+echo 'COMMIT:'\$(git rev-parse --short HEAD)
+echo 'MSG:'\$(git log -1 --pretty=%B | head -1)
+echo 'STATUS:success'
+" 2>&1)
+
+# Check for errors
+if echo "$SYNC_OUTPUT" | grep -q "ERROR:"; then
+    ERROR_TYPE=$(echo "$SYNC_OUTPUT" | grep "ERROR:" | head -1)
+    print_substep "fail" "Repository sync failed: $ERROR_TYPE"
+    echo "Debug output:"
+    echo "$SYNC_OUTPUT"
+    step_end "Sync Code" "failed"
+elif echo "$SYNC_OUTPUT" | grep -q "STATUS:success"; then
     print_substep "done" "Repository synchronized"
 else
-    # Don't fail, just warn and skip
-    print_substep "skip" "Repository sync skipped (will retry next deployment)"
+    print_substep "skip" "Repository sync unclear (check logs)"
+    echo "Debug output:"
+    echo "$SYNC_OUTPUT"
 fi
 
 COMMIT_HASH=$(echo "$SYNC_OUTPUT" | grep "^COMMIT:" | cut -d: -f2 | head -1)
