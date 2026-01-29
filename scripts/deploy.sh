@@ -722,7 +722,12 @@ if [ -n "$BEFORE_STATUS" ]; then
     done
 fi
 
-DOCKER_OUTPUT=$(run_ssh "cd $PROJECT_PATH; ([ '$FORCE_RESTART' = 'true' ] && (echo 'STEP:teardown'; docker compose down --remove-orphans --timeout 30 2>&1 || true)) || true; echo 'STEP:parallel_start'; docker compose pull --ignore-pull-failures 2>&1 || true; echo 'STEP:pull_done'; echo 'STEP:up_start'; docker compose up -d --build --remove-orphans 2>&1; sleep 3; echo 'STEP:up_done'; echo 'SERVICES:'\$(docker compose ps -q 2>/dev/null | wc -l)" 2>&1)
+DOCKER_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'DEBUG:pwd='\$(pwd); echo 'DEBUG:compose_file='\$(ls -la docker-compose*.yml 2>&1 || echo 'NOT_FOUND'); ([ '$FORCE_RESTART' = 'true' ] && (echo 'STEP:teardown'; docker compose down --remove-orphans --timeout 30 2>&1 || true)) || true; echo 'STEP:parallel_start'; docker compose pull --ignore-pull-failures 2>&1 || true; echo 'STEP:pull_done'; echo 'STEP:up_start'; docker compose up -d --build --remove-orphans 2>&1; UP_EXIT=\$?; echo 'UP_EXIT:'\$UP_EXIT; sleep 3; echo 'STEP:up_done'; echo 'SERVICES:'\$(docker compose ps -q 2>/dev/null | wc -l); docker compose ps 2>&1" 2>&1)
+
+# Show debug info
+echo "$DOCKER_OUTPUT" | grep "^DEBUG:" | while read line; do
+    echo -e "     ${DIM}├─ ${line#DEBUG:}${NC}"
+done
 
 # Parse docker output and show progress
 if echo "$DOCKER_OUTPUT" | grep -q "STEP:teardown"; then
@@ -739,7 +744,13 @@ fi
 
 if echo "$DOCKER_OUTPUT" | grep -q "STEP:up_done"; then
     SERVICE_COUNT=$(echo "$DOCKER_OUTPUT" | grep "^SERVICES:" | cut -d: -f2)
-    print_substep "done" "$SERVICE_COUNT container(s) started"
+    UP_EXIT=$(echo "$DOCKER_OUTPUT" | grep "^UP_EXIT:" | cut -d: -f2)
+    if [ "$SERVICE_COUNT" = "0" ] || [ -n "$UP_EXIT" ] && [ "$UP_EXIT" != "0" ]; then
+        print_substep "warn" "$SERVICE_COUNT container(s) - docker compose output:"
+        echo "$DOCKER_OUTPUT" | grep -v "^STEP:\|^DEBUG:\|^SERVICES:\|^UP_EXIT:" | tail -20
+    else
+        print_substep "done" "$SERVICE_COUNT container(s) started"
+    fi
 fi
 
 step_end "Docker Operations" "success"
