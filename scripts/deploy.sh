@@ -521,30 +521,80 @@ step_end "Setup Directory" "success"
 print_step 3 $TOTAL_STEPS "Synchronizing Code"
 step_start "Sync Code"
 
-# Deploy GitHub SSH key if it exists locally (copy via SCP)
+# Deploy GitHub SSH key to server for cloning
+# Supports:
+#   - GITHUB_SSH_KEY: Raw key content (from GitHub Actions secrets)
+#   - GITHUB_SSH_KEY_PATH: Path to local key file (default: ~/.ssh/github_deploy_key)
 GITHUB_KEY_LOCAL="${GITHUB_SSH_KEY_PATH:-$HOME/.ssh/github_deploy_key}"
-if [ -f "$GITHUB_KEY_LOCAL" ]; then
-    print_substep "start" "Configuring GitHub SSH access"
+GITHUB_KEY_DEPLOYED=false
+
+# Check if GITHUB_SSH_KEY content is provided (for GitHub Actions)
+if [ -n "${GITHUB_SSH_KEY:-}" ]; then
+    print_substep "start" "Configuring GitHub SSH access (from key content)"
     run_ssh "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>/dev/null
-    
+
+    # Create temporary file with the key content
+    TEMP_GITHUB_KEY=$(mktemp)
+    printf "%s" "$GITHUB_SSH_KEY" > "$TEMP_GITHUB_KEY"
+    chmod 600 "$TEMP_GITHUB_KEY"
+
     if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
-        # SCP via Cloudflare Tunnel
+        scp -o StrictHostKeyChecking=no \
+            -o ProxyCommand="cloudflared access ssh --hostname %h" \
+            -i "$SSH_KEY_FILE" \
+            "$TEMP_GITHUB_KEY" \
+            "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
+    else
+        scp -o StrictHostKeyChecking=no \
+            -i "$SSH_KEY_FILE" \
+            -P "$SSH_PORT" \
+            "$TEMP_GITHUB_KEY" \
+            "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
+    fi
+
+    rm -f "$TEMP_GITHUB_KEY"
+
+    run_ssh "chmod 600 ~/.ssh/github_deploy_key && cat > ~/.ssh/config << 'SSHCONFIG'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy_key
+  StrictHostKeyChecking accept-new
+SSHCONFIG
+chmod 600 ~/.ssh/config" 2>/dev/null
+    print_substep "done" "GitHub SSH key deployed (from content)"
+    GITHUB_KEY_DEPLOYED=true
+# Fallback: Check if local key file exists
+elif [ -f "$GITHUB_KEY_LOCAL" ]; then
+    print_substep "start" "Configuring GitHub SSH access (from local file)"
+    run_ssh "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>/dev/null
+
+    if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
         scp -o StrictHostKeyChecking=no \
             -o ProxyCommand="cloudflared access ssh --hostname %h" \
             -i "$SSH_KEY_FILE" \
             "$GITHUB_KEY_LOCAL" \
             "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
     else
-        # Direct SCP
         scp -o StrictHostKeyChecking=no \
             -i "$SSH_KEY_FILE" \
             -P "$SSH_PORT" \
             "$GITHUB_KEY_LOCAL" \
             "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
     fi
-    
-    run_ssh "chmod 600 ~/.ssh/github_deploy_key && echo 'Host github.com' > ~/.ssh/config && echo '  HostName github.com' >> ~/.ssh/config && echo '  User git' >> ~/.ssh/config && echo '  IdentityFile ~/.ssh/github_deploy_key' >> ~/.ssh/config && echo '  StrictHostKeyChecking accept-new' >> ~/.ssh/config" 2>/dev/null
-    print_substep "done" "GitHub SSH key deployed"
+
+    run_ssh "chmod 600 ~/.ssh/github_deploy_key && cat > ~/.ssh/config << 'SSHCONFIG'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy_key
+  StrictHostKeyChecking accept-new
+SSHCONFIG
+chmod 600 ~/.ssh/config" 2>/dev/null
+    print_substep "done" "GitHub SSH key deployed (from local file)"
+    GITHUB_KEY_DEPLOYED=true
+else
+    print_substep "skip" "No GitHub SSH key configured (GITHUB_SSH_KEY or ~/.ssh/github_deploy_key)"
 fi
 
 print_substep "start" "Synchronizing repository"
