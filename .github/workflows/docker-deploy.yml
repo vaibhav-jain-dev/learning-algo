@@ -5,9 +5,10 @@
 # and environment variable handling safely.
 #
 # Required Secrets:
-#   - SSH_PRIVATE_KEY: Private key for SSH authentication (required)
+#   - SSH_PRIVATE_KEY: Private key for SSH authentication to the server (required)
 #   - SSH_HOST: Server IP or hostname (can be in Secrets or Variables)
 #   - SSH_USERNAME: SSH user (can be in Secrets or Variables)
+#   - GITHUB_SSH_KEY: SSH private key for GitHub repo access (required for cloning)
 #
 # Optional Secrets:
 #   - SSH_PORT: SSH port (default: 22)
@@ -142,6 +143,17 @@ jobs:
           else
             echo "  ○ ENV_VARS: Not configured (optional)"
             echo "has_env_vars=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Check GITHUB_SSH_KEY (required for cloning repo via SSH)
+          echo "[Checking] GITHUB_SSH_KEY..."
+          if [ -n "${{ secrets.GITHUB_SSH_KEY }}" ]; then
+            echo "  ✓ GITHUB_SSH_KEY: Present (from Secrets)"
+            echo "has_github_ssh_key=true" >> $GITHUB_OUTPUT
+          else
+            echo "  ✗ GITHUB_SSH_KEY: MISSING (REQUIRED for cloning repo)"
+            MISSING_KEYS="${MISSING_KEYS}\n  - GITHUB_SSH_KEY (SSH key for GitHub repo access - add to Secrets)"
+            VALIDATION_PASSED=false
           fi
 
           echo ""
@@ -335,58 +347,189 @@ jobs:
             }
           fi
 
-      - name: Deploy to server via deploy.sh (single SSH session)
-        env:
-          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
-          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
-          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
-          SSH_USE_CLOUDFLARE_TUNNEL: ${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}
-          PROJECT_PATH: ${{ steps.project.outputs.path }}
-          REPO_BRANCH: ${{ github.ref_name }}
-          FORCE_RESTART: ${{ inputs.force_restart || 'false' }}
-          ENV_VARS_B64: ${{ env.ENV_VARS_B64 }}
+      - name: Deploy GitHub SSH key to server
         run: |
-          if [ "$SSH_USE_CLOUDFLARE_TUNNEL" = "true" ]; then
+          echo "=========================================="
+          echo "  Deploying GitHub SSH key to server"
+          echo "=========================================="
+
+          # Create temp file with GitHub SSH key
+          echo "${{ secrets.GITHUB_SSH_KEY }}" > /tmp/github_deploy_key
+          chmod 600 /tmp/github_deploy_key
+
+          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" = "true" ]; then
+            # Setup .ssh directory on server
             ssh -o BatchMode=yes \
                 -o StrictHostKeyChecking=no \
                 -o ProxyCommand="cloudflared access ssh --hostname %h" \
                 -i ~/.ssh/deploy_key \
-                "$SSH_USER@$SSH_HOST" << 'DEPLOY_SESSION'
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
+                "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+
+            # Copy GitHub SSH key to server
+            scp -o StrictHostKeyChecking=no \
+                -o ProxyCommand="cloudflared access ssh --hostname %h" \
+                -i ~/.ssh/deploy_key \
+                /tmp/github_deploy_key \
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }}:~/.ssh/github_deploy_key
+
+            # Configure SSH for GitHub
+            ssh -o BatchMode=yes \
+                -o StrictHostKeyChecking=no \
+                -o ProxyCommand="cloudflared access ssh --hostname %h" \
+                -i ~/.ssh/deploy_key \
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
+                "chmod 600 ~/.ssh/github_deploy_key && cat > ~/.ssh/config << 'SSHCONFIG'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy_key
+  StrictHostKeyChecking accept-new
+SSHCONFIG
+chmod 600 ~/.ssh/config"
           else
+            # Setup .ssh directory on server
             ssh -o BatchMode=yes \
                 -o StrictHostKeyChecking=no \
                 -i ~/.ssh/deploy_key \
-                -p "$SSH_PORT" \
-                "$SSH_USER@$SSH_HOST" << 'DEPLOY_SESSION'
+                -p ${{ needs.validate.outputs.ssh_port }} \
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
+                "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+
+            # Copy GitHub SSH key to server
+            scp -o StrictHostKeyChecking=no \
+                -i ~/.ssh/deploy_key \
+                -P ${{ needs.validate.outputs.ssh_port }} \
+                /tmp/github_deploy_key \
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }}:~/.ssh/github_deploy_key
+
+            # Configure SSH for GitHub
+            ssh -o BatchMode=yes \
+                -o StrictHostKeyChecking=no \
+                -i ~/.ssh/deploy_key \
+                -p ${{ needs.validate.outputs.ssh_port }} \
+                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
+                "chmod 600 ~/.ssh/github_deploy_key && cat > ~/.ssh/config << 'SSHCONFIG'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/github_deploy_key
+  StrictHostKeyChecking accept-new
+SSHCONFIG
+chmod 600 ~/.ssh/config"
           fi
-          
+
+          rm -f /tmp/github_deploy_key
+          echo "GitHub SSH key deployed to server"
+
+      - name: Deploy application to server
+        env:
+          PROJECT_PATH: ${{ steps.project.outputs.path }}
+          REPO_URL: git@github.com:${{ github.repository }}.git
+          REPO_BRANCH: ${{ github.ref_name }}
+          FORCE_RESTART: ${{ inputs.force_restart || 'false' }}
+          ENV_VARS_B64: ${{ env.ENV_VARS_B64 }}
+          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
+          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
+          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
+          USE_CLOUDFLARE: ${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}
+        run: |
+          echo "=========================================="
+          echo "  Deploying Application"
+          echo "=========================================="
+          echo "Repository: $REPO_URL"
+          echo "Branch: $REPO_BRANCH"
+          echo "Project Path: $PROJECT_PATH"
+          echo "Force Restart: $FORCE_RESTART"
+          echo "=========================================="
+
+          # Build SSH command based on tunnel option
+          if [ "$USE_CLOUDFLARE" = "true" ]; then
+            SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ProxyCommand=\"cloudflared access ssh --hostname %h\" -i ~/.ssh/deploy_key ${SSH_USER}@${SSH_HOST}"
+          else
+            SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST}"
+          fi
+
+          # Execute deployment script on server
+          eval $SSH_CMD << DEPLOY_SCRIPT
           set -e
 
-          echo "=========================================="
-          echo "  GitHub Actions Deployment"
-          echo "  $(date)"
-          echo "=========================================="
-
-          cd "$PROJECT_PATH"
-
-          # Call deploy.sh (single source of truth for ALL deployment logic)
-          chmod +x scripts/deploy.sh
-          
           echo ""
-          echo "Invoking deploy.sh (single source of truth)..."
-          echo "=========================================="
-          
-          # Export SSH variables for deploy.sh to use
-          export SSH_HOST="$SSH_HOST"
-          export SSH_USERNAME="$SSH_USER"
-          export SSH_PORT="$SSH_PORT"
-          export SSH_USE_CLOUDFLARE_TUNNEL="$SSH_USE_CLOUDFLARE_TUNNEL"
-          export FORCE_RESTART="$FORCE_RESTART"
-          export ENV_VARS_B64="$ENV_VARS_B64"
-          
-          ./scripts/deploy.sh
+          echo "[Step 1/4] Synchronizing Code"
+          echo "─────────────────────────────────────────"
 
-          DEPLOY_SESSION
+          cd $PROJECT_PATH || { echo "Failed to cd to $PROJECT_PATH"; exit 1; }
+
+          # Clone or update repository
+          if [ ! -d ".git" ]; then
+            echo "Cloning repository..."
+            cd ..
+            rm -rf \$(basename $PROJECT_PATH)
+            git clone $REPO_URL \$(basename $PROJECT_PATH)
+            cd \$(basename $PROJECT_PATH)
+          else
+            echo "Updating existing repository..."
+            git fetch origin
+          fi
+
+          # Checkout and update branch
+          git checkout $REPO_BRANCH || git checkout -b $REPO_BRANCH origin/$REPO_BRANCH
+          git reset --hard origin/$REPO_BRANCH
+
+          COMMIT_HASH=\$(git rev-parse --short HEAD)
+          COMMIT_MSG=\$(git log -1 --pretty=%B | head -1)
+          echo "✔ Repository synchronized"
+          echo "  Commit: \$COMMIT_HASH - \$COMMIT_MSG"
+
+          echo ""
+          echo "[Step 2/4] Configure Environment"
+          echo "─────────────────────────────────────────"
+
+          # Apply ENV_VARS if provided (base64 encoded)
+          if [ -n "$ENV_VARS_B64" ]; then
+            echo "Applying environment variable overrides..."
+            printf '%s' "$ENV_VARS_B64" | base64 -d > .env.override
+            chmod 600 .env.override
+            echo "✔ Environment overrides applied"
+          else
+            echo "○ No environment overrides"
+          fi
+
+          echo ""
+          echo "[Step 3/4] Docker Operations"
+          echo "─────────────────────────────────────────"
+
+          # Force restart if requested
+          if [ "$FORCE_RESTART" = "true" ]; then
+            echo "Tearing down existing containers (force restart)..."
+            docker compose down --remove-orphans --timeout 30 || true
+          fi
+
+          echo "Pulling images and building containers..."
+          docker compose pull --ignore-pull-failures || true
+          docker compose up -d --build --remove-orphans
+
+          echo "✔ Containers started"
+
+          echo ""
+          echo "[Step 4/4] Health Check"
+          echo "─────────────────────────────────────────"
+
+          sleep 5
+          docker compose ps
+
+          RUNNING=\$(docker compose ps --format '{{.Status}}' | grep -c 'running\|Up' || echo '0')
+          TOTAL=\$(docker compose ps -q | wc -l)
+          echo ""
+          echo "✔ \$RUNNING/\$TOTAL containers running"
+
+          echo ""
+          echo "=========================================="
+          echo "  Deployment Complete!"
+          echo "  Branch: $REPO_BRANCH @ \$COMMIT_HASH"
+          echo "=========================================="
+
+          DEPLOY_SCRIPT
 
       - name: Cleanup SSH key
         if: always()
