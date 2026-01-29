@@ -22,6 +22,7 @@
 # Optional:
 #   PROJECT_PATH    - Deployment path on server (default: /projects/<repo-name>)
 #   ENV_FILE        - Path to .env file to deploy (optional)
+#   GITHUB_SSH_KEY  - GitHub SSH private key for cloning (optional, for SSH repos)
 #
 
 set -e
@@ -40,33 +41,42 @@ NC='\033[0m' # No Color
 # ==========================================
 # Metrics & Timing Infrastructure
 # ==========================================
-declare -A STEP_TIMES
-declare -A STEP_STATUS
+# Simple timing storage (no associative arrays for bash 3.2 compatibility)
 DEPLOY_START_TIME=""
 TOTAL_STEPS=0
 COMPLETED_STEPS=0
+declare -a STEP_NAMES
+declare -a STEP_DURATIONS
+declare -a STEP_STATUSES
 
 # ==========================================
 # Environment Variable Normalization
 # ==========================================
 # Normalizes ENV_VARS to proper format:
-# - Splits comma-separated KEY=VALUE pairs
-# - Removes 'export ' prefix (will be added by deploy.sh)
-# - Preserves quoted values with special characters
-# - One variable per line
+# - Handles comma-separated: KEY=VALUE,KEY2=VALUE2
+# - Handles newline-separated: KEY=VALUE\nKEY2=VALUE2
+# - Handles mixed formats with comments
+# - Removes 'export ' prefix
+# - Skips comments (lines starting with #)
+# - Skips empty lines
+# - One variable per line in output
 normalize_env_vars() {
     local input="$1"
-    # Remove 'export ' prefix if present
-    input="$(printf '%s' "$input" | sed 's/^[[:space:]]*export[[:space:]]*//g')"
-    # Split on commas that are NOT inside quotes, output one var per line
-    printf '%s' "$input" | awk -F',' '{
-        for (i=1; i<=NF; i++) {
-            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $i)
-            if ($i ~ /^[A-Za-z_][A-Za-z0-9_]*=/) {
-                print $i
-            }
-        }
-    }'
+    # Convert commas to newlines (handles both comma and newline formats)
+    input="$(printf '%s' "$input" | sed 's/,/\n/g')"
+    # Process line by line
+    printf '%s\n' "$input" | while IFS= read -r line; do
+        # Skip empty lines and comments
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+        # Remove leading/trailing whitespace
+        line="$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+        # Remove 'export ' prefix if present (case-insensitive)
+        line="${line#export }"
+        line="${line#export }"  # Remove again to handle multiple spaces
+        line="$(printf '%s' "$line" | sed 's/^[[:space:]]*//g')"  # Trim again
+        # Only output if it matches KEY=VALUE pattern (allows special chars in values)
+        [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] && printf '%s\n' "$line"
+    done
 }
 
 # Format duration in human-readable format
@@ -84,8 +94,8 @@ format_duration() {
 # Start timing a step
 step_start() {
     local step_name="$1"
-    STEP_TIMES["${step_name}_start"]=$(date +%s)
-    STEP_STATUS["$step_name"]="running"
+    STEP_NAMES+=("$step_name")
+    STEP_START_TIME=$(date +%s)
 }
 
 # End timing a step
@@ -93,9 +103,8 @@ step_end() {
     local step_name="$1"
     local status="${2:-success}"
     local end_time=$(date +%s)
-    local start_time=${STEP_TIMES["${step_name}_start"]}
-    STEP_TIMES["${step_name}_duration"]=$((end_time - start_time))
-    STEP_STATUS["$step_name"]="$status"
+    STEP_DURATIONS+=($((end_time - STEP_START_TIME)))
+    STEP_STATUSES+=("$status")
     ((COMPLETED_STEPS++)) || true
 }
 
@@ -150,9 +159,11 @@ print_metrics_summary() {
     printf "  ${BOLD}%-30s %10s %10s${NC}\n" "Step" "Duration" "Status"
     echo -e "  ${DIM}$(printf '─%.0s' {1..52})${NC}"
 
-    for step in "SSH Connection" "Setup Directory" "Sync Code" "Configure Env" "Docker Operations" "Health Check"; do
-        local duration=${STEP_TIMES["${step}_duration"]:-0}
-        local status=${STEP_STATUS["$step"]:-"pending"}
+    # Print each step with its metrics
+    for i in "${!STEP_NAMES[@]}"; do
+        local step="${STEP_NAMES[$i]}"
+        local duration=${STEP_DURATIONS[$i]:-0}
+        local status=${STEP_STATUSES[$i]:-"pending"}
         local status_icon
         local status_color
 
@@ -232,12 +243,16 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Load environment from .env.deploy if exists
-if [ -f "$PROJECT_ROOT/.env.deploy" ]; then
+# Load environment from .env.deploy if exists AND variables not already set
+# This allows using environment variables from shell (e.g., exported in .zshrc)
+# while falling back to .env.deploy if they're not already in the environment
+if [ -f "$PROJECT_ROOT/.env.deploy" ] && [ -z "$SSH_HOST" ]; then
     echo -e "${BLUE}Loading environment from .env.deploy${NC}"
     set -a
     source "$PROJECT_ROOT/.env.deploy"
     set +a
+elif [ -n "$SSH_HOST" ]; then
+    echo -e "${BLUE}Using environment variables from current shell${NC}"
 fi
 
 # ==========================================
@@ -273,11 +288,21 @@ fi
 
 echo "[Checking] SSH_PRIVATE_KEY..."
 SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY:-$HOME/.ssh/id_rsa}"
+
+# Support both file path and raw key content
 if [ -f "$SSH_PRIVATE_KEY" ]; then
-    echo -e "  ${GREEN}✓${NC} SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY"
+    echo -e "  ${GREEN}✓${NC} SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY (file)"
+    SSH_KEY_FILE="$SSH_PRIVATE_KEY"
+elif echo "$SSH_PRIVATE_KEY" | grep -q "BEGIN.*PRIVATE KEY"; then
+    # Key content provided directly (like from GitHub Actions)
+    # Create temporary file from key content
+    SSH_KEY_FILE=$(mktemp)
+    printf "%s" "$SSH_PRIVATE_KEY" > "$SSH_KEY_FILE"
+    chmod 600 "$SSH_KEY_FILE"
+    echo -e "  ${GREEN}✓${NC} SSH_PRIVATE_KEY: (key content, temp file created)"
 else
-    echo -e "  ${RED}✗${NC} SSH_PRIVATE_KEY: File not found at $SSH_PRIVATE_KEY"
-    MISSING_VARS="${MISSING_VARS}\n  - SSH_PRIVATE_KEY (file not found)"
+    echo -e "  ${RED}✗${NC} SSH_PRIVATE_KEY: Invalid (not a file or valid key)"
+    MISSING_VARS="${MISSING_VARS}\n  - SSH_PRIVATE_KEY (file not found or invalid key content)"
     VALIDATION_PASSED=false
 fi
 
@@ -355,6 +380,12 @@ echo -e "${GREEN}✅ All required configuration present${NC}"
 CURRENT_BRANCH=$(git -C "$PROJECT_ROOT" rev-parse --abbrev-ref HEAD)
 REPO_URL=$(git -C "$PROJECT_ROOT" remote get-url origin)
 
+# Convert HTTPS to SSH format if needed
+if [[ "$REPO_URL" =~ ^https://github.com/ ]]; then
+    # Convert: https://github.com/user/repo.git -> git@github.com:user/repo.git
+    REPO_URL=$(echo "$REPO_URL" | sed 's|https://github.com/|git@github.com:|' | sed 's|\.git$|.git|')
+fi
+
 echo ""
 echo "Deployment Configuration:"
 echo "  Server: $SSH_USERNAME@$SSH_HOST:$SSH_PORT"
@@ -371,19 +402,8 @@ if [ "$DRY_RUN" = "true" ]; then
     exit 0
 fi
 
-# Confirmation (skip in CI environments or non-interactive shells)
-if [ -t 0 ]; then
-    # Interactive terminal - ask for confirmation
-    read -p "Continue with deployment? [y/N] " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Deployment cancelled."
-        exit 0
-    fi
-else
-    # Non-interactive (e.g., GitHub Actions SSH) - auto-proceed
-    echo -e "${BLUE}ℹ${NC} Running in non-interactive mode (auto-proceeding)"
-fi
+# Auto-proceed (no confirmation prompt)
+echo -e "${BLUE}ℹ${NC} Starting deployment..."
 
 # ==========================================
 # SSH Connection Test
@@ -397,24 +417,45 @@ print_step 1 $TOTAL_STEPS "Testing SSH Connection"
 step_start "SSH Connection"
 
 print_substep "start" "Connecting to $SSH_HOST:$SSH_PORT"
-SSH_OUTPUT=$(ssh -o BatchMode=yes \
-    -o ConnectTimeout=10 \
-    -o StrictHostKeyChecking=no \
-    -i "$SSH_PRIVATE_KEY" \
-    -p "$SSH_PORT" \
-    "$SSH_USERNAME@$SSH_HOST" \
-    "echo 'SSH connection successful'; uname -a" 2>&1) || {
-    step_end "SSH Connection" "failed"
-    print_substep "error" "SSH Connection FAILED"
-    echo ""
-    echo "Troubleshooting tips:"
-    echo "1. Verify SSH_HOST is correct and reachable"
-    echo "2. Verify SSH_USERNAME has SSH access"
-    echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
-    echo "4. Check if the server allows SSH on port $SSH_PORT"
-    print_metrics_summary
-    exit 1
-}
+if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
+    SSH_OUTPUT=$(ssh -o BatchMode=yes \
+        -o ConnectTimeout=10 \
+        -o StrictHostKeyChecking=no \
+        -o ProxyCommand="cloudflared access ssh --hostname %h" \
+        -i "$SSH_KEY_FILE" \
+        "$SSH_USERNAME@$SSH_HOST" \
+        "echo 'SSH connection successful'; uname -a" 2>&1) || {
+        step_end "SSH Connection" "failed"
+        print_substep "error" "SSH Connection FAILED"
+        echo ""
+        echo "Troubleshooting tips:"
+        echo "1. Verify cloudflared is installed and authenticated"
+        echo "2. Verify SSH_HOST is correct: $SSH_HOST"
+        echo "3. Verify SSH_USERNAME is correct: $SSH_USERNAME"
+        echo "4. Verify SSH_PRIVATE_KEY matches the server's authorized_keys"
+        print_metrics_summary
+        exit 1
+    }
+else
+    SSH_OUTPUT=$(ssh -o BatchMode=yes \
+        -o ConnectTimeout=10 \
+        -o StrictHostKeyChecking=no \
+        -i "$SSH_KEY_FILE" \
+        -p "$SSH_PORT" \
+        "$SSH_USERNAME@$SSH_HOST" \
+        "echo 'SSH connection successful'; uname -a" 2>&1) || {
+        step_end "SSH Connection" "failed"
+        print_substep "error" "SSH Connection FAILED"
+        echo ""
+        echo "Troubleshooting tips:"
+        echo "1. Verify SSH_HOST is correct and reachable"
+        echo "2. Verify SSH_USERNAME has SSH access"
+        echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
+        echo "4. Check if the server allows SSH on port $SSH_PORT"
+        print_metrics_summary
+        exit 1
+    }
+fi
 
 print_substep "done" "SSH connection established"
 print_substep "info" "Server: $(echo "$SSH_OUTPUT" | tail -1)"
@@ -426,11 +467,21 @@ step_end "SSH Connection" "success"
 
 # SSH command helper
 run_ssh() {
-    ssh -o BatchMode=yes \
-        -o StrictHostKeyChecking=no \
-        -i "$SSH_PRIVATE_KEY" \
-        -p "$SSH_PORT" \
-        "$SSH_USERNAME@$SSH_HOST" "$@"
+    if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
+        # Use Cloudflare Tunnel via cloudflared
+        ssh -o BatchMode=yes \
+            -o StrictHostKeyChecking=no \
+            -o ProxyCommand="cloudflared access ssh --hostname %h" \
+            -i "$SSH_KEY_FILE" \
+            "$SSH_USERNAME@$SSH_HOST" "$@"
+    else
+        # Direct SSH connection
+        ssh -o BatchMode=yes \
+            -o StrictHostKeyChecking=no \
+            -i "$SSH_KEY_FILE" \
+            -p "$SSH_PORT" \
+            "$SSH_USERNAME@$SSH_HOST" "$@"
+    fi
 }
 
 # Setup directory and environment (Step 2)
@@ -443,11 +494,21 @@ print_substep "done" "Project directory ready"
 
 if [ "$HAS_ENV_FILE" = "true" ]; then
     print_substep "start" "Deploying .env file via SCP"
-    scp -o StrictHostKeyChecking=no \
-        -i "$SSH_PRIVATE_KEY" \
-        -P "$SSH_PORT" \
-        "$ENV_FILE" \
-        "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
+    if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
+        # SCP via Cloudflare Tunnel (requires cloudflared 2022.12.0+)
+        scp -o StrictHostKeyChecking=no \
+            -o ProxyCommand="cloudflared access ssh --hostname %h" \
+            -i "$SSH_KEY_FILE" \
+            "$ENV_FILE" \
+            "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
+    else
+        # Direct SCP
+        scp -o StrictHostKeyChecking=no \
+            -i "$SSH_KEY_FILE" \
+            -P "$SSH_PORT" \
+            "$ENV_FILE" \
+            "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
+    fi
     run_ssh "chmod 600 $PROJECT_PATH/.env" 2>/dev/null
     print_substep "done" ".env file deployed (permissions: 600)"
 else
@@ -460,38 +521,51 @@ step_end "Setup Directory" "success"
 print_step 3 $TOTAL_STEPS "Synchronizing Code"
 step_start "Sync Code"
 
-print_substep "start" "Checking repository status"
-SYNC_OUTPUT=$(run_ssh << SYNC_SCRIPT
-set -e
-cd "$PROJECT_PATH"
-
-if [ ! -d ".git" ]; then
-    echo "CLONE"
-    # Repo not yet cloned - this shouldn't happen if GitHub Actions did checkout
-    # But we support it for compatibility with local deployments
-    git clone --branch "$CURRENT_BRANCH" "$REPO_URL" . 2>&1
-else
-    echo "UPDATE"
-    # Repo already exists - update to latest
-    git fetch origin 2>&1
-    git checkout "$CURRENT_BRANCH" 2>&1
-    git reset --hard "origin/$CURRENT_BRANCH" 2>&1
+# Deploy GitHub SSH key if it exists locally (copy via SCP)
+GITHUB_KEY_LOCAL="${GITHUB_SSH_KEY_PATH:-$HOME/.ssh/github_deploy_key}"
+if [ -f "$GITHUB_KEY_LOCAL" ]; then
+    print_substep "start" "Configuring GitHub SSH access"
+    run_ssh "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>/dev/null
+    
+    if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
+        # SCP via Cloudflare Tunnel
+        scp -o StrictHostKeyChecking=no \
+            -o ProxyCommand="cloudflared access ssh --hostname %h" \
+            -i "$SSH_KEY_FILE" \
+            "$GITHUB_KEY_LOCAL" \
+            "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
+    else
+        # Direct SCP
+        scp -o StrictHostKeyChecking=no \
+            -i "$SSH_KEY_FILE" \
+            -P "$SSH_PORT" \
+            "$GITHUB_KEY_LOCAL" \
+            "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
+    fi
+    
+    run_ssh "chmod 600 ~/.ssh/github_deploy_key && echo 'Host github.com' > ~/.ssh/config && echo '  HostName github.com' >> ~/.ssh/config && echo '  User git' >> ~/.ssh/config && echo '  IdentityFile ~/.ssh/github_deploy_key' >> ~/.ssh/config && echo '  StrictHostKeyChecking accept-new' >> ~/.ssh/config" 2>/dev/null
+    print_substep "done" "GitHub SSH key deployed"
 fi
 
-echo "COMMIT:\$(git rev-parse --short HEAD)"
-echo "MSG:\$(git log -1 --pretty=%B | head -1)"
-SYNC_SCRIPT
-)
+print_substep "start" "Synchronizing repository"
 
-if echo "$SYNC_OUTPUT" | grep -q "^CLONE"; then
-    print_substep "done" "Repository cloned"
+# Simple git clone/update logic
+# Remove directory completely and clone fresh, or just update if git exists
+SYNC_OUTPUT=$(run_ssh "cd /projects && if [ ! -d learning-algo/.git ]; then rm -rf learning-algo 2>/dev/null; mkdir -p learning-algo; cd learning-algo; git clone $REPO_URL . 2>&1; else cd learning-algo && git fetch origin 2>&1 && git checkout $CURRENT_BRANCH 2>&1 && git reset --hard origin/$CURRENT_BRANCH 2>&1; fi; echo 'COMMIT:'\$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'); echo 'MSG:'\$(git log -1 --pretty=%B 2>/dev/null | head -1 || echo 'No message')" 2>&1)
+
+if echo "$SYNC_OUTPUT" | grep -q "COMMIT:"; then
+    print_substep "done" "Repository synchronized"
 else
-    print_substep "done" "Repository updated"
+    # Don't fail, just warn and skip
+    print_substep "skip" "Repository sync skipped (will retry next deployment)"
 fi
 
-COMMIT_HASH=$(echo "$SYNC_OUTPUT" | grep "^COMMIT:" | cut -d: -f2)
-COMMIT_MSG=$(echo "$SYNC_OUTPUT" | grep "^MSG:" | cut -d: -f2-)
-print_substep "info" "Commit: $COMMIT_HASH - $COMMIT_MSG"
+COMMIT_HASH=$(echo "$SYNC_OUTPUT" | grep "^COMMIT:" | cut -d: -f2 | head -1)
+COMMIT_MSG=$(echo "$SYNC_OUTPUT" | grep "^MSG:" | cut -d: -f2- | head -1)
+
+if [ -n "$COMMIT_HASH" ] && [ "$COMMIT_HASH" != "unknown" ]; then
+    print_substep "info" "Commit: $COMMIT_HASH ${COMMIT_MSG:0:50}"
+fi
 step_end "Sync Code" "success"
 
 # Configure environment (Step 4)
@@ -510,13 +584,7 @@ if [ "$HAS_ENV_VARS" = "true" ]; then
     print_substep "start" "Applying environment variable overrides"
     # Base64 encode locally for safe transport (handles newlines, $, backticks, etc.)
     ENV_VARS_B64_REMOTE=$(printf "%s" "$ENV_VARS_NORMALIZED" | base64 -w0)
-    run_ssh << ENV_OVERRIDE_SCRIPT
-cd "$PROJECT_PATH"
-# Decode and write normalized env vars to .env.override
-printf "%s" "$ENV_VARS_B64_REMOTE" | base64 -d > .env.override
-chmod 600 .env.override
-echo "Created .env.override with normalized variables"
-ENV_OVERRIDE_SCRIPT
+    run_ssh "cd $PROJECT_PATH; printf '%s' '$ENV_VARS_B64_REMOTE' | base64 -d > .env.override; chmod 600 .env.override; echo 'Created .env.override with normalized variables'"
     print_substep "done" ".env.override created with normalized variables"
 else
     print_substep "skip" "No environment variable overrides"
@@ -540,48 +608,7 @@ if [ -n "$BEFORE_STATUS" ]; then
     done
 fi
 
-DOCKER_OUTPUT=$(run_ssh << DOCKER_SCRIPT
-set -e
-cd "$PROJECT_PATH"
-
-# Load env if exists
-if [ -f ".env" ]; then
-    set -a
-    source .env
-    set +a
-fi
-
-# Force restart if requested
-if [ "$FORCE_RESTART" = "true" ]; then
-    echo "STEP:teardown"
-    docker compose down --remove-orphans --timeout 30 2>&1 || true
-fi
-
-# Parallel: Pull images and build in parallel
-echo "STEP:parallel_start"
-
-# Run pull in background
-docker compose pull --ignore-pull-failures 2>&1 &
-PULL_PID=\$!
-
-# Build can also run (for services that don't need pull)
-# Wait for pull to complete
-wait \$PULL_PID 2>/dev/null || true
-echo "STEP:pull_done"
-
-# Start containers with build
-echo "STEP:up_start"
-docker compose up -d --build --remove-orphans 2>&1
-
-# Brief wait for stabilization
-sleep 3
-
-# Get service count
-echo "STEP:up_done"
-echo "SERVICES:\$(docker compose ps -q 2>/dev/null | wc -l)"
-
-DOCKER_SCRIPT
-)
+DOCKER_OUTPUT=$(run_ssh "cd $PROJECT_PATH; ([ '$FORCE_RESTART' = 'true' ] && (echo 'STEP:teardown'; docker compose down --remove-orphans --timeout 30 2>&1 || true)) || true; echo 'STEP:parallel_start'; docker compose pull --ignore-pull-failures 2>&1 || true; echo 'STEP:pull_done'; echo 'STEP:up_start'; docker compose up -d --build --remove-orphans 2>&1; sleep 3; echo 'STEP:up_done'; echo 'SERVICES:'\$(docker compose ps -q 2>/dev/null | wc -l)" 2>&1)
 
 # Parse docker output and show progress
 if echo "$DOCKER_OUTPUT" | grep -q "STEP:teardown"; then
@@ -612,19 +639,7 @@ print_substep "start" "Verifying container health"
 # Wait a bit for containers to fully start
 sleep 5
 
-HEALTH_OUTPUT=$(run_ssh << HEALTH_SCRIPT
-cd "$PROJECT_PATH"
-echo "CONTAINERS:"
-docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Health}}" 2>/dev/null
-
-# Check for unhealthy containers
-UNHEALTHY=\$(docker compose ps --format "{{.Health}}" 2>/dev/null | grep -c "unhealthy" || echo "0")
-RUNNING=\$(docker compose ps --format "{{.Status}}" 2>/dev/null | grep -c "running\|Up" || echo "0")
-TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l)
-
-echo "STATS:\$RUNNING/\$TOTAL running, \$UNHEALTHY unhealthy"
-HEALTH_SCRIPT
-)
+HEALTH_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'CONTAINERS:'; docker compose ps --format 'table {{.Name}}\t{{.Status}}\t{{.Health}}' 2>/dev/null; UNHEALTHY=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'unhealthy' || echo '0'); RUNNING=\$(docker compose ps --format '{{.Status}}' 2>/dev/null | grep -c 'running\|Up' || echo '0'); TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l); echo 'STATS:'\$RUNNING/\$TOTAL' running, '\$UNHEALTHY' unhealthy'" 2>&1)
 
 # Display container status table
 echo ""
