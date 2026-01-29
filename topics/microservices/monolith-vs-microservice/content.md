@@ -1,1005 +1,832 @@
-# Monolith vs Microservices: Complete Comparison Guide
+# Monolith vs Microservices: Deep Architectural Analysis
 
 ## Overview
 
-This comprehensive guide compares monolithic and microservices architectures, examining the advantages and disadvantages of each. For every advantage, we explore what to be careful about, and for every disadvantage, we discuss mitigation strategies.
+The choice between monolithic and microservices architectures represents one of the most consequential decisions in software engineering. This document provides interview-ready depth on both architectures, examining internal mechanisms, organizational implications, and real-world trade-offs that interviewers probe to assess architectural maturity.
 
-**Tags:** Architecture, Comparison, Decision Making, Trade-offs
+**Tags:** Architecture, System Design, Trade-offs, Team Scaling, Deployment
 
 ---
 
-## Architecture Comparison
+## Fundamental Architectural Models
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ARCHITECTURE COMPARISON</h3>
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ARCHITECTURAL TOPOLOGY</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 24px; border: 2px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 16px 0; text-align: center; font-size: 1.1em;">MONOLITH</h4>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+        <div style="color: #8b949e; font-size: 0.85em; margin-bottom: 8px; text-align: center;">Single Process Boundary</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="background: #f85149; border-radius: 6px; padding: 10px; text-align: center; color: #fff; font-size: 0.85em;">Web Layer (Controllers, Filters)</div>
+          <div style="background: #da3633; border-radius: 6px; padding: 10px; text-align: center; color: #fff; font-size: 0.85em;">Business Logic (Services, Domain)</div>
+          <div style="background: #b62324; border-radius: 6px; padding: 10px; text-align: center; color: #fff; font-size: 0.85em;">Data Access (Repositories, ORM)</div>
+        </div>
+        <div style="text-align: center; color: #f85149; margin: 12px 0;">|</div>
+        <div style="background: rgba(248,81,73,0.3); border-radius: 6px; padding: 10px; text-align: center; color: #fecaca; font-size: 0.85em;">Shared Database</div>
+      </div>
+      <div style="color: #8b949e; font-size: 0.8em;">
+        <strong style="color: #f85149;">Memory Model:</strong> Shared heap, direct method calls, in-process transactions
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 24px; border: 2px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 16px 0; text-align: center; font-size: 1.1em;">MICROSERVICES</h4>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+        <div style="color: #8b949e; font-size: 0.85em; margin-bottom: 8px; text-align: center;">Isolated Process Boundaries</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <div style="text-align: center;">
+            <div style="background: #238636; border-radius: 6px; padding: 8px; color: #fff; font-size: 0.75em; margin-bottom: 4px;">User Svc</div>
+            <div style="color: #7ee787; font-size: 0.7em;">|</div>
+            <div style="background: rgba(35,134,54,0.5); border-radius: 4px; padding: 4px; color: #d1fae5; font-size: 0.7em;">DB</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="background: #238636; border-radius: 6px; padding: 8px; color: #fff; font-size: 0.75em; margin-bottom: 4px;">Order Svc</div>
+            <div style="color: #7ee787; font-size: 0.7em;">|</div>
+            <div style="background: rgba(35,134,54,0.5); border-radius: 4px; padding: 4px; color: #d1fae5; font-size: 0.7em;">DB</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="background: #238636; border-radius: 6px; padding: 8px; color: #fff; font-size: 0.75em; margin-bottom: 4px;">Inventory</div>
+            <div style="color: #7ee787; font-size: 0.7em;">|</div>
+            <div style="background: rgba(35,134,54,0.5); border-radius: 4px; padding: 4px; color: #d1fae5; font-size: 0.7em;">DB</div>
+          </div>
+        </div>
+        <div style="background: rgba(88,166,255,0.2); border-radius: 6px; padding: 8px; text-align: center; color: #58a6ff; font-size: 0.8em; margin-top: 12px;">Network (HTTP/gRPC/Events)</div>
+      </div>
+      <div style="color: #8b949e; font-size: 0.8em;">
+        <strong style="color: #7ee787;">Memory Model:</strong> Isolated heaps, network serialization, distributed transactions
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Section 1: Communication Mechanisms
+
+### Internal Mechanisms Deep Dive
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+  <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">MONOLITH: IN-PROCESS COMMUNICATION</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>Method Invocation Path:</strong> When Service A calls Service B within a monolith, the JVM (or equivalent runtime) performs a direct method invocation on the call stack. This involves:</p>
+    <ul style="margin: 12px 0; padding-left: 24px;">
+      <li><strong>Stack frame allocation</strong>: ~100-200 nanoseconds</li>
+      <li><strong>Parameter passing</strong>: By reference (no serialization)</li>
+      <li><strong>Return value</strong>: Direct memory reference</li>
+      <li><strong>Exception propagation</strong>: Native stack unwinding</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Critical Assumption:</strong> All modules share the same memory space, class loaders, and thread pools. A memory leak in one module affects the entire application.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
+  <h4 style="color: #9ece6a; margin: 0 0 16px 0;">MICROSERVICES: NETWORK COMMUNICATION</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>Request Path (Synchronous HTTP):</strong></p>
+    <ol style="margin: 12px 0; padding-left: 24px;">
+      <li><strong>Serialization</strong>: Object to JSON/Protobuf (~1-10ms depending on payload)</li>
+      <li><strong>Connection acquisition</strong>: From connection pool or TCP handshake (~1-50ms)</li>
+      <li><strong>Network transit</strong>: Same datacenter ~0.5ms, cross-region ~50-150ms</li>
+      <li><strong>Load balancer routing</strong>: Service discovery + routing (~1-5ms)</li>
+      <li><strong>Deserialization</strong>: JSON/Protobuf to object (~1-10ms)</li>
+      <li><strong>Response path</strong>: Reverse of above</li>
+    </ol>
+    <p style="margin-top: 12px;"><strong>Critical Assumption:</strong> The network is unreliable. Every call can fail, timeout, or return partial results. You must handle: connection refused, timeout, 5xx errors, network partitions, and message duplication.</p>
+  </div>
+</div>
+
+### Trade-off Analysis: Latency vs Isolation
+
+| Aspect | Monolith | Microservices |
+|--------|----------|---------------|
+| **Call latency** | ~100ns (method call) | ~1-100ms (network) |
+| **Failure modes** | Process crash, exception | Timeout, partial failure, network partition |
+| **Data consistency** | ACID transactions | [[Eventual consistency]](/topics/distributed-systems/eventual-consistency) |
+| **Debugging** | Stack trace | [[Distributed tracing]](/topics/observability/distributed-tracing) |
+| **Resource isolation** | None (shared memory) | Complete (separate processes) |
+
+<div style="background: linear-gradient(135deg, #2d1b36 0%, #3d2347 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
+  <h4 style="color: #bb9af7; margin: 0 0 12px 0;">DESIGN CHOICE HIGHLIGHT</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <strong>The Latency Tax:</strong> Converting a monolith to microservices introduces the "network tax" on every inter-service call. A request that previously touched 10 modules with 100ns each (1 microsecond total) now potentially adds 10-1000ms of latency. This is why service boundaries must align with business boundaries, not technical layers.
+  </div>
+</div>
+
+### Interview Questions: Communication Mechanisms
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: What are the fundamental differences in how monoliths and microservices communicate internally?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> Monoliths use in-process method calls with shared memory, enabling direct object references without serialization. Microservices communicate over the network using protocols like HTTP/REST, gRPC, or message queues, requiring serialization/deserialization and handling network failures.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: You have a microservice making 50 downstream calls to complete a single request. How do you handle this without latency explosion?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Parallel fanout</strong>: Execute independent calls concurrently using async patterns (CompletableFuture, goroutines, async/await)</li>
+      <li><strong>Connection pooling</strong>: Reuse HTTP connections to eliminate TCP handshake overhead</li>
+      <li><strong>Batching</strong>: Combine multiple requests into single batch API calls</li>
+      <li><strong>Caching</strong>: Cache frequently-accessed data with appropriate TTLs</li>
+      <li><strong>Circuit breaking</strong>: Fail fast on unhealthy dependencies to prevent cascade delays</li>
+      <li><strong>Consider service redesign</strong>: 50 calls may indicate wrong service boundaries - consider [[BFF pattern]](/topics/microservices/api-gateway) or aggregator services</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Service A calls Service B, which calls Service C. Service B's database commits, but the response to Service A is lost due to a network partition. How do you handle this?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> This is the "dual write" or "at-least-once with side effects" problem:</p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Idempotency keys</strong>: Service B must accept an idempotency key from A. On retry, B checks if operation already completed and returns cached result</li>
+      <li><strong>[[Outbox pattern]](/topics/microservices/outbox-pattern)</strong>: B writes to its database AND an outbox table in same transaction. A separate process reads outbox and publishes events</li>
+      <li><strong>[[Saga pattern]](/topics/microservices/saga-pattern)</strong>: If the overall operation fails, compensating transactions roll back B's committed state</li>
+      <li><strong>Client-side deduplication</strong>: A must track which operations succeeded (potentially via correlation IDs) to avoid duplicate business actions</li>
+      <li><strong>Acknowledge the trade-off</strong>: In distributed systems, you cannot have exactly-once semantics - only at-least-once with idempotent operations or at-most-once with potential data loss</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+## Section 2: Data Consistency Models
+
+### ACID vs BASE: The Fundamental Trade-off
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">CONSISTENCY MODEL COMPARISON</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 12px 0; text-align: center;">ACID (Monolith)</h4>
+      <div style="color: #8b949e; font-size: 0.9em;">
+        <p><strong style="color: #fecaca;">Atomicity:</strong> All or nothing - transaction fully commits or fully rolls back</p>
+        <p><strong style="color: #fecaca;">Consistency:</strong> Database moves from one valid state to another</p>
+        <p><strong style="color: #fecaca;">Isolation:</strong> Concurrent transactions don't interfere (via locking or MVCC)</p>
+        <p><strong style="color: #fecaca;">Durability:</strong> Committed data survives crashes</p>
+      </div>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: monospace; font-size: 0.8em; color: #8b949e;">
+        BEGIN TRANSACTION;<br/>
+        UPDATE accounts SET balance = balance - 100 WHERE id = 1;<br/>
+        UPDATE accounts SET balance = balance + 100 WHERE id = 2;<br/>
+        COMMIT; -- Both or neither
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0; text-align: center;">BASE (Microservices)</h4>
+      <div style="color: #8b949e; font-size: 0.9em;">
+        <p><strong style="color: #d1fae5;">Basically Available:</strong> System guarantees availability per CAP theorem</p>
+        <p><strong style="color: #d1fae5;">Soft state:</strong> State may change over time even without input</p>
+        <p><strong style="color: #d1fae5;">Eventually consistent:</strong> System will become consistent given enough time</p>
+      </div>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: monospace; font-size: 0.8em; color: #8b949e;">
+        // Service A: Debit<br/>
+        debitAccount(userId, 100); // Commits<br/>
+        publishEvent("MoneyDebited");<br/><br/>
+        // Service B: Credit (async)<br/>
+        onEvent("MoneyDebited") {<br/>
+        &nbsp;&nbsp;creditAccount(targetId, 100);<br/>
+        } // Eventually consistent
+      </div>
+    </div>
+  </div>
+</div>
+
+### Distributed Transaction Patterns
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
+  <h4 style="color: #f7768e; margin: 0 0 16px 0;">TWO-PHASE COMMIT (2PC) - WHY IT'S AVOIDED</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>How it works:</strong> Coordinator asks all participants to prepare, then asks all to commit.</p>
+    <p><strong>Why microservices avoid it:</strong></p>
+    <ul style="margin: 12px 0; padding-left: 24px;">
+      <li><strong>Blocking protocol</strong>: If coordinator fails after prepare, participants are locked waiting</li>
+      <li><strong>Latency</strong>: Requires 2 round-trips to all participants</li>
+      <li><strong>Availability</strong>: Any participant failure blocks entire transaction</li>
+      <li><strong>Heterogeneous systems</strong>: Not all databases/services support XA transactions</li>
+    </ul>
+    <p><strong>When it IS used:</strong> Within a single service boundary when multiple databases (rare) must be consistent.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
+  <h4 style="color: #9ece6a; margin: 0 0 16px 0;">SAGA PATTERN - THE MICROSERVICES ANSWER</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>Core Concept:</strong> A saga is a sequence of local transactions where each transaction publishes an event that triggers the next transaction. If a transaction fails, compensating transactions undo the preceding successful transactions.</p>
+    <p style="margin-top: 12px;"><strong>Orchestration vs Choreography:</strong></p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+        <strong style="color: #7aa2f7;">Orchestration</strong>
+        <p style="font-size: 0.85em; margin-top: 8px;">Central coordinator tells each participant what to do. Easier to understand, single point of failure, coupling to orchestrator.</p>
+      </div>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+        <strong style="color: #bb9af7;">Choreography</strong>
+        <p style="font-size: 0.85em; margin-top: 8px;">Each service listens for events and knows what to do. Decoupled, harder to trace, no single point of failure.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Interview Questions: Data Consistency
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Why can't microservices use traditional database transactions across services?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> Each microservice owns its database (database-per-service pattern). Traditional ACID transactions require a single transaction coordinator with locks across all participants. Across service boundaries: (1) different databases may not support distributed transactions, (2) holding locks across network calls creates availability issues, (3) 2PC is blocking and reduces availability per CAP theorem.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Design a saga for an e-commerce order that involves: (1) reserving inventory, (2) charging payment, (3) creating shipment. What are the compensating transactions?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; margin-top: 12px; font-size: 0.9em;">
+      <strong>Forward transactions:</strong><br/>
+      1. Order Service: Create order (PENDING)<br/>
+      2. Inventory Service: Reserve items -> emit InventoryReserved<br/>
+      3. Payment Service: Charge customer -> emit PaymentCompleted<br/>
+      4. Shipping Service: Create shipment -> emit ShipmentCreated<br/>
+      5. Order Service: Update order (CONFIRMED)<br/><br/>
+      <strong>Compensating transactions (if payment fails at step 3):</strong><br/>
+      - Inventory Service: Release reservation (compensates step 2)<br/>
+      - Order Service: Mark order CANCELLED (compensates step 1)<br/><br/>
+      <strong>Key insight:</strong> Compensating transactions are not always exact inverses. "Release reservation" is not "unreserve" - you can't undo time. If items were shown as unavailable to other users during reservation, that opportunity cost cannot be recovered.
+    </div>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: In the saga above, what happens if: (1) Payment succeeds and emits PaymentCompleted, (2) Shipping service receives event and creates shipment, (3) Shipping service crashes before persisting or acknowledging the event, (4) Event is redelivered, (5) Shipment is created again. How do you prevent duplicate shipments?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Idempotency at receiver</strong>: Shipping service must store processed event IDs. Before processing, check if eventId exists. Use database unique constraint on (orderId, eventType) or similar.</li>
+      <li><strong>Natural idempotency keys</strong>: Use orderId as shipment creation idempotency key. "Create shipment for order X" is naturally idempotent if order can only have one shipment.</li>
+      <li><strong>Exactly-once semantics via transactional outbox</strong>: Read event, process, write result, and mark event processed in SAME database transaction. If Shipping DB differs from message broker, use [[Change Data Capture]](/topics/microservices/cdc) from outbox table.</li>
+      <li><strong>Consumer acknowledgment</strong>: Only acknowledge/commit Kafka offset AFTER database transaction commits. If service crashes after DB commit but before ack, redelivery triggers idempotency check.</li>
+      <li><strong>Accept and handle duplicates</strong>: In some systems, it's cheaper to detect and handle duplicates downstream (e.g., warehouse system deduplicates by orderId) than to guarantee exactly-once processing.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+## Section 3: Team Scaling and Conway's Law
+
+### The Organizational Dimension
+
+<div style="background: linear-gradient(135deg, #2d1b36 0%, #3d2347 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
+  <h4 style="color: #bb9af7; margin: 0 0 12px 0;">CONWAY'S LAW IN PRACTICE</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><em>"Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations."</em> - Melvin Conway, 1967</p>
+    <p style="margin-top: 12px;"><strong>Implication:</strong> Your architecture will eventually mirror your org chart. If you have a frontend team, backend team, and database team, you will build a layered architecture. If you have product-aligned teams (User team, Order team, Payment team), you will naturally evolve toward services aligned with those boundaries.</p>
+    <p style="margin-top: 12px;"><strong>Inverse Conway Maneuver:</strong> Deliberately structure your organization to produce the desired architecture. Want microservices? Create small, autonomous teams owning specific business capabilities.</p>
+  </div>
+</div>
+
+### Team Topology Analysis
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">TEAM SIZE AND ARCHITECTURE FIT</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+    <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 12px 0; text-align: center;">Small Team (2-8)</h4>
+      <div style="color: #8b949e; font-size: 0.85em;">
+        <p><strong>Recommendation:</strong> Monolith</p>
+        <p style="margin-top: 8px;"><strong>Why:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>Communication overhead is low</li>
+          <li>Everyone understands full system</li>
+          <li>No need for service boundaries</li>
+          <li>Deploy complexity not justified</li>
+        </ul>
+        <p style="margin-top: 8px;"><strong>Risk:</strong> Premature microservices = death by complexity</p>
+      </div>
+    </div>
+    <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; border: 1px solid #8957e5;">
+      <h4 style="color: #8957e5; margin: 0 0 12px 0; text-align: center;">Medium Team (8-40)</h4>
+      <div style="color: #8b949e; font-size: 0.85em;">
+        <p><strong>Recommendation:</strong> Modular Monolith or Selective Extraction</p>
+        <p style="margin-top: 8px;"><strong>Why:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>Communication overhead increasing</li>
+          <li>Sub-teams forming naturally</li>
+          <li>Merge conflicts becoming pain</li>
+          <li>Build times increasing</li>
+        </ul>
+        <p style="margin-top: 8px;"><strong>Action:</strong> Identify and extract high-churn or scaling-constrained modules</p>
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0; text-align: center;">Large Team (40+)</h4>
+      <div style="color: #8b949e; font-size: 0.85em;">
+        <p><strong>Recommendation:</strong> Microservices (domain-driven)</p>
+        <p style="margin-top: 8px;"><strong>Why:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>Teams need autonomy</li>
+          <li>Monolith becomes bottleneck</li>
+          <li>Different scaling needs</li>
+          <li>Can afford infra investment</li>
+        </ul>
+        <p style="margin-top: 8px;"><strong>Requirement:</strong> Strong platform team, DevOps maturity</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Cognitive Load and Service Ownership
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+  <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">THE TWO-PIZZA TEAM PRINCIPLE</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>Amazon's heuristic:</strong> A service should be owned by a team that can be fed with two pizzas (~6-8 people).</p>
+    <p style="margin-top: 12px;"><strong>Cognitive load implications:</strong></p>
+    <ul style="margin: 12px 0; padding-left: 24px;">
+      <li><strong>Intrinsic load</strong>: The inherent complexity of the domain (irreducible)</li>
+      <li><strong>Extraneous load</strong>: Complexity from tooling, processes, poor design (reducible)</li>
+      <li><strong>Germane load</strong>: Learning and skill development (valuable)</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Design Goal:</strong> Each team should be able to hold their service's complete mental model. If a team cannot understand their service fully, it's either too big or has too many dependencies.</p>
+  </div>
+</div>
+
+### Interview Questions: Team Scaling
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: How does team size influence the choice between monolith and microservices?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> Small teams (under 10) benefit from monolith simplicity - low coordination overhead, shared context, fast iteration. As teams grow, communication paths grow exponentially (n*(n-1)/2), making coordination costly. Microservices allow teams to work independently with clear API contracts, trading runtime complexity for organizational scalability. The transition point depends on domain complexity and DevOps maturity.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: You're at a company with 50 developers working on a monolith. Deployments take 4 hours and happen weekly. How would you approach decomposition?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Measure first</strong>: Identify what takes 4 hours - build time? Test time? Manual QA? Deployment pipeline?</li>
+      <li><strong>Address root causes</strong>: Parallel tests, better CI caching, containerized builds might reduce time without decomposition</li>
+      <li><strong>Identify extraction candidates</strong>: (1) High-change-frequency modules causing merge conflicts, (2) Modules with different scaling needs, (3) Modules with different release cadences</li>
+      <li><strong>Apply [[Strangler Fig Pattern]](/topics/microservices/strangler-pattern)</strong>: Extract incrementally, route traffic gradually, maintain feature parity</li>
+      <li><strong>Enforce modular boundaries first</strong>: Before extraction, ensure clear interfaces. If modules are tangled, extracting creates distributed monolith</li>
+      <li><strong>Platform investment</strong>: Build/adopt internal platform for deployment, observability, service discovery BEFORE teams need it</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: After splitting into microservices, teams report that changes frequently require coordinated deployments across 3-4 services. Releases now take longer than with the monolith. What went wrong?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> This is the "distributed monolith" anti-pattern. Likely causes:</p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Wrong service boundaries</strong>: Services were split along technical layers (UI, Business, Data) instead of business capabilities. Changes to a feature touch all layers.</li>
+      <li><strong>Shared database</strong>: Multiple services access same tables. Schema changes require coordination.</li>
+      <li><strong>Tight coupling via synchronous calls</strong>: Service A calls B calls C in chain. All must be deployed together for interface changes.</li>
+      <li><strong>Shared libraries with domain logic</strong>: Common library contains business rules. Updates require all consumers to redeploy.</li>
+      <li><strong>Fix: Apply [[Domain-Driven Design]](/topics/system-design/domain-driven-design)</strong>: Identify bounded contexts. Each service should encapsulate a business capability end-to-end.</li>
+      <li><strong>Fix: Event-driven decoupling</strong>: Replace synchronous chains with async events. Services publish facts, consumers decide what to do.</li>
+      <li><strong>Fix: Consumer-driven contracts</strong>: Services commit to backward-compatible APIs. Breaking changes use versioning and deprecation cycles.</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+## Section 4: Deployment and Operational Complexity
+
+### Deployment Topology
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DEPLOYMENT INFRASTRUCTURE REQUIREMENTS</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 16px 0; text-align: center;">Monolith Deployment</h4>
+      <div style="color: #8b949e; font-size: 0.9em;">
+        <p><strong>Infrastructure:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>1-N application servers</li>
+          <li>1 load balancer</li>
+          <li>1 database (possibly with replicas)</li>
+          <li>1 CI/CD pipeline</li>
+        </ul>
+        <p style="margin-top: 12px;"><strong>Deployment strategies:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>Rolling deployment</li>
+          <li>Blue-green</li>
+          <li>Canary (with sticky sessions or feature flags)</li>
+        </ul>
+        <p style="margin-top: 12px;"><strong>Estimated DevOps effort:</strong> 1-2 engineers can manage</p>
+      </div>
+    </div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 16px 0; text-align: center;">Microservices Deployment</h4>
+      <div style="color: #8b949e; font-size: 0.9em;">
+        <p><strong>Infrastructure:</strong></p>
+        <ul style="padding-left: 16px; margin: 8px 0;">
+          <li>Container orchestration (Kubernetes)</li>
+          <li>Service mesh (Istio/Linkerd)</li>
+          <li>[[API Gateway]](/topics/microservices/api-gateway)</li>
+          <li>Service discovery</li>
+          <li>N databases</li>
+          <li>Message broker</li>
+          <li>Distributed tracing</li>
+          <li>Centralized logging</li>
+          <li>N CI/CD pipelines</li>
+        </ul>
+        <p style="margin-top: 12px;"><strong>Estimated DevOps effort:</strong> Dedicated platform team (3-10 engineers)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Operational Complexity Comparison
+
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
+  <h4 style="color: #f7768e; margin: 0 0 16px 0;">THE HIDDEN COST OF MICROSERVICES</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+      <tr style="border-bottom: 1px solid #30363d;">
+        <th style="text-align: left; padding: 8px; color: #7aa2f7;">Concern</th>
+        <th style="text-align: left; padding: 8px; color: #f85149;">Monolith</th>
+        <th style="text-align: left; padding: 8px; color: #7ee787;">Microservices</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #30363d;">
+        <td style="padding: 8px;">Debugging</td>
+        <td style="padding: 8px;">Stack trace, breakpoints</td>
+        <td style="padding: 8px;">Distributed tracing, correlation IDs</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #30363d;">
+        <td style="padding: 8px;">Root cause analysis</td>
+        <td style="padding: 8px;">Single log file</td>
+        <td style="padding: 8px;">Log aggregation, trace assembly</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #30363d;">
+        <td style="padding: 8px;">Deployment</td>
+        <td style="padding: 8px;">Deploy one artifact</td>
+        <td style="padding: 8px;">Orchestrate N artifacts, manage versions</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #30363d;">
+        <td style="padding: 8px;">Security</td>
+        <td style="padding: 8px;">Perimeter security</td>
+        <td style="padding: 8px;">[[Zero-trust]](/topics/security/zero-trust), mTLS, service-to-service auth</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #30363d;">
+        <td style="padding: 8px;">Config management</td>
+        <td style="padding: 8px;">Application config file</td>
+        <td style="padding: 8px;">Config server, secrets management per service</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px;">Disaster recovery</td>
+        <td style="padding: 8px;">Restore one database, restart app</td>
+        <td style="padding: 8px;">Restore N databases, maintain consistency</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+### Interview Questions: Deployment Complexity
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: What operational capabilities are required before adopting microservices that aren't needed for a monolith?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Service discovery</strong>: Services need to find each other dynamically</li>
+      <li><strong>Distributed tracing</strong>: Follow requests across service boundaries</li>
+      <li><strong>Centralized logging</strong>: Aggregate logs from all services</li>
+      <li><strong>Health checking</strong>: Monitor each service independently</li>
+      <li><strong>Circuit breaking</strong>: Handle service failures gracefully</li>
+      <li><strong>Config management</strong>: Manage configuration across many services</li>
+      <li><strong>Secrets management</strong>: Distribute credentials securely</li>
+      <li><strong>Container orchestration</strong>: Schedule and manage containers</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: How do you implement a safe deployment strategy for a critical payment service that processes 10,000 TPS?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Canary deployment</strong>: Route 1% of traffic to new version first</li>
+      <li><strong>Automated rollback triggers</strong>: Define SLOs (latency p99 < 100ms, error rate < 0.1%). If breached, automatic rollback</li>
+      <li><strong>Feature flags</strong>: Deploy code disabled, enable incrementally per-customer or percentage</li>
+      <li><strong>Database compatibility</strong>: Use expand-contract pattern. New code handles old AND new schema. After full rollout, remove old schema support</li>
+      <li><strong>Shadow traffic</strong>: Send copy of production traffic to new version, compare results without affecting users</li>
+      <li><strong>Progressive rollout</strong>: 1% -> 5% -> 25% -> 50% -> 100% with monitoring between each step</li>
+      <li><strong>Circuit breaker ready</strong>: Other services calling payment should handle degraded mode</li>
+    </ul>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Your microservices system has a cascading failure. Service A's latency increases from 50ms to 5s. Within 2 minutes, Services B, C, D, E are all failing. Post-mortem: what happened and how do you prevent it?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <p><strong>Root cause analysis:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li>Service A became slow (DB issue, GC pause, resource exhaustion)</li>
+      <li>Service B calls A synchronously, threads blocked waiting</li>
+      <li>B's thread pool exhausted, B stops responding</li>
+      <li>C calls B, same cascade</li>
+      <li>Eventually request queues fill up, memory exhaustion, OOMKill</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Prevention measures:</strong></p>
+    <ul style="padding-left: 20px;">
+      <li><strong>Timeouts</strong>: Every outgoing call MUST have timeout. If A normally responds in 50ms, set timeout to 200ms (not 30s defaults)</li>
+      <li><strong>[[Circuit breakers]](/topics/microservices/circuit-breaker)</strong>: After X failures to A, stop calling A. Return fallback or error immediately. Try A again periodically</li>
+      <li><strong>Bulkheads</strong>: Isolate thread pools per dependency. A's slowness only exhausts A's dedicated pool, not shared threads</li>
+      <li><strong>Async communication</strong>: Where possible, use message queues. Decouple producer from consumer's availability</li>
+      <li><strong>Backpressure</strong>: Services must reject requests when overloaded (return 429/503) rather than queue unboundedly</li>
+      <li><strong>Graceful degradation</strong>: Design features to work with partial data. If recommendation service is down, show popular items instead</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+## Section 5: When to Choose Each Architecture
+
+### Decision Framework
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ARCHITECTURE DECISION MATRIX</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-    <!-- Monolith -->
-    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">MONOLITH</h4>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
-        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
-          <div style="background: rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; text-align: center; color: #fff; font-size: 0.85em;">User Module</div>
-          <div style="background: rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; text-align: center; color: #fff; font-size: 0.85em;">Order Module</div>
-          <div style="background: rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; text-align: center; color: #fff; font-size: 0.85em;">Payment Module</div>
-          <div style="background: rgba(255,255,255,0.15); border-radius: 4px; padding: 8px; text-align: center; color: #fff; font-size: 0.85em;">Shipping Module</div>
-        </div>
-        <div style="text-align: center; color: #fff;">↓</div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 10px; text-align: center; color: #fff; margin-top: 8px;">Single Database</div>
-      </div>
-    </div>
-    <!-- Microservices -->
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">MICROSERVICES</h4>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-        <div style="text-align: center;">
-          <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 10px; color: #fff; font-size: 0.85em; margin-bottom: 8px;">User Svc</div>
-          <div style="color: #fff;">↓</div>
-          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 6px; color: #d1fae5; font-size: 0.8em; margin-top: 4px;">DB</div>
-        </div>
-        <div style="text-align: center;">
-          <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 10px; color: #fff; font-size: 0.85em; margin-bottom: 8px;">Order Svc</div>
-          <div style="color: #fff;">↓</div>
-          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 6px; color: #d1fae5; font-size: 0.8em; margin-top: 4px;">DB</div>
-        </div>
-        <div style="text-align: center;">
-          <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 10px; color: #fff; font-size: 0.85em; margin-bottom: 8px;">Notif Svc</div>
-          <div style="color: #fff;">↓</div>
-          <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 6px; color: #d1fae5; font-size: 0.8em; margin-top: 4px;">DB</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Comparison points -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(248,81,73,0.15); border-radius: 8px; padding: 12px;">
-      <ul style="color: #f85149; margin: 0; padding-left: 20px; font-size: 0.9em;">
-        <li>Single deployable unit</li>
-        <li>Shared database</li>
-        <li>In-process communication</li>
-        <li>Simple deployment</li>
+    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 24px;">
+      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">Choose MONOLITH When</h4>
+      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.95em; line-height: 1.8;">
+        <li><strong>Team size:</strong> Under 20 developers</li>
+        <li><strong>Domain:</strong> Still discovering, boundaries unclear</li>
+        <li><strong>Consistency:</strong> Strong ACID transactions required</li>
+        <li><strong>DevOps maturity:</strong> Limited or no platform team</li>
+        <li><strong>Time to market:</strong> Critical to launch fast</li>
+        <li><strong>Budget:</strong> Cannot afford infrastructure investment</li>
+        <li><strong>Scale:</strong> Predictable, vertical scaling sufficient</li>
+        <li><strong>Change rate:</strong> Stable domain, infrequent releases acceptable</li>
       </ul>
     </div>
-    <div style="background: rgba(126,231,135,0.15); border-radius: 8px; padding: 12px;">
-      <ul style="color: #7ee787; margin: 0; padding-left: 20px; font-size: 0.9em;">
-        <li>Multiple independent services</li>
-        <li>Database per service</li>
-        <li>Network communication</li>
-        <li>Complex orchestration</li>
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 24px;">
+      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">Choose MICROSERVICES When</h4>
+      <ul style="color: #d1fae5; margin: 0; padding-left: 20px; font-size: 0.95em; line-height: 1.8;">
+        <li><strong>Team size:</strong> Multiple autonomous teams (30+)</li>
+        <li><strong>Domain:</strong> Well-understood, clear bounded contexts</li>
+        <li><strong>Consistency:</strong> Eventual consistency acceptable</li>
+        <li><strong>DevOps maturity:</strong> Strong platform team exists</li>
+        <li><strong>Time to market:</strong> Long-term velocity over short-term speed</li>
+        <li><strong>Budget:</strong> Can invest in infrastructure</li>
+        <li><strong>Scale:</strong> Components need independent scaling</li>
+        <li><strong>Change rate:</strong> Frequent releases, team autonomy valued</li>
       </ul>
     </div>
   </div>
-</div>
-
----
-
-## Monolith Advantages (with Caveats)
-
-### 1. Simpler Development & Debugging
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: SIMPLER DEVELOPMENT</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Single codebase to understand</li>
-      <li>Easy to debug with standard tools</li>
-      <li>No network complexity</li>
-      <li>Simple local development setup</li>
-      <li>IDE navigation across entire application</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. CODE ORGANIZATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Use clear module boundaries</li>
-          <li>Enforce architectural layers</li>
-          <li>Avoid circular dependencies</li>
-          <li>Use package-private visibility</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. TEAM COORDINATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Define code ownership (CODEOWNERS)</li>
-          <li>Use feature flags</li>
-          <li>Establish code review processes</li>
-          <li>Create shared coding standards</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. TESTING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Don't skip integration tests</li>
-          <li>Maintain test isolation</li>
-          <li>Use test databases/containers</li>
-        </ul>
-      </div>
+  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 24px;">
+    <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">THE MODULAR MONOLITH: Best of Both Worlds</h4>
+    <div style="color: #ede9fe; font-size: 0.95em; line-height: 1.7;">
+      <p><strong>Structure code as microservices, deploy as monolith:</strong></p>
+      <ul style="margin: 12px 0; padding-left: 20px;">
+        <li>Clear module boundaries enforced via package visibility</li>
+        <li>Inter-module communication via interfaces (not direct class access)</li>
+        <li>Separate database schemas per module (same database instance)</li>
+        <li>No shared mutable state between modules</li>
+        <li>When ready, extract module to service by replacing interface with network call</li>
+      </ul>
+      <p><strong>Key advantage:</strong> Pay complexity cost incrementally. Prove boundaries work before paying network/distribution price.</p>
     </div>
   </div>
 </div>
 
-### 2. ACID Transactions
+### Real-World Evolution Patterns
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: EASY ACID TRANSACTIONS</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Single database = simple transactions</li>
-      <li>Automatic rollback on failure</li>
-      <li>Strong consistency guarantees</li>
-      <li>No distributed transaction complexity</li>
-    </ul>
-  </div>
-  <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; margin-bottom: 20px; font-family: monospace; font-size: 0.85em;">
-    <div style="color: #8957e5; margin-bottom: 4px;">@Transactional</div>
-    <div style="color: #58a6ff;">public void createOrder(Order order) {</div>
-    <div style="color: #8b949e; padding-left: 20px;">userRepository.updateBalance(order.getUserId(), amount);</div>
-    <div style="color: #8b949e; padding-left: 20px;">orderRepository.save(order);</div>
-    <div style="color: #8b949e; padding-left: 20px;">inventoryRepository.decreaseStock(order.getItems());</div>
-    <div style="color: #7ee787; padding-left: 20px;">// All or nothing!</div>
-    <div style="color: #58a6ff;">}</div>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. TRANSACTION SCOPE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Keep transactions short</li>
-          <li>Don't hold DB locks while calling external APIs</li>
-          <li>Avoid long-running transactions</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. DEADLOCKS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Consistent ordering of table access</li>
-          <li>Use optimistic locking where possible</li>
-          <li>Monitor for deadlock patterns</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. DATABASE BOTTLENECKS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Large transactions can lock tables</li>
-          <li>Consider read replicas</li>
-          <li>Profile and optimize queries</li>
-        </ul>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+  <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">TYPICAL COMPANY EVOLUTION</h4>
+  <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
+    <p><strong>Stage 1 - Startup (1-10 engineers):</strong> Monolith. Fast iteration, product-market fit.</p>
+    <p><strong>Stage 2 - Growth (10-50 engineers):</strong> Modular monolith. Clear boundaries, some pain points.</p>
+    <p><strong>Stage 3 - Scale (50-200 engineers):</strong> Selective extraction. High-traffic or high-change modules become services.</p>
+    <p><strong>Stage 4 - Enterprise (200+ engineers):</strong> Full microservices. Platform team, service mesh, mature DevOps.</p>
+    <p style="margin-top: 16px;"><strong>Anti-pattern:</strong> Starting with microservices at Stage 1. Premature optimization. You'll build the wrong boundaries because you don't understand the domain yet.</p>
+    <p style="margin-top: 12px;"><strong>Evidence:</strong> Amazon, Netflix, Uber all started as monoliths and decomposed as they scaled. They had the luxury of learning their domains first.</p>
   </div>
 </div>
 
-### 3. Lower Operational Overhead
+### Interview Questions: Architecture Decision
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: LOWER OPERATIONAL OVERHEAD</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Single application to deploy</li>
-      <li>One set of logs to monitor</li>
-      <li>Simpler infrastructure</li>
-      <li>Lower hosting costs</li>
-      <li>Fewer moving parts = fewer failure points</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. DON'T SKIP OBSERVABILITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Still need proper logging</li>
-          <li>Implement health checks</li>
-          <li>Track key metrics</li>
-          <li>Set up alerting</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. DEPLOYMENT PIPELINE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Automate builds and deployments</li>
-          <li>Blue-green or rolling deployments</li>
-          <li>Have rollback procedures</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. RESOURCE PLANNING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Monitor resource usage trends</li>
-          <li>Plan for vertical scaling limits</li>
-          <li>Have horizontal scaling strategy ready</li>
-        </ul>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Under what circumstances would you recommend starting a new project as microservices rather than a monolith?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> Rarely. Starting with microservices is justified only when: (1) Domain is extremely well understood from previous projects, (2) Team has extensive microservices experience, (3) Strong DevOps/platform capabilities already exist, (4) Specific services have dramatically different scaling or security requirements from day one. Otherwise, start with a well-structured monolith and extract when pain points emerge.</p>
   </div>
 </div>
 
-### 4. Easy Refactoring
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: EASIER REFACTORING</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>IDE refactoring tools work across entire codebase</li>
-      <li>Rename/move classes easily</li>
-      <li>Compiler catches breaking changes</li>
-      <li>No API versioning concerns</li>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: You're rebuilding a legacy system. The old monolith is 500K lines, 15 years old, multiple technologies. Do you rewrite as microservices?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Never big-bang rewrite</strong>: History is littered with failed "rewrite everything" projects (Netscape 6.0 syndrome)</li>
+      <li><strong>Apply [[Strangler Fig Pattern]](/topics/microservices/strangler-pattern)</strong>:
+        <ul style="margin-top: 8px; padding-left: 20px;">
+          <li>Place proxy/[[API Gateway]](/topics/microservices/api-gateway) in front of legacy</li>
+          <li>Identify one well-bounded capability to extract first</li>
+          <li>Build new service, route subset of traffic</li>
+          <li>Gradually migrate functionality</li>
+          <li>Legacy shrinks organically</li>
+        </ul>
+      </li>
+      <li><strong>Event interception</strong>: Capture events from legacy system (CDC on database), process in new services</li>
+      <li><strong>Anti-corruption layer</strong>: New services communicate with legacy via explicit translation layer, not direct calls</li>
+      <li><strong>Measure success</strong>: New features faster to develop, incidents decrease, deployment frequency increases</li>
     </ul>
   </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. DATABASE MIGRATIONS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Schema changes affect entire application</li>
-          <li>Test migrations thoroughly</li>
-          <li>Have rollback scripts ready</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. SHARED STATE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Refactoring can break unexpected dependencies</li>
-          <li>Global state makes refactoring risky</li>
-          <li>Use dependency injection</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. TEST COVERAGE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Maintain high test coverage before refactoring</li>
-          <li>Refactoring without tests is dangerous</li>
-        </ul>
-      </div>
-    </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Your company adopted microservices 2 years ago. You now have 150 services owned by 40 engineers. Developers complain they spend more time on infrastructure than features. On-call is brutal - 5+ incidents per day. What went wrong and how do you fix it?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <p><strong>Diagnosis - Too many services per engineer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li>150 services / 40 engineers = ~4 services per engineer</li>
+      <li>Rule of thumb: One team should own 2-5 services. 40 engineers = ~6-8 teams = 12-40 services appropriate</li>
+      <li>Service sprawl likely from: nano-services, services for every database table, services by technical layer</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Fix strategies:</strong></p>
+    <ul style="padding-left: 20px;">
+      <li><strong>Service consolidation</strong>: Merge highly coupled services that always deploy together</li>
+      <li><strong>Platform investment</strong>: Abstract common concerns (logging, tracing, deployment) into platform. Developers should focus on business logic</li>
+      <li><strong>Service classification</strong>: Tier services by criticality. Tier-1 gets 24/7 on-call, Tier-3 can wait until morning</li>
+      <li><strong>Runbook automation</strong>: If the same incident response happens repeatedly, automate it</li>
+      <li><strong>Architecture review board</strong>: New services require justification. Default is "can this be part of an existing service?"</li>
+      <li><strong>Measure cognitive load</strong>: Survey developers. If >50% of time is infrastructure, platform is underinvested</li>
+    </ul>
   </div>
 </div>
 
 ---
 
-## Monolith Disadvantages (with Mitigation Strategies)
+## Section 6: Migration Strategies
 
-### 1. Limited Scalability
+### Monolith to Microservices
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: LIMITED SCALABILITY</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Must scale entire application together</li>
-      <li>CPU-intensive and memory-intensive modules compete</li>
-      <li>Cannot optimize for different workload patterns</li>
-      <li>Expensive to scale (more resources than needed)</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.2); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center; font-size: 0.9em; color: #fecaca;">
-    <strong>Example:</strong> Search module needs 10x resources during sale, but we must scale entire app, including rarely-used admin modules
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. MODULAR MONOLITH</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Structure code as if microservices</li>
-          <li>Clear interfaces between modules</li>
-          <li>Prepare for future extraction</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. HORIZONTAL SCALING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Multiple instances + load balancer</li>
-          <li>Make application stateless</li>
-          <li>External session store (Redis)</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. CACHING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Cache expensive computations</li>
-          <li>Use CDN for static content</li>
-          <li>Implement query caching</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. DATABASE OPTIMIZATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Read replicas for read-heavy workloads</li>
-          <li>Connection pooling</li>
-          <li>Proper indexing</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. ASYNC PROCESSING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Move heavy work to background jobs</li>
-          <li>Use message queues</li>
-          <li>Eventual consistency where appropriate</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 2. Slow Deployment Cycles
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: SLOW DEPLOYMENT CYCLES</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Small change requires full application deployment</li>
-      <li>Long build times</li>
-      <li>All-or-nothing deployments</li>
-      <li>Higher risk per deployment</li>
-      <li>Teams blocked by deployment queue</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. FEATURE FLAGS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Deploy code without enabling features</li>
-          <li>Gradual rollout</li>
-          <li>Quick rollback without deployment</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. CI/CD OPTIMIZATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Parallel test execution</li>
-          <li>Incremental builds</li>
-          <li>Caching of dependencies</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. BLUE-GREEN DEPLOYMENTS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Two identical environments</li>
-          <li>Instant switch between versions</li>
-          <li>Quick rollback</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. CANARY RELEASES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Deploy to small percentage first</li>
-          <li>Monitor for issues</li>
-          <li>Gradually increase traffic</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. TRUNK-BASED DEVELOPMENT</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Small, frequent commits</li>
-          <li>Short-lived branches</li>
-          <li>Continuous integration</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 3. Technology Lock-in
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: TECHNOLOGY LOCK-IN</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Entire app uses same language/framework</li>
-      <li>Cannot use best tool for each job</li>
-      <li>Framework upgrade affects entire codebase</li>
-      <li>Difficult to adopt new technologies</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. ABSTRACTION LAYERS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Abstract database access (Repository pattern)</li>
-          <li>Abstract external services</li>
-          <li>Use interfaces for major components</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. PLUGIN ARCHITECTURE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Extensible design for specific components</li>
-          <li>Allow different implementations</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. GRADUAL MIGRATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Plan incremental framework upgrades</li>
-          <li>Keep dependencies updated</li>
-          <li>Follow deprecation warnings</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. SIDECAR PATTERN</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Run specific functionality in separate process</li>
-          <li>E.g., ML model in Python sidecar</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 4. Single Point of Failure
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: SINGLE POINT OF FAILURE</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Bug in one module can crash entire application</li>
-      <li>Memory leak affects all functionality</li>
-      <li>No isolation between components</li>
-      <li>One bad deployment takes down everything</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. ROBUST ERROR HANDLING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Global exception handlers</li>
-          <li>Circuit breakers for external calls</li>
-          <li>Graceful degradation</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. MULTIPLE INSTANCES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Never run single instance</li>
-          <li>Load balancer health checks</li>
-          <li>Automatic instance replacement</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. PROCESS ISOLATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Run in containers with resource limits</li>
-          <li>Container restart on OOM</li>
-          <li>Separate critical paths</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. COMPREHENSIVE TESTING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>High test coverage</li>
-          <li>Load testing</li>
-          <li>Chaos engineering (carefully)</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. MONITORING & ALERTING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Real-time error tracking</li>
-          <li>Performance monitoring</li>
-          <li>Quick incident response</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
----
-
-## Microservices Advantages (with Caveats)
-
-### 1. Independent Scaling
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: INDEPENDENT SCALING</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Scale only what needs scaling</li>
-      <li>Optimize resources per service</li>
-      <li>Cost-effective scaling</li>
-      <li>Handle traffic spikes in specific services</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.2); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
-    <div style="color: #7ee787; font-weight: 600; margin-bottom: 8px;">Example:</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-      <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; color: #8b949e; font-size: 0.85em;"><strong style="color: #d1fae5;">Normal:</strong> Search(3), Order(2), User(2)</div>
-      <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; color: #8b949e; font-size: 0.85em;"><strong style="color: #7ee787;">Sale:</strong> Search(30), Order(20), User(2)</div>
-    </div>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. DOWNSTREAM DEPENDENCIES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Scaling may overload dependencies</li>
-          <li>Database can become bottleneck</li>
-          <li>Test full path, not just one service</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. COST MONITORING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Easy to over-provision</li>
-          <li>Multiple databases = multiple costs</li>
-          <li>Monitor and right-size regularly</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. AUTOSCALING CONFIG</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Wrong metrics can cause thrashing</li>
-          <li>Set appropriate min/max limits</li>
-          <li>Test autoscaling behavior</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 2. Technology Freedom
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: TECHNOLOGY FREEDOM</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Use best tool for each job</li>
-      <li>Teams can choose familiar technologies</li>
-      <li>Easy to experiment with new tech</li>
-      <li>Gradual migration of legacy code</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. OPERATIONAL COMPLEXITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Each technology requires expertise</li>
-          <li>Different deployment pipelines</li>
-          <li>Harder to share knowledge</li>
-          <li>Limit to 2-3 main stacks</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. HIRING & TRAINING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Need diverse skill sets</li>
-          <li>Higher training costs</li>
-          <li>Team mobility is harder</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. STANDARDIZATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Common logging format</li>
-          <li>Consistent error handling</li>
-          <li>API conventions</li>
-          <li>Security practices</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 3. Fault Isolation
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: FAULT ISOLATION</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Failure in one service doesn't crash others</li>
-      <li>Can gracefully degrade functionality</li>
-      <li>Easier to isolate and fix issues</li>
-      <li>Better user experience during partial outages</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. CASCADE FAILURES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>One slow service can block others</li>
-          <li>Thread pool exhaustion</li>
-          <li>Use timeouts, circuit breakers, bulkheads</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. PARTIAL FAILURES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Harder to reason about system state</li>
-          <li>Handle partial success scenarios</li>
-          <li>Idempotency, retry logic, saga pattern</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. MONITORING GAPS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Failure can go unnoticed</li>
-          <li>Silent degradation</li>
-          <li>Comprehensive monitoring, SLOs</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 4. Independent Deployments
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ADVANTAGE: INDEPENDENT DEPLOYMENTS</h3>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 12px 0;">WHY IT'S AN ADVANTAGE:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Teams can deploy without coordination</li>
-      <li>Faster time to market</li>
-      <li>Lower risk per deployment</li>
-      <li>Can deploy multiple times per day</li>
-    </ul>
-  </div>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 16px 0;">WHAT TO BE CAREFUL ABOUT:</h4>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. API COMPATIBILITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Breaking changes affect consumers</li>
-          <li>API versioning, contract testing</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. DATA COMPATIBILITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Event schema changes</li>
-          <li>Schema registry, backward compatibility</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. DEPENDENCY COORDINATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Some changes need coordinated deployment</li>
-          <li>Feature flags, expand-contract pattern</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. TESTING COMPLEXITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Test against other service versions</li>
-          <li>Consumer-driven contracts, staging envs</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
----
-
-## Microservices Disadvantages (with Mitigation Strategies)
-
-### 1. Distributed System Complexity
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: DISTRIBUTED SYSTEM COMPLEXITY</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Network failures</li>
-      <li>Latency</li>
-      <li>Data consistency</li>
-      <li>Distributed debugging</li>
-      <li>Complex failure modes</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. RESILIENCE PATTERNS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Circuit breakers (prevent cascade failures)</li>
-          <li>Retries with exponential backoff</li>
-          <li>Timeouts (don't wait forever)</li>
-          <li>Bulkheads (isolate failure domains)</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. OBSERVABILITY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Distributed tracing (Jaeger, Zipkin)</li>
-          <li>Centralized logging (ELK, Loki)</li>
-          <li>Metrics aggregation (Prometheus)</li>
-          <li>Correlation IDs across services</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. SERVICE MESH</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Handles retries, timeouts, mTLS</li>
-          <li>Istio, Linkerd, Consul Connect</li>
-          <li>Reduces code complexity</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. IDEMPOTENCY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.85em;">
-          <li>Design operations to be safely retried</li>
-          <li>Use idempotency keys</li>
-          <li>Handle duplicate messages</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 2. Data Consistency Challenges
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: DATA CONSISTENCY CHALLENGES</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>No cross-service transactions</li>
-      <li>Eventual consistency is hard to reason about</li>
-      <li>Data can be temporarily inconsistent</li>
-      <li>Queries across services are complex</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. SAGA PATTERN</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Orchestration: Central coordinator</li>
-          <li>Choreography: Event-driven</li>
-          <li>Compensating transactions for rollback</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. EVENT SOURCING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Store events, not just current state</li>
-          <li>Rebuild state from events</li>
-          <li>Natural audit trail</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. CQRS</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Separate read and write models</li>
-          <li>Optimized query stores</li>
-          <li>Materialized views for cross-service data</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. OUTBOX PATTERN</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Reliable event publishing</li>
-          <li>Database + message broker in one transaction</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. ACCEPT EVENTUAL CONSISTENCY</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Design UI for eventual consistency</li>
-          <li>Show "processing" states</li>
-          <li>Use optimistic UI updates</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 3. Operational Overhead
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: OPERATIONAL OVERHEAD</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Multiple services to deploy and monitor</li>
-      <li>Complex infrastructure</li>
-      <li>Higher hosting costs</li>
-      <li>Need specialized DevOps skills</li>
-      <li>Multiple databases to manage</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. PLATFORM ENGINEERING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Build internal developer platform</li>
-          <li>Standardize deployment templates</li>
-          <li>Self-service for teams</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. MANAGED SERVICES</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Cloud-managed databases</li>
-          <li>Managed Kubernetes (EKS, GKE, AKS)</li>
-          <li>Managed message brokers</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. INFRASTRUCTURE AS CODE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Terraform, Pulumi for infrastructure</li>
-          <li>Helm charts for Kubernetes</li>
-          <li>GitOps with ArgoCD/Flux</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. AUTOMATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Automated testing pipelines</li>
-          <li>Automated deployment</li>
-          <li>Automated scaling</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. START SMALL</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Don't start with 50 microservices</li>
-          <li>Extract services incrementally</li>
-          <li>Build operational maturity first</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-### 4. Testing Complexity
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DISADVANTAGE: TESTING COMPLEXITY</h3>
-  <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
-    <h4 style="color: #f85149; margin: 0 0 12px 0;">THE PROBLEM:</h4>
-    <ul style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>End-to-end tests require all services</li>
-      <li>Test data setup across services</li>
-      <li>Flaky tests due to network issues</li>
-      <li>Slow integration test suites</li>
-    </ul>
-  </div>
-  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #7ee787;">
-    <h4 style="color: #7ee787; margin: 0 0 16px 0;">HOW TO MANAGE:</h4>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">1. TEST PYRAMID</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Many unit tests (fast, isolated)</li>
-          <li>Fewer integration tests</li>
-          <li>Few end-to-end tests</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">2. CONTRACT TESTING</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Pact for consumer-driven contracts</li>
-          <li>Verify API compatibility</li>
-          <li>Test in isolation</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">3. SERVICE VIRTUALIZATION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Mock external dependencies</li>
-          <li>WireMock, Mountebank</li>
-          <li>Consistent test environments</li>
-        </ul>
-      </div>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">4. TESTING IN PRODUCTION</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Synthetic monitoring</li>
-          <li>Canary testing</li>
-          <li>Chaos engineering</li>
-        </ul>
-      </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">5. SHARED TEST INFRASTRUCTURE</div>
-        <ul style="color: #8b949e; margin: 0; padding-left: 16px; font-size: 0.8em;">
-          <li>Common test data factories</li>
-          <li>Shared test containers</li>
-          <li>Ephemeral test environments</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
----
-
-## Decision Matrix
-
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DECISION MATRIX</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
-    <!-- Monolith Column -->
-    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">Choose MONOLITH when:</h4>
-      <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
-        <li>Small team (&lt; 10)</li>
-        <li>Simple domain</li>
-        <li>Uncertain requirements</li>
-        <li>Quick time-to-market</li>
-        <li>Limited DevOps expertise</li>
-        <li>Tight budget</li>
-        <li>Strong consistency needed</li>
-        <li>New product exploration</li>
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">EXTRACTION DECISION CRITERIA</h3>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+    <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0; text-align: center; font-size: 0.95em;">GOOD EXTRACTION CANDIDATES</h4>
+      <ul style="color: #8b949e; font-size: 0.85em; padding-left: 16px; margin: 0;">
+        <li>High change frequency (constant merge conflicts)</li>
+        <li>Different scaling needs (10x more traffic)</li>
+        <li>Different team ownership</li>
+        <li>Clear domain boundary</li>
+        <li>Independent release cycle needed</li>
+        <li>Technology mismatch (need Python for ML)</li>
+        <li>Compliance isolation required</li>
       </ul>
     </div>
-    <!-- Microservices Column -->
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 16px 0; text-align: center;">Choose MICROSERVICES when:</h4>
-      <ul style="color: #d1fae5; margin: 0; padding-left: 20px; font-size: 0.9em;">
-        <li>Large team with multiple squads</li>
-        <li>Complex domain with clear boundaries</li>
-        <li>Well-understood domain</li>
-        <li>Long-term maintainability focus</li>
-        <li>Strong DevOps/Platform team</li>
-        <li>Budget for infrastructure</li>
-        <li>Eventual consistency acceptable</li>
-        <li>Proven product scaling up</li>
+    <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 12px 0; text-align: center; font-size: 0.95em;">POOR EXTRACTION CANDIDATES</h4>
+      <ul style="color: #8b949e; font-size: 0.85em; padding-left: 16px; margin: 0;">
+        <li>Tightly coupled to other modules</li>
+        <li>Shared database with complex joins</li>
+        <li>Requires distributed transactions</li>
+        <li>Low change frequency (stable)</li>
+        <li>Same team owns related modules</li>
+        <li>Performance-critical hot path</li>
+        <li>"Because microservices are cool"</li>
+      </ul>
+    </div>
+    <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px; border: 1px solid #8957e5;">
+      <h4 style="color: #8957e5; margin: 0 0 12px 0; text-align: center; font-size: 0.95em;">PRE-EXTRACTION CHECKLIST</h4>
+      <ul style="color: #8b949e; font-size: 0.85em; padding-left: 16px; margin: 0;">
+        <li>Clear interface already exists</li>
+        <li>Database access isolated to module</li>
+        <li>No circular dependencies</li>
+        <li>Monitoring/alerting in place</li>
+        <li>Team has on-call capability</li>
+        <li>CI/CD pipeline ready</li>
+        <li>Rollback strategy defined</li>
       </ul>
     </div>
   </div>
-  <!-- Hybrid Approach -->
-  <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
-    <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">HYBRID APPROACH: MODULAR MONOLITH</h4>
-    <ul style="color: #ede9fe; margin: 0; padding-left: 20px; font-size: 0.9em;">
-      <li>Start with monolith, structured as if it were microservices</li>
-      <li>Clear module boundaries</li>
-      <li>In-process communication via interfaces</li>
-      <li>Prepare for extraction but don't pay the price yet</li>
+</div>
+
+### Interview Questions: Migration
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: What is the Strangler Fig pattern and why is it preferred for monolith decomposition?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong> Named after strangler figs that grow around host trees, gradually replacing them. In software: place a facade/proxy in front of monolith, incrementally route requests to new services, gradually "strangle" the legacy system. Preferred because: (1) Delivers value incrementally, (2) Allows rollback at any point, (3) No big-bang risk, (4) Legacy continues working during transition, (5) Team learns microservices incrementally.</p>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: You're extracting the "notification" module from a monolith. It currently shares the users table with the main application. How do you handle the data?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Option 1 - Shared database (transitional)</strong>: Notification service reads from users table. Violates database-per-service but allows incremental extraction. Document as tech debt.</li>
+      <li><strong>Option 2 - Data replication via events</strong>: User service publishes UserCreated, UserUpdated events. Notification service maintains own read model of user data it needs (email, preferences). Eventual consistency.</li>
+      <li><strong>Option 3 - API call</strong>: Notification service calls User service API when it needs user data. Simpler consistency but adds latency and coupling.</li>
+      <li><strong>Option 4 - [[CDC]](/topics/microservices/cdc) (Change Data Capture)</strong>: Tool like Debezium captures changes from users table, publishes to Kafka. Notification service consumes. Good when modifying legacy is hard.</li>
+      <li><strong>Recommended path</strong>: Start with Option 1 (working extraction), migrate to Option 2 (proper decoupling) once stable.</li>
     </ul>
+  </div>
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
+  <div style="color: #8b949e; font-size: 0.95em;">
+    <p><strong>Q: Six months into migration, you discover the "order" module you extracted has a hidden dependency on the "pricing" module that wasn't documented. Orders are now occasionally priced incorrectly (race condition between services). How do you handle this?</strong></p>
+    <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
+    <p><strong>Immediate mitigation:</strong></p>
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li>Add monitoring to detect price mismatches</li>
+      <li>Implement reconciliation job to fix historical errors</li>
+      <li>Consider temporary rollback to monolith behavior if customer impact is high</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Root cause analysis:</strong></p>
+    <ul style="padding-left: 20px;">
+      <li>Hidden dependency wasn't surfaced during extraction planning</li>
+      <li>Order module was calling Pricing synchronously within transaction in monolith</li>
+      <li>After extraction, Order calls Pricing API, but database commit happens independently</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Architectural fix options:</strong></p>
+    <ul style="padding-left: 20px;">
+      <li><strong>Price snapshot</strong>: Order service captures price at order creation time. Price is immutable once captured. Decouples from Pricing service state.</li>
+      <li><strong>Saga pattern</strong>: Reserve price -> Create order -> Confirm price. If price changed, compensate.</li>
+      <li><strong>Merge services</strong>: If Order and Pricing are actually one bounded context, merging may be correct answer.</li>
+      <li><strong>Event-driven</strong>: Pricing publishes price changes. Order service maintains local cache. Strong consistency within service boundary.</li>
+    </ul>
+    <p style="margin-top: 12px;"><strong>Process fix:</strong> Before next extraction, create dependency map. Use static analysis, database query logs, and code review to find hidden couplings.</p>
   </div>
 </div>
 
 ---
 
-## Key Takeaways
+## Summary: Key Interview Insights
 
-1. **No silver bullet** - Both architectures have trade-offs
-2. **Context matters** - Team size, domain complexity, and scale requirements should drive the decision
-3. **Every advantage has caveats** - Be aware of what can go wrong
-4. **Every disadvantage can be mitigated** - But at a cost
-5. **Start simple** - It's easier to split a well-designed monolith than to merge poorly designed microservices
-6. **Measure before optimizing** - Don't adopt microservices for theoretical benefits
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+  <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">WHAT INTERVIEWERS ARE LOOKING FOR</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
+      <h4 style="color: #7ee787; margin: 0 0 12px 0;">STRONG SIGNALS</h4>
+      <ul style="color: #8b949e; font-size: 0.9em; padding-left: 16px; margin: 0; line-height: 1.8;">
+        <li>Discusses trade-offs, not absolutes</li>
+        <li>Considers organizational context</li>
+        <li>Asks clarifying questions before recommending</li>
+        <li>Acknowledges that "it depends"</li>
+        <li>Has experience with both architectures</li>
+        <li>Discusses failure modes proactively</li>
+        <li>Mentions testing and observability</li>
+        <li>Considers migration paths, not just end states</li>
+      </ul>
+    </div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
+      <h4 style="color: #f85149; margin: 0 0 12px 0;">RED FLAGS</h4>
+      <ul style="color: #8b949e; font-size: 0.9em; padding-left: 16px; margin: 0; line-height: 1.8;">
+        <li>"Microservices are always better"</li>
+        <li>"Monoliths don't scale"</li>
+        <li>Ignores team size and maturity</li>
+        <li>No mention of distributed systems challenges</li>
+        <li>Forgets about data consistency</li>
+        <li>Doesn't consider operational complexity</li>
+        <li>Treats architecture as purely technical decision</li>
+        <li>No migration strategy, only end-state vision</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+---
+
+## Cross-Reference Links
+
+- [[API Gateway]](/topics/microservices/api-gateway) - Entry point for microservices
+- [[Circuit Breaker]](/topics/microservices/circuit-breaker) - Resilience pattern
+- [[Saga Pattern]](/topics/microservices/saga-pattern) - Distributed transactions
+- [[Outbox Pattern]](/topics/microservices/outbox-pattern) - Reliable event publishing
+- [[Strangler Pattern]](/topics/microservices/strangler-pattern) - Migration strategy
+- [[Domain-Driven Design]](/topics/system-design/domain-driven-design) - Bounded contexts
+- [[Distributed Tracing]](/topics/observability/distributed-tracing) - Debugging microservices
+- [[Eventual Consistency]](/topics/distributed-systems/eventual-consistency) - Data models
+- [[CAP Theorem]](/topics/distributed-systems/cap-theorem) - Fundamental trade-offs
+- [[Change Data Capture]](/topics/microservices/cdc) - Database synchronization

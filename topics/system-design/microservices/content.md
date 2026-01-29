@@ -98,6 +98,70 @@ Assume everything will fail. Netflix's famous Chaos Monkey randomly kills produc
 
 ---
 
+## Service Boundaries: Domain-Driven Design
+
+<div style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #96f2d7;">
+<h4 style="color: #087f5b; margin: 0 0 24px 0; text-align: center;">BOUNDED CONTEXTS & SERVICE BOUNDARIES</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #38d9a9;">
+<div style="color: #087f5b; font-weight: 600; margin-bottom: 12px; text-align: center;">Order Context</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<div style="font-size: 11px; color: #495057;">Entities:</div>
+<div style="font-size: 12px; color: #087f5b;">Order, OrderItem, OrderStatus</div>
+</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px;">
+<div style="font-size: 11px; color: #495057;">Operations:</div>
+<div style="font-size: 12px; color: #087f5b;">Create, Cancel, Update</div>
+</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #748ffc;">
+<div style="color: #4263eb; font-weight: 600; margin-bottom: 12px; text-align: center;">Payment Context</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<div style="font-size: 11px; color: #495057;">Entities:</div>
+<div style="font-size: 12px; color: #4263eb;">Payment, Refund, Invoice</div>
+</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px;">
+<div style="font-size: 11px; color: #495057;">Operations:</div>
+<div style="font-size: 12px; color: #4263eb;">Charge, Refund, Verify</div>
+</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #ffa94d;">
+<div style="color: #e8590c; font-weight: 600; margin-bottom: 12px; text-align: center;">Shipping Context</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<div style="font-size: 11px; color: #495057;">Entities:</div>
+<div style="font-size: 12px; color: #e8590c;">Shipment, Address, Carrier</div>
+</div>
+<div style="background: #f8f9fa; padding: 12px; border-radius: 8px;">
+<div style="font-size: 11px; color: #495057;">Operations:</div>
+<div style="font-size: 12px; color: #e8590c;">Ship, Track, Return</div>
+</div>
+</div>
+</div>
+<div style="text-align: center; margin-top: 20px;">
+<div style="display: inline-flex; gap: 24px; background: #fff; padding: 16px 24px; border-radius: 8px;">
+<div style="font-size: 12px; color: #495057;"><span style="color: #087f5b;">Anti-Corruption Layer</span> translates between contexts</div>
+</div>
+</div>
+</div>
+
+<span style="color: #2f9e44; font-weight: 600;">Bounded contexts</span> from [[Domain-Driven Design]](/topic/system-design/ddd) define natural service boundaries. Each context has its own <span style="color: #2f9e44; font-weight: 600;">ubiquitous language</span> - "Customer" in Sales means something different than in Shipping.
+
+### Identifying Service Boundaries
+
+**Key Questions to Ask:**
+1. Can this capability be deployed independently?
+2. Does it have a clear owner (single team)?
+3. Does it align with a business capability?
+4. Can it scale independently based on its own demand?
+
+**Warning Signs of Wrong Boundaries:**
+- Services that always deploy together
+- Circular dependencies between services
+- Distributed monolith - changes require coordinating multiple teams
+- Data duplication without clear ownership
+
+---
+
 ## Service Communication Patterns
 
 <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #dee2e6;">
@@ -129,6 +193,52 @@ Inventory, Email, Analytics listen
 </div>
 </div>
 </div>
+
+### Inter-Service Communication Deep Dive
+
+<div style="background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d0bfff;">
+<h4 style="color: #7048e8; margin: 0 0 24px 0; text-align: center;">COMMUNICATION PROTOCOLS COMPARISON</h4>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden;">
+<thead>
+<tr style="background: #7048e8; color: white;">
+<th style="padding: 12px; text-align: left; font-size: 13px;">Protocol</th>
+<th style="padding: 12px; text-align: left; font-size: 13px;">Latency</th>
+<th style="padding: 12px; text-align: left; font-size: 13px;">Use Case</th>
+<th style="padding: 12px; text-align: left; font-size: 13px;">Trade-offs</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #e9ecef;">
+<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>REST/HTTP</strong></td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">~10-100ms</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">CRUD operations, external APIs</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Simple but verbose</td>
+</tr>
+<tr style="border-bottom: 1px solid #e9ecef; background: #f8f9fa;">
+<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>gRPC</strong></td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">~1-10ms</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Internal service-to-service</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Fast but needs proto files</td>
+</tr>
+<tr style="border-bottom: 1px solid #e9ecef;">
+<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>GraphQL</strong></td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">~10-50ms</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">API aggregation, BFF pattern</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Flexible but complex caching</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>Message Queue</strong></td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">~1-1000ms</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Async workflows, event sourcing</td>
+<td style="padding: 12px; font-size: 13px; color: #495057;">Decoupled but eventual consistency</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+See [[API Gateway]](/topic/system-design/api-gateway) for routing patterns and [[Message Queues]](/topic/system-design/message-queues) for async communication details.
 
 ### Python Implementation: Event-Driven Communication
 
@@ -425,6 +535,158 @@ def get_user_with_fallback(user_id: str) -> dict:
 
 ---
 
+## Data Consistency Patterns
+
+<div style="background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #ffe066;">
+<h4 style="color: #e67700; margin: 0 0 24px 0; text-align: center;">DATA CONSISTENCY SPECTRUM</h4>
+<div style="position: relative; background: linear-gradient(90deg, #d3f9d8 0%, #fff3bf 50%, #ffe3e3 100%); border-radius: 8px; height: 40px; margin-bottom: 20px;">
+<div style="position: absolute; left: 5%; top: 50%; transform: translateY(-50%); background: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; color: #2f9e44; border: 1px solid #51cf66;">Strong</div>
+<div style="position: absolute; left: 45%; top: 50%; transform: translate(-50%, -50%); background: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; color: #e67700; border: 1px solid #fab005;">Eventual</div>
+<div style="position: absolute; right: 5%; top: 50%; transform: translateY(-50%); background: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; color: #c92a2a; border: 1px solid #ff6b6b;">Weak</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #51cf66;">
+<div style="font-weight: 600; color: #2f9e44; margin-bottom: 8px;">2PC / Saga</div>
+<div style="font-size: 12px; color: #495057;">Guaranteed consistency across services</div>
+</div>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #fab005;">
+<div style="font-weight: 600; color: #e67700; margin-bottom: 8px;">Outbox Pattern</div>
+<div style="font-size: 12px; color: #495057;">Reliable event publishing</div>
+</div>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #ff6b6b;">
+<div style="font-weight: 600; color: #c92a2a; margin-bottom: 8px;">Fire & Forget</div>
+<div style="font-size: 12px; color: #495057;">Best effort, may lose events</div>
+</div>
+</div>
+</div>
+
+### The Outbox Pattern
+
+<span style="color: #2f9e44; font-weight: 600;">The Outbox Pattern</span> solves the dual-write problem: how do you reliably update your database AND publish an event atomically?
+
+<div style="background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #a5d8ff;">
+<h4 style="color: #1971c2; margin: 0 0 24px 0; text-align: center;">OUTBOX PATTERN FLOW</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fff; padding: 16px; border-radius: 8px; flex: 1; border: 2px solid #74c0fc;">
+<div style="font-weight: 600; color: #1971c2; margin-bottom: 8px;">Step 1: Single Transaction</div>
+<div style="font-size: 12px; color: #495057;">Write business data + outbox event in same DB transaction</div>
+</div>
+</div>
+<div style="text-align: center; color: #868e96;">|</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fff; padding: 16px; border-radius: 8px; flex: 1; border: 2px solid #74c0fc;">
+<div style="font-weight: 600; color: #1971c2; margin-bottom: 8px;">Step 2: Outbox Reader</div>
+<div style="font-size: 12px; color: #495057;">Background process polls outbox table, publishes to message broker</div>
+</div>
+</div>
+<div style="text-align: center; color: #868e96;">|</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fff; padding: 16px; border-radius: 8px; flex: 1; border: 2px solid #74c0fc;">
+<div style="font-weight: 600; color: #1971c2; margin-bottom: 8px;">Step 3: Mark Processed</div>
+<div style="font-size: 12px; color: #495057;">Delete or mark outbox record after successful publish</div>
+</div>
+</div>
+</div>
+</div>
+
+```python
+from datetime import datetime
+from typing import Optional
+import json
+
+class OutboxPattern:
+    """
+    Transactional Outbox Pattern implementation
+    Ensures atomic updates between business data and events
+    """
+
+    def __init__(self, db_session):
+        self.db = db_session
+
+    def create_order_with_outbox(self, order_data: dict) -> dict:
+        """
+        Creates order and outbox entry in single transaction
+        """
+        with self.db.begin_transaction() as tx:
+            # 1. Insert business data
+            order = tx.execute(
+                "INSERT INTO orders (user_id, total, status) VALUES (?, ?, ?) RETURNING id",
+                (order_data['user_id'], order_data['total'], 'created')
+            )
+            order_id = order.fetchone()[0]
+
+            # 2. Insert outbox event in SAME transaction
+            event_payload = {
+                'event_type': 'order.created',
+                'order_id': order_id,
+                'user_id': order_data['user_id'],
+                'total': order_data['total'],
+                'timestamp': datetime.utcnow().isoformat()
+            }
+
+            tx.execute(
+                """INSERT INTO outbox
+                   (aggregate_type, aggregate_id, event_type, payload, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('order', order_id, 'order.created',
+                 json.dumps(event_payload), datetime.utcnow())
+            )
+
+            tx.commit()  # Both succeed or both fail
+
+        return {'id': order_id, **order_data}
+
+
+class OutboxPublisher:
+    """
+    Background process that reads outbox and publishes events
+    Run as separate worker/cron job
+    """
+
+    def __init__(self, db_session, message_broker):
+        self.db = db_session
+        self.broker = message_broker
+
+    def process_outbox(self, batch_size: int = 100):
+        """
+        Poll outbox table and publish pending events
+        """
+        # Get unpublished events
+        events = self.db.execute(
+            """SELECT id, aggregate_type, aggregate_id, event_type, payload
+               FROM outbox
+               WHERE published_at IS NULL
+               ORDER BY created_at
+               LIMIT ?""",
+            (batch_size,)
+        ).fetchall()
+
+        for event in events:
+            try:
+                # Publish to message broker
+                self.broker.publish(
+                    topic=event['event_type'],
+                    message=event['payload']
+                )
+
+                # Mark as published
+                self.db.execute(
+                    "UPDATE outbox SET published_at = ? WHERE id = ?",
+                    (datetime.utcnow(), event['id'])
+                )
+                self.db.commit()
+
+            except Exception as e:
+                # Log and continue - will retry on next poll
+                print(f"Failed to publish event {event['id']}: {e}")
+                self.db.rollback()
+```
+
+See [[Event Sourcing]](/topic/system-design/event-sourcing) for event-based data storage and [[CQRS]](/topic/system-design/cqrs) for read/write separation.
+
+---
+
 ## The Saga Pattern: Distributed Transactions
 
 **The Problem**: In a monolith, you wrap multiple operations in a database transaction. With microservices, each service has its own database - traditional transactions don't work across service boundaries.
@@ -453,6 +715,48 @@ def get_user_with_fallback(user_id: str) -> dict:
 <div style="background: #d3f9d8; padding: 12px 20px; border-radius: 8px; color: #2f9e44; min-width: 150px; text-align: center;">4. Ship Order</div>
 <span style="color: #868e96;">--></span>
 <div style="background: #f8f9fa; padding: 8px 16px; border-radius: 6px; color: #868e96; font-size: 12px;">Final step - no compensation</div>
+</div>
+</div>
+</div>
+
+### Choreography vs Orchestration
+
+<div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #dee2e6;">
+<h4 style="color: #495057; margin: 0 0 24px 0; text-align: center;">SAGA COORDINATION STYLES</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #e6fcf5; border-radius: 12px; padding: 20px; border: 2px solid #38d9a9;">
+<div style="color: #087f5b; font-weight: 600; margin-bottom: 12px; text-align: center;">Choreography</div>
+<div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="display: flex; justify-content: space-around; margin-bottom: 12px;">
+<div style="text-align: center; font-size: 11px; color: #495057;">Order</div>
+<div style="text-align: center; font-size: 11px; color: #495057;">Inventory</div>
+<div style="text-align: center; font-size: 11px; color: #495057;">Payment</div>
+</div>
+<div style="text-align: center; color: #087f5b; font-size: 12px;">Services react to events independently</div>
+</div>
+<div style="font-size: 12px; color: #495057;">
+<div style="color: #2f9e44; margin-bottom: 4px;">+ No central coordinator</div>
+<div style="color: #2f9e44; margin-bottom: 4px;">+ Loose coupling</div>
+<div style="color: #c92a2a;">- Hard to track flow</div>
+</div>
+</div>
+<div style="background: #e7f5ff; border-radius: 12px; padding: 20px; border: 2px solid #74c0fc;">
+<div style="color: #1971c2; font-weight: 600; margin-bottom: 12px; text-align: center;">Orchestration</div>
+<div style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="text-align: center; margin-bottom: 8px;">
+<div style="display: inline-block; background: #1971c2; color: white; padding: 6px 16px; border-radius: 4px; font-size: 11px;">Orchestrator</div>
+</div>
+<div style="display: flex; justify-content: space-around;">
+<div style="text-align: center; font-size: 11px; color: #495057;">Order</div>
+<div style="text-align: center; font-size: 11px; color: #495057;">Inventory</div>
+<div style="text-align: center; font-size: 11px; color: #495057;">Payment</div>
+</div>
+</div>
+<div style="font-size: 12px; color: #495057;">
+<div style="color: #2f9e44; margin-bottom: 4px;">+ Clear flow control</div>
+<div style="color: #2f9e44; margin-bottom: 4px;">+ Easy to understand</div>
+<div style="color: #c92a2a;">- Single point of coordination</div>
+</div>
 </div>
 </div>
 </div>
@@ -587,6 +891,318 @@ class OrderSaga:
 
 ---
 
+## Deployment Strategies
+
+<div style="background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #a5d8ff;">
+<h4 style="color: #1971c2; margin: 0 0 24px 0; text-align: center;">DEPLOYMENT STRATEGIES COMPARISON</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #74c0fc;">
+<div style="color: #1971c2; font-weight: 600; margin-bottom: 12px;">Rolling Deployment</div>
+<div style="display: flex; gap: 4px; margin-bottom: 12px;">
+<div style="flex: 1; height: 24px; background: #51cf66; border-radius: 4px;"></div>
+<div style="flex: 1; height: 24px; background: #51cf66; border-radius: 4px;"></div>
+<div style="flex: 1; height: 24px; background: #74c0fc; border-radius: 4px;"></div>
+<div style="flex: 1; height: 24px; background: #868e96; border-radius: 4px;"></div>
+</div>
+<div style="font-size: 12px; color: #495057;">Replace instances one at a time. Zero downtime, gradual rollout.</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #38d9a9;">
+<div style="color: #087f5b; font-weight: 600; margin-bottom: 12px;">Blue-Green Deployment</div>
+<div style="display: flex; gap: 12px; margin-bottom: 12px;">
+<div style="flex: 1; background: #74c0fc; border-radius: 4px; padding: 8px; text-align: center; font-size: 11px; color: white;">Blue (Live)</div>
+<div style="flex: 1; background: #51cf66; border-radius: 4px; padding: 8px; text-align: center; font-size: 11px; color: white;">Green (New)</div>
+</div>
+<div style="font-size: 12px; color: #495057;">Run two identical environments, switch traffic instantly.</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #fab005;">
+<div style="color: #e67700; font-weight: 600; margin-bottom: 12px;">Canary Deployment</div>
+<div style="display: flex; gap: 4px; margin-bottom: 12px;">
+<div style="flex: 9; height: 24px; background: #74c0fc; border-radius: 4px;"></div>
+<div style="flex: 1; height: 24px; background: #fab005; border-radius: 4px;"></div>
+</div>
+<div style="font-size: 12px; color: #495057;">Route small % of traffic to new version, monitor, then expand.</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #b197fc;">
+<div style="color: #7048e8; font-weight: 600; margin-bottom: 12px;">Feature Flags</div>
+<div style="background: #f8f9fa; border-radius: 4px; padding: 8px; margin-bottom: 12px; font-family: monospace; font-size: 11px;">
+if (feature.enabled("new_checkout"))<br/>
+&nbsp;&nbsp;showNewCheckout()
+</div>
+<div style="font-size: 12px; color: #495057;">Toggle features without deployment. Per-user or percentage rollout.</div>
+</div>
+</div>
+</div>
+
+### Deployment Pipeline Best Practices
+
+<span style="color: #2f9e44; font-weight: 600;">Immutable infrastructure</span> means you never modify running servers - you replace them. Combined with <span style="color: #2f9e44; font-weight: 600;">containerization</span> via Docker and orchestration with [[Kubernetes]](/topic/system-design/kubernetes), this enables reliable, repeatable deployments.
+
+```yaml
+# Example: Kubernetes Rolling Update Configuration
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1      # At most 1 pod unavailable during update
+      maxSurge: 1            # At most 1 extra pod during update
+  template:
+    spec:
+      containers:
+      - name: order-service
+        image: order-service:v2.0.0
+        readinessProbe:        # Only receive traffic when ready
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:         # Restart if unhealthy
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+```
+
+See [[Code Deployment]](/topic/system-architectures/code-deployment) for comprehensive CI/CD patterns.
+
+---
+
+## Monitoring & Observability
+
+<div style="background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d0bfff;">
+<h4 style="color: #7048e8; margin: 0 0 24px 0; text-align: center;">THE THREE PILLARS OF OBSERVABILITY</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-top: 4px solid #1971c2;">
+<div style="color: #1971c2; font-weight: 600; margin-bottom: 12px; text-align: center;">Metrics</div>
+<div style="font-size: 12px; color: #495057; margin-bottom: 12px;">Numerical measurements over time</div>
+<div style="background: #e7f5ff; padding: 12px; border-radius: 8px; font-size: 11px;">
+<div style="color: #1971c2; font-weight: 600;">RED Method:</div>
+<div style="color: #495057;">Rate - requests/sec</div>
+<div style="color: #495057;">Errors - error rate</div>
+<div style="color: #495057;">Duration - latency</div>
+</div>
+<div style="margin-top: 12px; font-size: 11px; color: #868e96;">Tools: Prometheus, Datadog</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-top: 4px solid #2f9e44;">
+<div style="color: #2f9e44; font-weight: 600; margin-bottom: 12px; text-align: center;">Logs</div>
+<div style="font-size: 12px; color: #495057; margin-bottom: 12px;">Timestamped event records</div>
+<div style="background: #e6fcf5; padding: 12px; border-radius: 8px; font-size: 11px;">
+<div style="color: #087f5b; font-weight: 600;">Best Practices:</div>
+<div style="color: #495057;">Structured JSON format</div>
+<div style="color: #495057;">Correlation IDs</div>
+<div style="color: #495057;">Log levels (INFO/WARN/ERROR)</div>
+</div>
+<div style="margin-top: 12px; font-size: 11px; color: #868e96;">Tools: ELK Stack, Loki</div>
+</div>
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-top: 4px solid #e8590c;">
+<div style="color: #e8590c; font-weight: 600; margin-bottom: 12px; text-align: center;">Traces</div>
+<div style="font-size: 12px; color: #495057; margin-bottom: 12px;">Request flow across services</div>
+<div style="background: #fff4e6; padding: 12px; border-radius: 8px; font-size: 11px;">
+<div style="color: #e8590c; font-weight: 600;">Contains:</div>
+<div style="color: #495057;">Trace ID (full journey)</div>
+<div style="color: #495057;">Span ID (single hop)</div>
+<div style="color: #495057;">Timing & metadata</div>
+</div>
+<div style="margin-top: 12px; font-size: 11px; color: #868e96;">Tools: Jaeger, Zipkin</div>
+</div>
+</div>
+</div>
+
+### Distributed Tracing Implementation
+
+<span style="color: #2f9e44; font-weight: 600;">Distributed tracing</span> is essential for debugging microservices. Every request gets a <span style="color: #2f9e44; font-weight: 600;">trace ID</span> that follows it through all services.
+
+<div style="background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #ffd8a8;">
+<h4 style="color: #e8590c; margin: 0 0 24px 0; text-align: center;">DISTRIBUTED TRACE VISUALIZATION</h4>
+<div style="background: #fff; border-radius: 8px; padding: 20px;">
+<div style="font-size: 12px; color: #495057; margin-bottom: 16px;">Trace ID: <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 4px;">abc123</code></div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center;">
+<div style="width: 100px; font-size: 11px; color: #495057;">API Gateway</div>
+<div style="flex: 1; height: 20px; background: #74c0fc; border-radius: 4px; position: relative;">
+<span style="position: absolute; left: 8px; top: 2px; font-size: 10px; color: white;">150ms</span>
+</div>
+</div>
+<div style="display: flex; align-items: center;">
+<div style="width: 100px; font-size: 11px; color: #495057;">Order Service</div>
+<div style="width: 20px;"></div>
+<div style="flex: 0.7; height: 20px; background: #51cf66; border-radius: 4px; position: relative;">
+<span style="position: absolute; left: 8px; top: 2px; font-size: 10px; color: white;">80ms</span>
+</div>
+</div>
+<div style="display: flex; align-items: center;">
+<div style="width: 100px; font-size: 11px; color: #495057;">User Service</div>
+<div style="width: 40px;"></div>
+<div style="flex: 0.3; height: 20px; background: #b197fc; border-radius: 4px; position: relative;">
+<span style="position: absolute; left: 8px; top: 2px; font-size: 10px; color: white;">25ms</span>
+</div>
+</div>
+<div style="display: flex; align-items: center;">
+<div style="width: 100px; font-size: 11px; color: #495057;">Inventory DB</div>
+<div style="width: 45px;"></div>
+<div style="flex: 0.2; height: 20px; background: #ffa94d; border-radius: 4px; position: relative;">
+<span style="position: absolute; left: 8px; top: 2px; font-size: 10px; color: white;">15ms</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+```python
+import uuid
+from functools import wraps
+from typing import Optional, Dict, Any
+from datetime import datetime
+import json
+
+class Span:
+    """Represents a single unit of work in a trace"""
+
+    def __init__(self, trace_id: str, span_id: str, operation: str,
+                 parent_span_id: Optional[str] = None):
+        self.trace_id = trace_id
+        self.span_id = span_id
+        self.parent_span_id = parent_span_id
+        self.operation = operation
+        self.start_time = datetime.utcnow()
+        self.end_time: Optional[datetime] = None
+        self.tags: Dict[str, Any] = {}
+        self.logs: list = []
+
+    def set_tag(self, key: str, value: Any) -> 'Span':
+        self.tags[key] = value
+        return self
+
+    def log(self, message: str) -> 'Span':
+        self.logs.append({
+            'timestamp': datetime.utcnow().isoformat(),
+            'message': message
+        })
+        return self
+
+    def finish(self):
+        self.end_time = datetime.utcnow()
+
+    @property
+    def duration_ms(self) -> float:
+        if self.end_time:
+            return (self.end_time - self.start_time).total_seconds() * 1000
+        return 0
+
+    def to_dict(self) -> dict:
+        return {
+            'trace_id': self.trace_id,
+            'span_id': self.span_id,
+            'parent_span_id': self.parent_span_id,
+            'operation': self.operation,
+            'start_time': self.start_time.isoformat(),
+            'duration_ms': self.duration_ms,
+            'tags': self.tags,
+            'logs': self.logs
+        }
+
+
+class Tracer:
+    """
+    Distributed tracing implementation
+    Compatible with OpenTelemetry/Jaeger concepts
+    """
+
+    _current_span: Optional[Span] = None
+
+    def __init__(self, service_name: str, exporter=None):
+        self.service_name = service_name
+        self.exporter = exporter  # Send to Jaeger/Zipkin
+
+    def start_span(self, operation: str,
+                   trace_id: Optional[str] = None) -> Span:
+        """Start a new span, optionally continuing existing trace"""
+        if trace_id is None:
+            trace_id = str(uuid.uuid4())
+
+        span_id = str(uuid.uuid4())[:16]
+        parent_span_id = self._current_span.span_id if self._current_span else None
+
+        span = Span(trace_id, span_id, operation, parent_span_id)
+        span.set_tag('service', self.service_name)
+
+        self._current_span = span
+        return span
+
+    def finish_span(self, span: Span):
+        """Finish span and export"""
+        span.finish()
+
+        if self.exporter:
+            self.exporter.export(span.to_dict())
+        else:
+            # Default: structured log output
+            print(json.dumps(span.to_dict()))
+
+        self._current_span = None
+
+    def inject_headers(self) -> Dict[str, str]:
+        """Get headers to propagate trace context"""
+        if self._current_span:
+            return {
+                'X-Trace-Id': self._current_span.trace_id,
+                'X-Span-Id': self._current_span.span_id
+            }
+        return {}
+
+    def extract_headers(self, headers: Dict[str, str]) -> Optional[str]:
+        """Extract trace ID from incoming request headers"""
+        return headers.get('X-Trace-Id')
+
+
+def traced(tracer: Tracer, operation: str):
+    """Decorator to automatically trace function calls"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            span = tracer.start_span(operation)
+            try:
+                result = func(*args, **kwargs)
+                span.set_tag('status', 'success')
+                return result
+            except Exception as e:
+                span.set_tag('status', 'error')
+                span.set_tag('error.message', str(e))
+                span.log(f"Exception: {e}")
+                raise
+            finally:
+                tracer.finish_span(span)
+        return wrapper
+    return decorator
+
+
+# Usage Example
+tracer = Tracer('order-service')
+
+@traced(tracer, 'create_order')
+def create_order(user_id: str, items: list) -> dict:
+    # This call is automatically traced
+    user = get_user(user_id)
+    inventory = check_inventory(items)
+    return {'order_id': '123', 'user': user, 'inventory': inventory}
+
+@traced(tracer, 'get_user')
+def get_user(user_id: str) -> dict:
+    # Makes HTTP call with trace headers
+    import requests
+    headers = tracer.inject_headers()
+    response = requests.get(f'http://user-service/users/{user_id}', headers=headers)
+    return response.json()
+```
+
+---
+
 ## Failure Stories and Lessons
 
 ### Amazon's 2017 S3 Outage
@@ -600,37 +1216,197 @@ Uber grew from monolith to 2,200+ microservices. They learned that too many serv
 
 ---
 
-## Interview Questions with Detailed Answers
+## Interview Deep-Dive: 3-Level Recursive Q&A
 
 <div style="background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #a5d8ff;">
-<h4 style="color: #1971c2; margin: 0 0 20px 0;">COMMON INTERVIEW QUESTIONS</h4>
+<h4 style="color: #1971c2; margin: 0 0 20px 0;">SERVICE BOUNDARIES & DOMAIN DESIGN</h4>
 
-<div style="margin-bottom: 20px;">
-<p style="color: #495057; font-weight: 600; margin-bottom: 8px;">Q1: How do you handle data consistency across microservices?</p>
-<p style="color: #495057; font-size: 14px; background: #fff; padding: 12px; border-radius: 8px;">
-<strong>Answer:</strong> Use eventual consistency with sagas for distributed transactions. Implement the Outbox Pattern - write events to a local outbox table in the same transaction as business data, then publish events asynchronously. For queries spanning services, use CQRS with event-driven data synchronization. Accept that strong consistency across services is often impractical - design business processes to tolerate eventual consistency.
+<div style="margin-bottom: 24px;">
+<p style="color: #1971c2; font-weight: 600; margin-bottom: 8px;">Q1: How do you determine the right boundaries for microservices?</p>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Use <span style="color: #2f9e44; font-weight: 600;">Domain-Driven Design (DDD)</span> to identify bounded contexts. Each service should align with a business capability, have a single team owner, and be independently deployable. Key techniques include: (1) <span style="color: #2f9e44; font-weight: 600;">Event Storming</span> - workshop to discover domain events and aggregates, (2) Analyze team communication patterns - Conway's Law suggests system boundaries mirror org structure, (3) Look for natural seams where data consistency requirements change.
 </p>
 </div>
 
-<div style="margin-bottom: 20px;">
-<p style="color: #495057; font-weight: 600; margin-bottom: 8px;">Q2: When should you NOT use microservices?</p>
-<p style="color: #495057; font-size: 14px; background: #fff; padding: 12px; border-radius: 8px;">
-<strong>Answer:</strong> Avoid microservices when: (1) Small team (<10 devs) - operational overhead isn't worth it, (2) Unclear domain boundaries - you'll create wrong service boundaries, (3) Tight deadlines - monolith is faster to build initially, (4) Performance-critical tight coupling - network latency adds up, (5) Early-stage startups - you need speed, not distributed complexity.
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #4263eb; font-weight: 600; margin-bottom: 8px;">Q1.1: What if you get the boundaries wrong initially?</p>
+<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #4263eb;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Wrong boundaries manifest as: services always deploying together, excessive inter-service calls, or data duplication without clear ownership. Solutions: (1) <span style="color: #2f9e44; font-weight: 600;">Merge services</span> if they're too fine-grained, (2) <span style="color: #2f9e44; font-weight: 600;">Extract services</span> if a service does too much, (3) Use the <span style="color: #2f9e44; font-weight: 600;">Strangler Fig pattern</span> for gradual refactoring. The cost of wrong boundaries is high - you're essentially doing a distributed monolith refactor.
 </p>
 </div>
 
-<div style="margin-bottom: 20px;">
-<p style="color: #495057; font-weight: 600; margin-bottom: 8px;">Q3: How do you debug issues across multiple services?</p>
-<p style="color: #495057; font-size: 14px; background: #fff; padding: 12px; border-radius: 8px;">
-<strong>Answer:</strong> Implement distributed tracing (Jaeger, Zipkin) with correlation IDs passed through all service calls. Use structured logging with consistent formats. Aggregate logs centrally (ELK Stack, Datadog). Add service mesh (Istio) for visibility into service-to-service traffic. Create dashboards showing request flow and latency at each hop.
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #7048e8; font-weight: 600; margin-bottom: 8px;">Q1.1.1: How does the Strangler Fig pattern work for service boundary changes?</p>
+<div style="background: #f3f0ff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> The Strangler Fig pattern incrementally replaces functionality without big-bang rewrites. For boundary changes: (1) Create new service with correct boundary, (2) Use an <span style="color: #2f9e44; font-weight: 600;">Anti-Corruption Layer</span> to translate between old/new, (3) Gradually route traffic to new service using feature flags, (4) Once migrated, decommission old service. Netflix used this extensively during their cloud migration - they called it "building the plane while flying it."
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #96f2d7;">
+<h4 style="color: #087f5b; margin: 0 0 20px 0;">INTER-SERVICE COMMUNICATION</h4>
+
+<div style="margin-bottom: 24px;">
+<p style="color: #087f5b; font-weight: 600; margin-bottom: 8px;">Q2: When should you use synchronous vs asynchronous communication?</p>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #087f5b;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Use <span style="color: #2f9e44; font-weight: 600;">synchronous (REST/gRPC)</span> when: the caller needs an immediate response, the operation is simple query/command, and latency is acceptable. Use <span style="color: #2f9e44; font-weight: 600;">asynchronous (events/queues)</span> when: you need to decouple services, handle high throughput, or the operation can complete later. Rule of thumb: prefer async for anything that modifies state across services - it enables <span style="color: #2f9e44; font-weight: 600;">eventual consistency</span> and better fault tolerance.
 </p>
 </div>
 
-<div>
-<p style="color: #495057; font-weight: 600; margin-bottom: 8px;">Q4: How do you handle service versioning and backward compatibility?</p>
-<p style="color: #495057; font-size: 14px; background: #fff; padding: 12px; border-radius: 8px;">
-<strong>Answer:</strong> Use semantic versioning for APIs. Apply the "tolerant reader" pattern - services should ignore unknown fields. For breaking changes, run multiple API versions simultaneously during migration. Use consumer-driven contract testing (Pact) to ensure changes don't break clients. Implement feature flags for gradual rollouts.
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #1971c2; font-weight: 600; margin-bottom: 8px;">Q2.1: How do you handle failures in async communication?</p>
+<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Key patterns: (1) <span style="color: #2f9e44; font-weight: 600;">Dead Letter Queues (DLQ)</span> - failed messages go to separate queue for analysis, (2) <span style="color: #2f9e44; font-weight: 600;">Idempotency</span> - design handlers to safely process same message multiple times, (3) <span style="color: #2f9e44; font-weight: 600;">Retry with exponential backoff</span> - retry 3 times with increasing delays before DLQ, (4) <span style="color: #2f9e44; font-weight: 600;">Outbox pattern</span> - ensure events are published reliably. Always include correlation IDs to trace message flows.
 </p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #7048e8; font-weight: 600; margin-bottom: 8px;">Q2.1.1: How do you implement idempotency in event handlers?</p>
+<div style="background: #f3f0ff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Three approaches: (1) <span style="color: #2f9e44; font-weight: 600;">Idempotency keys</span> - store processed event IDs in database, check before processing, (2) <span style="color: #2f9e44; font-weight: 600;">Natural idempotency</span> - design operations to be naturally safe (e.g., "set status to X" vs "increment counter"), (3) <span style="color: #2f9e44; font-weight: 600;">Deduplication window</span> - track recent events in Redis with TTL. For critical operations, use database constraints - if inserting with same idempotency key fails with unique constraint, the event was already processed.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #ffe066;">
+<h4 style="color: #e67700; margin: 0 0 20px 0;">DATA CONSISTENCY</h4>
+
+<div style="margin-bottom: 24px;">
+<p style="color: #e67700; font-weight: 600; margin-bottom: 8px;">Q3: How do you handle data consistency across microservices without distributed transactions?</p>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #e67700;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Accept <span style="color: #2f9e44; font-weight: 600;">eventual consistency</span> as the default. Use: (1) <span style="color: #2f9e44; font-weight: 600;">Saga pattern</span> for distributed transactions with compensating actions, (2) <span style="color: #2f9e44; font-weight: 600;">Outbox pattern</span> for reliable event publishing, (3) <span style="color: #2f9e44; font-weight: 600;">CQRS</span> to separate read/write models and allow async synchronization. Design business processes to tolerate temporary inconsistency - e.g., "order pending" status while payment processes. Strong consistency across services requires distributed locking and has significant performance costs.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #1971c2; font-weight: 600; margin-bottom: 8px;">Q3.1: What happens if a saga step fails after others have committed?</p>
+<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Execute <span style="color: #2f9e44; font-weight: 600;">compensating transactions</span> in reverse order. Key principles: (1) Compensations must be <span style="color: #2f9e44; font-weight: 600;">idempotent</span> - they might run multiple times, (2) They must <span style="color: #2f9e44; font-weight: 600;">eventually succeed</span> - keep retrying with alerts, (3) Some actions are <span style="color: #2f9e44; font-weight: 600;">non-compensatable</span> (e.g., sent email) - design around this. Store saga state persistently so recovery can resume after crashes. If compensation truly fails, alert humans - this is a business-level exception.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #7048e8; font-weight: 600; margin-bottom: 8px;">Q3.1.1: How do you handle the case where a compensation action itself fails?</p>
+<div style="background: #f3f0ff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> This is the "saga of sagas" problem. Solutions: (1) <span style="color: #2f9e44; font-weight: 600;">Infinite retry with alerting</span> - compensation must eventually succeed, alert after N failures, (2) <span style="color: #2f9e44; font-weight: 600;">Manual intervention queue</span> - failed compensations go to human review, (3) <span style="color: #2f9e44; font-weight: 600;">Reconciliation jobs</span> - periodic batch jobs detect and fix inconsistencies. Design compensations to be simple and unlikely to fail. Example: if refund fails, store "refund_pending" and let a reconciliation job handle it. This is where <span style="color: #2f9e44; font-weight: 600;">event sourcing</span> helps - you can always replay to fix state.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d0bfff;">
+<h4 style="color: #7048e8; margin: 0 0 20px 0;">DEPLOYMENT STRATEGIES</h4>
+
+<div style="margin-bottom: 24px;">
+<p style="color: #7048e8; font-weight: 600; margin-bottom: 8px;">Q4: How do you safely deploy changes to production microservices?</p>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Layer multiple strategies: (1) <span style="color: #2f9e44; font-weight: 600;">Canary deployments</span> - route 1-5% traffic to new version, monitor errors/latency, (2) <span style="color: #2f9e44; font-weight: 600;">Feature flags</span> - deploy code dark, enable gradually per user segment, (3) <span style="color: #2f9e44; font-weight: 600;">Blue-green deployments</span> - instant rollback capability, (4) <span style="color: #2f9e44; font-weight: 600;">Automated rollback</span> - if error rate exceeds threshold, auto-revert. Every deployment should be reversible within minutes. Use immutable infrastructure - never patch running instances.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #1971c2; font-weight: 600; margin-bottom: 8px;">Q4.1: How do you handle database schema changes with zero-downtime deployments?</p>
+<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Use <span style="color: #2f9e44; font-weight: 600;">expand-contract pattern</span> (also called parallel change): (1) <span style="color: #2f9e44; font-weight: 600;">Expand</span> - add new column/table, deploy code that writes to both old and new, (2) <span style="color: #2f9e44; font-weight: 600;">Migrate</span> - backfill old data to new structure, (3) <span style="color: #2f9e44; font-weight: 600;">Contract</span> - deploy code that reads from new only, then drop old. Never rename columns directly - add new, migrate, drop old. For large tables, use online schema change tools (pt-online-schema-change, gh-ost) to avoid locking.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #087f5b; font-weight: 600; margin-bottom: 8px;">Q4.1.1: What if a migration fails midway during the expand phase?</p>
+<div style="background: #e6fcf5; padding: 16px; border-radius: 8px; border-left: 4px solid #087f5b;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Design migrations to be <span style="color: #2f9e44; font-weight: 600;">resumable and idempotent</span>: (1) Track migration progress (e.g., "last processed ID"), (2) Use batched updates with checkpoints, (3) Application code should handle both old and new schema during migration window. If migration corrupts data, restore from backup to the new column only - old data in original column is untouched. This is why expand-contract works: the old path remains functional throughout. For critical tables, test migrations on production-clone database first.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #ffc9c9;">
+<h4 style="color: #c92a2a; margin: 0 0 20px 0;">MONITORING & DEBUGGING</h4>
+
+<div style="margin-bottom: 24px;">
+<p style="color: #c92a2a; font-weight: 600; margin-bottom: 8px;">Q5: How do you debug issues that span multiple microservices?</p>
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #c92a2a;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Implement the <span style="color: #2f9e44; font-weight: 600;">three pillars of observability</span>: (1) <span style="color: #2f9e44; font-weight: 600;">Distributed tracing</span> (Jaeger/Zipkin) - trace ID follows request across all services, shows latency per hop, (2) <span style="color: #2f9e44; font-weight: 600;">Centralized logging</span> (ELK/Datadog) - correlation ID in all logs, structured JSON format, (3) <span style="color: #2f9e44; font-weight: 600;">Metrics</span> (Prometheus/Grafana) - RED metrics per service (Rate, Errors, Duration). Create dashboards showing request flow. When debugging, start with trace to identify slow/failing service, then dive into that service's logs.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #1971c2; font-weight: 600; margin-bottom: 8px;">Q5.1: How do you set up alerting that doesn't cause alert fatigue?</p>
+<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> Follow <span style="color: #2f9e44; font-weight: 600;">SRE alerting principles</span>: (1) Alert on <span style="color: #2f9e44; font-weight: 600;">symptoms, not causes</span> - "users can't checkout" not "CPU high", (2) Define <span style="color: #2f9e44; font-weight: 600;">SLOs</span> (Service Level Objectives) and alert on SLO breach, (3) Every alert must be <span style="color: #2f9e44; font-weight: 600;">actionable</span> - if no action needed, it's not an alert, (4) Use <span style="color: #2f9e44; font-weight: 600;">error budgets</span> - if 99.9% SLO, you have 43 minutes/month of allowed downtime. Distinguish pages (wake someone up) from tickets (fix tomorrow). Regularly review and tune alerts.
+</p>
+</div>
+
+<div style="margin-left: 24px; margin-top: 16px;">
+<p style="color: #7048e8; font-weight: 600; margin-bottom: 8px;">Q5.1.1: How do you define good SLOs for microservices?</p>
+<div style="background: #f3f0ff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #495057; font-size: 14px; margin: 0;">
+<strong>Answer:</strong> SLOs should reflect <span style="color: #2f9e44; font-weight: 600;">user experience</span>: (1) <span style="color: #2f9e44; font-weight: 600;">Availability</span> - "99.9% of requests succeed", (2) <span style="color: #2f9e44; font-weight: 600;">Latency</span> - "95% of requests complete in <200ms, 99% in <1s", (3) <span style="color: #2f9e44; font-weight: 600;">Correctness</span> - "99.99% of orders processed correctly". Start with what users actually need - don't promise 99.99% if 99.9% is sufficient (that's 10x harder). Different services need different SLOs - payment needs higher than recommendations. Track SLIs (indicators) continuously, compare against SLOs, alert when error budget burns too fast.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## Common Interview Questions: Quick Reference
+
+<div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #dee2e6;">
+<h4 style="color: #495057; margin: 0 0 20px 0;">RAPID-FIRE Q&A</h4>
+
+<div style="display: grid; gap: 16px;">
+
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #1971c2;">
+<p style="color: #1971c2; font-weight: 600; margin: 0 0 8px 0;">When should you NOT use microservices?</p>
+<p style="color: #495057; font-size: 13px; margin: 0;">Small team (<10 devs), unclear domain boundaries, tight deadlines, early-stage startup, or when performance requires tight coupling. The operational overhead isn't worth it for simple applications.</p>
+</div>
+
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #2f9e44;">
+<p style="color: #2f9e44; font-weight: 600; margin: 0 0 8px 0;">How do you handle API versioning?</p>
+<p style="color: #495057; font-size: 13px; margin: 0;">Use <span style="color: #2f9e44; font-weight: 600;">semantic versioning</span> in URLs (/v1/users) or headers. Apply <span style="color: #2f9e44; font-weight: 600;">tolerant reader pattern</span> - ignore unknown fields. Run multiple versions simultaneously during migration. Use <span style="color: #2f9e44; font-weight: 600;">consumer-driven contracts</span> (Pact) to verify compatibility.</p>
+</div>
+
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #e67700;">
+<p style="color: #e67700; font-weight: 600; margin: 0 0 8px 0;">What's the difference between orchestration and choreography?</p>
+<p style="color: #495057; font-size: 13px; margin: 0;"><span style="color: #2f9e44; font-weight: 600;">Orchestration</span>: Central coordinator directs workflow (easier to understand, single point of control). <span style="color: #2f9e44; font-weight: 600;">Choreography</span>: Services react to events independently (more decoupled, harder to trace). Use orchestration for complex business processes, choreography for simple event reactions.</p>
+</div>
+
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #7048e8;">
+<p style="color: #7048e8; font-weight: 600; margin: 0 0 8px 0;">How do you handle service discovery?</p>
+<p style="color: #495057; font-size: 13px; margin: 0;">Options: (1) <span style="color: #2f9e44; font-weight: 600;">DNS-based</span> (Kubernetes Services) - simple, built-in, (2) <span style="color: #2f9e44; font-weight: 600;">Service registry</span> (Consul, Eureka) - more features, health checks, (3) <span style="color: #2f9e44; font-weight: 600;">Service mesh</span> (Istio, Linkerd) - transparent, advanced traffic management. Kubernetes DNS is sufficient for most cases.</p>
+</div>
+
+<div style="background: #fff; padding: 16px; border-radius: 8px; border-left: 4px solid #c92a2a;">
+<p style="color: #c92a2a; font-weight: 600; margin: 0 0 8px 0;">What is a distributed monolith and how do you avoid it?</p>
+<p style="color: #495057; font-size: 13px; margin: 0;">A distributed monolith has microservice deployment but monolithic coupling - services can't deploy independently, share databases, or have circular dependencies. Avoid by: enforcing <span style="color: #2f9e44; font-weight: 600;">database per service</span>, using <span style="color: #2f9e44; font-weight: 600;">async communication</span>, defining clear <span style="color: #2f9e44; font-weight: 600;">API contracts</span>, and ensuring teams can deploy independently.</p>
+</div>
+
 </div>
 </div>
 
@@ -684,7 +1460,13 @@ Uber grew from monolith to 2,200+ microservices. They learned that too many serv
 
 ## Related Topics
 
-- [API Gateway](/topic/system-design/api-gateway) - Single entry point for microservices
-- [Message Queues](/topic/system-design/message-queues) - Async communication
-- [Service Discovery](/topic/system-design/service-discovery) - Finding service instances
-- [Event Sourcing](/topic/system-design/event-sourcing) - Event-based data storage
+- [[API Gateway]](/topic/system-design/api-gateway) - Single entry point for microservices
+- [[Message Queues]](/topic/system-design/message-queues) - Async communication patterns
+- [[Service Discovery]](/topic/system-design/service-discovery) - Finding service instances
+- [[Event Sourcing]](/topic/system-design/event-sourcing) - Event-based data storage
+- [[CQRS]](/topic/system-design/cqrs) - Command Query Responsibility Segregation
+- [[Distributed Locking]](/topic/system-design/distributed-locking) - Coordination across services
+- [[Rate Limiting]](/topic/system-design/rate-limiting) - Protecting services from overload
+- [[Load Balancing]](/topic/system-design/load-balancing) - Distributing traffic across instances
+- [[Code Deployment]](/topic/system-architectures/code-deployment) - CI/CD and deployment strategies
+- [[Kubernetes]](/topic/system-design/kubernetes) - Container orchestration

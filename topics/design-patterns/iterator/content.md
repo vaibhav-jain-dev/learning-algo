@@ -8,6 +8,13 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 **Category:** Behavioral Pattern
 **Also Known As:** Cursor
 
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: #f8fafc;">
+  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #475569; padding-bottom: 0.75rem;">Core Insight</div>
+  <div style="line-height: 1.7;">
+    The Iterator pattern separates the <span style="color:#22c55e"><strong>traversal algorithm</strong></span> from the <span style="color:#22c55e"><strong>collection structure</strong></span>. This enables multiple simultaneous traversals, different traversal strategies on the same collection, and lazy evaluation that processes elements on-demand without loading entire datasets into memory.
+  </div>
+</div>
+
 ---
 
 ## Simple Explanation: The Spotify Playlist Analogy
@@ -42,7 +49,1337 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 
 **Novice thinks:** "Iterator is just a for-loop in disguise."
 
-**Expert knows:** "Iterator enables **lazy evaluation** and **infinite sequences**. It separates the 'what' (traversal logic) from the 'how' (data structure). This is why Python generators, Java Streams, and JavaScript async iterators are so powerful - they can process terabytes of data without loading everything into memory."
+**Expert knows:** "Iterator enables <span style="color:#22c55e">**lazy evaluation**</span> and <span style="color:#22c55e">**infinite sequences**</span>. It separates the 'what' (traversal logic) from the 'how' (data structure). This is why Python generators, Java Streams, and JavaScript async iterators are so powerful - they can process terabytes of data without loading everything into memory."
+
+---
+
+## Internal vs External Iterators
+
+A critical design decision when implementing the Iterator pattern is choosing between <span style="color:#22c55e">**internal**</span> and <span style="color:#22c55e">**external**</span> iterators. This choice fundamentally affects control flow, flexibility, and API design.
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Iterator Control Models</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
+      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="background: #3b82f6; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">E</span>
+        External Iterator
+      </div>
+      <div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
+        <div style="margin-bottom: 0.5rem;"><strong>Client controls</strong> the iteration</div>
+        <div style="margin-bottom: 0.5rem;"><strong>Pull-based:</strong> Client calls next()</div>
+        <div style="margin-bottom: 0.5rem;"><strong>More flexible:</strong> Early termination, interleaving</div>
+        <div><strong>Example:</strong> Java Iterator, Python __iter__/__next__</div>
+      </div>
+    </div>
+    <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
+      <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="background: #22c55e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">I</span>
+        Internal Iterator
+      </div>
+      <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
+        <div style="margin-bottom: 0.5rem;"><strong>Collection controls</strong> the iteration</div>
+        <div style="margin-bottom: 0.5rem;"><strong>Push-based:</strong> Collection calls callback</div>
+        <div style="margin-bottom: 0.5rem;"><strong>Simpler API:</strong> forEach, map, filter</div>
+        <div><strong>Example:</strong> Ruby each, JavaScript forEach</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+### External Iterator: Client in Control
+
+With <span style="color:#22c55e">**external iterators**</span>, the client explicitly requests each element. This provides maximum control but requires the client to manage the iteration loop.
+
+```python
+# External Iterator - Client controls traversal
+class ExternalIterator:
+    """
+    External iterator where client controls traversal.
+    Also known as: Active Iterator, Pull Iterator
+    """
+
+    def __init__(self, collection):
+        self.collection = collection
+        self.index = 0
+
+    def has_next(self) -> bool:
+        return self.index < len(self.collection)
+
+    def next(self):
+        if not self.has_next():
+            raise StopIteration("No more elements")
+        value = self.collection[self.index]
+        self.index += 1
+        return value
+
+    def reset(self):
+        self.index = 0
+
+
+# Client controls the loop explicitly
+iterator = ExternalIterator([1, 2, 3, 4, 5])
+
+# Client decides when to advance
+while iterator.has_next():
+    value = iterator.next()
+    if value == 3:
+        break  # Easy early termination
+    print(value)
+
+# Can interleave with other iterators
+iter1 = ExternalIterator(['a', 'b', 'c'])
+iter2 = ExternalIterator([1, 2, 3])
+
+while iter1.has_next() and iter2.has_next():
+    print(f"{iter1.next()} -> {iter2.next()}")  # Zip behavior
+```
+
+### Internal Iterator: Collection in Control
+
+With <span style="color:#22c55e">**internal iterators**</span>, you pass a function to the collection, which applies it to each element. The collection controls the traversal.
+
+```python
+# Internal Iterator - Collection controls traversal
+class InternalIteratorCollection:
+    """
+    Collection with internal iterator support.
+    Also known as: Passive Iterator, Push Iterator
+    """
+
+    def __init__(self, items):
+        self._items = list(items)
+
+    def for_each(self, action):
+        """Apply action to each element (internal iteration)."""
+        for item in self._items:
+            action(item)
+
+    def map(self, transform):
+        """Transform each element, return new collection."""
+        result = []
+        for item in self._items:
+            result.append(transform(item))
+        return InternalIteratorCollection(result)
+
+    def filter(self, predicate):
+        """Keep elements matching predicate."""
+        result = []
+        for item in self._items:
+            if predicate(item):
+                result.append(item)
+        return InternalIteratorCollection(result)
+
+    def reduce(self, combiner, initial):
+        """Reduce collection to single value."""
+        accumulator = initial
+        for item in self._items:
+            accumulator = combiner(accumulator, item)
+        return accumulator
+
+    def any(self, predicate) -> bool:
+        """Check if any element matches."""
+        for item in self._items:
+            if predicate(item):
+                return True
+        return False
+
+    def all(self, predicate) -> bool:
+        """Check if all elements match."""
+        for item in self._items:
+            if not predicate(item):
+                return False
+        return True
+
+
+# Collection controls traversal - client just provides behavior
+numbers = InternalIteratorCollection([1, 2, 3, 4, 5])
+
+# Simple iteration
+numbers.for_each(lambda x: print(x))
+
+# Chained operations (functional style)
+result = (numbers
+    .filter(lambda x: x % 2 == 0)  # Keep evens
+    .map(lambda x: x * 2)           # Double them
+    .reduce(lambda a, b: a + b, 0)) # Sum
+
+print(f"Result: {result}")  # 12 (2*2 + 4*2)
+```
+
+### Comparison and Trade-offs
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">When to Use Each Approach</div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <tr style="background: #e2e8f0;">
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Scenario</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">External</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Internal</th>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Early termination needed</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Preferred</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Harder (exceptions)</td>
+    </tr>
+    <tr style="background: #f8fafc;">
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallel iteration (zip)</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Very difficult</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Simple processing</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Verbose</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Concise</td>
+    </tr>
+    <tr style="background: #f8fafc;">
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallelization</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Client manages</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Easy (Java streams)</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Complex state during iteration</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Closures needed</td>
+    </tr>
+  </table>
+</div>
+
+### Interview Deep Dive: Internal vs External Iterators
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is the difference between internal and external iterators?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+    <span style="color:#22c55e"><strong>External iterators</strong></span> give control to the client - the client explicitly calls <code>next()</code> to get each element. <span style="color:#22c55e"><strong>Internal iterators</strong></span> give control to the collection - you pass a function and the collection applies it to each element. External is like a pull model; internal is like a push model.
+  </div>
+
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Why can't you easily interleave two internal iterators like you can with external iterators?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      Internal iterators run the entire traversal when called - there's no way to pause mid-iteration. With <code>collection.forEach(fn)</code>, the forEach completes before returning. You can't say "give me one element, now give me one from another collection, repeat." External iterators maintain state between calls, so you can alternate: <code>iter1.next()</code>, <code>iter2.next()</code>, <code>iter1.next()</code>, etc.
+    </div>
+
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How do generators/coroutines blur the line between internal and external iterators?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        Generators combine both models. They're <strong>written</strong> like internal iterators (single function with <code>yield</code>) but <strong>behave</strong> like external iterators (caller controls advancement). When you call a generator, it returns an iterator. Each <code>next()</code> runs until the next <code>yield</code>, then suspends. This gives you the clean syntax of internal iteration with the control of external iteration. Python's <code>yield</code>, JavaScript's <code>function*</code>, and C#'s <code>yield return</code> all provide this. It's called <strong>semi-coroutine</strong> or <strong>asymmetric coroutine</strong> - the generator yields to caller, but caller decides when to resume.
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Lazy Evaluation and Infinite Sequences
+
+<span style="color:#22c55e">**Lazy evaluation**</span> is one of the most powerful capabilities of the Iterator pattern. Instead of computing all elements upfront, elements are generated on-demand when requested.
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Eager vs Lazy Evaluation</div>
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #fef2f2; color: #991b1b; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Eager</div>
+      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+        <div style="font-weight: 600; color: #991b1b;">Compute all elements immediately</div>
+        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(n) | Time to first element: O(n) | Infinite: Impossible</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #dcfce7; color: #166534; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Lazy</div>
+      <div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #86efac;">
+        <div style="font-weight: 600; color: #166534;">Compute elements on-demand</div>
+        <div style="color: #14532d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(1) | Time to first element: O(1) | Infinite: Possible</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+### Infinite Sequence Iterators
+
+Lazy iterators can represent <span style="color:#22c55e">**infinite sequences**</span> - something impossible with eager evaluation.
+
+```python
+from typing import Iterator, TypeVar, Callable, Optional
+from abc import ABC, abstractmethod
+
+T = TypeVar('T')
+
+
+class LazyIterator(ABC):
+    """Base class for lazy iterators."""
+
+    @abstractmethod
+    def has_next(self) -> bool:
+        pass
+
+    @abstractmethod
+    def next(self) -> T:
+        pass
+
+
+class FibonacciIterator(LazyIterator):
+    """
+    Infinite Fibonacci sequence iterator.
+    Each number is computed only when requested.
+    """
+
+    def __init__(self, limit: Optional[int] = None):
+        self.limit = limit  # None = infinite
+        self.count = 0
+        self.current = 0
+        self.next_val = 1
+
+    def has_next(self) -> bool:
+        if self.limit is None:
+            return True  # Infinite!
+        return self.count < self.limit
+
+    def next(self) -> int:
+        if not self.has_next():
+            raise StopIteration()
+
+        result = self.current
+        self.current, self.next_val = self.next_val, self.current + self.next_val
+        self.count += 1
+        return result
+
+
+class PrimeIterator(LazyIterator):
+    """
+    Infinite prime number generator.
+    Uses lazy sieve - only computes primes as needed.
+    """
+
+    def __init__(self, limit: Optional[int] = None):
+        self.limit = limit
+        self.count = 0
+        self.primes = []
+        self.candidate = 2
+
+    def _is_prime(self, n: int) -> bool:
+        """Check if n is prime using known primes."""
+        for p in self.primes:
+            if p * p > n:
+                break
+            if n % p == 0:
+                return False
+        return True
+
+    def has_next(self) -> bool:
+        if self.limit is None:
+            return True
+        return self.count < self.limit
+
+    def next(self) -> int:
+        if not self.has_next():
+            raise StopIteration()
+
+        while not self._is_prime(self.candidate):
+            self.candidate += 1
+
+        prime = self.candidate
+        self.primes.append(prime)
+        self.candidate += 1
+        self.count += 1
+        return prime
+
+
+class RangeIterator(LazyIterator):
+    """
+    Lazy range iterator - doesn't store all values.
+    Equivalent to Python's range() which is also lazy.
+    """
+
+    def __init__(self, start: int, stop: int = None, step: int = 1):
+        if stop is None:
+            start, stop = 0, start
+        self.current = start
+        self.stop = stop
+        self.step = step
+
+    def has_next(self) -> bool:
+        if self.step > 0:
+            return self.current < self.stop
+        return self.current > self.stop
+
+    def next(self) -> int:
+        if not self.has_next():
+            raise StopIteration()
+        value = self.current
+        self.current += self.step
+        return value
+
+
+# Usage: Process infinite sequences with early termination
+def find_first_prime_above(threshold: int) -> int:
+    """Find first prime above threshold - lazy evaluation makes this efficient."""
+    primes = PrimeIterator()  # Infinite iterator
+    while primes.has_next():
+        p = primes.next()
+        if p > threshold:
+            return p
+    return -1  # Never reached
+
+print(f"First prime above 1000: {find_first_prime_above(1000)}")  # 1009
+
+
+# Memory-efficient processing of large ranges
+def sum_of_squares_lazy(n: int) -> int:
+    """Sum of squares from 1 to n using lazy evaluation."""
+    total = 0
+    range_iter = RangeIterator(1, n + 1)
+    while range_iter.has_next():
+        x = range_iter.next()
+        total += x * x
+    return total
+```
+
+### Generator-Based Lazy Evaluation
+
+Python generators provide elegant lazy evaluation syntax.
+
+```python
+def fibonacci_generator(limit=None):
+    """Lazy Fibonacci using generator."""
+    a, b = 0, 1
+    count = 0
+    while limit is None or count < limit:
+        yield a
+        a, b = b, a + b
+        count += 1
+
+
+def prime_generator():
+    """Infinite prime generator."""
+    def is_prime(n, primes):
+        for p in primes:
+            if p * p > n:
+                return True
+            if n % p == 0:
+                return False
+        return True
+
+    primes = []
+    candidate = 2
+    while True:
+        if is_prime(candidate, primes):
+            primes.append(candidate)
+            yield candidate
+        candidate += 1
+
+
+def file_line_generator(filepath: str):
+    """
+    Lazy file reader - handles files larger than memory.
+    Each line is read only when needed.
+    """
+    with open(filepath, 'r') as f:
+        for line in f:
+            yield line.rstrip('\n')
+
+
+def paginated_api_generator(fetch_page, page_size=100):
+    """
+    Lazy pagination - fetches pages only when needed.
+    Memory-efficient for large API results.
+    """
+    page = 0
+    while True:
+        items = fetch_page(page, page_size)
+        if not items:
+            break
+        for item in items:
+            yield item
+        page += 1
+
+
+# Lazy pipeline - nothing executes until consumption
+def lazy_pipeline_example():
+    """
+    Chain of lazy operations - each element flows through
+    entire pipeline before next element is processed.
+    """
+
+    def take(n, iterable):
+        """Take first n elements lazily."""
+        count = 0
+        for item in iterable:
+            if count >= n:
+                break
+            yield item
+            count += 1
+
+    def filter_gen(predicate, iterable):
+        """Filter lazily."""
+        for item in iterable:
+            if predicate(item):
+                yield item
+
+    def map_gen(transform, iterable):
+        """Map lazily."""
+        for item in iterable:
+            yield transform(item)
+
+    # This pipeline is lazy - computes only what's needed
+    result = list(
+        take(5,
+            map_gen(lambda x: x * 2,
+                filter_gen(lambda x: x % 3 == 0,
+                    fibonacci_generator()
+                )
+            )
+        )
+    )
+    # Only generates Fibonacci numbers until we find 5 divisible by 3
+    print(f"First 5 Fibonacci divisible by 3, doubled: {result}")
+
+
+lazy_pipeline_example()
+```
+
+### Interview Deep Dive: Lazy Evaluation
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is lazy evaluation and why is it useful in iterators?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+    <span style="color:#22c55e"><strong>Lazy evaluation</strong></span> means computing values only when they're actually needed, not in advance. In iterators, this means each element is generated when <code>next()</code> is called, not when the iterator is created. Benefits: constant memory usage regardless of collection size, ability to represent infinite sequences, faster time-to-first-result, and short-circuit optimization when you don't need all elements.
+  </div>
+
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement lazy evaluation for database query results?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      Use <strong>cursor-based iteration</strong> with buffering. The iterator maintains a connection and cursor to the database. When the buffer empties, fetch the next batch (e.g., 1000 rows). This gives you constant memory usage even for millions of rows. Key considerations: connection lifecycle management (who closes it?), transaction isolation (what if data changes?), and network efficiency (batch size tuning). Database-specific: PostgreSQL uses <code>DECLARE CURSOR</code>, MySQL uses streaming result sets with <code>useCursorFetch=true</code>.
+    </div>
+
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: What are the challenges of lazy evaluation in distributed systems?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        <strong>Serialization:</strong> Can't serialize a lazy iterator's computation state across network boundaries - must materialize or use continuation tokens. <strong>Fault tolerance:</strong> If a node fails mid-iteration, how do you resume? Need checkpointing or idempotent reprocessing. <strong>Resource leaks:</strong> Lazy iterators hold resources (connections, file handles) - in distributed context, forgotten iterators cause resource exhaustion on remote nodes. <strong>Backpressure:</strong> Producer may generate faster than consumer can process - need flow control mechanisms. <strong>Consistency:</strong> Data may change between pages - use snapshot isolation or accept eventual consistency. Systems like Kafka solve this with commit offsets, Elasticsearch uses scroll contexts with point-in-time snapshots.
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Concurrent Modification Problem
+
+One of the most critical challenges with iterators is handling modifications to the underlying collection during iteration. This is known as the <span style="color:#22c55e">**concurrent modification problem**</span>.
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
+  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">The Core Problem</div>
+  <div style="color: #7f1d1d; line-height: 1.7;">
+    When you modify a collection while iterating over it, the iterator's internal state (index, pointers) may become invalid. This can cause skipped elements, duplicate processing, crashes, or undefined behavior. This affects both single-threaded modifications and multi-threaded access.
+  </div>
+</div>
+
+### What Goes Wrong
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
+  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Concurrent Modification Scenarios</div>
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; align-items: flex-start; gap: 1rem;">
+      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">1</div>
+      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+        <div style="font-weight: 600; color: #991b1b;">Removal During Iteration</div>
+        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Removing current element shifts indices, causing next element to be skipped</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 1rem;">
+      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">2</div>
+      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+        <div style="font-weight: 600; color: #991b1b;">Insertion During Iteration</div>
+        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Adding elements may cause some to be visited twice or iterator to loop forever</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 1rem;">
+      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">3</div>
+      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+        <div style="font-weight: 600; color: #991b1b;">Concurrent Thread Modification</div>
+        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Another thread modifies collection while iteration is in progress - race condition</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+```python
+# PROBLEM: Concurrent modification examples
+
+# Example 1: Removing during iteration - WRONG
+numbers = [1, 2, 3, 4, 5, 6]
+for i, num in enumerate(numbers):
+    if num % 2 == 0:
+        del numbers[i]  # Shifts indices! Elements get skipped
+print(numbers)  # [1, 3, 5] - but 4 was skipped!
+
+# Example 2: What actually happens
+#   i=0: see 1, keep
+#   i=1: see 2, delete -> [1, 3, 4, 5, 6]
+#   i=2: see 4, delete -> [1, 3, 5, 6]  (3 was skipped!)
+#   i=3: see 6, delete -> [1, 3, 5]
+
+# Example 3: Python dictionary - raises exception
+data = {'a': 1, 'b': 2, 'c': 3}
+try:
+    for key in data:
+        if data[key] == 2:
+            del data[key]  # RuntimeError!
+except RuntimeError as e:
+    print(f"Error: {e}")
+```
+
+### Solution Strategies
+
+```python
+from typing import List, TypeVar, Callable, Set
+from copy import copy
+import threading
+
+T = TypeVar('T')
+
+
+# Strategy 1: Snapshot Iterator (Copy-on-Iterate)
+class SnapshotIterator:
+    """
+    Takes a snapshot of collection at creation time.
+    Iteration is safe but may show stale data.
+    """
+
+    def __init__(self, collection: List[T]):
+        self._snapshot = list(collection)  # Copy!
+        self._index = 0
+
+    def has_next(self) -> bool:
+        return self._index < len(self._snapshot)
+
+    def next(self) -> T:
+        if not self.has_next():
+            raise StopIteration()
+        value = self._snapshot[self._index]
+        self._index += 1
+        return value
+
+
+# Strategy 2: Fail-Fast Iterator
+class FailFastCollection:
+    """
+    Detects modifications and raises exception.
+    Used by Java's ArrayList, HashMap, etc.
+    """
+
+    def __init__(self):
+        self._items: List[T] = []
+        self._mod_count = 0  # Modification counter
+
+    def add(self, item: T):
+        self._items.append(item)
+        self._mod_count += 1
+
+    def remove(self, item: T):
+        self._items.remove(item)
+        self._mod_count += 1
+
+    def iterator(self):
+        return FailFastIterator(self)
+
+
+class FailFastIterator:
+    """
+    Throws exception if collection modified during iteration.
+    """
+
+    def __init__(self, collection: FailFastCollection):
+        self._collection = collection
+        self._items = collection._items
+        self._expected_mod_count = collection._mod_count
+        self._index = 0
+
+    def _check_modification(self):
+        if self._collection._mod_count != self._expected_mod_count:
+            raise RuntimeError("Collection modified during iteration")
+
+    def has_next(self) -> bool:
+        self._check_modification()
+        return self._index < len(self._items)
+
+    def next(self) -> T:
+        self._check_modification()
+        if not self.has_next():
+            raise StopIteration()
+        value = self._items[self._index]
+        self._index += 1
+        return value
+
+    def remove(self):
+        """
+        Safe removal via iterator - updates mod count.
+        This is the ONLY safe way to remove during iteration.
+        """
+        self._check_modification()
+        if self._index <= 0:
+            raise RuntimeError("next() must be called before remove()")
+
+        self._index -= 1
+        del self._items[self._index]
+        self._expected_mod_count = self._collection._mod_count = \
+            self._collection._mod_count + 1
+
+
+# Strategy 3: Copy-on-Write Collection
+class CopyOnWriteList:
+    """
+    Thread-safe iteration via copy-on-write semantics.
+    Reads are fast, writes are expensive but safe.
+    Used by Java's CopyOnWriteArrayList.
+    """
+
+    def __init__(self):
+        self._items: List[T] = []
+        self._lock = threading.Lock()
+
+    def add(self, item: T):
+        with self._lock:
+            new_items = list(self._items)
+            new_items.append(item)
+            self._items = new_items  # Atomic reference swap
+
+    def remove(self, item: T):
+        with self._lock:
+            new_items = list(self._items)
+            new_items.remove(item)
+            self._items = new_items
+
+    def __iter__(self):
+        # Returns iterator over current snapshot
+        # No lock needed - reference read is atomic
+        return iter(self._items)
+
+
+# Strategy 4: Deferred Modifications
+class DeferredModificationIterator:
+    """
+    Collects modifications and applies them after iteration.
+    """
+
+    def __init__(self, collection: List[T]):
+        self._collection = collection
+        self._to_remove: Set[int] = set()
+        self._to_add: List[T] = []
+        self._index = 0
+
+    def has_next(self) -> bool:
+        return self._index < len(self._collection)
+
+    def next(self) -> T:
+        value = self._collection[self._index]
+        self._index += 1
+        return value
+
+    def mark_for_removal(self):
+        """Mark current element for removal after iteration."""
+        self._to_remove.add(self._index - 1)
+
+    def queue_addition(self, item: T):
+        """Queue item to be added after iteration."""
+        self._to_add.append(item)
+
+    def apply_modifications(self):
+        """Apply all queued modifications."""
+        # Remove in reverse order to maintain indices
+        for idx in sorted(self._to_remove, reverse=True):
+            del self._collection[idx]
+
+        # Add queued items
+        self._collection.extend(self._to_add)
+
+        # Clear queues
+        self._to_remove.clear()
+        self._to_add.clear()
+
+
+# Strategy 5: Iterate Backwards for Safe Removal
+def safe_remove_backwards(items: List[T], predicate: Callable[[T], bool]):
+    """
+    Remove items matching predicate by iterating backwards.
+    Index shifts don't affect unprocessed elements.
+    """
+    for i in range(len(items) - 1, -1, -1):
+        if predicate(items[i]):
+            del items[i]
+
+
+# Usage examples
+print("=== Fail-Fast Iterator ===")
+collection = FailFastCollection()
+for i in range(5):
+    collection.add(i)
+
+it = collection.iterator()
+while it.has_next():
+    value = it.next()
+    print(f"Value: {value}")
+    if value == 2:
+        it.remove()  # Safe removal via iterator
+
+print("=== Deferred Modifications ===")
+items = [1, 2, 3, 4, 5]
+it = DeferredModificationIterator(items)
+while it.has_next():
+    value = it.next()
+    if value % 2 == 0:
+        it.mark_for_removal()
+    if value == 3:
+        it.queue_addition(30)
+
+it.apply_modifications()
+print(f"After modifications: {items}")  # [1, 3, 5, 30]
+```
+
+### Interview Deep Dive: Concurrent Modification
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What causes ConcurrentModificationException in Java?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+    Java's fail-fast iterators track a <span style="color:#22c55e"><strong>modification count</strong></span>. When an iterator is created, it records the collection's current mod count. On each <code>next()</code> or <code>hasNext()</code> call, it compares the expected count to the actual count. If they differ, the collection was modified outside the iterator, so it throws <code>ConcurrentModificationException</code>. Note: This is a best-effort detection, not a guarantee - it can miss some modifications.
+  </div>
+
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Compare CopyOnWriteArrayList vs Collections.synchronizedList for concurrent iteration.</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      <strong>CopyOnWriteArrayList:</strong> Creates a new array copy on every write. Iterators see a snapshot - never throws CME, no locking during iteration. Best for read-heavy workloads with infrequent writes. <strong>synchronizedList:</strong> Uses mutex for all operations. Iteration still requires external locking to prevent CME. <code>synchronized(list) { for item in list { ... } }</code>. Better for write-heavy workloads. <strong>Key difference:</strong> COWAL trades write performance for iteration safety; synchronizedList requires manual locking for safe iteration.
+    </div>
+
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you implement a lock-free concurrent iterator for a skip list?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        Use <strong>hazard pointers</strong> or <strong>epoch-based reclamation</strong> to prevent nodes from being freed while any iterator references them. Iterator stores current node pointer. On <code>next()</code>: (1) Read current node's next pointer using atomic load, (2) If next is marked deleted (using pointer tagging), skip to next-next, (3) Use CAS to update any traversal state. <strong>Key insight:</strong> Never dereference a pointer that might be freed. Either use RAII with shared ownership (like <code>Arc</code> in Rust) or manual memory reclamation schemes. Java's <code>ConcurrentSkipListMap</code> uses a different approach: deleted nodes remain linked with a marker node until cleanup. Lock-free iteration is complex because you must handle: node deletion during traversal, ABA problems, and memory reclamation.
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## Custom Collection Iteration
+
+Implementing iterators for custom data structures requires careful consideration of the collection's characteristics and traversal semantics.
+
+### Binary Tree with Multiple Traversals
+
+```python
+from abc import ABC, abstractmethod
+from typing import TypeVar, Generic, List, Optional, Iterator as TypingIterator
+from collections import deque
+
+T = TypeVar('T')
+
+
+class Iterator(ABC, Generic[T]):
+    """Abstract iterator interface."""
+
+    @abstractmethod
+    def has_next(self) -> bool:
+        pass
+
+    @abstractmethod
+    def next(self) -> T:
+        pass
+
+    @abstractmethod
+    def reset(self) -> None:
+        pass
+
+
+class TreeNode(Generic[T]):
+    """Binary tree node."""
+
+    def __init__(self, value: T,
+                 left: 'TreeNode[T]' = None,
+                 right: 'TreeNode[T]' = None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+class InOrderIterator(Iterator[T]):
+    """
+    In-order traversal: Left -> Root -> Right
+    For BST, produces sorted order.
+    Uses O(h) space where h = tree height.
+    """
+
+    def __init__(self, root: TreeNode[T]):
+        self.root = root
+        self.stack: List[TreeNode[T]] = []
+        self._push_left(root)
+
+    def _push_left(self, node: TreeNode[T]) -> None:
+        while node:
+            self.stack.append(node)
+            node = node.left
+
+    def has_next(self) -> bool:
+        return len(self.stack) > 0
+
+    def next(self) -> T:
+        if not self.has_next():
+            raise StopIteration()
+
+        node = self.stack.pop()
+        self._push_left(node.right)
+        return node.value
+
+    def reset(self) -> None:
+        self.stack = []
+        self._push_left(self.root)
+
+
+class PreOrderIterator(Iterator[T]):
+    """
+    Pre-order traversal: Root -> Left -> Right
+    Useful for tree copying, serialization.
+    """
+
+    def __init__(self, root: TreeNode[T]):
+        self.root = root
+        self.stack: List[TreeNode[T]] = [root] if root else []
+
+    def has_next(self) -> bool:
+        return len(self.stack) > 0
+
+    def next(self) -> T:
+        if not self.has_next():
+            raise StopIteration()
+
+        node = self.stack.pop()
+        # Push right first so left is processed first
+        if node.right:
+            self.stack.append(node.right)
+        if node.left:
+            self.stack.append(node.left)
+
+        return node.value
+
+    def reset(self) -> None:
+        self.stack = [self.root] if self.root else []
+
+
+class LevelOrderIterator(Iterator[T]):
+    """
+    Level-order (BFS) traversal.
+    Visits nodes level by level, left to right.
+    """
+
+    def __init__(self, root: TreeNode[T]):
+        self.root = root
+        self.queue: deque = deque()
+        if root:
+            self.queue.append(root)
+
+    def has_next(self) -> bool:
+        return len(self.queue) > 0
+
+    def next(self) -> T:
+        if not self.has_next():
+            raise StopIteration()
+
+        node = self.queue.popleft()
+        if node.left:
+            self.queue.append(node.left)
+        if node.right:
+            self.queue.append(node.right)
+
+        return node.value
+
+    def reset(self) -> None:
+        self.queue = deque()
+        if self.root:
+            self.queue.append(self.root)
+
+
+class MorrisInOrderIterator(Iterator[T]):
+    """
+    Morris traversal: O(1) space in-order traversal!
+    Uses threading (temporary modification of tree pointers).
+
+    This is an advanced technique for memory-constrained systems.
+    """
+
+    def __init__(self, root: TreeNode[T]):
+        self.root = root
+        self.current = root
+        self._next_value: Optional[T] = None
+        self._advance()
+
+    def _advance(self) -> None:
+        """Find next node using Morris traversal."""
+        self._next_value = None
+
+        while self.current:
+            if self.current.left is None:
+                # No left child - visit current
+                self._next_value = self.current.value
+                self.current = self.current.right
+                return
+            else:
+                # Find inorder predecessor
+                predecessor = self.current.left
+                while predecessor.right and predecessor.right != self.current:
+                    predecessor = predecessor.right
+
+                if predecessor.right is None:
+                    # Create thread
+                    predecessor.right = self.current
+                    self.current = self.current.left
+                else:
+                    # Thread exists - remove it and visit
+                    predecessor.right = None
+                    self._next_value = self.current.value
+                    self.current = self.current.right
+                    return
+
+    def has_next(self) -> bool:
+        return self._next_value is not None
+
+    def next(self) -> T:
+        if not self.has_next():
+            raise StopIteration()
+        value = self._next_value
+        self._advance()
+        return value
+
+    def reset(self) -> None:
+        self.current = self.root
+        self._advance()
+
+
+class BinaryTree(Generic[T]):
+    """
+    Binary tree with multiple iterator types.
+    Demonstrates the Aggregate interface.
+    """
+
+    def __init__(self, root: TreeNode[T] = None):
+        self.root = root
+
+    def in_order_iterator(self) -> InOrderIterator[T]:
+        return InOrderIterator(self.root)
+
+    def pre_order_iterator(self) -> PreOrderIterator[T]:
+        return PreOrderIterator(self.root)
+
+    def level_order_iterator(self) -> LevelOrderIterator[T]:
+        return LevelOrderIterator(self.root)
+
+    def morris_iterator(self) -> MorrisInOrderIterator[T]:
+        return MorrisInOrderIterator(self.root)
+
+    def __iter__(self) -> TypingIterator[T]:
+        """Default iteration uses in-order."""
+        return self._inorder_generator(self.root)
+
+    def _inorder_generator(self, node: TreeNode[T]) -> TypingIterator[T]:
+        if node:
+            yield from self._inorder_generator(node.left)
+            yield node.value
+            yield from self._inorder_generator(node.right)
+```
+
+### Graph Iterator with Cycle Detection
+
+```python
+from typing import Dict, Set, List, Optional
+from collections import deque
+from enum import Enum
+
+
+class TraversalOrder(Enum):
+    DFS_PRE = "dfs_preorder"
+    DFS_POST = "dfs_postorder"
+    BFS = "bfs"
+    TOPOLOGICAL = "topological"
+
+
+class GraphIterator:
+    """
+    Iterator for directed graph with cycle detection.
+    Supports multiple traversal strategies.
+    """
+
+    def __init__(self,
+                 adjacency: Dict[str, List[str]],
+                 start: str,
+                 order: TraversalOrder = TraversalOrder.BFS):
+        self.adjacency = adjacency
+        self.start = start
+        self.order = order
+        self.visited: Set[str] = set()
+        self._output: List[str] = []
+        self._index = 0
+        self._cycles_found: List[List[str]] = []
+
+        if order == TraversalOrder.BFS:
+            self._build_bfs()
+        elif order == TraversalOrder.DFS_PRE:
+            self._build_dfs_pre()
+        elif order == TraversalOrder.DFS_POST:
+            self._build_dfs_post()
+        elif order == TraversalOrder.TOPOLOGICAL:
+            self._build_topological()
+
+    def _build_bfs(self) -> None:
+        queue = deque([self.start])
+        self.visited.add(self.start)
+
+        while queue:
+            node = queue.popleft()
+            self._output.append(node)
+
+            for neighbor in self.adjacency.get(node, []):
+                if neighbor not in self.visited:
+                    self.visited.add(neighbor)
+                    queue.append(neighbor)
+
+    def _build_dfs_pre(self) -> None:
+        stack = [self.start]
+
+        while stack:
+            node = stack.pop()
+            if node in self.visited:
+                continue
+
+            self.visited.add(node)
+            self._output.append(node)
+
+            # Add neighbors in reverse for left-to-right order
+            for neighbor in reversed(self.adjacency.get(node, [])):
+                if neighbor not in self.visited:
+                    stack.append(neighbor)
+
+    def _build_dfs_post(self) -> None:
+        def dfs(node: str, path: Set[str]):
+            if node in self.visited:
+                return
+            if node in path:
+                # Cycle detected
+                return
+
+            path.add(node)
+
+            for neighbor in self.adjacency.get(node, []):
+                dfs(neighbor, path)
+
+            path.remove(node)
+            self.visited.add(node)
+            self._output.append(node)
+
+        dfs(self.start, set())
+
+    def _build_topological(self) -> None:
+        """Kahn's algorithm for topological sort."""
+        in_degree: Dict[str, int] = {n: 0 for n in self.adjacency}
+
+        for neighbors in self.adjacency.values():
+            for neighbor in neighbors:
+                in_degree[neighbor] = in_degree.get(neighbor, 0) + 1
+
+        queue = deque([n for n, d in in_degree.items() if d == 0])
+
+        while queue:
+            node = queue.popleft()
+            self._output.append(node)
+
+            for neighbor in self.adjacency.get(node, []):
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+
+        # Check for cycles (not all nodes processed)
+        if len(self._output) != len(self.adjacency):
+            remaining = set(self.adjacency.keys()) - set(self._output)
+            raise ValueError(f"Graph has cycles involving: {remaining}")
+
+    def has_next(self) -> bool:
+        return self._index < len(self._output)
+
+    def next(self) -> str:
+        if not self.has_next():
+            raise StopIteration()
+        value = self._output[self._index]
+        self._index += 1
+        return value
+
+    def reset(self) -> None:
+        self._index = 0
+
+
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+print("BFS traversal:")
+it = GraphIterator(graph, 'A', TraversalOrder.BFS)
+while it.has_next():
+    print(it.next(), end=" ")
+print()
+
+print("DFS Pre-order:")
+it = GraphIterator(graph, 'A', TraversalOrder.DFS_PRE)
+while it.has_next():
+    print(it.next(), end=" ")
+print()
+```
+
+### Skip List Iterator
+
+```python
+import random
+from typing import Optional, Generic, TypeVar
+
+K = TypeVar('K')
+V = TypeVar('V')
+
+
+class SkipListNode(Generic[K, V]):
+    """Node in a skip list."""
+
+    def __init__(self, key: K, value: V, level: int):
+        self.key = key
+        self.value = value
+        self.forward: List[Optional['SkipListNode[K, V]']] = [None] * (level + 1)
+
+
+class SkipList(Generic[K, V]):
+    """
+    Skip list with iterator support.
+    O(log n) search, insert, delete with O(n) space.
+    """
+
+    MAX_LEVEL = 16
+    P = 0.5
+
+    def __init__(self):
+        self.header = SkipListNode(None, None, self.MAX_LEVEL)
+        self.level = 0
+        self._size = 0
+
+    def _random_level(self) -> int:
+        level = 0
+        while random.random() < self.P and level < self.MAX_LEVEL:
+            level += 1
+        return level
+
+    def insert(self, key: K, value: V) -> None:
+        update = [None] * (self.MAX_LEVEL + 1)
+        current = self.header
+
+        for i in range(self.level, -1, -1):
+            while current.forward[i] and current.forward[i].key < key:
+                current = current.forward[i]
+            update[i] = current
+
+        current = current.forward[0]
+
+        if current and current.key == key:
+            current.value = value
+        else:
+            new_level = self._random_level()
+
+            if new_level > self.level:
+                for i in range(self.level + 1, new_level + 1):
+                    update[i] = self.header
+                self.level = new_level
+
+            new_node = SkipListNode(key, value, new_level)
+
+            for i in range(new_level + 1):
+                new_node.forward[i] = update[i].forward[i]
+                update[i].forward[i] = new_node
+
+            self._size += 1
+
+    def __iter__(self):
+        """Return iterator over (key, value) pairs in sorted order."""
+        return SkipListIterator(self)
+
+    def range_iterator(self, start_key: K, end_key: K):
+        """Return iterator over range [start_key, end_key)."""
+        return SkipListRangeIterator(self, start_key, end_key)
+
+
+class SkipListIterator(Generic[K, V]):
+    """Iterator over all elements in sorted order."""
+
+    def __init__(self, skip_list: SkipList[K, V]):
+        self.skip_list = skip_list
+        self.current = skip_list.header.forward[0]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current is None:
+            raise StopIteration()
+
+        key, value = self.current.key, self.current.value
+        self.current = self.current.forward[0]
+        return (key, value)
+
+
+class SkipListRangeIterator(Generic[K, V]):
+    """Iterator over a range of keys."""
+
+    def __init__(self, skip_list: SkipList[K, V], start_key: K, end_key: K):
+        self.end_key = end_key
+
+        # Find starting position
+        current = skip_list.header
+        for i in range(skip_list.level, -1, -1):
+            while current.forward[i] and current.forward[i].key < start_key:
+                current = current.forward[i]
+
+        self.current = current.forward[0]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current is None or self.current.key >= self.end_key:
+            raise StopIteration()
+
+        key, value = self.current.key, self.current.value
+        self.current = self.current.forward[0]
+        return (key, value)
+```
+
+### Interview Deep Dive: Custom Collection Iteration
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What methods must a custom iterator implement?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+    At minimum: <code>has_next()</code> (or <code>hasNext()</code>) to check if more elements exist, and <code>next()</code> to retrieve the next element. In Python, implement <code>__iter__()</code> returning self and <code>__next__()</code> which raises <code>StopIteration</code> when exhausted. Optional but common: <code>reset()</code> to restart iteration, <code>remove()</code> for safe removal, <code>peek()</code> to look ahead without advancing.
+  </div>
+
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement an efficient range iterator for a B-tree?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      B-tree range iteration: (1) Navigate to leaf containing start key in O(log n), (2) Store path from root to current leaf on a stack for backtracking, (3) Iterate through keys in current leaf, (4) When leaf exhausted, pop stack to find next leaf - follow right sibling pointers if available, otherwise backtrack and descend. <strong>Key optimization:</strong> B-trees often have leaf-level linked lists (B+ trees), making range scans O(k) where k = result count after initial O(log n) seek. Store only the path, not all nodes - O(log n) space.
+    </div>
+
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: Design an iterator that merges k sorted iterators in O(log k) time per element.</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        Use a <strong>min-heap of (value, iterator_index)</strong> pairs. Initialize by calling <code>next()</code> on each iterator and pushing to heap - O(k log k). On each <code>next()</code> call: (1) Pop minimum from heap - O(log k), (2) Record the value and which iterator it came from, (3) If that iterator has more elements, call its <code>next()</code> and push new value to heap - O(log k), (4) Return recorded value. Total: O(log k) per element. <strong>For very large k:</strong> Consider tournament trees or cascade merging. <strong>With different-sized iterators:</strong> Priority queue naturally handles exhaustion. <strong>Edge case:</strong> Handle empty iterators at initialization by not adding to heap.
+      </div>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -58,6 +1395,7 @@ The Iterator pattern provides a way to access elements of a collection sequentia
     <li><strong>Elasticsearch:</strong> Scroll API provides iterator-like access to large result sets</li>
     <li><strong>AWS S3:</strong> List objects pagination uses continuation tokens (iterator pattern)</li>
     <li><strong>Google BigQuery:</strong> Page tokens for iterating through query results</li>
+    <li><strong>Redis SCAN:</strong> Cursor-based iteration for large keyspaces without blocking</li>
   </ul>
 </div>
 
@@ -68,7 +1406,6 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
   <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Iterator Pattern Architecture</div>
   <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-    <!-- Left side: Collection -->
     <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
       <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
         <div style="font-weight: 600; color: #475569; font-style: italic;">Iterable (interface)</div>
@@ -81,11 +1418,9 @@ The Iterator pattern provides a way to access elements of a collection sequentia
         <div style="font-size: 0.8rem; color: #3b82f6; margin-top: 8px; font-family: monospace;">- elements[]<br/>+ createIterator()</div>
       </div>
     </div>
-    <!-- Arrow between -->
     <div style="display: flex; align-items: center; color: #64748b; font-size: 1.5rem;">
       creates &#8594;
     </div>
-    <!-- Right side: Iterator -->
     <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
       <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
         <div style="font-weight: 600; color: #475569; font-style: italic;">Iterator (interface)</div>
@@ -113,7 +1448,7 @@ The Iterator pattern provides a way to access elements of a collection sequentia
     <li><strong>Lazy evaluation:</strong> Generate elements on-demand without loading all into memory</li>
     <li><strong>Infinite sequences:</strong> Fibonacci numbers, random generators, event streams</li>
     <li><strong>Paginated APIs:</strong> Iterate through pages of results transparently</li>
-    <li><strong>Composite structures:</strong> Uniform traversal of tree hierarchies</li>
+    <li><strong>[[Composite]](/topic/design-patterns/composite) structures:</strong> Uniform traversal of tree hierarchies</li>
     <li><strong>Filter/Transform chains:</strong> Build processing pipelines</li>
   </ul>
 </div>
@@ -132,472 +1467,6 @@ The Iterator pattern provides a way to access elements of a collection sequentia
     <li><strong>Ignoring iterator invalidation:</strong> Collection changes may invalidate active iterators</li>
   </ul>
 </div>
-
----
-
-## Python Implementation: Multiple Traversal Strategies
-
-```python
-from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List, Optional, Iterator as TypingIterator
-from collections import deque
-
-
-T = TypeVar('T')
-
-
-# ============================================================
-# ITERATOR INTERFACE
-# ============================================================
-
-class Iterator(ABC, Generic[T]):
-    """
-    Abstract iterator interface.
-    Defines the contract for all concrete iterators.
-    """
-
-    @abstractmethod
-    def has_next(self) -> bool:
-        """Check if there are more elements."""
-        pass
-
-    @abstractmethod
-    def next(self) -> T:
-        """Get the next element."""
-        pass
-
-    @abstractmethod
-    def reset(self) -> None:
-        """Reset iterator to beginning."""
-        pass
-
-
-# ============================================================
-# BINARY TREE STRUCTURE
-# ============================================================
-
-class TreeNode(Generic[T]):
-    """Binary tree node."""
-
-    def __init__(self, value: T, left: 'TreeNode[T]' = None, right: 'TreeNode[T]' = None):
-        self.value = value
-        self.left = left
-        self.right = right
-
-    def __repr__(self):
-        return f"TreeNode({self.value})"
-
-
-# ============================================================
-# CONCRETE ITERATORS - Different Traversal Strategies
-# ============================================================
-
-class InOrderIterator(Iterator[T]):
-    """
-    In-order traversal: Left -> Root -> Right
-    For BST, this gives sorted order.
-    """
-
-    def __init__(self, root: TreeNode[T]):
-        self.root = root
-        self.stack: List[TreeNode[T]] = []
-        self._push_left(root)
-
-    def _push_left(self, node: TreeNode[T]) -> None:
-        """Push all left children onto stack."""
-        while node:
-            self.stack.append(node)
-            node = node.left
-
-    def has_next(self) -> bool:
-        return len(self.stack) > 0
-
-    def next(self) -> T:
-        if not self.has_next():
-            raise StopIteration("No more elements")
-
-        node = self.stack.pop()
-        self._push_left(node.right)
-        return node.value
-
-    def reset(self) -> None:
-        self.stack = []
-        self._push_left(self.root)
-
-
-class PreOrderIterator(Iterator[T]):
-    """
-    Pre-order traversal: Root -> Left -> Right
-    Useful for copying trees or prefix expressions.
-    """
-
-    def __init__(self, root: TreeNode[T]):
-        self.root = root
-        self.stack: List[TreeNode[T]] = [root] if root else []
-
-    def has_next(self) -> bool:
-        return len(self.stack) > 0
-
-    def next(self) -> T:
-        if not self.has_next():
-            raise StopIteration("No more elements")
-
-        node = self.stack.pop()
-
-        # Push right first so left is processed first (LIFO)
-        if node.right:
-            self.stack.append(node.right)
-        if node.left:
-            self.stack.append(node.left)
-
-        return node.value
-
-    def reset(self) -> None:
-        self.stack = [self.root] if self.root else []
-
-
-class PostOrderIterator(Iterator[T]):
-    """
-    Post-order traversal: Left -> Right -> Root
-    Useful for deletion or postfix expressions.
-    """
-
-    def __init__(self, root: TreeNode[T]):
-        self.root = root
-        self.stack: List[TreeNode[T]] = []
-        self.output: List[T] = []
-        self._build_traversal(root)
-        self.index = 0
-
-    def _build_traversal(self, node: TreeNode[T]) -> None:
-        """Build post-order traversal iteratively."""
-        if not node:
-            return
-
-        stack = [node]
-        while stack:
-            current = stack.pop()
-            self.output.append(current.value)
-            if current.left:
-                stack.append(current.left)
-            if current.right:
-                stack.append(current.right)
-
-        self.output.reverse()
-
-    def has_next(self) -> bool:
-        return self.index < len(self.output)
-
-    def next(self) -> T:
-        if not self.has_next():
-            raise StopIteration("No more elements")
-
-        value = self.output[self.index]
-        self.index += 1
-        return value
-
-    def reset(self) -> None:
-        self.index = 0
-
-
-class LevelOrderIterator(Iterator[T]):
-    """
-    Level-order (BFS) traversal: Level by level, left to right.
-    Useful for finding shortest path or level-wise processing.
-    """
-
-    def __init__(self, root: TreeNode[T]):
-        self.root = root
-        self.queue: deque = deque()
-        if root:
-            self.queue.append(root)
-
-    def has_next(self) -> bool:
-        return len(self.queue) > 0
-
-    def next(self) -> T:
-        if not self.has_next():
-            raise StopIteration("No more elements")
-
-        node = self.queue.popleft()
-
-        if node.left:
-            self.queue.append(node.left)
-        if node.right:
-            self.queue.append(node.right)
-
-        return node.value
-
-    def reset(self) -> None:
-        self.queue = deque()
-        if self.root:
-            self.queue.append(self.root)
-
-
-# ============================================================
-# COLLECTION CLASS - The Aggregate
-# ============================================================
-
-class BinaryTree(Generic[T]):
-    """
-    Binary tree that can provide multiple iterator types.
-    This is the Aggregate in the Iterator pattern.
-    """
-
-    def __init__(self, root: TreeNode[T] = None):
-        self.root = root
-
-    def in_order_iterator(self) -> InOrderIterator[T]:
-        """Get in-order iterator (sorted for BST)."""
-        return InOrderIterator(self.root)
-
-    def pre_order_iterator(self) -> PreOrderIterator[T]:
-        """Get pre-order iterator."""
-        return PreOrderIterator(self.root)
-
-    def post_order_iterator(self) -> PostOrderIterator[T]:
-        """Get post-order iterator."""
-        return PostOrderIterator(self.root)
-
-    def level_order_iterator(self) -> LevelOrderIterator[T]:
-        """Get level-order (BFS) iterator."""
-        return LevelOrderIterator(self.root)
-
-    # ==========================================
-    # Python Protocol: __iter__ for native loops
-    # ==========================================
-
-    def __iter__(self) -> TypingIterator[T]:
-        """Default iteration uses in-order traversal."""
-        return self._generate_inorder(self.root)
-
-    def _generate_inorder(self, node: TreeNode[T]) -> TypingIterator[T]:
-        """Generator-based in-order traversal."""
-        if node:
-            yield from self._generate_inorder(node.left)
-            yield node.value
-            yield from self._generate_inorder(node.right)
-
-
-# ============================================================
-# FILTERING ITERATOR - Decorator Pattern
-# ============================================================
-
-class FilterIterator(Iterator[T]):
-    """
-    Iterator that filters elements based on a predicate.
-    Demonstrates iterator composition.
-    """
-
-    def __init__(self, inner: Iterator[T], predicate):
-        self.inner = inner
-        self.predicate = predicate
-        self._next_value: Optional[T] = None
-        self._has_next = False
-        self._advance()
-
-    def _advance(self) -> None:
-        """Find next element matching predicate."""
-        while self.inner.has_next():
-            value = self.inner.next()
-            if self.predicate(value):
-                self._next_value = value
-                self._has_next = True
-                return
-        self._has_next = False
-
-    def has_next(self) -> bool:
-        return self._has_next
-
-    def next(self) -> T:
-        if not self._has_next:
-            raise StopIteration("No more elements")
-        value = self._next_value
-        self._advance()
-        return value
-
-    def reset(self) -> None:
-        self.inner.reset()
-        self._advance()
-
-
-# ============================================================
-# LAZY INFINITE ITERATOR - Fibonacci Example
-# ============================================================
-
-class FibonacciIterator(Iterator[int]):
-    """
-    Infinite iterator generating Fibonacci numbers.
-    Demonstrates lazy evaluation - computes on demand.
-    """
-
-    def __init__(self, limit: int = None):
-        self.limit = limit
-        self.count = 0
-        self.a = 0
-        self.b = 1
-
-    def has_next(self) -> bool:
-        if self.limit is None:
-            return True  # Infinite!
-        return self.count < self.limit
-
-    def next(self) -> int:
-        if not self.has_next():
-            raise StopIteration("Reached limit")
-
-        value = self.a
-        self.a, self.b = self.b, self.a + self.b
-        self.count += 1
-        return value
-
-    def reset(self) -> None:
-        self.count = 0
-        self.a = 0
-        self.b = 1
-
-
-# ============================================================
-# PAGINATED API ITERATOR
-# ============================================================
-
-class PaginatedAPIIterator(Iterator[dict]):
-    """
-    Iterator for paginated API results.
-    Fetches pages lazily as needed.
-    """
-
-    def __init__(self, fetch_page, page_size: int = 10):
-        self.fetch_page = fetch_page  # Function to fetch a page
-        self.page_size = page_size
-        self.current_page = 0
-        self.current_items: List[dict] = []
-        self.item_index = 0
-        self.exhausted = False
-        self._load_next_page()
-
-    def _load_next_page(self) -> None:
-        """Load the next page of results."""
-        if self.exhausted:
-            return
-
-        items = self.fetch_page(self.current_page, self.page_size)
-
-        if not items:
-            self.exhausted = True
-            self.current_items = []
-        else:
-            self.current_items = items
-            self.item_index = 0
-            self.current_page += 1
-
-    def has_next(self) -> bool:
-        if self.item_index < len(self.current_items):
-            return True
-
-        if not self.exhausted:
-            self._load_next_page()
-            return len(self.current_items) > 0
-
-        return False
-
-    def next(self) -> dict:
-        if not self.has_next():
-            raise StopIteration("No more items")
-
-        item = self.current_items[self.item_index]
-        self.item_index += 1
-        return item
-
-    def reset(self) -> None:
-        self.current_page = 0
-        self.current_items = []
-        self.item_index = 0
-        self.exhausted = False
-        self._load_next_page()
-
-
-# ============================================================
-# USAGE EXAMPLES
-# ============================================================
-
-if __name__ == "__main__":
-    # Build a binary search tree
-    #         4
-    #       /   \
-    #      2     6
-    #     / \   / \
-    #    1   3 5   7
-
-    tree = BinaryTree(
-        TreeNode(4,
-            TreeNode(2, TreeNode(1), TreeNode(3)),
-            TreeNode(6, TreeNode(5), TreeNode(7))
-        )
-    )
-
-    # Different traversal strategies
-    print("=== Tree Traversals ===")
-
-    print("In-order (sorted):", end=" ")
-    it = tree.in_order_iterator()
-    while it.has_next():
-        print(it.next(), end=" ")
-    print()  # 1 2 3 4 5 6 7
-
-    print("Pre-order:", end=" ")
-    it = tree.pre_order_iterator()
-    while it.has_next():
-        print(it.next(), end=" ")
-    print()  # 4 2 1 3 6 5 7
-
-    print("Level-order (BFS):", end=" ")
-    it = tree.level_order_iterator()
-    while it.has_next():
-        print(it.next(), end=" ")
-    print()  # 4 2 6 1 3 5 7
-
-    # Python native iteration
-    print("\nUsing for-loop (in-order):", list(tree))
-
-    # Filtered iterator - only even numbers
-    print("\n=== Filtered Iterator ===")
-    filtered = FilterIterator(
-        tree.in_order_iterator(),
-        lambda x: x % 2 == 0
-    )
-    print("Even numbers:", end=" ")
-    while filtered.has_next():
-        print(filtered.next(), end=" ")
-    print()  # 2 4 6
-
-    # Fibonacci iterator
-    print("\n=== Fibonacci Iterator ===")
-    fib = FibonacciIterator(limit=10)
-    print("First 10 Fibonacci:", end=" ")
-    while fib.has_next():
-        print(fib.next(), end=" ")
-    print()  # 0 1 1 2 3 5 8 13 21 34
-
-    # Paginated API simulation
-    print("\n=== Paginated API Iterator ===")
-
-    # Simulate API with 25 items
-    all_items = [{"id": i, "name": f"Item {i}"} for i in range(1, 26)]
-
-    def mock_fetch_page(page: int, size: int) -> List[dict]:
-        start = page * size
-        end = start + size
-        return all_items[start:end]
-
-    api_iter = PaginatedAPIIterator(mock_fetch_page, page_size=10)
-    print("Items from paginated API:")
-    count = 0
-    while api_iter.has_next() and count < 15:
-        item = api_iter.next()
-        print(f"  {item}")
-        count += 1
-```
 
 ---
 
@@ -711,7 +1580,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 
 ---
 
-## Interview Questions
+## Comprehensive Interview Questions
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
 <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How would you implement an iterator for a binary tree that supports both forward and backward traversal?</summary>
@@ -760,6 +1629,7 @@ Solutions:
 2. **Fail-fast:** Track modification count, throw if changed
 3. **Copy-on-write:** Iterator works on immutable snapshot
 4. **Concurrent collections:** Use thread-safe data structures
+5. **Iterator.remove():** Use iterator's own remove method
 </div>
 </details>
 
@@ -798,7 +1668,7 @@ class DatabaseIterator:
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: Compare internal vs external iterators.</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: Compare internal vs external iterators with code examples.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong>
 - **External Iterator:** Client controls iteration (next/hasNext). More flexible but client must manage loop.
@@ -829,7 +1699,60 @@ Internal is better when: simple processing, parallel execution, cleaner code
 4. Deduplication of seen content
 5. Lazy loading for performance
 
-Use a merge iterator with priority queue, where each source is an iterator. Pop from highest-priority source, refill as needed.
+<strong>Implementation approach:</strong>
+Use a merge iterator with priority queue, where each source is an iterator. Pop from highest-priority source, refill as needed. Use seen-set for deduplication. Consider time-decay scoring for ranking.
+
+```python
+class FeedMergeIterator:
+    def __init__(self, sources, scorer):
+        self.heap = []  # (score, source_idx, item)
+        self.sources = sources
+        self.scorer = scorer
+        self.seen = set()
+        self._initialize()
+
+    def _initialize(self):
+        for idx, source in enumerate(self.sources):
+            self._add_from_source(idx)
+
+    def _add_from_source(self, idx):
+        if self.sources[idx].has_next():
+            item = self.sources[idx].next()
+            score = self.scorer(item)
+            heappush(self.heap, (-score, idx, item))
+
+    def next(self):
+        while self.heap:
+            _, idx, item = heappop(self.heap)
+            self._add_from_source(idx)
+            if item.id not in self.seen:
+                self.seen.add(item.id)
+                return item
+        raise StopIteration()
+```
+</div>
+</details>
+
+<details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q6: Explain Morris traversal and when you would use it.</summary>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Morris traversal is an O(1) space tree traversal algorithm that uses <span style="color:#22c55e">**threading**</span> - temporarily modifying tree pointers to eliminate the need for a stack.
+
+<strong>How it works:</strong>
+1. If current node has no left child, visit it and go right
+2. Otherwise, find inorder predecessor (rightmost in left subtree)
+3. If predecessor's right is null, create thread to current, go left
+4. If predecessor's right points to current (thread exists), remove thread, visit current, go right
+
+<strong>Use cases:</strong>
+- Memory-constrained embedded systems
+- Very deep trees where O(h) stack space is problematic
+- When tree modification is acceptable during traversal
+
+<strong>Trade-offs:</strong>
+- Modifies tree during traversal (not thread-safe)
+- Slightly more complex logic
+- Same O(n) time complexity
 </div>
 </details>
 
@@ -847,14 +1770,34 @@ Use a merge iterator with priority queue, where each source is an iterator. Pop 
     <li><strong>Consider thread safety:</strong> Document if iterator is thread-safe or not</li>
     <li><strong>Support reset when needed:</strong> Allow restarting iteration without recreating</li>
     <li><strong>Use type hints:</strong> Generic typing helps catch errors early</li>
+    <li><strong>Document mutation behavior:</strong> Be clear about concurrent modification handling</li>
   </ol>
+</div>
+
+---
+
+## Summary: Key Interview Points
+
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: #f8fafc;">
+  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #475569; padding-bottom: 0.75rem;">Memorize These</div>
+  <ul style="margin: 0; padding-left: 1.25rem; line-height: 2;">
+    <li><strong>Core concept:</strong> Separate traversal from collection structure</li>
+    <li><strong>Internal vs External:</strong> Who controls iteration - collection or client?</li>
+    <li><strong>Lazy evaluation:</strong> Compute elements on-demand, enables infinite sequences</li>
+    <li><strong>Concurrent modification:</strong> Fail-fast, snapshot, or copy-on-write solutions</li>
+    <li><strong>Python protocol:</strong> __iter__ returns iterator, __next__ returns next element</li>
+    <li><strong>Generator advantage:</strong> Implicit state management, cleaner syntax</li>
+    <li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Visitor]](/topic/design-patterns/visitor), [[Factory Method]](/topic/design-patterns/factory-method)</li>
+  </ul>
 </div>
 
 ---
 
 ## Related Patterns
 
-- [Composite](/topic/design-patterns/composite) - Often traversed using iterators
-- [Factory Method](/topic/design-patterns/factory-method) - Create appropriate iterator type
-- [Visitor](/topic/design-patterns/visitor) - Alternative for complex operations on elements
-- [Memento](/topic/design-patterns/memento) - Iterator can store traversal checkpoints
+- **[[Composite]](/topic/design-patterns/composite)** - Often traversed using iterators for uniform access to tree structures
+- **[[Factory Method]](/topic/design-patterns/factory-method)** - Creates appropriate iterator type for different collections
+- **[[Visitor]](/topic/design-patterns/visitor)** - Alternative for complex operations on elements; often used with iterators
+- **[[Memento]](/topic/design-patterns/memento)** - Iterator can store traversal checkpoints for resumption
+- **[[Strategy]](/topic/design-patterns/strategy)** - Different traversal strategies can be encapsulated as strategy objects
+- **[[Observer]](/topic/design-patterns/observer)** - Push-based iteration similar to internal iterators
