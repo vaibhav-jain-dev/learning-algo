@@ -175,18 +175,20 @@ services:
     container_name: dsalgo-learn-app
     hostname: dsalgo-learn-app
     labels:
-      - "cloudflare:learn.arvaibhav.cloud:8080"
-      - "cloudflare:learn-api.arvaibhav.cloud:8080"
-    # Dependencies - can be removed if using external services via env vars
+      - "cloudflare:learn.arvaibhav.cloud:3001"
+      - "cloudflare:learn-api.arvaibhav.cloud:8081"
+    # Dependencies - elasticsearch is optional (app handles ES unavailability gracefully)
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
-      dsalgo-elasticsearch:
-        condition: service_healthy
       dsalgo-redis:
         condition: service_healthy
+      dsalgo-elasticsearch:
+        condition: service_started
+        required: false
     ports:
-      - "8080:8080"
+      - "3001:8080"  # Frontend (learn.arvaibhav.cloud)
+      - "8081:8080"  # Backend API (learn-api.arvaibhav.cloud)
     volumes:
       # PRODUCTION: Only persistent data volumes, no code mounts
       # Code is COPY'd in Dockerfile for consistent deployments
@@ -259,18 +261,20 @@ services:
     image: dsalgo-learn-platform:dev
     container_name: dsalgo-learn-dev
     labels:
-      - "cloudflare:learn.arvaibhav.cloud:8080"
-      - "cloudflare:learn-api.arvaibhav.cloud:8080"
-    # Dependencies - can be removed if using external services via env vars
+      - "cloudflare:learn.arvaibhav.cloud:3001"
+      - "cloudflare:learn-api.arvaibhav.cloud:8081"
+    # Dependencies - elasticsearch is optional (app handles ES unavailability gracefully)
     depends_on:
       dsalgo-postgres:
         condition: service_healthy
-      dsalgo-elasticsearch:
-        condition: service_healthy
       dsalgo-redis:
         condition: service_healthy
+      dsalgo-elasticsearch:
+        condition: service_started
+        required: false
     ports:
-      - "8080:8080"
+      - "3001:8080"  # Frontend (learn.arvaibhav.cloud)
+      - "8081:8080"  # Backend API (learn-api.arvaibhav.cloud)
     volumes:
       # DEV: Mount source code for hot reload (air watches for changes)
       # Code changes trigger automatic server restart via air
