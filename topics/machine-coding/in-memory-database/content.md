@@ -2230,17 +2230,1343 @@ if __name__ == "__main__":
 
 ---
 
+---
+
+## Section 6: Advanced Data Structures
+
+### B-Tree and B+ Tree for Range Queries
+
+While <span style="color: #16a34a; font-weight: 600;">hash maps</span> provide O(1) lookup, they cannot efficiently support <span style="color: #16a34a; font-weight: 600;">range queries</span> like "find all keys between A and B". For these operations, we need ordered data structures. See [[database-sharding]](/system-design/database-sharding) for how these structures scale across nodes.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<div style="font-weight: 700; color: #1e293b; font-size: 18px; text-align: center; margin-bottom: 28px;">B+ Tree Structure for In-Memory Database</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+
+<div style="background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="color: #92400e; font-weight: 700; font-size: 14px; margin-bottom: 8px;">Root Node (Internal)</div>
+<div style="display: flex; gap: 8px; justify-content: center;">
+<div style="background: #fff; border: 1px solid #fcd34d; padding: 8px 16px; border-radius: 6px; font-family: monospace; font-size: 12px;">key: 50</div>
+<div style="background: #fff; border: 1px solid #fcd34d; padding: 8px 16px; border-radius: 6px; font-family: monospace; font-size: 12px;">key: 100</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 80px;">
+<div style="width: 2px; height: 30px; background: #94a3b8;"></div>
+<div style="width: 2px; height: 30px; background: #94a3b8;"></div>
+<div style="width: 2px; height: 30px; background: #94a3b8;"></div>
+</div>
+
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px;">
+<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px;">Leaf Node</div>
+<div style="font-family: monospace; font-size: 11px; color: #14532d;">10, 20, 30, 40</div>
+<div style="font-size: 10px; color: #6b7280; margin-top: 4px;">+ data pointers</div>
+</div>
+<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px;">
+<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px;">Leaf Node</div>
+<div style="font-family: monospace; font-size: 11px; color: #14532d;">50, 60, 70, 80</div>
+<div style="font-size: 10px; color: #6b7280; margin-top: 4px;">+ data pointers</div>
+</div>
+<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px;">
+<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px;">Leaf Node</div>
+<div style="font-family: monospace; font-size: 11px; color: #14532d;">100, 110, 120</div>
+<div style="font-size: 10px; color: #6b7280; margin-top: 4px;">+ data pointers</div>
+</div>
+</div>
+
+<div style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 8px;">
+<div style="background: #dbeafe; padding: 6px 12px; border-radius: 6px; font-size: 11px; color: #1e40af;">Leaf nodes linked for range scans</div>
+<div style="color: #3b82f6;">→→→</div>
+</div>
+
+</div>
+</div>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Key Insight: B+ Tree Advantages for In-Memory Use</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8;">
+<ul style="margin: 0; padding-left: 20px;">
+<li><span style="color: #16a34a; font-weight: 600;">Cache-friendly</span>: High fanout (100-1000 keys per node) means shallow trees (2-4 levels for millions of keys)</li>
+<li><span style="color: #16a34a; font-weight: 600;">Range queries</span>: O(log n + k) where k = result size, thanks to linked leaf nodes</li>
+<li><span style="color: #16a34a; font-weight: 600;">Sorted iteration</span>: Sequential scan through leaf chain for ORDER BY operations</li>
+<li><span style="color: #16a34a; font-weight: 600;">Prefix compression</span>: Internal nodes only store separator keys, not full data</li>
+</ul>
+</div>
+</div>
+
+```python
+from typing import List, Optional, Any, Tuple
+from dataclasses import dataclass, field
+
+@dataclass
+class BPlusTreeNode:
+    """
+    B+ Tree node optimized for in-memory use.
+
+    Design decisions:
+    1. ORDER = 4 for demonstration (production uses 100-1000)
+    2. Leaf nodes store actual values (not disk pointers)
+    3. Internal nodes store only keys (separator values)
+    """
+    ORDER = 4  # Maximum keys per node (use higher in production)
+
+    keys: List[Any] = field(default_factory=list)
+    is_leaf: bool = True
+
+    # For leaf nodes: actual values
+    values: List[Any] = field(default_factory=list)
+
+    # For internal nodes: child pointers
+    children: List['BPlusTreeNode'] = field(default_factory=list)
+
+    # For leaf nodes: linked list pointer
+    next_leaf: Optional['BPlusTreeNode'] = None
+
+    def is_full(self) -> bool:
+        return len(self.keys) >= self.ORDER
+
+    def is_underfull(self) -> bool:
+        """Node has fewer than minimum keys (ORDER/2)."""
+        return len(self.keys) < self.ORDER // 2
+
+class BPlusTree:
+    """
+    B+ Tree implementation for range-queryable secondary index.
+
+    Use cases in in-memory database:
+    1. Secondary indexes on sortable fields
+    2. Sorted sets (like Redis ZSET)
+    3. Time-series data with timestamp ranges
+
+    Time Complexities:
+    - Search: O(log n)
+    - Insert: O(log n)
+    - Delete: O(log n)
+    - Range query [a,b]: O(log n + k) where k = result count
+    """
+
+    def __init__(self):
+        self.root = BPlusTreeNode()
+        self._size = 0
+
+    def search(self, key: Any) -> Optional[Any]:
+        """Find value by exact key match."""
+        node = self._find_leaf(key)
+
+        for i, k in enumerate(node.keys):
+            if k == key:
+                return node.values[i]
+        return None
+
+    def _find_leaf(self, key: Any) -> BPlusTreeNode:
+        """Navigate tree to find appropriate leaf node."""
+        node = self.root
+        while not node.is_leaf:
+            # Find child to follow
+            i = 0
+            while i < len(node.keys) and key >= node.keys[i]:
+                i += 1
+            node = node.children[i]
+        return node
+
+    def range_query(self, start: Any, end: Any) -> List[Tuple[Any, Any]]:
+        """
+        Find all key-value pairs where start <= key <= end.
+
+        This is the killer feature of B+ trees: O(log n + k)
+        where k is the number of results, thanks to leaf linking.
+        """
+        results = []
+        node = self._find_leaf(start)
+
+        # Scan through leaf nodes
+        while node:
+            for i, key in enumerate(node.keys):
+                if key > end:
+                    return results
+                if key >= start:
+                    results.append((key, node.values[i]))
+            node = node.next_leaf
+
+        return results
+
+    def insert(self, key: Any, value: Any) -> None:
+        """Insert key-value pair, splitting nodes as needed."""
+        leaf = self._find_leaf(key)
+
+        # Find insertion position
+        insert_pos = 0
+        while insert_pos < len(leaf.keys) and leaf.keys[insert_pos] < key:
+            insert_pos += 1
+
+        # Update if key exists
+        if insert_pos < len(leaf.keys) and leaf.keys[insert_pos] == key:
+            leaf.values[insert_pos] = value
+            return
+
+        # Insert new key-value
+        leaf.keys.insert(insert_pos, key)
+        leaf.values.insert(insert_pos, value)
+        self._size += 1
+
+        # Split if overflow
+        if leaf.is_full():
+            self._split_leaf(leaf)
+
+    def _split_leaf(self, leaf: BPlusTreeNode) -> None:
+        """Split full leaf node, propagating split upward if needed."""
+        mid = len(leaf.keys) // 2
+
+        # Create new leaf with right half
+        new_leaf = BPlusTreeNode(is_leaf=True)
+        new_leaf.keys = leaf.keys[mid:]
+        new_leaf.values = leaf.values[mid:]
+        new_leaf.next_leaf = leaf.next_leaf
+
+        # Truncate original leaf
+        leaf.keys = leaf.keys[:mid]
+        leaf.values = leaf.values[:mid]
+        leaf.next_leaf = new_leaf
+
+        # Promote split key to parent
+        split_key = new_leaf.keys[0]
+        self._insert_into_parent(leaf, split_key, new_leaf)
+
+    def _insert_into_parent(self, left: BPlusTreeNode,
+                            key: Any, right: BPlusTreeNode) -> None:
+        """Insert split key into parent, creating new root if needed."""
+        # Find parent (simplified - production would track parent during descent)
+        parent = self._find_parent(self.root, left)
+
+        if parent is None:
+            # Create new root
+            new_root = BPlusTreeNode(is_leaf=False)
+            new_root.keys = [key]
+            new_root.children = [left, right]
+            self.root = new_root
+            return
+
+        # Insert into parent
+        insert_pos = 0
+        while insert_pos < len(parent.keys) and parent.keys[insert_pos] < key:
+            insert_pos += 1
+
+        parent.keys.insert(insert_pos, key)
+        parent.children.insert(insert_pos + 1, right)
+
+        # Split parent if needed (recursive)
+        if parent.is_full():
+            self._split_internal(parent)
+
+    def _find_parent(self, current: BPlusTreeNode,
+                     target: BPlusTreeNode) -> Optional[BPlusTreeNode]:
+        """Find parent of target node."""
+        if current.is_leaf or current == target:
+            return None
+
+        for child in current.children:
+            if child == target:
+                return current
+            result = self._find_parent(child, target)
+            if result:
+                return result
+        return None
+```
+
+### Hash Map vs B-Tree: Decision Matrix
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
+<div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 20px;">When to Use Each Data Structure</div>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+<div style="flex: 1; min-width: 280px; background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 14px;">Use Hash Map When</div>
+<div style="color: #1e3a8a; font-size: 13px; line-height: 1.9;">
+<div style="margin-bottom: 8px;">Primary key lookup (GET by key)</div>
+<div style="margin-bottom: 8px;">Existence checks (EXISTS)</div>
+<div style="margin-bottom: 8px;">Session/cache storage</div>
+<div style="margin-bottom: 8px;">No ordering requirements</div>
+<div style="margin-bottom: 8px;">Maximum single-key performance</div>
+<div style="background: #fff; padding: 10px; border-radius: 8px; margin-top: 12px;">
+<div style="color: #1e40af; font-weight: 600; font-size: 12px;">Complexity: O(1) average</div>
+<div style="color: #3b82f6; font-size: 11px;">Examples: Redis strings, Memcached</div>
+</div>
+</div>
+</div>
+
+<div style="flex: 1; min-width: 280px; background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 20px;">
+<div style="color: #166534; font-weight: 700; font-size: 15px; margin-bottom: 14px;">Use B-Tree When</div>
+<div style="color: #14532d; font-size: 13px; line-height: 1.9;">
+<div style="margin-bottom: 8px;">Range queries (BETWEEN, >, <)</div>
+<div style="margin-bottom: 8px;">Sorted iteration (ORDER BY)</div>
+<div style="margin-bottom: 8px;">Prefix matching (LIKE 'abc%')</div>
+<div style="margin-bottom: 8px;">Min/Max operations</div>
+<div style="margin-bottom: 8px;">Time-series with windowing</div>
+<div style="background: #fff; padding: 10px; border-radius: 8px; margin-top: 12px;">
+<div style="color: #166534; font-weight: 600; font-size: 12px;">Complexity: O(log n)</div>
+<div style="color: #22c55e; font-size: 11px;">Examples: Redis ZSET, SQLite indexes</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+### Radix Tree for Prefix Operations
+
+For string-heavy workloads requiring <span style="color: #16a34a; font-weight: 600;">prefix matching</span>, a [[radix-tree]](/data-structures/tries) (compressed trie) offers optimal performance. Redis uses this internally for key pattern matching.
+
+```python
+from dataclasses import dataclass, field
+from typing import Dict, Optional, List, Any
+
+@dataclass
+class RadixNode:
+    """
+    Radix tree node for memory-efficient prefix indexing.
+
+    Key insight: Radix trees compress single-child chains,
+    reducing memory from O(total characters) to O(unique prefixes).
+    """
+    edge_label: str = ""  # Compressed edge label
+    value: Optional[Any] = None
+    is_terminal: bool = False
+    children: Dict[str, 'RadixNode'] = field(default_factory=dict)
+
+class RadixTree:
+    """
+    Radix tree (Patricia trie) for prefix-based operations.
+
+    Use cases:
+    1. Key pattern matching (KEYS prefix*)
+    2. Autocomplete/typeahead
+    3. IP routing tables
+    4. URL routing
+
+    Complexity:
+    - Insert: O(k) where k = key length
+    - Search: O(k)
+    - Prefix search: O(k + m) where m = matching keys
+    - Space: O(unique_prefixes) - much better than trie
+    """
+
+    def __init__(self):
+        self.root = RadixNode()
+        self._size = 0
+
+    def insert(self, key: str, value: Any) -> None:
+        """Insert key-value pair into radix tree."""
+        node = self.root
+        remaining = key
+
+        while remaining:
+            # Find matching child
+            match_char = remaining[0]
+
+            if match_char not in node.children:
+                # Create new leaf
+                new_node = RadixNode(
+                    edge_label=remaining,
+                    value=value,
+                    is_terminal=True
+                )
+                node.children[match_char] = new_node
+                self._size += 1
+                return
+
+            child = node.children[match_char]
+            edge = child.edge_label
+
+            # Find common prefix length
+            common_len = 0
+            while (common_len < len(edge) and
+                   common_len < len(remaining) and
+                   edge[common_len] == remaining[common_len]):
+                common_len += 1
+
+            if common_len == len(edge):
+                # Full edge match - continue down
+                remaining = remaining[common_len:]
+                node = child
+            else:
+                # Partial match - need to split edge
+                self._split_edge(node, match_char, child,
+                               common_len, remaining, value)
+                return
+
+        # Exact match - update terminal
+        node.value = value
+        node.is_terminal = True
+        if not node.is_terminal:
+            self._size += 1
+
+    def _split_edge(self, parent: RadixNode, char: str,
+                    child: RadixNode, split_pos: int,
+                    remaining: str, value: Any) -> None:
+        """Split edge at split_pos when partial match occurs."""
+        # Create intermediate node
+        common_prefix = child.edge_label[:split_pos]
+        child_suffix = child.edge_label[split_pos:]
+        new_suffix = remaining[split_pos:]
+
+        intermediate = RadixNode(edge_label=common_prefix)
+
+        # Old child becomes child of intermediate
+        child.edge_label = child_suffix
+        intermediate.children[child_suffix[0]] = child
+
+        # New node for new key
+        if new_suffix:
+            new_node = RadixNode(
+                edge_label=new_suffix,
+                value=value,
+                is_terminal=True
+            )
+            intermediate.children[new_suffix[0]] = new_node
+        else:
+            intermediate.value = value
+            intermediate.is_terminal = True
+
+        parent.children[char] = intermediate
+        self._size += 1
+
+    def find_by_prefix(self, prefix: str) -> List[tuple]:
+        """
+        Find all key-value pairs with given prefix.
+
+        This is the killer feature for pattern matching:
+        KEYS user:* becomes find_by_prefix("user:")
+        """
+        results = []
+        node = self.root
+        current_key = ""
+        remaining = prefix
+
+        # Navigate to prefix node
+        while remaining and node:
+            match_char = remaining[0]
+            if match_char not in node.children:
+                return []  # Prefix not found
+
+            child = node.children[match_char]
+            edge = child.edge_label
+
+            if remaining.startswith(edge):
+                current_key += edge
+                remaining = remaining[len(edge):]
+                node = child
+            elif edge.startswith(remaining):
+                # Partial edge match - prefix ends mid-edge
+                current_key += remaining
+                remaining = ""
+                node = child
+            else:
+                return []  # No match
+
+        # Collect all descendants
+        self._collect_all(node, current_key, results)
+        return results
+
+    def _collect_all(self, node: RadixNode,
+                     prefix: str, results: List) -> None:
+        """Recursively collect all terminal nodes under prefix."""
+        if node.is_terminal:
+            results.append((prefix, node.value))
+
+        for char, child in node.children.items():
+            self._collect_all(child, prefix + child.edge_label, results)
+```
+
+### Interview Questions: Data Structures
+
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #10b981; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #065f46; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: Foundational Understanding</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #059669; font-weight: 600;">Q: Why does Redis use both hash tables AND skip lists for sorted sets?</div>
+<div style="color: #064e3b; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Redis ZSET stores data in both structures simultaneously: (1) <span style="color: #16a34a; font-weight: 600;">Hash table</span> maps member -> score for O(1) score lookup and duplicate detection. (2) <span style="color: #16a34a; font-weight: 600;">Skip list</span> orders by score for O(log n) range queries. The space overhead (storing each member twice) is acceptable because it enables both ZSCORE (O(1)) and ZRANGEBYSCORE (O(log n + k)) to be fast. This is a classic <span style="color: #16a34a; font-weight: 600;">space-time tradeoff</span>.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: 2px solid #34d399; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #047857; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Implementation Depth</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #10b981; font-weight: 600;">Q: How would you implement a secondary index that supports both equality and range queries efficiently?</div>
+<div style="color: #065f46; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Use a <span style="color: #16a34a; font-weight: 600;">B+ tree</span> as the index structure. For equality (WHERE age = 25): traverse tree to leaf, O(log n). For range (WHERE age BETWEEN 20 AND 30): traverse to first matching leaf, then scan linked leaves, O(log n + k). For composite indexes (age, name): B+ tree with composite keys enables both "age = 25" and "age = 25 AND name LIKE 'A%'" efficiently. Maintain hash table for primary key, B+ tree for secondary indexes. Index updates must be <span style="color: #16a34a; font-weight: 600;">atomic with data updates</span> - use transaction to update both.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #047857; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Production Considerations</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #34d399; font-weight: 600;">Q: How would you handle memory pressure when B-tree indexes become too large for available RAM?</div>
+<div style="color: #065f46; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Several strategies: (1) <span style="color: #16a34a; font-weight: 600;">Partial indexes</span>: Only index frequently queried subset (WHERE status = 'active'). (2) <span style="color: #16a34a; font-weight: 600;">Index eviction</span>: Treat cold index nodes as evictable cache, rebuild from WAL on access. (3) <span style="color: #16a34a; font-weight: 600;">Sparse indexes</span>: Index every Nth key, scan within blocks. (4) <span style="color: #16a34a; font-weight: 600;">Bloom filters</span>: Pre-filter queries that definitely won't match before B-tree lookup - see [[caching]](/system-design/caching). (5) <span style="color: #16a34a; font-weight: 600;">Hybrid storage</span>: Keep hot internal nodes in memory, cold leaves on SSD with memory-mapped access. Modern systems like RocksDB use LSM trees which are designed for memory/disk hybrid from the start.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## Section 7: Query Optimization
+
+### Query Planning and Execution
+
+<span style="color: #16a34a; font-weight: 600;">Query optimization</span> in in-memory databases differs from disk-based systems because I/O is not the bottleneck - instead, we optimize for CPU cache efficiency and memory access patterns.
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
+<div style="font-weight: 700; color: #1e293b; font-size: 18px; text-align: center; margin-bottom: 28px;">Query Execution Pipeline</div>
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+
+<div style="background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%); border: 2px solid #ef4444; border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px;">
+<div style="color: #991b1b; font-weight: 700; font-size: 12px;">Parse</div>
+<div style="color: #7f1d1d; font-size: 10px; margin-top: 4px;">Command validation</div>
+</div>
+
+<div style="color: #94a3b8; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%); border: 2px solid #f59e0b; border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px;">
+<div style="color: #92400e; font-weight: 700; font-size: 12px;">Plan</div>
+<div style="color: #78350f; font-size: 10px; margin-top: 4px;">Index selection</div>
+</div>
+
+<div style="color: #94a3b8; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px;">
+<div style="color: #166534; font-weight: 700; font-size: 12px;">Optimize</div>
+<div style="color: #14532d; font-size: 10px; margin-top: 4px;">Cost estimation</div>
+</div>
+
+<div style="color: #94a3b8; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%); border: 2px solid #3b82f6; border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: 700; font-size: 12px;">Execute</div>
+<div style="color: #1e3a8a; font-size: 10px; margin-top: 4px;">Data retrieval</div>
+</div>
+
+<div style="color: #94a3b8; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(180deg, #f3e8ff 0%, #faf5ff 100%); border: 2px solid #a855f7; border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px;">
+<div style="color: #6b21a8; font-weight: 700; font-size: 12px;">Return</div>
+<div style="color: #581c87; font-size: 10px; margin-top: 4px;">Serialize result</div>
+</div>
+
+</div>
+</div>
+
+### Index Selection Strategy
+
+```python
+from enum import Enum
+from typing import List, Optional, Dict, Any, Tuple
+from dataclasses import dataclass
+
+class QueryType(Enum):
+    POINT = "point"       # Exact key match
+    RANGE = "range"       # Between, >, <
+    PREFIX = "prefix"     # LIKE 'abc%'
+    SCAN = "scan"         # Full scan (worst case)
+
+@dataclass
+class QueryPlan:
+    """
+    Query execution plan with cost estimation.
+
+    In-memory databases optimize for:
+    1. Minimize memory accesses (cache misses are expensive)
+    2. Maximize sequential access (prefetcher-friendly)
+    3. Avoid full scans on large datasets
+    """
+    query_type: QueryType
+    index_name: Optional[str]
+    estimated_rows: int
+    estimated_cost: float  # Abstract cost units
+    access_pattern: str
+
+    def __repr__(self):
+        return (f"QueryPlan(type={self.query_type.value}, "
+                f"index={self.index_name}, "
+                f"est_rows={self.estimated_rows}, "
+                f"cost={self.estimated_cost:.2f})")
+
+class QueryOptimizer:
+    """
+    Simple query optimizer for in-memory database.
+
+    Key principles:
+    1. Use index if selectivity > threshold (typically 10-20%)
+    2. Prefer hash index for equality, B-tree for range
+    3. Consider index intersection for complex predicates
+
+    See [[storage]](/system-design/storage) for disk-based optimization.
+    """
+
+    # Cost model constants (tuned for in-memory access)
+    HASH_LOOKUP_COST = 1.0
+    BTREE_LOOKUP_COST = 3.0  # O(log n) tree traversal
+    SCAN_PER_ROW_COST = 0.1  # Sequential access is fast
+    RANDOM_ACCESS_MULTIPLIER = 5.0  # Cache miss penalty
+
+    def __init__(self, stats: Dict[str, 'TableStats']):
+        self.stats = stats
+
+    def plan_query(self, table: str, predicates: List['Predicate'],
+                   indexes: Dict[str, 'IndexInfo']) -> QueryPlan:
+        """
+        Generate optimal query plan.
+
+        Steps:
+        1. Enumerate possible access paths
+        2. Estimate cost of each path
+        3. Select minimum cost path
+        """
+        table_stats = self.stats.get(table)
+        if not table_stats:
+            return self._plan_full_scan(table, table_stats)
+
+        candidates = []
+
+        for pred in predicates:
+            # Check for matching index
+            if pred.column in indexes:
+                idx = indexes[pred.column]
+                plan = self._plan_index_access(pred, idx, table_stats)
+                candidates.append(plan)
+
+        # Always consider full scan
+        candidates.append(self._plan_full_scan(table, table_stats))
+
+        # Select minimum cost
+        return min(candidates, key=lambda p: p.estimated_cost)
+
+    def _plan_index_access(self, pred: 'Predicate',
+                           idx: 'IndexInfo',
+                           stats: 'TableStats') -> QueryPlan:
+        """Plan query using index access."""
+
+        if pred.operator == '=' and idx.type == 'hash':
+            # Hash index for equality - best case
+            return QueryPlan(
+                query_type=QueryType.POINT,
+                index_name=idx.name,
+                estimated_rows=1,
+                estimated_cost=self.HASH_LOOKUP_COST,
+                access_pattern="Hash lookup"
+            )
+
+        if pred.operator in ('=', '>', '<', 'BETWEEN') and idx.type == 'btree':
+            # B-tree index for range
+            selectivity = self._estimate_selectivity(pred, stats)
+            estimated_rows = int(stats.row_count * selectivity)
+
+            cost = (self.BTREE_LOOKUP_COST +
+                   estimated_rows * self.SCAN_PER_ROW_COST)
+
+            return QueryPlan(
+                query_type=QueryType.RANGE if pred.operator != '=' else QueryType.POINT,
+                index_name=idx.name,
+                estimated_rows=estimated_rows,
+                estimated_cost=cost,
+                access_pattern=f"B-tree {pred.operator} scan"
+            )
+
+        # Index exists but not optimal for this predicate
+        return self._plan_full_scan(pred.column, stats)
+
+    def _plan_full_scan(self, table: str,
+                        stats: Optional['TableStats']) -> QueryPlan:
+        """Plan full table scan (fallback)."""
+        row_count = stats.row_count if stats else 10000
+
+        return QueryPlan(
+            query_type=QueryType.SCAN,
+            index_name=None,
+            estimated_rows=row_count,
+            estimated_cost=row_count * self.SCAN_PER_ROW_COST,
+            access_pattern="Full scan"
+        )
+
+    def _estimate_selectivity(self, pred: 'Predicate',
+                              stats: 'TableStats') -> float:
+        """
+        Estimate fraction of rows matching predicate.
+
+        Techniques:
+        1. Histograms for value distribution
+        2. Min/max for range estimation
+        3. NDV (number of distinct values) for equality
+        """
+        if pred.operator == '=':
+            # Assume uniform distribution
+            ndv = stats.distinct_values.get(pred.column, stats.row_count)
+            return 1.0 / ndv
+
+        if pred.operator in ('>', '<', 'BETWEEN'):
+            # Simple linear interpolation based on min/max
+            # Production systems use histograms
+            return 0.1  # Conservative estimate
+
+        return 0.5  # Unknown operator
+
+@dataclass
+class Predicate:
+    column: str
+    operator: str
+    value: Any
+
+@dataclass
+class IndexInfo:
+    name: str
+    type: str  # 'hash' or 'btree'
+    columns: List[str]
+
+@dataclass
+class TableStats:
+    row_count: int
+    distinct_values: Dict[str, int]
+```
+
+### Memory-Efficient Query Execution
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Design Principle: Streaming vs Materialization</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8;">
+For complex queries with multiple operations (filter, sort, aggregate), choose between:
+
+<div style="display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 200px; background: #fff; padding: 12px; border-radius: 8px;">
+<div style="font-weight: 600; color: #1e40af; font-size: 13px;">Materialization</div>
+<div style="font-size: 12px; color: #3b82f6; margin-top: 4px;">Store intermediate results. Simpler but uses O(n) memory.</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #fff; padding: 12px; border-radius: 8px;">
+<div style="font-weight: 600; color: #1e40af; font-size: 13px;">Streaming/Pipelining</div>
+<div style="font-size: 12px; color: #3b82f6; margin-top: 4px;">Process row-by-row. O(1) memory but can't backtrack.</div>
+</div>
+</div>
+</div>
+</div>
+
+```python
+from typing import Iterator, Callable, Any, List
+from abc import ABC, abstractmethod
+
+class QueryOperator(ABC):
+    """
+    Volcano-style query operator (iterator model).
+
+    Each operator implements open/next/close interface.
+    Data flows upward through operator tree, one row at a time.
+
+    Benefits:
+    1. Memory efficient - O(1) for most operators
+    2. Pipelining - no intermediate materialization
+    3. Short-circuit - can stop early (LIMIT)
+    """
+
+    @abstractmethod
+    def open(self) -> None:
+        """Initialize operator state."""
+        pass
+
+    @abstractmethod
+    def next(self) -> Optional[dict]:
+        """Return next row or None if exhausted."""
+        pass
+
+    @abstractmethod
+    def close(self) -> None:
+        """Clean up resources."""
+        pass
+
+class ScanOperator(QueryOperator):
+    """Scan all entries from primary store."""
+
+    def __init__(self, store: dict):
+        self._store = store
+        self._iterator = None
+
+    def open(self) -> None:
+        self._iterator = iter(self._store.items())
+
+    def next(self) -> Optional[dict]:
+        try:
+            key, entry = next(self._iterator)
+            return {'_key': key, '_value': entry.value, '_entry': entry}
+        except StopIteration:
+            return None
+
+    def close(self) -> None:
+        self._iterator = None
+
+class FilterOperator(QueryOperator):
+    """Filter rows based on predicate."""
+
+    def __init__(self, child: QueryOperator,
+                 predicate: Callable[[dict], bool]):
+        self._child = child
+        self._predicate = predicate
+
+    def open(self) -> None:
+        self._child.open()
+
+    def next(self) -> Optional[dict]:
+        while True:
+            row = self._child.next()
+            if row is None:
+                return None
+            if self._predicate(row):
+                return row
+
+    def close(self) -> None:
+        self._child.close()
+
+class ProjectOperator(QueryOperator):
+    """Project specific columns from rows."""
+
+    def __init__(self, child: QueryOperator, columns: List[str]):
+        self._child = child
+        self._columns = columns
+
+    def open(self) -> None:
+        self._child.open()
+
+    def next(self) -> Optional[dict]:
+        row = self._child.next()
+        if row is None:
+            return None
+        return {col: row.get(col) for col in self._columns}
+
+    def close(self) -> None:
+        self._child.close()
+
+class LimitOperator(QueryOperator):
+    """Return at most N rows."""
+
+    def __init__(self, child: QueryOperator, limit: int):
+        self._child = child
+        self._limit = limit
+        self._count = 0
+
+    def open(self) -> None:
+        self._child.open()
+        self._count = 0
+
+    def next(self) -> Optional[dict]:
+        if self._count >= self._limit:
+            return None
+        row = self._child.next()
+        if row:
+            self._count += 1
+        return row
+
+    def close(self) -> None:
+        self._child.close()
+
+class SortOperator(QueryOperator):
+    """
+    Sort rows by key.
+
+    NOTE: This MUST materialize - O(n) memory.
+    In-memory DBs often avoid sorting by using ordered indexes.
+    """
+
+    def __init__(self, child: QueryOperator,
+                 sort_key: Callable[[dict], Any],
+                 descending: bool = False):
+        self._child = child
+        self._sort_key = sort_key
+        self._descending = descending
+        self._sorted_rows = []
+        self._index = 0
+
+    def open(self) -> None:
+        self._child.open()
+
+        # Materialize all rows (unavoidable for sorting)
+        rows = []
+        while True:
+            row = self._child.next()
+            if row is None:
+                break
+            rows.append(row)
+
+        self._sorted_rows = sorted(
+            rows,
+            key=self._sort_key,
+            reverse=self._descending
+        )
+        self._index = 0
+
+    def next(self) -> Optional[dict]:
+        if self._index >= len(self._sorted_rows):
+            return None
+        row = self._sorted_rows[self._index]
+        self._index += 1
+        return row
+
+    def close(self) -> None:
+        self._child.close()
+        self._sorted_rows = []
+
+# Example: Build query execution tree
+def example_query_execution(store: dict):
+    """
+    Example: Get top 10 users by age > 21, sorted by score
+
+    Execution tree:
+        Limit(10)
+            |
+        Sort(score DESC)
+            |
+        Filter(age > 21)
+            |
+        Scan(users)
+    """
+    scan = ScanOperator(store)
+    filtered = FilterOperator(scan, lambda r: r.get('age', 0) > 21)
+    sorted_op = SortOperator(filtered, lambda r: r.get('score', 0), descending=True)
+    limited = LimitOperator(sorted_op, 10)
+
+    # Execute
+    results = []
+    limited.open()
+    while True:
+        row = limited.next()
+        if row is None:
+            break
+        results.append(row)
+    limited.close()
+
+    return results
+```
+
+### Interview Questions: Query Optimization
+
+<div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border: 2px solid #d946ef; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #86198f; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: Foundational Understanding</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #c026d3; font-weight: 600;">Q: When would a full table scan be faster than using an index in an in-memory database?</div>
+<div style="color: #701a75; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> When the query would return most of the table (>20-30%). Index lookup requires: (1) B-tree traversal O(log n), then (2) random access to each matching row. Full scan is sequential O(n) but <span style="color: #16a34a; font-weight: 600;">cache-friendly</span> - CPU prefetcher works well. Also when the table is small (<1000 rows), index overhead exceeds benefit. Modern optimizers use <span style="color: #16a34a; font-weight: 600;">selectivity estimation</span> to choose.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%); border: 2px solid #e879f9; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #a21caf; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Implementation Depth</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #d946ef; font-weight: 600;">Q: How would you implement index intersection for queries with multiple predicates?</div>
+<div style="color: #86198f; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> For query "WHERE age > 30 AND city = 'NYC'": (1) Use age B-tree index to get matching row IDs (Set A). (2) Use city hash index to get matching row IDs (Set B). (3) Compute A intersect B - this gives final candidates. (4) Fetch actual rows only for intersection. Key optimization: Start with more selective predicate (city = 'NYC' likely returns fewer rows). For <span style="color: #16a34a; font-weight: 600;">bitmap indexes</span>, intersection is just AND operation on bit vectors - very fast. Trade-off: Index intersection needs random access to multiple indexes, sometimes sequential scan + filter is faster.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #f5d0fe 0%, #f0abfc 100%); border: 2px solid #d946ef; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #a21caf; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Production Considerations</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #e879f9; font-weight: 600;">Q: How do you handle query optimization when statistics are stale or unavailable?</div>
+<div style="color: #86198f; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Multiple strategies: (1) <span style="color: #16a34a; font-weight: 600;">Adaptive execution</span>: Start with estimated plan, collect actual statistics during execution, re-optimize mid-query if estimates were very wrong. (2) <span style="color: #16a34a; font-weight: 600;">Background statistics collection</span>: Sample table periodically (Redis scans 10 random keys/100ms for info commands). (3) <span style="color: #16a34a; font-weight: 600;">Conservative defaults</span>: Assume 10% selectivity for unknown predicates. (4) <span style="color: #16a34a; font-weight: 600;">Hybrid plans</span>: For uncertain cases, prepare both indexed and scan plans, choose at runtime based on first few rows. PostgreSQL uses "Generic" vs "Custom" plans. (5) <span style="color: #16a34a; font-weight: 600;">Query hints</span>: Let developers force specific access paths when they know better than optimizer.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## Section 8: Comprehensive Interview Deep-Dive
+
+This section presents a complete 3-level recursive interview covering all aspects of in-memory database design.
+
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #475569;">
+<div style="color: #f8fafc; font-weight: 700; font-size: 20px; margin-bottom: 20px; text-align: center;">Master Interview: In-Memory Database Architecture</div>
+<div style="color: #94a3b8; font-size: 14px; text-align: center;">The following simulates a deep-dive technical interview covering all major topics</div>
+</div>
+
+### Core Architecture Questions
+
+<div style="background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); border: 2px solid #14b8a6; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #0f766e; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: System Design Foundation</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #0d9488; font-weight: 600;">Q: Walk me through how you would design the core architecture of an in-memory database from scratch.</div>
+<div style="color: #134e4a; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> I would design it in layers:
+
+**1. Storage Layer:** Primary <span style="color: #16a34a; font-weight: 600;">hash table</span> for O(1) key-value operations. Each entry contains: value, data type, TTL metadata, and access statistics for eviction. Using slots (Python) or packed structs to minimize per-entry overhead.
+
+**2. Index Layer:** Optional <span style="color: #16a34a; font-weight: 600;">secondary indexes</span> - B+ trees for range queries, radix trees for prefix matching, skip lists for sorted sets. TTL heap (min-heap) for expiration management.
+
+**3. Transaction Layer:** Stack-based nested transactions with <span style="color: #16a34a; font-weight: 600;">copy-on-write snapshots</span> per modified key. Support BEGIN/COMMIT/ROLLBACK with merge semantics for nested commits.
+
+**4. Persistence Layer (optional):** WAL for durability with configurable fsync policy. Periodic RDB snapshots using fork() for copy-on-write consistency.
+
+**5. Concurrency Layer:** Single-threaded event loop (Redis model) OR RLock-based thread safety. Single-threaded avoids locking complexity and is surprisingly performant for memory-bound workloads.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%); border: 2px solid #2dd4bf; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #0f766e; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Deep Implementation</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #14b8a6; font-weight: 600;">Q: You mentioned copy-on-write snapshots. Explain exactly how nested transaction rollback works when the same key is modified at multiple nesting levels.</div>
+<div style="color: #115e59; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Let me trace through an example:
+
+```
+Initial: x = 5
+1. BEGIN (outer)    - outer.snapshot = {}
+2. SET x = 10       - outer.snapshot[x] = 5, store[x] = 10
+3. BEGIN (inner)    - inner.snapshot = {}
+4. SET x = 15       - inner.snapshot[x] = 10, store[x] = 15
+5. SET x = 20       - (no action - inner already has x)
+6. ROLLBACK inner   - restore store[x] = inner.snapshot[x] = 10
+7. Result: x = 10   - outer transaction's value preserved
+```
+
+Key insight: Each transaction level records the value from BEFORE that transaction started, not the original value. On rollback, we restore from that level's snapshot. On commit, we merge the child's original values into the parent (in case parent hasn't touched those keys yet).
+
+This is <span style="color: #16a34a; font-weight: 600;">O(modified_keys)</span> per transaction, not O(all_keys), because we use lazy snapshotting - only capture on first write.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #99f6e4 0%, #5eead4 100%); border: 2px solid #14b8a6; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #0f766e; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Edge Cases and Production</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #2dd4bf; font-weight: 600;">Q: What happens if a transaction modifies millions of keys? How would you optimize for memory during large transactions?</div>
+<div style="color: #115e59; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> This is a real production concern. Options:
+
+**1. Transaction Size Limits:** Enforce maximum keys per transaction. Fail early if exceeded. This is the simplest and what most systems do.
+
+**2. Streaming Snapshots:** Instead of deep copying values, store references to immutable value objects. Values become copy-on-write at object level. More complex but O(1) per key.
+
+**3. <span style="color: #16a34a; font-weight: 600;">Command Logging</span>:** Instead of value snapshots, log the inverse operation: SET x = 10 -> log "SET x = 5" (old value). Rollback replays log in reverse. O(operations) memory, not O(key_size).
+
+**4. Checkpoint-Based:** For very large transactions, checkpoint to disk periodically. Rollback replays from checkpoint + memory log. Trades disk I/O for memory.
+
+**5. Two-Phase Transactions:** For distributed scenarios, use prepare/commit phases with WAL. This naturally bounds in-memory state. See [[distributed-locking]](/system-design/distributed-locking).
+
+Redis limits MULTI/EXEC transactions by memory and simply fails if exceeded. For a custom implementation, I'd combine approach (1) with (3) - limit size and use command logging for better memory efficiency.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+### TTL and Expiration Deep-Dive
+
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 2px solid #f97316; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #9a3412; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: Expiration Mechanisms</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ea580c; font-weight: 600;">Q: Compare and contrast lazy expiration vs active expiration. When would you use each?</div>
+<div style="color: #7c2d12; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong>
+
+**<span style="color: #16a34a; font-weight: 600;">Lazy Expiration</span>:** Check TTL only when key is accessed. If expired, delete and return nil.
+- Pros: Zero CPU overhead when idle, simplest to implement
+- Cons: Expired keys consume memory until accessed, "memory leak" for cold data
+- Use when: Low memory pressure, most keys are accessed regularly
+
+**<span style="color: #16a34a; font-weight: 600;">Active Expiration</span>:** Background thread periodically scans for expired keys.
+- Pros: Memory reclaimed promptly, bounded memory overhead from expired keys
+- Cons: CPU cost even when idle, can cause latency if not throttled
+- Use when: High memory pressure, many keys with TTL, cold data common
+
+**<span style="color: #16a34a; font-weight: 600;">Hybrid (Redis)</span>:** Combine both - lazy check on access + probabilistic background cleanup.
+- Best of both worlds with complexity tradeoff
+- Use when: Production systems with SLA requirements
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); border: 2px solid #fb923c; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #c2410c; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Implementation Complexity</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #f97316; font-weight: 600;">Q: The TTL heap can have stale entries when keys are deleted or TTL is updated. How do you prevent unbounded heap growth?</div>
+<div style="color: #9a3412; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Three strategies with different trade-offs:
+
+**1. <span style="color: #16a34a; font-weight: 600;">Lazy Cleanup</span> (Redis approach):**
+- When popping from heap, verify key exists AND TTL matches
+- Stale entries are discarded, not processed
+- Heap can grow up to O(total_operations) in worst case
+- Simple, works well if TTL updates are rare
+
+**2. Indexed Heap with Update/Delete:**
+- Maintain hash map: key -> heap_position
+- When TTL changes, update heap entry in-place O(log n)
+- No stale entries, but more complex
+- Extra O(n) memory for position tracking
+
+**3. <span style="color: #16a34a; font-weight: 600;">Periodic Rebuild</span>:**
+- Track stale_ratio = stale_entries / total_entries
+- When ratio > threshold (e.g., 50%), rebuild heap from scratch
+- O(n) periodic cost, but amortized O(1)
+- Good for workloads with many TTL updates
+
+I'd recommend (1) for most cases with (3) as safeguard. Production Redis uses (1) with monitoring.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #c2410c; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Distributed Considerations</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #fb923c; font-weight: 600;">Q: In a replicated setup, how should TTL expiration be coordinated between primary and replicas?</div>
+<div style="color: #9a3412; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> This is tricky due to <span style="color: #16a34a; font-weight: 600;">clock skew</span> between nodes. Options:
+
+**1. Primary-Driven Expiration (Redis approach):**
+- Primary runs expiration logic, sends explicit DEL commands to replicas
+- Replicas DON'T independently expire, wait for master DEL
+- BUT: Replicas return nil for expired keys on read (read-only lazy check)
+- Pros: Consistency guaranteed, no clock sync needed
+- Cons: Replication lag means replica may serve expired data briefly
+
+**2. Logical Timestamps:**
+- Include logical clock in TTL metadata
+- Expire based on logical time, not wall clock
+- Requires vector clock or similar for causality
+- Complex but clock-skew immune
+
+**3. Loose Coupling (Memcached approach):**
+- Each node expires independently
+- Accept that nodes may have different views briefly
+- Works for caching (TTL is hint, not guarantee)
+- Simple but inconsistent
+
+For a database (vs cache), I'd use option (1). The brief inconsistency window is acceptable, and it's much simpler than logical timestamps. Reads on replica for expired keys returning nil is actually correct behavior - they're logically expired even if not yet deleted.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+### Persistence Strategy Deep-Dive
+
+<div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border: 2px solid #ec4899; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #9d174d; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: Durability Fundamentals</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #db2777; font-weight: 600;">Q: Explain the trade-off between AOF fsync policies: always, every-second, and never.</div>
+<div style="color: #831843; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong>
+
+| Policy | Data Loss Risk | Throughput | Use Case |
+|--------|---------------|------------|----------|
+| **always** | ~0 (disk failure only) | 100-1000 ops/s | Financial, audit logs |
+| **everysec** | Up to 1 second | 10K-100K ops/s | Most applications |
+| **no** | OS buffer (~30s) | 100K+ ops/s | Caching, rebuilable data |
+
+<span style="color: #16a34a; font-weight: 600;">Key insight:</span> fsync() is expensive because it forces data to stable storage. SSDs: ~100us. HDDs: ~10ms. Without fsync, data may be in OS buffer cache, lost on power failure.
+
+**everysec** is the sweet spot - you accept losing the last second of data in exchange for 100x better throughput. Most applications can tolerate this. For the rare cases needing true durability, use **always** or external transaction coordinator.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border: 2px solid #f472b6; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #be185d; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Implementation Details</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ec4899; font-weight: 600;">Q: How does fork()-based snapshotting work, and what are the memory implications?</div>
+<div style="color: #9d174d; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> fork() creates a child process with <span style="color: #16a34a; font-weight: 600;">copy-on-write (COW)</span> semantics:
+
+**1. Initial State:** Parent and child share all memory pages (marked read-only in page tables)
+
+**2. On Write by Parent:** OS intercepts write, copies page to new location, then allows write. Child still sees original page.
+
+**3. Child Writes Snapshot:** Iterates through shared memory, writes to file. Sees consistent point-in-time view.
+
+**Memory Implications:**
+- Best case: Child reads, parent reads → 0 extra memory
+- Worst case: Parent modifies every page during save → 2x memory
+- Typical case: 10-30% memory spike during save
+
+**Pitfalls:**
+- <span style="color: #16a34a; font-weight: 600;">Transparent Huge Pages (THP)</span>: COW copies 2MB at a time instead of 4KB. Can cause massive memory spikes. Disable THP for Redis.
+- Long-running saves with heavy writes: Memory keeps growing. Monitor and alert.
+- Fork() itself takes O(n) time for page table copy (though memory is shared)
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%); border: 2px solid #ec4899; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #be185d; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Failure Scenarios</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #f472b6; font-weight: 600;">Q: Walk me through recovery from: (1) crash during AOF write, (2) crash during RDB save, (3) corrupt AOF file mid-way.</div>
+<div style="color: #9d174d; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong>
+
+**1. Crash During AOF Write:**
+- AOF uses append-only, so partial write is always at the end
+- On recovery: read file until first parse error, truncate there
+- Lost: partial last entry (bounded data loss)
+- Optional: checksum per entry for corruption detection
+
+**2. Crash During RDB Save:**
+- RDB writes to temp file first, atomic rename on completion
+- If crash: temp file exists, old RDB intact
+- Recovery: load old RDB, replay any AOF after RDB timestamp
+- Lost: changes since last successful RDB (could be significant)
+
+**3. Corrupt AOF Mid-way (disk error, bit rot):**
+- <span style="color: #16a34a; font-weight: 600;">Checksum verification</span> detects corruption during replay
+- Options: (a) Stop at corruption point, (b) Skip corrupt entry and continue
+- redis-check-aof tool: fixes by truncating at corruption
+- Best practice: Keep RDB snapshots + AOF. Corruption likely means data after RDB is questionable anyway.
+
+**Defense in Depth:**
+1. Regular RDB snapshots (baseline)
+2. AOF for incremental durability
+3. Checksums for corruption detection
+4. Replication for availability
+5. Periodic backups to cold storage
+</div>
+</div>
+</div>
+</div>
+</div>
+
+### Concurrency and Threading
+
+<div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 2px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #5b21b6; font-weight: 700; font-size: 16px; margin-bottom: 20px;">Level 1: Concurrency Models</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #7c3aed; font-weight: 600;">Q: Redis is single-threaded yet handles 100K+ operations/second. How is this possible?</div>
+<div style="color: #4c1d95; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Several factors combine to make single-threaded in-memory databases fast:
+
+**1. <span style="color: #16a34a; font-weight: 600;">Memory-bound, not CPU-bound</span>:** Operations are simple (hash lookup, list append). CPU isn't the bottleneck - memory access is.
+
+**2. No Lock Contention:** Zero overhead from locks, context switches, cache invalidation between cores.
+
+**3. <span style="color: #16a34a; font-weight: 600;">Efficient Event Loop</span>:** epoll/kqueue handle thousands of connections with O(1) per event. Network I/O is non-blocking.
+
+**4. Request Pipelining:** Clients can send multiple commands without waiting. Server batches responses.
+
+**5. Simple Operations:** Most ops are O(1). Compare to SQL query planning, disk I/O, etc.
+
+**The Reality:** Single core can do ~100K simple ops/second easily. If you need more, shard across instances (Redis Cluster). This is often simpler than complex multi-threaded synchronization.
+
+**Redis 6+ Threading:** I/O threads for network handling. Core operations still single-threaded. Best of both worlds.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: 2px solid #a78bfa; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #6d28d9; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 2: Lock Implementation</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #8b5cf6; font-weight: 600;">Q: If you choose multi-threaded, explain why RLock is necessary instead of regular Lock for in-memory database.</div>
+<div style="color: #5b21b6; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> <span style="color: #16a34a; font-weight: 600;">RLock (reentrant lock)</span> allows the same thread to acquire the lock multiple times:
+
+```python
+def set_with_ttl(key, value, ttl):
+    with self._lock:  # First acquisition
+        self.set(key, value)  # Contains: with self._lock
+        self.expire(key, ttl)  # Contains: with self._lock
+```
+
+With regular Lock, the nested `with self._lock` in set() would deadlock - thread already holds the lock, can't acquire again.
+
+**RLock behavior:**
+- Same thread: Increments reference count, succeeds
+- Different thread: Blocks until count reaches 0
+- Each release decrements count
+
+**Why needed for DB:**
+1. Public methods call other public methods
+2. Transaction operations (BEGIN in set, COMMIT) may nest
+3. Internal helpers may need protection
+
+**Alternative:** Use lock only at top-level public API, make all internal methods assume lock is held. Cleaner but error-prone.
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px; margin-top: 16px;">
+<div style="color: #6d28d9; font-weight: 700; font-size: 14px; margin-bottom: 16px;">Level 3: Advanced Concurrency</div>
+
+<div style="background: #fff; border-radius: 8px; padding: 16px;">
+<div style="color: #a78bfa; font-weight: 600;">Q: How would you implement lock-free concurrent reads with single-writer semantics?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-top: 8px; line-height: 1.7;">
+<strong>A:</strong> Use <span style="color: #16a34a; font-weight: 600;">Read-Copy-Update (RCU)</span> or <span style="color: #16a34a; font-weight: 600;">SeqLock</span> pattern:
+
+**SeqLock Approach:**
+```python
+class SeqLockStore:
+    def __init__(self):
+        self._seq = 0  # Even = unlocked, Odd = locked
+        self._data = {}
+
+    def read(self, key):
+        while True:
+            seq1 = self._seq
+            if seq1 % 2 == 1:  # Writer active
+                continue
+            value = self._data.get(key)  # Read
+            seq2 = self._seq
+            if seq1 == seq2:  # No write during read
+                return value
+
+    def write(self, key, value):
+        with self._write_lock:
+            self._seq += 1  # Now odd (writing)
+            self._data[key] = value
+            self._seq += 1  # Now even (done)
+```
+
+**RCU Approach:**
+1. Readers access data directly, no locks
+2. Writers create new version, atomically swap pointer
+3. Old version kept until all readers finish (grace period)
+4. Used in Linux kernel, very efficient for read-heavy
+
+**Trade-offs:**
+- SeqLock: Simple, readers may retry during writes
+- RCU: Complex, needs garbage collection for old versions
+- Both: Single writer only (for multiple writers, still need write lock)
+
+For in-memory DB, RCU with copy-on-write maps well to our transaction snapshot model.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
 ## Related Topics
 
 <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0ea5e9; border-radius: 16px; padding: 24px; margin: 24px 0;">
 <div style="color: #0c4a6e; font-weight: 700; font-size: 16px; margin-bottom: 16px;">Explore Further</div>
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-<a href="/data-structures/hash-tables" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Hash Tables</a>
-<a href="/data-structures/skip-list" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Skip Lists</a>
-<a href="/system-design/caching" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Caching Strategies</a>
-<a href="/system-design/storage" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Storage Systems</a>
-<a href="/system-design/rate-limiting" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Rate Limiting</a>
-<a href="/system-design/concurrency" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">Concurrency Patterns</a>
+<a href="/data-structures/hash-tables" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Hash Tables]]</a>
+<a href="/data-structures/skip-list" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Skip Lists]]</a>
+<a href="/system-design/caching" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Caching Strategies]]</a>
+<a href="/system-design/storage" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Storage Systems]]</a>
+<a href="/system-design/rate-limiting" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Rate Limiting]]</a>
+<a href="/system-design/concurrency-patterns" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Concurrency Patterns]]</a>
+<a href="/system-design/distributed-locking" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Distributed Locking]]</a>
+<a href="/system-design/database-sharding" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[Database Sharding]]</a>
+<a href="/machine-coding/lru-cache" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[LRU Cache]]</a>
+<a href="/system-design/cap-theorem" style="background: #fff; border: 1px solid #7dd3fc; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px;">[[CAP Theorem]]</a>
 </div>
 </div>

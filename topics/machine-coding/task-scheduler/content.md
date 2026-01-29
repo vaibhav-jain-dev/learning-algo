@@ -974,7 +974,438 @@ class CheckpointedTask:
 
 ---
 
-### 5. Idempotency
+### 5. Job Dependencies and DAG Execution
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
+**Why Job Dependencies Matter**
+
+Real-world workflows rarely consist of independent tasks. <span style="color: #7ee787;">**Data pipelines**</span>, <span style="color: #7ee787;">**ETL processes**</span>, and <span style="color: #7ee787;">**CI/CD builds**</span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.
+
+**The Core Problem**: How do you ensure Task B doesn't start until Task A completes successfully, while maximizing parallelism across independent branches?
+
+**Solution**: Model workflows as <span style="color: #7ee787;">**Directed Acyclic Graphs (DAGs)**</span> where nodes are tasks and edges represent dependencies.
+
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">DAG-Based Task Execution Model</h4>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Extract</div>
+<div style="color: #d1f5d3; font-size: 9px;">Source Data</div>
+</div>
+
+<div style="color: #7ee787; font-size: 24px;">&#8594;</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 10px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Transform A</div>
+<div style="color: #a5d6ff; font-size: 8px;">Clean Users</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 10px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Transform B</div>
+<div style="color: #a5d6ff; font-size: 8px;">Clean Orders</div>
+</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 24px;">&#8594;</div>
+
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Join</div>
+<div style="color: #eddeff; font-size: 9px;">Merge Data</div>
+</div>
+
+<div style="color: #a371f7; font-size: 24px;">&#8594;</div>
+
+<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Load</div>
+<div style="color: #fff; font-size: 9px;">Data Warehouse</div>
+</div>
+
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+
+<div style="background: #21262d; padding: 14px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Parallelism</div>
+<div style="color: #c9d1d9; font-size: 10px;">Transform A and B run concurrently since both only depend on Extract</div>
+</div>
+
+<div style="background: #21262d; padding: 14px; border-radius: 8px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Barrier Sync</div>
+<div style="color: #c9d1d9; font-size: 10px;">Join waits for ALL upstream transforms before starting</div>
+</div>
+
+<div style="background: #21262d; padding: 14px; border-radius: 8px;">
+<div style="color: #ffa657; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Failure Propagation</div>
+<div style="color: #c9d1d9; font-size: 10px;">If Transform A fails, Join and Load are skipped (not executed)</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+
+**Assumption**: Tasks within a DAG share execution context (variables, outputs).
+
+**Dependency Resolution Algorithm** using [[Topological Sort]](/algorithms/topological-sort):
+
+```python
+class DAGScheduler:
+    def __init__(self):
+        self.tasks: Dict[str, Task] = {}
+        self.dependencies: Dict[str, Set[str]] = defaultdict(set)  # task -> upstream tasks
+        self.dependents: Dict[str, Set[str]] = defaultdict(set)    # task -> downstream tasks
+
+    def add_dependency(self, task_id: str, depends_on: str):
+        """Task depends_on must complete before task_id can start."""
+        self.dependencies[task_id].add(depends_on)
+        self.dependents[depends_on].add(task_id)
+
+    def get_ready_tasks(self, completed: Set[str]) -> List[str]:
+        """
+        Return tasks whose dependencies are ALL satisfied.
+        These can be executed in parallel.
+        """
+        ready = []
+        for task_id, deps in self.dependencies.items():
+            if task_id not in completed and deps.issubset(completed):
+                ready.append(task_id)
+
+        # Also include tasks with no dependencies
+        for task_id in self.tasks:
+            if task_id not in completed and not self.dependencies[task_id]:
+                if task_id not in ready:
+                    ready.append(task_id)
+
+        return ready
+
+    def detect_cycle(self) -> bool:
+        """Use DFS to detect cycles - cycles make DAG invalid."""
+        WHITE, GRAY, BLACK = 0, 1, 2
+        color = {t: WHITE for t in self.tasks}
+
+        def dfs(node):
+            color[node] = GRAY
+            for dep in self.dependents[node]:  # downstream tasks
+                if color[dep] == GRAY:  # Back edge = cycle
+                    return True
+                if color[dep] == WHITE and dfs(dep):
+                    return True
+            color[node] = BLACK
+            return False
+
+        return any(dfs(t) for t in self.tasks if color[t] == WHITE)
+```
+
+**Trade-off**: Dependency specification approaches
+
+| Approach | Syntax | Pros | Cons |
+|----------|--------|------|------|
+| Explicit edges | `task_b.depends_on(task_a)` | Clear, flexible | Verbose for many deps |
+| Decorator-based | `@depends_on("task_a")` | Concise | Magic behavior |
+| Return-value based | `task_b(task_a())` | Type-safe | Forces single upstream |
+| Configuration file | YAML/JSON DAG definition | External tooling | Separate from code |
+
+**Design Choice**: Apache Airflow uses explicit `>>` operator (`task_a >> task_b`) for readability. Prefect uses return values for type safety. Choose based on team familiarity.
+
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h4 style="color: #a371f7; margin: 0 0 24px 0; font-size: 16px;">Dependency State Machine</h4>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+
+<div style="background: #30363d; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #8b949e; font-weight: bold; font-size: 11px;">WAITING</div>
+<div style="color: #6e7681; font-size: 9px;">Deps not met</div>
+</div>
+
+<div style="color: #7ee787; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">all deps done</span></div>
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">READY</div>
+<div style="color: #d1f5d3; font-size: 9px;">Can execute</div>
+</div>
+
+<div style="color: #58a6ff; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">worker picks</span></div>
+
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">RUNNING</div>
+<div style="color: #a5d6ff; font-size: 9px;">Executing</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+<div style="color: #7ee787; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #7ee787;">success</span></div>
+<div style="color: #f85149; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #f85149;">failure</span></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 10px;">SUCCESS</div>
+</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 10px;">FAILED</div>
+</div>
+</div>
+
+</div>
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Downstream Failure Handling Strategies</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+<div>
+<div style="color: #7ee787; font-size: 11px; font-weight: bold;">all_success (default)</div>
+<div style="color: #8b949e; font-size: 10px;">Run only if ALL upstream succeeded</div>
+</div>
+<div>
+<div style="color: #58a6ff; font-size: 11px; font-weight: bold;">all_done</div>
+<div style="color: #8b949e; font-size: 10px;">Run when all upstream completed (success or fail)</div>
+</div>
+<div>
+<div style="color: #a371f7; font-size: 11px; font-weight: bold;">one_success</div>
+<div style="color: #8b949e; font-size: 10px;">Run if ANY upstream succeeded</div>
+</div>
+<div>
+<div style="color: #ffa657; font-size: 11px; font-weight: bold;">none_failed</div>
+<div style="color: #8b949e; font-size: 10px;">Run if no upstream failed (skipped is OK)</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+
+**Critical Edge Cases in Dependency Management**
+
+1. <span style="color: #7ee787;">**Diamond Dependencies**</span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.
+
+2. <span style="color: #7ee787;">**Dynamic Dependencies**</span>: Task creates new tasks at runtime. How do you handle dependencies on not-yet-existing tasks? Solutions:
+   - **Deferred resolution**: Dependency references are strings, resolved at execution time
+   - **Task factories**: Parent task spawns child DAG as atomic unit
+
+3. <span style="color: #7ee787;">**Cross-DAG Dependencies**</span>: Task in DAG-1 depends on task in DAG-2. Options:
+   - **Sensors**: DAG-1 task polls for DAG-2 completion (Airflow approach)
+   - **Events**: DAG-2 publishes completion event, DAG-1 subscribes
+   - **Shared state**: Both check common database/cache for status
+
+4. <span style="color: #7ee787;">**Conditional Dependencies**</span>: Task B depends on A only if A produced specific output. Requires runtime dependency evaluation, not static DAG structure.
+
+</div>
+
+#### Interview Questions: Job Dependencies
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+**Level 1**: What happens if you have a cycle in your task dependency graph?
+
+<details>
+<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+
+A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span style="color: #7ee787;">**deadlock**</span>.
+
+**Detection**: Run [[cycle detection]](/algorithms/graph-cycle-detection) using DFS. If you find a back edge (edge to a node currently in the recursion stack), there's a cycle.
+
+**Prevention**: Validate DAG structure at definition time, before any task executes. Reject workflows with cycles.
+
+```python
+def validate_dag(dependencies):
+    # Kahn's algorithm - if we can't process all nodes, there's a cycle
+    in_degree = defaultdict(int)
+    for task, deps in dependencies.items():
+        for dep in deps:
+            in_degree[task] += 1
+
+    queue = [t for t in dependencies if in_degree[t] == 0]
+    processed = 0
+
+    while queue:
+        node = queue.pop(0)
+        processed += 1
+        for dependent in get_dependents(node):
+            in_degree[dependent] -= 1
+            if in_degree[dependent] == 0:
+                queue.append(dependent)
+
+    return processed == len(dependencies)  # False if cycle exists
+```
+
+</details>
+
+**Level 2**: How would you implement partial DAG re-execution after a mid-pipeline failure?
+
+<details>
+<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+
+Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume from task 3 without re-running tasks 1-2.
+
+**Implementation**:
+
+1. <span style="color: #7ee787;">**Persist task outputs**</span>: Store each task's output with execution ID
+   ```python
+   outputs[f"{dag_run_id}:{task_id}"] = task_result
+   ```
+
+2. <span style="color: #7ee787;">**Mark task states**</span>: Track which tasks completed successfully in this run
+   ```python
+   task_states = {
+       "task_1": "success",
+       "task_2": "success",
+       "task_3": "failed",
+       "task_4": "skipped",  # downstream of failure
+       "task_5": "skipped"
+   }
+   ```
+
+3. <span style="color: #7ee787;">**Selective re-execution**</span>:
+   ```python
+   def rerun_from_failure(dag_run_id, failed_task_id):
+       # Get all downstream tasks (including failed one)
+       to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}
+
+       # Clear their states
+       for task_id in to_rerun:
+           task_states[task_id] = "pending"
+
+       # Upstream outputs already exist - they'll be loaded, not recomputed
+       execute_dag(dag_run_id, skip_completed=True)
+   ```
+
+4. <span style="color: #7ee787;">**Dependency resolution**</span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.
+
+Airflow calls this "clearing" a task - it resets the task and all downstream tasks to pending state.
+
+</details>
+
+**Level 3**: Design a scheduler that supports dynamic task fan-out where one task spawns N child tasks at runtime, and a downstream task must wait for all N to complete.
+
+<details>
+<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+
+**Challenge**: Traditional DAGs have static structure. Here, the number of child tasks is unknown until runtime.
+
+**Solution: Dynamic Task Groups with Barrier Synchronization**
+
+```python
+class DynamicDAGScheduler:
+    def __init__(self):
+        self.task_groups: Dict[str, TaskGroup] = {}
+        self.barriers: Dict[str, Barrier] = {}
+
+    def execute_fan_out(self, parent_task_id: str, items: List[Any],
+                        child_task_fn: Callable, downstream_task_id: str):
+        """
+        Parent task calls this to spawn N child tasks.
+        downstream_task waits for all children to complete.
+        """
+        group_id = f"{parent_task_id}_children"
+
+        # Create barrier for N children + 1 (for bookkeeping)
+        barrier = Barrier(len(items))
+        self.barriers[group_id] = barrier
+
+        # Spawn child tasks
+        child_task_ids = []
+        for i, item in enumerate(items):
+            child_id = f"{group_id}_{i}"
+            child_task = Task(
+                id=child_id,
+                func=lambda: self._run_child(child_task_fn, item, group_id),
+                group_id=group_id
+            )
+            self.schedule(child_task)
+            child_task_ids.append(child_id)
+
+        # Register downstream dependency on the GROUP, not individual tasks
+        self.add_group_dependency(downstream_task_id, group_id)
+
+        return child_task_ids
+
+    def _run_child(self, fn, item, group_id):
+        """Execute child and update barrier."""
+        try:
+            result = fn(item)
+            self.barriers[group_id].mark_success()
+            return result
+        except Exception as e:
+            self.barriers[group_id].mark_failure()
+            raise
+
+    def is_group_ready(self, group_id: str) -> Tuple[bool, str]:
+        """Check if all tasks in group completed."""
+        barrier = self.barriers.get(group_id)
+        if not barrier:
+            return False, "pending"
+
+        if barrier.all_success():
+            return True, "success"
+        elif barrier.any_failure():
+            return True, "failed"  # Group failed, downstream should handle
+        else:
+            return False, "running"
+
+class Barrier:
+    def __init__(self, expected_count: int):
+        self.expected = expected_count
+        self.success_count = 0
+        self.failure_count = 0
+        self.lock = threading.Lock()
+
+    def mark_success(self):
+        with self.lock:
+            self.success_count += 1
+
+    def mark_failure(self):
+        with self.lock:
+            self.failure_count += 1
+
+    def all_success(self) -> bool:
+        with self.lock:
+            return self.success_count == self.expected
+
+    def any_failure(self) -> bool:
+        with self.lock:
+            return self.failure_count > 0
+
+    def all_done(self) -> bool:
+        with self.lock:
+            return (self.success_count + self.failure_count) == self.expected
+```
+
+**Key Design Decisions**:
+
+1. <span style="color: #7ee787;">**Group abstraction**</span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.
+
+2. <span style="color: #7ee787;">**Barrier synchronization**</span>: Atomic counter tracks child completion. Downstream task wakes when barrier complete.
+
+3. <span style="color: #7ee787;">**Failure semantics**</span>: Define policy - fail-fast (first child failure cancels siblings) or wait-all (collect all results, then fail).
+
+4. <span style="color: #7ee787;">**Result aggregation**</span>: Store child results in shared location. Downstream task retrieves all results:
+   ```python
+   def collect_results(group_id) -> List[Any]:
+       return [outputs[f"{group_id}_{i}"] for i in range(barrier.expected)]
+   ```
+
+Real-world example: Airflow's `expand()` (formerly `mapped tasks`) implements exactly this pattern.
+
+</details>
+
+</div>
+
+---
+
+### 6. Idempotency
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
@@ -2762,6 +3193,883 @@ Recovery: Transaction rollback
 
 ---
 
+## Deep-Dive Interview Q&A: 3-Level Recursive Format
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Complete Task Scheduler System Design</h3>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "Design a task scheduler system"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**High-Level Architecture**:
+
+A task scheduler consists of four main components:
+
+1. <span style="color: #7ee787;">**Task Storage**</span>: Where task definitions and states are persisted
+2. <span style="color: #7ee787;">**Scheduler Core**</span>: Determines which tasks to execute and when
+3. <span style="color: #7ee787;">**Worker Pool**</span>: Executes the actual task logic
+4. <span style="color: #7ee787;">**Coordination Layer**</span>: Handles distributed concerns (if multi-node)
+
+**Core Data Structures**:
+
+```python
+class Task:
+    id: str
+    name: str
+    payload: dict                    # Task arguments
+    scheduled_time: datetime         # When to execute
+    priority: int                    # Higher = more important
+    status: Enum[PENDING, RUNNING, COMPLETED, FAILED]
+    recurrence: Optional[CronExpr]   # For recurring tasks
+    max_retries: int
+    retry_count: int
+
+class Scheduler:
+    task_queue: MinHeap[Task]        # Ordered by (scheduled_time, -priority)
+    workers: ThreadPool
+    storage: TaskStorage             # Persistence layer
+```
+
+**Scheduling Algorithm**:
+
+1. Maintain a <span style="color: #7ee787;">**min-heap**</span> ordered by scheduled_time
+2. Worker threads wait on condition variable
+3. When top task's scheduled_time <= now, pop and execute
+4. After execution, handle retries or schedule next occurrence
+
+**Key Features to Mention**:
+- One-time and recurring task support
+- Priority-based execution
+- Failure handling with configurable retries
+- Idempotent execution to handle duplicates
+- Persistence for crash recovery
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**The Core Challenge**: In distributed systems, "exactly-once" is theoretically impossible due to the [[Two Generals Problem]](/algorithms/two-generals). We achieve <span style="color: #7ee787;">**effectively exactly-once**</span> through:
+
+**Strategy 1: At-Least-Once Delivery + Idempotency**
+
+```python
+def execute_task(task):
+    idempotency_key = f"{task.id}:{task.scheduled_time.timestamp()}"
+
+    # Atomic check-and-set
+    if not redis.setnx(idempotency_key, "processing", ex=3600):
+        # Already executed or in progress
+        return get_cached_result(idempotency_key)
+
+    try:
+        result = task.execute()
+        cache_result(idempotency_key, result)
+        return result
+    except:
+        redis.delete(idempotency_key)  # Allow retry
+        raise
+```
+
+**Strategy 2: Fencing Tokens**
+
+```python
+def claim_task(task_id, worker_id):
+    # Increment fence token on claim
+    result = db.execute("""
+        UPDATE tasks
+        SET status = 'claimed',
+            fence_token = fence_token + 1,
+            claimed_by = %s
+        WHERE id = %s AND status = 'pending'
+        RETURNING fence_token
+    """, worker_id, task_id)
+
+    return result.fence_token
+
+def execute_with_fence(task, fence_token):
+    # All writes include fence token
+    # Storage layer rejects writes with lower fence tokens
+    external_service.call(task.payload, fence_token=fence_token)
+```
+
+**Strategy 3: Outbox Pattern for External Effects**
+
+```python
+def process_order(order_id):
+    with db.transaction():
+        # All state changes in same transaction
+        update_order_status(order_id, 'processing')
+        # Don't call external API directly - write to outbox
+        insert_outbox_event({
+            'type': 'send_email',
+            'payload': {'order_id': order_id}
+        })
+
+    # Separate process reads outbox and calls external APIs
+    # with idempotency keys
+```
+
+**Key Insight**: The combination ensures that even if a task runs twice, external effects happen exactly once (via idempotency keys) and internal state is consistent (via fencing).
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**Failure Modes**:
+
+1. <span style="color: #f85149;">**Redis down before SETNX**</span>: Can't check, can't proceed
+2. <span style="color: #f85149;">**Redis down after SETNX, before task execution**</span>: Key set but work not done
+3. <span style="color: #f85149;">**Redis down after execution, before caching result**</span>: Work done but key may expire
+4. <span style="color: #f85149;">**Redis comes back with data loss**</span>: Keys gone, duplicates possible
+
+**Solution: Multi-Layer Idempotency**
+
+```python
+class RobustIdempotencyManager:
+    def __init__(self, redis, database):
+        self.redis = redis
+        self.db = database
+
+    def execute_once(self, idempotency_key, operation):
+        # Layer 1: Fast path - check Redis
+        try:
+            if self.redis.exists(idempotency_key):
+                return self.get_cached_result(idempotency_key)
+        except RedisError:
+            pass  # Fallback to database
+
+        # Layer 2: Durable check - database
+        existing = self.db.query(
+            "SELECT result FROM idempotency_log WHERE key = %s",
+            idempotency_key
+        )
+        if existing:
+            # Backfill Redis for next time
+            self.try_cache_to_redis(idempotency_key, existing.result)
+            return existing.result
+
+        # Layer 3: Atomic claim in database
+        claimed = self.db.execute("""
+            INSERT INTO idempotency_log (key, status, started_at)
+            VALUES (%s, 'processing', NOW())
+            ON CONFLICT (key) DO NOTHING
+            RETURNING key
+        """, idempotency_key)
+
+        if not claimed:
+            # Another worker claimed it - wait and fetch result
+            return self.wait_for_result(idempotency_key)
+
+        try:
+            result = operation()
+
+            # Record completion in database (durable)
+            self.db.execute("""
+                UPDATE idempotency_log
+                SET status = 'completed', result = %s, completed_at = NOW()
+                WHERE key = %s
+            """, json.dumps(result), idempotency_key)
+
+            # Cache in Redis (fast path for future)
+            self.try_cache_to_redis(idempotency_key, result)
+
+            return result
+
+        except Exception as e:
+            # Mark as failed, allow retry
+            self.db.execute("""
+                UPDATE idempotency_log
+                SET status = 'failed', error = %s
+                WHERE key = %s
+            """, str(e), idempotency_key)
+            raise
+
+    def wait_for_result(self, key, timeout=30):
+        """Poll database for result from other worker."""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            row = self.db.query(
+                "SELECT status, result FROM idempotency_log WHERE key = %s",
+                key
+            )
+            if row.status == 'completed':
+                return json.loads(row.result)
+            if row.status == 'failed':
+                raise Exception("Task failed on another worker")
+            time.sleep(0.5)
+        raise TimeoutError("Waiting for idempotency result")
+```
+
+**Trade-offs**:
+
+| Approach | Durability | Speed | Complexity |
+|----------|------------|-------|------------|
+| Redis only | Low (data loss) | Fast | Low |
+| Database only | High | Slower | Low |
+| Redis + DB | High | Fast for hits | Medium |
+| Redis + DB + Polling | High | Fast + handles races | High |
+
+**Production Recommendation**: Use Redis as cache layer, database as source of truth. Accept 2x latency when Redis is down. Set up [[Redis Sentinel]](/databases/redis-sentinel) or Cluster for HA.
+
+</div>
+</details>
+</div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Distributed Scheduling Deep Dive</h3>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you scale a task scheduler horizontally?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**Approach 1: Leader-Based (Active-Passive)**
+
+One node is the scheduler (leader), others are workers only:
+
+```
+[Leader] ─── schedules tasks ───> [Task Queue] <─── pull ─── [Worker 1]
+    │                                   ↑                    [Worker 2]
+    │                                   │                    [Worker 3]
+    └─── heartbeat/election ───> [ZooKeeper/etcd]
+```
+
+- Leader handles all scheduling decisions
+- Workers pull tasks from shared queue
+- On leader failure, election promotes new leader
+- **Good for**: < 100K tasks, simple coordination needs
+
+**Approach 2: Partition-Based (Active-Active)**
+
+Tasks are sharded across scheduler nodes:
+
+```python
+def get_scheduler_for_task(task_id, num_schedulers):
+    # Consistent hashing
+    hash_val = hash(task_id) % 360
+    node = find_node_for_hash(hash_val)  # Virtual nodes
+    return node
+
+# Each scheduler owns a hash range
+Scheduler-1: [0, 120)    -> Tasks hashing to this range
+Scheduler-2: [120, 240)  -> Tasks hashing to this range
+Scheduler-3: [240, 360)  -> Tasks hashing to this range
+```
+
+- Each node schedules its partition independently
+- [[Consistent Hashing]](/algorithms/consistent-hashing) minimizes rebalancing
+- **Good for**: > 100K tasks, high throughput needs
+
+**Approach 3: Database-Centric (Shared Nothing)**
+
+No in-memory scheduling, all coordination through database:
+
+```sql
+-- Each worker polls independently
+SELECT id FROM tasks
+WHERE status = 'pending'
+  AND scheduled_time <= NOW()
+  AND (claimed_by IS NULL OR claimed_at < NOW() - INTERVAL '5 minutes')
+ORDER BY priority DESC, scheduled_time
+LIMIT 10
+FOR UPDATE SKIP LOCKED;
+```
+
+- No leader election needed
+- Database handles consistency
+- **Good for**: Durability-critical, moderate throughput
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**Principle**: <span style="color: #7ee787;">Separate task ownership from task execution</span>
+
+**Solution Architecture**:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Durable Task Store                        │
+│  (PostgreSQL, MySQL, or distributed KV store)               │
+│                                                              │
+│  tasks: id, payload, status, owner_node, heartbeat_time     │
+└─────────────────────────────────────────────────────────────┘
+         ↑                    ↑                    ↑
+    [Scheduler-1]       [Scheduler-2]       [Scheduler-3]
+    (owns tasks       (owns tasks          (owns tasks
+     0-999)            1000-1999)           2000-2999)
+```
+
+**Heartbeat-Based Ownership**:
+
+```python
+class DistributedScheduler:
+    def __init__(self, node_id, task_store):
+        self.node_id = node_id
+        self.store = task_store
+        self.heartbeat_interval = 10  # seconds
+        self.failure_threshold = 30   # seconds
+
+    def ownership_loop(self):
+        while running:
+            # Update heartbeat for all tasks I own
+            self.store.execute("""
+                UPDATE tasks
+                SET heartbeat_time = NOW()
+                WHERE owner_node = %s AND status = 'running'
+            """, self.node_id)
+
+            time.sleep(self.heartbeat_interval)
+
+    def recovery_loop(self):
+        """Run on every node - detects and recovers orphaned tasks."""
+        while running:
+            # Find tasks with stale heartbeats
+            orphaned = self.store.query("""
+                SELECT id FROM tasks
+                WHERE status = 'running'
+                  AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+            """, self.failure_threshold)
+
+            for task_id in orphaned:
+                self.attempt_recovery(task_id)
+
+            time.sleep(self.heartbeat_interval)
+
+    def attempt_recovery(self, task_id):
+        # Atomic claim - only one node succeeds
+        claimed = self.store.execute("""
+            UPDATE tasks
+            SET owner_node = %s,
+                heartbeat_time = NOW(),
+                status = 'pending',
+                retry_count = retry_count + 1
+            WHERE id = %s
+              AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+        """, self.node_id, task_id, self.failure_threshold)
+
+        if claimed:
+            log.info(f"Recovered orphaned task {task_id}")
+```
+
+**Partition Rebalancing on Node Join/Leave**:
+
+```python
+def rebalance_partitions(current_nodes, new_nodes):
+    """Use consistent hashing to minimize movement."""
+    old_ring = ConsistentHashRing(current_nodes)
+    new_ring = ConsistentHashRing(new_nodes)
+
+    migrations = []
+    for task_id in all_task_ids():
+        old_owner = old_ring.get_node(task_id)
+        new_owner = new_ring.get_node(task_id)
+
+        if old_owner != new_owner:
+            migrations.append((task_id, old_owner, new_owner))
+
+    # With 100 virtual nodes per physical node,
+    # only ~1/N tasks move when node joins/leaves
+    return migrations
+```
+
+**Key Insight**: Never trust in-memory state for task ownership. Always persist to durable store and use heartbeats to detect failures.
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you prevent thundering herd when a failed node's tasks are redistributed?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**The Problem**: Node-3 dies. It owned 1000 tasks. All surviving nodes detect this simultaneously and try to claim all 1000 tasks at once:
+- Database gets hammered with UPDATE queries
+- Lock contention spikes
+- Legitimate work gets starved
+
+**Solution 1: Staggered Recovery with Jitter**
+
+```python
+def recovery_loop(self):
+    while running:
+        # Random jitter prevents synchronized recovery attempts
+        jitter = random.uniform(0, self.heartbeat_interval / 2)
+        time.sleep(self.heartbeat_interval + jitter)
+
+        # Limit batch size per recovery cycle
+        orphaned = self.store.query("""
+            SELECT id FROM tasks
+            WHERE status = 'running'
+              AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+            LIMIT 10  -- Don't grab everything at once
+        """, self.failure_threshold)
+
+        for task_id in orphaned:
+            # Additional per-task jitter
+            time.sleep(random.uniform(0.1, 0.5))
+            self.attempt_recovery(task_id)
+```
+
+**Solution 2: Lease-Based Batch Assignment**
+
+```python
+def claim_orphan_batch(self):
+    """Claim a batch of orphaned tasks atomically."""
+    # Single query claims up to N tasks for this node
+    # No thundering herd - each node claims different tasks
+    claimed = self.store.execute("""
+        WITH claimable AS (
+            SELECT id FROM tasks
+            WHERE status = 'running'
+              AND heartbeat_time < NOW() - INTERVAL '30 seconds'
+            ORDER BY id  -- Deterministic ordering
+            LIMIT 50
+            FOR UPDATE SKIP LOCKED  -- Don't block other nodes
+        )
+        UPDATE tasks
+        SET owner_node = %s,
+            heartbeat_time = NOW(),
+            status = 'pending'
+        WHERE id IN (SELECT id FROM claimable)
+        RETURNING id
+    """, self.node_id)
+
+    return claimed
+```
+
+**Solution 3: Coordinator-Based Redistribution**
+
+```python
+class ClusterCoordinator:
+    """Elected leader handles all redistribution."""
+
+    def on_node_failure(self, failed_node):
+        # Only coordinator runs this, no thundering herd
+        orphaned_tasks = self.get_tasks_owned_by(failed_node)
+
+        surviving_nodes = self.get_healthy_nodes()
+
+        # Evenly distribute across survivors
+        assignments = self.compute_assignment(orphaned_tasks, surviving_nodes)
+
+        for node, tasks in assignments.items():
+            # Batch update per node
+            self.store.execute("""
+                UPDATE tasks
+                SET owner_node = %s, status = 'pending'
+                WHERE id = ANY(%s)
+            """, node, tasks)
+
+            # Notify node about new tasks
+            self.notify_node(node, tasks)
+```
+
+**Solution 4: Pull-Based with Rate Limiting**
+
+```python
+class RateLimitedRecovery:
+    def __init__(self, max_claims_per_second=10):
+        self.limiter = TokenBucket(max_claims_per_second)
+
+    def recovery_loop(self):
+        while running:
+            # Wait for token before claiming
+            self.limiter.acquire()
+
+            task = self.claim_one_orphan()
+            if task:
+                self.schedule_for_execution(task)
+            else:
+                time.sleep(1)  # No orphans, back off
+
+    def claim_one_orphan(self):
+        """Claim exactly one orphan per call."""
+        return self.store.execute("""
+            UPDATE tasks
+            SET owner_node = %s, status = 'pending'
+            WHERE id = (
+                SELECT id FROM tasks
+                WHERE status = 'running'
+                  AND heartbeat_time < NOW() - INTERVAL '30 seconds'
+                LIMIT 1
+                FOR UPDATE SKIP LOCKED
+            )
+            RETURNING *
+        """, self.node_id)
+```
+
+**Comparison**:
+
+| Approach | Complexity | Fairness | Recovery Speed | DB Load |
+|----------|------------|----------|----------------|---------|
+| Jittered loop | Low | Poor | Slow | Medium |
+| Batch + SKIP LOCKED | Medium | Good | Fast | Low |
+| Coordinator | High | Best | Medium | Lowest |
+| Rate-limited pull | Medium | Fair | Controlled | Low |
+
+**Production Recommendation**: Combine batch claiming with `SKIP LOCKED` + rate limiting. Each node claims up to 10 tasks per second, database handles contention gracefully via skip locked.
+
+</div>
+</details>
+</div>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Cron and Timing Deep Dive</h3>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you implement cron-style recurring tasks?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**Core Concept**: Parse cron expression into field constraints, then find next matching datetime.
+
+```python
+class CronSchedule:
+    def __init__(self, expression: str):
+        # "*/15 9-17 * * MON-FRI"
+        parts = expression.split()
+        self.minute = CronField(parts[0], 0, 59)
+        self.hour = CronField(parts[1], 0, 23)
+        self.day = CronField(parts[2], 1, 31)
+        self.month = CronField(parts[3], 1, 12)
+        self.dow = CronField(parts[4], 0, 6)
+
+    def next_run(self, after: datetime) -> datetime:
+        """Find next datetime matching all field constraints."""
+        candidate = after.replace(second=0, microsecond=0) + timedelta(minutes=1)
+
+        for _ in range(4 * 366 * 24 * 60):  # Max 4 years
+            if self._matches(candidate):
+                return candidate
+            candidate = self._advance(candidate)
+
+        raise ValueError("No matching time in next 4 years")
+
+    def _matches(self, dt: datetime) -> bool:
+        return (
+            self.minute.contains(dt.minute) and
+            self.hour.contains(dt.hour) and
+            self.day.contains(dt.day) and
+            self.month.contains(dt.month) and
+            self.dow.contains(dt.weekday())
+        )
+```
+
+**Optimized Advancement** (jump to next valid value):
+
+```python
+def _advance(self, dt: datetime) -> datetime:
+    # If month doesn't match, jump to next valid month
+    if not self.month.contains(dt.month):
+        next_month = self.month.next_value(dt.month)
+        if next_month is None:  # Wrap to next year
+            return dt.replace(year=dt.year+1, month=self.month.min_value, day=1, hour=0, minute=0)
+        return dt.replace(month=next_month, day=1, hour=0, minute=0)
+
+    # Similarly for day, hour, minute...
+    # Each field jumps to next valid value, resetting lower fields
+```
+
+**Integration with Scheduler**:
+
+```python
+def schedule_next_occurrence(task):
+    if task.cron_expr:
+        next_run = task.cron_expr.next_run(datetime.now())
+        new_task = Task(
+            id=generate_id(),
+            cron_expr=task.cron_expr,
+            scheduled_time=next_run,
+            # ... copy other fields
+        )
+        scheduler.enqueue(new_task)
+```
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle daylight saving time transitions?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**The Problem**:
+- <span style="color: #f85149;">**Spring Forward**</span>: 2:00 AM → 3:00 AM (2:30 AM doesn't exist)
+- <span style="color: #ffa657;">**Fall Back**</span>: 2:00 AM → 1:00 AM (1:30 AM happens twice)
+
+**Scenario 1**: Task scheduled for 2:30 AM on spring-forward day
+
+```python
+# Three options:
+SKIP = "skip"           # Don't run at all that day
+RUN_AFTER = "run_after"  # Run at 3:00 AM instead
+RUN_BEFORE = "run_before" # Run at 1:59 AM instead
+
+def resolve_nonexistent_time(scheduled_time, tz, policy):
+    try:
+        tz.localize(scheduled_time, is_dst=None)
+        return scheduled_time  # Time exists normally
+    except AmbiguousTimeError:
+        # Fall back - time exists twice
+        return handle_ambiguous(scheduled_time, tz)
+    except NonExistentTimeError:
+        # Spring forward - time doesn't exist
+        if policy == SKIP:
+            return None
+        elif policy == RUN_AFTER:
+            # Jump forward by DST offset (usually 1 hour)
+            return scheduled_time + timedelta(hours=1)
+        elif policy == RUN_BEFORE:
+            return scheduled_time - timedelta(minutes=1)
+```
+
+**Scenario 2**: Task scheduled for 1:30 AM on fall-back day
+
+```python
+def handle_ambiguous(scheduled_time, tz):
+    # is_dst=True: first occurrence (before clocks change)
+    # is_dst=False: second occurrence (after clocks change)
+
+    # Policy options:
+    FIRST = "first"   # Run on first 1:30 AM
+    SECOND = "second" # Run on second 1:30 AM
+    BOTH = "both"     # Run twice (dangerous for non-idempotent tasks!)
+
+    if policy == FIRST:
+        return tz.localize(scheduled_time, is_dst=True)
+    elif policy == SECOND:
+        return tz.localize(scheduled_time, is_dst=False)
+    elif policy == BOTH:
+        return [
+            tz.localize(scheduled_time, is_dst=True),
+            tz.localize(scheduled_time, is_dst=False)
+        ]
+```
+
+**Best Practice**: Store and compute in UTC internally
+
+```python
+class TimezoneAwareCronTask:
+    def __init__(self, cron_expr, user_timezone):
+        self.cron = CronSchedule(cron_expr)
+        self.tz = pytz.timezone(user_timezone)
+
+    def next_run_utc(self, after_utc):
+        # Convert to user's timezone for cron matching
+        after_local = after_utc.astimezone(self.tz)
+
+        # Find next match in user's timezone
+        next_local = self.cron.next_run(after_local)
+
+        # Handle DST edge cases
+        next_local = resolve_dst_issues(next_local, self.tz)
+
+        # Convert back to UTC for storage
+        return next_local.astimezone(pytz.UTC)
+```
+
+**Critical**: Never store timezone offset (`-05:00`). Store timezone name (`America/New_York`) so DST rules apply correctly.
+
+</div>
+</details>
+</div>
+
+<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you efficiently query 'which cron tasks fire in the next 5 minutes' across millions of tasks?"</div>
+
+<details>
+<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+
+<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+
+**The Problem**: Computing `next_run()` for 1 million cron tasks on every scheduler tick is too slow.
+
+**Solution: Pre-computed Next-Fire Index**
+
+```python
+class CronIndexer:
+    def __init__(self):
+        # Sorted set: score = next_fire_timestamp, value = task_id
+        self.next_fire_index = SortedSet()
+        # task_id -> CronTask
+        self.tasks = {}
+
+    def add_task(self, task: CronTask):
+        self.tasks[task.id] = task
+        next_fire = task.next_run_utc(datetime.utcnow())
+        self.next_fire_index.add((next_fire.timestamp(), task.id))
+
+    def get_tasks_firing_in(self, seconds: int) -> List[str]:
+        """O(log n + k) where k is number of matching tasks."""
+        now = time.time()
+        deadline = now + seconds
+
+        result = []
+        for score, task_id in self.next_fire_index.irange_key(now, deadline):
+            result.append(task_id)
+
+        return result
+
+    def update_after_execution(self, task_id: str):
+        """Called after task runs. Compute and index next occurrence."""
+        task = self.tasks[task_id]
+
+        # Remove old entry
+        self.next_fire_index.discard((task.last_scheduled.timestamp(), task_id))
+
+        # Add new entry
+        next_fire = task.next_run_utc(datetime.utcnow())
+        self.next_fire_index.add((next_fire.timestamp(), task_id))
+```
+
+**Redis Implementation**:
+
+```python
+class RedisCronIndex:
+    def __init__(self, redis):
+        self.redis = redis
+        self.INDEX_KEY = "cron:next_fire"
+
+    def add_task(self, task_id, next_fire_timestamp):
+        self.redis.zadd(self.INDEX_KEY, {task_id: next_fire_timestamp})
+
+    def get_tasks_firing_in(self, seconds):
+        now = time.time()
+        deadline = now + seconds
+
+        return self.redis.zrangebyscore(
+            self.INDEX_KEY,
+            min=now,
+            max=deadline
+        )
+
+    def update_after_execution(self, task_id, new_next_fire):
+        # Atomic update
+        self.redis.zadd(self.INDEX_KEY, {task_id: new_next_fire})
+```
+
+**Sharded Index for Scale**:
+
+```python
+class ShardedCronIndex:
+    """Distribute index across multiple Redis instances."""
+
+    def __init__(self, redis_nodes):
+        self.nodes = redis_nodes
+        self.num_shards = len(redis_nodes)
+
+    def _get_shard(self, task_id):
+        return self.nodes[hash(task_id) % self.num_shards]
+
+    def get_all_tasks_firing_in(self, seconds):
+        """Query all shards in parallel."""
+        now = time.time()
+        deadline = now + seconds
+
+        with ThreadPoolExecutor(max_workers=self.num_shards) as executor:
+            futures = [
+                executor.submit(
+                    node.zrangebyscore,
+                    "cron:next_fire",
+                    min=now,
+                    max=deadline
+                )
+                for node in self.nodes
+            ]
+
+            results = []
+            for future in futures:
+                results.extend(future.result())
+
+        return results
+```
+
+**Memory Optimization**: Only index next 24 hours
+
+```python
+def maintenance_loop(self):
+    """Run periodically to refresh the index."""
+    while running:
+        # Remove entries older than now (already fired)
+        self.redis.zremrangebyscore(self.INDEX_KEY, '-inf', time.time())
+
+        # For tasks beyond 24h, only index first occurrence
+        far_future = time.time() + 86400
+        far_tasks = self.get_tasks_beyond(far_future)
+
+        for task_id in far_tasks:
+            # Recompute - may now fall within 24h window
+            next_fire = self.compute_next_fire(task_id)
+            if next_fire < far_future:
+                self.redis.zadd(self.INDEX_KEY, {task_id: next_fire})
+
+        time.sleep(3600)  # Run hourly
+```
+
+**Performance Comparison**:
+
+| Approach | Query Time (1M tasks, 5 min window) | Memory |
+|----------|-------------------------------------|--------|
+| Scan all + compute | O(n) = seconds | None |
+| Sorted set index | O(log n + k) = milliseconds | O(n) |
+| Sharded index (10 nodes) | O(log(n/10) + k/10) = sub-millisecond | O(n) |
+
+</div>
+</details>
+</div>
+
+</div>
+
+---
+
 ## Related Topics
 
 - [[Priority Queues]](/data-structures/priority-queue) - Heap data structure internals
@@ -2770,3 +4078,13 @@ Recovery: Transaction rollback
 - [[Message Queues]](/system-design/message-queues) - Pub/sub and work queues
 - [[CAP Theorem]](/system-design/cap-theorem) - Distributed systems trade-offs
 - [[Exponential Backoff]](/algorithms/exponential-backoff) - Retry strategy algorithms
+- [[Consistent Hashing]](/algorithms/consistent-hashing) - Partition distribution
+- [[Topological Sort]](/algorithms/topological-sort) - DAG dependency resolution
+- [[Two Generals Problem]](/algorithms/two-generals) - Distributed consensus limits
+- [[Graph Cycle Detection]](/algorithms/graph-cycle-detection) - DAG validation
+- [[Redis Sentinel]](/databases/redis-sentinel) - High availability caching
+- [[Dead Letter Queues]](/system-design/dead-letter-queues) - Failed message handling
+- [[Saga Pattern]](/design-patterns/saga) - Distributed transaction management
+- [[Outbox Pattern]](/design-patterns/outbox) - Reliable event publishing
+- [[Apache Airflow]](/tools/airflow) - Production DAG scheduler
+- [[Celery]](/tools/celery) - Python distributed task queue

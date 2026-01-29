@@ -4,7 +4,7 @@
 
 Design and implement an elevator control system for a multi-story building with multiple elevators. The system must efficiently handle pickup requests from floors and destination requests from inside cabins, optimizing for minimal wait times while ensuring fair service to all passengers.
 
-This classic machine coding problem tests your ability to model real-world physical systems with complex state transitions, implement scheduling algorithms borrowed from operating systems, and design coordination mechanisms for distributed actors. Companies like Amazon, Google, Microsoft, and Uber use this problem to assess systems thinking, state machine design, and algorithm selection.
+This classic machine coding problem tests your ability to model real-world physical systems with <span style="color: #22c55e; font-weight: bold;">complex state transitions</span>, implement <span style="color: #22c55e; font-weight: bold;">scheduling algorithms</span> borrowed from operating systems, and design <span style="color: #22c55e; font-weight: bold;">coordination mechanisms</span> for distributed actors. Companies like Amazon, Google, Microsoft, and Uber use this problem to assess systems thinking, [[state-machine]](/topics/system-design/state-machine) design, and algorithm selection.
 
 <div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0;">
 <div style="color: #f8fafc; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Why This Problem Matters</div>
@@ -121,7 +121,45 @@ Real systems like Otis Compass and Schindler PORT handle this with combination o
 
 ## Scheduling Algorithms Deep Dive
 
-The core intellectual challenge of elevator systems is the scheduling algorithm—determining which floors to visit and in what order. These algorithms have direct parallels to disk scheduling in operating systems.
+The core intellectual challenge of elevator systems is the <span style="color: #22c55e; font-weight: bold;">scheduling algorithm</span>—determining which floors to visit and in what order. These algorithms have direct parallels to [[disk-scheduling]](/topics/operating-systems/disk-scheduling) in operating systems, where the elevator head movement mirrors disk seek operations.
+
+<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
+<div style="color: #f8fafc; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center;">Scheduling Algorithm Taxonomy</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;">
+
+<div style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Naive</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px;">FCFS</div>
+<div style="color: #fca5a5; font-size: 11px; margin-top: 4px;">High variance</div>
+</div>
+
+<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #14532d 0%, #166534 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #bbf7d0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Sweep-Based</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px;">SCAN / LOOK</div>
+<div style="color: #86efac; font-size: 11px; margin-top: 4px;">Bounded wait</div>
+</div>
+
+<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #bfdbfe; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Greedy</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px;">SSTF</div>
+<div style="color: #93c5fd; font-size: 11px; margin-top: 4px;">Starvation risk</div>
+</div>
+
+<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+
+<div style="background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #e9d5ff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Hybrid</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px;">SSTF + Aging</div>
+<div style="color: #c4b5fd; font-size: 11px; margin-top: 4px;">Best of both</div>
+</div>
+
+</div>
+</div>
 
 ### FCFS (First-Come-First-Served)
 
@@ -155,18 +193,61 @@ Service requests in the exact order they arrive, regardless of elevator position
 Move in one direction serving all requests, then reverse direction and repeat. Continue to the building's end before reversing, even if no requests remain in that direction.
 
 **Mechanism**:
-1. Maintain current direction (UP or DOWN)
+1. Maintain current <span style="color: #22c55e; font-weight: bold;">direction state</span> (UP or DOWN)
 2. Continue in that direction, stopping at requested floors
-3. When reaching building boundary (top or bottom floor), reverse direction
+3. When reaching <span style="color: #22c55e; font-weight: bold;">building boundary</span> (top or bottom floor), reverse direction
 4. Repeat indefinitely
 
 **Properties**:
-- **Bounded wait time**: Maximum wait is 2 * (num_floors - 1) moves
-- **No starvation**: Every floor gets served within one complete cycle
-- **Predictable**: Passengers can estimate arrival based on elevator position
+- <span style="color: #22c55e; font-weight: bold;">Bounded wait time</span>: Maximum wait is 2 * (num_floors - 1) moves
+- <span style="color: #22c55e; font-weight: bold;">No starvation</span>: Every floor gets served within one complete cycle
+- <span style="color: #22c55e; font-weight: bold;">Predictable</span>: Passengers can estimate arrival based on elevator position
 
 **Trade-off**: May travel to building extremes unnecessarily when no requests exist there.
 
+</div>
+</div>
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">SCAN Algorithm Visualization</div>
+
+<div style="display: flex; gap: 8px; align-items: flex-end; justify-content: center; margin-bottom: 16px; height: 200px;">
+<div style="display: flex; flex-direction: column; justify-content: space-between; padding-right: 8px; height: 100%;">
+<div style="font-size: 11px; color: #64748b;">F10</div>
+<div style="font-size: 11px; color: #64748b;">F9</div>
+<div style="font-size: 11px; color: #64748b;">F8</div>
+<div style="font-size: 11px; color: #64748b;">F7</div>
+<div style="font-size: 11px; color: #64748b;">F6</div>
+<div style="font-size: 11px; color: #64748b;">F5</div>
+<div style="font-size: 11px; color: #64748b;">F4</div>
+<div style="font-size: 11px; color: #64748b;">F3</div>
+<div style="font-size: 11px; color: #64748b;">F2</div>
+<div style="font-size: 11px; color: #64748b;">F1</div>
+</div>
+
+<div style="position: relative; width: 300px; height: 100%; background: linear-gradient(to right, #dbeafe 0%, #dbeafe 50%, #fef3c7 50%, #fef3c7 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
+<div style="position: absolute; left: 10%; top: 10%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<div style="position: absolute; left: 20%; top: 30%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<div style="position: absolute; left: 35%; top: 50%; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; border: 3px solid #1d4ed8;"></div>
+<div style="position: absolute; left: 45%; top: 0%; width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+<div style="position: absolute; left: 55%; top: 20%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<div style="position: absolute; left: 70%; top: 60%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<div style="position: absolute; left: 85%; top: 80%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<div style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: #94a3b8;"></div>
+<div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #94a3b8; border-style: dashed;"></div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; font-size: 12px;">
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; border: 2px solid #1d4ed8;"></div> Current Position</div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div> Pending Stop</div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div> Boundary (Must Visit)</div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 20px; height: 12px; background: #dbeafe; border-radius: 2px;"></div> UP Phase</div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 20px; height: 12px; background: #fef3c7; border-radius: 2px;"></div> DOWN Phase</div>
+</div>
+
+<div style="margin-top: 16px; padding: 12px; background: #f1f5f9; border-radius: 8px; font-size: 13px; color: #475569; text-align: center;">
+<strong>SCAN Path:</strong> Floor 5 → 7 → 9 → <span style="color: #ef4444; font-weight: bold;">10 (boundary)</span> → 8 → 4 → 2 → <span style="color: #ef4444; font-weight: bold;">1 (boundary)</span>
 </div>
 </div>
 
@@ -223,10 +304,10 @@ Like SCAN, but reverses direction when no more requests exist in the current dir
 **Mechanism**:
 1. Maintain current direction
 2. Continue in that direction, stopping at requested floors
-3. When no more requests in current direction, reverse immediately
-4. "Look ahead" before moving to see if direction change is needed
+3. When no more requests in current direction, <span style="color: #22c55e; font-weight: bold;">reverse immediately</span>
+4. <span style="color: #22c55e; font-weight: bold;">"Look ahead"</span> before moving to see if direction change is needed
 
-**Improvement over SCAN**: Eliminates wasteful travel to building boundaries when no requests exist there.
+**Improvement over SCAN**: Eliminates <span style="color: #22c55e; font-weight: bold;">wasteful travel</span> to building boundaries when no requests exist there.
 
 **Example**:
 - Current: Floor 5, Direction: UP
@@ -234,6 +315,76 @@ Like SCAN, but reverses direction when no more requests exist in the current dir
 - SCAN would go: 5 → 7 → (max floor) → 3 → 1
 - LOOK would go: 5 → 7 → 3 → 1 (reverses at 7, not max)
 
+</div>
+</div>
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">SCAN vs LOOK Comparison</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 16px; border: 1px solid #fecaca;">
+<div style="color: #991b1b; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">SCAN (Wasteful)</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F10</div>
+<div style="flex: 1; height: 20px; background: #fee2e2; border-radius: 4px; position: relative;">
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #dc2626;">← wasted travel</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F7</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F5</div>
+<div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 2px solid #1d4ed8;"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F3</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F1</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
+</div>
+</div>
+<div style="margin-top: 12px; font-size: 12px; color: #991b1b; text-align: center;"><strong>Path:</strong> 5→7→8→9→10→3→1 = <strong>12 moves</strong></div>
+</div>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 16px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">LOOK (Efficient)</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F10</div>
+<div style="flex: 1; height: 20px; background: #f1f5f9; border-radius: 4px; position: relative;">
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #94a3b8;">skipped</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F7</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div><span style="font-size: 10px; margin-left: 4px; color: #166534;">reverse here!</span></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F5</div>
+<div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 2px solid #1d4ed8;"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F3</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 40px; font-size: 11px; color: #64748b;">F1</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
+</div>
+</div>
+<div style="margin-top: 12px; font-size: 12px; color: #166534; text-align: center;"><strong>Path:</strong> 5→7→3→1 = <strong>8 moves</strong></div>
+</div>
+
+</div>
+
+<div style="margin-top: 16px; padding: 12px; background: #dcfce7; border-radius: 8px; font-size: 13px; color: #166534; text-align: center;">
+<strong>LOOK saves 33% movement</strong> in this example by not traveling to floor 10 unnecessarily
 </div>
 </div>
 
@@ -445,7 +596,39 @@ Real systems like Otis, Schindler, and KONE use hybrid approaches with central "
 
 ## State Machine Design
 
-A single elevator is fundamentally a [[state-machine]](/topics/system-design/state-machine)—it exists in discrete states and transitions between them based on events. Correct state machine design is critical for safety and correctness.
+A single elevator is fundamentally a [[state-machine]](/topics/system-design/state-machine)—it exists in <span style="color: #22c55e; font-weight: bold;">discrete states</span> and transitions between them based on <span style="color: #22c55e; font-weight: bold;">events</span>. Correct state machine design is critical for <span style="color: #22c55e; font-weight: bold;">safety</span> and <span style="color: #22c55e; font-weight: bold;">correctness</span>.
+
+<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #4338ca;">
+<div style="color: #e0e7ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">State Machine Design Principles</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px;">1</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px;">Explicit States</div>
+<div style="color: #c7d2fe; font-size: 12px;">Every possible elevator condition has a named state</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px;">2</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px;">Defined Transitions</div>
+<div style="color: #c7d2fe; font-size: 12px;">Only valid (state, event) pairs cause state changes</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px;">3</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px;">Guard Conditions</div>
+<div style="color: #c7d2fe; font-size: 12px;">Transitions can have boolean conditions that must be true</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px;">4</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px;">Actions on Transition</div>
+<div style="color: #c7d2fe; font-size: 12px;">Side effects execute atomically with state change</div>
+</div>
+
+</div>
+</div>
 
 ### Elevator States
 
@@ -1311,6 +1494,442 @@ This mirrors patterns from distributed databases like [[raft-consensus]](/topics
 </div>
 </div>
 </div>
+
+---
+
+## Emergency Handling and Safety Systems
+
+<span style="color: #22c55e; font-weight: bold;">Emergency handling</span> is a critical aspect of elevator systems that interviewers love to explore. It tests your understanding of [[fault-tolerance]](/topics/system-design/fault-tolerance), safety-critical design, and graceful degradation patterns.
+
+<div style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #fca5a5;">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center;">Emergency Response Architecture</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Fire Emergency</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Phase 1 Recall</div>
+<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+All elevators → Lobby<br/>
+Doors open & hold<br/>
+Disable hall calls<br/>
+Firefighter key override
+</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Power Failure</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Battery Backup</div>
+<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+One elevator at a time<br/>
+Move to nearest floor<br/>
+Open doors safely<br/>
+Evacuate passengers
+</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Earthquake</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Seismic Protocol</div>
+<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+Stop at nearest floor<br/>
+Open doors immediately<br/>
+Disable all operation<br/>
+Require inspection reset
+</div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
+<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Entrapment</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Rescue Mode</div>
+<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+Emergency intercom<br/>
+Ventilation maintained<br/>
+Position broadcast<br/>
+Manual override access
+</div>
+</div>
+
+</div>
+</div>
+
+### Emergency State Machine Extension
+
+```python
+class EmergencyState(Enum):
+    """Emergency states that override normal operation."""
+    NORMAL = auto()           # Standard operation
+    FIRE_PHASE1 = auto()      # Recall to lobby
+    FIRE_PHASE2 = auto()      # Firefighter manual control
+    EARTHQUAKE = auto()       # Stop at nearest, open doors
+    POWER_FAILURE = auto()    # Battery backup mode
+    ENTRAPMENT = auto()       # Stuck between floors
+    MAINTENANCE = auto()      # Out of service
+
+
+class EmergencyHandler:
+    """
+    Handles emergency scenarios with proper state transitions.
+
+    Key design principle: Safety over efficiency.
+    Emergency states override ALL normal scheduling logic.
+
+    Related: [[circuit-breaker]](/topics/system-design/circuit-breaker)
+    """
+
+    def __init__(self, controller: 'ElevatorController'):
+        self.controller = controller
+        self.emergency_state = EmergencyState.NORMAL
+        self.fire_recall_floor = 0  # Usually lobby
+        self.alternate_recall_floor = 1  # If fire at lobby
+
+    def trigger_fire_alarm(self, fire_floor: Optional[int] = None):
+        """
+        Initiate fire emergency Phase 1 recall.
+
+        All elevators return to designated floor, open doors, and hold.
+        This is mandated by ASME A17.1 elevator safety code.
+        """
+        self.emergency_state = EmergencyState.FIRE_PHASE1
+
+        # Determine recall floor (avoid fire floor)
+        recall_floor = self.fire_recall_floor
+        if fire_floor == self.fire_recall_floor:
+            recall_floor = self.alternate_recall_floor
+
+        for elevator in self.controller.elevators:
+            # Clear all pending stops
+            elevator.up_stops.clear()
+            elevator.down_stops.clear()
+
+            # Set single destination: recall floor
+            if elevator.current_floor != recall_floor:
+                elevator.add_stop(recall_floor, None)
+
+            # Mark as emergency mode
+            elevator.emergency_mode = True
+            elevator.doors_held_open = True
+
+        # Disable all hall call buttons
+        self.controller.accept_hall_calls = False
+
+        # Log for audit
+        self._log_emergency("FIRE_PHASE1", f"Recall to floor {recall_floor}")
+
+    def trigger_earthquake_mode(self, intensity: float):
+        """
+        Seismic event response.
+
+        Strategy: Get passengers out ASAP at nearest safe floor.
+        """
+        self.emergency_state = EmergencyState.EARTHQUAKE
+
+        for elevator in self.controller.elevators:
+            # Find nearest floor
+            current = elevator.current_floor
+            nearest = round(current)  # In case between floors
+
+            # Clear stops, go to nearest
+            elevator.up_stops.clear()
+            elevator.down_stops.clear()
+
+            if nearest != current:
+                elevator.add_stop(nearest, None)
+            else:
+                # Already at a floor, open doors immediately
+                elevator.state = ElevatorState.DOORS_OPEN
+                elevator.doors_held_open = True
+
+            elevator.emergency_mode = True
+
+        self.controller.accept_hall_calls = False
+        self._log_emergency("EARTHQUAKE", f"Intensity: {intensity}")
+
+    def handle_power_failure(self):
+        """
+        Battery backup evacuation mode.
+
+        Challenge: Limited battery capacity means we can't run
+        all elevators simultaneously. Process one at a time.
+        """
+        self.emergency_state = EmergencyState.POWER_FAILURE
+
+        # Sort elevators by passenger count (evacuate occupied first)
+        occupied = [e for e in self.controller.elevators if e.current_passengers > 0]
+        empty = [e for e in self.controller.elevators if e.current_passengers == 0]
+
+        # Queue for sequential evacuation
+        evacuation_queue = occupied + empty
+
+        # Only first elevator operates on battery
+        for i, elevator in enumerate(evacuation_queue):
+            if i == 0:
+                elevator.battery_mode = True
+                nearest = round(elevator.current_floor)
+                elevator.add_stop(nearest, None)
+            else:
+                # Suspend other elevators
+                elevator.state = ElevatorState.EMERGENCY
+                elevator.suspended = True
+
+        self._log_emergency("POWER_FAILURE", f"Evacuating {len(occupied)} occupied elevators")
+
+    def handle_entrapment(self, elevator_id: int):
+        """
+        Passenger trapped between floors.
+
+        This is a critical scenario requiring:
+        1. Communication with passengers
+        2. Position tracking for rescue
+        3. Ventilation maintenance
+        """
+        elevator = self.controller.elevators[elevator_id]
+        elevator.state = ElevatorState.EMERGENCY
+        elevator.entrapment_detected = True
+
+        # Activate emergency systems
+        elevator.intercom_active = True
+        elevator.ventilation_boost = True
+
+        # Broadcast position for rescue
+        position_info = {
+            'elevator_id': elevator_id,
+            'floor_position': elevator.current_floor,
+            'between_floors': not elevator.current_floor.is_integer(),
+            'passengers': elevator.current_passengers,
+            'timestamp': time.time()
+        }
+
+        self._broadcast_rescue_info(position_info)
+        self._log_emergency("ENTRAPMENT", f"Elevator {elevator_id} at {elevator.current_floor}")
+
+    def reset_emergency(self, authorized_key: str) -> bool:
+        """
+        Reset from emergency state (requires authorization).
+
+        Only building management or emergency services can reset.
+        Prevents unauthorized resumption of service.
+        """
+        if not self._validate_authorization(authorized_key):
+            return False
+
+        self.emergency_state = EmergencyState.NORMAL
+
+        for elevator in self.controller.elevators:
+            elevator.emergency_mode = False
+            elevator.doors_held_open = False
+            elevator.battery_mode = False
+            elevator.suspended = False
+            elevator.state = ElevatorState.IDLE
+
+        self.controller.accept_hall_calls = True
+        self._log_emergency("RESET", "Normal operation resumed")
+        return True
+```
+
+### Emergency Response Flow Diagram
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Emergency Detection and Response Flow</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #fee2e2; padding: 12px 20px; border-radius: 8px; border: 2px solid #fca5a5; text-align: center;">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px;">TRIGGER DETECTED</div>
+<div style="color: #dc2626; font-size: 11px;">Fire/Quake/Power/Manual</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="background: #fef3c7; padding: 12px 20px; border-radius: 8px; border: 2px solid #fcd34d; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 13px;">HALT NEW REQUESTS</div>
+<div style="color: #d97706; font-size: 11px;">Disable hall buttons</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; border: 2px solid #93c5fd; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px;">CLEAR STOP QUEUES</div>
+<div style="color: #3b82f6; font-size: 11px;">Override scheduling</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #f3e8ff; padding: 12px 20px; border-radius: 8px; border: 2px solid #d8b4fe; text-align: center;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px;">EXECUTE PROTOCOL</div>
+<div style="color: #8b5cf6; font-size: 11px;">Type-specific response</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; border: 2px solid #86efac; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 13px;">SAFE STATE REACHED</div>
+<div style="color: #22c55e; font-size: 11px;">Passengers evacuated</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 2px solid #cbd5e1; text-align: center;">
+<div style="color: #475569; font-weight: bold; font-size: 13px;">AWAIT RESET</div>
+<div style="color: #64748b; font-size: 11px;">Authorized personnel</div>
+</div>
+</div>
+
+</div>
+</div>
+
+### Interview Questions: Emergency Handling
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #e2e8f0;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px;">Level 1: Basic Emergency Design</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0;">
+
+**Q: Why do elevators return to the lobby during a fire alarm instead of the nearest floor?**
+
+The lobby is typically the <span style="color: #22c55e; font-weight: bold;">primary egress point</span> for a building and where firefighters will enter. Returning all elevators to lobby:
+
+1. **Centralizes evacuation**: Passengers exit through monitored, accessible ground floor
+2. **Firefighter access**: Firefighters can commandeer elevators from lobby for rescue operations
+3. **Smoke avoidance**: Lobbies typically have better ventilation and fire separation
+4. **Standardization**: Emergency responders know exactly where to find the elevators
+
+Exception: If the fire is AT the lobby, elevators go to an alternate recall floor (usually one floor up).
+
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px;">Level 2: Safety Invariants</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+**Q: What safety invariants must NEVER be violated, even in software bugs? How do you enforce them?**
+
+Critical <span style="color: #22c55e; font-weight: bold;">safety invariants</span> for elevator systems:
+
+1. **Elevator must not move with doors open** - Enforced by hardware interlock (physical switch cuts motor power)
+2. **Doors must not open between floors** - Door motor circuit includes floor-position sensor
+3. **Overspeed must trigger emergency brake** - Mechanical governor activates independently of software
+4. **Free-fall must be prevented** - Multiple independent brake systems (rope brakes, safety gear)
+
+**Software enforcement is insufficient** because:
+- Software can have bugs, race conditions, memory corruption
+- Hardware provides independent safety layer
+- Regulations (ASME A17.1) mandate hardware interlocks
+
+**Design pattern**: <span style="color: #22c55e; font-weight: bold;">Defense in depth</span> - multiple independent mechanisms protecting each invariant.
+
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px;">Level 3: Partial Failure Scenarios</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+**Q: The building loses power, but only 2 of 6 elevators have passengers. Battery backup can only run one elevator at a time for 30 minutes total. Design the evacuation strategy.**
+
+This is a <span style="color: #22c55e; font-weight: bold;">resource-constrained optimization</span> problem:
+
+**Analysis**:
+- 2 occupied elevators need evacuation
+- 30 minutes battery, 1 elevator at a time
+- Moving one floor typically takes ~5-10 seconds
+- Door open/close cycle ~10-15 seconds
+
+**Strategy**:
+```
+1. PRIORITIZE by risk:
+   - Elevator with medical emergency passengers FIRST
+   - Elevator with more passengers (maximize evacuees per battery-minute)
+   - Elevator further from a floor (longer travel time)
+
+2. OPTIMIZE movement:
+   - Calculate nearest floor for each occupied elevator
+   - Evacuate elevator that needs LESS movement first
+   - This maximizes remaining battery for second elevator
+
+3. SEQUENTIAL execution:
+   - Power elevator A → nearest floor → open doors → passengers exit
+   - Power elevator A → move to safe parking position (optional)
+   - Switch to elevator B → repeat
+
+4. FALLBACK if battery depletes:
+   - Remaining passengers use emergency intercom
+   - Ventilation runs on separate battery (longer duration)
+   - Fire department notified for manual extraction
+```
+
+**Key insight**: This mirrors [[resource-scheduling]](/topics/operating-systems/scheduling) problems where you must make optimal decisions with limited resources. The "shortest job first" heuristic (evacuate faster elevator first) maximizes total passengers evacuated.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+### Fire Service Phase 2 Operation
+
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #eab308;">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px;">Firefighter Manual Control Mode</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8;">
+
+After Phase 1 recall, firefighters can activate <span style="color: #22c55e; font-weight: bold;">Phase 2 operation</span> using a special key. In this mode:
+
+- **Only in-car controls work** (hall buttons remain disabled)
+- **Doors require constant pressure** (dead-man switch for safety)
+- **Car call buttons illuminate but don't auto-close doors**
+- **Firefighter can override door obstruction sensors**
+
+This mode enables firefighters to:
+- Access floors for rescue operations
+- Transport equipment up the building
+- Evacuate injured persons
+
+**Implementation note**: Phase 2 is NOT automated—it's manual control with minimal software involvement, reducing failure modes during critical operations.
+
+</div>
+</div>
+
+```python
+class FirefighterMode:
+    """
+    Phase 2 firefighter operation mode.
+
+    This is intentionally SIMPLE - minimal logic, maximum manual control.
+    Complexity is the enemy of safety in emergency scenarios.
+    """
+
+    def __init__(self, elevator: Elevator):
+        self.elevator = elevator
+        self.active = False
+        self.door_hold_pressed = False
+
+    def activate(self, firefighter_key: bool) -> bool:
+        """Activate with physical key switch."""
+        if not firefighter_key:
+            return False
+
+        self.active = True
+        self.elevator.automatic_doors = False
+        self.elevator.hall_calls_enabled = False
+        return True
+
+    def move_to_floor(self, floor: int, door_hold: bool) -> bool:
+        """
+        Manual floor selection with door control.
+
+        Door only stays open while door_hold is pressed (dead-man switch).
+        This prevents firefighter from being separated from elevator.
+        """
+        if not self.active:
+            return False
+
+        if not door_hold:
+            # Must hold door button to move
+            self.elevator.state = ElevatorState.DOORS_CLOSING
+            return False
+
+        # Close doors and move
+        self.elevator.up_stops.clear()
+        self.elevator.down_stops.clear()
+        self.elevator.add_stop(floor, None)
+        return True
+
+    def hold_doors_open(self, pressed: bool):
+        """Doors only stay open while button is held."""
+        self.door_hold_pressed = pressed
+        if pressed:
+            self.elevator.state = ElevatorState.DOORS_OPEN
+        else:
+            self.elevator.state = ElevatorState.DOORS_CLOSING
+```
 
 ---
 

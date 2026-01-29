@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Design a URL shortening service (like bit.ly or TinyURL) that converts long URLs into compact, shareable codes while enabling redirection, analytics tracking, and high availability at scale.
+Design a <span style="color:#22c55e;font-weight:bold">URL shortening service</span> (like bit.ly or TinyURL) that converts long URLs into compact, shareable codes while enabling redirection, <span style="color:#22c55e;font-weight:bold">analytics tracking</span>, and <span style="color:#22c55e;font-weight:bold">high availability</span> at scale.
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
@@ -16,7 +16,7 @@ Design a URL shortening service (like bit.ly or TinyURL) that converts long URLs
 
 ### The Mathematics Behind Short Codes
 
-Base62 encoding transforms numeric identifiers into alphanumeric strings using a 62-character alphabet: `a-z`, `A-Z`, `0-9`. This choice is deliberate and reveals important trade-offs.
+<span style="color:#22c55e;font-weight:bold">Base62 encoding</span> transforms numeric identifiers into alphanumeric strings using a 62-character alphabet: `a-z`, `A-Z`, `0-9`. This choice is deliberate and reveals important trade-offs in [[information density]](/topics/system-design/data-encoding) versus URL compatibility.
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
 
@@ -158,7 +158,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 
 ### Understanding Collision Probability
 
-Collisions occur when two different inputs produce the same short code. The probability follows the [[birthday paradox]](/topics/probability/birthday-paradox) mathematics.
+<span style="color:#22c55e;font-weight:bold">Hash collisions</span> occur when two different inputs produce the same short code. The probability follows the [[birthday paradox]](/topics/probability/birthday-paradox) mathematics, a fundamental concept in [[cryptography]](/topics/security/cryptographic-foundations) and [[distributed systems]](/topics/system-design/distributed-systems-fundamentals).
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
@@ -423,7 +423,7 @@ Cons: Inconsistent code lengths
 
 ### The Coordination Problem
 
-In a distributed system, generating unique IDs without coordination is one of the hardest problems. Each approach trades off between uniqueness guarantees, latency, and operational complexity.
+In a <span style="color:#22c55e;font-weight:bold">distributed system</span>, generating unique IDs without coordination is one of the hardest problems. Each approach trades off between <span style="color:#22c55e;font-weight:bold">uniqueness guarantees</span>, <span style="color:#22c55e;font-weight:bold">latency</span>, and operational complexity. This relates closely to [[consensus protocols]](/topics/system-design/consensus-algorithms) and [[distributed coordination]](/topics/system-design/distributed-locking).
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
@@ -857,7 +857,749 @@ class ULIDGenerator:
 
 ---
 
-## Section 4: Analytics Tracking Architecture
+## Section 4: Custom Aliases (Vanity URLs)
+
+### The Business Case for Custom Aliases
+
+<span style="color:#22c55e;font-weight:bold">Custom aliases</span> (also called vanity URLs) allow users to choose memorable, branded short codes instead of auto-generated ones. This feature transforms a utility into a premium product.
+
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+
+**Business Value of Custom Aliases**:
+
+- **Brand recognition**: `short.url/nike-sale` vs `short.url/7x9Kp2m`
+- **Memorability**: Users can recall and type custom URLs
+- **Trust signals**: Branded URLs have higher click-through rates
+- **Premium feature**: Monetization opportunity (paid plans)
+
+**Real-world pricing**: bit.ly charges $35/month for custom back-halves, Rebrandly's business plan at $69/month includes vanity URLs.
+
+</div>
+
+### Design Challenges for Custom Aliases
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Alias Design Considerations</div>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Namespace Collision</div>
+<div style="color: #fee2e2; font-size: 12px; line-height: 1.6;">
+<div>Custom codes may conflict with auto-generated codes</div>
+<div>Reserved words (admin, api, help)</div>
+<div>Offensive/inappropriate words</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Squatting Prevention</div>
+<div style="color: #fef3c7; font-size: 12px; line-height: 1.6;">
+<div>Users registering valuable names speculatively</div>
+<div>Trademark infringement risks</div>
+<div>Resource exhaustion attacks</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Validation Complexity</div>
+<div style="color: #d1fae5; font-size: 12px; line-height: 1.6;">
+<div>Character restrictions (URL-safe only)</div>
+<div>Length limits and minimums</div>
+<div>Case sensitivity decisions</div>
+</div>
+</div>
+
+</div>
+</div>
+
+### Implementation: Custom Alias Validator
+
+```python
+import re
+from typing import Optional, Tuple
+from dataclasses import dataclass
+from enum import Enum
+
+class AliasValidationError(Enum):
+    TOO_SHORT = "Alias must be at least 4 characters"
+    TOO_LONG = "Alias cannot exceed 50 characters"
+    INVALID_CHARS = "Alias can only contain letters, numbers, hyphens, and underscores"
+    RESERVED_WORD = "This alias is reserved"
+    OFFENSIVE = "This alias contains prohibited content"
+    ALREADY_EXISTS = "This alias is already taken"
+    STARTS_WITH_HYPHEN = "Alias cannot start or end with a hyphen"
+    CONSECUTIVE_HYPHENS = "Alias cannot contain consecutive hyphens"
+
+@dataclass
+class AliasValidationResult:
+    is_valid: bool
+    error: Optional[AliasValidationError] = None
+    normalized_alias: Optional[str] = None
+
+class CustomAliasValidator:
+    """
+    Validates and normalizes custom aliases with multiple rule layers.
+
+    Design choices:
+    1. Case-insensitive storage (normalize to lowercase)
+    2. Allow hyphens and underscores for readability
+    3. Minimum 4 chars to prevent exhaustion attacks
+    4. Block offensive content proactively
+    """
+
+    # Reserved words that conflict with system routes or are misleading
+    RESERVED_WORDS = frozenset({
+        'admin', 'api', 'www', 'app', 'help', 'support', 'about',
+        'terms', 'privacy', 'login', 'logout', 'signup', 'register',
+        'dashboard', 'settings', 'profile', 'account', 'billing',
+        'status', 'health', 'metrics', 'favicon', 'robots', 'sitemap',
+        'null', 'undefined', 'true', 'false', 'none'
+    })
+
+    # Pattern for valid alias characters
+    VALID_PATTERN = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$')
+    CONSECUTIVE_HYPHENS = re.compile(r'[-_]{2,}')
+
+    def __init__(
+        self,
+        min_length: int = 4,
+        max_length: int = 50,
+        offensive_word_list: Optional[set] = None,
+        storage_checker = None
+    ):
+        self.min_length = min_length
+        self.max_length = max_length
+        self.offensive_words = offensive_word_list or set()
+        self.storage_checker = storage_checker  # Async function to check DB
+
+    async def validate(self, alias: str) -> AliasValidationResult:
+        """
+        Validate a custom alias through multiple rule layers.
+
+        Order of checks optimized for fast rejection:
+        1. Length checks (O(1), no external calls)
+        2. Character validation (O(n), regex)
+        3. Reserved word check (O(1), hash lookup)
+        4. Offensive content check (O(k), where k = offensive words)
+        5. Existence check (O(1) amortized, but requires DB/cache call)
+        """
+        # Normalize: lowercase, strip whitespace
+        normalized = alias.strip().lower()
+
+        # Length validation
+        if len(normalized) < self.min_length:
+            return AliasValidationResult(False, AliasValidationError.TOO_SHORT)
+
+        if len(normalized) > self.max_length:
+            return AliasValidationResult(False, AliasValidationError.TOO_LONG)
+
+        # Character validation
+        if not self.VALID_PATTERN.match(normalized):
+            if normalized.startswith('-') or normalized.endswith('-'):
+                return AliasValidationResult(False, AliasValidationError.STARTS_WITH_HYPHEN)
+            return AliasValidationResult(False, AliasValidationError.INVALID_CHARS)
+
+        # Consecutive special characters
+        if self.CONSECUTIVE_HYPHENS.search(normalized):
+            return AliasValidationResult(False, AliasValidationError.CONSECUTIVE_HYPHENS)
+
+        # Reserved word check
+        if normalized in self.RESERVED_WORDS:
+            return AliasValidationResult(False, AliasValidationError.RESERVED_WORD)
+
+        # Offensive content check (substring matching)
+        if self._contains_offensive_content(normalized):
+            return AliasValidationResult(False, AliasValidationError.OFFENSIVE)
+
+        # Existence check (most expensive, do last)
+        if self.storage_checker:
+            exists = await self.storage_checker(normalized)
+            if exists:
+                return AliasValidationResult(False, AliasValidationError.ALREADY_EXISTS)
+
+        return AliasValidationResult(True, normalized_alias=normalized)
+
+    def _contains_offensive_content(self, alias: str) -> bool:
+        """
+        Check for offensive content using multiple strategies.
+
+        Real-world implementation would use:
+        1. Bloom filter for fast negative check
+        2. ML-based toxicity detection
+        3. Levenshtein distance for obfuscation attempts (l33t speak)
+        """
+        # Simple substring check (production: use more sophisticated NLP)
+        for word in self.offensive_words:
+            if word in alias:
+                return True
+        return False
+```
+
+### Namespace Separation Strategy
+
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+
+**The Namespace Problem**:
+
+If auto-generated codes use Base62 and produce `abc123`, but a user wants custom alias `abc123`, you have a collision. Three strategies to resolve this:
+
+</div>
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Namespace Separation Approaches</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 1: Prefix Differentiation</div>
+<div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
+<div><code>short.url/~abc123</code> (custom, prefix ~)</div>
+<div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Clear separation, simple lookup</div>
+<div style="font-size: 11px;">Cons: URLs look different, ~ needs encoding</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 2: Length Differentiation</div>
+<div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
+<div><code>short.url/my-custom-alias</code> (custom, 4+ chars with hyphens)</div>
+<div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Natural URLs, implicit separation</div>
+<div style="font-size: 11px;">Cons: Limits auto-generated code format</div>
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 3: Unified Namespace with Blocking</div>
+<div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
+<div>Block custom aliases that could be auto-generated</div>
+<div>Reserve auto-generated keyspace from custom use</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Cleanest URLs, single lookup</div>
+<div style="font-size: 11px;">Cons: Complex validation, keyspace waste</div>
+</div>
+</div>
+
+</div>
+</div>
+
+```python
+class NamespaceManager:
+    """
+    Manages unified namespace with collision prevention.
+
+    Strategy: Auto-generated codes are always 7 alphanumeric chars.
+    Custom aliases must be 4+ chars AND contain at least one
+    hyphen/underscore OR be longer than 7 chars.
+
+    This ensures no overlap between namespaces.
+    """
+
+    AUTO_GENERATED_PATTERN = re.compile(r'^[a-zA-Z0-9]{7}$')
+
+    def is_auto_generated_format(self, code: str) -> bool:
+        """Check if code matches auto-generated format."""
+        return bool(self.AUTO_GENERATED_PATTERN.match(code))
+
+    def validate_custom_alias_namespace(self, alias: str) -> bool:
+        """
+        Ensure custom alias doesn't conflict with auto-generated space.
+
+        Rules:
+        - If exactly 7 chars, must contain non-alphanumeric (hyphen/underscore)
+        - If all alphanumeric, must be != 7 chars
+        """
+        normalized = alias.lower()
+
+        # If it looks like auto-generated format, reject
+        if self.is_auto_generated_format(normalized):
+            return False
+
+        return True
+
+    async def resolve_code(
+        self,
+        code: str,
+        custom_storage,
+        auto_storage
+    ) -> Optional[str]:
+        """
+        Resolve a short code to its original URL.
+
+        Optimization: Check format to determine which storage to query first.
+        """
+        if self.is_auto_generated_format(code):
+            # Likely auto-generated, check that storage first
+            result = await auto_storage.get(code)
+            if result:
+                return result
+            # Fallback: maybe it's a custom alias that looks like auto-generated
+            # (from before namespace rules were enforced)
+            return await custom_storage.get(code)
+        else:
+            # Must be custom alias
+            return await custom_storage.get(code)
+```
+
+### Premium Feature: Custom Domain Integration
+
+<span style="color:#22c55e;font-weight:bold">Custom domains</span> take vanity URLs to the next level, allowing enterprises to use their own domains (e.g., `go.nike.com/sale`) while the URL shortener handles everything.
+
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Domain Architecture</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Customer Domain</div>
+<div style="color: #dcfce7; font-size: 10px;">go.nike.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">DNS CNAME</div>
+<div style="color: #dbeafe; font-size: 10px;">custom.shorturl.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Load Balancer</div>
+<div style="color: #fef3c7; font-size: 10px;">SNI Routing</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">URL Shortener</div>
+<div style="color: #ede9fe; font-size: 10px;">Multi-tenant</div>
+</div>
+</div>
+
+<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div>1. Customer adds CNAME record pointing to your infrastructure</div>
+<div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
+<div>3. Load balancer uses SNI to route to correct certificate</div>
+<div>4. Application identifies tenant by Host header</div>
+</div>
+</div>
+
+</div>
+</div>
+
+```python
+from dataclasses import dataclass
+from typing import Dict, Optional
+import ssl
+
+@dataclass
+class CustomDomain:
+    domain: str
+    organization_id: str
+    ssl_certificate_arn: str
+    verified: bool = False
+    created_at: datetime = None
+
+class CustomDomainManager:
+    """
+    Manages custom domain registration and SSL provisioning.
+
+    Real-world considerations:
+    1. DNS verification (TXT record) to prove domain ownership
+    2. Automatic SSL certificate provisioning via ACME/Let's Encrypt
+    3. Certificate renewal automation
+    4. Multi-tenant isolation
+    """
+
+    def __init__(self, certificate_manager, dns_verifier):
+        self.cert_manager = certificate_manager
+        self.dns_verifier = dns_verifier
+        self.domains: Dict[str, CustomDomain] = {}
+
+    async def register_domain(
+        self,
+        domain: str,
+        organization_id: str
+    ) -> CustomDomain:
+        """
+        Start custom domain registration process.
+
+        Returns domain record with verification instructions.
+        """
+        # Generate verification token
+        verification_token = self._generate_verification_token(domain, organization_id)
+
+        custom_domain = CustomDomain(
+            domain=domain,
+            organization_id=organization_id,
+            ssl_certificate_arn="pending",
+            verified=False,
+            created_at=datetime.utcnow()
+        )
+
+        self.domains[domain] = custom_domain
+
+        # Return instructions for DNS verification
+        return custom_domain, {
+            'verification_type': 'TXT',
+            'record_name': f'_shorturl-verify.{domain}',
+            'record_value': verification_token
+        }
+
+    async def verify_and_provision(self, domain: str) -> bool:
+        """
+        Verify DNS and provision SSL certificate.
+
+        This is typically called via webhook or polling job.
+        """
+        custom_domain = self.domains.get(domain)
+        if not custom_domain:
+            return False
+
+        # Verify DNS TXT record
+        if not await self.dns_verifier.verify_txt_record(domain):
+            return False
+
+        # Provision SSL certificate
+        cert_arn = await self.cert_manager.provision_certificate(domain)
+
+        custom_domain.ssl_certificate_arn = cert_arn
+        custom_domain.verified = True
+
+        return True
+
+    def get_organization_for_domain(self, host: str) -> Optional[str]:
+        """
+        Resolve Host header to organization.
+
+        Used during request processing to identify tenant.
+        """
+        custom_domain = self.domains.get(host)
+        if custom_domain and custom_domain.verified:
+            return custom_domain.organization_id
+        return None
+```
+
+### Interview Questions: Custom Aliases (3 Levels Deep)
+
+<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+
+**Level 1**: How would you implement custom short code (vanity URL) support?
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+Custom aliases require additional validation beyond auto-generated codes:
+
+1. **Validation layer**: Check length (min 4 chars), allowed characters (alphanumeric, hyphens, underscores), reserved words, offensive content
+2. **Namespace separation**: Ensure custom aliases don't conflict with auto-generated codes (e.g., require hyphens or different lengths)
+3. **Uniqueness check**: Query database before creation, handle race conditions with unique constraints
+4. **Normalization**: Convert to lowercase for case-insensitive matching
+
+The key trade-off is between <span style="color:#22c55e;font-weight:bold">user flexibility</span> (allowing many formats) and <span style="color:#22c55e;font-weight:bold">system simplicity</span> (predictable URL structure).
+
+</div>
+</details>
+
+**Level 2**: Your custom alias system allows users to create any alias. An attacker creates aliases like `login`, `admin`, `api` - all linking to phishing sites. How would you prevent this while maintaining a good user experience?
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+Multi-layered defense strategy:
+
+1. **Reserved word blocklist**: Maintain a comprehensive list of system routes, common phishing targets (`paypal`, `google`, `amazon`), and technical terms (`null`, `undefined`)
+
+2. **Trademark protection**:
+   - Partner with brand protection services
+   - Require verification for brand names
+   - Implement [[DMCA takedown process]](/topics/legal/dmca-compliance)
+
+3. **Proactive scanning**:
+   - Scan destination URLs against [[Safe Browsing API]](/topics/security/safe-browsing)
+   - Monitor click patterns for phishing indicators
+   - Machine learning on URL features
+
+4. **Tiered access**:
+   - Free users: limited to lowercase alphanumeric
+   - Verified accounts: expanded character set
+   - Enterprise: brand protection included
+
+5. **Reputation system**: New accounts have alias restrictions lifted gradually based on behavior.
+
+The trade-off: Too restrictive blocks legitimate use cases. Consider implementing an appeal process and manual review queue for edge cases.
+
+</div>
+</details>
+
+**Level 3**: Design a custom alias system that (a) allows millions of users to create aliases concurrently, (b) prevents race conditions where two users try to claim the same alias simultaneously, (c) provides instant feedback on alias availability as users type, and (d) handles the case where a user's session crashes between checking availability and confirming creation. Consider the distributed systems implications across multiple data centers.
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+**Architecture for concurrent alias creation at scale:**
+
+1. **Real-time availability check (debounced, 200ms)**:
+```
+User types -> Debounce -> Check Bloom filter (local)
+   -> If "maybe exists": check Redis (regional)
+   -> If still uncertain: check DB (async, show "checking...")
+```
+   - Bloom filter provides instant negative ("definitely available")
+   - Regional Redis cache reduces cross-region latency
+   - Accept false positives (say unavailable when actually available) over false negatives
+
+2. **Reservation system with TTL**:
+```python
+async def reserve_alias(alias: str, user_id: str) -> bool:
+    # Atomic reservation with 5-minute TTL
+    reserved = await redis.set(
+        f"alias:reservation:{alias}",
+        user_id,
+        nx=True,  # Only if not exists
+        ex=300    # 5-minute expiry
+    )
+    return reserved
+```
+   - User gets 5 minutes to complete signup/payment
+   - Reservation auto-expires if abandoned
+   - Prevents squatting during checkout flow
+
+3. **Distributed race condition handling**:
+```python
+async def create_alias(alias: str, user_id: str, url: str) -> bool:
+    # Check reservation ownership
+    reservation = await redis.get(f"alias:reservation:{alias}")
+    if reservation != user_id:
+        return False  # Someone else reserved or reservation expired
+
+    # Database insert with unique constraint
+    try:
+        await db.execute("""
+            INSERT INTO aliases (alias, user_id, url, created_at)
+            VALUES ($1, $2, $3, NOW())
+        """, alias, user_id, url)
+    except UniqueViolationError:
+        return False  # Lost race to DB write
+
+    # Clean up reservation
+    await redis.delete(f"alias:reservation:{alias}")
+
+    # Update Bloom filter (async, fire-and-forget)
+    asyncio.create_task(bloom_filter.add(alias))
+
+    return True
+```
+
+4. **Multi-region consistency**:
+   - Use [[CRDTs]](/topics/system-design/crdts) for Bloom filter synchronization
+   - Primary region owns alias creation (consistent hashing by first char)
+   - [[Cross-region replication]](/topics/system-design/replication) with conflict resolution (first-write-wins based on vector clock)
+
+5. **Session crash recovery**:
+   - Reservation TTL ensures automatic cleanup
+   - If user had completed payment but session crashed: reconciliation job checks for "orphaned payments" and completes registration
+   - Idempotency keys prevent double-creation on retry
+
+**Key insight**: The system is eventually consistent for reads (Bloom filter may lag) but strongly consistent for writes (database unique constraint is the source of truth). This matches user expectations: instant feedback is "best effort," but actual creation is guaranteed unique.
+
+</div>
+</details>
+
+</div>
+
+<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+
+**Level 1**: Should custom aliases be case-sensitive or case-insensitive?
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+**Case-insensitive is the better choice** for custom aliases:
+
+1. **User experience**: Users typing from memory often get case wrong
+2. **Verbal sharing**: "go to short dot url slash My-Brand" - ambiguous capitalization
+3. **Email clients**: Some lowercase all URLs
+4. **Consistency**: `MyBrand`, `mybrand`, `MYBRAND` should all work
+
+Implementation: Normalize to lowercase at creation time, store lowercase, query lowercase.
+
+Trade-off: Reduces namespace by ~26x (since A-Z collapse to a-z), but for human-readable aliases this is acceptable.
+
+</div>
+</details>
+
+**Level 2**: Your marketing team wants case-sensitivity preserved for display purposes (showing `MyBrand` in analytics) while maintaining case-insensitive matching. How would you implement this?
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+**Dual-storage approach:**
+
+```sql
+CREATE TABLE custom_aliases (
+    normalized_alias VARCHAR(50) PRIMARY KEY,  -- lowercase, for lookups
+    display_alias VARCHAR(50) NOT NULL,        -- original case, for display
+    original_url TEXT NOT NULL,
+    user_id UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_aliases_user ON custom_aliases(user_id);
+```
+
+```python
+class CasePreservingAliasStore:
+    async def create(self, alias: str, url: str, user_id: str):
+        normalized = alias.lower()
+        await db.execute("""
+            INSERT INTO custom_aliases
+            (normalized_alias, display_alias, original_url, user_id)
+            VALUES ($1, $2, $3, $4)
+        """, normalized, alias, url, user_id)
+
+    async def lookup(self, alias: str) -> Optional[dict]:
+        # Always query with normalized form
+        return await db.fetchone("""
+            SELECT display_alias, original_url
+            FROM custom_aliases
+            WHERE normalized_alias = $1
+        """, alias.lower())
+```
+
+Cache key uses normalized form; cache value includes display form for analytics.
+
+</div>
+</details>
+
+**Level 3**: You've implemented case-insensitive custom aliases. Now a premium customer complains: they created `GitHub-Repo` but a competitor later created `github-repo` (normalized to same value) and your system rejected it. The competitor argues they should have access to the lowercase version. Design a policy and technical system that fairly resolves such conflicts, considers trademark implications, and scales to millions of aliases without requiring manual review for every case.
+
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+
+**Policy Framework:**
+
+1. **First-come-first-served for normalized form**: Whoever creates any case variant first owns the normalized namespace. This is simple, predictable, and legally defensible.
+
+2. **Trademark override process**:
+   - Trademark holder can file claim with documentation
+   - System flags alias for review
+   - If legitimate, transfer ownership (with notification to original creator)
+   - Time limit: claims must be filed within 30 days of creation
+
+3. **Preventive measures**:
+   - Known trademark database check at creation time
+   - Require verification for exact trademark matches
+   - Warning message: "This alias may conflict with existing trademarks"
+
+**Technical Implementation:**
+
+```python
+@dataclass
+class AliasOwnership:
+    normalized_alias: str
+    owner_id: str
+    created_at: datetime
+    trademark_protected: bool = False
+    trademark_claim_deadline: datetime = None
+
+class AliasDisputeSystem:
+    async def file_trademark_claim(
+        self,
+        alias: str,
+        claimant_id: str,
+        trademark_proof: str
+    ) -> str:
+        """
+        File a trademark claim for an alias.
+        Returns claim_id for tracking.
+        """
+        ownership = await self.get_ownership(alias.lower())
+
+        if not ownership:
+            return "ALIAS_NOT_FOUND"
+
+        if ownership.owner_id == claimant_id:
+            return "ALREADY_OWNER"
+
+        # Check claim deadline
+        if datetime.utcnow() > ownership.trademark_claim_deadline:
+            return "CLAIM_PERIOD_EXPIRED"
+
+        # Create claim record
+        claim = await self.create_claim(
+            alias=alias.lower(),
+            claimant_id=claimant_id,
+            current_owner_id=ownership.owner_id,
+            proof=trademark_proof
+        )
+
+        # Notify current owner
+        await self.notify_owner_of_claim(ownership.owner_id, claim)
+
+        # Queue for review (ML-assisted prioritization)
+        await self.queue_for_review(claim)
+
+        return claim.id
+
+    async def resolve_claim(
+        self,
+        claim_id: str,
+        decision: str,
+        reviewer_id: str
+    ):
+        """
+        Resolve a trademark claim.
+        decision: 'TRANSFER' | 'REJECT' | 'COEXIST'
+        """
+        claim = await self.get_claim(claim_id)
+
+        if decision == 'TRANSFER':
+            # Transfer ownership
+            await self.transfer_ownership(
+                claim.alias,
+                new_owner=claim.claimant_id
+            )
+            # Mark as trademark protected (prevent future claims)
+            await self.mark_trademark_protected(claim.alias)
+            # Notify parties
+            await self.notify_transfer(claim)
+
+        elif decision == 'REJECT':
+            await self.notify_rejection(claim)
+
+        elif decision == 'COEXIST':
+            # Both parties can use, but neither owns exclusively
+            # Typically used for generic terms
+            await self.mark_generic_term(claim.alias)
+```
+
+**ML-Assisted Review Queue:**
+- Auto-approve: Exact match to registered trademark + claimant is trademark registrant
+- Auto-reject: No trademark registration + alias existed 30+ days
+- Human review: Everything else, prioritized by trademark class and alias popularity
+
+**Scaling considerations:**
+- 99% of aliases never disputed (auto-handled by first-come policy)
+- ~0.9% rejected automatically (no trademark registration)
+- ~0.1% require human review (O(thousands/year) at scale, manageable)
+
+</div>
+</details>
+
+</div>
+
+---
+
+## Section 5: Analytics Tracking Architecture
 
 ### The 301 vs 302 Decision
 

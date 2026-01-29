@@ -2305,3 +2305,1215 @@ def basic_config(level: LogLevel = LogLevel.INFO,
         else:
             h.set_formatter(ColoredFormatter())
         root.add_handler(h)
+```
+
+---
+
+## 6. Distributed Tracing Integration
+
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Connecting Logs Across Service Boundaries</div>
+<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+
+<span style="color: #90EE90; font-weight: bold;">Distributed tracing</span> correlates logs, metrics, and traces across microservices by propagating context identifiers through the entire request lifecycle. When a user action triggers calls across 10+ services, tracing lets you reconstruct the full story from a single trace ID.
+
+</div>
+</div>
+
+### The Three Pillars Integration Model
+
+Logs, metrics, and traces form the <span style="color: #22c55e; font-weight: bold;">three pillars of observability</span>. While each serves a different purpose, their power multiplies when unified:
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px;">Observability Pillars Unified by Trace Context</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 20px 28px; border-radius: 12px; border: 2px solid #3b82f6; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px;">Logs</div>
+<div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">What happened</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px;">Detail & Context</div>
+</div>
+<div style="background: #dcfce7; padding: 20px 28px; border-radius: 12px; border: 2px solid #22c55e; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 14px;">Metrics</div>
+<div style="color: #22c55e; font-size: 11px; margin-top: 4px;">How much/often</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px;">Aggregates & Trends</div>
+</div>
+<div style="background: #fef3c7; padding: 20px 28px; border-radius: 12px; border: 2px solid #f59e0b; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 14px;">Traces</div>
+<div style="color: #f59e0b; font-size: 11px; margin-top: 4px;">Where it flowed</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px;">Causality & Latency</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: center;">
+<div style="background: #f3e8ff; padding: 16px 32px; border-radius: 12px; border: 2px solid #a855f7;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px; text-align: center;">Unified by Trace Context</div>
+<div style="color: #a855f7; font-size: 11px; text-align: center; margin-top: 4px;">trace_id + span_id + baggage</div>
+</div>
+</div>
+
+</div>
+</div>
+
+### W3C Trace Context Implementation
+
+The <span style="color: #22c55e; font-weight: bold;">W3C Trace Context</span> standard defines how to propagate tracing information across service boundaries. Our logger integrates with this standard:
+
+```python
+import uuid
+from typing import Optional, Dict
+from dataclasses import dataclass
+
+@dataclass
+class TraceContext:
+    """
+    W3C Trace Context compatible context holder.
+
+    The trace context travels with every request, enabling
+    correlation of logs across all services involved in
+    processing that request.
+    """
+    trace_id: str          # 32 hex chars - unique per trace
+    span_id: str           # 16 hex chars - unique per span
+    parent_span_id: Optional[str] = None
+    trace_flags: int = 1   # 1 = sampled
+    trace_state: str = ""  # Vendor-specific state
+
+    @classmethod
+    def generate(cls) -> 'TraceContext':
+        """Generate new trace context for root span."""
+        return cls(
+            trace_id=uuid.uuid4().hex,
+            span_id=uuid.uuid4().hex[:16]
+        )
+
+    @classmethod
+    def from_headers(cls, headers: Dict[str, str]) -> Optional['TraceContext']:
+        """
+        Parse W3C traceparent header.
+
+        Format: {version}-{trace_id}-{parent_id}-{flags}
+        Example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+        """
+        traceparent = headers.get('traceparent', '')
+        if not traceparent:
+            return None
+
+        try:
+            parts = traceparent.split('-')
+            if len(parts) != 4 or parts[0] != '00':
+                return None
+            return cls(
+                trace_id=parts[1],
+                parent_span_id=parts[2],
+                span_id=uuid.uuid4().hex[:16],  # New span
+                trace_flags=int(parts[3], 16)
+            )
+        except (ValueError, IndexError):
+            return None
+
+    def to_headers(self) -> Dict[str, str]:
+        """Generate headers for outgoing requests."""
+        return {
+            'traceparent': f"00-{self.trace_id}-{self.span_id}-{self.trace_flags:02x}",
+            'tracestate': self.trace_state
+        }
+
+    def child_span(self) -> 'TraceContext':
+        """Create child span context."""
+        return TraceContext(
+            trace_id=self.trace_id,
+            span_id=uuid.uuid4().hex[:16],
+            parent_span_id=self.span_id,
+            trace_flags=self.trace_flags,
+            trace_state=self.trace_state
+        )
+
+
+# Context variable for async-safe trace propagation
+_trace_context: contextvars.ContextVar[Optional[TraceContext]] = \
+    contextvars.ContextVar('trace_context', default=None)
+
+
+class TracingLogger:
+    """
+    Logger with automatic trace context injection.
+
+    Every log message automatically includes trace_id and span_id
+    from the current context, enabling cross-service correlation.
+    """
+
+    def __init__(self, base_logger: Logger):
+        self.base = base_logger
+
+    @staticmethod
+    @contextmanager
+    def span(name: str, **attributes):
+        """
+        Create a new span context.
+
+        Usage:
+            with TracingLogger.span("db_query", table="users"):
+                logger.info("Executing query")
+                result = db.query(...)
+        """
+        parent = _trace_context.get()
+
+        if parent:
+            ctx = parent.child_span()
+        else:
+            ctx = TraceContext.generate()
+
+        # Record span start
+        start_time = time.time_ns()
+        token = _trace_context.set(ctx)
+
+        try:
+            yield ctx
+        finally:
+            # Record span end (could emit to tracing backend)
+            duration_ns = time.time_ns() - start_time
+            _trace_context.reset(token)
+
+    def _enrich_with_trace(self, kwargs: dict) -> dict:
+        """Add trace context to log extra fields."""
+        ctx = _trace_context.get()
+        if ctx:
+            kwargs = {
+                'trace_id': ctx.trace_id,
+                'span_id': ctx.span_id,
+                'parent_span_id': ctx.parent_span_id,
+                **kwargs
+            }
+        return kwargs
+
+    def info(self, message: str, **kwargs):
+        self.base.info(message, **self._enrich_with_trace(kwargs))
+
+    def error(self, message: str, **kwargs):
+        self.base.error(message, **self._enrich_with_trace(kwargs))
+
+    # ... other level methods
+```
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px;">Key Insight: Automatic vs. Manual Injection</div>
+<div style="color: #14532d; font-size: 14px;">
+The <span style="color: #22c55e; font-weight: bold;">TracingLogger</span> automatically injects trace context into every log. This eliminates the bug-prone pattern of manually passing trace IDs through every function call. When debugging, simply query logs by trace_id to see the complete request journey.
+</div>
+</div>
+
+### OpenTelemetry Integration
+
+For production systems, integrate with <span style="color: #22c55e; font-weight: bold;">OpenTelemetry</span> rather than building custom tracing. See [[distributed-tracing]](/topics/observability/distributed-tracing) for full integration patterns.
+
+```python
+from opentelemetry import trace
+from opentelemetry.trace import Span, StatusCode
+
+class OTelAwareHandler(Handler):
+    """
+    Handler that links logs to active OpenTelemetry spans.
+
+    This enables clicking from a log line directly to
+    the associated trace in your tracing UI (Jaeger, Zipkin, etc.)
+    """
+
+    def __init__(self, delegate: Handler, level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.delegate = delegate
+        self.tracer = trace.get_tracer(__name__)
+
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        # Get current span from OpenTelemetry context
+        current_span = trace.get_current_span()
+
+        if current_span and current_span.is_recording():
+            span_context = current_span.get_span_context()
+
+            # Enrich log record with span info
+            record.extra['trace_id'] = format(span_context.trace_id, '032x')
+            record.extra['span_id'] = format(span_context.span_id, '016x')
+
+            # Add log as span event (appears in trace UI)
+            current_span.add_event(
+                record.message,
+                attributes={
+                    'log.level': record.level.name,
+                    'log.logger': record.logger_name,
+                    **{k: str(v) for k, v in record.extra.items()}
+                }
+            )
+
+            # Mark span as error if logging error
+            if record.level >= LogLevel.ERROR:
+                current_span.set_status(StatusCode.ERROR, record.message)
+
+        # Delegate actual output
+        self.delegate.emit(formatted, record)
+```
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px;">Request Flow with Trace Context</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Client Request</div>
+<div style="color: #3b82f6; font-size: 10px;">No trace context</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">API Gateway</div>
+<div style="color: #15803d; font-size: 10px;">Generate trace_id: abc123</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: 40px;">
+<div style="color: #64748b; font-size: 20px;">&#8595;</div>
+<div style="color: #64748b; font-size: 11px;">traceparent: 00-abc123-span1-01</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; font-size: 12px;">Order Service</div>
+<div style="color: #a16207; font-size: 10px;">span_id: span2, parent: span1</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px; border: 2px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px;">Payment Service</div>
+<div style="color: #b91c1c; font-size: 10px;">span_id: span3, parent: span2</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #f3e8ff; padding: 14px 20px; border-radius: 10px; border: 2px solid #a855f7;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 12px;">Notification Service</div>
+<div style="color: #a855f7; font-size: 10px;">span_id: span4, parent: span2</div>
+</div>
+</div>
+
+<div style="background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-top: 8px;">
+<div style="color: #475569; font-size: 11px;">
+All services log with trace_id=abc123 &#8594; Query <code>trace_id:abc123</code> shows complete request journey
+</div>
+</div>
+
+</div>
+</div>
+
+### Baggage: Request-Scoped Metadata
+
+<span style="color: #22c55e; font-weight: bold;">Baggage</span> carries application-specific metadata (user ID, tenant ID, feature flags) across service boundaries alongside trace context:
+
+```python
+@dataclass
+class Baggage:
+    """
+    Request-scoped key-value pairs propagated across services.
+
+    Unlike trace context (for correlation), baggage carries
+    business data needed for request processing or logging.
+    """
+    items: Dict[str, str] = field(default_factory=dict)
+
+    def set(self, key: str, value: str) -> 'Baggage':
+        """Immutable set - returns new baggage."""
+        new_items = self.items.copy()
+        new_items[key] = value
+        return Baggage(new_items)
+
+    def get(self, key: str, default: str = None) -> Optional[str]:
+        return self.items.get(key, default)
+
+    def to_header(self) -> str:
+        """Encode as W3C baggage header."""
+        # Format: key1=value1,key2=value2
+        return ','.join(f"{k}={v}" for k, v in self.items.items())
+
+    @classmethod
+    def from_header(cls, header: str) -> 'Baggage':
+        """Parse W3C baggage header."""
+        items = {}
+        if header:
+            for pair in header.split(','):
+                if '=' in pair:
+                    k, v = pair.split('=', 1)
+                    items[k.strip()] = v.strip()
+        return cls(items)
+
+
+# Usage in middleware
+async def tracing_middleware(request, call_next):
+    # Extract trace context and baggage from incoming request
+    trace_ctx = TraceContext.from_headers(request.headers) or TraceContext.generate()
+    baggage = Baggage.from_header(request.headers.get('baggage', ''))
+
+    # Add request-specific baggage
+    baggage = baggage.set('user_id', request.user_id)
+    baggage = baggage.set('tenant_id', request.tenant_id)
+
+    # Set context for this request
+    with TracingLogger.span("http_request", path=request.path):
+        with logging_context(
+            trace_id=trace_ctx.trace_id,
+            user_id=baggage.get('user_id'),
+            tenant_id=baggage.get('tenant_id')
+        ):
+            response = await call_next(request)
+
+    # Propagate to outgoing requests
+    # (HTTP client interceptor adds trace_ctx.to_headers() + baggage.to_header())
+    return response
+```
+
+### Interview Questions: Distributed Tracing (3 Levels Deep)
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px;">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8;">
+
+**Q1: What is the relationship between logging and distributed tracing?**
+
+Logging captures <span style="color: #22c55e; font-weight: bold;">what happened</span> in detail at each service. Tracing captures <span style="color: #22c55e; font-weight: bold;">where requests flowed</span> and how long each step took. When unified by trace_id, you can click from a slow span in your trace to see the detailed logs from that exact operation. Without trace context, logs from different services are disconnected - you cannot reconstruct the full request journey.
+
+**Q2: What is the W3C Trace Context standard and why does it matter?**
+
+W3C Trace Context standardizes how tracing information propagates via HTTP headers (`traceparent`, `tracestate`). Before standardization, each vendor (Zipkin, Jaeger, AWS X-Ray) used incompatible formats. The standard enables interoperability: a request starting in a service using Jaeger can flow through services using different tracing backends while maintaining correlation. The `traceparent` format is: `{version}-{trace_id}-{parent_id}-{flags}`.
+
+</div>
+</div>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px;">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8;">
+
+**Q2.1: How do you implement trace context propagation in an async Python application where requests may jump between threads/coroutines?**
+
+Use <span style="color: #22c55e; font-weight: bold;">contextvars</span> (Python 3.7+), which are async-safe and automatically propagate across await boundaries. Unlike `threading.local`, contextvars correctly handle the case where a single request spawns multiple concurrent database queries - each coroutine sees the same trace context. For thread pool executors, explicitly copy context: `asyncio.get_event_loop().run_in_executor(None, contextvars.copy_context().run, func)`.
+
+**Q2.2: What happens to trace context when a service uses message queues (Kafka, RabbitMQ) instead of synchronous HTTP?**
+
+Trace context must be explicitly serialized into message headers. The consumer extracts and restores the context, creating a <span style="color: #22c55e; font-weight: bold;">link</span> (not parent-child) relationship since the consumer span starts after the producer span ends. Key considerations:
+1. Message may be processed hours after production - timestamps matter
+2. One message may fan out to multiple consumers - trace branches
+3. Batch consumers should create one span per message, not per batch
+
+See [[event-driven-architecture]](/topics/microservices/event-strategies) for patterns.
+
+</div>
+</div>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px;">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8;">
+
+**Q2.1.1: How do you implement trace context propagation across language boundaries (e.g., Python service calling a Go service calling a Rust service)?**
+
+This is exactly why W3C Trace Context exists. Each language's tracing library (OpenTelemetry SDK) speaks the same wire protocol:
+1. Python service adds `traceparent` header to outgoing HTTP request
+2. Go service extracts header, creates child span, logs with same trace_id
+3. Rust service does the same
+
+The key is <span style="color: #22c55e; font-weight: bold;">standard header names and formats</span>. If using gRPC, trace context propagates via gRPC metadata. For custom protocols, explicitly define where trace context lives in the message format.
+
+**Q2.2.1: Design a system that maintains trace context through a complex workflow involving: HTTP API -> Kafka -> Worker -> Redis Cache -> External API -> Webhook callback.**
+
+```
+1. HTTP API receives request
+   - Generate trace_id if not present
+   - Create span: "api.receive_order"
+
+2. Publish to Kafka
+   - Serialize trace context to message headers
+   - Record span event: "kafka.publish"
+
+3. Worker consumes message
+   - Extract trace context from headers
+   - Create linked span: "worker.process_order"
+
+4. Redis cache check
+   - Create child span: "redis.get"
+   - Include trace_id in Redis key for debugging
+
+5. External API call
+   - Propagate trace context in outgoing headers
+   - Create child span: "external.payment_api"
+
+6. External API calls webhook
+   - Include trace_id in webhook payload
+   - Webhook handler extracts and continues trace
+```
+
+<span style="color: #22c55e; font-weight: bold;">Critical insight</span>: The webhook is the hardest part. External APIs don't propagate your trace context automatically. Include trace_id in the payload you send them, and configure them to echo it back in the webhook. This creates a "logical" continuation even if the wire format doesn't support tracing.
+
+**Q2.2.2: How do you handle trace context in a system with both synchronous request-response and fire-and-forget patterns?**
+
+Distinguish between:
+1. **Synchronous spans**: Parent-child relationship, child span ends before parent
+2. **Async fire-and-forget spans**: Link relationship, independent lifecycle
+
+For fire-and-forget (e.g., sending an email after order completion):
+- Create a new root span with a <span style="color: #22c55e; font-weight: bold;">link</span> to the original trace
+- The link says "this work was triggered by trace X" without implying timing
+- Log correlation still works - query by either trace_id
+
+```python
+def send_async_email(order_id: str, original_trace_id: str):
+    # New trace for async work, linked to original
+    with tracer.start_as_current_span(
+        "send_email",
+        links=[Link(SpanContext(trace_id=original_trace_id, span_id="..."))]
+    ):
+        # Logs here have new trace_id but link preserves causality
+        logger.info("Sending order confirmation",
+                   order_id=order_id,
+                   triggered_by_trace=original_trace_id)
+```
+
+See [[saga-pattern]](/topics/distributed-systems/saga-pattern) for complex workflow correlation.
+
+</div>
+</div>
+
+---
+
+## 7. Performance Optimization Deep Dive
+
+<div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Zero-Cost Abstraction Goals</div>
+<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+
+Production logging must be <span style="color: #90EE90; font-weight: bold;">effectively free</span> when disabled. A log call at DEBUG level in production (where INFO is the minimum) should cost nanoseconds, not microseconds. This section covers techniques to achieve near-zero overhead.
+
+</div>
+</div>
+
+### The Cost Hierarchy of Logging Operations
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px;">Operation Costs (Approximate)</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; min-width: 160px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">Level Check</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1;">~1-5 ns</div>
+<div style="color: #22c55e; font-size: 11px;">Integer comparison</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; min-width: 160px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">String Formatting</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1;">~100-500 ns</div>
+<div style="color: #3b82f6; font-size: 11px;">f-strings, % formatting</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; min-width: 160px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; font-size: 12px;">LogRecord Creation</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1;">~200-1000 ns</div>
+<div style="color: #f59e0b; font-size: 11px;">Object allocation + timestamp</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fee2e2; padding: 12px 16px; border-radius: 8px; min-width: 160px; border: 2px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px;">File Write + Flush</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1;">~1-10 μs</div>
+<div style="color: #ef4444; font-size: 11px;">Syscall overhead</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #f3e8ff; padding: 12px 16px; border-radius: 8px; min-width: 160px; border: 2px solid #a855f7;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 12px;">Network Write</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1;">~50 μs - 50 ms</div>
+<div style="color: #a855f7; font-size: 11px;">Variable, can spike</div>
+</div>
+
+</div>
+</div>
+
+### Lazy Evaluation Pattern
+
+The key insight: <span style="color: #22c55e; font-weight: bold;">never format a message that won't be logged</span>.
+
+```python
+class LazyLogger:
+    """
+    Logger that defers expensive operations until necessary.
+    """
+
+    def debug(self, message: str, *args, **kwargs):
+        # FAST PATH: Check level before ANY work
+        if self.level > LogLevel.DEBUG:
+            return  # Cost: ~5ns
+
+        # SLOW PATH: Only reached if message will be logged
+        if args:
+            message = message % args  # Deferred formatting
+        self._emit(LogLevel.DEBUG, message, kwargs)
+
+    def debug_lazy(self, message_func: Callable[[], str], **kwargs):
+        """
+        For expensive message construction.
+
+        Usage:
+            logger.debug_lazy(lambda: f"Query result: {expensive_serialize(result)}")
+        """
+        if self.level > LogLevel.DEBUG:
+            return  # Lambda never called
+        self._emit(LogLevel.DEBUG, message_func(), kwargs)
+```
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px;">Python Gotcha: f-string Evaluation</div>
+<div style="color: #14532d; font-size: 14px;">
+
+```python
+# BAD: f-string evaluates BEFORE is_enabled check
+logger.debug(f"Result: {expensive_operation()}")  # Always runs!
+
+# GOOD: % formatting defers until needed
+logger.debug("Result: %s", expensive_operation())  # Deferred if DEBUG disabled
+
+# GOOD: Explicit lazy
+logger.debug_lazy(lambda: f"Result: {expensive_operation()}")
+```
+
+See [[python-performance]](/topics/languages/python-performance) for more optimization patterns.
+
+</div>
+</div>
+
+### Lock-Free Hot Path
+
+For extreme throughput, eliminate locks from the critical path using <span style="color: #22c55e; font-weight: bold;">lock-free data structures</span>:
+
+```python
+import ctypes
+from typing import Optional
+
+class AtomicCounter:
+    """Lock-free counter using atomic operations."""
+
+    def __init__(self, initial: int = 0):
+        self._value = ctypes.c_long(initial)
+
+    def increment(self) -> int:
+        """Atomic increment, returns new value."""
+        # On x86, LOCK XADD is atomic
+        # Python's ctypes doesn't expose this directly,
+        # so production code should use atomics library
+        # This is illustrative
+        pass
+
+
+class LockFreeLogBuffer:
+    """
+    MPSC (Multi-Producer Single-Consumer) ring buffer.
+
+    Multiple threads can log without contention.
+    Single consumer thread drains to handlers.
+    """
+
+    def __init__(self, capacity: int = 65536):
+        # Power of 2 for fast modulo
+        assert capacity & (capacity - 1) == 0
+        self.capacity = capacity
+        self.mask = capacity - 1
+
+        # Pre-allocated slots avoid GC pressure
+        self.buffer = [None] * capacity
+
+        # Atomic positions
+        self.write_pos = AtomicCounter(0)
+        self.read_pos = AtomicCounter(0)
+
+    def try_write(self, record: LogRecord) -> bool:
+        """
+        Non-blocking write attempt.
+        Returns False if buffer full.
+        """
+        while True:
+            current_write = self.write_pos.get()
+            next_write = (current_write + 1) & self.mask
+
+            # Check if full
+            if next_write == self.read_pos.get():
+                return False
+
+            # CAS to claim slot
+            if self.write_pos.compare_and_swap(current_write, next_write):
+                self.buffer[current_write] = record
+                return True
+
+    def try_read(self) -> Optional[LogRecord]:
+        """
+        Non-blocking read attempt.
+        Returns None if empty.
+        """
+        current_read = self.read_pos.get()
+
+        if current_read == self.write_pos.get():
+            return None  # Empty
+
+        record = self.buffer[current_read]
+        self.buffer[current_read] = None  # Help GC
+        self.read_pos.increment()
+        return record
+```
+
+See [[lock-free-data-structures]](/topics/concurrency/lock-free) and [[disruptor-pattern]](/topics/concurrency/disruptor) for production implementations.
+
+### Interview Questions: Performance (3 Levels Deep)
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px;">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8;">
+
+**Q1: Why is early level checking critical for logging performance?**
+
+Level checking is a <span style="color: #22c55e; font-weight: bold;">~5ns integer comparison</span>. String formatting is ~100-500ns. Record creation is ~200-1000ns. File I/O is ~1-10μs. By checking level first, we skip ALL subsequent work for disabled log calls. In a tight loop logging at DEBUG with INFO threshold, this is the difference between ~5ns/call and ~1μs/call - a 200x improvement.
+
+**Q2: What is the performance impact of logging in a hot loop?**
+
+Even with async logging and early level checks, logging in a hot loop can devastate performance:
+- Each call still has function call overhead (~20ns)
+- String literals still need construction (~10ns)
+- If enabled, queue insertion adds contention
+
+Solutions: (1) Sample logs in loops (`if i % 1000 == 0: log...`), (2) Aggregate metrics instead of individual logs, (3) Use conditional compilation/feature flags to eliminate logging code entirely in release builds.
+
+</div>
+</div>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px;">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8;">
+
+**Q2.1: How does Python's logging module implement lazy message formatting, and what's the catch?**
+
+Python's logging uses `%` style formatting: `logger.info("User %s logged in", username)`. The `username` argument is only substituted if the message will be logged. However, <span style="color: #22c55e; font-weight: bold;">the arguments are still evaluated</span> before being passed to the function. So `logger.debug("Data: %s", expensive_serialize(data))` ALWAYS calls `expensive_serialize`. Use lambdas or the `isEnabledFor()` check for truly lazy evaluation.
+
+**Q2.2: How do you minimize GC pressure in a high-throughput logging system?**
+
+Three strategies:
+1. **Object pooling**: Pre-allocate LogRecord objects, reset and reuse them
+2. **Ring buffer**: Fixed-size buffer avoids node allocation/deallocation
+3. **Structural sharing**: Use immutable context dicts that share underlying data
+
+The LMAX Disruptor pattern combines all three: pre-allocated ring buffer with object reuse. In Python, you can achieve similar effects with `__slots__` on LogRecord to reduce per-instance memory.
+
+</div>
+</div>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px;">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8;">
+
+**Q2.1.1: Design a logging system that can handle 10 million logs/second with <1μs p99 latency impact on the application.**
+
+Architecture for extreme throughput:
+
+1. **Thread-local pre-serialization**: Each thread has a pre-allocated buffer. Log records are serialized into this buffer without locks.
+
+2. **Lock-free handoff**: When buffer is full, atomically swap with empty buffer from pool. Consumer takes filled buffer.
+
+3. **Batch I/O**: Consumer aggregates buffers, writes in large batches to minimize syscalls.
+
+4. **Memory-mapped output**: Write to mmap'd file for zero-copy I/O.
+
+```python
+class UltraFastLogger:
+    _thread_buffer = threading.local()
+
+    def info(self, msg):
+        if self.level > INFO:
+            return
+        buf = self._get_buffer()
+        buf.write_record(msg)  # No locks, no allocation
+        if buf.full():
+            self._swap_buffer(buf)
+```
+
+The key insight: <span style="color: #22c55e; font-weight: bold;">separate the fast path (buffering) from the slow path (I/O)</span> with zero contention between them.
+
+**Q2.2.1: How do you benchmark logging performance accurately without the benchmark itself affecting results?**
+
+Logging benchmarks are notoriously misleading:
+
+1. **Warm-up**: Run thousands of iterations before measuring to trigger JIT (if applicable) and warm caches
+
+2. **Isolate I/O**: For measuring log overhead, use a null handler that discards output
+
+3. **Prevent optimization**: Ensure the compiler can't elide log calls - use volatile or blackhole
+
+4. **Measure tail latency**: Average is misleading; measure p99, p999. Async logging often has good average but terrible tail due to queue draining.
+
+5. **Test contention**: Single-threaded benchmarks miss lock contention. Test with realistic concurrent load.
+
+See [[microbenchmarking]](/topics/performance/microbenchmarking) for rigorous methodology.
+
+</div>
+</div>
+
+---
+
+## 8. Testing Logging Systems
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Verifying Invisible Infrastructure</div>
+<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+
+Logging is <span style="color: #90EE90; font-weight: bold;">invisible infrastructure</span> - it doesn't affect business logic but is critical for operations. Testing logging ensures that when you need logs most (during incidents), they're actually there and useful.
+
+</div>
+</div>
+
+### Capturing Logs in Tests
+
+```python
+import pytest
+from typing import List
+
+class LogCapture(Handler):
+    """
+    Test handler that captures logs for assertions.
+
+    Usage in pytest:
+        def test_login_logging(log_capture):
+            service.login("alice", "password")
+            assert log_capture.contains(level=INFO, message_contains="login")
+            assert log_capture.contains(user_id="alice")
+    """
+
+    def __init__(self):
+        super().__init__(level=LogLevel.DEBUG)
+        self.records: List[LogRecord] = []
+
+    def emit(self, formatted: str, record: LogRecord) -> None:
+        self.records.append(record)
+
+    def clear(self) -> None:
+        self.records.clear()
+
+    def contains(self,
+                 level: LogLevel = None,
+                 message_contains: str = None,
+                 message_regex: str = None,
+                 **extra_fields) -> bool:
+        """Check if any captured record matches criteria."""
+        import re
+
+        for record in self.records:
+            if level and record.level != level:
+                continue
+            if message_contains and message_contains not in record.message:
+                continue
+            if message_regex and not re.search(message_regex, record.message):
+                continue
+
+            # Check extra fields
+            match = True
+            for key, expected in extra_fields.items():
+                actual = record.extra.get(key)
+                if actual != expected:
+                    match = False
+                    break
+
+            if match:
+                return True
+        return False
+
+    def assert_logged(self, **kwargs):
+        """Assert that a matching log exists."""
+        assert self.contains(**kwargs), \
+            f"Expected log not found. Criteria: {kwargs}\nCaptured: {self.records}"
+
+
+@pytest.fixture
+def log_capture():
+    """Pytest fixture for capturing logs."""
+    capture = LogCapture()
+    root = LogManager.get_root()
+    root.add_handler(capture)
+    yield capture
+    root.handlers.remove(capture)
+
+
+# Test examples
+class TestOrderService:
+    def test_order_creation_logs_with_trace_context(self, log_capture):
+        with logging_context(trace_id="test-trace-123"):
+            order_service.create_order(user_id="alice", items=["book"])
+
+        log_capture.assert_logged(
+            level=LogLevel.INFO,
+            message_contains="Order created",
+            trace_id="test-trace-123",
+            user_id="alice"
+        )
+
+    def test_payment_failure_logs_error_with_details(self, log_capture):
+        with pytest.raises(PaymentError):
+            order_service.process_payment(order_id="123", amount=100)
+
+        log_capture.assert_logged(
+            level=LogLevel.ERROR,
+            message_contains="Payment failed",
+            order_id="123"
+        )
+```
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px;">Testing Philosophy: What to Assert</div>
+<div style="color: #14532d; font-size: 14px;">
+
+Test <span style="color: #22c55e; font-weight: bold;">semantic content</span>, not exact format:
+- Good: `assert_logged(message_contains="Order created", order_id="123")`
+- Bad: `assert logs[0] == "[2024-01-15 10:30:00] INFO order.service - Order created..."`
+
+The first survives format changes; the second breaks constantly.
+
+</div>
+</div>
+
+### Testing Async and Rotation
+
+```python
+class TestAsyncHandler:
+    def test_logs_are_eventually_written(self):
+        """Async handler should flush on close."""
+        capture = LogCapture()
+        async_handler = AsyncHandler(capture, queue_size=100)
+        logger = Logger("test").add_handler(async_handler)
+
+        for i in range(50):
+            logger.info(f"Message {i}")
+
+        # Logs may not be written yet
+        assert len(capture.records) < 50
+
+        # Close triggers flush
+        async_handler.close()
+        assert len(capture.records) == 50
+
+    def test_overflow_policy_drop_oldest(self):
+        """Queue overflow should drop oldest messages."""
+        capture = LogCapture()
+        async_handler = AsyncHandler(
+            capture,
+            queue_size=10,
+            overflow_policy="drop_oldest"
+        )
+        logger = Logger("test").add_handler(async_handler)
+
+        # Fill queue beyond capacity
+        for i in range(20):
+            logger.info(f"Message {i}")
+
+        async_handler.close()
+
+        # Should have recent messages, not oldest
+        messages = [r.message for r in capture.records]
+        assert "Message 0" not in messages  # Oldest dropped
+        assert "Message 19" in messages     # Newest kept
+
+
+class TestRotatingFileHandler:
+    def test_rotates_at_size_limit(self, tmp_path):
+        """File should rotate when size exceeded."""
+        log_file = tmp_path / "test.log"
+        handler = RotatingFileHandler(
+            str(log_file),
+            max_bytes=1000,
+            backup_count=3,
+            compress=False
+        )
+        logger = Logger("test").add_handler(handler)
+
+        # Write until rotation
+        for i in range(100):
+            logger.info("X" * 50)  # ~60 bytes per line
+
+        handler.close()
+
+        # Check rotation occurred
+        assert log_file.exists()
+        assert (tmp_path / "test.log.1").exists()
+```
+
+---
+
+## 9. Common Pitfalls & Interview Gotchas
+
+<div style="background: #fee2e2; border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Production Pitfalls to Discuss in Interviews</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8;">
+
+These are the "war stories" that demonstrate real-world experience. Interviewers love hearing about these because they show you've operated logging systems at scale.
+
+</div>
+</div>
+
+### Pitfall 1: Logging Sensitive Data
+
+```python
+# DANGEROUS: Logging request bodies may include passwords
+logger.info(f"Received request: {request.body}")
+
+# DANGEROUS: Exception messages may contain sensitive data
+try:
+    authenticate(username, password)
+except AuthError as e:
+    logger.error(f"Auth failed: {e}")  # May log password!
+
+# SAFE: Explicit field extraction
+logger.info("Received request",
+           path=request.path,
+           method=request.method,
+           content_length=len(request.body))
+```
+
+### Pitfall 2: Logging Loop Amplification
+
+```python
+# DANGEROUS: Logs inside retry loops
+for attempt in range(100):
+    try:
+        result = flaky_operation()
+        break
+    except FlakyError:
+        logger.warning(f"Attempt {attempt} failed")  # 100 logs!
+
+# SAFE: Log summary
+for attempt in range(100):
+    try:
+        result = flaky_operation()
+        break
+    except FlakyError:
+        last_error = e
+        continue
+else:
+    logger.error(f"All {attempt} attempts failed", last_error=str(last_error))
+```
+
+### Pitfall 3: Log-and-Throw Anti-Pattern
+
+```python
+# ANTI-PATTERN: Logs error twice (here and at catch site)
+def process_order(order_id):
+    try:
+        validate(order_id)
+    except ValidationError as e:
+        logger.error(f"Validation failed: {e}")  # Logged here...
+        raise  # ...and logged again when caught upstream
+
+# BETTER: Let the catcher log
+def process_order(order_id):
+    validate(order_id)  # Let exception propagate
+
+# Or log only at the top-level handler
+@app.exception_handler(ValidationError)
+def handle_validation_error(e):
+    logger.error("Request validation failed", error=str(e))
+    return {"error": "Invalid request"}
+```
+
+### Pitfall 4: Timestamp Synchronization
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px;">Clock Skew Causes Correlation Failures</div>
+<div style="color: #78350f; font-size: 14px;">
+When Service A's clock is 5 seconds ahead of Service B, logs appear out of order even with correct trace_id correlation. Solutions:
+1. Use NTP with monitoring for clock drift
+2. Include <span style="color: #22c55e; font-weight: bold;">logical timestamps</span> (lamport clocks) alongside wall-clock time
+3. In log analysis, sort by trace_id + span_id hierarchy, not timestamp
+
+See [[distributed-time]](/topics/distributed-systems/time-synchronization) for clock synchronization patterns.
+</div>
+</div>
+
+### Interview Quick-Fire Questions
+
+<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #a855f7;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 12px;">Rapid-Fire Interview Questions</div>
+<div style="color: #581c87; font-size: 14px; line-height: 2.0;">
+
+**Q: Why use DEBUG, INFO, WARN, ERROR instead of just "log"?**
+A: <span style="color: #22c55e; font-weight: bold;">Filtering</span>. Production runs at INFO, debugging at DEBUG. Different severity enables routing (ERROR to PagerDuty).
+
+**Q: Sync vs async logging trade-off in one sentence?**
+A: Sync guarantees durability but blocks; async provides throughput but may lose logs on crash.
+
+**Q: Why is `logger.debug(f"Data: {expensive()}")` bad?**
+A: f-string evaluates before the level check - `expensive()` runs even if DEBUG is disabled.
+
+**Q: What's wrong with `catch (e) { log(e); throw e; }`?**
+A: Error logged twice - once here, once at final handler. Creates duplicate alerts.
+
+**Q: How do you correlate logs across microservices?**
+A: <span style="color: #22c55e; font-weight: bold;">Trace context propagation</span> - inject trace_id into every log, propagate via W3C headers.
+
+**Q: What happens to async logs if the app crashes?**
+A: Lost. Queued logs exist only in memory. Critical logs need sync handlers or persistent queues.
+
+**Q: Why compress rotated logs?**
+A: Logs are highly compressible (5-10x). Compression reduces storage cost and speeds up shipping.
+
+**Q: How do you prevent log injection attacks?**
+A: Structured logging (JSON) instead of string templates. Never interpolate user input into log format strings.
+
+</div>
+</div>
+
+---
+
+## 10. Real-World Architecture Patterns
+
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px;">Production Logging Architecture (ELK Stack)</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 12px; border: 2px solid #3b82f6; text-align: center; flex: 1; min-width: 120px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px;">App Pods</div>
+<div style="color: #3b82f6; font-size: 10px; margin-top: 4px;">stdout/stderr</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #dcfce7; padding: 16px 24px; border-radius: 12px; border: 2px solid #22c55e; text-align: center; flex: 1; min-width: 120px;">
+<div style="color: #166534; font-weight: bold; font-size: 13px;">Fluent Bit</div>
+<div style="color: #22c55e; font-size: 10px; margin-top: 4px;">DaemonSet</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #fef3c7; padding: 16px 24px; border-radius: 12px; border: 2px solid #f59e0b; text-align: center; flex: 1; min-width: 120px;">
+<div style="color: #92400e; font-weight: bold; font-size: 13px;">Kafka</div>
+<div style="color: #f59e0b; font-size: 10px; margin-top: 4px;">Buffer</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #fee2e2; padding: 16px 24px; border-radius: 12px; border: 2px solid #ef4444; text-align: center; flex: 1; min-width: 120px;">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px;">Logstash</div>
+<div style="color: #ef4444; font-size: 10px; margin-top: 4px;">Transform</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 12px; border: 2px solid #a855f7; text-align: center; flex: 1; min-width: 120px;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px;">Elasticsearch</div>
+<div style="color: #a855f7; font-size: 10px; margin-top: 4px;">Index & Search</div>
+</div>
+</div>
+
+<div style="display: flex; justify-content: flex-end;">
+<div style="background: #e0f2fe; padding: 14px 20px; border-radius: 10px; border: 2px solid #0ea5e9;">
+<div style="color: #0369a1; font-weight: bold; font-size: 12px;">Kibana / Grafana</div>
+<div style="color: #0ea5e9; font-size: 10px;">Visualization & Alerting</div>
+</div>
+</div>
+
+</div>
+</div>
+
+### Pattern: Log Levels by Environment
+
+```python
+# Configuration per environment
+LOGGING_CONFIG = {
+    "development": {
+        "root_level": LogLevel.DEBUG,
+        "handlers": [
+            {"type": "console", "formatter": "colored"},
+        ],
+        "async": False,  # Easier debugging
+    },
+    "staging": {
+        "root_level": LogLevel.DEBUG,
+        "handlers": [
+            {"type": "console", "formatter": "json"},
+            {"type": "file", "path": "/var/log/app.log"},
+        ],
+        "async": True,
+    },
+    "production": {
+        "root_level": LogLevel.INFO,  # No DEBUG in prod
+        "handlers": [
+            {"type": "console", "formatter": "json"},  # For K8s log collection
+        ],
+        "sampling": {
+            LogLevel.DEBUG: 0.01,  # 1% sampling if enabled
+        },
+        "async": True,
+    },
+}
+```
+
+### Pattern: Correlation ID Middleware
+
+```python
+# FastAPI middleware example
+from fastapi import FastAPI, Request
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class CorrelationMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware that ensures every request has correlation context.
+
+    - Extracts trace_id from incoming headers (or generates new)
+    - Sets context for all logs within request
+    - Propagates to outgoing requests
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        # Extract or generate trace context
+        trace_ctx = TraceContext.from_headers(dict(request.headers))
+        if not trace_ctx:
+            trace_ctx = TraceContext.generate()
+
+        # Set context for this request
+        with logging_context(
+            trace_id=trace_ctx.trace_id,
+            span_id=trace_ctx.span_id,
+            request_path=request.url.path,
+            request_method=request.method,
+            client_ip=request.client.host
+        ):
+            logger.info("Request started")
+
+            try:
+                response = await call_next(request)
+                logger.info("Request completed",
+                           status_code=response.status_code)
+                return response
+            except Exception as e:
+                logger.exception("Request failed")
+                raise
+
+
+app = FastAPI()
+app.add_middleware(CorrelationMiddleware)
+```
+
+See [[api-gateway]](/topics/system-design/api-gateway) for centralized correlation management and [[observability-patterns]](/topics/observability/patterns) for comprehensive monitoring strategies.
+
+---
+
+## Summary: Key Interview Takeaways
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">What Interviewers Look For</div>
+<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+
+1. <span style="color: #90EE90; font-weight: bold;">Performance awareness</span>: Early level checking, lazy evaluation, async I/O
+2. <span style="color: #90EE90; font-weight: bold;">Reliability trade-offs</span>: Durability vs. latency, queue overflow policies
+3. <span style="color: #90EE90; font-weight: bold;">Observability integration</span>: Trace context propagation, structured data
+4. <span style="color: #90EE90; font-weight: bold;">Production readiness</span>: Rotation, sensitive data handling, error isolation
+5. <span style="color: #90EE90; font-weight: bold;">Design patterns</span>: Strategy (handlers), Template Method (Handler.handle), Chain of Responsibility (filters)
+
+</div>
+</div>
