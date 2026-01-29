@@ -603,19 +603,28 @@ print_substep "start" "Synchronizing repository"
 PROJECT_BASE=$(dirname "$PROJECT_PATH")
 PROJECT_DIR=$(basename "$PROJECT_PATH")
 
+echo -e "     ${DIM}├─ Target: $PROJECT_PATH${NC}"
+echo -e "     ${DIM}├─ Repo: $REPO_URL${NC}"
+echo -e "     ${DIM}├─ Branch: $CURRENT_BRANCH${NC}"
+
 # Robust git clone/update logic with proper error handling
 SYNC_OUTPUT=$(run_ssh "
 set -e
+
+echo 'PATH:base=$PROJECT_BASE'
+echo 'PATH:dir=$PROJECT_DIR'
 
 # Ensure base project directory exists
 mkdir -p '$PROJECT_BASE'
 
 cd '$PROJECT_BASE'
+echo 'PATH:pwd='\$(pwd)
 
 # Check if repo already exists
 if [ -d '$PROJECT_DIR/.git' ]; then
     echo 'STATUS:updating'
     cd '$PROJECT_DIR'
+    echo 'PATH:repo='\$(pwd)
     git fetch origin 2>&1 || { echo 'ERROR:fetch_failed'; exit 1; }
     git checkout '$CURRENT_BRANCH' 2>&1 || git checkout -b '$CURRENT_BRANCH' origin/'$CURRENT_BRANCH' 2>&1 || { echo 'ERROR:checkout_failed'; exit 1; }
     git reset --hard origin/'$CURRENT_BRANCH' 2>&1 || { echo 'ERROR:reset_failed'; exit 1; }
@@ -625,29 +634,43 @@ else
     rm -rf '$PROJECT_DIR' 2>/dev/null || true
 
     # Clone fresh
+    echo 'CLONE:git clone $REPO_URL $PROJECT_DIR'
     git clone '$REPO_URL' '$PROJECT_DIR' 2>&1 || { echo 'ERROR:clone_failed'; exit 1; }
     cd '$PROJECT_DIR'
+    echo 'PATH:cloned='\$(pwd)
     git checkout '$CURRENT_BRANCH' 2>&1 || git checkout -b '$CURRENT_BRANCH' origin/'$CURRENT_BRANCH' 2>&1 || true
 fi
 
-# Output commit info
+# Show what we have
+echo 'FILES:'\$(ls -1 | head -5 | tr '\n' ' ')
 echo 'COMMIT:'\$(git rev-parse --short HEAD)
 echo 'MSG:'\$(git log -1 --pretty=%B | head -1)
 echo 'STATUS:success'
 " 2>&1)
 
+# Show debug paths
+echo "$SYNC_OUTPUT" | grep "^PATH:" | while read line; do
+    echo -e "     ${DIM}├─ ${line#PATH:}${NC}"
+done
+echo "$SYNC_OUTPUT" | grep "^CLONE:" | while read line; do
+    echo -e "     ${DIM}├─ ${line#CLONE:}${NC}"
+done
+echo "$SYNC_OUTPUT" | grep "^FILES:" | while read line; do
+    echo -e "     ${DIM}├─ files: ${line#FILES:}${NC}"
+done
+
 # Check for errors
 if echo "$SYNC_OUTPUT" | grep -q "ERROR:"; then
     ERROR_TYPE=$(echo "$SYNC_OUTPUT" | grep "ERROR:" | head -1)
     print_substep "fail" "Repository sync failed: $ERROR_TYPE"
-    echo "Debug output:"
+    echo "Full output:"
     echo "$SYNC_OUTPUT"
     step_end "Sync Code" "failed"
 elif echo "$SYNC_OUTPUT" | grep -q "STATUS:success"; then
     print_substep "done" "Repository synchronized"
 else
     print_substep "skip" "Repository sync unclear (check logs)"
-    echo "Debug output:"
+    echo "Full output:"
     echo "$SYNC_OUTPUT"
 fi
 
