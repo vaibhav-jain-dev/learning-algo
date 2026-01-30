@@ -4,7 +4,7 @@
 
 Design a large-scale e-commerce platform like Amazon that handles product catalog, search, shopping cart, checkout, payments, order management, and delivery tracking.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 ### Core Requirements
 - **Product Catalog**: Millions of products with categories, attributes, images
@@ -22,9 +22,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0;">
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Customer</h4>
-<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #1d4ed8; margin: 0 0 12px 0;">Customer</h4>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Browse/search products</li>
 <li>View product details</li>
 <li>Add to cart/wishlist</li>
@@ -34,9 +34,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </ul>
 </div>
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px;">
-<h4 style="color: #a371f7; margin: 0 0 12px 0;">Seller</h4>
-<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #7c3aed; margin: 0 0 12px 0;">Seller</h4>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>List products</li>
 <li>Manage inventory</li>
 <li>Process orders</li>
@@ -46,9 +46,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </ul>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px;">
-<h4 style="color: #7ee787; margin: 0 0 12px 0;">System</h4>
-<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #16a34a; margin: 0 0 12px 0;">System</h4>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Inventory sync</li>
 <li>Payment processing</li>
 <li>Fraud detection</li>
@@ -64,7 +64,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 ## Non-Functional Requirements
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 | Requirement | Target | Notes |
 |-------------|--------|-------|
@@ -80,73 +80,86 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">AMAZON E-COMMERCE ARCHITECTURE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">AMAZON E-COMMERCE ARCHITECTURE</h3>
 
-```
-                                    ┌─────────────────┐
-                                    │   CloudFront    │
-                                    │     (CDN)       │
-                                    └────────┬────────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    │                        │                        │
-                    ▼                        ▼                        ▼
-            ┌───────────────┐      ┌───────────────┐      ┌───────────────┐
-            │  Web App      │      │  Mobile API   │      │  Seller API   │
-            │  (React/Next) │      │   Gateway     │      │   Gateway     │
-            └───────┬───────┘      └───────┬───────┘      └───────┬───────┘
-                    │                      │                      │
-                    └──────────────────────┼──────────────────────┘
-                                           │
-                               ┌───────────▼───────────┐
-                               │    API Gateway        │
-                               │   (Rate Limiting,     │
-                               │    Auth, Routing)     │
-                               └───────────┬───────────┘
-                                           │
-    ┌──────────────────────────────────────┼──────────────────────────────────────┐
-    │                                      │                                      │
-    │  ┌─────────────────────────────────────────────────────────────────────┐   │
-    │  │                        SERVICE MESH (Envoy/Istio)                   │   │
-    │  └─────────────────────────────────────────────────────────────────────┘   │
-    │                                      │                                      │
-    │     ┌────────────────────────────────┼────────────────────────────────┐    │
-    │     │                                │                                │    │
-    │     ▼                                ▼                                ▼    │
-    │ ┌─────────┐  ┌─────────┐  ┌─────────────┐  ┌─────────┐  ┌─────────────┐   │
-    │ │ Product │  │ Search  │  │    Cart     │  │  Order  │  │   Payment   │   │
-    │ │ Service │  │ Service │  │   Service   │  │ Service │  │   Service   │   │
-    │ └────┬────┘  └────┬────┘  └──────┬──────┘  └────┬────┘  └──────┬──────┘   │
-    │      │            │              │              │              │          │
-    │ ┌─────────┐  ┌─────────┐  ┌─────────────┐  ┌─────────┐  ┌─────────────┐   │
-    │ │Inventory│  │  User   │  │Notification │  │Shipping │  │   Review    │   │
-    │ │ Service │  │ Service │  │   Service   │  │ Service │  │   Service   │   │
-    │ └─────────┘  └─────────┘  └─────────────┘  └─────────┘  └─────────────┘   │
-    │                                                                            │
-    │                         MICROSERVICES LAYER                                │
-    └────────────────────────────────────────────────────────────────────────────┘
-                                           │
-    ┌──────────────────────────────────────┼──────────────────────────────────────┐
-    │                                      │                                      │
-    │  ┌─────────────────────────────────────────────────────────────────────┐   │
-    │  │                        MESSAGE BUS (Kafka)                          │   │
-    │  └─────────────────────────────────────────────────────────────────────┘   │
-    │                                                                            │
-    │                          EVENT STREAMING LAYER                             │
-    └────────────────────────────────────────────────────────────────────────────┘
-                                           │
-    ┌──────────────────────────────────────┼──────────────────────────────────────┐
-    │     ┌────────────────────────────────┼────────────────────────────────┐    │
-    │     ▼                                ▼                                ▼    │
-    │ ┌─────────┐  ┌─────────┐  ┌─────────────┐  ┌─────────┐  ┌─────────────┐   │
-    │ │DynamoDB │  │ Aurora  │  │Elasticsearch│  │  Redis  │  │     S3      │   │
-    │ │(Catalog)│  │(Orders) │  │  (Search)   │  │ (Cache) │  │  (Images)   │   │
-    │ └─────────┘  └─────────┘  └─────────────┘  └─────────┘  └─────────────┘   │
-    │                                                                            │
-    │                            DATA LAYER                                      │
-    └────────────────────────────────────────────────────────────────────────────┘
-```
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+
+<!-- CDN Layer -->
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+  <strong>CloudFront (CDN)</strong>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Client Apps -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+    <strong>Web App</strong><br><span style="font-size: 11px;">(React/Next)</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+    <strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+    <strong>Seller API</strong><br><span style="font-size: 11px;">Gateway</span>
+  </div>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- API Gateway -->
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+  <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth, Routing</span>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Microservices Layer -->
+<div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
+  <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">SERVICE MESH (Envoy/Istio)</div>
+
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Product</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Search</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Cart</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Order</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Payment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+  </div>
+
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Inventory</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Notification</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Shipping</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Review</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+  </div>
+
+  <div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">MICROSERVICES LAYER</div>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Event Streaming Layer -->
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 16px; padding: 16px; width: 100%; max-width: 800px; text-align: center;">
+  <strong style="color: #d97706;">MESSAGE BUS (Kafka)</strong>
+  <div style="color: #475569; font-size: 12px; margin-top: 4px;">EVENT STREAMING LAYER</div>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Data Layer -->
+<div style="background: #f1f5f9; border: 2px solid #7c3aed; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+    <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>DynamoDB</strong><br><span style="font-size: 11px;">(Catalog)</span></div>
+    <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Aurora</strong><br><span style="font-size: 11px;">(Orders)</span></div>
+    <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Elasticsearch</strong><br><span style="font-size: 11px;">(Search)</span></div>
+    <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span></div>
+    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>S3</strong><br><span style="font-size: 11px;">(Images)</span></div>
+  </div>
+  <div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">DATA LAYER</div>
+</div>
+
+</div>
 
 </div>
 
@@ -155,7 +168,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 ## Phase 1: Starting Phase (Low Budget)
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 1,000 - 50,000 monthly active users
@@ -166,7 +179,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 ### Monolithic Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -330,7 +343,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 ## Phase 2: Medium User Phase
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 500,000 - 5M monthly active users
@@ -341,7 +354,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 
 ### Modular Monolith Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```
                         ┌─────────────────────┐
@@ -378,7 +391,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 ### Microservices Architecture
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">DOMAIN-DRIVEN MICROSERVICES</h4>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">DOMAIN-DRIVEN MICROSERVICES</h4>
 
 ```
                               ┌────────────────────┐
@@ -439,7 +452,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 16px;">
-<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Synchronous (REST/gRPC)</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 8px 0;">Synchronous (REST/gRPC)</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Cart → Inventory (check stock)</li>
 <li>Order → Payment (process)</li>
@@ -448,7 +461,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 16px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Asynchronous (Kafka)</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Asynchronous (Kafka)</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Order placed → Inventory update</li>
 <li>Order placed → Send emails</li>
@@ -466,7 +479,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 ## Phase 3: High User Base Phase
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 300M+ monthly active users
@@ -477,7 +490,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 
 ### Global Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ```
                             GLOBAL INFRASTRUCTURE
@@ -524,13 +537,13 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 
 ### Data Partitioning Strategy
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">SHARDING STRATEGIES</h4>
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">Products (DynamoDB)</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">Products (DynamoDB)</h5>
 
 ```
 Partition Key: product_id
@@ -551,7 +564,7 @@ Benefits:
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Orders (Aurora)</h5>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Orders (Aurora)</h5>
 
 ```
 Shard Key: user_id % 256
@@ -574,8 +587,8 @@ Cross-shard queries:
 
 ### Checkout Flow (High Scale)
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">SAGA PATTERN FOR DISTRIBUTED CHECKOUT</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">SAGA PATTERN FOR DISTRIBUTED CHECKOUT</h4>
 
 ```
     ┌─────────────────────────────────────────────────────────────────┐
@@ -629,7 +642,7 @@ Cross-shard queries:
 
 ### Recommendation Engine
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ```
                     RECOMMENDATION PIPELINE
@@ -682,7 +695,7 @@ Cross-shard queries:
 
 ## AWS Technologies & Alternatives
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 | Component | AWS Service | Alternative | Trade-offs |
 |-----------|-------------|-------------|------------|
@@ -701,7 +714,7 @@ Cross-shard queries:
 
 ## Distributed Systems Considerations
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### 1. Inventory Consistency
 
@@ -713,7 +726,7 @@ Cross-shard queries:
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Solution: Optimistic Locking</h5>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Solution: Optimistic Locking</h5>
 
 ```python
 # DynamoDB conditional update
@@ -789,20 +802,20 @@ Eventual consistency: ~1-5 seconds lag
 
 ## Interview Deep Dive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 Interviewers use these probing questions to test your depth of understanding. Here are the questions, what they're really probing, and how to answer effectively.
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### 1. "Why DynamoDB for cart instead of Redis?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">What They're Probing</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">What They're Probing</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Do you understand persistence vs. cache trade-offs?</li>
 <li>Can you reason about data durability requirements?</li>
@@ -811,8 +824,8 @@ Interviewers use these probing questions to test your depth of understanding. He
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Strong Answer</h5>
-<p style="color: #c9d1d9; font-size: 13px; margin: 0;">"At Amazon scale, carts represent potential revenue. Redis is faster but volatile - a Redis cluster restart loses carts. DynamoDB gives us durability with single-digit ms latency. We use Redis as a read-through cache in front of DynamoDB for hot carts. For checkout, we need the guarantee that the cart survives infrastructure failures."</p>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Strong Answer</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">"At Amazon scale, carts represent potential revenue. Redis is faster but volatile - a Redis cluster restart loses carts. DynamoDB gives us durability with single-digit ms latency. We use Redis as a read-through cache in front of DynamoDB for hot carts. For checkout, we need the guarantee that the cart survives infrastructure failures."</p>
 </div>
 
 </div>
@@ -829,7 +842,7 @@ Interviewers use these probing questions to test your depth of understanding. He
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">What They're Probing</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">What They're Probing</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Understanding of race conditions in distributed systems</li>
 <li>Knowledge of pessimistic vs. optimistic locking</li>
@@ -838,8 +851,8 @@ Interviewers use these probing questions to test your depth of understanding. He
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Strong Answer</h5>
-<p style="color: #c9d1d9; font-size: 13px; margin: 0;">"Three-layer approach: (1) Pre-sale queue with virtual waiting room to control concurrent requests, (2) Redis atomic decrement with Lua script for inventory - `DECR` returns new value atomically, reject if < 0, (3) DynamoDB conditional write as final check with `ConditionExpression: quantity >= :requested`. For ultra-hot items, we pre-shard inventory across multiple keys and aggregate."</p>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Strong Answer</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">"Three-layer approach: (1) Pre-sale queue with virtual waiting room to control concurrent requests, (2) Redis atomic decrement with Lua script for inventory - `DECR` returns new value atomically, reject if < 0, (3) DynamoDB conditional write as final check with `ConditionExpression: quantity >= :requested`. For ultra-hot items, we pre-shard inventory across multiple keys and aggregate."</p>
 </div>
 
 </div>
@@ -856,7 +869,7 @@ Interviewers use these probing questions to test your depth of understanding. He
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">What They're Probing</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">What They're Probing</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Do you understand polyglot persistence?</li>
 <li>Can you articulate when relational breaks down?</li>
@@ -865,8 +878,8 @@ Interviewers use these probing questions to test your depth of understanding. He
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Strong Answer</h5>
-<p style="color: #c9d1d9; font-size: 13px; margin: 0;">"For orders, PostgreSQL is perfect - ACID transactions, complex joins for reporting. But product catalog has different access patterns: 500M products, read-heavy (1000:1 read/write), needs single-digit ms latency, flexible schemas per category. DynamoDB handles this natively. PostgreSQL at this scale requires manual sharding, which is operationally complex. Search needs inverted indices - Elasticsearch does this 100x better than PostgreSQL's full-text search at scale."</p>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Strong Answer</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">"For orders, PostgreSQL is perfect - ACID transactions, complex joins for reporting. But product catalog has different access patterns: 500M products, read-heavy (1000:1 read/write), needs single-digit ms latency, flexible schemas per category. DynamoDB handles this natively. PostgreSQL at this scale requires manual sharding, which is operationally complex. Search needs inverted indices - Elasticsearch does this 100x better than PostgreSQL's full-text search at scale."</p>
 </div>
 
 </div>
@@ -883,7 +896,7 @@ Interviewers use these probing questions to test your depth of understanding. He
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">What They're Probing</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">What They're Probing</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Understanding of capacity planning and load testing</li>
 <li>Knowledge of graceful degradation patterns</li>
@@ -892,8 +905,8 @@ Interviewers use these probing questions to test your depth of understanding. He
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Strong Answer</h5>
-<p style="color: #c9d1d9; font-size: 13px; margin: 0;">"Multi-pronged: (1) Pre-warm everything - EC2, Lambda, DynamoDB provisioned capacity 24h before, (2) Aggressive CDN caching - product pages become static HTML for 60s, (3) Queue non-critical work - email confirmations, analytics go to SQS, (4) Circuit breakers on recommendations - if ML service is slow, show trending instead, (5) Virtual waiting rooms for checkout to control database load. We practice with 'GameDay' load tests monthly."</p>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Strong Answer</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">"Multi-pronged: (1) Pre-warm everything - EC2, Lambda, DynamoDB provisioned capacity 24h before, (2) Aggressive CDN caching - product pages become static HTML for 60s, (3) Queue non-critical work - email confirmations, analytics go to SQS, (4) Circuit breakers on recommendations - if ML service is slow, show trending instead, (5) Virtual waiting rooms for checkout to control database load. We practice with 'GameDay' load tests monthly."</p>
 </div>
 
 </div>
@@ -910,7 +923,7 @@ Interviewers use these probing questions to test your depth of understanding. He
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px;">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0;">What They're Probing</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 12px 0;">What They're Probing</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Understanding of event streaming vs. message queues</li>
 <li>Knowledge of event sourcing and replay capabilities</li>
@@ -919,8 +932,8 @@ Interviewers use these probing questions to test your depth of understanding. He
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px;">
-<h5 style="color: #7ee787; margin: 0 0 12px 0;">Strong Answer</h5>
-<p style="color: #c9d1d9; font-size: 13px; margin: 0;">"Kafka provides event log semantics - we can replay order events to rebuild search indices, recalculate analytics, or debug issues. Multiple consumers read the same events (search indexer, email service, analytics, fraud detection) without coordination. SQS deletes after consumption. For checkout specifically, we actually use SQS - it's simpler, and we don't need replay. Kafka is for the event backbone where history matters."</p>
+<h5 style="color: #16a34a; margin: 0 0 12px 0;">Strong Answer</h5>
+<p style="color: #475569; font-size: 13px; margin: 0;">"Kafka provides event log semantics - we can replay order events to rebuild search indices, recalculate analytics, or debug issues. Multiple consumers read the same events (search indexer, email service, analytics, fraud detection) without coordination. SQS deletes after consumption. For checkout specifically, we actually use SQS - it's simpler, and we don't need replay. Kafka is for the event backbone where history matters."</p>
 </div>
 
 </div>
@@ -963,10 +976,10 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">DynamoDB for Product Catalog</h4>
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">DynamoDB for Product Catalog</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Pros</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Pros</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Consistent single-digit ms latency at any scale</li>
 <li>No capacity planning - auto-scales</li>
@@ -986,16 +999,16 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 
 <div style="background: rgba(137, 87, 229, 0.1); border-radius: 8px; padding: 12px;">
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Mitigation</h5>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Mitigation</h5>
 <p style="color: #8b949e; font-size: 13px; margin: 0;">Use OpenSearch for complex queries. Denormalize seller info into product records. Cache GSI results in Redis.</p>
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Aurora for Orders</h4>
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Aurora for Orders</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Pros</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Pros</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>ACID transactions for payment integrity</li>
 <li>Complex queries for analytics/reporting</li>
@@ -1015,7 +1028,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 
 <div style="background: rgba(137, 87, 229, 0.1); border-radius: 8px; padding: 12px;">
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Mitigation</h5>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Mitigation</h5>
 <p style="color: #8b949e; font-size: 13px; margin: 0;">Shard by user_id at scale. Use read replicas for analytics. Consider Aurora Serverless v2 for variable load.</p>
 </div>
 </div>
@@ -1025,10 +1038,10 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Kafka for Event Streaming</h4>
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Kafka for Event Streaming</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Pros</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Pros</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Event replay for rebuilding state</li>
 <li>Multiple consumers without duplication</li>
@@ -1048,16 +1061,16 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 
 <div style="background: rgba(137, 87, 229, 0.1); border-radius: 8px; padding: 12px;">
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Mitigation</h5>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Mitigation</h5>
 <p style="color: #8b949e; font-size: 13px; margin: 0;">Use MSK for managed operations. Implement custom DLQ with separate topic. Start with fewer partitions and scale up.</p>
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Microservices Architecture</h4>
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Microservices Architecture</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Pros</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Pros</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Independent deployment and scaling</li>
 <li>Technology flexibility per service</li>
@@ -1077,7 +1090,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 
 <div style="background: rgba(137, 87, 229, 0.1); border-radius: 8px; padding: 12px;">
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Mitigation</h5>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Mitigation</h5>
 <p style="color: #8b949e; font-size: 13px; margin: 0;">Start with modular monolith. Use service mesh for observability. Implement saga pattern for distributed transactions. Invest in good CI/CD.</p>
 </div>
 </div>
@@ -1089,11 +1102,11 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-<h4 style="color: #7ee787; margin: 0 0 12px 0;">The $500/month E-Commerce Platform</h4>
-<p style="color: #c9d1d9; font-size: 14px; margin: 0 0 16px 0;">A real architecture that handles $2M/year in revenue:</p>
+<h4 style="color: #16a34a; margin: 0 0 12px 0;">The $500/month E-Commerce Platform</h4>
+<p style="color: #475569; font-size: 14px; margin: 0 0 16px 0;">A real architecture that handles $2M/year in revenue:</p>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1187,7 +1200,7 @@ LIMIT 20;
 
 ### Simpler Alternatives Table
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 | Complex Solution | Simpler Alternative | Use Simpler When |
 |-----------------|---------------------|------------------|
@@ -1204,7 +1217,7 @@ LIMIT 20;
 
 ### Scale Thresholds - When to Upgrade
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1245,7 +1258,7 @@ LIMIT 20;
 
 ## Trade-off Analysis & Mitigation
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 Every architectural decision has costs. Here's how to acknowledge and manage them.
 
@@ -1254,10 +1267,10 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">CON: Eventual Consistency in Catalog</h4>
 
-<p style="color: #c9d1d9; font-size: 14px;"><strong>The Problem:</strong> Product updates in DynamoDB take 1-5 seconds to appear in OpenSearch. User might see stale prices or inventory.</p>
+<p style="color: #475569; font-size: 14px;"><strong>The Problem:</strong> Product updates in DynamoDB take 1-5 seconds to appear in OpenSearch. User might see stale prices or inventory.</p>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-top: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Mitigation Strategies</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Mitigation Strategies</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Always fetch price/inventory from source at checkout (not cache)</li>
 <li>Show "prices may vary" disclaimer on search results</li>
@@ -1270,10 +1283,10 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">CON: Microservices Network Latency</h4>
 
-<p style="color: #c9d1d9; font-size: 14px;"><strong>The Problem:</strong> Product page requires 5 service calls (product, inventory, reviews, recommendations, seller). Network adds 50-100ms.</p>
+<p style="color: #475569; font-size: 14px;"><strong>The Problem:</strong> Product page requires 5 service calls (product, inventory, reviews, recommendations, seller). Network adds 50-100ms.</p>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-top: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Mitigation Strategies</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Mitigation Strategies</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Parallel calls with Promise.all() / asyncio.gather()</li>
 <li>BFF (Backend for Frontend) pattern - aggregate in one API call</li>
@@ -1287,10 +1300,10 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">CON: Distributed Transaction Complexity</h4>
 
-<p style="color: #c9d1d9; font-size: 14px;"><strong>The Problem:</strong> Checkout spans inventory, payment, order services. Payment succeeds but order creation fails - now what?</p>
+<p style="color: #475569; font-size: 14px;"><strong>The Problem:</strong> Checkout spans inventory, payment, order services. Payment succeeds but order creation fails - now what?</p>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-top: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Mitigation Strategies</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Mitigation Strategies</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Saga pattern with compensation actions (refund payment, release inventory)</li>
 <li>Idempotency keys on all operations for safe retry</li>
@@ -1304,10 +1317,10 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">CON: Kafka Operational Complexity</h4>
 
-<p style="color: #c9d1d9; font-size: 14px;"><strong>The Problem:</strong> Consumer lag, partition rebalancing during deploys, no built-in DLQ, requires dedicated expertise.</p>
+<p style="color: #475569; font-size: 14px;"><strong>The Problem:</strong> Consumer lag, partition rebalancing during deploys, no built-in DLQ, requires dedicated expertise.</p>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-top: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Mitigation Strategies</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Mitigation Strategies</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Use MSK (managed Kafka) to avoid ZooKeeper management</li>
 <li>Implement custom DLQ topic with retry logic</li>
@@ -1321,10 +1334,10 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">CON: Multi-Region Data Consistency</h4>
 
-<p style="color: #c9d1d9; font-size: 14px;"><strong>The Problem:</strong> US user places order, immediately checks from EU - order not visible due to replication lag.</p>
+<p style="color: #475569; font-size: 14px;"><strong>The Problem:</strong> US user places order, immediately checks from EU - order not visible due to replication lag.</p>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-top: 12px;">
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Mitigation Strategies</h5>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Mitigation Strategies</h5>
 <ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 16px;">
 <li>Route user to primary region for writes, read from local replica</li>
 <li>Sticky sessions - user stays in same region for session duration</li>
@@ -1367,7 +1380,7 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 
 <div style="background: linear-gradient(135deg, #3d1f1f 0%, #5a3a3a 100%); border-radius: 12px; padding: 24px;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">Red Flags - Avoid These</h4>
-<ul style="color: #c9d1d9; font-size: 13px; padding-left: 20px;">
+<ul style="color: #475569; font-size: 13px; padding-left: 20px;">
 <li>"We need microservices because Amazon uses them" (cargo culting)</li>
 <li>Jumping to complex solutions without discussing scale requirements</li>
 <li>Not mentioning caching when discussing product pages</li>
@@ -1382,8 +1395,8 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 </div>
 
 <div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5a4a 100%); border-radius: 12px; padding: 24px;">
-<h4 style="color: #7ee787; margin: 0 0 16px 0;">Impressive Statements</h4>
-<ul style="color: #c9d1d9; font-size: 13px; padding-left: 20px;">
+<h4 style="color: #16a34a; margin: 0 0 16px 0;">Impressive Statements</h4>
+<ul style="color: #475569; font-size: 13px; padding-left: 20px;">
 <li>"At 1000 orders/day, a monolith with PostgreSQL is the right choice"</li>
 <li>"We'd use optimistic locking with DynamoDB conditional writes for inventory"</li>
 <li>"The product page should be cacheable at CDN for 60 seconds with stale-while-revalidate"</li>
@@ -1399,7 +1412,7 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 ### The Perfect Interview Flow
 
@@ -1431,5 +1444,5 @@ Every architectural decision has costs. Here's how to acknowledge and manage the
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <h4 style="color: #f0883e; margin: 0 0 12px 0;">Final Tip: Show Pragmatism</h4>
-<p style="color: #c9d1d9; font-size: 14px; margin: 0;">The best candidates demonstrate they know when NOT to use complex solutions. Saying "At this scale, we don't need Kafka - SQS is simpler and sufficient" is more impressive than always reaching for the most complex tool. Interviewers want to hire engineers who can ship products, not architects who over-engineer everything.</p>
+<p style="color: #475569; font-size: 14px; margin: 0;">The best candidates demonstrate they know when NOT to use complex solutions. Saying "At this scale, we don't need Kafka - SQS is simpler and sufficient" is more impressive than always reaching for the most complex tool. Interviewers want to hire engineers who can ship products, not architects who over-engineer everything.</p>
 </div>

@@ -4,16 +4,16 @@
 
 Network protocols are the foundational contracts that govern how distributed systems exchange data. Understanding their internal mechanisms, failure modes, and performance characteristics is essential for designing systems that operate correctly under real-world conditions.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 32px; margin: 24px 0; color: white;">
-<h4 style="color: #60a5fa; margin-top: 0;">Why Protocol Internals Matter in Interviews</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-<div style="color: #94a3b8; font-size: 13px; margin-bottom: 8px;">Surface-level answer:</div>
-<div style="color: #f1f5f9; font-size: 14px;">"TCP is reliable, UDP is fast"</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Why Protocol Internals Matter in Interviews</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Surface-level answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"TCP is reliable, UDP is fast"</div>
 </div>
-<div>
-<div style="color: #94a3b8; font-size: 13px; margin-bottom: 8px;">Interview-winning answer:</div>
-<div style="color: #f1f5f9; font-size: 14px;">"TCP's congestion control uses AIMD, which causes throughput oscillation. For high-bandwidth transcontinental links, the BDP exceeds default buffer sizes, requiring tuning or protocols like QUIC."</div>
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Interview-winning answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"TCP's congestion control uses AIMD, which causes throughput oscillation. For high-bandwidth transcontinental links, the BDP exceeds default buffer sizes, requiring tuning or protocols like QUIC."</div>
 </div>
 </div>
 </div>

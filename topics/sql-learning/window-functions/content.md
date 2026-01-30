@@ -4,9 +4,9 @@
 
 Window functions perform calculations across a set of table rows that are related to the current row, without collapsing them into a single output row like GROUP BY does. They enable powerful analytics like running totals, rankings, moving averages, and row comparisons while keeping all original rows intact.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Core Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #ffffff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #e2e8f0;">
     Window Function = Function(column) OVER (PARTITION BY grouping ORDER BY sorting FRAME specification)
   </div>
 </div>
@@ -337,7 +337,7 @@ Ranking functions assign a position to each row based on the ORDER BY expression
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px; overflow: hidden;">
 <thead>
-<tr style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white;">
+<tr style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border: 2px solid #e2e8f0;">
 <th style="padding: 16px; text-align: left; font-weight: 600;">Name</th>
 <th style="padding: 16px; text-align: center; font-weight: 600;">Score</th>
 <th style="padding: 16px; text-align: center; font-weight: 600;">ROW_NUMBER()</th>
@@ -551,7 +551,7 @@ WHERE r.dr <= c.cutoff_rank;
 <div style="display: flex; flex-direction: column; gap: 4px;">
 <div style="background: #dbeafe; padding: 8px 24px; border-radius: 4px; font-size: 13px;">Row -2</div>
 <div style="background: #93c5fd; padding: 8px 24px; border-radius: 4px; font-size: 13px;">Row -1 (LAG 1)</div>
-<div style="background: #3b82f6; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: white; font-weight: bold;">Current Row</div>
+<div style="background: #3b82f6; padding: 8px 24px; border-radius: 4px; font-size: 13px; border: 2px solid #e2e8f0; font-weight: bold;">Current Row</div>
 <div style="background: #e2e8f0; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: #94a3b8;">Row +1</div>
 <div style="background: #e2e8f0; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: #94a3b8;">Row +2</div>
 </div>
@@ -562,7 +562,7 @@ WHERE r.dr <= c.cutoff_rank;
 <div style="display: flex; flex-direction: column; gap: 4px;">
 <div style="background: #e2e8f0; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: #94a3b8;">Row -2</div>
 <div style="background: #e2e8f0; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: #94a3b8;">Row -1</div>
-<div style="background: #10b981; padding: 8px 24px; border-radius: 4px; font-size: 13px; color: white; font-weight: bold;">Current Row</div>
+<div style="background: #10b981; padding: 8px 24px; border-radius: 4px; font-size: 13px; border: 2px solid #e2e8f0; font-weight: bold;">Current Row</div>
 <div style="background: #6ee7b7; padding: 8px 24px; border-radius: 4px; font-size: 13px;">Row +1 (LEAD 1)</div>
 <div style="background: #a7f3d0; padding: 8px 24px; border-radius: 4px; font-size: 13px;">Row +2</div>
 </div>
@@ -737,7 +737,7 @@ HAVING COUNT(*) >= 3;  -- Find streaks of 3+ consecutive
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px; overflow: hidden;">
 <thead>
-<tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+<tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: 2px solid #e2e8f0;">
 <th style="padding: 14px; text-align: left;">Date</th>
 <th style="padding: 14px; text-align: right;">Amount</th>
 <th style="padding: 14px; text-align: right;">Running Total</th>
@@ -936,7 +936,7 @@ The <span style="color: #10b981; font-weight: 600;">frame specification</span> d
 <div style="font-family: monospace; font-size: 12px;">
 <div style="background: #e2e8f0; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">Jan 1: $100</div>
 <div style="background: #e2e8f0; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">Jan 1: $200</div>
-<div style="background: #3b82f6; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; color: white;">Jan 1: $150 ← Current (sum = $150)</div>
+<div style="background: #3b82f6; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; border: 2px solid #e2e8f0;">Jan 1: $150 ← Current (sum = $150)</div>
 <div style="background: #e2e8f0; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">Jan 2: $300</div>
 </div>
 <div style="margin-top: 12px; color: #475569; font-size: 12px; text-align: center;">Only the physical current row</div>
@@ -946,7 +946,7 @@ The <span style="color: #10b981; font-weight: 600;">frame specification</span> d
 <div style="font-family: monospace; font-size: 12px;">
 <div style="background: #dcfce7; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; border-left: 3px solid #10b981;">Jan 1: $100 (peer)</div>
 <div style="background: #dcfce7; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; border-left: 3px solid #10b981;">Jan 1: $200 (peer)</div>
-<div style="background: #10b981; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; color: white;">Jan 1: $150 ← Current (sum = $450)</div>
+<div style="background: #10b981; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px; border: 2px solid #e2e8f0;">Jan 1: $150 ← Current (sum = $450)</div>
 <div style="background: #e2e8f0; padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">Jan 2: $300</div>
 </div>
 <div style="margin-top: 12px; color: #475569; font-size: 12px; text-align: center;">All rows with same ORDER BY value</div>

@@ -6,9 +6,9 @@ Load balancing is the process of distributing incoming network traffic across mu
 
 At its core, a load balancer sits between clients and servers, acting as a reverse proxy that decides which server should handle each incoming request. This simple concept enables some of the most critical capabilities in modern systems: high availability, horizontal scaling, and fault tolerance.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
     Load Balancer = Traffic Distribution + Health Monitoring + Session Management + Failover Automation
   </div>
 </div>

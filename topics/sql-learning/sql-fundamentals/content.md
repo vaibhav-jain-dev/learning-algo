@@ -643,10 +643,12 @@ WHERE EXTRACT(MONTH FROM created_at) = 1;  -- Bad: function prevents index use
 <div>
 <div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Hard</div>
 <ul style="margin: 0; padding-left: 20px; color: #1e293b; line-height: 2;">
-<li><strong>How do you find the second highest salary?</strong></li>
+<li><strong>How do you find the second highest salary?</strong><br/>
+<span style="color: #475569;">Use DISTINCT with LIMIT/OFFSET: <code>SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1</code>. Alternatively, use a subquery: <code>SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)</code>.</span></li>
 <li><strong>What happens with NOT IN when the subquery contains NULL?</strong><br/>
 <span style="color: #475569;">It returns no results. Use NOT EXISTS instead for safety.</span></li>
-<li><strong>How would you optimize a slow GROUP BY query?</strong></li>
+<li><strong>How would you optimize a slow GROUP BY query?</strong><br/>
+<span style="color: #475569;">Add indexes on GROUP BY columns. Filter rows with WHERE before grouping. Avoid SELECT * and only select needed columns. Consider using HAVING only when filtering on aggregates is required. Analyze the query plan with EXPLAIN ANALYZE.</span></li>
 </ul>
 </div>
 </div>

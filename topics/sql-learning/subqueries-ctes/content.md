@@ -294,8 +294,8 @@ WHERE NOT EXISTS (
 
 A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> references columns from the outer query, so it executes once per outer row. This is fundamentally different from non-correlated subqueries which execute only once.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">CORRELATED SUBQUERY EXECUTION MODEL</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">CORRELATED SUBQUERY EXECUTION MODEL</h4>
 <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #238636; color: #fff; padding: 12px 20px; border-radius: 8px; min-width: 180px; text-align: center; font-size: 13px; font-weight: bold;">Outer Query Row 1</div>
@@ -312,9 +312,9 @@ A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> refe
 <span style="color: #f0883e; font-size: 20px;">&#8594;</span>
 <div style="background: #1f6feb; color: #fff; padding: 12px 20px; border-radius: 8px; flex: 1; text-align: center; font-size: 12px;">Subquery executes with Row N context</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; margin-top: 12px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; margin-top: 12px; border: 2px solid #e2e8f0;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Performance Impact</div>
-<div style="color: #8b949e; font-size: 13px;">N outer rows = N subquery executions. For 10,000 rows, the subquery runs 10,000 times!</div>
+<div style="color: #64748b; font-size: 13px;">N outer rows = N subquery executions. For 10,000 rows, the subquery runs 10,000 times!</div>
 </div>
 </div>
 </div>
@@ -425,30 +425,30 @@ WHERE salary > dept_avg;
 
 Understanding the difference between <span style="color:#10b981; font-weight:bold;">EXISTS</span> and <span style="color:#10b981; font-weight:bold;">IN</span> is crucial for both performance optimization and correct handling of NULL values.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">EXISTS vs IN - EXECUTION BEHAVIOR</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">EXISTS vs IN - EXECUTION BEHAVIOR</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
 <div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">EXISTS</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #238636; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">For each outer row...</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #1f6feb; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Execute correlated subquery</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #f0883e; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">STOP at first match!</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #8957e5; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Return TRUE/FALSE</div>
 </div>
 </div>
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">IN</div>
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
+<div style="color: #1e40af; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">IN</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #238636; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Execute subquery once</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #1f6feb; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Build result set / hash table</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #f0883e; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Check each outer value</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #8957e5; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; text-align: center;">Return match result</div>
 </div>
 </div>
@@ -673,18 +673,18 @@ ORDER BY ms.month;
 
 <span style="color:#10b981; font-weight:bold;">Recursive CTEs</span> can reference themselves, enabling traversal of hierarchical or graph data structures. They consist of two parts: the <span style="color:#10b981; font-weight:bold;">anchor member</span> (base case) and the <span style="color:#10b981; font-weight:bold;">recursive member</span>.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">RECURSIVE CTE EXECUTION MODEL</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">RECURSIVE CTE EXECUTION MODEL</h4>
 <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #238636; color: #fff; padding: 16px 24px; border-radius: 8px; min-width: 160px; text-align: center;">
 <div style="font-weight: bold; font-size: 14px;">Anchor Member</div>
 <div style="font-size: 11px; opacity: 0.9;">Base case query</div>
 </div>
-<span style="color: #58a6ff; font-size: 20px;">&#8594;</span>
-<div style="background: #21262d; color: #c9d1d9; padding: 16px 20px; border-radius: 8px; flex: 1; text-align: center; border: 1px solid #30363d;">
+<span style="color: #1e40af; font-size: 20px;">&#8594;</span>
+<div style="background: #ffffff; color: #475569; padding: 16px 20px; border-radius: 8px; flex: 1; text-align: center; border: 2px solid #e2e8f0;">
 <div style="font-size: 13px;">Result Set R0</div>
-<div style="font-size: 11px; color: #8b949e;">Initial rows</div>
+<div style="font-size: 11px; color: #64748b;">Initial rows</div>
 </div>
 </div>
 <div style="text-align: center; color: #f0883e; font-size: 24px;">&#8595; UNION ALL</div>
@@ -693,10 +693,10 @@ ORDER BY ms.month;
 <div style="font-weight: bold; font-size: 14px;">Recursive Member</div>
 <div style="font-size: 11px; opacity: 0.9;">Joins with CTE itself</div>
 </div>
-<span style="color: #58a6ff; font-size: 20px;">&#8594;</span>
-<div style="background: #21262d; color: #c9d1d9; padding: 16px 20px; border-radius: 8px; flex: 1; text-align: center; border: 1px solid #30363d;">
+<span style="color: #1e40af; font-size: 20px;">&#8594;</span>
+<div style="background: #ffffff; color: #475569; padding: 16px 20px; border-radius: 8px; flex: 1; text-align: center; border: 2px solid #e2e8f0;">
 <div style="font-size: 13px;">Result Set R1, R2, R3...</div>
-<div style="font-size: 11px; color: #8b949e;">Until empty</div>
+<div style="font-size: 11px; color: #64748b;">Until empty</div>
 </div>
 </div>
 <div style="text-align: center; color: #f0883e; font-size: 24px;">&#8595; Terminates when Rn is empty</div>
@@ -890,34 +890,34 @@ SELECT * FROM bom;
 
 Understanding when to use <span style="color:#10b981; font-weight:bold;">CTEs</span> versus <span style="color:#10b981; font-weight:bold;">temporary tables</span> is an important architectural decision that affects performance, maintainability, and transaction behavior.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">CTE vs TEMP TABLE - LIFECYCLE COMPARISON</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">CTE vs TEMP TABLE - LIFECYCLE COMPARISON</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
 <div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">CTE Lifecycle</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #238636; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">Query starts</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #1f6feb; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">CTE defined & executed</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #8957e5; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">Main query uses CTE</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #f85149; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">Query ends = CTE gone</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; margin-top: 12px; text-align: center;">Scope: Single statement</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 12px; text-align: center;">Scope: Single statement</div>
 </div>
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
 <div style="color: #f0883e; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">Temp Table Lifecycle</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #238636; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">CREATE TEMP TABLE</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #1f6feb; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">INSERT data</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #8957e5; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">Multiple queries can use</div>
-<div style="text-align: center; color: #58a6ff;">&#8595;</div>
+<div style="text-align: center; color: #1e40af;">&#8595;</div>
 <div style="background: #f0883e; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center;">Session ends OR explicit DROP</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; margin-top: 12px; text-align: center;">Scope: Entire session</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 12px; text-align: center;">Scope: Entire session</div>
 </div>
 </div>
 </div>
@@ -1042,30 +1042,30 @@ SELECT * FROM customer_tier ORDER BY spending DESC;
 
 Understanding how the [[query optimizer]](/topic/sql-learning/query-optimization) handles subqueries and CTEs is crucial for writing performant SQL. Different approaches can yield dramatically different execution plans.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">OPTIMIZATION STRATEGIES BY DATABASE</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">OPTIMIZATION STRATEGIES BY DATABASE</h4>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
 <div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">PostgreSQL</div>
-<ul style="margin: 0; padding-left: 16px; color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<ul style="margin: 0; padding-left: 16px; color: #475569; font-size: 12px; line-height: 1.8;">
 <li>CTEs are optimization fences (< v12)</li>
 <li>v12+ can inline non-recursive CTEs</li>
 <li>Use MATERIALIZED/NOT MATERIALIZED</li>
 <li>Excellent recursive CTE support</li>
 </ul>
 </div>
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">MySQL</div>
-<ul style="margin: 0; padding-left: 16px; color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">MySQL</div>
+<ul style="margin: 0; padding-left: 16px; color: #475569; font-size: 12px; line-height: 1.8;">
 <li>CTEs materialized as temp tables (v8+)</li>
 <li>Recursive CTEs supported in v8+</li>
 <li>Derived tables often merged</li>
 <li>Subquery optimization varies</li>
 </ul>
 </div>
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
 <div style="color: #f0883e; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">SQL Server</div>
-<ul style="margin: 0; padding-left: 16px; color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<ul style="margin: 0; padding-left: 16px; color: #475569; font-size: 12px; line-height: 1.8;">
 <li>CTEs not materialized by default</li>
 <li>Can inline or spool as needed</li>
 <li>OPTION (MAXRECURSION) for limits</li>
@@ -1145,33 +1145,33 @@ FROM employees;
 
 ## 3-Level Deep Interview Q&A
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: CORRELATED SUBQUERIES</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: CORRELATED SUBQUERIES</h4>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0;">
 <div style="background: #238636; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L1 - Basic</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What is a correlated subquery?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
-<strong style="color: #7ee787;">A:</strong> A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> is a subquery that references columns from the outer query. Unlike a regular subquery that executes once, a correlated subquery executes once for each row processed by the outer query. For example: <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e2.department = e1.department)</code> - here <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">e1.department</code> references the outer query.
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
+<strong style="color: #7ee787;">A:</strong> A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> is a subquery that references columns from the outer query. Unlike a regular subquery that executes once, a correlated subquery executes once for each row processed by the outer query. For example: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e2.department = e1.department)</code> - here <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">e1.department</code> references the outer query.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d; margin-left: 24px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0; margin-left: 24px;">
 <div style="background: #f0883e; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L2 - Follow-up</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What are the performance implications? How would you optimize it?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Correlated subqueries have O(N) execution complexity - they run once per outer row. For 100K rows, that's 100K subquery executions. Optimization strategies:<br/><br/>
 <strong>1. Rewrite as JOIN:</strong> Pre-compute the aggregates and join back<br/>
-<strong>2. Use window functions:</strong> <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">AVG(salary) OVER (PARTITION BY department)</code> computes all averages in a single pass<br/>
+<strong>2. Use window functions:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">AVG(salary) OVER (PARTITION BY department)</code> computes all averages in a single pass<br/>
 <strong>3. Index optimization:</strong> Ensure the correlated column (e.g., department) is indexed in the inner table<br/>
 <strong>4. Use CTE with materialization:</strong> Pre-compute results once and join
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-left: 48px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0; margin-left: 48px;">
 <div style="background: #f85149; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L3 - Expert</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: Can modern query optimizers decorrelate subqueries? How does this work internally?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Yes, modern optimizers can perform <span style="color:#10b981; font-weight:bold;">subquery decorrelation</span> (also called "unnesting"). The optimizer transforms the correlated subquery into an equivalent JOIN-based query plan internally:<br/><br/>
 <strong>Process:</strong><br/>
 1. Optimizer identifies the correlation predicate<br/>
@@ -1179,42 +1179,42 @@ FROM employees;
 3. Converts to a LEFT JOIN (for scalar subqueries) or SEMI-JOIN (for EXISTS)<br/>
 4. Pushes predicates through the join<br/><br/>
 <strong>Example transformation:</strong><br/>
-<code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">WHERE x > (SELECT AGG FROM t WHERE t.k = outer.k)</code><br/>
+<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE x > (SELECT AGG FROM t WHERE t.k = outer.k)</code><br/>
 becomes<br/>
-<code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">LEFT JOIN (SELECT k, AGG FROM t GROUP BY k) ON t.k = outer.k WHERE x > AGG</code><br/><br/>
+<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">LEFT JOIN (SELECT k, AGG FROM t GROUP BY k) ON t.k = outer.k WHERE x > AGG</code><br/><br/>
 PostgreSQL's EXPLAIN shows this as "SubPlan" vs "Hash Join" - always verify with EXPLAIN ANALYZE.
 </div>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: EXISTS vs IN</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: EXISTS vs IN</h4>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0;">
 <div style="background: #238636; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L1 - Basic</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What is the difference between EXISTS and IN?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> <span style="color:#10b981; font-weight:bold;">IN</span> compares a value against a list of values from a subquery and returns TRUE if there's a match. <span style="color:#10b981; font-weight:bold;">EXISTS</span> returns TRUE if the subquery returns ANY rows, regardless of the actual values. EXISTS is always correlated and stops at the first match, while IN builds a complete list for comparison.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d; margin-left: 24px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0; margin-left: 24px;">
 <div style="background: #f0883e; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L2 - Follow-up</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: Why does NOT IN return no rows when the subquery contains NULL?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> This is due to SQL's <span style="color:#10b981; font-weight:bold;">three-valued logic</span> (TRUE, FALSE, UNKNOWN):<br/><br/>
-• <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">x NOT IN (1, 2, NULL)</code> expands to <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">x != 1 AND x != 2 AND x != NULL</code><br/>
-• <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">x != NULL</code> evaluates to UNKNOWN (not FALSE)<br/>
+• <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x NOT IN (1, 2, NULL)</code> expands to <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x != 1 AND x != 2 AND x != NULL</code><br/>
+• <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x != NULL</code> evaluates to UNKNOWN (not FALSE)<br/>
 • TRUE AND UNKNOWN = UNKNOWN<br/>
 • WHERE clause only returns rows where condition is TRUE, not UNKNOWN<br/><br/>
 This is why NOT EXISTS is safer - it only checks for row existence, not value comparison with NULLs.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-left: 48px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0; margin-left: 48px;">
 <div style="background: #f85149; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L3 - Expert</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do modern optimizers handle IN vs EXISTS differently? When might IN outperform EXISTS?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Modern optimizers often transform both to the same execution plan (<span style="color:#10b981; font-weight:bold;">semi-join</span>), but there are scenarios where they differ:<br/><br/>
 <strong>IN may be faster when:</strong><br/>
 • Subquery returns few distinct values that can be hashed<br/>
@@ -1229,34 +1229,34 @@ This is why NOT EXISTS is safer - it only checks for row existence, not value co
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: RECURSIVE CTEs</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: RECURSIVE CTEs</h4>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0;">
 <div style="background: #238636; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L1 - Basic</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What is a recursive CTE and when would you use one?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> A <span style="color:#10b981; font-weight:bold;">recursive CTE</span> is a CTE that references itself, enabling traversal of hierarchical or graph data. It has two parts: an anchor member (base case) and a recursive member joined with UNION ALL. Use cases include: organization hierarchies, bill of materials, tree traversal, path finding, and generating series.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d; margin-left: 24px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0; margin-left: 24px;">
 <div style="background: #f0883e; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L2 - Follow-up</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do you prevent infinite loops in recursive CTEs?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Multiple strategies:<br/><br/>
-<strong>1. Depth limiting:</strong> Add a level counter and filter: <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">WHERE level < 100</code><br/><br/>
-<strong>2. Path tracking:</strong> Store visited nodes in an array, check before recursing: <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">WHERE NOT id = ANY(visited_array)</code><br/><br/>
-<strong>3. PostgreSQL 14+ CYCLE clause:</strong> <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">CYCLE id SET is_cycle USING path</code><br/><br/>
-<strong>4. Database limits:</strong> SQL Server's <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">OPTION (MAXRECURSION 100)</code><br/><br/>
+<strong>1. Depth limiting:</strong> Add a level counter and filter: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE level < 100</code><br/><br/>
+<strong>2. Path tracking:</strong> Store visited nodes in an array, check before recursing: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE NOT id = ANY(visited_array)</code><br/><br/>
+<strong>3. PostgreSQL 14+ CYCLE clause:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">CYCLE id SET is_cycle USING path</code><br/><br/>
+<strong>4. Database limits:</strong> SQL Server's <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">OPTION (MAXRECURSION 100)</code><br/><br/>
 Best practice: always include a termination condition in the WHERE clause of the recursive member.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-left: 48px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0; margin-left: 48px;">
 <div style="background: #f85149; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L3 - Expert</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: Explain the execution model of recursive CTEs. What's the difference between linear and tree recursion?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> <span style="color:#10b981; font-weight:bold;">Execution model:</span><br/>
 1. Execute anchor member → Result set R0 (working table)<br/>
 2. Execute recursive member using R0 → R1<br/>
@@ -1272,21 +1272,21 @@ Best practice: always include a termination condition in the WHERE clause of the
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: CTE vs TEMP TABLES</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: CTE vs TEMP TABLES</h4>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0;">
 <div style="background: #238636; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L1 - Basic</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What are the differences between CTEs and temporary tables?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> <span style="color:#10b981; font-weight:bold;">CTEs</span> exist only for the duration of a single query and cannot be indexed. <span style="color:#10b981; font-weight:bold;">Temporary tables</span> persist for the session, can have indexes and constraints, and can be modified with INSERT/UPDATE/DELETE. CTEs support recursion; temp tables don't. CTEs are part of the query's transaction; temp tables may survive rollbacks.
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d; margin-left: 24px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0; margin-left: 24px;">
 <div style="background: #f0883e; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L2 - Follow-up</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: When would you choose a temp table over a CTE for performance?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Choose temp table when:<br/><br/>
 <strong>1. Complex intermediate results:</strong> Computing once and reusing across multiple queries is cheaper than recomputing<br/>
 <strong>2. Index needed:</strong> If you'll do multiple lookups on the result, indexing the temp table speeds things up<br/>
@@ -1296,29 +1296,29 @@ Best practice: always include a termination condition in the WHERE clause of the
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-left: 48px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0; margin-left: 48px;">
 <div style="background: #f85149; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L3 - Expert</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do CTE optimization fences affect query planning? How did PostgreSQL 12 change this?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Before PostgreSQL 12, CTEs were <span style="color:#10b981; font-weight:bold;">optimization fences</span> - the optimizer couldn't push predicates into the CTE or inline it. This meant:<br/><br/>
-• <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">WITH big_cte AS (SELECT * FROM million_rows) SELECT * FROM big_cte WHERE id = 1</code> would materialize ALL million rows before filtering<br/><br/>
+• <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WITH big_cte AS (SELECT * FROM million_rows) SELECT * FROM big_cte WHERE id = 1</code> would materialize ALL million rows before filtering<br/><br/>
 <strong>PostgreSQL 12+ changes:</strong><br/>
 • Non-recursive CTEs referenced once can be inlined (predicate pushdown works)<br/>
 • CTEs referenced multiple times or with side effects are still materialized<br/>
-• <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">MATERIALIZED</code> forces old behavior (optimization fence)<br/>
-• <code style="background: #161b22; padding: 2px 6px; border-radius: 4px;">NOT MATERIALIZED</code> forces inlining even if referenced multiple times<br/><br/>
+• <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">MATERIALIZED</code> forces old behavior (optimization fence)<br/>
+• <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">NOT MATERIALIZED</code> forces inlining even if referenced multiple times<br/><br/>
 <strong>Practical impact:</strong> In older PostgreSQL, use derived tables (inline subqueries) when you want predicate pushdown. In v12+, CTEs are usually as efficient as derived tables.
 </div>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: QUERY OPTIMIZATION</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">INTERVIEW DEEP DIVE: QUERY OPTIMIZATION</h4>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0;">
 <div style="background: #238636; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L1 - Basic</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do you optimize a slow subquery?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Key optimization strategies:<br/>
 1. Use EXPLAIN ANALYZE to understand current execution<br/>
 2. Add indexes on columns used in subquery WHERE clauses<br/>
@@ -1329,10 +1329,10 @@ Best practice: always include a termination condition in the WHERE clause of the
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #30363d; margin-left: 24px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 2px solid #e2e8f0; margin-left: 24px;">
 <div style="background: #f0883e; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L2 - Follow-up</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: What patterns in EXPLAIN output indicate subquery problems?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Red flags to watch for:<br/><br/>
 <strong>1. "SubPlan" with high loops:</strong> Indicates correlated subquery executing many times<br/>
 <strong>2. Nested Loop with large actual rows:</strong> O(N*M) complexity warning<br/>
@@ -1343,13 +1343,13 @@ Best practice: always include a termination condition in the WHERE clause of the
 </div>
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; border: 1px solid #30363d; margin-left: 48px;">
+<div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0; margin-left: 48px;">
 <div style="background: #f85149; color: #fff; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; margin-bottom: 12px;">L3 - Expert</div>
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do you handle a query with multiple subqueries that can't all be optimized with indexes?</div>
-<div style="color: #8b949e; font-size: 14px; line-height: 1.7;">
+<div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Advanced strategies for complex multi-subquery optimization:<br/><br/>
 <strong>1. Query rewriting:</strong> Combine multiple correlated subqueries into a single pass using window functions:<br/>
-<code style="background: #161b22; padding: 2px 6px; border-radius: 4px; display: block; margin: 8px 0;">SELECT name, salary,
+<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; display: block; margin: 8px 0;">SELECT name, salary,
   AVG(salary) OVER (PARTITION BY dept),
   MAX(salary) OVER (PARTITION BY dept),
   RANK() OVER (PARTITION BY dept ORDER BY salary)

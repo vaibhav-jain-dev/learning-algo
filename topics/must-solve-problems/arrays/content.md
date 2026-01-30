@@ -403,27 +403,46 @@ print(first_duplicate_value(array))  # 2
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Spiral Traversal Pattern</h4>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Matrix:
-    ┌──→──→──→──┐
-    ↑  1  2  3  4  ↓
-    ↑ 12 13 14  5  ↓
-    ↑ 11 16 15  6  ↓
-    └──←──←──←──┘
-       10  9  8  7
-
-Order: 1→2→3→4→5→6→7→8→9→10→11→12→13→14→15→16
-
-Boundaries:
-- top (row), bottom (row)
-- left (col), right (col)
-
-After each direction:
-- Right traversal: top++
-- Down traversal: right--
-- Left traversal: bottom--
-- Up traversal: left++
-</pre>
+<div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<p style="color: #1e293b; font-weight: 600; margin: 0 0 12px 0;">Matrix with Spiral Direction:</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 16px;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="display: flex; align-items: center; margin-bottom: 4px;">
+<span style="color: #3b82f6; font-size: 14px; margin-right: 4px;">START</span>
+<span style="color: #3b82f6;">&#8594;&#8594;&#8594;</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, 40px); gap: 2px;">
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">1</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">2</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">3</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">4</div>
+<div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">12</div>
+<div style="background: #fefce8; border: 1px solid #eab308; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">13</div>
+<div style="background: #fefce8; border: 1px solid #eab308; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">14</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">5</div>
+<div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">11</div>
+<div style="background: #fefce8; border: 1px solid #eab308; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">16</div>
+<div style="background: #fefce8; border: 1px solid #eab308; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">15</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">6</div>
+<div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">10</div>
+<div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">9</div>
+<div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">8</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 8px; text-align: center; color: #1e293b; font-weight: 500;">7</div>
+</div>
+<div style="display: flex; align-items: center; margin-top: 4px;">
+<span style="color: #22c55e;">&#8592;&#8592;&#8592;</span>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; justify-content: center;">
+<div style="display: flex; align-items: center; gap: 4px;"><span style="display: inline-block; width: 16px; height: 16px; background: #eff6ff; border: 1px solid #3b82f6;"></span><span style="color: #1e293b; font-size: 13px;">Outer spiral</span></div>
+<div style="display: flex; align-items: center; gap: 4px;"><span style="display: inline-block; width: 16px; height: 16px; background: #f0fdf4; border: 1px solid #22c55e;"></span><span style="color: #1e293b; font-size: 13px;">Left/Bottom</span></div>
+<div style="display: flex; align-items: center; gap: 4px;"><span style="display: inline-block; width: 16px; height: 16px; background: #fefce8; border: 1px solid #eab308;"></span><span style="color: #1e293b; font-size: 13px;">Inner spiral</span></div>
+</div>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Order:</strong> 1 &#8594; 2 &#8594; 3 &#8594; 4 &#8594; 5 &#8594; 6 &#8594; 7 &#8594; 8 &#8594; 9 &#8594; 10 &#8594; 11 &#8594; 12 &#8594; 13 &#8594; 14 &#8594; 15 &#8594; 16</p>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Boundaries:</strong> top (row), bottom (row), left (col), right (col)</p>
+<p style="color: #1e293b; margin: 0;"><strong>After each direction:</strong> Right: top++ | Down: right-- | Left: bottom-- | Up: left++</p>
+</div>
 </div>
 
 ```python

@@ -4,12 +4,12 @@
 
 Database indexing is the <span style="color: #22c55e; font-weight: 600;">single most important optimization technique</span> for query performance. An index is a separate data structure that maintains a sorted reference to rows in a table, enabling the database to locate data without scanning every row. Understanding index internals—B-tree structure, selectivity, covering indexes, and query planner behavior—is essential for designing performant database schemas.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Performance Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 15px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
-    Query Time = (Disk I/O × Pages Read) + (CPU × Rows Processed) + (Network × Result Size)
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Core Performance Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 15px; background: #ffffff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #e2e8f0;">
+    Query Time = (Disk I/O x Pages Read) + (CPU x Rows Processed) + (Network x Result Size)
   </div>
-  <p style="color: #94a3b8; margin: 16px 0 0 0; font-size: 14px; text-align: center;">Indexes minimize disk I/O by reducing pages read from O(n) to O(log n)</p>
+  <p style="color: #475569; margin: 16px 0 0 0; font-size: 14px; text-align: center;">Indexes minimize disk I/O by reducing pages read from O(n) to O(log n)</p>
 </div>
 
 **Critical Assumption**: Indexes assume that <span style="color: #22c55e; font-weight: 600;">selective queries</span> (returning small percentage of rows) are the common case. For queries returning most rows, a full table scan is often faster than index lookups.
@@ -608,11 +608,11 @@ CREATE INDEX idx_orders_all ON orders(status, order_number, amount, created_at);
 
 <span style="color: #22c55e; font-weight: 600;">Index selectivity</span> measures how effectively an index filters rows. It's calculated as the ratio of distinct values to total rows: `selectivity = cardinality / total_rows`. A selectivity of 1.0 means every value is unique (perfect for indexing); near 0 means many duplicates (poor for indexing).
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Selectivity Formula</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Selectivity Formula</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #ffffff; padding: 20px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #e2e8f0;">
     Selectivity = COUNT(DISTINCT column) / COUNT(*)<br><br>
-    <span style="font-size: 14px; color: #94a3b8;">Higher selectivity = Better index candidate</span>
+    <span style="font-size: 14px; color: #475569;">Higher selectivity = Better index candidate</span>
   </div>
 </div>
 
@@ -786,22 +786,22 @@ WHERE u.created_at > '2024-01-01'
 GROUP BY u.id, u.name;
 ```
 
-  <div style="background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; margin-top: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; overflow-x: auto;">
-    <div><span style="color: #f59e0b;">HashAggregate</span> (cost=1234.56..1240.00 rows=100 width=40) <span style="color: #22c55e;">(actual time=15.2..15.8 rows=95 loops=1)</span></div>
+  <div style="background: #f8fafc; color: #1e293b; padding: 20px; border-radius: 8px; margin-top: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; overflow-x: auto; border: 1px solid #e2e8f0;">
+    <div><span style="color: #b45309;">HashAggregate</span> (cost=1234.56..1240.00 rows=100 width=40) <span style="color: #047857;">(actual time=15.2..15.8 rows=95 loops=1)</span></div>
     <div style="padding-left: 20px;">Group Key: u.id, u.name</div>
-    <div style="padding-left: 20px; color: #94a3b8;">Buffers: shared hit=45 read=12</div>
-    <div style="padding-left: 20px;">-> <span style="color: #3b82f6;">Hash Left Join</span> (cost=200.00..1200.00 rows=5000 width=32) <span style="color: #22c55e;">(actual time=2.1..12.5 rows=4850 loops=1)</span></div>
+    <div style="padding-left: 20px; color: #64748b;">Buffers: shared hit=45 read=12</div>
+    <div style="padding-left: 20px;">-> <span style="color: #1e40af;">Hash Left Join</span> (cost=200.00..1200.00 rows=5000 width=32) <span style="color: #047857;">(actual time=2.1..12.5 rows=4850 loops=1)</span></div>
     <div style="padding-left: 40px;">Hash Cond: (u.id = o.user_id)</div>
-    <div style="padding-left: 40px; color: #94a3b8;">Buffers: shared hit=40 read=10</div>
-    <div style="padding-left: 40px;">-> <span style="color: #8b5cf6;">Index Scan</span> using idx_users_created on users u (cost=0.42..50.00 rows=100 width=24) <span style="color: #22c55e;">(actual time=0.02..0.5 rows=95 loops=1)</span></div>
+    <div style="padding-left: 40px; color: #64748b;">Buffers: shared hit=40 read=10</div>
+    <div style="padding-left: 40px;">-> <span style="color: #6d28d9;">Index Scan</span> using idx_users_created on users u (cost=0.42..50.00 rows=100 width=24) <span style="color: #047857;">(actual time=0.02..0.5 rows=95 loops=1)</span></div>
     <div style="padding-left: 60px;">Index Cond: (created_at > '2024-01-01')</div>
-    <div style="padding-left: 60px; color: #94a3b8;">Buffers: shared hit=5</div>
-    <div style="padding-left: 40px;">-> <span style="color: #10b981;">Hash</span> (cost=150.00..150.00 rows=5000 width=12) <span style="color: #22c55e;">(actual time=1.8..1.8 rows=4850 loops=1)</span></div>
+    <div style="padding-left: 60px; color: #64748b;">Buffers: shared hit=5</div>
+    <div style="padding-left: 40px;">-> <span style="color: #047857;">Hash</span> (cost=150.00..150.00 rows=5000 width=12) <span style="color: #047857;">(actual time=1.8..1.8 rows=4850 loops=1)</span></div>
     <div style="padding-left: 60px;">Buckets: 8192 Batches: 1 Memory Usage: 250kB</div>
-    <div style="padding-left: 60px;">-> <span style="color: #ef4444;">Seq Scan</span> on orders o (cost=0.00..150.00 rows=5000 width=12) <span style="color: #22c55e;">(actual time=0.01..1.2 rows=4850 loops=1)</span></div>
-    <div style="padding-left: 80px; color: #94a3b8;">Buffers: shared hit=35 read=10</div>
-    <div style="margin-top: 8px; color: #94a3b8;">Planning Time: 0.25 ms</div>
-    <div style="color: #22c55e;">Execution Time: 16.1 ms</div>
+    <div style="padding-left: 60px;">-> <span style="color: #dc2626;">Seq Scan</span> on orders o (cost=0.00..150.00 rows=5000 width=12) <span style="color: #047857;">(actual time=0.01..1.2 rows=4850 loops=1)</span></div>
+    <div style="padding-left: 80px; color: #64748b;">Buffers: shared hit=35 read=10</div>
+    <div style="margin-top: 8px; color: #64748b;">Planning Time: 0.25 ms</div>
+    <div style="color: #047857;">Execution Time: 16.1 ms</div>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px;">
@@ -889,11 +889,11 @@ GROUP BY u.id, u.name;
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
       <thead>
-        <tr style="background: #1e293b; color: white;">
-          <th style="padding: 12px; text-align: left; border: 1px solid #334155;">Index Type</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #334155;">Best For</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #334155;">Operations</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #334155;">Example</th>
+        <tr style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white;">
+          <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Index Type</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Best For</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Operations</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Example</th>
         </tr>
       </thead>
       <tbody>
@@ -1023,13 +1023,13 @@ ALTER INDEX idx_users_email_new RENAME TO idx_users_email;
 
 ## Best Practices Summary
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px; text-align: center;">Index Design Checklist</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px; text-align: center;">Index Design Checklist</h4>
 
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 24px;">
-    <div>
-      <h5 style="color: #22c55e; margin-bottom: 16px;">DO</h5>
-      <ul style="color: #e2e8f0; margin: 0; padding-left: 20px; line-height: 2;">
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px;">
+    <div style="flex: 1; min-width: 280px; background: #ffffff; padding: 20px; border-radius: 12px; border-left: 4px solid #22c55e;">
+      <h5 style="color: #166534; margin-bottom: 16px; margin-top: 0;">DO</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; line-height: 2;">
         <li>Index columns in WHERE, JOIN, ORDER BY</li>
         <li>Put equality columns before range columns</li>
         <li>Put high-selectivity columns first</li>
@@ -1040,9 +1040,9 @@ ALTER INDEX idx_users_email_new RENAME TO idx_users_email;
         <li>Test with EXPLAIN ANALYZE</li>
       </ul>
     </div>
-    <div>
-      <h5 style="color: #ef4444; margin-bottom: 16px;">AVOID</h5>
-      <ul style="color: #e2e8f0; margin: 0; padding-left: 20px; line-height: 2;">
+    <div style="flex: 1; min-width: 280px; background: #ffffff; padding: 20px; border-radius: 12px; border-left: 4px solid #ef4444;">
+      <h5 style="color: #991b1b; margin-bottom: 16px; margin-top: 0;">AVOID</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; line-height: 2;">
         <li>Indexing low-selectivity columns alone</li>
         <li>Too many indexes on write-heavy tables</li>
         <li>Functions on indexed columns in WHERE</li>

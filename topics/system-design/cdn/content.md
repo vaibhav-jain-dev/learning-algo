@@ -4,48 +4,48 @@
 
 A Content Delivery Network is a globally distributed network of proxy servers that caches content at edge locations to minimize the distance between users and the content they request. Beyond simple caching, modern CDNs perform TLS termination, DDoS mitigation, edge computing, request routing, and real-time content optimization.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <h3 style="color: #f8fafc; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CDN ARCHITECTURE DEEP DIVE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CDN ARCHITECTURE DEEP DIVE</h3>
   <div style="display: flex; flex-direction: column; gap: 20px;">
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); padding: 16px 32px; border-radius: 12px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 700;">Origin Server</div>
-        <div style="color: #e9d5ff; font-size: 12px;">Source of truth</div>
+      <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #7c3aed;">
+        <div style="color: #5b21b6; font-weight: 700;">Origin Server</div>
+        <div style="color: #7c3aed; font-size: 12px;">Source of truth</div>
       </div>
     </div>
     <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #64748b;"></div>
+      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
     </div>
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); padding: 16px 32px; border-radius: 12px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 700;">Origin Shield</div>
-        <div style="color: #cffafe; font-size: 12px;">Mid-tier cache aggregator</div>
+      <div style="background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #06b6d4;">
+        <div style="color: #0e7490; font-weight: 700;">Origin Shield</div>
+        <div style="color: #0891b2; font-size: 12px;">Mid-tier cache aggregator</div>
       </div>
     </div>
     <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #64748b;"></div>
+      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
     </div>
     <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 14px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #d1fae5; font-size: 11px;">Americas</div>
+      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+        <div style="color: #15803d; font-size: 11px;">Americas</div>
       </div>
-      <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 14px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #d1fae5; font-size: 11px;">EMEA</div>
+      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+        <div style="color: #15803d; font-size: 11px;">EMEA</div>
       </div>
-      <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 14px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #d1fae5; font-size: 11px;">APAC</div>
+      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+        <div style="color: #15803d; font-size: 11px;">APAC</div>
       </div>
     </div>
     <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #64748b;"></div>
+      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
     </div>
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); padding: 14px 48px; border-radius: 10px; text-align: center;">
-        <div style="color: #ffffff; font-weight: 600;">End Users</div>
-        <div style="color: #bfdbfe; font-size: 11px;">Connected via Anycast DNS</div>
+      <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 14px 48px; border-radius: 10px; text-align: center; border: 2px solid #3b82f6;">
+        <div style="color: #1e40af; font-weight: 600;">End Users</div>
+        <div style="color: #2563eb; font-size: 11px;">Connected via Anycast DNS</div>
       </div>
     </div>
   </div>

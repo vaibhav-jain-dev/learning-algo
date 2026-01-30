@@ -4,7 +4,7 @@
 
 Design a personalized news feed system that aggregates, ranks, and delivers relevant content from a user's social connections in near real-time at massive scale.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #1877f2;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #1877f2;">
 
 ### Core Requirements
 
@@ -18,7 +18,7 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 </div>
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #1a1a2e 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 ### Critical Assumptions
 
@@ -48,14 +48,14 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Feed System Component Flow
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
 
-<div style="background: linear-gradient(135deg, #1f6feb22 0%, #1f6feb11 100%); border: 1px solid #1f6feb; border-radius: 12px; padding: 20px;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Layer 1: Ingestion Layer</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Layer 1: Ingestion Layer</h4>
 
 **Components**: API Gateway, Post Service, Event Bus
 
@@ -67,8 +67,8 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 **Key Metrics**: Write latency p99 < 500ms, durability 99.999%
 </div>
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 20px;">
-<h4 style="color: #7ee787; margin: 0 0 16px 0;">Layer 2: Fan-out Layer</h4>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 20px;">
+<h4 style="color: #15803d; margin: 0 0 16px 0;">Layer 2: Fan-out Layer</h4>
 
 **Components**: Fan-out Service, Social Graph Service, User Segmentation
 
@@ -80,8 +80,8 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 **Key Metrics**: Fan-out completion < 5s for 99% of posts
 </div>
 
-<div style="background: linear-gradient(135deg, #8957e522 0%, #8957e511 100%); border: 1px solid #8957e5; border-radius: 12px; padding: 20px;">
-<h4 style="color: #a371f7; margin: 0 0 16px 0;">Layer 3: Aggregation Layer</h4>
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 20px;">
+<h4 style="color: #6d28d9; margin: 0 0 16px 0;">Layer 3: Aggregation Layer</h4>
 
 **Components**: Feed Aggregator, Content Sources, Merge Service
 
@@ -93,8 +93,8 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 **Key Metrics**: Aggregation latency < 50ms
 </div>
 
-<div style="background: linear-gradient(135deg, #f0883e22 0%, #f0883e11 100%); border: 1px solid #f0883e; border-radius: 12px; padding: 20px;">
-<h4 style="color: #f0883e; margin: 0 0 16px 0;">Layer 4: Ranking Layer</h4>
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 20px;">
+<h4 style="color: #c2410c; margin: 0 0 16px 0;">Layer 4: Ranking Layer</h4>
 
 **Components**: Feature Store, ML Inference, Ranking Models
 
@@ -106,8 +106,8 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 **Key Metrics**: Ranking latency < 100ms, model freshness < 1 hour
 </div>
 
-<div style="background: linear-gradient(135deg, #f8514922 0%, #f8514911 100%); border: 1px solid #f85149; border-radius: 12px; padding: 20px;">
-<h4 style="color: #f85149; margin: 0 0 16px 0;">Layer 5: Serving Layer</h4>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1px solid #ef4444; border-radius: 12px; padding: 20px;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Layer 5: Serving Layer</h4>
 
 **Components**: Feed Cache, CDN, Real-time Updates
 
@@ -126,11 +126,11 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 ## Fan-out Strategies: The Core Design Decision
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Fan-out-on-Write (Push Model)
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: When a user posts, immediately write the post ID to every follower's pre-computed feed list.
 
@@ -197,7 +197,7 @@ class FanOutOnWriteService:
 
 ### Fan-out-on-Read (Pull Model)
 
-<div style="background: linear-gradient(135deg, #1f6feb22 0%, #1f6feb11 100%); border: 1px solid #1f6feb; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: When a user requests their feed, dynamically fetch posts from all accounts they follow and merge/rank on the fly.
 
@@ -274,7 +274,7 @@ class FanOutOnReadService:
 
 ### Hybrid Model (Facebook/Twitter Approach)
 
-<div style="background: linear-gradient(135deg, #8957e522 0%, #8957e511 100%); border: 1px solid #8957e5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: Use push for normal users, pull for celebrities. The threshold is tunable based on write capacity.
 
@@ -408,11 +408,11 @@ def calculate_optimal_threshold(
 
 ## Ranking Algorithms
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Evolution of Feed Ranking
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Phase 1: Chronological (Pre-2009)**
 - Simply sort by timestamp
@@ -433,7 +433,7 @@ def calculate_optimal_threshold(
 
 ### EdgeRank: The Foundation
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class EdgeRankScorer:
@@ -540,7 +540,7 @@ class EdgeRankScorer:
 
 ### Modern ML-Based Ranking
 
-<div style="background: linear-gradient(135deg, #1f6feb22 0%, #1f6feb11 100%); border: 1px solid #1f6feb; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class MLRankingPipeline:
@@ -779,11 +779,11 @@ class MultiObjectiveRanker:
 
 ## Caching Strategies
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Multi-Layer Cache Architecture
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Cache Hierarchy** (See [[caching]](/topics/system-design/caching) for fundamentals):
 
@@ -798,7 +798,7 @@ class MultiObjectiveRanker:
 
 ### Feed Cache Implementation
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class FeedCacheService:
@@ -953,7 +953,7 @@ class FeedCacheService:
 
 ### Cache Stampede Prevention
 
-<div style="background: linear-gradient(135deg, #f0883e22 0%, #f0883e11 100%); border: 1px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class StampedePreventionCache:
@@ -1077,7 +1077,7 @@ class StampedePreventionCache:
 
 ### TAO: Facebook's Graph-Aware Cache
 
-<div style="background: linear-gradient(135deg, #8957e522 0%, #8957e511 100%); border: 1px solid #8957e5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class TAOCache:
@@ -1290,11 +1290,11 @@ class TAOCache:
 
 ## Social Graph Traversal
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Graph Storage Patterns
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Storage Options** (See [[graph-databases]](/topics/databases/graph-databases) for more):
 
@@ -1309,7 +1309,7 @@ class TAOCache:
 
 ### Efficient Friend-of-Friend Queries
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class SocialGraphService:
@@ -1461,7 +1461,7 @@ class SocialGraphService:
 
 ### Graph Partitioning for Scale
 
-<div style="background: linear-gradient(135deg, #f0883e22 0%, #f0883e11 100%); border: 1px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class GraphPartitioningStrategy:
@@ -1548,11 +1548,11 @@ class GraphPartitioningStrategy:
 
 ## Interview Deep Dive: 3-Level Recursive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 ### Section 1: Fan-out Strategy Questions
 
-<div style="background: linear-gradient(135deg, #23863622 0%, #23863611 100%); border: 1px solid #238636; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 #### Level 1: "Explain the difference between fan-out-on-write and fan-out-on-read."
 
@@ -1604,7 +1604,7 @@ In practice, celebrity posts are so frequently accessed that cache misses are ra
 
 ### Section 2: Ranking Algorithm Questions
 
-<div style="background: linear-gradient(135deg, #1f6feb22 0%, #1f6feb11 100%); border: 1px solid #1f6feb; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 #### Level 1: "How would you rank posts in a news feed?"
 
@@ -1667,7 +1667,7 @@ There's a freshness trade-off: streaming updates have seconds of delay, batch up
 
 ### Section 3: Caching Strategy Questions
 
-<div style="background: linear-gradient(135deg, #8957e522 0%, #8957e511 100%); border: 1px solid #8957e5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 #### Level 1: "How would you cache the news feed?"
 
@@ -1727,7 +1727,7 @@ The real scaling secret is that most data is cold. 99.8% cache hit rate means we
 
 ### Section 4: Social Graph Questions
 
-<div style="background: linear-gradient(135deg, #f0883e22 0%, #f0883e11 100%); border: 1px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 #### Level 1: "How would you store the social graph for a Facebook-like application?"
 
@@ -1798,7 +1798,7 @@ The practical answer is: use user-based sharding with bidirectional edges, hide 
 
 ## Cross-Referenced Concepts
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Related System Design Topics
 
@@ -1828,7 +1828,7 @@ The practical answer is: use user-based sharding with bidirectional edges, hide 
 
 ## Design Decision Summary
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #1a1a2e 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #a371f7;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7c3aed;">
 
 ### When to Use Each Pattern
 

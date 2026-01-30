@@ -10,7 +10,7 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 ### 1. Priority Queue Internals
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Why Priority Queues are Fundamental to Scheduling**
 
@@ -27,46 +27,46 @@ The min-heap maintains the **heap invariant**: every parent node has a smaller (
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Heap Operations Visualized</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Heap Operations Visualized</h4>
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Insert (Push)</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Insert (Push)</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
 1. Add element at end<br>
-2. <span style="color: #ffa657;">Bubble-up</span>: swap with parent while smaller<br>
+2. <span style="color: #ea580c;">Bubble-up</span>: swap with parent while smaller<br>
 3. Stop when heap invariant restored
 </div>
-<div style="color: #8b949e; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Extract-Min (Pop)</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #ef4444;">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Extract-Min (Pop)</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
 1. Remove root (min element)<br>
 2. Move last element to root<br>
-3. <span style="color: #ffa657;">Bubble-down</span>: swap with smaller child
+3. <span style="color: #ea580c;">Bubble-down</span>: swap with smaller child
 </div>
-<div style="color: #8b949e; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Peek</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+<div style="background: #f5f3ff; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #8b5cf6;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Peek</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
 1. Return root element<br>
 2. No modification needed<br>
 3. Heap unchanged
 </div>
-<div style="color: #8b949e; font-size: 10px; margin-top: 8px;">Time: O(1)</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(1)</div>
 </div>
 
 </div>
 
-<div style="background: #161b22; padding: 16px; border-radius: 8px; margin-top: 16px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Critical Insight: Decrease-Key Problem</div>
-<div style="color: #c9d1d9; font-size: 11px;">
+<div style="background: #fff7ed; padding: 16px; border-radius: 8px; margin-top: 16px; border-left: 3px solid #f97316;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Critical Insight: Decrease-Key Problem</div>
+<div style="color: #1e293b; font-size: 11px;">
 Standard binary heaps lack efficient decrease-key (needed for task rescheduling). Solutions:
 <ul style="margin: 8px 0 0 16px; padding: 0;">
 <li><strong>Lazy deletion</strong>: Mark old entry invalid, insert new one. O(1) update but O(n) space waste</li>
@@ -77,7 +77,7 @@ Standard binary heaps lack efficient decrease-key (needed for task rescheduling)
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
 **Assumption**: Tasks arrive independently and uniformly over time.
 
@@ -98,12 +98,12 @@ Standard binary heaps lack efficient decrease-key (needed for task rescheduling)
 
 #### Interview Questions: Priority Queue
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Level 1**: Why use a min-heap instead of a sorted array for task scheduling?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Sorted arrays have O(n) insertion (shifting elements) but O(1) removal of minimum. Min-heaps have O(log n) for both. Since schedulers frequently insert new tasks, the heap's balanced performance wins. With 10,000 tasks, heap insertion takes ~13 comparisons vs 5,000 average shifts for sorted arrays.
 
@@ -112,7 +112,7 @@ Sorted arrays have O(n) insertion (shifting elements) but O(1) removal of minimu
 **Level 2**: How would you handle efficient task cancellation in a heap-based scheduler?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Three approaches:
 1. **Lazy deletion**: Mark task as cancelled, skip during extraction. Pros: O(1) cancel. Cons: Memory bloat, requires periodic cleanup.
@@ -126,7 +126,7 @@ Production systems typically use lazy deletion with periodic compaction when can
 **Level 3**: Design a priority queue that supports O(1) insertion for tasks scheduled within the next hour, while maintaining correctness for all tasks.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Use a **Hierarchical Timing Wheel** combined with a heap:
 
@@ -146,7 +146,7 @@ The wheel "ticks" every minute, promoting slot tasks to execution queue. Heap on
 
 ### 2. Cron Expression Parsing
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **The Cron Expression Format**
 
@@ -154,15 +154,33 @@ Standard cron: `minute hour day-of-month month day-of-week`
 
 Extended (6-field): `second minute hour day-of-month month day-of-week`
 
-```
- ┌───────────── minute (0-59)
- │ ┌───────────── hour (0-23)
- │ │ ┌───────────── day of month (1-31)
- │ │ │ ┌───────────── month (1-12)
- │ │ │ │ ┌───────────── day of week (0-6, Sunday=0)
- │ │ │ │ │
- * * * * *
-```
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; background: #eff6ff; padding: 16px; border-radius: 8px;">
+<div style="text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">minute</div>
+<div style="color: #64748b; font-size: 10px;">(0-59)</div>
+<div style="color: #3b82f6; font-size: 18px; font-family: monospace;">*</div>
+</div>
+<div style="text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">hour</div>
+<div style="color: #64748b; font-size: 10px;">(0-23)</div>
+<div style="color: #3b82f6; font-size: 18px; font-family: monospace;">*</div>
+</div>
+<div style="text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">day of month</div>
+<div style="color: #64748b; font-size: 10px;">(1-31)</div>
+<div style="color: #3b82f6; font-size: 18px; font-family: monospace;">*</div>
+</div>
+<div style="text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">month</div>
+<div style="color: #64748b; font-size: 10px;">(1-12)</div>
+<div style="color: #3b82f6; font-size: 18px; font-family: monospace;">*</div>
+</div>
+<div style="text-align: center; min-width: 100px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">day of week</div>
+<div style="color: #64748b; font-size: 10px;">(0-6, Sun=0)</div>
+<div style="color: #3b82f6; font-size: 18px; font-family: monospace;">*</div>
+</div>
+</div>
 
 **Special Characters**:
 - `*` - Any value
@@ -175,44 +193,44 @@ Extended (6-field): `second minute hour day-of-month month day-of-week`
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Cron Parser State Machine</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Cron Parser State Machine</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
 
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">TOKENIZE</div>
-<div style="color: #d1f5d3; font-size: 9px;">Split by spaces</div>
+<div style="background: #f0fdf4; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px; border-left: 3px solid #22c55e;">
+<div style="color: #166534; font-weight: bold; font-size: 11px;">TOKENIZE</div>
+<div style="color: #1e293b; font-size: 9px;">Split by spaces</div>
 </div>
 
-<div style="color: #7ee787; font-size: 20px;">&#8594;</div>
+<div style="color: #22c55e; font-size: 20px;">&#8594;</div>
 
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">PARSE FIELD</div>
-<div style="color: #a5d6ff; font-size: 9px;">Handle *, ranges, steps</div>
+<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px; border-left: 3px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: bold; font-size: 11px;">PARSE FIELD</div>
+<div style="color: #1e293b; font-size: 9px;">Handle *, ranges, steps</div>
 </div>
 
-<div style="color: #58a6ff; font-size: 20px;">&#8594;</div>
+<div style="color: #3b82f6; font-size: 20px;">&#8594;</div>
 
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">EXPAND</div>
-<div style="color: #eddeff; font-size: 9px;">Generate value sets</div>
+<div style="background: #f5f3ff; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px; border-left: 3px solid #8b5cf6;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 11px;">EXPAND</div>
+<div style="color: #1e293b; font-size: 9px;">Generate value sets</div>
 </div>
 
-<div style="color: #a371f7; font-size: 20px;">&#8594;</div>
+<div style="color: #8b5cf6; font-size: 20px;">&#8594;</div>
 
-<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #fff; font-weight: bold; font-size: 11px;">VALIDATE</div>
-<div style="color: #fff; font-size: 9px;">Check bounds</div>
+<div style="background: #fff7ed; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px; border-left: 3px solid #f97316;">
+<div style="color: #c2410c; font-weight: bold; font-size: 11px;">VALIDATE</div>
+<div style="color: #1e293b; font-size: 9px;">Check bounds</div>
 </div>
 
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Example: Parsing "*/15 9-17 * * MON-FRI"</div>
-<div style="color: #c9d1d9; font-size: 11px; font-family: monospace; line-height: 1.8;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #f97316;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Example: Parsing "*/15 9-17 * * MON-FRI"</div>
+<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
 minute: */15 &#8594; {0, 15, 30, 45}<br>
 hour: 9-17 &#8594; {9, 10, 11, 12, 13, 14, 15, 16, 17}<br>
 day: * &#8594; {1, 2, ..., 31}<br>
@@ -224,7 +242,7 @@ dow: MON-FRI &#8594; {1, 2, 3, 4, 5}
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
 **Assumption**: Server timezone is consistent. Daylight saving time transitions are handled.
 
@@ -259,7 +277,7 @@ def next_execution(cron, from_time):
 
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
 **Edge Cases That Break Naive Implementations**
 
@@ -286,12 +304,12 @@ def next_execution(cron, from_time):
 
 #### Interview Questions: Cron Expressions
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1**: Parse the cron expression `0 */2 * * *` and explain when it fires.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 - minute: 0 (exactly on the hour)
 - hour: */2 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22} (every 2 hours)
@@ -304,7 +322,7 @@ Fires at: 00:00, 02:00, 04:00, 06:00, 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, 
 **Level 2**: How would you handle timezone-aware cron scheduling when users are in different timezones?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Store and compute in UTC internally, convert for user display:
 
@@ -325,7 +343,7 @@ Critical: Never store just UTC offset (-05:00). Store timezone name so DST rules
 **Level 3**: Design an efficient data structure to support querying "which tasks fire in the next N minutes" across 1 million cron-scheduled tasks.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **Problem**: Computing next-fire for 1M tasks on every query is too slow.
 
@@ -360,7 +378,7 @@ Airflow uses a similar approach with a "next_dagrun" precomputed column that's u
 
 ### 3. Distributed Scheduling
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 **The Distributed Scheduling Challenge**
 
@@ -373,56 +391,56 @@ This is a classic [[CAP theorem]](/system-design/cap-theorem) trade-off scenario
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Distributed Scheduling Architectures</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Distributed Scheduling Architectures</h4>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px;">Leader-Based (Active-Passive)</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px;">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 16px;">Leader-Based (Active-Passive)</div>
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px; border-radius: 8px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">LEADER</div>
-<div style="color: #d1f5d3; font-size: 9px;">Schedules all tasks</div>
+<div style="color: #166534; font-size: 9px;">Schedules all tasks</div>
 </div>
 <div style="display: flex; justify-content: center; gap: 8px;">
 <div style="background: #30363d; padding: 10px; border-radius: 6px; text-align: center;">
-<div style="color: #8b949e; font-size: 10px;">Follower 1</div>
+<div style="color: #64748b; font-size: 10px;">Follower 1</div>
 <div style="color: #6e7681; font-size: 8px;">Standby</div>
 </div>
 <div style="background: #30363d; padding: 10px; border-radius: 6px; text-align: center;">
-<div style="color: #8b949e; font-size: 10px;">Follower 2</div>
+<div style="color: #64748b; font-size: 10px;">Follower 2</div>
 <div style="color: #6e7681; font-size: 8px;">Standby</div>
 </div>
 </div>
 </div>
 
-<div style="color: #c9d1d9; font-size: 11px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 11px; margin-top: 12px;">
 <strong>Pros</strong>: Simple, no coordination<br>
 <strong>Cons</strong>: Leader bottleneck, failover delay
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 16px;">Partition-Based (Active-Active)</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 16px;">Partition-Based (Active-Active)</div>
 
 <div style="display: flex; justify-content: space-around; gap: 8px;">
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px; border-radius: 8px; text-align: center;">
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Node 1</div>
-<div style="color: #a5d6ff; font-size: 9px;">Tasks 0-999</div>
+<div style="color: #1e40af; font-size: 9px;">Tasks 0-999</div>
 </div>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 12px; border-radius: 8px; text-align: center;">
+<div style="background: #f5f3ff; border-left: 3px solid #8b5cf6; padding: 12px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Node 2</div>
-<div style="color: #eddeff; font-size: 9px;">Tasks 1000-1999</div>
+<div style="color: #5b21b6; font-size: 9px;">Tasks 1000-1999</div>
 </div>
-<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 12px; border-radius: 8px; text-align: center;">
+<div style="background: #fff7ed; border-left: 3px solid #f97316; padding: 12px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Node 3</div>
 <div style="color: #fff; font-size: 9px;">Tasks 2000-2999</div>
 </div>
 </div>
 
-<div style="color: #c9d1d9; font-size: 11px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 11px; margin-top: 12px;">
 <strong>Pros</strong>: Scales horizontally, no SPOF<br>
 <strong>Cons</strong>: Rebalancing complexity on node changes
 </div>
@@ -430,26 +448,26 @@ This is a classic [[CAP theorem]](/system-design/cap-theorem) trade-off scenario
 
 </div>
 
-<div style="background: #161b22; padding: 16px; border-radius: 8px; margin-top: 20px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Coordination Mechanisms</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Coordination Mechanisms</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
 <div style="text-align: center;">
-<div style="color: #7ee787; font-size: 11px; font-weight: bold;">[[ZooKeeper]](/system-design/zookeeper)</div>
-<div style="color: #8b949e; font-size: 9px;">Leader election, distributed locks</div>
+<div style="color: #166534; font-size: 11px; font-weight: bold;">[[ZooKeeper]](/system-design/zookeeper)</div>
+<div style="color: #64748b; font-size: 9px;">Leader election, distributed locks</div>
 </div>
 <div style="text-align: center;">
-<div style="color: #58a6ff; font-size: 11px; font-weight: bold;">[[Redis]](/databases/redis)</div>
-<div style="color: #8b949e; font-size: 9px;">SETNX for locks, Redlock for safety</div>
+<div style="color: #1e40af; font-size: 11px; font-weight: bold;">[[Redis]](/databases/redis)</div>
+<div style="color: #64748b; font-size: 9px;">SETNX for locks, Redlock for safety</div>
 </div>
 <div style="text-align: center;">
-<div style="color: #a371f7; font-size: 11px; font-weight: bold;">[[etcd]](/system-design/etcd)</div>
-<div style="color: #8b949e; font-size: 9px;">Lease-based locking, watch API</div>
+<div style="color: #5b21b6; font-size: 11px; font-weight: bold;">[[etcd]](/system-design/etcd)</div>
+<div style="color: #64748b; font-size: 9px;">Lease-based locking, watch API</div>
 </div>
 </div>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 **Assumption**: Network partitions are possible but rare. Clocks are synchronized within acceptable bounds (NTP).
 
@@ -479,13 +497,13 @@ def try_execute_task(task_id):
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #a371f7; margin: 0 0 24px 0; font-size: 16px;">Database-Based Scheduling with Row Locking</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px;">Database-Based Scheduling with Row Locking</h4>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">The "Claim" Pattern</div>
-<div style="color: #c9d1d9; font-size: 11px; font-family: monospace; line-height: 1.8;">
-<span style="color: #ffa657;">-- Atomic claim: only one node succeeds</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px;">The "Claim" Pattern</div>
+<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
+<span style="color: #c2410c;">-- Atomic claim: only one node succeeds</span><br>
 UPDATE tasks<br>
 SET status = 'running',<br>
 &nbsp;&nbsp;&nbsp;&nbsp;claimed_by = 'node-1',<br>
@@ -495,7 +513,7 @@ WHERE id = (SELECT id FROM tasks<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND scheduled_time <= NOW()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER BY scheduled_time, priority DESC<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT 1<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #f85149;">FOR UPDATE SKIP LOCKED</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dc2626;">FOR UPDATE SKIP LOCKED</span>)<br>
 RETURNING *;
 </div>
 </div>
@@ -503,7 +521,7 @@ RETURNING *;
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: #238636; padding: 12px; border-radius: 8px;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">SKIP LOCKED Advantage</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">Nodes don't block each other. If row is locked, skip to next candidate.</div>
+<div style="color: #166534; font-size: 10px; margin-top: 4px;">Nodes don't block each other. If row is locked, skip to next candidate.</div>
 </div>
 <div style="background: #f85149; padding: 12px; border-radius: 8px;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Without SKIP LOCKED</div>
@@ -512,7 +530,7 @@ RETURNING *;
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 **Critical Distributed Scheduling Pitfalls**
 
@@ -530,12 +548,12 @@ RETURNING *;
 
 #### Interview Questions: Distributed Scheduling
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1**: Why can't we simply use a shared database table with optimistic locking for distributed task scheduling?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Optimistic locking (version numbers/timestamps) causes high contention:
 
@@ -551,7 +569,7 @@ With N nodes and M due tasks, collision rate approaches 100% as N grows. Each co
 **Level 2**: How would you implement leader election for a scheduler cluster using Redis?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 ```python
 class RedisLeaderElection:
@@ -598,7 +616,7 @@ Critical: Use Lua script for refresh to ensure atomicity. Otherwise another node
 **Level 3**: Design a scheduler that guarantees exactly-once execution even during network partitions, without relying on distributed transactions.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **Approach: Idempotent execution + outbox pattern + deduplication**
 
@@ -662,7 +680,7 @@ This ensures that even if two nodes somehow both try to execute (partition scena
 
 ### 4. Failure Recovery
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 **Failure Modes in Task Scheduling**
 
@@ -676,25 +694,25 @@ This ensures that even if two nodes somehow both try to execute (partition scena
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Heartbeat-Based Failure Detection</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Heartbeat-Based Failure Detection</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
 
-<div style="flex: 1; min-width: 200px; background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Worker Heartbeat Loop</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.8;">
+<div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Worker Heartbeat Loop</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8;">
 while running:<br>
 &nbsp;&nbsp;send_heartbeat(worker_id, current_task)<br>
 &nbsp;&nbsp;sleep(heartbeat_interval)
 </div>
 </div>
 
-<div style="flex: 1; min-width: 200px; background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Recovery Monitor Loop</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.8;">
+<div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Recovery Monitor Loop</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8;">
 while running:<br>
 &nbsp;&nbsp;stale = find_stale_heartbeats(threshold)<br>
 &nbsp;&nbsp;for worker in stale:<br>
@@ -705,9 +723,9 @@ while running:<br>
 
 </div>
 
-<div style="background: #161b22; padding: 16px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Tuning Heartbeat Parameters</div>
-<div style="color: #c9d1d9; font-size: 11px;">
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Tuning Heartbeat Parameters</div>
+<div style="color: #1e293b; font-size: 11px;">
 <strong>heartbeat_interval</strong>: 10-30 seconds typical. Too fast = network overhead. Too slow = delayed detection.<br>
 <strong>failure_threshold</strong>: Usually 3x heartbeat_interval. Accounts for network jitter, GC pauses.<br>
 <strong>check_interval</strong>: heartbeat_interval / 2. Ensures timely detection.
@@ -717,7 +735,7 @@ while running:<br>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 **Assumption**: Task execution is either idempotent or has built-in deduplication.
 
@@ -759,8 +777,8 @@ def calculate_retry_delay(attempt, base_delay=1, max_delay=3600, jitter=True):
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #a371f7; margin: 0 0 24px 0; font-size: 16px;">Dead Letter Queue Pattern</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px;">Dead Letter Queue Pattern</h4>
 
 <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
 
@@ -768,49 +786,49 @@ def calculate_retry_delay(attempt, base_delay=1, max_delay=3600, jitter=True):
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
 <div style="display: flex; align-items: center; gap: 12px;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 10px 14px; border-radius: 8px;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 10px 14px; border-radius: 8px;">
 <div style="color: #fff; font-size: 10px; font-weight: bold;">Main Queue</div>
 </div>
-<div style="color: #7ee787;">&#8594;</div>
-<div style="background: #21262d; padding: 10px 14px; border-radius: 8px;">
-<div style="color: #c9d1d9; font-size: 10px;">Process Task</div>
+<div style="color: #166534;">&#8594;</div>
+<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px;">
+<div style="color: #1e293b; font-size: 10px;">Process Task</div>
 </div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px; margin-left: 120px;">
-<div style="color: #f85149;">&#8595; failure</div>
+<div style="color: #dc2626;">&#8595; failure</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
-<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 10px 14px; border-radius: 8px;">
+<div style="background: #fff7ed; border-left: 3px solid #f97316; padding: 10px 14px; border-radius: 8px;">
 <div style="color: #fff; font-size: 10px; font-weight: bold;">Retry Queue</div>
 </div>
-<div style="color: #ffa657;">&#8594;</div>
-<div style="background: #21262d; padding: 10px 14px; border-radius: 8px;">
-<div style="color: #c9d1d9; font-size: 10px;">Retry (with backoff)</div>
+<div style="color: #c2410c;">&#8594;</div>
+<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px;">
+<div style="color: #1e293b; font-size: 10px;">Retry (with backoff)</div>
 </div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px; margin-left: 120px;">
-<div style="color: #f85149;">&#8595; max retries exceeded</div>
+<div style="color: #dc2626;">&#8595; max retries exceeded</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 10px 14px; border-radius: 8px;">
 <div style="color: #fff; font-size: 10px; font-weight: bold;">Dead Letter Queue</div>
 </div>
-<div style="color: #f85149;">&#8594;</div>
-<div style="background: #21262d; padding: 10px 14px; border-radius: 8px;">
-<div style="color: #c9d1d9; font-size: 10px;">Manual review / Alert</div>
+<div style="color: #dc2626;">&#8594;</div>
+<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px;">
+<div style="color: #1e293b; font-size: 10px;">Manual review / Alert</div>
 </div>
 </div>
 
 </div>
 </div>
 
-<div style="flex: 1; min-width: 180px; background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">DLQ Contents</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+<div style="flex: 1; min-width: 180px; background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 11px; margin-bottom: 8px;">DLQ Contents</div>
+<div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
 - Original task payload<br>
 - All retry attempt logs<br>
 - Final error message<br>
@@ -823,7 +841,7 @@ def calculate_retry_delay(attempt, base_delay=1, max_delay=3600, jitter=True):
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 **The "Stuck Task" Problem**
 
@@ -849,12 +867,12 @@ Scenario: Worker claims task, starts execution, hangs indefinitely (deadlock, in
 
 #### Interview Questions: Failure Recovery
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1**: What's the difference between at-least-once and at-most-once task execution semantics?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **At-most-once**: Task executed 0 or 1 times. Achieved by acknowledging before execution. If worker dies during execution, task is lost. Use for: logging, metrics, non-critical notifications.
 
@@ -867,7 +885,7 @@ Scenario: Worker claims task, starts execution, hangs indefinitely (deadlock, in
 **Level 2**: Design a visibility timeout mechanism for a database-backed task queue.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 ```sql
 -- Schema
@@ -915,7 +933,7 @@ The key insight: `visible_after` serves dual purpose - scheduling AND failure re
 **Level 3**: How would you implement checkpoint-based recovery for long-running tasks that process millions of records?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 ```python
 class CheckpointedTask:
@@ -976,53 +994,53 @@ class CheckpointedTask:
 
 ### 5. Job Dependencies and DAG Execution
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 **Why Job Dependencies Matter**
 
-Real-world workflows rarely consist of independent tasks. <span style="color: #7ee787;">**Data pipelines**</span>, <span style="color: #7ee787;">**ETL processes**</span>, and <span style="color: #7ee787;">**CI/CD builds**</span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.
+Real-world workflows rarely consist of independent tasks. <span style="color: #166534;">**Data pipelines**</span>, <span style="color: #166534;">**ETL processes**</span>, and <span style="color: #166534;">**CI/CD builds**</span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.
 
 **The Core Problem**: How do you ensure Task B doesn't start until Task A completes successfully, while maximizing parallelism across independent branches?
 
-**Solution**: Model workflows as <span style="color: #7ee787;">**Directed Acyclic Graphs (DAGs)**</span> where nodes are tasks and edges represent dependencies.
+**Solution**: Model workflows as <span style="color: #166534;">**Directed Acyclic Graphs (DAGs)**</span> where nodes are tasks and edges represent dependencies.
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">DAG-Based Task Execution Model</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">DAG-Based Task Execution Model</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
 
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Extract</div>
-<div style="color: #d1f5d3; font-size: 9px;">Source Data</div>
+<div style="color: #166534; font-size: 9px;">Source Data</div>
 </div>
 
-<div style="color: #7ee787; font-size: 24px;">&#8594;</div>
+<div style="color: #166534; font-size: 24px;">&#8594;</div>
 
 <div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 10px 16px; border-radius: 8px; text-align: center;">
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 10px 16px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Transform A</div>
-<div style="color: #a5d6ff; font-size: 8px;">Clean Users</div>
+<div style="color: #1e40af; font-size: 8px;">Clean Users</div>
 </div>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 10px 16px; border-radius: 8px; text-align: center;">
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 10px 16px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">Transform B</div>
-<div style="color: #a5d6ff; font-size: 8px;">Clean Orders</div>
+<div style="color: #1e40af; font-size: 8px;">Clean Orders</div>
 </div>
 </div>
 
-<div style="color: #58a6ff; font-size: 24px;">&#8594;</div>
+<div style="color: #1e40af; font-size: 24px;">&#8594;</div>
 
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="background: #f5f3ff; border-left: 3px solid #8b5cf6; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Join</div>
-<div style="color: #eddeff; font-size: 9px;">Merge Data</div>
+<div style="color: #5b21b6; font-size: 9px;">Merge Data</div>
 </div>
 
-<div style="color: #a371f7; font-size: 24px;">&#8594;</div>
+<div style="color: #5b21b6; font-size: 24px;">&#8594;</div>
 
-<div style="background: linear-gradient(135deg, #ffa657 0%, #f78166 100%); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
+<div style="background: #fff7ed; border-left: 3px solid #f97316; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Load</div>
 <div style="color: #fff; font-size: 9px;">Data Warehouse</div>
 </div>
@@ -1031,27 +1049,27 @@ Real-world workflows rarely consist of independent tasks. <span style="color: #7
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
 
-<div style="background: #21262d; padding: 14px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Parallelism</div>
-<div style="color: #c9d1d9; font-size: 10px;">Transform A and B run concurrently since both only depend on Extract</div>
+<div style="background: #f8fafc; padding: 14px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Parallelism</div>
+<div style="color: #1e293b; font-size: 10px;">Transform A and B run concurrently since both only depend on Extract</div>
 </div>
 
-<div style="background: #21262d; padding: 14px; border-radius: 8px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Barrier Sync</div>
-<div style="color: #c9d1d9; font-size: 10px;">Join waits for ALL upstream transforms before starting</div>
+<div style="background: #f8fafc; padding: 14px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Barrier Sync</div>
+<div style="color: #1e293b; font-size: 10px;">Join waits for ALL upstream transforms before starting</div>
 </div>
 
-<div style="background: #21262d; padding: 14px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Failure Propagation</div>
-<div style="color: #c9d1d9; font-size: 10px;">If Transform A fails, Join and Load are skipped (not executed)</div>
-</div>
-
+<div style="background: #f8fafc; padding: 14px; border-radius: 8px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Failure Propagation</div>
+<div style="color: #1e293b; font-size: 10px;">If Transform A fails, Join and Load are skipped (not executed)</div>
 </div>
 
 </div>
+
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 **Assumption**: Tasks within a DAG share execution context (variables, outputs).
 
@@ -1118,39 +1136,39 @@ class DAGScheduler:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #a371f7; margin: 0 0 24px 0; font-size: 16px;">Dependency State Machine</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px;">Dependency State Machine</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
 
 <div style="background: #30363d; padding: 12px 16px; border-radius: 8px; text-align: center;">
-<div style="color: #8b949e; font-weight: bold; font-size: 11px;">WAITING</div>
+<div style="color: #64748b; font-weight: bold; font-size: 11px;">WAITING</div>
 <div style="color: #6e7681; font-size: 9px;">Deps not met</div>
 </div>
 
-<div style="color: #7ee787; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">all deps done</span></div>
+<div style="color: #166534; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">all deps done</span></div>
 
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px 16px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">READY</div>
-<div style="color: #d1f5d3; font-size: 9px;">Can execute</div>
+<div style="color: #166534; font-size: 9px;">Can execute</div>
 </div>
 
-<div style="color: #58a6ff; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">worker picks</span></div>
+<div style="color: #1e40af; font-size: 18px;">&#8594;<br><span style="font-size: 9px;">worker picks</span></div>
 
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px 16px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 11px;">RUNNING</div>
-<div style="color: #a5d6ff; font-size: 9px;">Executing</div>
+<div style="color: #1e40af; font-size: 9px;">Executing</div>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-<div style="color: #7ee787; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #7ee787;">success</span></div>
-<div style="color: #f85149; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #f85149;">failure</span></div>
+<div style="color: #166534; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #166534;">success</span></div>
+<div style="color: #dc2626; font-size: 14px;">&#8594; <span style="font-size: 9px; color: #dc2626;">failure</span></div>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 8px 12px; border-radius: 6px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 10px;">SUCCESS</div>
 </div>
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 12px; border-radius: 6px; text-align: center;">
@@ -1160,24 +1178,24 @@ class DAGScheduler:
 
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Downstream Failure Handling Strategies</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Downstream Failure Handling Strategies</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
 <div>
-<div style="color: #7ee787; font-size: 11px; font-weight: bold;">all_success (default)</div>
-<div style="color: #8b949e; font-size: 10px;">Run only if ALL upstream succeeded</div>
+<div style="color: #166534; font-size: 11px; font-weight: bold;">all_success (default)</div>
+<div style="color: #64748b; font-size: 10px;">Run only if ALL upstream succeeded</div>
 </div>
 <div>
-<div style="color: #58a6ff; font-size: 11px; font-weight: bold;">all_done</div>
-<div style="color: #8b949e; font-size: 10px;">Run when all upstream completed (success or fail)</div>
+<div style="color: #1e40af; font-size: 11px; font-weight: bold;">all_done</div>
+<div style="color: #64748b; font-size: 10px;">Run when all upstream completed (success or fail)</div>
 </div>
 <div>
-<div style="color: #a371f7; font-size: 11px; font-weight: bold;">one_success</div>
-<div style="color: #8b949e; font-size: 10px;">Run if ANY upstream succeeded</div>
+<div style="color: #5b21b6; font-size: 11px; font-weight: bold;">one_success</div>
+<div style="color: #64748b; font-size: 10px;">Run if ANY upstream succeeded</div>
 </div>
 <div>
-<div style="color: #ffa657; font-size: 11px; font-weight: bold;">none_failed</div>
-<div style="color: #8b949e; font-size: 10px;">Run if no upstream failed (skipped is OK)</div>
+<div style="color: #c2410c; font-size: 11px; font-weight: bold;">none_failed</div>
+<div style="color: #64748b; font-size: 10px;">Run if no upstream failed (skipped is OK)</div>
 </div>
 </div>
 </div>
@@ -1185,35 +1203,35 @@ class DAGScheduler:
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 **Critical Edge Cases in Dependency Management**
 
-1. <span style="color: #7ee787;">**Diamond Dependencies**</span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.
+1. <span style="color: #166534;">**Diamond Dependencies**</span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.
 
-2. <span style="color: #7ee787;">**Dynamic Dependencies**</span>: Task creates new tasks at runtime. How do you handle dependencies on not-yet-existing tasks? Solutions:
+2. <span style="color: #166534;">**Dynamic Dependencies**</span>: Task creates new tasks at runtime. How do you handle dependencies on not-yet-existing tasks? Solutions:
    - **Deferred resolution**: Dependency references are strings, resolved at execution time
    - **Task factories**: Parent task spawns child DAG as atomic unit
 
-3. <span style="color: #7ee787;">**Cross-DAG Dependencies**</span>: Task in DAG-1 depends on task in DAG-2. Options:
+3. <span style="color: #166534;">**Cross-DAG Dependencies**</span>: Task in DAG-1 depends on task in DAG-2. Options:
    - **Sensors**: DAG-1 task polls for DAG-2 completion (Airflow approach)
    - **Events**: DAG-2 publishes completion event, DAG-1 subscribes
    - **Shared state**: Both check common database/cache for status
 
-4. <span style="color: #7ee787;">**Conditional Dependencies**</span>: Task B depends on A only if A produced specific output. Requires runtime dependency evaluation, not static DAG structure.
+4. <span style="color: #166534;">**Conditional Dependencies**</span>: Task B depends on A only if A produced specific output. Requires runtime dependency evaluation, not static DAG structure.
 
 </div>
 
 #### Interview Questions: Job Dependencies
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1**: What happens if you have a cycle in your task dependency graph?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span style="color: #7ee787;">**deadlock**</span>.
+A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span style="color: #166534;">**deadlock**</span>.
 
 **Detection**: Run [[cycle detection]](/algorithms/graph-cycle-detection) using DFS. If you find a back edge (edge to a node currently in the recursion stack), there's a cycle.
 
@@ -1246,18 +1264,18 @@ def validate_dag(dependencies):
 **Level 2**: How would you implement partial DAG re-execution after a mid-pipeline failure?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume from task 3 without re-running tasks 1-2.
 
 **Implementation**:
 
-1. <span style="color: #7ee787;">**Persist task outputs**</span>: Store each task's output with execution ID
+1. <span style="color: #166534;">**Persist task outputs**</span>: Store each task's output with execution ID
    ```python
    outputs[f"{dag_run_id}:{task_id}"] = task_result
    ```
 
-2. <span style="color: #7ee787;">**Mark task states**</span>: Track which tasks completed successfully in this run
+2. <span style="color: #166534;">**Mark task states**</span>: Track which tasks completed successfully in this run
    ```python
    task_states = {
        "task_1": "success",
@@ -1268,7 +1286,7 @@ Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume
    }
    ```
 
-3. <span style="color: #7ee787;">**Selective re-execution**</span>:
+3. <span style="color: #166534;">**Selective re-execution**</span>:
    ```python
    def rerun_from_failure(dag_run_id, failed_task_id):
        # Get all downstream tasks (including failed one)
@@ -1282,7 +1300,7 @@ Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume
        execute_dag(dag_run_id, skip_completed=True)
    ```
 
-4. <span style="color: #7ee787;">**Dependency resolution**</span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.
+4. <span style="color: #166534;">**Dependency resolution**</span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.
 
 Airflow calls this "clearing" a task - it resets the task and all downstream tasks to pending state.
 
@@ -1291,7 +1309,7 @@ Airflow calls this "clearing" a task - it resets the task and all downstream tas
 **Level 3**: Design a scheduler that supports dynamic task fan-out where one task spawns N child tasks at runtime, and a downstream task must wait for all N to complete.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **Challenge**: Traditional DAGs have static structure. Here, the number of child tasks is unknown until runtime.
 
@@ -1385,13 +1403,13 @@ class Barrier:
 
 **Key Design Decisions**:
 
-1. <span style="color: #7ee787;">**Group abstraction**</span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.
+1. <span style="color: #166534;">**Group abstraction**</span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.
 
-2. <span style="color: #7ee787;">**Barrier synchronization**</span>: Atomic counter tracks child completion. Downstream task wakes when barrier complete.
+2. <span style="color: #166534;">**Barrier synchronization**</span>: Atomic counter tracks child completion. Downstream task wakes when barrier complete.
 
-3. <span style="color: #7ee787;">**Failure semantics**</span>: Define policy - fail-fast (first child failure cancels siblings) or wait-all (collect all results, then fail).
+3. <span style="color: #166534;">**Failure semantics**</span>: Define policy - fail-fast (first child failure cancels siblings) or wait-all (collect all results, then fail).
 
-4. <span style="color: #7ee787;">**Result aggregation**</span>: Store child results in shared location. Downstream task retrieves all results:
+4. <span style="color: #166534;">**Result aggregation**</span>: Store child results in shared location. Downstream task retrieves all results:
    ```python
    def collect_results(group_id) -> List[Any]:
        return [outputs[f"{group_id}_{i}"] for i in range(barrier.expected)]
@@ -1407,7 +1425,7 @@ Real-world example: Airflow's `expand()` (formerly `mapped tasks`) implements ex
 
 ### 6. Idempotency
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 **Why Idempotency is Non-Negotiable for Schedulers**
 
@@ -1427,27 +1445,27 @@ In distributed systems, exactly-once delivery is a myth. Networks fail, workers 
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Idempotency Key Pattern</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Idempotency Key Pattern</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">The Pattern</div>
-<div style="color: #c9d1d9; font-size: 11px; font-family: monospace; line-height: 1.8;">
-<span style="color: #ffa657;">def</span> process_with_idempotency(idempotency_key, operation):<br>
-&nbsp;&nbsp;<span style="color: #8b949e;"># Check if already processed</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">The Pattern</div>
+<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
+<span style="color: #c2410c;">def</span> process_with_idempotency(idempotency_key, operation):<br>
+&nbsp;&nbsp;<span style="color: #64748b;"># Check if already processed</span><br>
 &nbsp;&nbsp;existing = idempotency_store.get(idempotency_key)<br>
-&nbsp;&nbsp;<span style="color: #ffa657;">if</span> existing:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffa657;">return</span> existing.result &nbsp;<span style="color: #8b949e;"># Return cached result</span><br>
+&nbsp;&nbsp;<span style="color: #c2410c;">if</span> existing:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #c2410c;">return</span> existing.result &nbsp;<span style="color: #64748b;"># Return cached result</span><br>
 <br>
-&nbsp;&nbsp;<span style="color: #8b949e;"># Execute operation</span><br>
+&nbsp;&nbsp;<span style="color: #64748b;"># Execute operation</span><br>
 &nbsp;&nbsp;result = operation()<br>
 <br>
-&nbsp;&nbsp;<span style="color: #8b949e;"># Store result (with TTL for cleanup)</span><br>
-&nbsp;&nbsp;idempotency_store.set(idempotency_key, result, ttl=<span style="color: #a5d6ff;">86400</span>)<br>
+&nbsp;&nbsp;<span style="color: #64748b;"># Store result (with TTL for cleanup)</span><br>
+&nbsp;&nbsp;idempotency_store.set(idempotency_key, result, ttl=<span style="color: #1e40af;">86400</span>)<br>
 <br>
-&nbsp;&nbsp;<span style="color: #ffa657;">return</span> result
+&nbsp;&nbsp;<span style="color: #c2410c;">return</span> result
 </div>
 </div>
 
@@ -1455,7 +1473,7 @@ In distributed systems, exactly-once delivery is a myth. Networks fail, workers 
 
 <div style="background: #238636; padding: 12px; border-radius: 8px;">
 <div style="color: #fff; font-weight: bold; font-size: 11px; margin-bottom: 4px;">Good Idempotency Keys</div>
-<div style="color: #d1f5d3; font-size: 10px;">
+<div style="color: #166534; font-size: 10px;">
 - task_id + scheduled_time<br>
 - order_id + action + timestamp<br>
 - user_id + operation + date
@@ -1476,7 +1494,7 @@ In distributed systems, exactly-once delivery is a myth. Networks fail, workers 
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 **Assumption**: Idempotency keys are unique per logical operation instance.
 
@@ -1493,39 +1511,39 @@ In distributed systems, exactly-once delivery is a myth. Networks fail, workers 
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #a371f7; margin: 0 0 24px 0; font-size: 16px;">Making Non-Idempotent Operations Idempotent</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px;">Making Non-Idempotent Operations Idempotent</h4>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: Additive Operations</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.6;">
-<span style="color: #8b949e;">-- Non-idempotent: runs twice = double credit</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: Additive Operations</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
+<span style="color: #64748b;">-- Non-idempotent: runs twice = double credit</span><br>
 UPDATE accounts<br>
 SET balance = balance + 100<br>
 WHERE user_id = 5;
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Transaction Log</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.6;">
-<span style="color: #8b949e;">-- Idempotent: unique constraint prevents duplicate</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Transaction Log</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
+<span style="color: #64748b;">-- Idempotent: unique constraint prevents duplicate</span><br>
 INSERT INTO transactions<br>
 &nbsp;&nbsp;(id, user_id, amount, idempotency_key)<br>
 VALUES (gen_id(), 5, 100, 'task-123-2024-01-15')<br>
 ON CONFLICT (idempotency_key) DO NOTHING;<br><br>
-<span style="color: #8b949e;">-- Balance computed from transactions</span><br>
+<span style="color: #64748b;">-- Balance computed from transactions</span><br>
 SELECT SUM(amount) FROM transactions<br>
 WHERE user_id = 5;
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: External API Calls</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.6;">
-<span style="color: #8b949e;"># Non-idempotent: duplicate emails</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: External API Calls</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
+<span style="color: #64748b;"># Non-idempotent: duplicate emails</span><br>
 email_api.send(<br>
 &nbsp;&nbsp;to='user@example.com',<br>
 &nbsp;&nbsp;subject='Your order shipped'<br>
@@ -1533,22 +1551,22 @@ email_api.send(<br>
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Check-then-send with Lock</div>
-<div style="color: #c9d1d9; font-size: 10px; font-family: monospace; line-height: 1.6;">
-<span style="color: #8b949e;"># Idempotent: check before sending</span><br>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Check-then-send with Lock</div>
+<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
+<span style="color: #64748b;"># Idempotent: check before sending</span><br>
 key = f'email_sent:{order_id}:shipped'<br>
 if not redis.setnx(key, '1', ex=86400):<br>
-&nbsp;&nbsp;return <span style="color: #8b949e;"># Already sent</span><br><br>
+&nbsp;&nbsp;return <span style="color: #64748b;"># Already sent</span><br><br>
 email_api.send(...)<br>
-<span style="color: #8b949e;"># If send fails, key expires, retry works</span>
+<span style="color: #64748b;"># If send fails, key expires, retry works</span>
 </div>
 </div>
 
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1a1a 0%, #5a2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 **The Idempotency-Atomicity Gap**
 
@@ -1587,12 +1605,12 @@ def process_order(order_id, idempotency_key):
 
 #### Interview Questions: Idempotency
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1**: Why is `INSERT INTO table VALUES (...)` not idempotent, and how would you make it idempotent?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 Each INSERT creates a new row with a new auto-generated ID. Running twice = two rows.
 
@@ -1623,7 +1641,7 @@ Each INSERT creates a new row with a new auto-generated ID. Running twice = two 
 **Level 2**: How do you handle idempotency when your task calls multiple external services sequentially?
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **Saga pattern with compensation**:
 
@@ -1681,7 +1699,7 @@ Key insight: Each external call has its own idempotency key derived from the par
 **Level 3**: Design an idempotency system that handles concurrent duplicate requests arriving within milliseconds of each other.
 
 <details>
-<summary style="color: #a371f7; cursor: pointer;">Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 **Problem**: Two requests with same idempotency key arrive simultaneously. Both check "is processed?" -> both get "no" -> both execute.
 
@@ -3143,14 +3161,14 @@ func main() {
 
 ## Design Considerations Summary
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Architecture Decision Matrix</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Architecture Decision Matrix</h4>
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Single Node</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Single Node</div>
+<div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
 Use when: < 10K tasks, simple ops<br>
 Data structure: Binary min-heap<br>
 Concurrency: Condition variables<br>
@@ -3158,9 +3176,9 @@ Recovery: Process restart
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Leader)</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Leader)</div>
+<div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
 Use when: Need HA, < 100K tasks<br>
 Coordination: ZooKeeper/etcd<br>
 Concurrency: Leader election<br>
@@ -3168,9 +3186,9 @@ Recovery: Automatic failover
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Partitioned)</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Partitioned)</div>
+<div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
 Use when: > 100K tasks, horizontal scale<br>
 Coordination: Consistent hashing<br>
 Concurrency: Partition locks<br>
@@ -3178,9 +3196,9 @@ Recovery: Partition rebalancing
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Database-Backed</div>
-<div style="color: #c9d1d9; font-size: 10px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Database-Backed</div>
+<div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
 Use when: Durability critical, audit needed<br>
 Data structure: Indexed table<br>
 Concurrency: SKIP LOCKED<br>
@@ -3195,25 +3213,25 @@ Recovery: Transaction rollback
 
 ## Deep-Dive Interview Q&A: 3-Level Recursive Format
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Complete Task Scheduler System Design</h3>
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e40af; margin: 0 0 24px 0;">Complete Task Scheduler System Design</h3>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "Design a task scheduler system"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "Design a task scheduler system"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **High-Level Architecture**:
 
 A task scheduler consists of four main components:
 
-1. <span style="color: #7ee787;">**Task Storage**</span>: Where task definitions and states are persisted
-2. <span style="color: #7ee787;">**Scheduler Core**</span>: Determines which tasks to execute and when
-3. <span style="color: #7ee787;">**Worker Pool**</span>: Executes the actual task logic
-4. <span style="color: #7ee787;">**Coordination Layer**</span>: Handles distributed concerns (if multi-node)
+1. <span style="color: #166534;">**Task Storage**</span>: Where task definitions and states are persisted
+2. <span style="color: #166534;">**Scheduler Core**</span>: Determines which tasks to execute and when
+3. <span style="color: #166534;">**Worker Pool**</span>: Executes the actual task logic
+4. <span style="color: #166534;">**Coordination Layer**</span>: Handles distributed concerns (if multi-node)
 
 **Core Data Structures**:
 
@@ -3237,7 +3255,7 @@ class Scheduler:
 
 **Scheduling Algorithm**:
 
-1. Maintain a <span style="color: #7ee787;">**min-heap**</span> ordered by scheduled_time
+1. Maintain a <span style="color: #166534;">**min-heap**</span> ordered by scheduled_time
 2. Worker threads wait on condition variable
 3. When top task's scheduled_time <= now, pop and execute
 4. After execution, handle retries or schedule next occurrence
@@ -3253,15 +3271,15 @@ class Scheduler:
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
-**The Core Challenge**: In distributed systems, "exactly-once" is theoretically impossible due to the [[Two Generals Problem]](/algorithms/two-generals). We achieve <span style="color: #7ee787;">**effectively exactly-once**</span> through:
+**The Core Challenge**: In distributed systems, "exactly-once" is theoretically impossible due to the [[Two Generals Problem]](/algorithms/two-generals). We achieve <span style="color: #166534;">**effectively exactly-once**</span> through:
 
 **Strategy 1: At-Least-Once Delivery + Idempotency**
 
@@ -3328,20 +3346,20 @@ def process_order(order_id):
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **Failure Modes**:
 
-1. <span style="color: #f85149;">**Redis down before SETNX**</span>: Can't check, can't proceed
-2. <span style="color: #f85149;">**Redis down after SETNX, before task execution**</span>: Key set but work not done
-3. <span style="color: #f85149;">**Redis down after execution, before caching result**</span>: Work done but key may expire
-4. <span style="color: #f85149;">**Redis comes back with data loss**</span>: Keys gone, duplicates possible
+1. <span style="color: #dc2626;">**Redis down before SETNX**</span>: Can't check, can't proceed
+2. <span style="color: #dc2626;">**Redis down after SETNX, before task execution**</span>: Key set but work not done
+3. <span style="color: #dc2626;">**Redis down after execution, before caching result**</span>: Work done but key may expire
+4. <span style="color: #dc2626;">**Redis comes back with data loss**</span>: Keys gone, duplicates possible
 
 **Solution: Multi-Layer Idempotency**
 
@@ -3438,27 +3456,44 @@ class RobustIdempotencyManager:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Distributed Scheduling Deep Dive</h3>
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e40af; margin: 0 0 24px 0;">Distributed Scheduling Deep Dive</h3>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you scale a task scheduler horizontally?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you scale a task scheduler horizontally?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **Approach 1: Leader-Based (Active-Passive)**
 
 One node is the scheduler (leader), others are workers only:
 
-```
-[Leader] ─── schedules tasks ───> [Task Queue] <─── pull ─── [Worker 1]
-    │                                   ↑                    [Worker 2]
-    │                                   │                    [Worker 3]
-    └─── heartbeat/election ───> [ZooKeeper/etcd]
-```
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0;">
+<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; border-left: 3px solid #3b82f6; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px;">Leader</div>
+<div style="color: #64748b; font-size: 10px;">schedules tasks</div>
+</div>
+<div style="color: #3b82f6; font-size: 16px;">&#8594;</div>
+<div style="background: #f0fdf4; padding: 12px 16px; border-radius: 8px; border-left: 3px solid #22c55e; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">Task Queue</div>
+</div>
+<div style="color: #22c55e; font-size: 16px;">&#8592;</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px; border-left: 3px solid #f97316; text-align: center;">
+<span style="color: #c2410c; font-size: 11px;">Worker 1</span>
+</div>
+<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px; border-left: 3px solid #f97316; text-align: center;">
+<span style="color: #c2410c; font-size: 11px;">Worker 2</span>
+</div>
+<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px; border-left: 3px solid #f97316; text-align: center;">
+<span style="color: #c2410c; font-size: 11px;">Worker 3</span>
+</div>
+</div>
+</div>
+<div style="text-align: center; color: #64748b; font-size: 11px; margin-top: 8px;">Leader heartbeat/election via ZooKeeper/etcd</div>
 
 - Leader handles all scheduling decisions
 - Workers pull tasks from shared queue
@@ -3509,26 +3544,29 @@ FOR UPDATE SKIP LOCKED;
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
-**Principle**: <span style="color: #7ee787;">Separate task ownership from task execution</span>
+**Principle**: <span style="color: #166534;">Separate task ownership from task execution</span>
 
 **Solution Architecture**:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Durable Task Store                        │
-│  (PostgreSQL, MySQL, or distributed KV store)               │
-│                                                              │
-│  tasks: id, payload, status, owner_node, heartbeat_time     │
-└─────────────────────────────────────────────────────────────┘
-         ↑                    ↑                    ↑
+<div style="display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; align-items: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0;">
+<div style="background: #eff6ff; padding: 16px 24px; border-radius: 8px; border: 1px solid #3b82f6; text-align: center; width: 100%; max-width: 400px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px;">Durable Task Store</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 4px;">PostgreSQL, MySQL, or distributed KV store</div>
+<div style="color: #1e293b; font-size: 10px; margin-top: 8px; font-family: monospace;">tasks: id, payload, status, owner_node, heartbeat_time</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 8px;">
+<span style="color: #3b82f6;">&#8593;</span>
+<span style="color: #3b82f6;">&#8593;</span>
+<span style="color: #3b82f6;">&#8593;</span>
+</div>
     [Scheduler-1]       [Scheduler-2]       [Scheduler-3]
     (owns tasks       (owns tasks          (owns tasks
      0-999)            1000-1999)           2000-2999)
@@ -3613,13 +3651,13 @@ def rebalance_partitions(current_nodes, new_nodes):
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you prevent thundering herd when a failed node's tasks are redistributed?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you prevent thundering herd when a failed node's tasks are redistributed?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **The Problem**: Node-3 dies. It owned 1000 tasks. All surviving nodes detect this simultaneously and try to claim all 1000 tasks at once:
 - Database gets hammered with UPDATE queries
@@ -3754,16 +3792,16 @@ class RateLimitedRecovery:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h3 style="color: #58a6ff; margin: 0 0 24px 0;">Cron and Timing Deep Dive</h3>
+<div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e40af; margin: 0 0 24px 0;">Cron and Timing Deep Dive</h3>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you implement cron-style recurring tasks?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you implement cron-style recurring tasks?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **Core Concept**: Parse cron expression into field constraints, then find next matching datetime.
 
@@ -3833,17 +3871,17 @@ def schedule_next_occurrence(task):
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle daylight saving time transitions?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle daylight saving time transitions?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **The Problem**:
-- <span style="color: #f85149;">**Spring Forward**</span>: 2:00 AM → 3:00 AM (2:30 AM doesn't exist)
-- <span style="color: #ffa657;">**Fall Back**</span>: 2:00 AM → 1:00 AM (1:30 AM happens twice)
+- <span style="color: #dc2626;">**Spring Forward**</span>: 2:00 AM → 3:00 AM (2:30 AM doesn't exist)
+- <span style="color: #c2410c;">**Fall Back**</span>: 2:00 AM → 1:00 AM (1:30 AM happens twice)
 
 **Scenario 1**: Task scheduled for 2:30 AM on spring-forward day
 
@@ -3922,13 +3960,13 @@ class TimezoneAwareCronTask:
 </details>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you efficiently query 'which cron tasks fire in the next 5 minutes' across millions of tasks?"</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "How do you efficiently query 'which cron tasks fire in the next 5 minutes' across millions of tasks?"</div>
 
 <details>
-<summary style="color: #a371f7; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
-<div style="margin-top: 16px; padding: 16px; background: #161b22; border-radius: 8px;">
+<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **The Problem**: Computing `next_run()` for 1 million cron tasks on every scheduler tick is too slow.
 

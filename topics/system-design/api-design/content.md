@@ -14,12 +14,12 @@ This guide provides interview-depth coverage of the critical dimensions of API d
 
 **GraphQL** models APIs around a typed schema with a single endpoint. Clients specify exactly what data they need through queries. The client dictates response structure.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f8fafc; margin: 0 0 20px 0; text-align: center;">REST vs GraphQL: Request Flow Comparison</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
+  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">REST vs GraphQL: Request Flow Comparison</h4>
   <div style="display: flex; flex-wrap: wrap; gap: 24px;">
     <div style="flex: 1; min-width: 300px;">
       <div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">REST: Multiple Round Trips</div>
-      <div style="background: #1e3a5f; padding: 16px; border-radius: 0 0 8px 8px;">
+      <div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #3b82f6;">
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
             <strong>Request 1:</strong> GET /users/123
@@ -40,12 +40,12 @@ This guide provides interview-depth coverage of the critical dimensions of API d
             Response: {productId, name, price}
           </div>
         </div>
-        <div style="color: #fbbf24; font-size: 12px; margin-top: 12px; text-align: center;">3 round trips, potential over-fetching</div>
+        <div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center;">3 round trips, potential over-fetching</div>
       </div>
     </div>
     <div style="flex: 1; min-width: 300px;">
       <div style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">GraphQL: Single Request</div>
-      <div style="background: #4c1d2e; padding: 16px; border-radius: 0 0 8px 8px;">
+      <div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #e11d48;">
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">query {
   user(id: "123") {
@@ -856,19 +856,19 @@ function versionMiddleware(req, res, next) {
 
 **Solution Architecture:**
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f8fafc; margin: 0 0 20px 0; text-align: center;">Version Translation Architecture</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
+  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Version Translation Architecture</h4>
   <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
     <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
       <div style="font-weight: 600;">Client Request</div>
       <div style="font-size: 12px; opacity: 0.9;">API-Version: 2024-01</div>
     </div>
-    <div style="color: #64748b;">|</div>
+    <div style="color: #94a3b8;">|</div>
     <div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; width: 80%; max-width: 400px;">
       <div style="font-weight: 600;">API Gateway</div>
       <div style="font-size: 12px; opacity: 0.9; margin-top: 4px;">Version Registry + Transform Engine</div>
     </div>
-    <div style="display: flex; gap: 24px; color: #64748b;">
+    <div style="display: flex; gap: 24px; color: #94a3b8;">
       <span>|</span>
       <span>|</span>
       <span>|</span>
@@ -989,41 +989,41 @@ For APIs: Replaying a request with the same idempotency key returns the same res
 
 ### Implementation Architecture
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f8fafc; margin: 0 0 20px 0; text-align: center;">Idempotency Request Flow</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
+  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Idempotency Request Flow</h4>
   <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
       <div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; min-width: 120px; text-align: center;">Request + Key</div>
-      <div style="color: #64748b;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+      <div style="color: #94a3b8;">--></div>
+      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>1. Check Store</strong>: Key exists?
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-left: 150px;">
-      <div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+      <div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>YES</strong>: Return cached response (no side effects)
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-left: 150px;">
-      <div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+      <div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>NO</strong>: Acquire lock, process request
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-left: 150px;">
-      <div style="color: #64748b;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+      <div style="color: #94a3b8;">--></div>
+      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>2. Execute</strong>: Run business logic
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-left: 150px;">
-      <div style="color: #64748b;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+      <div style="color: #94a3b8;">--></div>
+      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>3. Store</strong>: Save response with key (TTL: 24h)
       </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px; margin-left: 150px;">
-      <div style="color: #64748b;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+      <div style="color: #94a3b8;">--></div>
+      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
         <strong>4. Release</strong>: Unlock, return response
       </div>
     </div>
@@ -1301,19 +1301,19 @@ def create_payment():
 
 **Solution: Orchestrated Saga with Per-Step Idempotency**
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f8fafc; margin: 0 0 20px 0; text-align: center;">Distributed Idempotency Architecture</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
+  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Distributed Idempotency Architecture</h4>
   <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
     <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
       <div style="font-weight: 600;">API Gateway</div>
       <div style="font-size: 11px;">Idempotency-Key: order_abc123</div>
     </div>
-    <div style="color: #64748b;">|</div>
+    <div style="color: #94a3b8;">|</div>
     <div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; width: 80%; max-width: 400px;">
       <div style="font-weight: 600; text-align: center;">Saga Orchestrator</div>
       <div style="font-size: 12px; margin-top: 8px; text-align: center;">Tracks saga state + step completion</div>
     </div>
-    <div style="display: flex; gap: 8px; color: #64748b;">
+    <div style="display: flex; gap: 8px; color: #94a3b8;">
       <span>|</span>
       <span>|</span>
       <span>|</span>

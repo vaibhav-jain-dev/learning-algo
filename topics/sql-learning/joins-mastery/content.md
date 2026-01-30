@@ -712,9 +712,12 @@ WHERE o.status = 'completed';
 <div>
 <div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Hard</div>
 <ul style="margin: 0; padding-left: 20px; color: #1e293b; line-height: 2;">
-<li><strong>How do you get the latest record per group using joins?</strong></li>
-<li><strong>Explain Hash Join vs Nested Loop Join vs Merge Join.</strong></li>
-<li><strong>How would you optimize a query joining 5+ tables?</strong></li>
+<li><strong>How do you get the latest record per group using joins?</strong><br/>
+<span style="color: #475569;">Use a self-join with a subquery: <code>SELECT t1.* FROM table t1 JOIN (SELECT group_col, MAX(date_col) AS max_date FROM table GROUP BY group_col) t2 ON t1.group_col = t2.group_col AND t1.date_col = t2.max_date</code>. Alternatively, use ROW_NUMBER() window function with a CTE.</span></li>
+<li><strong>Explain Hash Join vs Nested Loop Join vs Merge Join.</strong><br/>
+<span style="color: #475569;">Nested Loop: O(n*m), best for small tables or indexed inner table. Hash Join: O(n+m), builds hash table on smaller table, best for equality joins on medium-large tables. Merge Join: O(n log n + m log m), requires sorted input, efficient for pre-sorted data or range joins.</span></li>
+<li><strong>How would you optimize a query joining 5+ tables?</strong><br/>
+<span style="color: #475569;">Ensure all join columns are indexed. Filter rows early with WHERE before joins. Check statistics are up to date (run ANALYZE). Consider join order - start with most selective filters. Use EXPLAIN ANALYZE to identify slow join operations. Consider denormalization or materialized views for frequently run queries.</span></li>
 </ul>
 </div>
 </div>
