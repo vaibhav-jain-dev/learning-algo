@@ -263,10 +263,6 @@ async function generatePdf() {
     const btnText = document.getElementById('pdf-btn-text');
     const loading = document.getElementById('pdf-loading');
 
-    // Variables for cleanup
-    let overlay = null;
-    let messageDiv = null;
-
     // Show loading state
     if (btnText) btnText.classList.add('hidden');
     if (loading) loading.classList.remove('hidden');
@@ -670,52 +666,35 @@ async function generatePdf() {
         console.log('Container text length:', pdfContainer.textContent.length);
         console.log('Number of elements:', pdfContainer.querySelectorAll('*').length);
 
-        // Make container fully visible in a modal overlay for proper rendering
-        // html2canvas needs the element to be truly visible, not hidden with opacity
-        overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        overlay.style.zIndex = '99999';
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'flex-start';
-        overlay.style.justifyContent = 'center';
-        overlay.style.overflow = 'auto';
-        overlay.style.padding = '20px';
-
-        pdfContainer.style.position = 'relative';
+        // Make container visible but in the background (no overlay)
+        // Position it in a way that html2canvas can capture it but user doesn't see it
+        pdfContainer.style.position = 'absolute';
+        pdfContainer.style.top = '-99999px'; // Far off screen but still in document flow
+        pdfContainer.style.left = '0';
         pdfContainer.style.width = '680px';
         pdfContainer.style.backgroundColor = 'white';
-        pdfContainer.style.margin = '0 auto';
-        pdfContainer.style.boxShadow = '0 0 50px rgba(255, 255, 255, 0.3)';
+        pdfContainer.style.visibility = 'hidden'; // Hidden but still rendered
+        pdfContainer.style.pointerEvents = 'none';
 
-        overlay.appendChild(pdfContainer);
-        document.body.appendChild(overlay);
+        document.body.appendChild(pdfContainer);
 
-        // Show message to user
-        messageDiv = document.createElement('div');
-        messageDiv.style.position = 'fixed';
-        messageDiv.style.top = '20px';
-        messageDiv.style.left = '50%';
-        messageDiv.style.transform = 'translateX(-50%)';
-        messageDiv.style.backgroundColor = '#0d6efd';
-        messageDiv.style.color = 'white';
-        messageDiv.style.padding = '15px 30px';
-        messageDiv.style.borderRadius = '8px';
-        messageDiv.style.zIndex = '100000';
-        messageDiv.style.fontSize = '16px';
-        messageDiv.style.fontWeight = 'bold';
-        messageDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-        messageDiv.textContent = 'Generating PDF... Please wait';
-        document.body.appendChild(messageDiv);
+        // Force browser to render and calculate all styles
+        // Multiple techniques to ensure everything is ready
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-        // Give browser time to render and calculate layout
+        // Force reflow to ensure all styles are applied
+        pdfContainer.offsetHeight; // This forces a reflow
+
+        // Use requestAnimationFrame to ensure rendering is complete
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        // Wait a bit more for any dynamic content
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        console.log('Container is now rendered and visible, proceeding with PDF generation...');
+        console.log('Container rendered, preparing for PDF capture...');
+
+        // Make it visible for html2canvas (but still off-screen)
+        pdfContainer.style.visibility = 'visible';
 
         // Generate filename
         let filename;
@@ -739,11 +718,13 @@ async function generatePdf() {
                 scale: 2,
                 useCORS: true,
                 letterRendering: true,
-                logging: true, // Enable logging for debugging
+                logging: false,
                 width: 680,
                 windowWidth: 680,
-                scrollY: 0,
-                scrollX: 0
+                scrollY: -window.scrollY,
+                scrollX: -window.scrollX,
+                y: 0,
+                x: 0
             },
             jsPDF: {
                 unit: 'mm',
@@ -799,12 +780,9 @@ async function generatePdf() {
             pdf.save(filename);
         });
 
-        // Remove temporary overlay, message, and container
-        if (overlay && overlay.parentNode) {
-            document.body.removeChild(overlay);
-        }
-        if (messageDiv && messageDiv.parentNode) {
-            document.body.removeChild(messageDiv);
+        // Remove temporary container
+        if (pdfContainer && pdfContainer.parentNode) {
+            document.body.removeChild(pdfContainer);
         }
 
         // Close modal on success
@@ -813,14 +791,10 @@ async function generatePdf() {
     } catch (error) {
         console.error('PDF generation failed:', error);
 
-        // Clean up overlay and message on error
-        const existingOverlay = document.querySelector('.pdf-export-container')?.closest('div[style*="position: fixed"]');
-        if (existingOverlay && existingOverlay.parentNode) {
-            document.body.removeChild(existingOverlay);
-        }
-        const existingMessage = document.querySelector('div[style*="Generating PDF"]');
-        if (existingMessage && existingMessage.parentNode) {
-            document.body.removeChild(existingMessage);
+        // Clean up container on error
+        const existingContainer = document.querySelector('.pdf-export-container');
+        if (existingContainer && existingContainer.parentNode) {
+            document.body.removeChild(existingContainer);
         }
 
         // Show detailed error message to user
