@@ -2558,6 +2558,540 @@ Examples:
                 <a class="btn btn-primary" onclick="loadLesson('range-agg')">Next: Range Aggregation &#8594;</a>
             </div>
         `
+    },
+    'prefix-query': {
+        title: 'Prefix Query',
+        category: 'Advanced Search',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Prefix Query: Matching the Beginning of Terms</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is a Prefix Query?</h2>
+                <p>The prefix query matches documents containing terms that <strong>start with</strong> a specified prefix. It's useful for autocomplete and type-ahead functionality.</p>
+
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #6ee7b7;">
+                    <h4 style="color: #065f46; margin-bottom: 1rem;">Prefix Matching Visualization</h4>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-size: 0.85rem; color: #6b7280; margin-bottom: 0.5rem;">Query Prefix</div>
+                            <div style="font-family: monospace; font-size: 1.25rem; color: #059669; font-weight: 600;">"blo"</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem; border: 2px solid #22c55e;">
+                                <span style="color: #22c55e; font-weight: 600;">&#10003;</span>
+                                <span style="font-family: monospace;"><span style="background: #bbf7d0; padding: 0 2px;">blo</span>od</span>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem; border: 2px solid #22c55e;">
+                                <span style="color: #22c55e; font-weight: 600;">&#10003;</span>
+                                <span style="font-family: monospace;"><span style="background: #bbf7d0; padding: 0 2px;">blo</span>ating</span>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem; border: 2px solid #22c55e;">
+                                <span style="color: #22c55e; font-weight: 600;">&#10003;</span>
+                                <span style="font-family: monospace;"><span style="background: #bbf7d0; padding: 0 2px;">blo</span>cker</span>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem; border: 2px solid #ef4444;">
+                                <span style="color: #ef4444; font-weight: 600;">&#10007;</span>
+                                <span style="font-family: monospace;">hemoglobin</span>
+                                <span style="font-size: 0.75rem; color: #6b7280;">(not at start)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h3>Key Characteristics</h3>
+                    <ul>
+                        <li><strong>Term-level query:</strong> Works on exact terms, not analyzed text</li>
+                        <li><strong>Case-sensitive:</strong> Unless field is lowercased at index time</li>
+                        <li><strong>No scoring by default:</strong> All matches get same score</li>
+                        <li><strong>Performance:</strong> Can be slow without proper indexing</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Prefix Query</h2>
+
+                <div class="example-query">
+                    <h4>Simple Prefix Search</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "prefix": {
+      "testName": {
+        "value": "blood"
+      }
+    }
+  }
+}</code></pre>
+                    <p>Finds all tests whose name starts with "blood"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;prefix&quot;:{&quot;testName&quot;:{&quot;value&quot;:&quot;blood&quot;}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Case-Insensitive Prefix</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "prefix": {
+      "testName": {
+        "value": "comp",
+        "case_insensitive": true
+      }
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;prefix&quot;:{&quot;testName&quot;:{&quot;value&quot;:&quot;comp&quot;,&quot;case_insensitive&quot;:true}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Prefix vs Alternatives</h2>
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #93c5fd;">
+                    <h4 style="color: #1e40af; margin-bottom: 1rem;">When to Use Each Approach</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">prefix query</div>
+                            <ul style="margin: 0; padding-left: 1rem; font-size: 0.85rem; color: #475569;">
+                                <li>Simple prefix matching</li>
+                                <li>Small datasets</li>
+                                <li>One-off queries</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #7c3aed; margin-bottom: 0.5rem;">edge_ngram</div>
+                            <ul style="margin: 0; padding-left: 1rem; font-size: 0.85rem; color: #475569;">
+                                <li>Autocomplete feature</li>
+                                <li>High-volume queries</li>
+                                <li>Need scoring</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #059669; margin-bottom: 0.5rem;">completion suggester</div>
+                            <ul style="margin: 0; padding-left: 1rem; font-size: 0.85rem; color: #475569;">
+                                <li>Search-as-you-type</li>
+                                <li>Fastest performance</li>
+                                <li>Limited flexibility</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Prefix query matches terms starting with a prefix</li>
+                        <li>&#10003; Works on term level (use keyword fields for exact prefix)</li>
+                        <li>&#10003; Can be case-insensitive with case_insensitive: true</li>
+                        <li>&#10003; For production autocomplete, prefer edge_ngram tokenizer</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('wildcard-query')">&#8592; Previous: Wildcard</a>
+                <a class="btn btn-primary" onclick="loadLesson('fuzzy-query')">Next: Fuzzy Search &#8594;</a>
+            </div>
+        `
+    },
+    'fuzzy-query': {
+        title: 'Fuzzy Search',
+        category: 'Advanced Search',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Fuzzy Search: Handling Typos and Misspellings</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Fuzzy Search?</h2>
+                <p>Fuzzy search finds documents that match terms similar to the search term, allowing for typos, misspellings, and minor variations using Levenshtein edit distance.</p>
+
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fcd34d;">
+                    <h4 style="color: #92400e; margin-bottom: 1rem;">Edit Distance Examples</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">1 Edit Distance</div>
+                            <div style="font-size: 0.9rem; color: #475569;">
+                                <div>blood → <span style="color: #16a34a;">blod</span> (deletion)</div>
+                                <div>blood → <span style="color: #16a34a;">bloood</span> (insertion)</div>
+                                <div>blood → <span style="color: #16a34a;">bload</span> (substitution)</div>
+                            </div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">2 Edit Distance</div>
+                            <div style="font-size: 0.9rem; color: #475569;">
+                                <div>blood → <span style="color: #16a34a;">blud</span></div>
+                                <div>blood → <span style="color: #16a34a;">bleed</span></div>
+                                <div>blood → <span style="color: #16a34a;">flood</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Using Fuzzy in Match Query</h2>
+
+                <div class="example-query">
+                    <h4>Fuzzy Match with AUTO</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": {
+        "query": "blod",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}</code></pre>
+                    <p>AUTO adjusts fuzziness based on term length (0-2 chars: exact, 3-5: 1 edit, 6+: 2 edits)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:{&quot;query&quot;:&quot;blod&quot;,&quot;fuzziness&quot;:&quot;AUTO&quot;}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Explicit Fuzziness</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": {
+      "testName": {
+        "query": "complet blod count",
+        "fuzziness": 1
+      }
+    }
+  }
+}</code></pre>
+                    <p>Allow 1 edit per term</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:{&quot;query&quot;:&quot;complet blod count&quot;,&quot;fuzziness&quot;:1}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Fuzziness Options</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Value</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>0</code></td><td>Exact match only</td></tr>
+                            <tr><td><code>1</code></td><td>Allow 1 edit</td></tr>
+                            <tr><td><code>2</code></td><td>Allow 2 edits (max)</td></tr>
+                            <tr><td><code>AUTO</code></td><td>Automatic based on term length</td></tr>
+                            <tr><td><code>AUTO:3,6</code></td><td>Custom thresholds</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Fuzzy search handles typos using edit distance</li>
+                        <li>&#10003; Use fuzziness: "AUTO" for smart defaults</li>
+                        <li>&#10003; Maximum edit distance is 2</li>
+                        <li>&#10003; Fuzzy increases recall but may reduce precision</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('prefix-query')">&#8592; Previous: Prefix Query</a>
+                <a class="btn btn-primary" onclick="loadLesson('nested-query')">Next: Nested Queries &#8594;</a>
+            </div>
+        `
+    },
+    'multi-match': {
+        title: 'Multi-Match Query',
+        category: 'Query DSL',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Multi-Match Query: Search Across Multiple Fields</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Multi-Match?</h2>
+                <p>Multi-match query searches the same text across multiple fields, combining scores to find the best matches.</p>
+
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+                    <h4 style="color: #166534; margin-bottom: 1rem;">Multi-Field Search Flow</h4>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-size: 0.85rem; color: #6b7280;">Query</div>
+                            <div style="font-family: monospace; color: #166534;">"blood test"</div>
+                        </div>
+                        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="background: #dcfce7; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">testName</div>
+                            <div style="background: #dcfce7; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">testAlias</div>
+                            <div style="background: #dcfce7; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">description</div>
+                        </div>
+                        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-size: 0.85rem; color: #6b7280;">Combined</div>
+                            <div style="font-weight: 600; color: #166534;">Score</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Multi-Match</h2>
+
+                <div class="example-query">
+                    <h4>Search Multiple Fields</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "blood",
+      "fields": ["testName", "testAlias"]
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;multi_match&quot;:{&quot;query&quot;:&quot;blood&quot;,&quot;fields&quot;:[&quot;testName&quot;,&quot;testAlias&quot;]}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>With Field Boosting</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "liver function",
+      "fields": ["testName^3", "testAlias^2", "description"]
+    }
+  }
+}</code></pre>
+                    <p>testName matches are 3x more important</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;multi_match&quot;:{&quot;query&quot;:&quot;liver function&quot;,&quot;fields&quot;:[&quot;testName^3&quot;,&quot;testAlias^2&quot;]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Multi-Match Types</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Behavior</th><th>Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>best_fields</code></td><td>Score from best matching field</td><td>Default, general search</td></tr>
+                            <tr><td><code>most_fields</code></td><td>Combine scores from all fields</td><td>Same text, different analyzers</td></tr>
+                            <tr><td><code>cross_fields</code></td><td>Treat fields as one big field</td><td>First name + last name</td></tr>
+                            <tr><td><code>phrase</code></td><td>Run match_phrase on each field</td><td>Exact phrase search</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Multi-match searches same query across multiple fields</li>
+                        <li>&#10003; Use ^N for field boosting</li>
+                        <li>&#10003; best_fields: uses highest scoring field</li>
+                        <li>&#10003; cross_fields: treats all fields as one</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('match-phrase')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('query-string')">Next: Query String &#8594;</a>
+            </div>
+        `
+    },
+    'highlighting': {
+        title: 'Highlighting',
+        category: 'Advanced Search',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Highlighting: Show Matching Text</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Highlighting?</h2>
+                <p>Highlighting returns snippets of text from matching fields with the search terms wrapped in tags, helping users see why a document matched.</p>
+
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fcd34d;">
+                    <h4 style="color: #92400e; margin-bottom: 1rem;">Highlighting Example</h4>
+                    <div style="background: white; border-radius: 8px; padding: 1rem;">
+                        <div style="font-size: 0.9rem; color: #475569;">Query: "blood count"</div>
+                        <div style="margin-top: 0.75rem; font-size: 1rem;">
+                            Complete <em style="background: #fef08a; padding: 0 4px; font-style: normal; font-weight: 600;">Blood</em> <em style="background: #fef08a; padding: 0 4px; font-style: normal; font-weight: 600;">Count</em> (CBC) Test
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Highlighting</h2>
+
+                <div class="example-query">
+                    <h4>Simple Highlight</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "highlight": {
+    "fields": {
+      "testName": {}
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},&quot;highlight&quot;:{&quot;fields&quot;:{&quot;testName&quot;:{}}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Custom Tags</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "highlight": {
+    "pre_tags": ["<strong>"],
+    "post_tags": ["</strong>"],
+    "fields": {
+      "testName": {}
+    }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},&quot;highlight&quot;:{&quot;pre_tags&quot;:[&quot;<strong>&quot;],&quot;post_tags&quot;:[&quot;</strong>&quot;],&quot;fields&quot;:{&quot;testName&quot;:{}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Highlighting shows why documents matched</li>
+                        <li>&#10003; Default tags are &lt;em&gt; tags</li>
+                        <li>&#10003; Customize with pre_tags and post_tags</li>
+                        <li>&#10003; Essential for search UX</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('nested-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('suggesters')">Next: Suggesters &#8594;</a>
+            </div>
+        `
+    },
+    'suggesters': {
+        title: 'Suggesters',
+        category: 'Advanced Search',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Suggesters: Search Suggestions and Autocomplete</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Types of Suggesters</h2>
+                <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d8b4fe;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #7c3aed; margin-bottom: 0.5rem;">Term Suggester</div>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Suggests corrections for misspelled terms based on edit distance</p>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #7c3aed; margin-bottom: 0.5rem;">Phrase Suggester</div>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Suggests corrections for entire phrases, considering word order</p>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #7c3aed; margin-bottom: 0.5rem;">Completion Suggester</div>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Optimized for autocomplete, extremely fast prefix-based suggestions</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Term Suggester</h2>
+                <div class="example-query">
+                    <h4>Spell Correction</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "suggest": {
+    "test-suggest": {
+      "text": "blod",
+      "term": {
+        "field": "testName"
+      }
+    }
+  }
+}</code></pre>
+                    <p>Suggests "blood" for misspelled "blod"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;suggest&quot;:{&quot;test-suggest&quot;:{&quot;text&quot;:&quot;blod&quot;,&quot;term&quot;:{&quot;field&quot;:&quot;testName&quot;}}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Term suggester: Spell correction for individual terms</li>
+                        <li>&#10003; Phrase suggester: Correct entire phrases</li>
+                        <li>&#10003; Completion suggester: Fast autocomplete</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('highlighting')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('terms-agg')">Next: Terms Aggregation &#8594;</a>
+            </div>
+        `
     }
 };
 
