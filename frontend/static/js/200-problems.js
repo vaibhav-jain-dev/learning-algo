@@ -5298,25 +5298,65 @@
         html += '<div class="test-summary ' + summaryClass + '">';
         html += '<span class="summary-icon">' + summaryIcon + '</span>';
         html += '<span class="summary-text">' + results.passed + '/' + results.total + ' tests passed</span>';
+
+        // Show total execution time if available
+        if (results.total_time_ms !== undefined) {
+            var timeClass = results.total_time_ms > (results.time_limit_ms || 1000) ? 'time-exceeded' : 'time-ok';
+            html += '<span class="summary-time ' + timeClass + '">' + results.total_time_ms.toFixed(2) + 'ms';
+            if (results.time_limit_ms) {
+                html += ' / ' + results.time_limit_ms + 'ms limit';
+            }
+            html += '</span>';
+        }
         html += '</div>';
 
         // Individual test results
         html += '<div class="test-cases">';
         results.results.forEach(function(test, idx) {
-            var statusClass = test.status === 'PASS' ? 'test-pass' : (test.status === 'ERROR' ? 'test-error' : 'test-fail');
-            var statusIcon = test.status === 'PASS' ? '✓' : (test.status === 'ERROR' ? '!' : '✗');
+            var statusClass = 'test-fail';
+            var statusIcon = '✗';
+            var statusLabel = test.status;
+
+            if (test.status === 'PASS') {
+                statusClass = 'test-pass';
+                statusIcon = '✓';
+            } else if (test.status === 'TLE') {
+                statusClass = 'test-tle';
+                statusIcon = '⏱';
+                statusLabel = 'TLE';
+            } else if (test.status === 'MLE') {
+                statusClass = 'test-mle';
+                statusIcon = '💾';
+                statusLabel = 'MLE';
+            } else if (test.status === 'ERROR') {
+                statusClass = 'test-error';
+                statusIcon = '!';
+            }
 
             html += '<div class="test-case ' + statusClass + '">';
             html += '<div class="test-header" onclick="toggleTestDetails(this)">';
             html += '<span class="test-status-icon">' + statusIcon + '</span>';
             html += '<span class="test-name">' + test.name + '</span>';
-            html += '<span class="test-status-badge">' + test.status + '</span>';
+
+            // Show execution time for each test
+            if (test.time_ms !== undefined) {
+                var testTimeClass = test.time_ms > (test.time_limit_ms || 1000) ? 'time-exceeded' : 'time-ok';
+                html += '<span class="test-time ' + testTimeClass + '">' + test.time_ms.toFixed(2) + 'ms</span>';
+            }
+
+            html += '<span class="test-status-badge">' + statusLabel + '</span>';
             html += '<span class="test-expand-icon">▶</span>';
             html += '</div>';
 
             html += '<div class="test-details" style="display:none;">';
             if (test.error) {
                 html += '<div class="test-error-msg"><strong>Error:</strong> ' + escapeHtmlOutput(test.error) + '</div>';
+            } else if (test.status === 'TLE') {
+                html += '<div class="test-error-msg"><strong>Time Limit Exceeded:</strong> ' + test.time_ms.toFixed(2) + 'ms &gt; ' + (test.time_limit_ms || 1000) + 'ms limit</div>';
+                html += '<div class="test-expected"><strong>Expected:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.expected)) + '</code></div>';
+                html += '<div class="test-actual"><strong>Actual:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.actual)) + '</code></div>';
+            } else if (test.status === 'MLE') {
+                html += '<div class="test-error-msg"><strong>Memory Limit Exceeded:</strong> Your solution uses too much memory.</div>';
             } else {
                 html += '<div class="test-expected"><strong>Expected:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.expected)) + '</code></div>';
                 html += '<div class="test-actual"><strong>Actual:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.actual)) + '</code></div>';
@@ -5475,8 +5515,13 @@
         var paramUnpack = paramNames.map(function(p) { return p + " = input_args['" + p + "']"; }).join('\n            ');
 
         var code = cleanUserCode + '\n\n';
+        // Get time limit from problem (default 1000ms, with 500ms buffer for network)
+        var timeLimit = problem.timeLimit || 1000;
+
         code += '# ============ TEST RUNNER (DO NOT MODIFY BELOW) ============\n';
-        code += 'import json\n\n';
+        code += 'import json\n';
+        code += 'import time\n\n';
+        code += 'TIME_LIMIT_MS = ' + timeLimit + '  # milliseconds per test case\n\n';
         code += 'def compare_output(actual, expected):\n';
         code += '    """Compare actual output with expected output."""\n';
         code += '    if isinstance(actual, list) and isinstance(expected, list):\n';
@@ -5492,17 +5537,27 @@
         code += '    test_cases = [\n        ' + testCasesPy + '\n    ]\n\n';
         code += '    results = []\n';
         code += '    passed = 0\n';
-        code += '    failed = 0\n\n';
+        code += '    failed = 0\n';
+        code += '    total_time_ms = 0\n\n';
         code += '    for i, tc in enumerate(test_cases):\n';
         code += '        try:\n';
         code += '            input_args = tc["input"]\n';
         code += '            ' + paramUnpack + '\n\n';
+        code += '            start_time = time.perf_counter()\n';
         code += '            actual = ' + funcName + '(' + paramList + ')\n';
-        code += '            expected = tc["expected"]\n\n';
+        code += '            end_time = time.perf_counter()\n';
+        code += '            exec_time_ms = (end_time - start_time) * 1000\n';
+        code += '            total_time_ms += exec_time_ms\n\n';
+        code += '            expected = tc["expected"]\n';
         code += '            is_pass = compare_output(actual, expected)\n\n';
-        code += '            if is_pass:\n';
+        code += '            # Check time limit (with some buffer)\n';
+        code += '            time_exceeded = exec_time_ms > TIME_LIMIT_MS\n\n';
+        code += '            if is_pass and not time_exceeded:\n';
         code += '                passed += 1\n';
         code += '                status = "PASS"\n';
+        code += '            elif time_exceeded:\n';
+        code += '                failed += 1\n';
+        code += '                status = "TLE"  # Time Limit Exceeded\n';
         code += '            else:\n';
         code += '                failed += 1\n';
         code += '                status = "FAIL"\n\n';
@@ -5510,8 +5565,17 @@
         code += '                "name": tc["name"],\n';
         code += '                "status": status,\n';
         code += '                "expected": expected,\n';
-        code += '                "actual": actual\n';
+        code += '                "actual": actual,\n';
+        code += '                "time_ms": round(exec_time_ms, 2),\n';
+        code += '                "time_limit_ms": TIME_LIMIT_MS\n';
         code += '            })\n\n';
+        code += '        except MemoryError:\n';
+        code += '            failed += 1\n';
+        code += '            results.append({\n';
+        code += '                "name": tc["name"],\n';
+        code += '                "status": "MLE",\n';
+        code += '                "error": "Memory Limit Exceeded"\n';
+        code += '            })\n';
         code += '        except Exception as e:\n';
         code += '            failed += 1\n';
         code += '            results.append({\n';
@@ -5523,6 +5587,8 @@
         code += '        "total": len(test_cases),\n';
         code += '        "passed": passed,\n';
         code += '        "failed": failed,\n';
+        code += '        "total_time_ms": round(total_time_ms, 2),\n';
+        code += '        "time_limit_ms": TIME_LIMIT_MS,\n';
         code += '        "results": results\n';
         code += '    }\n';
         code += '    print("__TEST_RESULTS__")\n';
@@ -5633,29 +5699,38 @@
             code += 'package main\n\n';
         }
 
+        // Get time limit from problem (default 1000ms)
+        var timeLimit = problem.timeLimit || 1000;
+
         // Add necessary imports - NO reflect package (security blocked)
         if (cleanUserCode.indexOf('"encoding/json"') === -1) {
             code += 'import (\n';
             code += '\t"encoding/json"\n';
             code += '\t"fmt"\n';
             code += '\t"sort"\n';
+            code += '\t"time"\n';
             code += ')\n\n';
         }
 
         code += cleanUserCode + '\n\n';
         code += '// ============ TEST RUNNER (DO NOT MODIFY BELOW) ============\n\n';
+        code += 'const TimeLimitMS = ' + timeLimit + ' // milliseconds per test case\n\n';
         code += 'type TestResult struct {\n';
-        code += '\tName     string      `json:"name"`\n';
-        code += '\tStatus   string      `json:"status"`\n';
-        code += '\tExpected interface{} `json:"expected"`\n';
-        code += '\tActual   interface{} `json:"actual"`\n';
-        code += '\tError    string      `json:"error,omitempty"`\n';
+        code += '\tName        string      `json:"name"`\n';
+        code += '\tStatus      string      `json:"status"`\n';
+        code += '\tExpected    interface{} `json:"expected"`\n';
+        code += '\tActual      interface{} `json:"actual"`\n';
+        code += '\tTimeMS      float64     `json:"time_ms"`\n';
+        code += '\tTimeLimitMS int         `json:"time_limit_ms"`\n';
+        code += '\tError       string      `json:"error,omitempty"`\n';
         code += '}\n\n';
         code += 'type TestOutput struct {\n';
-        code += '\tTotal   int          `json:"total"`\n';
-        code += '\tPassed  int          `json:"passed"`\n';
-        code += '\tFailed  int          `json:"failed"`\n';
-        code += '\tResults []TestResult `json:"results"`\n';
+        code += '\tTotal       int          `json:"total"`\n';
+        code += '\tPassed      int          `json:"passed"`\n';
+        code += '\tFailed      int          `json:"failed"`\n';
+        code += '\tTotalTimeMS float64      `json:"total_time_ms"`\n';
+        code += '\tTimeLimitMS int          `json:"time_limit_ms"`\n';
+        code += '\tResults     []TestResult `json:"results"`\n';
         code += '}\n\n';
         code += 'func intSlicesEqual(a, b []int) bool {\n';
         code += '\tif len(a) != len(b) { return false }\n';
@@ -5697,23 +5772,34 @@
         code += testCasesGo + '\n';
         code += '\t}\n\n';
         code += '\toutput := TestOutput{\n';
-        code += '\t\tTotal:   len(testCases),\n';
-        code += '\t\tResults: make([]TestResult, 0, len(testCases)),\n';
+        code += '\t\tTotal:       len(testCases),\n';
+        code += '\t\tTimeLimitMS: TimeLimitMS,\n';
+        code += '\t\tResults:     make([]TestResult, 0, len(testCases)),\n';
         code += '\t}\n\n';
+        code += '\tvar totalTimeMS float64\n\n';
         code += '\tfor _, tc := range testCases {\n';
-        code += '\t\tresult := TestResult{Name: tc.name}\n';
+        code += '\t\tresult := TestResult{Name: tc.name, TimeLimitMS: TimeLimitMS}\n\n';
+        code += '\t\tstartTime := time.Now()\n';
         code += '\t\tactual := ' + funcName + '(' + paramNames + ')\n';
+        code += '\t\texecTimeMS := float64(time.Since(startTime).Microseconds()) / 1000.0\n';
+        code += '\t\ttotalTimeMS += execTimeMS\n\n';
         code += '\t\tresult.Expected = tc.expected\n';
-        code += '\t\tresult.Actual = actual\n\n';
-        code += '\t\tif compareOutputTest(actual, tc.expected) {\n';
+        code += '\t\tresult.Actual = actual\n';
+        code += '\t\tresult.TimeMS = execTimeMS\n\n';
+        code += '\t\ttimeExceeded := execTimeMS > float64(TimeLimitMS)\n\n';
+        code += '\t\tif compareOutputTest(actual, tc.expected) && !timeExceeded {\n';
         code += '\t\t\tresult.Status = "PASS"\n';
         code += '\t\t\toutput.Passed++\n';
+        code += '\t\t} else if timeExceeded {\n';
+        code += '\t\t\tresult.Status = "TLE"\n';
+        code += '\t\t\toutput.Failed++\n';
         code += '\t\t} else {\n';
         code += '\t\t\tresult.Status = "FAIL"\n';
         code += '\t\t\toutput.Failed++\n';
         code += '\t\t}\n';
         code += '\t\toutput.Results = append(output.Results, result)\n';
         code += '\t}\n\n';
+        code += '\toutput.TotalTimeMS = totalTimeMS\n\n';
         code += '\tfmt.Println("__TEST_RESULTS__")\n';
         code += '\tjsonOutput, _ := json.Marshal(output)\n';
         code += '\tfmt.Println(string(jsonOutput))\n';
