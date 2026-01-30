@@ -121,7 +121,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
       &#8226; Parse "Paris" to bounding box / polygon coordinates<br/>
       &#8226; Filter listings within geographic area using spatial index<br/>
-      &#8226; Use Elasticsearch <code style="background: #161b22; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">geo_shape</code> query
+      &#8226; Use Elasticsearch <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">geo_shape</code> query
     </div>
   </div>
 
@@ -151,7 +151,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
       <div style="background: #a371f7; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">5,000 listings</div>
     </div>
     <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
-      &#8226; Filter: <code style="background: #161b22; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">guests >= 2</code><br/>
+      &#8226; Filter: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">guests >= 2</code><br/>
       &#8226; Apply price range, property type, amenities filters<br/>
       &#8226; Apply Instant Book, Superhost, accessibility filters
     </div>
@@ -167,7 +167,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
       <div style="background: #3fb950; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">Top 100 ranked</div>
     </div>
     <div style="color: #8b949e; font-size: 12px; line-height: 1.5;">
-      <div style="background: #161b22; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
+      <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
         Ranking Score = w1 * quality_score<br/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w2 * review_score<br/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w3 * response_rate<br/>
@@ -187,7 +187,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 ## Phase 1: Starting Phase
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Listings**: 1,000 - 50,000
@@ -255,7 +255,7 @@ class BookingService:
 ## Phase 2: Medium Scale
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Availability Calendar
 
@@ -269,7 +269,7 @@ class BookingService:
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
       <thead>
-        <tr style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%);">
+        <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">date</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">available</th>
@@ -278,21 +278,21 @@ class BookingService:
         </tr>
       </thead>
       <tbody>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">false</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">$150</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2</td>
         </tr>
-        <tr style="background: #0d1117;">
+        <tr style="background: #f8fafc;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-16</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">false</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">$150</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2</td>
         </tr>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-17</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #3fb950;">true</td>
@@ -310,7 +310,7 @@ class BookingService:
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
       <thead>
-        <tr style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%);">
+        <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">start_date</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">end_date</th>
@@ -319,14 +319,14 @@ class BookingService:
         </tr>
       </thead>
       <tbody>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-17</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">booked</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #1d4ed8;">B123</td>
         </tr>
-        <tr style="background: #0d1117;">
+        <tr style="background: #f8fafc;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-20</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-25</td>
@@ -339,7 +339,7 @@ class BookingService:
 </div>
 
 <!-- Query Example -->
-<div style="background: #161b22; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
   <div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Query: Available Dec 15-20?</div>
   <pre style="margin: 0; color: #c9d1d9; font-size: 11px; overflow-x: auto;"><code>SELECT NOT EXISTS(
     SELECT 1 FROM calendar_blocks
@@ -393,7 +393,7 @@ class PricingService:
 ## Phase 3: Airbnb Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Listings**: 7M+ active
@@ -407,7 +407,7 @@ class PricingService:
 
 <h4 style="color: #f85149; text-align: center; margin: 0 0 20px 0;">DOUBLE-BOOKING PREVENTION</h4>
 
-<div style="background: #21262d; border-radius: 10px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
   <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 8px;">Problem Statement</div>
   <div style="color: #8b949e; font-size: 12px;">Two guests try to book same listing for same dates simultaneously</div>
 </div>
@@ -511,7 +511,7 @@ class PricingService:
 <!-- Query Routing & Benefits -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-  <div style="background: #21262d; border-radius: 10px; padding: 16px;">
+  <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
     <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Query Routing</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Parse search location from query<br/>
@@ -520,7 +520,7 @@ class PricingService:
     </div>
   </div>
 
-  <div style="background: #21262d; border-radius: 10px; padding: 16px;">
+  <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
     <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Benefits</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Reduced index size per cluster<br/>
@@ -1197,13 +1197,13 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### The "$400/month Rental Platform" Architecture
 
 For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach houses in Outer Banks"):
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 <h4 style="color: #8b949e; margin: 0 0 16px 0;">Reality Check</h4>
 
@@ -1306,7 +1306,7 @@ LIMIT 20;
 
 ### When You DON'T Need Distributed Locking
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 16px;">Question: Do I need Redis for double-booking prevention?</div>
 
@@ -1362,7 +1362,7 @@ LIMIT 20;
 ## Trade-off Analysis & Mitigation
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Consistency vs. Availability Trade-offs
 
@@ -1376,7 +1376,7 @@ LIMIT 20;
 
 ### Search Latency vs. Accuracy Trade-offs
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0;">SEARCH FRESHNESS SPECTRUM</h4>
 
@@ -1405,7 +1405,7 @@ LIMIT 20;
 
 </div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
   <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Recommendation</div>
   <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
     &#8226; Search listing page: 30s Redis cache (acceptable stale)<br/>

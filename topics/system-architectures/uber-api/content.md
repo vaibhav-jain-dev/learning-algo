@@ -1954,7 +1954,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 ## Scaling Milestones
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Phase 1: College Town MVP ($300/month)
 

@@ -1448,34 +1448,34 @@ class DynamicPricingService:
 <!-- Tables Schema -->
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
 
-<div style="background: #161b22; border: 1px solid #238636; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #238636; border-radius: 8px; padding: 16px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px; font-size: 13px;">parking_lots</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, name, address, total_spots, lat, lng, base_hourly_rate, daily_max_rate, max_surge_multiplier</div>
 </div>
 
-<div style="background: #161b22; border: 1px solid #1f6feb; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #1f6feb; border-radius: 8px; padding: 16px;">
 <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px; font-size: 13px;">levels</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, lot_id, floor_number, name, total_spots</div>
 </div>
 
-<div style="background: #161b22; border: 1px solid #8957e5; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #8957e5; border-radius: 8px; padding: 16px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px; font-size: 13px;">spots</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, level_id, spot_number, spot_type, status, sensor_id, distance_to_entrance</div>
 <div style="color: #6e7681; font-size: 11px; margin-top: 4px;">type: COMPACT, REGULAR, LARGE, HANDICAP, EV</div>
 <div style="color: #6e7681; font-size: 11px;">status: AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE</div>
 </div>
 
-<div style="background: #161b22; border: 1px solid #f0883e; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #f0883e; border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px; font-size: 13px;">tickets</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, lot_id, spot_id, vehicle_id, entry_time, exit_time, status, locked_rate, amount_due, amount_paid</div>
 </div>
 
-<div style="background: #161b22; border: 1px solid #da3633; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #da3633; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px; font-size: 13px;">vehicles</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, license_plate, vehicle_type, owner_id, payment_method_id</div>
 </div>
 
-<div style="background: #161b22; border: 1px solid #00bcd4; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border: 1px solid #00bcd4; border-radius: 8px; padding: 16px;">
 <div style="color: #00bcd4; font-weight: bold; margin-bottom: 8px; font-size: 13px;">reservations</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, spot_id, user_id, start_time, end_time, status, prepaid_amount</div>
 </div>
@@ -1585,7 +1585,7 @@ class SimpleParking:
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
 <!-- Row 1 -->
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f1f5f9; border-radius: 8px; padding: 12px;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Trade-off</div>
 <div style="color: #3fb950; font-weight: bold; font-size: 12px;">Option A</div>
 <div style="color: #1d4ed8; font-weight: bold; font-size: 12px;">Option B</div>

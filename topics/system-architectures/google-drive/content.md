@@ -305,7 +305,7 @@ class FileService:
 
 ### Microservices with Chunking
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <!-- API Gateway -->
 <div style="display: flex; justify-content: center; margin-bottom: 20px;">
@@ -433,7 +433,7 @@ class DeltaSyncService:
 
 ### Conflict Resolution
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <!-- Three-way diagram -->
 <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: start; margin-bottom: 24px;">
@@ -516,7 +516,7 @@ class DeltaSyncService:
 
 ### Global Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px;">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
 
@@ -779,7 +779,7 @@ class GlobalDeduplicationService:
 
 ## Interview Deep Dive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 ### 1. "Why chunking instead of whole file upload?"
 
@@ -839,7 +839,7 @@ With chunking, a 100MB file (25 chunks) can upload 4 chunks simultaneously:
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 ### 2. "How do you handle conflicts in collaborative editing?"
 
@@ -934,7 +934,7 @@ def resolve_conflict(base_version, version_a, version_b, file_type):
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #238636;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #238636;">
 
 ### 3. "Why not just use S3 directly for everything?"
 
@@ -1022,7 +1022,7 @@ ORDER BY changed_at
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #8957e5;">
 
 ### 4. "How would you implement offline support?"
 
@@ -1169,7 +1169,7 @@ def sync_on_reconnect(self):
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f78166;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f78166;">
 
 ### 5. "How do you ensure durability and prevent data loss?"
 
@@ -1590,7 +1590,7 @@ User can browse version history and restore any previous version. This catches:
 
 ### Core Trade-offs
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f0883e;">
 
 #### 1. Consistency vs. Availability
 
@@ -1607,7 +1607,7 @@ User can browse version history and restore any previous version. This catches:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #58a6ff;">
 
 #### 2. Storage Cost vs. Access Speed
 
@@ -1625,7 +1625,7 @@ User can browse version history and restore any previous version. This catches:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #238636;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #238636;">
 
 #### 3. Deduplication vs. Privacy
 
@@ -1643,7 +1643,7 @@ User can browse version history and restore any previous version. This catches:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #8957e5;">
 
 #### 4. Sync Speed vs. Battery/Bandwidth
 
