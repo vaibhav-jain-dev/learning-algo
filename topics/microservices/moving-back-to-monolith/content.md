@@ -888,7 +888,7 @@ A modular monolith is an architecture that provides the organizational benefits 
       <div style="width: 20px; height: 20px; border-right: 2px solid #30363d; border-bottom: 2px solid #e2e8f0;"></div>
     </div>
 
-    <div style="background: linear-gradient(135deg, #30363d 0%, #21262d 100%); border-radius: 10px; padding: 20px; text-align: center;">
+    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 10px; padding: 20px; text-align: center;">
       <div style="color: #64748b; font-weight: 600; margin-bottom: 12px;">SHARED INFRASTRUCTURE</div>
       <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
         <div style="background: rgba(88,166,255,0.2); border-radius: 6px; padding: 8px 16px; color: #58a6ff; font-size: 0.85em;">Database</div>
