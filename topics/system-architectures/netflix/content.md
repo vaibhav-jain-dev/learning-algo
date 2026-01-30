@@ -4,7 +4,7 @@
 
 Design a video streaming platform that serves millions of concurrent viewers with personalized content recommendations.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e50914;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e50914;">
 
 ### Core Requirements
 - **Video Streaming**: Adaptive bitrate streaming
@@ -20,50 +20,62 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">NETFLIX STREAMING ARCHITECTURE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">NETFLIX STREAMING ARCHITECTURE</h3>
 
-```
-                                    ┌─────────────────┐
-                                    │  DNS (Route53)  │
-                                    │  GeoDNS Routing │
-                                    └────────┬────────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    ▼                        ▼                        ▼
-             ┌───────────┐            ┌───────────┐            ┌───────────┐
-             │   OPEN    │            │   OPEN    │            │   OPEN    │
-             │  CONNECT  │            │  CONNECT  │            │  CONNECT  │
-             │  US-EAST  │            │  EU-WEST  │            │  AP-SOUTH │
-             └─────┬─────┘            └─────┬─────┘            └─────┬─────┘
-                   │                        │                        │
-                   │    OPEN CONNECT CDN (ISP-Embedded Servers)     │
-                   └────────────────────────┼────────────────────────┘
-                                            │
-                                            │ Cache Miss?
-                                            ▼
-                              ┌──────────────────────────┐
-                              │      AWS REGION          │
-                              │                          │
-                              │  ┌────────────────────┐  │
-                              │  │   API Gateway      │  │
-                              │  │   (Zuul)           │  │
-                              │  └─────────┬──────────┘  │
-                              │            │             │
-                              │  ┌─────────┴─────────┐   │
-                              │  │                   │   │
-                              │  ▼                   ▼   │
-                              │┌─────────┐     ┌─────────┐│
-                              ││ Playback│     │ Content ││
-                              ││ Service │     │ Service ││
-                              │└─────────┘     └─────────┘│
-                              │                          │
-                              │  ┌─────────────────────┐ │
-                              │  │       S3            │ │
-                              │  │   (Video Storage)   │ │
-                              │  └─────────────────────┘ │
-                              └──────────────────────────┘
-```
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+
+<!-- DNS Layer -->
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+  <strong>DNS (Route53)</strong><br><span style="font-size: 12px;">GeoDNS Routing</span>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Open Connect CDN Layer -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">US-EAST</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">EU-WEST</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">AP-SOUTH</span>
+  </div>
+</div>
+
+<div style="background: #fef2f2; border: 1px solid #e50914; border-radius: 8px; padding: 8px 16px; text-align: center;">
+  <span style="color: #dc2626; font-size: 13px;">OPEN CONNECT CDN (ISP-Embedded Servers)</span>
+</div>
+
+<div style="color: #f59e0b; font-size: 14px;">↓ Cache Miss?</div>
+
+<!-- AWS Region -->
+<div style="background: #fff7ed; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 400px;">
+  <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 16px;">AWS REGION</div>
+
+  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-bottom: 12px;">
+    <strong>API Gateway (Zuul)</strong>
+  </div>
+
+  <div style="color: #3b82f6; font-size: 20px; text-align: center;">↓</div>
+
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 12px 0;">
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
+      <strong style="color: #1d4ed8;">Playback</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
+    </div>
+    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
+      <strong style="color: #1d4ed8;">Content</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
+    </div>
+  </div>
+
+  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-top: 12px;">
+    <strong>S3 (Video Storage)</strong>
+  </div>
+</div>
+
+</div>
 
 </div>
 
@@ -71,64 +83,80 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 ## Video Transcoding Pipeline
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">CONTENT PROCESSING PIPELINE</h4>
 
-```
-Original Video (4K Master)
-         │
-         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    TRANSCODING PIPELINE                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Step 1: Ingest & Validate                                  │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │ - Check codec compatibility                              ││
-│  │ - Validate audio tracks (5.1, stereo)                   ││
-│  │ - Extract subtitles                                      ││
-│  │ - Generate thumbnail sprites                             ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-│  Step 2: Encode Multiple Profiles                           │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                                                          ││
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐        ││
-│  │  │  4K HDR    │  │  1080p     │  │  720p      │        ││
-│  │  │  25 Mbps   │  │  8 Mbps    │  │  4 Mbps    │        ││
-│  │  └────────────┘  └────────────┘  └────────────┘        ││
-│  │                                                          ││
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐        ││
-│  │  │  480p      │  │  360p      │  │  240p      │        ││
-│  │  │  2 Mbps    │  │  1 Mbps    │  │  0.5 Mbps  │        ││
-│  │  └────────────┘  └────────────┘  └────────────┘        ││
-│  │                                                          ││
-│  │  Encoding: H.264, H.265, VP9, AV1                       ││
-│  │  Audio: AAC, Dolby Digital, Dolby Atmos                 ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-│  Step 3: Segment for Streaming                              │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │                                                          ││
-│  │  Split into 4-second chunks (MPEG-DASH / HLS)           ││
-│  │                                                          ││
-│  │  segment_001.m4s  segment_002.m4s  segment_003.m4s ...  ││
-│  │                                                          ││
-│  │  Generate manifest files:                                ││
-│  │  - master.m3u8 (HLS)                                    ││
-│  │  - manifest.mpd (DASH)                                  ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-│  Step 4: Distribute to CDN                                  │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │  Push to S3 → Replicate to Open Connect appliances     ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
-Processing Time: ~4 hours for a 2-hour movie
-Storage: ~50-100GB per title (all formats)
-```
+<!-- Original Video -->
+<div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+  <strong>Original Video (4K Master)</strong>
+</div>
+
+<div style="color: #7c3aed; font-size: 24px;">↓</div>
+
+<!-- Transcoding Pipeline -->
+<div style="background: #f1f5f9; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
+  <h4 style="text-align: center; color: #d97706; margin: 0 0 20px 0;">TRANSCODING PIPELINE</h4>
+
+  <!-- Step 1 -->
+  <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Step 1: Ingest & Validate</div>
+    <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
+      <li>Check codec compatibility</li>
+      <li>Validate audio tracks (5.1, stereo)</li>
+      <li>Extract subtitles</li>
+      <li>Generate thumbnail sprites</li>
+    </ul>
+  </div>
+
+  <!-- Step 2 -->
+  <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">Step 2: Encode Multiple Profiles</div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">4K HDR</strong><br><span style="font-size: 11px; color: #475569;">25 Mbps</span></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">1080p</strong><br><span style="font-size: 11px; color: #475569;">8 Mbps</span></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">720p</strong><br><span style="font-size: 11px; color: #475569;">4 Mbps</span></div>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px;">
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">480p</strong><br><span style="font-size: 11px; color: #475569;">2 Mbps</span></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">360p</strong><br><span style="font-size: 11px; color: #475569;">1 Mbps</span></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">240p</strong><br><span style="font-size: 11px; color: #475569;">0.5 Mbps</span></div>
+    </div>
+    <div style="color: #475569; font-size: 12px; text-align: center;">
+      <strong>Encoding:</strong> H.264, H.265, VP9, AV1<br>
+      <strong>Audio:</strong> AAC, Dolby Digital, Dolby Atmos
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Step 3: Segment for Streaming</div>
+    <div style="color: #475569; font-size: 13px;">
+      Split into 4-second chunks (MPEG-DASH / HLS)<br>
+      <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;">segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
+      Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</code> (DASH)
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 12px; text-align: center;">
+    <div style="color: #d97706; font-weight: bold;">Step 4: Distribute to CDN</div>
+    <div style="color: #475569; font-size: 13px;">Push to S3 → Replicate to Open Connect appliances</div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <div style="background: #dbeafe; border-radius: 8px; padding: 10px 16px; text-align: center;">
+    <strong style="color: #1d4ed8;">Processing Time:</strong><br><span style="color: #475569;">~4 hours for 2-hour movie</span>
+  </div>
+  <div style="background: #dcfce7; border-radius: 8px; padding: 10px 16px; text-align: center;">
+    <strong style="color: #16a34a;">Storage:</strong><br><span style="color: #475569;">~50-100GB per title</span>
+  </div>
+</div>
+
+</div>
 
 </div>
 
@@ -137,7 +165,7 @@ Storage: ~50-100GB per title (all formats)
 ## Phase 1: Starting Phase
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 1,000 - 50,000
@@ -206,7 +234,7 @@ class VideoService:
 ## Phase 2: Medium Scale
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 10M - 100M
@@ -309,7 +337,7 @@ class VideoService:
 ## Phase 3: Netflix Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Users**: 250M+ subscribers
@@ -376,7 +404,7 @@ class VideoService:
 ### Recommendation System
 
 <div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">PERSONALIZATION PIPELINE</h4>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">PERSONALIZATION PIPELINE</h4>
 
 ```
 User Signals                        Content Features
@@ -443,7 +471,7 @@ User Signals                        Content Features
 
 ## AWS Technologies & Alternatives
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 | Component | AWS Service | Netflix Uses | Trade-offs |
 |-----------|-------------|--------------|------------|
@@ -460,7 +488,7 @@ User Signals                        Content Features
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0;">
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 16px;">
-<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Zuul</h5>
+<h5 style="color: #1d4ed8; margin: 0 0 8px 0;">Zuul</h5>
 <p style="color: #8b949e; font-size: 12px;">API Gateway with dynamic routing</p>
 </div>
 
@@ -482,7 +510,7 @@ User Signals                        Content Features
 
 ## Distributed Systems Considerations
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### 1. Chaos Engineering
 
@@ -625,7 +653,7 @@ class DRMService:
 
 ## Why This Technology?
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Technology Decision Matrix
 
@@ -681,7 +709,7 @@ Netflix: ~1 Exabyte/month = Open Connect is 10-100x cheaper than commercial
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### The "$500/Month Video Platform" That Handles 90% of Use Cases
 
@@ -788,7 +816,7 @@ Instead of Netflix's 6+ quality levels + multiple codecs:
 
 ## Trade-off Analysis & Mitigation
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Critical Trade-offs in Video Streaming
 
@@ -927,7 +955,7 @@ Instead of Netflix's 6+ quality levels + multiple codecs:
 
 ## Red Flags & Impressive Statements
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Red Flags (What NOT to Say)
 

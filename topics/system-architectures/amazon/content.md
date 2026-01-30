@@ -181,51 +181,64 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      E-COMMERCE MONOLITH                         │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    PRESENTATION LAYER                       │ │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │ │
-│  │  │  Web Pages   │  │  REST API    │  │  Admin Panel     │  │ │
-│  │  │  (Templates) │  │  (JSON)      │  │  (Dashboard)     │  │ │
-│  │  └──────────────┘  └──────────────┘  └──────────────────┘  │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                              │                                   │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    BUSINESS LOGIC LAYER                     │ │
-│  │                                                             │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │ │
-│  │  │  Products   │  │    Cart     │  │      Orders         │ │ │
-│  │  │  Module     │  │   Module    │  │      Module         │ │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────────────┘ │ │
-│  │                                                             │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │ │
-│  │  │   Users     │  │  Payments   │  │     Inventory       │ │ │
-│  │  │  Module     │  │   Module    │  │      Module         │ │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────────────┘ │ │
-│  │                                                             │ │
-│  │  ┌─────────────┐  ┌─────────────┐                          │ │
-│  │  │   Search    │  │   Reviews   │                          │ │
-│  │  │  Module     │  │   Module    │                          │ │
-│  │  └─────────────┘  └─────────────┘                          │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                              │                                   │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    DATA ACCESS LAYER                        │ │
-│  │            (ORM: Django ORM / SQLAlchemy / TypeORM)         │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-         ┌─────────────────────┼─────────────────────┐
-         ▼                     ▼                     ▼
-    ┌─────────┐          ┌─────────┐          ┌─────────┐
-    │PostgreSQL│          │  Redis  │          │   S3    │
-    │          │          │ (Cache/ │          │(Images) │
-    │          │          │Sessions)│          │         │
-    └─────────┘          └─────────┘          └─────────┘
-```
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+
+<!-- Monolith Container -->
+<div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
+  <h4 style="text-align: center; color: #1d4ed8; margin: 0 0 16px 0;">E-COMMERCE MONOLITH</h4>
+
+  <!-- Presentation Layer -->
+  <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+    <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">PRESENTATION LAYER</div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Web Pages</strong><br><span style="font-size: 11px; color: #475569;">(Templates)</span></div>
+      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">REST API</strong><br><span style="font-size: 11px; color: #475569;">(JSON)</span></div>
+      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Admin Panel</strong><br><span style="font-size: 11px; color: #475569;">(Dashboard)</span></div>
+    </div>
+  </div>
+
+  <!-- Business Logic Layer -->
+  <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+    <div style="text-align: center; color: #16a34a; font-weight: bold; margin-bottom: 12px;">BUSINESS LOGIC LAYER</div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Products</strong></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Cart</strong></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Orders</strong></div>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Users</strong></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Payments</strong></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Inventory</strong></div>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Search</strong></div>
+      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Reviews</strong></div>
+    </div>
+  </div>
+
+  <!-- Data Access Layer -->
+  <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
+    <strong style="color: #7c3aed;">DATA ACCESS LAYER</strong><br>
+    <span style="font-size: 12px; color: #475569;">(ORM: Django ORM / SQLAlchemy / TypeORM)</span>
+  </div>
+</div>
+
+<div style="color: #3b82f6; font-size: 24px;">↓</div>
+
+<!-- Databases -->
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>PostgreSQL</strong>
+  </div>
+  <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>Redis</strong><br><span style="font-size: 11px;">(Cache/Sessions)</span>
+  </div>
+  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+    <strong>S3</strong><br><span style="font-size: 11px;">(Images)</span>
+  </div>
+</div>
+
+</div>
 
 </div>
 

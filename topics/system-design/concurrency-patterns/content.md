@@ -4,23 +4,23 @@
 
 Concurrency patterns are battle-tested solutions for coordinating multiple execution contexts competing for shared resources. Understanding these patterns at a deep level is essential for designing systems that are correct under all interleavings, performant under load, and debuggable when things go wrong.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #475569;">
-  <div style="color: #f8fafc; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center;">The Fundamental Tension in Concurrent Systems</div>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-    <div style="background: rgba(59, 130, 246, 0.15); border-radius: 12px; padding: 20px; border: 1px solid rgba(59, 130, 246, 0.3);">
-      <div style="color: #60a5fa; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Safety</div>
-      <div style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">Nothing bad ever happens. No race conditions, no data corruption, no invariant violations.</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="color: #1e293b; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center;">The Fundamental Tension in Concurrent Systems</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6; flex: 1; min-width: 180px;">
+      <div style="color: #1e40af; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Safety</div>
+      <div style="color: #475569; font-size: 13px; line-height: 1.6;">Nothing bad ever happens. No race conditions, no data corruption, no invariant violations.</div>
     </div>
-    <div style="background: rgba(34, 197, 94, 0.15); border-radius: 12px; padding: 20px; border: 1px solid rgba(34, 197, 94, 0.3);">
-      <div style="color: #4ade80; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Liveness</div>
-      <div style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">Something good eventually happens. No deadlocks, no starvation, progress is always made.</div>
+    <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 2px solid #22c55e; flex: 1; min-width: 180px;">
+      <div style="color: #166534; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Liveness</div>
+      <div style="color: #475569; font-size: 13px; line-height: 1.6;">Something good eventually happens. No deadlocks, no starvation, progress is always made.</div>
     </div>
-    <div style="background: rgba(251, 146, 60, 0.15); border-radius: 12px; padding: 20px; border: 1px solid rgba(251, 146, 60, 0.3);">
-      <div style="color: #fb923c; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Performance</div>
-      <div style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">Good things happen quickly. Low latency, high throughput, efficient resource utilization.</div>
+    <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 2px solid #f97316; flex: 1; min-width: 180px;">
+      <div style="color: #c2410c; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Performance</div>
+      <div style="color: #475569; font-size: 13px; line-height: 1.6;">Good things happen quickly. Low latency, high throughput, efficient resource utilization.</div>
     </div>
   </div>
-  <div style="color: #94a3b8; font-size: 13px; text-align: center; margin-top: 16px; font-style: italic;">Every concurrency design decision involves trading off between these three properties.</div>
+  <div style="color: #64748b; font-size: 13px; text-align: center; margin-top: 16px; font-style: italic;">Every concurrency design decision involves trading off between these three properties.</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #eab308;">
@@ -221,27 +221,27 @@ The producer-consumer pattern decouples task generation from task processing usi
 
 ### Lock-Free Alternatives: LMAX Disruptor Pattern
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #475569;">
-  <div style="color: #f8fafc; font-size: 16px; font-weight: 700; margin-bottom: 16px;">The Disruptor: Mechanical Sympathy in Action</div>
-  <div style="color: #cbd5e1; font-size: 14px; line-height: 1.7; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 16px;">The Disruptor: Mechanical Sympathy in Action</div>
+  <div style="color: #475569; font-size: 14px; line-height: 1.7; margin-bottom: 16px;">
     The LMAX Disruptor achieves millions of operations per second through:
   </div>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(59, 130, 246, 0.3);">
-      <div style="color: #60a5fa; font-weight: 600; margin-bottom: 8px;">Pre-allocated Ring Buffer</div>
-      <div style="color: #94a3b8; font-size: 12px;">All entries pre-allocated. No GC pressure. Entries overwritten, not deallocated.</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+    <div style="background: #eff6ff; border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; flex: 1; min-width: 200px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Pre-allocated Ring Buffer</div>
+      <div style="color: #475569; font-size: 12px;">All entries pre-allocated. No GC pressure. Entries overwritten, not deallocated.</div>
     </div>
-    <div style="background: rgba(34, 197, 94, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(34, 197, 94, 0.3);">
-      <div style="color: #4ade80; font-weight: 600; margin-bottom: 8px;">Cache-Line Padding</div>
-      <div style="color: #94a3b8; font-size: 12px;">Sequences padded to avoid false sharing. Each sequence on its own cache line (64 bytes).</div>
+    <div style="background: #f0fdf4; border-radius: 12px; padding: 16px; border: 2px solid #22c55e; flex: 1; min-width: 200px;">
+      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Cache-Line Padding</div>
+      <div style="color: #475569; font-size: 12px;">Sequences padded to avoid false sharing. Each sequence on its own cache line (64 bytes).</div>
     </div>
-    <div style="background: rgba(251, 146, 60, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(251, 146, 60, 0.3);">
-      <div style="color: #fb923c; font-weight: 600; margin-bottom: 8px;">Memory Barriers</div>
-      <div style="color: #94a3b8; font-size: 12px;">Volatile writes for sequence numbers. Consumers spin-wait on sequence, avoiding kernel transitions.</div>
+    <div style="background: #fff7ed; border-radius: 12px; padding: 16px; border: 2px solid #f97316; flex: 1; min-width: 200px;">
+      <div style="color: #c2410c; font-weight: 600; margin-bottom: 8px;">Memory Barriers</div>
+      <div style="color: #475569; font-size: 12px;">Volatile writes for sequence numbers. Consumers spin-wait on sequence, avoiding kernel transitions.</div>
     </div>
-    <div style="background: rgba(168, 85, 247, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(168, 85, 247, 0.3);">
-      <div style="color: #c084fc; font-weight: 600; margin-bottom: 8px;">Batching</div>
-      <div style="color: #94a3b8; font-size: 12px;">Consumer can process all available entries in one batch. Amortizes synchronization overhead.</div>
+    <div style="background: #f5f3ff; border-radius: 12px; padding: 16px; border: 2px solid #8b5cf6; flex: 1; min-width: 200px;">
+      <div style="color: #5b21b6; font-weight: 600; margin-bottom: 8px;">Batching</div>
+      <div style="color: #475569; font-size: 12px;">Consumer can process all available entries in one batch. Amortizes synchronization overhead.</div>
     </div>
   </div>
 </div>
@@ -365,9 +365,9 @@ Multiple readers can safely access shared data simultaneously (reads don't confl
 
 ### Implementation Deep Dive
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #475569;">
-  <div style="color: #f8fafc; font-size: 16px; font-weight: 700; margin-bottom: 16px;">Writer-Preference RWLock Implementation</div>
-  <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #e2e8f0; line-height: 1.8; background: #0f172a; padding: 20px; border-radius: 12px; overflow-x: auto;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 16px;">Writer-Preference RWLock Implementation</div>
+  <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #1e293b; line-height: 1.8; background: #f1f5f9; padding: 20px; border-radius: 12px; overflow-x: auto; border: 1px solid #cbd5e1;">
     <span style="color: #94a3b8;">// State variables</span><br/>
     int readers = 0;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #94a3b8;">// Active readers</span><br/>
     int writers_waiting = 0;&nbsp;<span style="color: #94a3b8;">// Writers in queue</span><br/>
@@ -740,21 +740,21 @@ Deadlock requires ALL four conditions to hold simultaneously. Preventing any one
 
 ### Deadlock Detection and Recovery
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #475569;">
-  <div style="color: #f8fafc; font-size: 16px; font-weight: 700; margin-bottom: 16px;">Wait-For Graph (Runtime Detection)</div>
-  <div style="color: #cbd5e1; font-size: 14px; line-height: 1.7; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 16px;">Wait-For Graph (Runtime Detection)</div>
+  <div style="color: #475569; font-size: 14px; line-height: 1.7; margin-bottom: 16px;">
     Maintain a directed graph: edge from T1 to T2 if T1 waits for resource held by T2. Cycle in graph = deadlock.
   </div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(59, 130, 246, 0.3);">
-      <div style="color: #60a5fa; font-weight: 600; margin-bottom: 8px;">Detection Algorithm</div>
-      <div style="color: #94a3b8; font-size: 12px; line-height: 1.6;">
+  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+    <div style="background: #eff6ff; border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; flex: 1; min-width: 200px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Detection Algorithm</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.6;">
         Periodically run cycle detection (DFS). Frequency trade-off: too often wastes CPU, too rare delays recovery. Typical: every few seconds or on wait timeout.
       </div>
     </div>
-    <div style="background: rgba(239, 68, 68, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(239, 68, 68, 0.3);">
-      <div style="color: #f87171; font-weight: 600; margin-bottom: 8px;">Recovery Options</div>
-      <div style="color: #94a3b8; font-size: 12px; line-height: 1.6;">
+    <div style="background: #fef2f2; border-radius: 12px; padding: 16px; border: 2px solid #ef4444; flex: 1; min-width: 200px;">
+      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Recovery Options</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.6;">
         1. <strong>Victim selection:</strong> Abort one thread in cycle (choose by age, priority, work done).<br/>
         2. <strong>Resource preemption:</strong> Forcibly take resource, rollback holder's transaction.<br/>
         3. <strong>Process termination:</strong> Kill deadlocked processes (last resort).
@@ -1379,40 +1379,40 @@ if __name__ == "__main__":
 
 ## Quick Reference Card
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #475569;">
-  <div style="color: #f8fafc; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center;">Concurrency Patterns Cheat Sheet</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <div style="color: #1e293b; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center;">Concurrency Patterns Cheat Sheet</div>
 
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(59, 130, 246, 0.3);">
-      <div style="color: #60a5fa; font-weight: 700; margin-bottom: 12px;">Thread Pool Sizing</div>
-      <div style="color: #e2e8f0; font-size: 12px; line-height: 1.8;">
+  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+    <div style="background: #eff6ff; border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; flex: 1; min-width: 200px;">
+      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Thread Pool Sizing</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
         <strong>CPU-bound:</strong> N = cores + 1<br/>
         <strong>I/O-bound:</strong> N = cores x (1 + W/C)<br/>
         <strong>Mixed:</strong> Separate pools or managed blocking<br/>
         <strong>Start:</strong> 2x cores, then benchmark
       </div>
     </div>
-    <div style="background: rgba(34, 197, 94, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(34, 197, 94, 0.3);">
-      <div style="color: #4ade80; font-weight: 700; margin-bottom: 12px;">Deadlock Prevention</div>
-      <div style="color: #e2e8f0; font-size: 12px; line-height: 1.8;">
+    <div style="background: #f0fdf4; border-radius: 12px; padding: 16px; border: 2px solid #22c55e; flex: 1; min-width: 200px;">
+      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Deadlock Prevention</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
         1. Lock ordering (by ID/address)<br/>
         2. Timeout + exponential backoff<br/>
         3. Lock hierarchy levels<br/>
         4. Acquire all upfront or none
       </div>
     </div>
-    <div style="background: rgba(251, 146, 60, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(251, 146, 60, 0.3);">
-      <div style="color: #fb923c; font-weight: 700; margin-bottom: 12px;">When to Use What</div>
-      <div style="color: #e2e8f0; font-size: 12px; line-height: 1.8;">
+    <div style="background: #fff7ed; border-radius: 12px; padding: 16px; border: 2px solid #f97316; flex: 1; min-width: 200px;">
+      <div style="color: #c2410c; font-weight: 700; margin-bottom: 12px;">When to Use What</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
         <strong>Mutex:</strong> Protecting shared state<br/>
         <strong>Semaphore:</strong> Resource counting, signaling<br/>
         <strong>RWLock:</strong> Read-heavy, long reads<br/>
         <strong>Condition:</strong> Wait for state change
       </div>
     </div>
-    <div style="background: rgba(168, 85, 247, 0.15); border-radius: 12px; padding: 16px; border: 1px solid rgba(168, 85, 247, 0.3);">
-      <div style="color: #c084fc; font-weight: 700; margin-bottom: 12px;">Common Pitfalls</div>
-      <div style="color: #e2e8f0; font-size: 12px; line-height: 1.8;">
+    <div style="background: #f5f3ff; border-radius: 12px; padding: 16px; border: 2px solid #8b5cf6; flex: 1; min-width: 200px;">
+      <div style="color: #5b21b6; font-weight: 700; margin-bottom: 12px;">Common Pitfalls</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
         - if instead of while (spurious wakeup)<br/>
         - Unbounded queue = OOM risk<br/>
         - Calling unknown code holding lock<br/>

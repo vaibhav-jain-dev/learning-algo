@@ -26,7 +26,7 @@ Design a rate limiter that controls the rate of requests a client can make to an
 
 ### Why Rate Limiting Exists
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Protection Layers:**
 
@@ -44,7 +44,7 @@ Design a rate limiter that controls the rate of requests a client can make to an
 
 #### Interview Questions: Rate Limiting Fundamentals
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1: Where should rate limiting be implemented in a microservices architecture?**
 
@@ -1189,7 +1189,7 @@ class SlidingWindowLog:
 
 #### Interview Questions: Sliding Window
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Level 1: What's the maximum error rate of sliding window counter compared to sliding window log?**
 
@@ -1454,7 +1454,7 @@ allowed, remaining, reset = limiter.allow("user:123", weight=200)
 
 ### The Distributed Challenge
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Problem**: With multiple application servers, each server has its own rate limiter state. A user could send requests to different servers and effectively multiply their rate limit.
 
@@ -2124,7 +2124,7 @@ result = limiter.allow(
 
 ### Unit Testing Rate Limiters
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Key Testing Challenges:**
 
@@ -2889,7 +2889,7 @@ class InstrumentedRateLimiter:
 
 ## Key Takeaways
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 1. **Algorithm Selection**: Token bucket for APIs (allows bursts), sliding window for strict enforcement, leaky bucket for traffic shaping
 

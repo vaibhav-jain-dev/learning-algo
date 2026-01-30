@@ -2322,8 +2322,8 @@ ORDER BY days_remaining ASC;
 
 **Solution: Multi-Phase Migration with Escape Hatches**
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f8fafc; margin: 0 0 20px 0; text-align: center;">Breaking Change Migration Phases</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
+  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Breaking Change Migration Phases</h4>
   <div style="display: flex; flex-direction: column; gap: 16px;">
     <div style="display: flex; gap: 16px; flex-wrap: wrap;">
       <div style="flex: 1; min-width: 200px; background: #22c55e; color: white; padding: 16px; border-radius: 8px;">

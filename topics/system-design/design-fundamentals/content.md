@@ -10,8 +10,8 @@ System design is the discipline of defining architecture, components, data flows
 
 ## Why This Matters
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #475569;">
-<div style="color: #f1f5f9; font-size: 15px; line-height: 1.9;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+<div style="color: #1e293b; font-size: 15px; line-height: 1.9;">
 
 **For Senior Engineering Roles:** System design interviews are the primary differentiator between L4/L5 and L6+ roles at top companies. They evaluate your ability to navigate ambiguity, reason about trade-offs, and communicate complex ideas clearly.
 
@@ -28,9 +28,9 @@ System design is the discipline of defining architecture, components, data flows
 
 Scalability is the property of a system to handle growing amounts of work by adding resources. A scalable system maintains acceptable performance characteristics as load increases, whether that means more users, more data, more requests, or more complex operations.
 
-<div style="background: #0f172a; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
-<h4 style="color: #22d3ee; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
-<div style="color: #e2e8f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 Scalability is not a binary property. Systems scale along specific dimensions (read throughput, write throughput, data volume, geographic distribution) and may scale well on one dimension while hitting walls on others. Always ask: "Scale <em>what</em> metric by <em>how much</em>?"
 </div>
 </div>
