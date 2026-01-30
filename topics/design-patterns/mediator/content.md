@@ -13,29 +13,29 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 ## Simple Explanation: The Air Traffic Control Analogy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
-  <div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">&#9992;</div>
-  <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">Think of Air Traffic Control</div>
-  <div style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">&#9992;</div>
+<div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">Think of Air Traffic Control</div>
+<div style="color: #334155; font-size: 1rem; line-height: 1.7;">
     Imagine an airport with 50 planes. If every pilot had to coordinate directly with every other pilot, you'd have 2,450 possible communication channels - pure chaos! Instead, all pilots talk to one Air Traffic Controller (ATC). The ATC receives requests, makes decisions, and coordinates everyone. Pilots don't know about each other; they only know the tower. This is the Mediator pattern - a central coordinator that manages complex interactions.
-  </div>
-  <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-    <div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e40af; font-weight: 600;">Pilots</div>
-      <div style="color: #3b82f6; font-size: 0.85rem;">Colleagues (participants)</div>
-    </div>
-    <div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #166534; font-weight: 600;">Control Tower</div>
-      <div style="color: #22c55e; font-size: 0.85rem;">Mediator (coordinator)</div>
-    </div>
-    <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #92400e; font-weight: 600;">Radio Messages</div>
-      <div style="color: #f59e0b; font-size: 0.85rem;">Communication Protocol</div>
-    </div>
-    <div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #9d174d; font-weight: 600;">Runways</div>
-      <div style="color: #ec4899; font-size: 0.85rem;">Shared Resources</div>
-    </div>
-  </div>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Pilots</div>
+<div style="color: #3b82f6; font-size: 0.85rem;">Colleagues (participants)</div>
+</div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: 600;">Control Tower</div>
+<div style="color: #22c55e; font-size: 0.85rem;">Mediator (coordinator)</div>
+</div>
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #92400e; font-weight: 600;">Radio Messages</div>
+<div style="color: #f59e0b; font-size: 0.85rem;">Communication Protocol</div>
+</div>
+<div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #9d174d; font-weight: 600;">Runways</div>
+<div style="color: #ec4899; font-size: 0.85rem;">Shared Resources</div>
+</div>
+</div>
 </div>
 
 ### The Expert Insight
@@ -49,16 +49,16 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 ## Real-World Company Usage
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>React/Redux:</strong> Store acts as mediator between components - they dispatch actions, store coordinates state</li>
-    <li><strong>Kubernetes:</strong> API Server mediates between controllers, nodes, and pods</li>
-    <li><strong>Message Brokers (RabbitMQ, Kafka):</strong> Mediate between producers and consumers</li>
-    <li><strong>Chat Applications (Slack, Discord):</strong> Server mediates all user communications</li>
-    <li><strong>Operating Systems:</strong> Kernel mediates between user processes and hardware</li>
-    <li><strong>MVC Frameworks:</strong> Controller mediates between Model and View</li>
-    <li><strong>Microservices API Gateway:</strong> Mediates requests between clients and services</li>
-  </ul>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>React/Redux:</strong> Store acts as mediator between components - they dispatch actions, store coordinates state</li>
+<li><strong>Kubernetes:</strong> API Server mediates between controllers, nodes, and pods</li>
+<li><strong>Message Brokers (RabbitMQ, Kafka):</strong> Mediate between producers and consumers</li>
+<li><strong>Chat Applications (Slack, Discord):</strong> Server mediates all user communications</li>
+<li><strong>Operating Systems:</strong> Kernel mediates between user processes and hardware</li>
+<li><strong>MVC Frameworks:</strong> Controller mediates between Model and View</li>
+<li><strong>Microservices API Gateway:</strong> Mediates requests between clients and services</li>
+</ul>
 </div>
 
 ---
@@ -66,71 +66,71 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 ## Pattern Structure
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Mediator Pattern Architecture</div>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Mediator Pattern Architecture</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
     <!-- Mediator Interface -->
-    <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 32px; text-align: center;">
-      <div style="font-weight: 600; color: #475569; font-style: italic;">Mediator (interface)</div>
-      <div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ notify(sender, event)</div>
-    </div>
-    <div style="color: #64748b;">implements</div>
-    <div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
+<div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: 600; color: #475569; font-style: italic;">Mediator (interface)</div>
+<div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ notify(sender, event)</div>
+</div>
+<div style="color: #64748b;">implements</div>
+<div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
     <!-- Concrete Mediator -->
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px 40px; text-align: center;">
-      <div style="font-weight: 700; color: #166534; font-size: 1.1rem;">ConcreteMediator</div>
-      <div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace;">- colleagueA<br/>- colleagueB<br/>- colleagueC<br/>+ notify(sender, event)</div>
-    </div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px 40px; text-align: center;">
+<div style="font-weight: 700; color: #166534; font-size: 1.1rem;">ConcreteMediator</div>
+<div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace;">- colleagueA<br/>- colleagueB<br/>- colleagueC<br/>+ notify(sender, event)</div>
+</div>
     <!-- Arrows to colleagues -->
-    <div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
-      <span>&#8601;</span>
-      <span>coordinates</span>
-      <span>&#8600;</span>
-    </div>
+<div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
+<span>&#8601;</span>
+<span>coordinates</span>
+<span>&#8600;</span>
+</div>
     <!-- Colleagues Row -->
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #1e40af;">ColleagueA</div>
-        <div style="font-size: 0.75rem; color: #3b82f6; margin-top: 4px;">knows mediator</div>
-      </div>
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #92400e;">ColleagueB</div>
-        <div style="font-size: 0.75rem; color: #b45309; margin-top: 4px;">knows mediator</div>
-      </div>
-      <div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #9d174d;">ColleagueC</div>
-        <div style="font-size: 0.75rem; color: #be185d; margin-top: 4px;">knows mediator</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #1e40af;">ColleagueA</div>
+<div style="font-size: 0.75rem; color: #3b82f6; margin-top: 4px;">knows mediator</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #92400e;">ColleagueB</div>
+<div style="font-size: 0.75rem; color: #b45309; margin-top: 4px;">knows mediator</div>
+</div>
+<div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #9d174d;">ColleagueC</div>
+<div style="font-size: 0.75rem; color: #be185d; margin-top: 4px;">knows mediator</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Without vs With Mediator
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0;">
-  <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
-    <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px; text-align: center;">Without Mediator</div>
-    <div style="color: #334155; font-size: 0.9rem; text-align: center;">
-      <div style="font-family: monospace; background: #fee2e2; padding: 12px; border-radius: 8px; margin-top: 8px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px; text-align: center;">Without Mediator</div>
+<div style="color: #334155; font-size: 0.9rem; text-align: center;">
+<div style="font-family: monospace; background: #fee2e2; padding: 12px; border-radius: 8px; margin-top: 8px;">
         A &harr; B<br/>
         A &harr; C<br/>
         B &harr; C<br/>
         <br/>
         n(n-1)/2 connections
-      </div>
-    </div>
-  </div>
-  <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
-    <div style="font-weight: 700; color: #166534; margin-bottom: 12px; text-align: center;">With Mediator</div>
-    <div style="color: #334155; font-size: 0.9rem; text-align: center;">
-      <div style="font-family: monospace; background: #d1fae5; padding: 12px; border-radius: 8px; margin-top: 8px;">
+</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 12px; text-align: center;">With Mediator</div>
+<div style="color: #334155; font-size: 0.9rem; text-align: center;">
+<div style="font-family: monospace; background: #d1fae5; padding: 12px; border-radius: 8px; margin-top: 8px;">
         A &rarr; M<br/>
         B &rarr; M<br/>
         C &rarr; M<br/>
         <br/>
         n connections
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -138,16 +138,16 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 ## When to Use Mediator Pattern
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #22c55e;">
-  <div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Perfect Use Cases</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>Complex UI interactions:</strong> Form fields that depend on each other's values</li>
-    <li><strong>Chat rooms/messaging:</strong> Users communicate through a central server</li>
-    <li><strong>Workflow orchestration:</strong> Coordinating multiple steps/services</li>
-    <li><strong>Event handling systems:</strong> Central dispatcher for events</li>
-    <li><strong>Resource scheduling:</strong> Managing shared resources (runways, meeting rooms)</li>
-    <li><strong>Game development:</strong> Game manager coordinating players, enemies, and environment</li>
-    <li><strong>IoT systems:</strong> Hub coordinating multiple devices</li>
-  </ul>
+<div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Perfect Use Cases</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>Complex UI interactions:</strong> Form fields that depend on each other's values</li>
+<li><strong>Chat rooms/messaging:</strong> Users communicate through a central server</li>
+<li><strong>Workflow orchestration:</strong> Coordinating multiple steps/services</li>
+<li><strong>Event handling systems:</strong> Central dispatcher for events</li>
+<li><strong>Resource scheduling:</strong> Managing shared resources (runways, meeting rooms)</li>
+<li><strong>Game development:</strong> Game manager coordinating players, enemies, and environment</li>
+<li><strong>IoT systems:</strong> Hub coordinating multiple devices</li>
+</ul>
 </div>
 
 ---
@@ -155,14 +155,14 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 ## Anti-Patterns: When NOT to Use
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Common Mistakes</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>God mediator:</strong> Mediator becomes too complex - split into multiple mediators by domain</li>
-    <li><strong>Simple cases:</strong> Two objects communicating don't need a mediator - direct reference is fine</li>
-    <li><strong>Performance critical paths:</strong> Extra indirection adds latency</li>
-    <li><strong>Hiding necessary coupling:</strong> Sometimes objects SHOULD know about each other</li>
-    <li><strong>Single point of failure:</strong> Mediator going down kills entire system</li>
-  </ul>
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Common Mistakes</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>God mediator:</strong> Mediator becomes too complex - split into multiple mediators by domain</li>
+<li><strong>Simple cases:</strong> Two objects communicating don't need a mediator - direct reference is fine</li>
+<li><strong>Performance critical paths:</strong> Extra indirection adds latency</li>
+<li><strong>Hiding necessary coupling:</strong> Sometimes objects SHOULD know about each other</li>
+<li><strong>Single point of failure:</strong> Mediator going down kills entire system</li>
+</ul>
 </div>
 
 ---
@@ -582,43 +582,43 @@ if __name__ == "__main__":
 ## Mediator vs Facade vs Observer
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Common Interview Question: Pattern Comparison</div>
-  <table style="width: 100%; border-collapse: collapse; color: #334155;">
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Common Interview Question: Pattern Comparison</div>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
     <thead>
-      <tr style="background: #e2e8f0;">
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Aspect</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Mediator</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Facade</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Observer</th>
-      </tr>
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Aspect</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Mediator</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Facade</th>
+<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Observer</th>
+</tr>
     </thead>
     <tbody>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Purpose</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Coordinate peer communication</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Simplify complex subsystem</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Notify of state changes</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Direction</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Bidirectional</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Unidirectional (client to subsystem)</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Unidirectional (subject to observers)</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Awareness</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Colleagues know mediator</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Subsystems don't know facade</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Subject doesn't know observers</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Example</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Chat room</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Home theater remote</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Newsletter subscription</td>
-      </tr>
+<tr>
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Purpose</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Coordinate peer communication</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Simplify complex subsystem</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Notify of state changes</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Direction</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Bidirectional</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Unidirectional (client to subsystem)</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Unidirectional (subject to observers)</td>
+</tr>
+<tr>
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Awareness</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Colleagues know mediator</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Subsystems don't know facade</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Subject doesn't know observers</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Example</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Chat room</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Home theater remote</td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Newsletter subscription</td>
+</tr>
     </tbody>
-  </table>
+</table>
 </div>
 
 ---
@@ -627,8 +627,8 @@ if __name__ == "__main__":
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How do you prevent the mediator from becoming a God object?</summary>
-  <div style="margin-top: 12px; color: #334155;">
-    <strong>Answer:</strong> Several strategies:
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Several strategies:
     1. **Domain-specific mediators:** Split by business domain (UserMediator, OrderMediator)
     2. **Chain of mediators:** Hierarchical mediators that delegate
     3. **Use events:** Mediator dispatches events instead of direct calls
@@ -649,13 +649,13 @@ if __name__ == "__main__":
     class OrderMediator: ...
     class PaymentMediator: ...
     ```
-  </div>
+</div>
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: When would you use Mediator instead of Observer?</summary>
-  <div style="margin-top: 12px; color: #334155;">
-    <strong>Answer:</strong>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong>
     - **Mediator:** When objects need bidirectional communication and coordination logic is complex
     - **Observer:** When objects only need one-way notification (subject to observers)
 
@@ -668,13 +668,13 @@ if __name__ == "__main__":
     - One object changes, many need to be notified
     - Observers don't interact with each other
     - Simple publish-subscribe semantics suffice
-  </div>
+</div>
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you make a mediator fault-tolerant?</summary>
-  <div style="margin-top: 12px; color: #334155;">
-    <strong>Answer:</strong>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong>
     1. **Replicate mediator:** Primary-secondary setup with failover
     2. **Message persistence:** Store messages in durable queue
     3. **Idempotent handlers:** Allow safe message replay
@@ -701,13 +701,13 @@ if __name__ == "__main__":
     self.circuit_breaker.record_failure()
     # Message will be retried from store
     ```
-  </div>
+</div>
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: How does Redux implement the Mediator pattern?</summary>
-  <div style="margin-top: 12px; color: #334155;">
-    <strong>Answer:</strong> Redux Store acts as mediator:
+<div style="margin-top: 12px; color: #334155;">
+<strong>Answer:</strong> Redux Store acts as mediator:
     - **Colleagues:** React components
     - **Mediator:** Redux Store
     - **Communication:** Actions dispatched to store
@@ -732,13 +732,13 @@ if __name__ == "__main__":
     // Component B (colleague) - automatically notified via selector
     const cart = useSelector(state => state.cart);
     ```
-  </div>
+</div>
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design a mediator for a smart home system.</summary>
-  <div style="margin-top: 12px; color: #334155;">
-    <strong>Key considerations:</strong>
+<div style="margin-top: 12px; color: #334155;">
+<strong>Key considerations:</strong>
     1. **Devices:** Lights, thermostat, security, music, blinds
     2. **Scenes:** "Movie mode" coordinates multiple devices
     3. **Automation rules:** "If motion detected after 10pm, turn on lights"
@@ -747,7 +747,7 @@ if __name__ == "__main__":
     6. **Offline resilience:** What if hub loses connectivity?
 
     Design: Central Hub as mediator with event-driven rules engine. Devices register capabilities, hub orchestrates based on rules and priorities.
-  </div>
+</div>
 </details>
 
 ---
@@ -755,16 +755,16 @@ if __name__ == "__main__":
 ## Best Practices
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Production Guidelines</div>
-  <ol style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
-    <li><strong>Keep mediator focused:</strong> Single responsibility - only coordination, not business logic</li>
-    <li><strong>Use events/messages:</strong> Loose coupling between mediator and colleagues</li>
-    <li><strong>Implement logging:</strong> Track all communications for debugging</li>
-    <li><strong>Consider async:</strong> Don't block colleagues waiting for mediator</li>
-    <li><strong>Handle failures:</strong> What happens if mediator or colleague fails?</li>
-    <li><strong>Test in isolation:</strong> Mock mediator when testing colleagues</li>
-    <li><strong>Document protocols:</strong> Clear contract for how colleagues interact</li>
-  </ol>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Production Guidelines</div>
+<ol style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
+<li><strong>Keep mediator focused:</strong> Single responsibility - only coordination, not business logic</li>
+<li><strong>Use events/messages:</strong> Loose coupling between mediator and colleagues</li>
+<li><strong>Implement logging:</strong> Track all communications for debugging</li>
+<li><strong>Consider async:</strong> Don't block colleagues waiting for mediator</li>
+<li><strong>Handle failures:</strong> What happens if mediator or colleague fails?</li>
+<li><strong>Test in isolation:</strong> Mock mediator when testing colleagues</li>
+<li><strong>Document protocols:</strong> Clear contract for how colleagues interact</li>
+</ol>
 </div>
 
 ---

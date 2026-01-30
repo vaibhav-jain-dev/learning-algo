@@ -5,51 +5,51 @@
 The Decorator pattern dynamically attaches additional responsibilities to objects by wrapping them with decorator objects that share the same interface. Unlike subclassing, which creates static behavior extensions at compile time, decoration enables runtime composition of behaviors while preserving the Open/Closed Principle.
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e94560;">
-  <h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Core Insight</h4>
-  <p style="color: #eee; margin: 0; line-height: 1.6;">The Decorator pattern embodies the principle of <strong>composition over inheritance</strong>. Each decorator "has-a" component rather than "is-a" specialized version, enabling unlimited behavioral combinations without exponential class hierarchies.</p>
+<h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Core Insight</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">The Decorator pattern embodies the principle of <strong>composition over inheritance</strong>. Each decorator "has-a" component rather than "is-a" specialized version, enabling unlimited behavioral combinations without exponential class hierarchies.</p>
 </div>
 
 ## Structural Architecture
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);">
-    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Component Interface</div>
-    <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; font-family: monospace;">+ operation(): Result</div>
-  </div>
-  <div style="display: flex; align-items: center; gap: 0.5rem; color: #667eea;">
-    <div style="width: 2px; height: 30px; background: #667eea;"></div>
-  </div>
-  <div style="display: flex; gap: 4rem; align-items: flex-start;">
-    <div style="display: flex; flex-direction: column; align-items: center;">
-      <div style="background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); border: 2px solid #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; text-align: center;">
-        <div style="color: #4ecdc4; font-weight: 600;">ConcreteComponent</div>
-        <div style="color: #888; font-size: 0.8rem; margin-top: 0.5rem; font-family: monospace;">+ operation()</div>
-      </div>
-      <div style="color: #888; font-size: 0.75rem; margin-top: 0.5rem; max-width: 150px; text-align: center;">Base implementation without decoration</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-      <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
-        <div style="font-weight: 700;">BaseDecorator</div>
-        <div style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; margin-top: 0.5rem; font-family: monospace;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">Component Interface</div>
+<div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; font-family: monospace;">+ operation(): Result</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.5rem; color: #667eea;">
+<div style="width: 2px; height: 30px; background: #667eea;"></div>
+</div>
+<div style="display: flex; gap: 4rem; align-items: flex-start;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); border: 2px solid #4ecdc4; border-radius: 10px; padding: 1rem 1.5rem; text-align: center;">
+<div style="color: #4ecdc4; font-weight: 600;">ConcreteComponent</div>
+<div style="color: #888; font-size: 0.8rem; margin-top: 0.5rem; font-family: monospace;">+ operation()</div>
+</div>
+<div style="color: #888; font-size: 0.75rem; margin-top: 0.5rem; max-width: 150px; text-align: center;">Base implementation without decoration</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem 1.5rem; color: white; text-align: center; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+<div style="font-weight: 700;">BaseDecorator</div>
+<div style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem; margin-top: 0.5rem; font-family: monospace;">
           - wrappedComponent: Component<br>+ operation(): delegates to wrapped
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; color: #38ef7d;">
-          <div style="width: 2px; height: 20px; background: #38ef7d;"></div>
-        </div>
-        <div style="display: flex; gap: 1.5rem;">
-          <div style="background: #1a1a2e; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1rem; text-align: center;">
-            <div style="color: #f093fb; font-size: 0.9rem; font-weight: 600;">DecoratorA</div>
-            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">adds behavior before</div>
-          </div>
-          <div style="background: #1a1a2e; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1rem; text-align: center;">
-            <div style="color: #ffd93d; font-size: 0.9rem; font-weight: 600;">DecoratorB</div>
-            <div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">adds behavior after</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.5rem; color: #38ef7d;">
+<div style="width: 2px; height: 20px; background: #38ef7d;"></div>
+</div>
+<div style="display: flex; gap: 1.5rem;">
+<div style="background: #1a1a2e; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1rem; text-align: center;">
+<div style="color: #f093fb; font-size: 0.9rem; font-weight: 600;">DecoratorA</div>
+<div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">adds behavior before</div>
+</div>
+<div style="background: #1a1a2e; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1rem; text-align: center;">
+<div style="color: #ffd93d; font-size: 0.9rem; font-weight: 600;">DecoratorB</div>
+<div style="color: #888; font-size: 0.75rem; margin-top: 0.25rem;">adds behavior after</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
   ---
 
@@ -59,11 +59,11 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 
   Inheritance creates a **static class hierarchy** where each combination of features requires a dedicated class. Consider a notification system with 3 delivery channels and 3 formatting options:
 
-  <div style="display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #ff6b6b22 0%, #ff6b6b11 100%); border: 1px solid #ff6b6b; border-radius: 10px; padding: 1.25rem;">
-      <h4 style="color: #ff6b6b; margin: 0 0 1rem 0;">Inheritance Approach</h4>
-      <div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
-        <div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
+<div style="display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #ff6b6b22 0%, #ff6b6b11 100%); border: 1px solid #ff6b6b; border-radius: 10px; padding: 1.25rem;">
+<h4 style="color: #ff6b6b; margin: 0 0 1rem 0;">Inheritance Approach</h4>
+<div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
+<div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
           Notifier (base)<br>
             EmailNotifier<br>
               SMSNotifier<br>
@@ -72,25 +72,25 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                     PlainTextEmailNotifier<br>
                       HTMLSMSNotifier<br>
                         ... (3 x 3 = 9 classes minimum)
-                      </div>
-                      <div style="color: #ff6b6b;">Classes grow multiplicatively: O(n * m * k)</div>
-                    </div>
-                  </div>
-                  <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #4ecdc422 0%, #4ecdc411 100%); border: 1px solid #4ecdc4; border-radius: 10px; padding: 1.25rem;">
-                    <h4 style="color: #4ecdc4; margin: 0 0 1rem 0;">Decorator Approach</h4>
-                    <div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
-                      <div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
+</div>
+<div style="color: #ff6b6b;">Classes grow multiplicatively: O(n * m * k)</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #4ecdc422 0%, #4ecdc411 100%); border: 1px solid #4ecdc4; border-radius: 10px; padding: 1.25rem;">
+<h4 style="color: #4ecdc4; margin: 0 0 1rem 0;">Decorator Approach</h4>
+<div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
+<div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
                         Notifier (interface)<br>
                           BaseNotifier<br>
                             EmailDecorator<br>
                               SMSDecorator<br>
                                 HTMLFormatterDecorator<br>
                                   ... (3 + 3 = 6 classes total)
-                                </div>
-                                <div style="color: #4ecdc4;">Classes grow additively: O(n + m + k)</div>
-                              </div>
-                            </div>
-                          </div>
+</div>
+<div style="color: #4ecdc4;">Classes grow additively: O(n + m + k)</div>
+</div>
+</div>
+</div>
 
                           ### Internal Mechanics: How Delegation Chains Work
 
@@ -194,10 +194,10 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           return decompressed
                           ```
 
-                          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ffd93d;">
-                            <h4 style="color: #ffd93d; margin: 0 0 0.75rem 0;">Key Assumption</h4>
-                            <p style="color: #eee; margin: 0; line-height: 1.6;">The Decorator pattern assumes <strong>interface stability</strong>. All decorators must implement the complete Component interface. Adding methods to the interface requires updating ALL decorators - a significant maintenance cost that inheritance avoids through method inheritance.</p>
-                          </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ffd93d;">
+<h4 style="color: #ffd93d; margin: 0 0 0.75rem 0;">Key Assumption</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">The Decorator pattern assumes <strong>interface stability</strong>. All decorators must implement the complete Component interface. Adding methods to the interface requires updating ALL decorators - a significant maintenance cost that inheritance avoids through method inheritance.</p>
+</div>
 
                           ### Trade-off Analysis
 
@@ -271,26 +271,26 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           - Short-circuit the chain conditionally
                           - Maintain internal state that affects subsequent calls
 
-                          <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
-                            <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 1rem; color: white;">
-                              <div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Compression -> Encryption -> FileSource</div>
-                              <div style="font-family: monospace; font-size: 0.85rem;">
+<div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
+<div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 1rem; color: white;">
+<div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Compression -> Encryption -> FileSource</div>
+<div style="font-family: monospace; font-size: 0.85rem;">
                                 write("Hello") -> compress("Hello") -> encrypt(compressed) -> store(encrypted)
-                              </div>
-                            </div>
-                            <div style="text-align: center; color: #888; font-size: 1.5rem;">vs</div>
-                            <div style="background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem; color: white;">
-                              <div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Encryption -> Compression -> FileSource</div>
-                              <div style="font-family: monospace; font-size: 0.85rem;">
+</div>
+</div>
+<div style="text-align: center; color: #888; font-size: 1.5rem;">vs</div>
+<div style="background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem; color: white;">
+<div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Encryption -> Compression -> FileSource</div>
+<div style="font-family: monospace; font-size: 0.85rem;">
                                 write("Hello") -> encrypt("Hello") -> compress(encrypted) -> store(compressed)
-                              </div>
-                            </div>
-                          </div>
+</div>
+</div>
+</div>
 
-                          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e94560;">
-                            <h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Critical Insight: Compression + Encryption Order</h4>
-                            <p style="color: #eee; margin: 0; line-height: 1.6;">Compress-then-encrypt is generally correct because compression finds patterns in plaintext. Encrypted data appears random and doesn't compress well. Encrypt-then-compress wastes CPU cycles and may even increase size. This is why the order in decorator chains has <strong>real-world security and performance implications</strong>.</p>
-                          </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e94560;">
+<h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Critical Insight: Compression + Encryption Order</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">Compress-then-encrypt is generally correct because compression finds patterns in plaintext. Encrypted data appears random and doesn't compress well. Encrypt-then-compress wastes CPU cycles and may even increase size. This is why the order in decorator chains has <strong>real-world security and performance implications</strong>.</p>
+</div>
 
                           ### Implementing Robust Stacking
 
@@ -622,32 +622,32 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 
                           Java's `java.io` package is the canonical real-world Decorator implementation. The design enables mixing and matching stream behaviors:
 
-                          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin: 2rem 0; font-family: monospace; font-size: 0.9rem;">
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center;">InputStream</div>
-                              <div style="color: #888; flex: 1;">Abstract component - defines read(), close(), available()</div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
-                              <div style="width: 2px; height: 20px; background: #667eea;"></div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
-                              <div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 0.75rem 1.5rem; border-radius: 8px; color: #4ecdc4; min-width: 200px; text-align: center;">FileInputStream</div>
-                              <div style="color: #888; flex: 1;">Concrete component - reads from file</div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
-                              <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center;">FilterInputStream</div>
-                              <div style="color: #888; flex: 1;">Abstract decorator base - wraps any InputStream</div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem; padding-left: 4rem;">
-                              <div style="width: 2px; height: 20px; background: #38ef7d;"></div>
-                            </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding-left: 4rem;">
-                              <div style="background: #1a1a2e; border: 2px solid #f093fb; padding: 0.5rem 1rem; border-radius: 6px; color: #f093fb;">BufferedInputStream</div>
-                              <div style="background: #1a1a2e; border: 2px solid #ffd93d; padding: 0.5rem 1rem; border-radius: 6px; color: #ffd93d;">DataInputStream</div>
-                              <div style="background: #1a1a2e; border: 2px solid #74b9ff; padding: 0.5rem 1rem; border-radius: 6px; color: #74b9ff;">GZIPInputStream</div>
-                              <div style="background: #1a1a2e; border: 2px solid #a29bfe; padding: 0.5rem 1rem; border-radius: 6px; color: #a29bfe;">CipherInputStream</div>
-                            </div>
-                          </div>
+<div style="display: flex; flex-direction: column; gap: 0.5rem; margin: 2rem 0; font-family: monospace; font-size: 0.9rem;">
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center;">InputStream</div>
+<div style="color: #888; flex: 1;">Abstract component - defines read(), close(), available()</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
+<div style="width: 2px; height: 20px; background: #667eea;"></div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
+<div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 0.75rem 1.5rem; border-radius: 8px; color: #4ecdc4; min-width: 200px; text-align: center;">FileInputStream</div>
+<div style="color: #888; flex: 1;">Concrete component - reads from file</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem;">
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center;">FilterInputStream</div>
+<div style="color: #888; flex: 1;">Abstract decorator base - wraps any InputStream</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem; padding-left: 4rem;">
+<div style="width: 2px; height: 20px; background: #38ef7d;"></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding-left: 4rem;">
+<div style="background: #1a1a2e; border: 2px solid #f093fb; padding: 0.5rem 1rem; border-radius: 6px; color: #f093fb;">BufferedInputStream</div>
+<div style="background: #1a1a2e; border: 2px solid #ffd93d; padding: 0.5rem 1rem; border-radius: 6px; color: #ffd93d;">DataInputStream</div>
+<div style="background: #1a1a2e; border: 2px solid #74b9ff; padding: 0.5rem 1rem; border-radius: 6px; color: #74b9ff;">GZIPInputStream</div>
+<div style="background: #1a1a2e; border: 2px solid #a29bfe; padding: 0.5rem 1rem; border-radius: 6px; color: #a29bfe;">CipherInputStream</div>
+</div>
+</div>
 
                           ### Python Implementation with Real-World Concerns
 
@@ -976,10 +976,10 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           # print(f"\nFile hash: {hasher.get_hash()}")
                           ```
 
-                          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e94560;">
-                            <h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Resource Management Warning</h4>
-                            <p style="color: #eee; margin: 0; line-height: 1.6;">Stream decorators MUST propagate <code>close()</code> calls down the chain. Failure to do so causes resource leaks (file handles, network connections). In languages without deterministic destruction, always use try-finally or context managers. Java's try-with-resources and Python's context managers are designed specifically for this pattern.</p>
-                          </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e94560;">
+<h4 style="color: #e94560; margin: 0 0 0.75rem 0;">Resource Management Warning</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">Stream decorators MUST propagate <code>close()</code> calls down the chain. Failure to do so causes resource leaks (file handles, network connections). In languages without deterministic destruction, always use try-finally or context managers. Java's try-with-resources and Python's context managers are designed specifically for this pattern.</p>
+</div>
 
                           ### Interview Questions - Level 1 (Foundation)
 
@@ -1079,21 +1079,21 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 
                           Web framework middleware is the Decorator pattern applied to HTTP handling. Each middleware wraps the next handler, creating a pipeline.
 
-                          <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap;">
-                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Request</div>
-                            <div style="color: #667eea; font-size: 1.5rem;">-></div>
-                            <div style="background: #1a1a2e; border: 2px solid #f093fb; padding: 0.5rem 0.75rem; border-radius: 6px; color: #f093fb; font-size: 0.8rem;">Logging</div>
-                            <div style="color: #888;">-></div>
-                            <div style="background: #1a1a2e; border: 2px solid #ffd93d; padding: 0.5rem 0.75rem; border-radius: 6px; color: #ffd93d; font-size: 0.8rem;">Auth</div>
-                            <div style="color: #888;">-></div>
-                            <div style="background: #1a1a2e; border: 2px solid #74b9ff; padding: 0.5rem 0.75rem; border-radius: 6px; color: #74b9ff; font-size: 0.8rem;">RateLimit</div>
-                            <div style="color: #888;">-></div>
-                            <div style="background: #1a1a2e; border: 2px solid #a29bfe; padding: 0.5rem 0.75rem; border-radius: 6px; color: #a29bfe; font-size: 0.8rem;">CORS</div>
-                            <div style="color: #888;">-></div>
-                            <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Handler</div>
-                            <div style="color: #38ef7d; font-size: 1.5rem;">-></div>
-                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Response</div>
-                          </div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Request</div>
+<div style="color: #667eea; font-size: 1.5rem;">-></div>
+<div style="background: #1a1a2e; border: 2px solid #f093fb; padding: 0.5rem 0.75rem; border-radius: 6px; color: #f093fb; font-size: 0.8rem;">Logging</div>
+<div style="color: #888;">-></div>
+<div style="background: #1a1a2e; border: 2px solid #ffd93d; padding: 0.5rem 0.75rem; border-radius: 6px; color: #ffd93d; font-size: 0.8rem;">Auth</div>
+<div style="color: #888;">-></div>
+<div style="background: #1a1a2e; border: 2px solid #74b9ff; padding: 0.5rem 0.75rem; border-radius: 6px; color: #74b9ff; font-size: 0.8rem;">RateLimit</div>
+<div style="color: #888;">-></div>
+<div style="background: #1a1a2e; border: 2px solid #a29bfe; padding: 0.5rem 0.75rem; border-radius: 6px; color: #a29bfe; font-size: 0.8rem;">CORS</div>
+<div style="color: #888;">-></div>
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Handler</div>
+<div style="color: #38ef7d; font-size: 1.5rem;">-></div>
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Response</div>
+</div>
 
                           ### Go Implementation with Real-World Patterns
 
@@ -1382,10 +1382,10 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           }
                           ```
 
-                          <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #4ecdc4;">
-                            <h4 style="color: #4ecdc4; margin: 0 0 0.75rem 0;">Design Choice: Handler vs Middleware Responsibility</h4>
-                            <p style="color: #eee; margin: 0; line-height: 1.6;">Middleware should handle <strong>cross-cutting concerns</strong>: authentication, logging, rate limiting, CORS. Business logic belongs in handlers. If you find middleware making business decisions (e.g., "admin users skip rate limits"), consider moving that logic to the handler or introducing a policy layer.</p>
-                          </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #4ecdc4;">
+<h4 style="color: #4ecdc4; margin: 0 0 0.75rem 0;">Design Choice: Handler vs Middleware Responsibility</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">Middleware should handle <strong>cross-cutting concerns</strong>: authentication, logging, rate limiting, CORS. Business logic belongs in handlers. If you find middleware making business decisions (e.g., "admin users skip rate limits"), consider moving that logic to the handler or introducing a policy layer.</p>
+</div>
 
                           ### Express.js Pattern Comparison
 
@@ -1567,25 +1567,25 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 
                           ## Summary: When to Use Decorator
 
-                          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
-                            <div style="background: linear-gradient(135deg, #4ecdc422 0%, #4ecdc411 100%); border: 1px solid #4ecdc4; border-radius: 10px; padding: 1.25rem;">
-                              <h4 style="color: #4ecdc4; margin: 0 0 0.75rem 0;">Use Decorator When</h4>
-                              <ul style="color: #ccc; margin: 0; padding-left: 1.25rem; line-height: 1.8;">
-                                <li>Adding responsibilities dynamically</li>
-                                <li>Responsibilities can be withdrawn</li>
-                                <li>Subclassing creates class explosion</li>
-                                <li>Need to combine behaviors flexibly</li>
-                                <li>Modifying third-party code behavior</li>
-                              </ul>
-                            </div>
-                            <div style="background: linear-gradient(135deg, #ff6b6b22 0%, #ff6b6b11 100%); border: 1px solid #ff6b6b; border-radius: 10px; padding: 1.25rem;">
-                              <h4 style="color: #ff6b6b; margin: 0 0 0.75rem 0;">Avoid Decorator When</h4>
-                              <ul style="color: #ccc; margin: 0; padding-left: 1.25rem; line-height: 1.8;">
-                                <li>Single fixed behavior needed</li>
-                                <li>Component interface is unstable</li>
-                                <li>Deep chains cause performance issues</li>
-                                <li>Identity/type checking is important</li>
-                                <li>Decorators need to access each other</li>
-                              </ul>
-                            </div>
-                          </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+<div style="background: linear-gradient(135deg, #4ecdc422 0%, #4ecdc411 100%); border: 1px solid #4ecdc4; border-radius: 10px; padding: 1.25rem;">
+<h4 style="color: #4ecdc4; margin: 0 0 0.75rem 0;">Use Decorator When</h4>
+<ul style="color: #ccc; margin: 0; padding-left: 1.25rem; line-height: 1.8;">
+<li>Adding responsibilities dynamically</li>
+<li>Responsibilities can be withdrawn</li>
+<li>Subclassing creates class explosion</li>
+<li>Need to combine behaviors flexibly</li>
+<li>Modifying third-party code behavior</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #ff6b6b22 0%, #ff6b6b11 100%); border: 1px solid #ff6b6b; border-radius: 10px; padding: 1.25rem;">
+<h4 style="color: #ff6b6b; margin: 0 0 0.75rem 0;">Avoid Decorator When</h4>
+<ul style="color: #ccc; margin: 0; padding-left: 1.25rem; line-height: 1.8;">
+<li>Single fixed behavior needed</li>
+<li>Component interface is unstable</li>
+<li>Deep chains cause performance issues</li>
+<li>Identity/type checking is important</li>
+<li>Decorators need to access each other</li>
+</ul>
+</div>
+</div>

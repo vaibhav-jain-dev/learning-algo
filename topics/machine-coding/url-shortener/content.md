@@ -339,50 +339,50 @@ class BloomOptimizedShortener:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Collision Resolution Strategies</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Collision Resolution Strategies</div>
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Linear Probing (Rehash)</div>
-      <div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
-        <div>hash(url) -> collision</div>
-        <div>hash(url + "1") -> collision</div>
-        <div>hash(url + "2") -> success</div>
-      </div>
-      <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Linear Probing (Rehash)</div>
+<div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
+<div>hash(url) -> collision</div>
+<div>hash(url + "1") -> collision</div>
+<div>hash(url + "2") -> success</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px;">
         Pros: Simple, deterministic<br/>
         Cons: Clustering, predictable
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Random Probing</div>
-      <div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
-        <div>hash(url) -> collision</div>
-        <div>random_code() -> collision</div>
-        <div>random_code() -> success</div>
-      </div>
-      <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Random Probing</div>
+<div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
+<div>hash(url) -> collision</div>
+<div>random_code() -> collision</div>
+<div>random_code() -> success</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px;">
         Pros: No clustering, unpredictable<br/>
         Cons: Non-deterministic, can't dedupe
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Hierarchical Fallback</div>
-      <div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
-        <div>7-char hash -> collision</div>
-        <div>8-char hash -> success</div>
-        <div>(increases code length)</div>
-      </div>
-      <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Hierarchical Fallback</div>
+<div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
+<div>7-char hash -> collision</div>
+<div>8-char hash -> success</div>
+<div>(increases code length)</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px;">
         Pros: Eventually succeeds<br/>
         Cons: Inconsistent code lengths
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Interview Questions: Collision Handling (3 Levels Deep)
@@ -440,44 +440,44 @@ In a <span style="color:#22c55e;font-weight:bold">distributed system</span>, gen
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Snowflake ID Structure (64 bits)</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Snowflake ID Structure (64 bits)</div>
 
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
-      <div style="color: #fff; font-weight: bold; font-size: 11px;">Sign</div>
-      <div style="color: #e0e7ff; font-size: 10px;">1 bit</div>
-      <div style="color: #c7d2fe; font-size: 9px; margin-top: 4px;">Always 0</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 1 1 200px;">
-      <div style="color: #fff; font-weight: bold; font-size: 11px;">Timestamp</div>
-      <div style="color: #fef3c7; font-size: 10px;">41 bits</div>
-      <div style="color: #fde68a; font-size: 9px; margin-top: 4px;">~69 years from epoch</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
-      <div style="color: #fff; font-weight: bold; font-size: 11px;">Datacenter</div>
-      <div style="color: #d1fae5; font-size: 10px;">5 bits</div>
-      <div style="color: #a7f3d0; font-size: 9px; margin-top: 4px;">32 DCs</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
-      <div style="color: #fff; font-weight: bold; font-size: 11px;">Worker</div>
-      <div style="color: #dbeafe; font-size: 10px;">5 bits</div>
-      <div style="color: #bfdbfe; font-size: 9px; margin-top: 4px;">32/DC</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
-      <div style="color: #fff; font-weight: bold; font-size: 11px;">Sequence</div>
-      <div style="color: #fce7f3; font-size: 10px;">12 bits</div>
-      <div style="color: #fbcfe8; font-size: 9px; margin-top: 4px;">4096/ms</div>
-    </div>
-  </div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Sign</div>
+<div style="color: #e0e7ff; font-size: 10px;">1 bit</div>
+<div style="color: #c7d2fe; font-size: 9px; margin-top: 4px;">Always 0</div>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 1 1 200px;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Timestamp</div>
+<div style="color: #fef3c7; font-size: 10px;">41 bits</div>
+<div style="color: #fde68a; font-size: 9px; margin-top: 4px;">~69 years from epoch</div>
+</div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Datacenter</div>
+<div style="color: #d1fae5; font-size: 10px;">5 bits</div>
+<div style="color: #a7f3d0; font-size: 9px; margin-top: 4px;">32 DCs</div>
+</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Worker</div>
+<div style="color: #dbeafe; font-size: 10px;">5 bits</div>
+<div style="color: #bfdbfe; font-size: 9px; margin-top: 4px;">32/DC</div>
+</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto;">
+<div style="color: #fff; font-weight: bold; font-size: 11px;">Sequence</div>
+<div style="color: #fce7f3; font-size: 10px;">12 bits</div>
+<div style="color: #fbcfe8; font-size: 9px; margin-top: 4px;">4096/ms</div>
+</div>
+</div>
 
-  <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
-    <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Capacity Analysis:</div>
-    <div style="color: #c9d1d9; font-size: 12px;">
-      <div>32 datacenters x 32 workers = 1,024 total ID generators</div>
-      <div>4,096 IDs per millisecond per worker = 4.1M IDs/sec per worker</div>
-      <div>Total system capacity: 4.2 billion IDs per second</div>
-    </div>
-  </div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Capacity Analysis:</div>
+<div style="color: #c9d1d9; font-size: 12px;">
+<div>32 datacenters x 32 workers = 1,024 total ID generators</div>
+<div>4,096 IDs per millisecond per worker = 4.1M IDs/sec per worker</div>
+<div>Total system capacity: 4.2 billion IDs per second</div>
+</div>
+</div>
 
 </div>
 
@@ -608,46 +608,46 @@ class SnowflakeGenerator:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Range Allocation Architecture</div>
+<div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Range Allocation Architecture</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px 40px; border-radius: 12px; text-align: center;">
-      <div style="color: #fff; font-weight: bold; font-size: 14px;">Zookeeper Cluster</div>
-      <div style="color: #e9d5ff; font-size: 11px; margin-top: 8px;">Maintains: next_range_start = 5,000,000</div>
-    </div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px 40px; border-radius: 12px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 14px;">Zookeeper Cluster</div>
+<div style="color: #e9d5ff; font-size: 11px; margin-top: 8px;">Maintains: next_range_start = 5,000,000</div>
+</div>
 
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-      <div style="color: #7ee787; font-size: 24px;">|</div>
-    </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="color: #7ee787; font-size: 24px;">|</div>
+</div>
 
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">Server A</div>
-        <div style="color: #d1f5d3; font-size: 10px; margin-top: 8px;">Range: 1M - 2M</div>
-        <div style="color: #a7f3d0; font-size: 9px;">Current: 1,847,293</div>
-      </div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Server A</div>
+<div style="color: #d1f5d3; font-size: 10px; margin-top: 8px;">Range: 1M - 2M</div>
+<div style="color: #a7f3d0; font-size: 9px;">Current: 1,847,293</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">Server B</div>
-        <div style="color: #dbeafe; font-size: 10px; margin-top: 8px;">Range: 2M - 3M</div>
-        <div style="color: #bfdbfe; font-size: 9px;">Current: 2,124,891</div>
-      </div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Server B</div>
+<div style="color: #dbeafe; font-size: 10px; margin-top: 8px;">Range: 2M - 3M</div>
+<div style="color: #bfdbfe; font-size: 9px;">Current: 2,124,891</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">Server C</div>
-        <div style="color: #fed7aa; font-size: 10px; margin-top: 8px;">Range: 3M - 4M</div>
-        <div style="color: #fdba74; font-size: 9px;">Current: 3,999,102</div>
-      </div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Server C</div>
+<div style="color: #fed7aa; font-size: 10px; margin-top: 8px;">Range: 3M - 4M</div>
+<div style="color: #fdba74; font-size: 9px;">Current: 3,999,102</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: #f8fafc; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
-      <div style="color: #ffa657; font-size: 11px;">Server C nearly exhausted - requesting new range 5M-6M</div>
-    </div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
+<div style="color: #ffa657; font-size: 11px;">Server C nearly exhausted - requesting new range 5M-6M</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ```python
@@ -880,38 +880,38 @@ class ULIDGenerator:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Alias Design Considerations</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Alias Design Considerations</div>
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 
-    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Namespace Collision</div>
-      <div style="color: #fee2e2; font-size: 12px; line-height: 1.6;">
-        <div>Custom codes may conflict with auto-generated codes</div>
-        <div>Reserved words (admin, api, help)</div>
-        <div>Offensive/inappropriate words</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Namespace Collision</div>
+<div style="color: #fee2e2; font-size: 12px; line-height: 1.6;">
+<div>Custom codes may conflict with auto-generated codes</div>
+<div>Reserved words (admin, api, help)</div>
+<div>Offensive/inappropriate words</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Squatting Prevention</div>
-      <div style="color: #fef3c7; font-size: 12px; line-height: 1.6;">
-        <div>Users registering valuable names speculatively</div>
-        <div>Trademark infringement risks</div>
-        <div>Resource exhaustion attacks</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Squatting Prevention</div>
+<div style="color: #fef3c7; font-size: 12px; line-height: 1.6;">
+<div>Users registering valuable names speculatively</div>
+<div>Trademark infringement risks</div>
+<div>Resource exhaustion attacks</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Validation Complexity</div>
-      <div style="color: #d1fae5; font-size: 12px; line-height: 1.6;">
-        <div>Character restrictions (URL-safe only)</div>
-        <div>Length limits and minimums</div>
-        <div>Case sensitivity decisions</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Validation Complexity</div>
+<div style="color: #d1fae5; font-size: 12px; line-height: 1.6;">
+<div>Character restrictions (URL-safe only)</div>
+<div>Length limits and minimums</div>
+<div>Case sensitivity decisions</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
   ### Implementation: Custom Alias Validator
@@ -1049,41 +1049,41 @@ class CustomAliasValidator:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Namespace Separation Approaches</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Namespace Separation Approaches</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 1: Prefix Differentiation</div>
-      <div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
-        <div><code>short.url/~abc123</code> (custom, prefix ~)</div>
-        <div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
-        <div style="margin-top: 8px; font-size: 11px;">Pros: Clear separation, simple lookup</div>
-        <div style="font-size: 11px;">Cons: URLs look different, ~ needs encoding</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 1: Prefix Differentiation</div>
+<div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
+<div><code>short.url/~abc123</code> (custom, prefix ~)</div>
+<div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Clear separation, simple lookup</div>
+<div style="font-size: 11px;">Cons: URLs look different, ~ needs encoding</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 2: Length Differentiation</div>
-      <div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
-        <div><code>short.url/my-custom-alias</code> (custom, 4+ chars with hyphens)</div>
-        <div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
-        <div style="margin-top: 8px; font-size: 11px;">Pros: Natural URLs, implicit separation</div>
-        <div style="font-size: 11px;">Cons: Limits auto-generated code format</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 2: Length Differentiation</div>
+<div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
+<div><code>short.url/my-custom-alias</code> (custom, 4+ chars with hyphens)</div>
+<div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Natural URLs, implicit separation</div>
+<div style="font-size: 11px;">Cons: Limits auto-generated code format</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 3: Unified Namespace with Blocking</div>
-      <div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
-        <div>Block custom aliases that could be auto-generated</div>
-        <div>Reserve auto-generated keyspace from custom use</div>
-        <div style="margin-top: 8px; font-size: 11px;">Pros: Cleanest URLs, single lookup</div>
-        <div style="font-size: 11px;">Cons: Complex validation, keyspace waste</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 3: Unified Namespace with Blocking</div>
+<div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
+<div>Block custom aliases that could be auto-generated</div>
+<div>Reserve auto-generated keyspace from custom use</div>
+<div style="margin-top: 8px; font-size: 11px;">Pros: Cleanest URLs, single lookup</div>
+<div style="font-size: 11px;">Cons: Complex validation, keyspace waste</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ```python
@@ -1150,43 +1150,43 @@ class NamespaceManager:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Domain Architecture</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Domain Architecture</div>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-      <div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 20px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">Customer Domain</div>
-        <div style="color: #dcfce7; font-size: 10px;">go.nike.com</div>
-      </div>
-      <div style="color: #7ee787; font-size: 20px;">-></div>
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">DNS CNAME</div>
-        <div style="color: #dbeafe; font-size: 10px;">custom.shorturl.com</div>
-      </div>
-      <div style="color: #7ee787; font-size: 20px;">-></div>
-      <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">Load Balancer</div>
-        <div style="color: #fef3c7; font-size: 10px;">SNI Routing</div>
-      </div>
-      <div style="color: #7ee787; font-size: 20px;">-></div>
-      <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 12px;">URL Shortener</div>
-        <div style="color: #ede9fe; font-size: 10px;">Multi-tenant</div>
-      </div>
-    </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Customer Domain</div>
+<div style="color: #dcfce7; font-size: 10px;">go.nike.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">DNS CNAME</div>
+<div style="color: #dbeafe; font-size: 10px;">custom.shorturl.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">Load Balancer</div>
+<div style="color: #fef3c7; font-size: 10px;">SNI Routing</div>
+</div>
+<div style="color: #7ee787; font-size: 20px;">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 12px;">URL Shortener</div>
+<div style="color: #ede9fe; font-size: 10px;">Multi-tenant</div>
+</div>
+</div>
 
-    <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
-      <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
-      <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
-        <div>1. Customer adds CNAME record pointing to your infrastructure</div>
-        <div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
-        <div>3. Load balancer uses SNI to route to correct certificate</div>
-        <div>4. Application identifies tenant by Host header</div>
-      </div>
-    </div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div>1. Customer adds CNAME record pointing to your infrastructure</div>
+<div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
+<div>3. Load balancer uses SNI to route to correct certificate</div>
+<div>4. Application identifies tenant by Host header</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ```python
@@ -1290,7 +1290,7 @@ class CustomDomainManager:
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       Custom aliases require additional validation beyond auto-generated codes:
 
@@ -1299,16 +1299,16 @@ class CustomDomainManager:
       3. **Uniqueness check**: Query database before creation, handle race conditions with unique constraints
       4. **Normalization**: Convert to lowercase for case-insensitive matching
 
-      The key trade-off is between <span style="color:#22c55e;font-weight:bold">user flexibility</span> (allowing many formats) and <span style="color:#22c55e;font-weight:bold">system simplicity</span> (predictable URL structure).
+The key trade-off is between <span style="color:#22c55e;font-weight:bold">user flexibility</span> (allowing many formats) and <span style="color:#22c55e;font-weight:bold">system simplicity</span> (predictable URL structure).
 
-    </div>
+</div>
   </details>
 
   **Level 2**: Your custom alias system allows users to create any alias. An attacker creates aliases like `login`, `admin`, `api` - all linking to phishing sites. How would you prevent this while maintaining a good user experience?
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       Multi-layered defense strategy:
 
@@ -1333,14 +1333,14 @@ class CustomDomainManager:
 
       The trade-off: Too restrictive blocks legitimate use cases. Consider implementing an appeal process and manual review queue for edge cases.
 
-    </div>
+</div>
   </details>
 
   **Level 3**: Design a custom alias system that (a) allows millions of users to create aliases concurrently, (b) prevents race conditions where two users try to claim the same alias simultaneously, (c) provides instant feedback on alias availability as users type, and (d) handles the case where a user's session crashes between checking availability and confirming creation. Consider the distributed systems implications across multiple data centers.
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       **Architecture for concurrent alias creation at scale:**
 
@@ -1408,7 +1408,7 @@ class CustomDomainManager:
 
       **Key insight**: The system is eventually consistent for reads (Bloom filter may lag) but strongly consistent for writes (database unique constraint is the source of truth). This matches user expectations: instant feedback is "best effort," but actual creation is guaranteed unique.
 
-    </div>
+</div>
   </details>
 
 </div>
@@ -1419,7 +1419,7 @@ class CustomDomainManager:
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       **Case-insensitive is the better choice** for custom aliases:
 
@@ -1432,14 +1432,14 @@ class CustomDomainManager:
 
       Trade-off: Reduces namespace by ~26x (since A-Z collapse to a-z), but for human-readable aliases this is acceptable.
 
-    </div>
+</div>
   </details>
 
   **Level 2**: Your marketing team wants case-sensitivity preserved for display purposes (showing `MyBrand` in analytics) while maintaining case-insensitive matching. How would you implement this?
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       **Dual-storage approach:**
 
@@ -1476,14 +1476,14 @@ class CustomDomainManager:
 
       Cache key uses normalized form; cache value includes display form for analytics.
 
-    </div>
+</div>
   </details>
 
   **Level 3**: You've implemented case-insensitive custom aliases. Now a premium customer complains: they created `GitHub-Repo` but a competitor later created `github-repo` (normalized to same value) and your system rejected it. The competitor argues they should have access to the lowercase version. Design a policy and technical system that fairly resolves such conflicts, considers trademark implications, and scales to millions of aliases without requiring manual review for every case.
 
   <details style="margin-top: 12px;">
     <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
-    <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
       **Policy Framework:**
 
@@ -1592,7 +1592,7 @@ class CustomDomainManager:
       - ~0.9% rejected automatically (no trademark registration)
       - ~0.1% require human review (O(thousands/year) at scale, manageable)
 
-    </div>
+</div>
   </details>
 
 </div>
@@ -1607,42 +1607,42 @@ Redirect status codes fundamentally affect your analytics capabilities.
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">HTTP Redirect Behavior Comparison</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">HTTP Redirect Behavior Comparison</div>
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
-      <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">301 Moved Permanently</div>
-      <div style="color: #d1f5d3; font-size: 12px; line-height: 1.8;">
-        <div>Browser caches redirect</div>
-        <div>Future requests skip your server</div>
-        <div>SEO: Link juice transfers</div>
-        <div>Lower server load</div>
-        <div>Analytics: First click only</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">301 Moved Permanently</div>
+<div style="color: #d1f5d3; font-size: 12px; line-height: 1.8;">
+<div>Browser caches redirect</div>
+<div>Future requests skip your server</div>
+<div>SEO: Link juice transfers</div>
+<div>Lower server load</div>
+<div>Analytics: First click only</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
-      <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">302 Found (Temporary)</div>
-      <div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
-        <div>Browser doesn't cache</div>
-        <div>Every request hits your server</div>
-        <div>SEO: Original URL retains value</div>
-        <div>Higher server load</div>
-        <div>Analytics: Every click tracked</div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">302 Found (Temporary)</div>
+<div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
+<div>Browser doesn't cache</div>
+<div>Every request hits your server</div>
+<div>SEO: Original URL retains value</div>
+<div>Higher server load</div>
+<div>Analytics: Every click tracked</div>
+</div>
+</div>
 
-  </div>
+</div>
 
-  <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
-    <div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
-    <div style="color: #c9d1d9; font-size: 11px;">
-      <div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
-      <div>TinyURL: 301 (prioritizes performance)</div>
-      <div>Marketing platforms: 302 (prioritizes analytics)</div>
-    </div>
-  </div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
+<div style="color: #c9d1d9; font-size: 11px;">
+<div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
+<div>TinyURL: 301 (prioritizes performance)</div>
+<div>Marketing platforms: 302 (prioritizes analytics)</div>
+</div>
+</div>
 
 </div>
 
@@ -1736,73 +1736,73 @@ class URLAnalytics:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Lambda Architecture for Analytics</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Lambda Architecture for Analytics</div>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Speed Layer (Real-Time)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Click Event</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Kafka</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Flink/Spark Streaming</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Redis Counters</div>
-        </div>
-      </div>
-      <div style="color: #fef3c7; font-size: 11px; margin-top: 12px;">Latency: ~seconds | Accuracy: Approximate | Retention: Hours</div>
-    </div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Speed Layer (Real-Time)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Click Event</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Kafka</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Flink/Spark Streaming</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Redis Counters</div>
+</div>
+</div>
+<div style="color: #fef3c7; font-size: 11px; margin-top: 12px;">Latency: ~seconds | Accuracy: Approximate | Retention: Hours</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Batch Layer (Historical)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Click Events</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">S3/HDFS</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Spark Batch</div>
-        </div>
-        <div style="color: #fff;">-></div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Data Warehouse</div>
-        </div>
-      </div>
-      <div style="color: #dbeafe; font-size: 11px; margin-top: 12px;">Latency: ~hours | Accuracy: Exact | Retention: Years</div>
-    </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Batch Layer (Historical)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Click Events</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">S3/HDFS</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Spark Batch</div>
+</div>
+<div style="color: #fff;">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Data Warehouse</div>
+</div>
+</div>
+<div style="color: #dbeafe; font-size: 11px; margin-top: 12px;">Latency: ~hours | Accuracy: Exact | Retention: Years</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Serving Layer (Query)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Real-time (Redis)</div>
-        </div>
-        <div style="color: #fff;">+</div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Historical (Warehouse)</div>
-        </div>
-        <div style="color: #fff;">=</div>
-        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-          <div style="color: #fff; font-size: 11px;">Unified Dashboard</div>
-        </div>
-      </div>
-      <div style="color: #d1fae5; font-size: 11px; margin-top: 12px;">Merges speed + batch for complete, consistent view</div>
-    </div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Serving Layer (Query)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Real-time (Redis)</div>
+</div>
+<div style="color: #fff;">+</div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Historical (Warehouse)</div>
+</div>
+<div style="color: #fff;">=</div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+<div style="color: #fff; font-size: 11px;">Unified Dashboard</div>
+</div>
+</div>
+<div style="color: #d1fae5; font-size: 11px; margin-top: 12px;">Merges speed + batch for complete, consistent view</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Click Event Processing Pipeline
@@ -2009,68 +2009,68 @@ URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), maki
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Multi-Layer Cache Architecture</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Multi-Layer Cache Architecture</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-      <div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 13px;">Browser</div>
-        <div style="color: #dcfce7; font-size: 10px; margin-top: 4px;">301 Cache</div>
-      </div>
-      <div style="color: #6b7280;">-></div>
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 13px;">CDN Edge</div>
-        <div style="color: #dbeafe; font-size: 10px; margin-top: 4px;">Global PoPs</div>
-      </div>
-      <div style="color: #6b7280;">-></div>
-      <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 13px;">App Server</div>
-        <div style="color: #fef3c7; font-size: 10px; margin-top: 4px;">Local LRU</div>
-      </div>
-      <div style="color: #6b7280;">-></div>
-      <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 13px;">Redis</div>
-        <div style="color: #fee2e2; font-size: 10px; margin-top: 4px;">Distributed</div>
-      </div>
-      <div style="color: #6b7280;">-></div>
-      <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
-        <div style="color: #fff; font-weight: bold; font-size: 13px;">Database</div>
-        <div style="color: #ede9fe; font-size: 10px; margin-top: 4px;">Source of Truth</div>
-      </div>
-    </div>
+<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 13px;">Browser</div>
+<div style="color: #dcfce7; font-size: 10px; margin-top: 4px;">301 Cache</div>
+</div>
+<div style="color: #6b7280;">-></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 13px;">CDN Edge</div>
+<div style="color: #dbeafe; font-size: 10px; margin-top: 4px;">Global PoPs</div>
+</div>
+<div style="color: #6b7280;">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 13px;">App Server</div>
+<div style="color: #fef3c7; font-size: 10px; margin-top: 4px;">Local LRU</div>
+</div>
+<div style="color: #6b7280;">-></div>
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 13px;">Redis</div>
+<div style="color: #fee2e2; font-size: 10px; margin-top: 4px;">Distributed</div>
+</div>
+<div style="color: #6b7280;">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="color: #fff; font-weight: bold; font-size: 13px;">Database</div>
+<div style="color: #ede9fe; font-size: 10px; margin-top: 4px;">Source of Truth</div>
+</div>
+</div>
 
-    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
-        <div>
-          <div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>
-          <div style="color: #9ca3af; font-size: 10px;">0ms latency</div>
-          <div style="color: #9ca3af; font-size: 10px;">No server cost</div>
-        </div>
-        <div>
-          <div style="color: #3b82f6; font-weight: bold; font-size: 11px;">CDN Edge</div>
-          <div style="color: #9ca3af; font-size: 10px;">5-20ms latency</div>
-          <div style="color: #9ca3af; font-size: 10px;">~80% hit rate</div>
-        </div>
-        <div>
-          <div style="color: #f59e0b; font-weight: bold; font-size: 11px;">Local LRU</div>
-          <div style="color: #9ca3af; font-size: 10px;">0.1ms latency</div>
-          <div style="color: #9ca3af; font-size: 10px;">~50% hit rate</div>
-        </div>
-        <div>
-          <div style="color: #ef4444; font-weight: bold; font-size: 11px;">Redis</div>
-          <div style="color: #9ca3af; font-size: 10px;">1-5ms latency</div>
-          <div style="color: #9ca3af; font-size: 10px;">~95% hit rate</div>
-        </div>
-        <div>
-          <div style="color: #8b5cf6; font-weight: bold; font-size: 11px;">Database</div>
-          <div style="color: #9ca3af; font-size: 10px;">10-50ms latency</div>
-          <div style="color: #9ca3af; font-size: 10px;">Always available</div>
-        </div>
-      </div>
-    </div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+<div>
+<div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>
+<div style="color: #9ca3af; font-size: 10px;">0ms latency</div>
+<div style="color: #9ca3af; font-size: 10px;">No server cost</div>
+</div>
+<div>
+<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">CDN Edge</div>
+<div style="color: #9ca3af; font-size: 10px;">5-20ms latency</div>
+<div style="color: #9ca3af; font-size: 10px;">~80% hit rate</div>
+</div>
+<div>
+<div style="color: #f59e0b; font-weight: bold; font-size: 11px;">Local LRU</div>
+<div style="color: #9ca3af; font-size: 10px;">0.1ms latency</div>
+<div style="color: #9ca3af; font-size: 10px;">~50% hit rate</div>
+</div>
+<div>
+<div style="color: #ef4444; font-weight: bold; font-size: 11px;">Redis</div>
+<div style="color: #9ca3af; font-size: 10px;">1-5ms latency</div>
+<div style="color: #9ca3af; font-size: 10px;">~95% hit rate</div>
+</div>
+<div>
+<div style="color: #8b5cf6; font-weight: bold; font-size: 11px;">Database</div>
+<div style="color: #9ca3af; font-size: 10px;">10-50ms latency</div>
+<div style="color: #9ca3af; font-size: 10px;">Always available</div>
+</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Cache Implementation with Write-Through Pattern
@@ -2519,103 +2519,103 @@ class ConsistentCache:
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="color: #58a6ff; font-weight: bold; font-size: 18px; margin-bottom: 24px; text-align: center;">Complete URL Shortener Architecture</div>
+<div style="color: #58a6ff; font-weight: bold; font-size: 18px; margin-bottom: 24px; text-align: center;">Complete URL Shortener Architecture</div>
 
-  <div style="display: flex; flex-direction: column; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 24px;">
 
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #7ee787; font-weight: bold; margin-bottom: 16px;">Write Path (URL Creation)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Client</div>
-        </div>
-        <div style="color: #7ee787;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">API Gateway</div>
-          <div style="color: #9ca3af; font-size: 10px;">Rate Limit</div>
-        </div>
-        <div style="color: #7ee787;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">App Server</div>
-          <div style="color: #9ca3af; font-size: 10px;">Validate + Generate</div>
-        </div>
-        <div style="color: #7ee787;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">ID Service</div>
-          <div style="color: #9ca3af; font-size: 10px;">Snowflake/ZK</div>
-        </div>
-        <div style="color: #7ee787;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Database</div>
-          <div style="color: #9ca3af; font-size: 10px;">Cassandra</div>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #7ee787; font-weight: bold; margin-bottom: 16px;">Write Path (URL Creation)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Client</div>
+</div>
+<div style="color: #7ee787;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">API Gateway</div>
+<div style="color: #9ca3af; font-size: 10px;">Rate Limit</div>
+</div>
+<div style="color: #7ee787;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">App Server</div>
+<div style="color: #9ca3af; font-size: 10px;">Validate + Generate</div>
+</div>
+<div style="color: #7ee787;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">ID Service</div>
+<div style="color: #9ca3af; font-size: 10px;">Snowflake/ZK</div>
+</div>
+<div style="color: #7ee787;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Database</div>
+<div style="color: #9ca3af; font-size: 10px;">Cassandra</div>
+</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #3b1f5f 0%, #5a2d7b 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #a78bfa; font-weight: bold; margin-bottom: 16px;">Read Path (URL Redirect)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Client</div>
-        </div>
-        <div style="color: #a78bfa;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">CDN Edge</div>
-          <div style="color: #9ca3af; font-size: 10px;">Global PoPs</div>
-        </div>
-        <div style="color: #a78bfa;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Load Balancer</div>
-          <div style="color: #9ca3af; font-size: 10px;">Geo-routing</div>
-        </div>
-        <div style="color: #a78bfa;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">App Server</div>
-          <div style="color: #9ca3af; font-size: 10px;">Local LRU</div>
-        </div>
-        <div style="color: #a78bfa;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Redis Cluster</div>
-          <div style="color: #9ca3af; font-size: 10px;">Distributed</div>
-        </div>
-        <div style="color: #a78bfa;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Database</div>
-          <div style="color: #9ca3af; font-size: 10px;">Replica</div>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #3b1f5f 0%, #5a2d7b 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #a78bfa; font-weight: bold; margin-bottom: 16px;">Read Path (URL Redirect)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Client</div>
+</div>
+<div style="color: #a78bfa;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">CDN Edge</div>
+<div style="color: #9ca3af; font-size: 10px;">Global PoPs</div>
+</div>
+<div style="color: #a78bfa;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Load Balancer</div>
+<div style="color: #9ca3af; font-size: 10px;">Geo-routing</div>
+</div>
+<div style="color: #a78bfa;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">App Server</div>
+<div style="color: #9ca3af; font-size: 10px;">Local LRU</div>
+</div>
+<div style="color: #a78bfa;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Redis Cluster</div>
+<div style="color: #9ca3af; font-size: 10px;">Distributed</div>
+</div>
+<div style="color: #a78bfa;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Database</div>
+<div style="color: #9ca3af; font-size: 10px;">Replica</div>
+</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #5f3b1f 0%, #7b5a2d 100%); padding: 20px; border-radius: 12px;">
-      <div style="color: #fbbf24; font-weight: bold; margin-bottom: 16px;">Analytics Path (Async)</div>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Click Event</div>
-        </div>
-        <div style="color: #fbbf24;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Kafka</div>
-          <div style="color: #9ca3af; font-size: 10px;">Buffer</div>
-        </div>
-        <div style="color: #fbbf24;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Flink</div>
-          <div style="color: #9ca3af; font-size: 10px;">Enrich + Aggregate</div>
-        </div>
-        <div style="color: #fbbf24;">-></div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Redis</div>
-          <div style="color: #9ca3af; font-size: 10px;">Real-time</div>
-        </div>
-        <div style="color: #fbbf24;">+</div>
-        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
-          <div style="color: #fff; font-size: 12px;">Data Lake</div>
-          <div style="color: #9ca3af; font-size: 10px;">Historical</div>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #5f3b1f 0%, #7b5a2d 100%); padding: 20px; border-radius: 12px;">
+<div style="color: #fbbf24; font-weight: bold; margin-bottom: 16px;">Analytics Path (Async)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Click Event</div>
+</div>
+<div style="color: #fbbf24;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Kafka</div>
+<div style="color: #9ca3af; font-size: 10px;">Buffer</div>
+</div>
+<div style="color: #fbbf24;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Flink</div>
+<div style="color: #9ca3af; font-size: 10px;">Enrich + Aggregate</div>
+</div>
+<div style="color: #fbbf24;">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Redis</div>
+<div style="color: #9ca3af; font-size: 10px;">Real-time</div>
+</div>
+<div style="color: #fbbf24;">+</div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #fff; font-size: 12px;">Data Lake</div>
+<div style="color: #9ca3af; font-size: 10px;">Historical</div>
+</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ---

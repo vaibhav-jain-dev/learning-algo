@@ -7,8 +7,8 @@ An LRU (Least Recently Used) Cache is a bounded data structure that maintains a 
 This is among the most frequently asked machine coding problems because it tests the candidate's ability to compose data structures, understand pointer manipulation, and reason about time-space trade-offs under constraints.
 
 <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">Interview Frequency</div>
-  <div style="color: #78350f; font-size: 14px;">LeetCode #146. Asked at Amazon (weekly), Google, Meta, Microsoft, Netflix, Uber, and virtually every major tech company. Often the first question in machine coding rounds.</div>
+<div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">Interview Frequency</div>
+<div style="color: #78350f; font-size: 14px;">LeetCode #146. Asked at Amazon (weekly), Google, Meta, Microsoft, Netflix, Uber, and virtually every major tech company. Often the first question in machine coding rounds.</div>
 </div>
 
 ---
@@ -44,47 +44,47 @@ This is among the most frequently asked machine coding problems because it tests
 ### Questions to Ask the Interviewer
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #059669; font-weight: 600; font-size: 14px; margin-bottom: 12px; border-bottom: 2px solid #10b981; padding-bottom: 8px;">Functional Requirements</div>
-      <ul style="margin: 0; padding-left: 18px; color: #374151; font-size: 13px; line-height: 1.8;">
-        <li>Which operations: get, put, delete, peek?</li>
-        <li>Does updating a key reset its recency?</li>
-        <li>Return value for missing keys: -1, null, Optional, throw?</li>
-        <li>Support for TTL (time-to-live) expiration?</li>
-        <li>Support for eviction callbacks/listeners?</li>
-        <li>Key/value type constraints (int only vs generic)?</li>
-      </ul>
-    </div>
-    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #7c3aed; font-weight: 600; font-size: 14px; margin-bottom: 12px; border-bottom: 2px solid #8b5cf6; padding-bottom: 8px;">Non-Functional Requirements</div>
-      <ul style="margin: 0; padding-left: 18px; color: #374151; font-size: 13px; line-height: 1.8;">
-        <li>Expected capacity range (hundreds vs millions)?</li>
-        <li>Thread-safety for concurrent access?</li>
-        <li>Single machine or distributed system?</li>
-        <li>Read/write ratio (90/10 vs 50/50)?</li>
-        <li>Memory constraints?</li>
-        <li>Latency requirements (p99)?</li>
-      </ul>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #059669; font-weight: 600; font-size: 14px; margin-bottom: 12px; border-bottom: 2px solid #10b981; padding-bottom: 8px;">Functional Requirements</div>
+<ul style="margin: 0; padding-left: 18px; color: #374151; font-size: 13px; line-height: 1.8;">
+<li>Which operations: get, put, delete, peek?</li>
+<li>Does updating a key reset its recency?</li>
+<li>Return value for missing keys: -1, null, Optional, throw?</li>
+<li>Support for TTL (time-to-live) expiration?</li>
+<li>Support for eviction callbacks/listeners?</li>
+<li>Key/value type constraints (int only vs generic)?</li>
+</ul>
+</div>
+<div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #7c3aed; font-weight: 600; font-size: 14px; margin-bottom: 12px; border-bottom: 2px solid #8b5cf6; padding-bottom: 8px;">Non-Functional Requirements</div>
+<ul style="margin: 0; padding-left: 18px; color: #374151; font-size: 13px; line-height: 1.8;">
+<li>Expected capacity range (hundreds vs millions)?</li>
+<li>Thread-safety for concurrent access?</li>
+<li>Single machine or distributed system?</li>
+<li>Read/write ratio (90/10 vs 50/50)?</li>
+<li>Memory constraints?</li>
+<li>Latency requirements (p99)?</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### Interview Questions: Requirements
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-  <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why is requirements gathering important for LRU Cache?</div>
-  <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">It determines API design, thread-safety needs, and whether simple LRU suffices or if variants (LRU-K, ARC, LIRS) are needed.</div>
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why is requirements gathering important for LRU Cache?</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">It determines API design, thread-safety needs, and whether simple LRU suffices or if variants (LRU-K, ARC, LIRS) are needed.</div>
 
-  <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-    <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: How would TTL support change your implementation?</div>
-    <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Requires storing timestamps per entry, periodic cleanup (background thread or lazy eviction on access), and potentially a separate data structure like a min-heap ordered by expiration time.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: How would TTL support change your implementation?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Requires storing timestamps per entry, periodic cleanup (background thread or lazy eviction on access), and potentially a separate data structure like a min-heap ordered by expiration time.</div>
 
-    <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-      <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Compare lazy vs eager TTL eviction. When would you choose each?</div>
-      <div style="color: #6d28d9; font-size: 13px;">Lazy eviction (check on access) has no background overhead but may hold stale data and shows inconsistent memory usage. Eager eviction (background sweeper) maintains consistent memory but requires threading and adds latency spikes during cleanup. Choose lazy for simple cases, eager when memory predictability matters (e.g., embedded systems, strict SLAs).</div>
-    </div>
-  </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Compare lazy vs eager TTL eviction. When would you choose each?</div>
+<div style="color: #6d28d9; font-size: 13px;">Lazy eviction (check on access) has no background overhead but may hold stale data and shows inconsistent memory usage. Eager eviction (background sweeper) maintains consistent memory but requires threading and adds latency spikes during cleanup. Choose lazy for simple cases, eager when memory predictability matters (e.g., embedded systems, strict SLAs).</div>
+</div>
+</div>
 </div>
 
 ---
@@ -96,65 +96,65 @@ This is among the most frequently asked machine coding problems because it tests
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The key architectural insight: HashMap provides O(1) lookup by key, while the doubly linked list maintains access order with O(1) insertion, deletion, and reordering when we have a direct node reference.</span>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center; font-size: 16px;">LRU Cache Internal Architecture</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center; font-size: 16px;">LRU Cache Internal Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
-    <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
-      <div style="color: #059669; font-weight: bold; font-size: 13px; margin-bottom: 12px;">HashMap: Key to Node Reference Mapping</div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
-          <div style="color: #166534; font-weight: bold; font-size: 12px;">"user:123"</div>
-          <div style="color: #15803d; font-size: 10px;">ptr: 0x7f2a</div>
-        </div>
-        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
-          <div style="color: #166534; font-weight: bold; font-size: 12px;">"session:abc"</div>
-          <div style="color: #15803d; font-size: 10px;">ptr: 0x7f3b</div>
-        </div>
-        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
-          <div style="color: #166534; font-weight: bold; font-size: 12px;">"config:db"</div>
-          <div style="color: #15803d; font-size: 10px;">ptr: 0x7f4c</div>
-        </div>
-      </div>
-      <div style="color: #64748b; font-size: 11px; margin-top: 10px;">HashMap stores direct memory references to nodes, enabling O(1) node access without list traversal</div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
+<div style="color: #059669; font-weight: bold; font-size: 13px; margin-bottom: 12px;">HashMap: Key to Node Reference Mapping</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">"user:123"</div>
+<div style="color: #15803d; font-size: 10px;">ptr: 0x7f2a</div>
+</div>
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">"session:abc"</div>
+<div style="color: #15803d; font-size: 10px;">ptr: 0x7f3b</div>
+</div>
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 10px 16px; border-radius: 6px; text-align: center;">
+<div style="color: #166534; font-weight: bold; font-size: 12px;">"config:db"</div>
+<div style="color: #15803d; font-size: 10px;">ptr: 0x7f4c</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 10px;">HashMap stores direct memory references to nodes, enabling O(1) node access without list traversal</div>
+</div>
 
-    <div style="text-align: center; color: #6b7280; font-size: 12px;">
-      <div style="display: inline-block; background: #e5e7eb; padding: 4px 12px; border-radius: 4px;">Pointers reference nodes directly</div>
-    </div>
+<div style="text-align: center; color: #6b7280; font-size: 12px;">
+<div style="display: inline-block; background: #e5e7eb; padding: 4px 12px; border-radius: 4px;">Pointers reference nodes directly</div>
+</div>
 
-    <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
-      <div style="color: #7c3aed; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Doubly Linked List: Recency Order (Head = Most Recent)</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
-        <div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 8px 12px; border-radius: 6px; text-align: center;">
-          <div style="color: #64748b; font-size: 10px; font-weight: 600;">HEAD</div>
-          <div style="color: #94a3b8; font-size: 9px;">sentinel</div>
-        </div>
-        <div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
-        <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 8px 12px; border-radius: 6px; text-align: center;">
-          <div style="color: #1e40af; font-weight: bold; font-size: 10px;">0x7f2a</div>
-          <div style="color: #3b82f6; font-size: 9px;">"user:123"</div>
-          <div style="color: #059669; font-size: 8px; font-weight: 600;">MRU</div>
-        </div>
-        <div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
-        <div style="background: #ede9fe; border: 2px solid #8b5cf6; padding: 8px 12px; border-radius: 6px; text-align: center;">
-          <div style="color: #5b21b6; font-weight: bold; font-size: 10px;">0x7f3b</div>
-          <div style="color: #7c3aed; font-size: 9px;">"session:abc"</div>
-        </div>
-        <div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
-        <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 8px 12px; border-radius: 6px; text-align: center;">
-          <div style="color: #92400e; font-weight: bold; font-size: 10px;">0x7f4c</div>
-          <div style="color: #d97706; font-size: 9px;">"config:db"</div>
-          <div style="color: #dc2626; font-size: 8px; font-weight: 600;">LRU</div>
-        </div>
-        <div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
-        <div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 8px 12px; border-radius: 6px; text-align: center;">
-          <div style="color: #64748b; font-size: 10px; font-weight: 600;">TAIL</div>
-          <div style="color: #94a3b8; font-size: 9px;">sentinel</div>
-        </div>
-      </div>
-      <div style="color: #64748b; font-size: 11px; margin-top: 10px; text-align: center;">Each node has prev/next pointers; sentinel nodes eliminate null checks</div>
-    </div>
-  </div>
+<div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 8px; padding: 16px;">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Doubly Linked List: Recency Order (Head = Most Recent)</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+<div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #64748b; font-size: 10px; font-weight: 600;">HEAD</div>
+<div style="color: #94a3b8; font-size: 9px;">sentinel</div>
+</div>
+<div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 10px;">0x7f2a</div>
+<div style="color: #3b82f6; font-size: 9px;">"user:123"</div>
+<div style="color: #059669; font-size: 8px; font-weight: 600;">MRU</div>
+</div>
+<div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
+<div style="background: #ede9fe; border: 2px solid #8b5cf6; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #5b21b6; font-weight: bold; font-size: 10px;">0x7f3b</div>
+<div style="color: #7c3aed; font-size: 9px;">"session:abc"</div>
+</div>
+<div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #92400e; font-weight: bold; font-size: 10px;">0x7f4c</div>
+<div style="color: #d97706; font-size: 9px;">"config:db"</div>
+<div style="color: #dc2626; font-size: 8px; font-weight: 600;">LRU</div>
+</div>
+<div style="color: #3b82f6; font-size: 16px;">&#8644;</div>
+<div style="background: #f1f5f9; border: 2px dashed #94a3b8; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #64748b; font-size: 10px; font-weight: 600;">TAIL</div>
+<div style="color: #94a3b8; font-size: 9px;">sentinel</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 10px; text-align: center;">Each node has prev/next pointers; sentinel nodes eliminate null checks</div>
+</div>
+</div>
 </div>
 
 ### Why Doubly Linked List (Not Singly)?
@@ -195,68 +195,68 @@ def remove(node):
 ### Class Structure
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-    <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; min-width: 200px; overflow: hidden;">
-      <div style="background: #3b82f6; color: white; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;">Node</div>
-      <div style="padding: 12px;">
-        <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 8px;">
-          <div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Fields</div>
-          <div style="font-family: monospace; font-size: 12px; color: #1f2937;">
-            <div>- key: K</div>
-            <div>- value: V</div>
-            <div>- prev: Node</div>
-            <div>- next: Node</div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; min-width: 200px; overflow: hidden;">
+<div style="background: #3b82f6; color: white; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;">Node</div>
+<div style="padding: 12px;">
+<div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 8px;">
+<div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Fields</div>
+<div style="font-family: monospace; font-size: 12px; color: #1f2937;">
+<div>- key: K</div>
+<div>- value: V</div>
+<div>- prev: Node</div>
+<div>- next: Node</div>
+</div>
+</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; color: #6b7280; font-size: 24px;">&#8594;</div>
+<div style="display: flex; align-items: center; color: #6b7280; font-size: 24px;">&#8594;</div>
 
-    <div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; min-width: 240px; overflow: hidden;">
-      <div style="background: #059669; color: white; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;">LRUCache</div>
-      <div style="padding: 12px;">
-        <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 8px;">
-          <div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Fields</div>
-          <div style="font-family: monospace; font-size: 12px; color: #1f2937;">
-            <div>- capacity: int</div>
-            <div>- size: int</div>
-            <div>- cache: HashMap&lt;K, Node&gt;</div>
-            <div>- head: Node (sentinel)</div>
-            <div>- tail: Node (sentinel)</div>
-          </div>
-        </div>
-        <div>
-          <div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Methods</div>
-          <div style="font-family: monospace; font-size: 12px; color: #1f2937;">
-            <div>+ get(key): V</div>
-            <div>+ put(key, value): void</div>
-            <div>- addToFront(node): void</div>
-            <div>- removeNode(node): void</div>
-            <div>- moveToFront(node): void</div>
-            <div>- evictLRU(): void</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; min-width: 240px; overflow: hidden;">
+<div style="background: #059669; color: white; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;">LRUCache</div>
+<div style="padding: 12px;">
+<div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 8px;">
+<div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Fields</div>
+<div style="font-family: monospace; font-size: 12px; color: #1f2937;">
+<div>- capacity: int</div>
+<div>- size: int</div>
+<div>- cache: HashMap&lt;K, Node&gt;</div>
+<div>- head: Node (sentinel)</div>
+<div>- tail: Node (sentinel)</div>
+</div>
+</div>
+<div>
+<div style="color: #6b7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;">Methods</div>
+<div style="font-family: monospace; font-size: 12px; color: #1f2937;">
+<div>+ get(key): V</div>
+<div>+ put(key, value): void</div>
+<div>- addToFront(node): void</div>
+<div>- removeNode(node): void</div>
+<div>- moveToFront(node): void</div>
+<div>- evictLRU(): void</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
         ### Interview Questions: Architecture
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-  <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why can't we use just a HashMap for LRU Cache?</div>
-  <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap provides O(1) lookup but has no inherent ordering. We need to track access recency, which requires a separate ordered structure. HashMap iteration order is either undefined or insertion-order (LinkedHashMap), not access-order.</div>
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why can't we use just a HashMap for LRU Cache?</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap provides O(1) lookup but has no inherent ordering. We need to track access recency, which requires a separate ordered structure. HashMap iteration order is either undefined or insertion-order (LinkedHashMap), not access-order.</div>
 
-  <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-    <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: Could we use a LinkedHashMap (access-order mode) instead of building from scratch?</div>
-    <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Yes! Java's LinkedHashMap with accessOrder=true maintains access order. Override removeEldestEntry() to enforce capacity. However, interviewers want to see you implement the mechanism manually to demonstrate understanding.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: Could we use a LinkedHashMap (access-order mode) instead of building from scratch?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Yes! Java's LinkedHashMap with accessOrder=true maintains access order. Override removeEldestEntry() to enforce capacity. However, interviewers want to see you implement the mechanism manually to demonstrate understanding.</div>
 
-    <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-      <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: What are the internal differences between your implementation and LinkedHashMap?</div>
-      <div style="color: #6d28d9; font-size: 13px;">LinkedHashMap uses a single doubly-linked list threaded through the HashMap entries themselves (each Entry has before/after pointers), avoiding separate node allocation. It also handles iteration, serialization, and has optimized memory layout. Our implementation is cleaner conceptually but less memory-efficient. LinkedHashMap also handles null keys/values with special treatment.</div>
-    </div>
-  </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: What are the internal differences between your implementation and LinkedHashMap?</div>
+<div style="color: #6d28d9; font-size: 13px;">LinkedHashMap uses a single doubly-linked list threaded through the HashMap entries themselves (each Entry has before/after pointers), avoiding separate node allocation. It also handles iteration, serialization, and has optimized memory layout. Our implementation is cleaner conceptually but less memory-efficient. LinkedHashMap also handles null keys/values with special treatment.</div>
+</div>
+</div>
 </div>
 
   ---
@@ -266,97 +266,97 @@ def remove(node):
   ### GET Operation
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #6ee7b7; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <div style="font-weight: 600; color: #047857; font-size: 15px; margin-bottom: 16px;">GET(key) - Retrieve value and update recency</div>
+<div style="font-weight: 600; color: #047857; font-size: 15px; margin-bottom: 16px;">GET(key) - Retrieve value and update recency</div>
 
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">1</div>
-      <div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #065f46; font-size: 13px;"><strong>HashMap Lookup:</strong> cache.get(key) - O(1) average</div>
-        <div style="color: #047857; font-size: 11px; margin-top: 4px;">Returns null/None if key doesn't exist, otherwise returns Node reference</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">1</div>
+<div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #065f46; font-size: 13px;"><strong>HashMap Lookup:</strong> cache.get(key) - O(1) average</div>
+<div style="color: #047857; font-size: 11px; margin-top: 4px;">Returns null/None if key doesn't exist, otherwise returns Node reference</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">2</div>
-      <div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #065f46; font-size: 13px;"><strong>Not Found Path:</strong> Return -1 (or throw, based on API contract)</div>
-      </div>
-    </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">2</div>
+<div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #065f46; font-size: 13px;"><strong>Not Found Path:</strong> Return -1 (or throw, based on API contract)</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">3</div>
-      <div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #065f46; font-size: 13px;"><strong>Remove from Current Position:</strong> Unlink node by updating neighbor pointers - O(1)</div>
-        <div style="color: #047857; font-size: 11px; margin-top: 4px;">node.prev.next = node.next; node.next.prev = node.prev</div>
-      </div>
-    </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">3</div>
+<div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #065f46; font-size: 13px;"><strong>Remove from Current Position:</strong> Unlink node by updating neighbor pointers - O(1)</div>
+<div style="color: #047857; font-size: 11px; margin-top: 4px;">node.prev.next = node.next; node.next.prev = node.prev</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">4</div>
-      <div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #065f46; font-size: 13px;"><strong>Insert After Head:</strong> Add node as most recently used - O(1)</div>
-        <div style="color: #047857; font-size: 11px; margin-top: 4px;">Update 4 pointers: node.prev, node.next, head.next.prev, head.next</div>
-      </div>
-    </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">4</div>
+<div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #065f46; font-size: 13px;"><strong>Insert After Head:</strong> Add node as most recently used - O(1)</div>
+<div style="color: #047857; font-size: 11px; margin-top: 4px;">Update 4 pointers: node.prev, node.next, head.next.prev, head.next</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">5</div>
-      <div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #065f46; font-size: 13px;"><strong>Return Value:</strong> Return node.value</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">5</div>
+<div style="background: white; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #065f46; font-size: 13px;"><strong>Return Value:</strong> Return node.value</div>
+</div>
+</div>
+</div>
 </div>
 
 ### PUT Operation
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #93c5fd; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <div style="font-weight: 600; color: #1d4ed8; font-size: 15px; margin-bottom: 16px;">PUT(key, value) - Insert or update entry</div>
+<div style="font-weight: 600; color: #1d4ed8; font-size: 15px; margin-bottom: 16px;">PUT(key, value) - Insert or update entry</div>
 
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #2563eb; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">1</div>
-      <div style="background: white; border: 1px solid #93c5fd; border-radius: 6px; padding: 10px 14px; flex: 1;">
-        <div style="color: #1e40af; font-size: 13px;"><strong>Check Existence:</strong> Does key already exist in cache?</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #2563eb; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">1</div>
+<div style="background: white; border: 1px solid #93c5fd; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #1e40af; font-size: 13px;"><strong>Check Existence:</strong> Does key already exist in cache?</div>
+</div>
+</div>
 
-    <div style="display: flex; gap: 16px; margin-left: 40px; flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 250px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 14px;">
-        <div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key EXISTS (Update Path)</div>
-        <div style="color: #15803d; font-size: 12px; line-height: 1.7;">
+<div style="display: flex; gap: 16px; margin-left: 40px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 250px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 14px;">
+<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key EXISTS (Update Path)</div>
+<div style="color: #15803d; font-size: 12px; line-height: 1.7;">
           2a. Update node.value<br>
             2b. Move node to front (same as GET)<br>
               2c. Return
-            </div>
-          </div>
+</div>
+</div>
 
-          <div style="flex: 1; min-width: 250px; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 14px;">
-            <div style="color: #92400e; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key NOT EXISTS (Insert Path)</div>
-            <div style="color: #78350f; font-size: 12px; line-height: 1.7;">
+<div style="flex: 1; min-width: 250px; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 14px;">
+<div style="color: #92400e; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key NOT EXISTS (Insert Path)</div>
+<div style="color: #78350f; font-size: 12px; line-height: 1.7;">
               2a. If size == capacity: evict LRU<br>
                 2b. Create new Node(key, value)<br>
                   2c. Add to HashMap<br>
                     2d. Insert after head<br>
                       2e. Increment size
-                    </div>
-                  </div>
-                </div>
+</div>
+</div>
+</div>
 
-                <div style="display: flex; align-items: flex-start; gap: 12px;">
-                  <div style="background: #dc2626; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">!</div>
-                  <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 10px 14px; flex: 1;">
-                    <div style="color: #991b1b; font-size: 13px;"><strong>Eviction:</strong> Remove tail.prev from list AND delete its key from HashMap</div>
-                    <div style="color: #b91c1c; font-size: 11px; margin-top: 4px;">Common bug: forgetting to remove from HashMap causes memory leak and size mismatch</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #dc2626; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0;">!</div>
+<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 10px 14px; flex: 1;">
+<div style="color: #991b1b; font-size: 13px;"><strong>Eviction:</strong> Remove tail.prev from list AND delete its key from HashMap</div>
+<div style="color: #b91c1c; font-size: 11px; margin-top: 4px;">Common bug: forgetting to remove from HashMap causes memory leak and size mismatch</div>
+</div>
+</div>
+</div>
+</div>
 
             ### Pointer Update Sequence (Critical)
 
-            <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The order of pointer updates matters! Updating in the wrong order can lose references.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The order of pointer updates matters! Updating in the wrong order can lose references.</span>
 
             ```python
             # CORRECT: Insert node after head
@@ -378,20 +378,20 @@ def remove(node):
 
             ### Interview Questions: O(1) Operations
 
-            <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-              <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Walk me through what happens internally when we call get(key) on an existing key.</div>
-              <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap lookup returns node pointer (O(1)). Node is unlinked from current position by making its neighbors point to each other (O(1)). Node is then inserted right after head sentinel by updating 4 pointers (O(1)). Finally, return node.value.</div>
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Walk me through what happens internally when we call get(key) on an existing key.</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap lookup returns node pointer (O(1)). Node is unlinked from current position by making its neighbors point to each other (O(1)). Node is then inserted right after head sentinel by updating 4 pointers (O(1)). Finally, return node.value.</div>
 
-              <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-                <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: Is HashMap lookup truly O(1)? When might it degrade?</div>
-                <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">HashMap is O(1) average case but O(n) worst case when all keys hash to the same bucket. This happens with pathological hash functions or adversarial inputs. Modern HashMaps (Java 8+) convert long chains to balanced trees (O(log n) worst case). Load factor and resizing also affect performance.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: Is HashMap lookup truly O(1)? When might it degrade?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">HashMap is O(1) average case but O(n) worst case when all keys hash to the same bucket. This happens with pathological hash functions or adversarial inputs. Modern HashMaps (Java 8+) convert long chains to balanced trees (O(log n) worst case). Load factor and resizing also affect performance.</div>
 
-                <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-                  <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: How does HashMap resizing interact with LRU Cache performance? What's the amortized complexity?</div>
-                  <div style="color: #6d28d9; font-size: 13px;">HashMap resize is O(n) when triggered (rehash all entries). However, since resize doubles capacity and only triggers when load factor exceeded, each element is rehashed O(1) times amortized. For LRU Cache, resizes are rare after warmup since size is bounded by capacity. Initial puts might trigger resizes; consider initializing HashMap with expected capacity to avoid this. Amortized complexity remains O(1).</div>
-                </div>
-              </div>
-            </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: How does HashMap resizing interact with LRU Cache performance? What's the amortized complexity?</div>
+<div style="color: #6d28d9; font-size: 13px;">HashMap resize is O(n) when triggered (rehash all entries). However, since resize doubles capacity and only triggers when load factor exceeded, each element is rehashed O(1) times amortized. For LRU Cache, resizes are rare after warmup since size is bounded by capacity. Initial puts might trigger resizes; consider initializing HashMap with expected capacity to avoid this. Amortized complexity remains O(1).</div>
+</div>
+</div>
+</div>
 
             ---
 
@@ -883,100 +883,100 @@ def remove(node):
 
                                       ### The Challenge
 
-                                      <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU Cache operations appear to be simple reads (get) and writes (put), but get actually MUTATES the data structure by updating access order. This makes thread-safe implementation non-trivial.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU Cache operations appear to be simple reads (get) and writes (put), but get actually MUTATES the data structure by updating access order. This makes thread-safe implementation non-trivial.</span>
 
-                                      <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
-                                        <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Race Condition Example</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Race Condition Example</div>
 
-                                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                                          <div style="flex: 1; min-width: 200px;">
-                                            <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
-                                              <div style="font-weight: 600; color: #92400e; font-size: 12px;">Thread A: get(key1)</div>
-                                              <div style="color: #78350f; font-size: 11px; font-family: monospace;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 200px;">
+<div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
+<div style="font-weight: 600; color: #92400e; font-size: 12px;">Thread A: get(key1)</div>
+<div style="color: #78350f; font-size: 11px; font-family: monospace;">
                                                 1. Read node from map<br>
                                                   2. Remove node from list<br>
-                                                    <span style="color: #dc2626;">--CONTEXT SWITCH--</span><br>
+<span style="color: #dc2626;">--CONTEXT SWITCH--</span><br>
                                                       3. Add node to front
-                                                    </div>
-                                                  </div>
-                                                </div>
+</div>
+</div>
+</div>
 
-                                                <div style="flex: 1; min-width: 200px;">
-                                                  <div style="background: #dbeafe; border: 1px solid #93c5fd; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
-                                                    <div style="font-weight: 600; color: #1e40af; font-size: 12px;">Thread B: put(key2)</div>
-                                                    <div style="color: #1e3a8a; font-size: 11px; font-family: monospace;">
-                                                      <span style="color: #dc2626;">--RUNS DURING SWITCH--</span><br>
+<div style="flex: 1; min-width: 200px;">
+<div style="background: #dbeafe; border: 1px solid #93c5fd; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
+<div style="font-weight: 600; color: #1e40af; font-size: 12px;">Thread B: put(key2)</div>
+<div style="color: #1e3a8a; font-size: 11px; font-family: monospace;">
+<span style="color: #dc2626;">--RUNS DURING SWITCH--</span><br>
                                                         1. Check capacity (full)<br>
                                                           2. Evict tail.prev<br>
-                                                            <span style="color: #dc2626; font-weight: bold;">BUG: May evict wrong node!</span>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
+<span style="color: #dc2626; font-weight: bold;">BUG: May evict wrong node!</span>
+</div>
+</div>
+</div>
+</div>
 
-                                                    <div style="color: #7f1d1d; font-size: 13px; margin-top: 12px;">
-                                                      <strong>Result:</strong> List structure is corrupted because Thread A left the node in a partially removed state.
-                                                    </div>
-                                                  </div>
+<div style="color: #7f1d1d; font-size: 13px; margin-top: 12px;">
+<strong>Result:</strong> List structure is corrupted because Thread A left the node in a partially removed state.
+</div>
+</div>
 
                                                   ### Synchronization Strategies
 
-                                                  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-                                                      <div style="background: #ffffff; border: 2px solid #f59e0b; border-radius: 8px; overflow: hidden;">
-                                                        <div style="background: #f59e0b; color: white; padding: 12px; font-weight: 600;">1. Global Mutex (Simple)</div>
-                                                        <div style="padding: 14px;">
-                                                          <div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Single lock protects all operations</div>
-                                                          <div style="font-size: 12px;">
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ Simple to implement correctly</div>
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ No deadlock risk</div>
-                                                            <div style="color: #dc2626; margin-bottom: 4px;">- No concurrent reads</div>
-                                                            <div style="color: #dc2626;">- Bottleneck under high load</div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
+<div style="background: #ffffff; border: 2px solid #f59e0b; border-radius: 8px; overflow: hidden;">
+<div style="background: #f59e0b; color: white; padding: 12px; font-weight: 600;">1. Global Mutex (Simple)</div>
+<div style="padding: 14px;">
+<div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Single lock protects all operations</div>
+<div style="font-size: 12px;">
+<div style="color: #059669; margin-bottom: 4px;">+ Simple to implement correctly</div>
+<div style="color: #059669; margin-bottom: 4px;">+ No deadlock risk</div>
+<div style="color: #dc2626; margin-bottom: 4px;">- No concurrent reads</div>
+<div style="color: #dc2626;">- Bottleneck under high load</div>
+</div>
+</div>
+</div>
 
-                                                      <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden;">
-                                                        <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 600;">2. Read-Write Lock</div>
-                                                        <div style="padding: 14px;">
-                                                          <div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Readers share, writers exclusive</div>
-                                                          <div style="font-size: 12px;">
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ Concurrent reads for peek()</div>
-                                                            <div style="color: #dc2626; margin-bottom: 4px;">- get() needs write lock (updates order)</div>
-                                                            <div style="color: #dc2626; margin-bottom: 4px;">- Limited benefit for LRU</div>
-                                                            <div style="color: #6b7280;">See: Java ReentrantReadWriteLock</div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
+<div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden;">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 600;">2. Read-Write Lock</div>
+<div style="padding: 14px;">
+<div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Readers share, writers exclusive</div>
+<div style="font-size: 12px;">
+<div style="color: #059669; margin-bottom: 4px;">+ Concurrent reads for peek()</div>
+<div style="color: #dc2626; margin-bottom: 4px;">- get() needs write lock (updates order)</div>
+<div style="color: #dc2626; margin-bottom: 4px;">- Limited benefit for LRU</div>
+<div style="color: #6b7280;">See: Java ReentrantReadWriteLock</div>
+</div>
+</div>
+</div>
 
-                                                      <div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; overflow: hidden;">
-                                                        <div style="background: #059669; color: white; padding: 12px; font-weight: 600;">3. Segmented/Striped Locks</div>
-                                                        <div style="padding: 14px;">
-                                                          <div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Partition cache into segments, each with own lock</div>
-                                                          <div style="font-size: 12px;">
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ Parallel access to different segments</div>
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ Used by ConcurrentHashMap</div>
-                                                            <div style="color: #dc2626; margin-bottom: 4px;">- Per-segment LRU, not global</div>
-                                                            <div style="color: #dc2626;">- Complex implementation</div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
+<div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; overflow: hidden;">
+<div style="background: #059669; color: white; padding: 12px; font-weight: 600;">3. Segmented/Striped Locks</div>
+<div style="padding: 14px;">
+<div style="color: #374151; font-size: 13px; margin-bottom: 10px;">Partition cache into segments, each with own lock</div>
+<div style="font-size: 12px;">
+<div style="color: #059669; margin-bottom: 4px;">+ Parallel access to different segments</div>
+<div style="color: #059669; margin-bottom: 4px;">+ Used by ConcurrentHashMap</div>
+<div style="color: #dc2626; margin-bottom: 4px;">- Per-segment LRU, not global</div>
+<div style="color: #dc2626;">- Complex implementation</div>
+</div>
+</div>
+</div>
 
-                                                      <div style="background: #ffffff; border: 2px solid #7c3aed; border-radius: 8px; overflow: hidden;">
-                                                        <div style="background: #7c3aed; color: white; padding: 12px; font-weight: 600;">4. Lock-Free (Advanced)</div>
-                                                        <div style="padding: 14px;">
-                                                          <div style="color: #374151; font-size: 13px; margin-bottom: 10px;">CAS operations, concurrent data structures</div>
-                                                          <div style="font-size: 12px;">
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ Maximum throughput</div>
-                                                            <div style="color: #059669; margin-bottom: 4px;">+ No blocking</div>
-                                                            <div style="color: #dc2626; margin-bottom: 4px;">- Extremely complex</div>
-                                                            <div style="color: #dc2626;">- Often approximate LRU</div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+<div style="background: #ffffff; border: 2px solid #7c3aed; border-radius: 8px; overflow: hidden;">
+<div style="background: #7c3aed; color: white; padding: 12px; font-weight: 600;">4. Lock-Free (Advanced)</div>
+<div style="padding: 14px;">
+<div style="color: #374151; font-size: 13px; margin-bottom: 10px;">CAS operations, concurrent data structures</div>
+<div style="font-size: 12px;">
+<div style="color: #059669; margin-bottom: 4px;">+ Maximum throughput</div>
+<div style="color: #059669; margin-bottom: 4px;">+ No blocking</div>
+<div style="color: #dc2626; margin-bottom: 4px;">- Extremely complex</div>
+<div style="color: #dc2626;">- Often approximate LRU</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
                                                   ### Production Approaches
 
@@ -991,114 +991,114 @@ def remove(node):
                                                   - Each segment has its own LRU order
                                                   - Global LRU is approximated, not exact
 
-                                                  <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">In interviews, implement simple global lock first, then discuss trade-offs. Mentioning Caffeine/Guava shows production awareness.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">In interviews, implement simple global lock first, then discuss trade-offs. Mentioning Caffeine/Guava shows production awareness.</span>
 
                                                   ### Interview Questions: Thread Safety
 
-                                                  <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-                                                    <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why does get() need a write lock in thread-safe LRU Cache?</div>
-                                                    <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Because get() modifies the data structure by moving the accessed node to the front of the list. This is a write operation on the linked list, even though it appears to be a "read" from the caller's perspective.</div>
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why does get() need a write lock in thread-safe LRU Cache?</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Because get() modifies the data structure by moving the accessed node to the front of the list. This is a write operation on the linked list, even though it appears to be a "read" from the caller's perspective.</div>
 
-                                                    <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-                                                      <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: How would you optimize for a read-heavy workload?</div>
-                                                      <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Options: (1) Add peek() that doesn't update order (can use read lock). (2) Buffer access events and batch-update order periodically. (3) Use approximate LRU with probabilistic promotion (not every read moves to front). (4) Segmented cache where each segment has its own LRU. (5) Consider CLOCK algorithm which approximates LRU with less contention.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: How would you optimize for a read-heavy workload?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Options: (1) Add peek() that doesn't update order (can use read lock). (2) Buffer access events and batch-update order periodically. (3) Use approximate LRU with probabilistic promotion (not every read moves to front). (4) Segmented cache where each segment has its own LRU. (5) Consider CLOCK algorithm which approximates LRU with less contention.</div>
 
-                                                      <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-                                                        <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Explain the buffered writes approach used by Caffeine. What are the trade-offs?</div>
-                                                        <div style="color: #6d28d9; font-size: 13px;">Caffeine uses read/write buffers backed by concurrent queues. Access events are appended to buffer (fast, non-blocking). A maintenance thread periodically drains buffers and updates the eviction policy. Trade-offs: (1) Access order is eventually consistent, not immediately reflected. (2) Memory overhead for buffers. (3) Under extreme write bursts, buffers may overflow (Caffeine drops oldest events). (4) Eviction decisions based on slightly stale information. This is acceptable because perfect LRU is often overkill - near-LRU with high throughput is better in practice.</div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Explain the buffered writes approach used by Caffeine. What are the trade-offs?</div>
+<div style="color: #6d28d9; font-size: 13px;">Caffeine uses read/write buffers backed by concurrent queues. Access events are appended to buffer (fast, non-blocking). A maintenance thread periodically drains buffers and updates the eviction policy. Trade-offs: (1) Access order is eventually consistent, not immediately reflected. (2) Memory overhead for buffers. (3) Under extreme write bursts, buffers may overflow (Caffeine drops oldest events). (4) Eviction decisions based on slightly stale information. This is acceptable because perfect LRU is often overkill - near-LRU with high throughput is better in practice.</div>
+</div>
+</div>
+</div>
 
                                                   ---
 
                                                   ## Cache Eviction Policies Comparison
 
-                                                  <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU is just one eviction policy. Understanding alternatives shows depth and helps choose the right tool for specific workloads.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU is just one eviction policy. Understanding alternatives shows depth and helps choose the right tool for specific workloads.</span>
 
-                                                  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                                                       <thead>
-                                                        <tr style="background: #e2e8f0;">
-                                                          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Policy</th>
-                                                          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Evicts</th>
-                                                          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Pros</th>
-                                                          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Cons</th>
-                                                          <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Use Case</th>
-                                                        </tr>
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Policy</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Evicts</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Pros</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Cons</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Use Case</th>
+</tr>
                                                       </thead>
                                                       <tbody>
-                                                        <tr>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #059669;">LRU</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Least recently accessed</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Simple, O(1), good locality</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Scan pollution, ignores frequency</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">General purpose, web caching</td>
-                                                        </tr>
-                                                        <tr style="background: #f8fafc;">
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #3b82f6;">LFU</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Least frequently accessed</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Keeps popular items</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Old popular items never evicted, O(log n) naive</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">CDN, long-running caches</td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #7c3aed;">FIFO</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">First inserted</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Simplest, no access tracking</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Ignores actual usage</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Write buffers, simple queues</td>
-                                                        </tr>
-                                                        <tr style="background: #f8fafc;">
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #f59e0b;">CLOCK</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Approximates LRU</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Less metadata than LRU, fast</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Only approximation</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">OS page replacement</td>
-                                                        </tr>
-                                                        <tr>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #dc2626;">ARC</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Adaptive (recency + frequency)</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Self-tuning, scan-resistant</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Complex, IBM patent (expired)</td>
-                                                          <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">ZFS, databases</td>
-                                                        </tr>
-                                                        <tr style="background: #f8fafc;">
-                                                          <td style="padding: 12px; font-weight: 600; color: #0ea5e9;">TinyLFU</td>
-                                                          <td style="padding: 12px;">Combines LRU window + LFU main</td>
-                                                          <td style="padding: 12px;">Best hit rates, scan-resistant</td>
-                                                          <td style="padding: 12px;">Complex, approximate</td>
-                                                          <td style="padding: 12px;">Caffeine, modern caches</td>
-                                                        </tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #059669;">LRU</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Least recently accessed</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Simple, O(1), good locality</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Scan pollution, ignores frequency</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">General purpose, web caching</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #3b82f6;">LFU</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Least frequently accessed</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Keeps popular items</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Old popular items never evicted, O(log n) naive</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">CDN, long-running caches</td>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #7c3aed;">FIFO</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">First inserted</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Simplest, no access tracking</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Ignores actual usage</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Write buffers, simple queues</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #f59e0b;">CLOCK</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Approximates LRU</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Less metadata than LRU, fast</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Only approximation</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">OS page replacement</td>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #dc2626;">ARC</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Adaptive (recency + frequency)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Self-tuning, scan-resistant</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Complex, IBM patent (expired)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">ZFS, databases</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; font-weight: 600; color: #0ea5e9;">TinyLFU</td>
+<td style="padding: 12px;">Combines LRU window + LFU main</td>
+<td style="padding: 12px;">Best hit rates, scan-resistant</td>
+<td style="padding: 12px;">Complex, approximate</td>
+<td style="padding: 12px;">Caffeine, modern caches</td>
+</tr>
                                                       </tbody>
-                                                    </table>
-                                                  </div>
+</table>
+</div>
 
                                                   ### LRU Scan Pollution Problem
 
-                                                  <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
-                                                    <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Scan Pollution Example</div>
-                                                    <div style="color: #7f1d1d; font-size: 13px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Scan Pollution Example</div>
+<div style="color: #7f1d1d; font-size: 13px; margin-bottom: 16px;">
                                                       Consider a database with a hot set (frequently accessed) and a full table scan:
-                                                    </div>
+</div>
 
-                                                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                                                      <div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
-                                                        <div style="font-weight: 600; color: #991b1b; font-size: 12px;">Before Scan</div>
-                                                        <div style="color: #7f1d1d; font-size: 11px; font-family: monospace;">Cache: [A, B, C, D, E] (all hot, frequently accessed)</div>
-                                                      </div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
+<div style="font-weight: 600; color: #991b1b; font-size: 12px;">Before Scan</div>
+<div style="color: #7f1d1d; font-size: 11px; font-family: monospace;">Cache: [A, B, C, D, E] (all hot, frequently accessed)</div>
+</div>
 
-                                                      <div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
-                                                        <div style="font-weight: 600; color: #991b1b; font-size: 12px;">Full Table Scan Reads: X, Y, Z, W, V (each accessed once)</div>
-                                                        <div style="color: #7f1d1d; font-size: 11px; font-family: monospace;">Cache: [X, Y, Z, W, V] (all cold, never accessed again!)</div>
-                                                      </div>
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
+<div style="font-weight: 600; color: #991b1b; font-size: 12px;">Full Table Scan Reads: X, Y, Z, W, V (each accessed once)</div>
+<div style="color: #7f1d1d; font-size: 11px; font-family: monospace;">Cache: [X, Y, Z, W, V] (all cold, never accessed again!)</div>
+</div>
 
-                                                      <div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
-                                                        <div style="font-weight: 600; color: #991b1b; font-size: 12px;">Result</div>
-                                                        <div style="color: #7f1d1d; font-size: 11px;">Hot data evicted by one-time scan. Cache becomes useless until hot data reloaded.</div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px;">
+<div style="font-weight: 600; color: #991b1b; font-size: 12px;">Result</div>
+<div style="color: #7f1d1d; font-size: 11px;">Hot data evicted by one-time scan. Cache becomes useless until hot data reloaded.</div>
+</div>
+</div>
+</div>
 
                                                   ### LFU Implementation Insight
 
@@ -1106,94 +1106,94 @@ def remove(node):
 
                                                   ### Interview Questions: Eviction Policies
 
-                                                  <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-                                                    <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: When would LFU be better than LRU?</div>
-                                                    <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">When access patterns have clear frequency differences. Example: A popular API endpoint called 1000x/sec should stay cached even if a batch job scans through rarely-accessed data. LRU would evict the popular endpoint; LFU keeps it.</div>
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: When would LFU be better than LRU?</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">When access patterns have clear frequency differences. Example: A popular API endpoint called 1000x/sec should stay cached even if a batch job scans through rarely-accessed data. LRU would evict the popular endpoint; LFU keeps it.</div>
 
-                                                    <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-                                                      <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: What's the main problem with pure LFU?</div>
-                                                      <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Cache pollution from historical frequency. Items popular in the past but no longer relevant (e.g., yesterday's trending topic) can't be evicted because they accumulated high frequency counts. Solutions: decay frequency over time, use windowed LFU, or hybrid approaches like TinyLFU.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: What's the main problem with pure LFU?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">Cache pollution from historical frequency. Items popular in the past but no longer relevant (e.g., yesterday's trending topic) can't be evicted because they accumulated high frequency counts. Solutions: decay frequency over time, use windowed LFU, or hybrid approaches like TinyLFU.</div>
 
-                                                      <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-                                                        <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Explain how TinyLFU solves both LRU's scan pollution and LFU's history problem.</div>
-                                                        <div style="color: #6d28d9; font-size: 13px;">TinyLFU uses a small LRU "window" (typically 1% of cache) as an admission filter. New items enter the window first. To enter the main cache, an item must "win" against a potential eviction victim by having higher estimated frequency. Frequency is tracked using a Count-Min Sketch (probabilistic, constant space) that's periodically halved (aging). The main cache uses Segmented LRU (protected + probationary segments). This combines recency (window), frequency (admission filter), and aging (sketch decay), achieving near-optimal hit rates while resisting both scan pollution and stale frequency.</div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: Explain how TinyLFU solves both LRU's scan pollution and LFU's history problem.</div>
+<div style="color: #6d28d9; font-size: 13px;">TinyLFU uses a small LRU "window" (typically 1% of cache) as an admission filter. New items enter the window first. To enter the main cache, an item must "win" against a potential eviction victim by having higher estimated frequency. Frequency is tracked using a Count-Min Sketch (probabilistic, constant space) that's periodically halved (aging). The main cache uses Segmented LRU (protected + probationary segments). This combines recency (window), frequency (admission filter), and aging (sketch decay), achieving near-optimal hit rates while resisting both scan pollution and stale frequency.</div>
+</div>
+</div>
+</div>
 
                                                   ---
 
                                                   ## Distributed Caching
 
-                                                  <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Scaling LRU Cache beyond a single machine introduces fundamental distributed systems challenges: consistency, partition tolerance, and coordination overhead.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Scaling LRU Cache beyond a single machine introduces fundamental distributed systems challenges: consistency, partition tolerance, and coordination overhead.</span>
 
                                                   ### Architecture Patterns
 
-                                                  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-                                                      <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden;">
-                                                        <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 600; text-align: center;">Replicated Cache</div>
-                                                        <div style="padding: 14px;">
-                                                          <div style="text-align: center; margin-bottom: 12px;">
-                                                            <div style="display: inline-flex; gap: 8px;">
-                                                              <div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node A<br><span style="font-size: 9px;">Full Copy</span></div>
-                                                                <div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node B<br><span style="font-size: 9px;">Full Copy</span></div>
-                                                                  <div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node C<br><span style="font-size: 9px;">Full Copy</span></div>
-                                                                  </div>
-                                                                </div>
-                                                                <div style="font-size: 12px; color: #374151;">
-                                                                  <div style="color: #059669;">+ Fast reads (local)</div>
-                                                                  <div style="color: #059669;">+ High availability</div>
-                                                                  <div style="color: #dc2626;">- Write amplification</div>
-                                                                  <div style="color: #dc2626;">- Limited by smallest node</div>
-                                                                </div>
-                                                              </div>
-                                                            </div>
+<div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden;">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 600; text-align: center;">Replicated Cache</div>
+<div style="padding: 14px;">
+<div style="text-align: center; margin-bottom: 12px;">
+<div style="display: inline-flex; gap: 8px;">
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node A<br><span style="font-size: 9px;">Full Copy</span></div>
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node B<br><span style="font-size: 9px;">Full Copy</span></div>
+<div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node C<br><span style="font-size: 9px;">Full Copy</span></div>
+</div>
+</div>
+<div style="font-size: 12px; color: #374151;">
+<div style="color: #059669;">+ Fast reads (local)</div>
+<div style="color: #059669;">+ High availability</div>
+<div style="color: #dc2626;">- Write amplification</div>
+<div style="color: #dc2626;">- Limited by smallest node</div>
+</div>
+</div>
+</div>
 
-                                                            <div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; overflow: hidden;">
-                                                              <div style="background: #059669; color: white; padding: 12px; font-weight: 600; text-align: center;">Partitioned/Sharded Cache</div>
-                                                              <div style="padding: 14px;">
-                                                                <div style="text-align: center; margin-bottom: 12px;">
-                                                                  <div style="display: inline-flex; gap: 8px;">
-                                                                    <div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node A<br><span style="font-size: 9px;">Keys 0-33%</span></div>
-                                                                      <div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node B<br><span style="font-size: 9px;">Keys 34-66%</span></div>
-                                                                        <div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node C<br><span style="font-size: 9px;">Keys 67-100%</span></div>
-                                                                        </div>
-                                                                      </div>
-                                                                      <div style="font-size: 12px; color: #374151;">
-                                                                        <div style="color: #059669;">+ Scales capacity linearly</div>
-                                                                        <div style="color: #059669;">+ Per-shard LRU works well</div>
-                                                                        <div style="color: #dc2626;">- Network hop for remote keys</div>
-                                                                        <div style="color: #dc2626;">- Rebalancing complexity</div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
+<div style="background: #ffffff; border: 2px solid #059669; border-radius: 8px; overflow: hidden;">
+<div style="background: #059669; color: white; padding: 12px; font-weight: 600; text-align: center;">Partitioned/Sharded Cache</div>
+<div style="padding: 14px;">
+<div style="text-align: center; margin-bottom: 12px;">
+<div style="display: inline-flex; gap: 8px;">
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node A<br><span style="font-size: 9px;">Keys 0-33%</span></div>
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node B<br><span style="font-size: 9px;">Keys 34-66%</span></div>
+<div style="background: #dcfce7; border: 1px solid #86efac; padding: 8px 12px; border-radius: 6px; font-size: 11px;">Node C<br><span style="font-size: 9px;">Keys 67-100%</span></div>
+</div>
+</div>
+<div style="font-size: 12px; color: #374151;">
+<div style="color: #059669;">+ Scales capacity linearly</div>
+<div style="color: #059669;">+ Per-shard LRU works well</div>
+<div style="color: #dc2626;">- Network hop for remote keys</div>
+<div style="color: #dc2626;">- Rebalancing complexity</div>
+</div>
+</div>
+</div>
 
-                                                                  <div style="background: #ffffff; border: 2px solid #7c3aed; border-radius: 8px; overflow: hidden;">
-                                                                    <div style="background: #7c3aed; color: white; padding: 12px; font-weight: 600; text-align: center;">Tiered Cache (L1 + L2)</div>
-                                                                    <div style="padding: 14px;">
-                                                                      <div style="text-align: center; margin-bottom: 12px;">
-                                                                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                                                                          <div style="background: #ede9fe; border: 1px solid #c4b5fd; padding: 6px 10px; border-radius: 6px; font-size: 10px;">L1: Local (per-instance, small)</div>
-                                                                          <div style="color: #6b7280; font-size: 10px;">miss</div>
-                                                                          <div style="background: #f3e8ff; border: 1px solid #d8b4fe; padding: 6px 10px; border-radius: 6px; font-size: 10px;">L2: Distributed (shared, large)</div>
-                                                                        </div>
-                                                                      </div>
-                                                                      <div style="font-size: 12px; color: #374151;">
-                                                                        <div style="color: #059669;">+ Best latency for hot data</div>
-                                                                        <div style="color: #059669;">+ Reduces L2 load</div>
-                                                                        <div style="color: #dc2626;">- Consistency between tiers</div>
-                                                                        <div style="color: #dc2626;">- Cache invalidation complexity</div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                                </div>
-                                                              </div>
+<div style="background: #ffffff; border: 2px solid #7c3aed; border-radius: 8px; overflow: hidden;">
+<div style="background: #7c3aed; color: white; padding: 12px; font-weight: 600; text-align: center;">Tiered Cache (L1 + L2)</div>
+<div style="padding: 14px;">
+<div style="text-align: center; margin-bottom: 12px;">
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+<div style="background: #ede9fe; border: 1px solid #c4b5fd; padding: 6px 10px; border-radius: 6px; font-size: 10px;">L1: Local (per-instance, small)</div>
+<div style="color: #6b7280; font-size: 10px;">miss</div>
+<div style="background: #f3e8ff; border: 1px solid #d8b4fe; padding: 6px 10px; border-radius: 6px; font-size: 10px;">L2: Distributed (shared, large)</div>
+</div>
+</div>
+<div style="font-size: 12px; color: #374151;">
+<div style="color: #059669;">+ Best latency for hot data</div>
+<div style="color: #059669;">+ Reduces L2 load</div>
+<div style="color: #dc2626;">- Consistency between tiers</div>
+<div style="color: #dc2626;">- Cache invalidation complexity</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
                                                               ### Consistent Hashing for Sharding
 
-                                                              <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Consistent hashing minimizes key redistribution when nodes are added/removed. Instead of rehashing all keys, only keys in the affected range move.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Consistent hashing minimizes key redistribution when nodes are added/removed. Instead of rehashing all keys, only keys in the affected range move.</span>
 
                                                               See [[Consistent Hashing]](/topic/system-design/consistent-hashing) for detailed explanation.
 
@@ -1204,9 +1204,9 @@ def remove(node):
 
                                                               ### Cache Invalidation
 
-                                                              <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-                                                                <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton</div>
-                                                              </div>
+<div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
+<div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton</div>
+</div>
 
                                                               **Invalidation Strategies:**
 
@@ -1238,70 +1238,70 @@ def remove(node):
 
                                                               ### Interview Questions: Distributed Caching
 
-                                                              <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
-                                                                <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: How would you distribute an LRU cache across multiple servers?</div>
-                                                                <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Use consistent hashing to partition keys across nodes. Each node maintains its own LRU cache for its assigned keys. Clients hash the key to determine which node to contact. This scales capacity linearly with nodes.</div>
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: How would you distribute an LRU cache across multiple servers?</div>
+<div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Use consistent hashing to partition keys across nodes. Each node maintains its own LRU cache for its assigned keys. Clients hash the key to determine which node to contact. This scales capacity linearly with nodes.</div>
 
-                                                                <div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
-                                                                  <div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: What happens when a node fails or is added?</div>
-                                                                  <div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">With consistent hashing, only keys mapped to the failed/new node are affected. For failure: those keys become cache misses until the node recovers or is replaced. For addition: some keys from neighboring nodes remap to the new node (cold start). Use virtual nodes to distribute load more evenly. Consider replication for high availability.</div>
+<div style="margin-left: 20px; border-left: 3px solid #c084fc; padding-left: 16px;">
+<div style="font-weight: 600; color: #7c3aed; margin-bottom: 8px;">L2: What happens when a node fails or is added?</div>
+<div style="color: #5b21b6; font-size: 13px; margin-bottom: 12px;">With consistent hashing, only keys mapped to the failed/new node are affected. For failure: those keys become cache misses until the node recovers or is replaced. For addition: some keys from neighboring nodes remap to the new node (cold start). Use virtual nodes to distribute load more evenly. Consider replication for high availability.</div>
 
-                                                                  <div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
-                                                                    <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: How do you handle cache stampede when a popular key expires or node fails?</div>
-                                                                    <div style="color: #6d28d9; font-size: 13px;">Cache stampede: multiple requests simultaneously try to recompute/fetch a missing popular key, overwhelming the backend. Solutions: (1) Locking - only one request recomputes, others wait or get stale data. (2) Probabilistic early expiration - randomly refresh before TTL to avoid synchronized expiration. (3) Background refresh - proactively refresh popular keys before expiration. (4) Request coalescing - combine identical in-flight requests. (5) Circuit breaker - limit concurrent backend requests. For node failure specifically, implement warm-up procedures to gradually restore the cache.</div>
-                                                                  </div>
-                                                                </div>
-                                                              </div>
+<div style="margin-left: 20px; border-left: 3px solid #a78bfa; padding-left: 16px;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">L3: How do you handle cache stampede when a popular key expires or node fails?</div>
+<div style="color: #6d28d9; font-size: 13px;">Cache stampede: multiple requests simultaneously try to recompute/fetch a missing popular key, overwhelming the backend. Solutions: (1) Locking - only one request recomputes, others wait or get stale data. (2) Probabilistic early expiration - randomly refresh before TTL to avoid synchronized expiration. (3) Background refresh - proactively refresh popular keys before expiration. (4) Request coalescing - combine identical in-flight requests. (5) Circuit breaker - limit concurrent backend requests. For node failure specifically, implement warm-up procedures to gradually restore the cache.</div>
+</div>
+</div>
+</div>
 
                                                               ---
 
                                                               ## Edge Cases and Common Bugs
 
-                                                              <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
-                                                                <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 16px;">Common Implementation Bugs</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 16px;">Common Implementation Bugs</div>
 
-                                                                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                                                                   <thead>
-                                                                    <tr style="background: #fee2e2;">
-                                                                      <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Bug</th>
-                                                                      <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Symptom</th>
-                                                                      <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Fix</th>
-                                                                    </tr>
+<tr style="background: #fee2e2;">
+<th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Bug</th>
+<th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Symptom</th>
+<th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Fix</th>
+</tr>
                                                                   </thead>
                                                                   <tbody>
-                                                                    <tr>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Forget to delete from HashMap on eviction</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Memory leak, size never decreases</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Always delete from both structures</td>
-                                                                    </tr>
-                                                                    <tr style="background: #fef2f2;">
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Update doesn't move to front</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Updated items evicted unexpectedly</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Call moveToFront on update</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Wrong pointer update order</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Corrupted list, lost nodes</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Set new node pointers first</td>
-                                                                    </tr>
-                                                                    <tr style="background: #fef2f2;">
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Confuse sentinel with data nodes</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Return dummy values, crash</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Clear separation, never store data in sentinels</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Capacity 0 not handled</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Division by zero, infinite loop</td>
-                                                                      <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Validate capacity > 0 in constructor</td>
-                                                                    </tr>
-                                                                    <tr style="background: #fef2f2;">
-                                                                      <td style="padding: 10px;">Node key not stored</td>
-                                                                      <td style="padding: 10px;">Can't remove from HashMap on evict</td>
-                                                                      <td style="padding: 10px;">Store key in Node class</td>
-                                                                    </tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Forget to delete from HashMap on eviction</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Memory leak, size never decreases</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Always delete from both structures</td>
+</tr>
+<tr style="background: #fef2f2;">
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Update doesn't move to front</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Updated items evicted unexpectedly</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Call moveToFront on update</td>
+</tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Wrong pointer update order</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Corrupted list, lost nodes</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Set new node pointers first</td>
+</tr>
+<tr style="background: #fef2f2;">
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Confuse sentinel with data nodes</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Return dummy values, crash</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Clear separation, never store data in sentinels</td>
+</tr>
+<tr>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Capacity 0 not handled</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Division by zero, infinite loop</td>
+<td style="padding: 10px; border-bottom: 1px solid #fecaca;">Validate capacity > 0 in constructor</td>
+</tr>
+<tr style="background: #fef2f2;">
+<td style="padding: 10px;">Node key not stored</td>
+<td style="padding: 10px;">Can't remove from HashMap on evict</td>
+<td style="padding: 10px;">Store key in Node class</td>
+</tr>
                                                                   </tbody>
-                                                                </table>
-                                                              </div>
+</table>
+</div>
 
                                                               ### Critical Edge Cases to Test
 
@@ -1358,50 +1358,50 @@ def remove(node):
 
                                                               ### 45-Minute Timeline
 
-                                                              <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                                                <div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
 
-                                                                  <div style="display: flex; align-items: center; gap: 12px;">
-                                                                    <div style="background: #059669; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">0-5 min</div>
-                                                                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
-                                                                      <div style="font-weight: 600; color: #374151; font-size: 13px;">Clarify Requirements</div>
-                                                                      <div style="color: #6b7280; font-size: 12px;">Operations? Thread-safety? Capacity range? Return type for missing keys?</div>
-                                                                    </div>
-                                                                  </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #059669; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">0-5 min</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
+<div style="font-weight: 600; color: #374151; font-size: 13px;">Clarify Requirements</div>
+<div style="color: #6b7280; font-size: 12px;">Operations? Thread-safety? Capacity range? Return type for missing keys?</div>
+</div>
+</div>
 
-                                                                  <div style="display: flex; align-items: center; gap: 12px;">
-                                                                    <div style="background: #3b82f6; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">5-12 min</div>
-                                                                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
-                                                                      <div style="font-weight: 600; color: #374151; font-size: 13px;">Design Discussion</div>
-                                                                      <div style="color: #6b7280; font-size: 12px;">Draw HashMap + Doubly Linked List. Explain why each is needed. Walk through get/put.</div>
-                                                                    </div>
-                                                                  </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #3b82f6; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">5-12 min</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
+<div style="font-weight: 600; color: #374151; font-size: 13px;">Design Discussion</div>
+<div style="color: #6b7280; font-size: 12px;">Draw HashMap + Doubly Linked List. Explain why each is needed. Walk through get/put.</div>
+</div>
+</div>
 
-                                                                  <div style="display: flex; align-items: center; gap: 12px;">
-                                                                    <div style="background: #7c3aed; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">12-35 min</div>
-                                                                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
-                                                                      <div style="font-weight: 600; color: #374151; font-size: 13px;">Implementation</div>
-                                                                      <div style="color: #6b7280; font-size: 12px;">Node class -> Helper methods (add, remove, move) -> get() -> put(). Comment as you go.</div>
-                                                                    </div>
-                                                                  </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #7c3aed; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">12-35 min</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
+<div style="font-weight: 600; color: #374151; font-size: 13px;">Implementation</div>
+<div style="color: #6b7280; font-size: 12px;">Node class -> Helper methods (add, remove, move) -> get() -> put(). Comment as you go.</div>
+</div>
+</div>
 
-                                                                  <div style="display: flex; align-items: center; gap: 12px;">
-                                                                    <div style="background: #f59e0b; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">35-40 min</div>
-                                                                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
-                                                                      <div style="font-weight: 600; color: #374151; font-size: 13px;">Testing & Verification</div>
-                                                                      <div style="color: #6b7280; font-size: 12px;">Dry run example. Trace through edge cases verbally. Check pointer updates.</div>
-                                                                    </div>
-                                                                  </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #f59e0b; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">35-40 min</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
+<div style="font-weight: 600; color: #374151; font-size: 13px;">Testing & Verification</div>
+<div style="color: #6b7280; font-size: 12px;">Dry run example. Trace through edge cases verbally. Check pointer updates.</div>
+</div>
+</div>
 
-                                                                  <div style="display: flex; align-items: center; gap: 12px;">
-                                                                    <div style="background: #dc2626; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">40-45 min</div>
-                                                                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
-                                                                      <div style="font-weight: 600; color: #374151; font-size: 13px;">Extensions Discussion</div>
-                                                                      <div style="color: #6b7280; font-size: 12px;">Thread-safety approach. TTL addition. LRU vs LFU. Distributed caching.</div>
-                                                                    </div>
-                                                                  </div>
-                                                                </div>
-                                                              </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #dc2626; color: white; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; min-width: 70px; text-align: center;">40-45 min</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; flex: 1;">
+<div style="font-weight: 600; color: #374151; font-size: 13px;">Extensions Discussion</div>
+<div style="color: #6b7280; font-size: 12px;">Thread-safety approach. TTL addition. LRU vs LFU. Distributed caching.</div>
+</div>
+</div>
+</div>
+</div>
 
                                                               ### What Differentiates Candidates
 
@@ -1426,43 +1426,43 @@ def remove(node):
 
                                                               ## Time and Space Complexity
 
-                                                              <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                                                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                                                                   <thead>
-                                                                    <tr style="background: #e2e8f0;">
-                                                                      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Operation</th>
-                                                                      <th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Average)</th>
-                                                                      <th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Worst)</th>
-                                                                      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Notes</th>
-                                                                    </tr>
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Operation</th>
+<th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Average)</th>
+<th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Worst)</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Notes</th>
+</tr>
                                                                   </thead>
                                                                   <tbody>
-                                                                    <tr>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">get(key)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">*HashMap worst case with collisions</td>
-                                                                    </tr>
-                                                                    <tr style="background: #f8fafc;">
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">put(key, value)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">*HashMap resize amortized O(1)</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">delete(key)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
-                                                                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">Same as get + unlink</td>
-                                                                    </tr>
-                                                                    <tr style="background: #f8fafc;">
-                                                                      <td style="padding: 12px; font-weight: 600;">Space</td>
-                                                                      <td style="padding: 12px; text-align: center;" colspan="2"><span style="color: #059669; font-weight: 600;">O(capacity)</span></td>
-                                                                      <td style="padding: 12px; font-size: 12px;">HashMap + List nodes</td>
-                                                                    </tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">get(key)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">*HashMap worst case with collisions</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">put(key, value)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">*HashMap resize amortized O(1)</td>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">delete(key)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #f59e0b;">O(n)*</td>
+<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">Same as get + unlink</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; font-weight: 600;">Space</td>
+<td style="padding: 12px; text-align: center;" colspan="2"><span style="color: #059669; font-weight: 600;">O(capacity)</span></td>
+<td style="padding: 12px; font-size: 12px;">HashMap + List nodes</td>
+</tr>
                                                                   </tbody>
-                                                                </table>
-                                                              </div>
+</table>
+</div>
 
                                                               **Per-Entry Memory (approximate, 64-bit system):**
                                                               - HashMap entry: 32-48 bytes (key, value ref, hash, next)
@@ -1484,15 +1484,15 @@ def remove(node):
 
                                                               ## Summary
 
-                                                              <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #6ee7b7; border-radius: 12px; padding: 20px; margin: 20px 0;">
-                                                                <div style="font-weight: 600; color: #047857; font-size: 16px; margin-bottom: 12px;">Key Takeaways</div>
-                                                                <ul style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.8;">
-                                                                  <li><strong>Architecture</strong>: HashMap (O(1) lookup) + Doubly Linked List (O(1) reorder) = O(1) for both operations</li>
-                                                                  <li><strong>Why doubly linked</strong>: Removal needs predecessor access; singly linked would be O(n)</li>
-                                                                  <li><strong>Sentinel nodes</strong>: Eliminate null checks, simplify edge cases</li>
-                                                                  <li><strong>Store key in node</strong>: Required to delete from HashMap during eviction</li>
-                                                                  <li><strong>Thread-safety</strong>: get() modifies structure, needs write lock; consider buffered writes for high throughput</li>
-                                                                  <li><strong>Distributed</strong>: Per-shard LRU with consistent hashing; no global LRU needed</li>
-                                                                  <li><strong>Alternatives</strong>: LFU for frequency-heavy workloads; TinyLFU for best hit rates</li>
-                                                                </ul>
-                                                              </div>
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #6ee7b7; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="font-weight: 600; color: #047857; font-size: 16px; margin-bottom: 12px;">Key Takeaways</div>
+<ul style="margin: 0; padding-left: 20px; color: #065f46; line-height: 1.8;">
+<li><strong>Architecture</strong>: HashMap (O(1) lookup) + Doubly Linked List (O(1) reorder) = O(1) for both operations</li>
+<li><strong>Why doubly linked</strong>: Removal needs predecessor access; singly linked would be O(n)</li>
+<li><strong>Sentinel nodes</strong>: Eliminate null checks, simplify edge cases</li>
+<li><strong>Store key in node</strong>: Required to delete from HashMap during eviction</li>
+<li><strong>Thread-safety</strong>: get() modifies structure, needs write lock; consider buffered writes for high throughput</li>
+<li><strong>Distributed</strong>: Per-shard LRU with consistent hashing; no global LRU needed</li>
+<li><strong>Alternatives</strong>: LFU for frequency-heavy workloads; TinyLFU for best hit rates</li>
+</ul>
+</div>

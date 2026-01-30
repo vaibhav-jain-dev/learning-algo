@@ -5,50 +5,50 @@
 A Content Delivery Network is a globally distributed network of proxy servers that caches content at edge locations to minimize the distance between users and the content they request. Beyond simple caching, modern CDNs perform TLS termination, DDoS mitigation, edge computing, request routing, and real-time content optimization.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CDN ARCHITECTURE DEEP DIVE</h3>
-  <div style="display: flex; flex-direction: column; gap: 20px;">
-    <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #7c3aed;">
-        <div style="color: #5b21b6; font-weight: 700;">Origin Server</div>
-        <div style="color: #7c3aed; font-size: 12px;">Source of truth</div>
-      </div>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
-    </div>
-    <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #06b6d4;">
-        <div style="color: #0e7490; font-weight: 700;">Origin Shield</div>
-        <div style="color: #0891b2; font-size: 12px;">Mid-tier cache aggregator</div>
-      </div>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
-    </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #15803d; font-size: 11px;">Americas</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #15803d; font-size: 11px;">EMEA</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
-        <div style="color: #15803d; font-size: 11px;">APAC</div>
-      </div>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
-      <div style="width: 2px; height: 24px; background: #94a3b8;"></div>
-    </div>
-    <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 14px 48px; border-radius: 10px; text-align: center; border: 2px solid #3b82f6;">
-        <div style="color: #1e40af; font-weight: 600;">End Users</div>
-        <div style="color: #2563eb; font-size: 11px;">Connected via Anycast DNS</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CDN ARCHITECTURE DEEP DIVE</h3>
+<div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; justify-content: center;">
+<div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #7c3aed;">
+<div style="color: #5b21b6; font-weight: 700;">Origin Server</div>
+<div style="color: #7c3aed; font-size: 12px;">Source of truth</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
+<div style="width: 2px; height: 24px; background: #94a3b8;"></div>
+</div>
+<div style="display: flex; justify-content: center;">
+<div style="background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%); padding: 16px 32px; border-radius: 12px; text-align: center; border: 2px solid #06b6d4;">
+<div style="color: #0e7490; font-weight: 700;">Origin Shield</div>
+<div style="color: #0891b2; font-size: 12px;">Mid-tier cache aggregator</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
+<div style="width: 2px; height: 24px; background: #94a3b8;"></div>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+<div style="color: #15803d; font-size: 11px;">Americas</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+<div style="color: #15803d; font-size: 11px;">EMEA</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 14px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600; font-size: 14px;">Edge PoP</div>
+<div style="color: #15803d; font-size: 11px;">APAC</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 8px; align-items: center;">
+<div style="width: 2px; height: 24px; background: #94a3b8;"></div>
+</div>
+<div style="display: flex; justify-content: center;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 14px 48px; border-radius: 10px; text-align: center; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 600;">End Users</div>
+<div style="color: #2563eb; font-size: 11px;">Connected via Anycast DNS</div>
+</div>
+</div>
+</div>
 </div>
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Key assumption: CDN effectiveness depends on content being cacheable. Highly personalized or real-time content benefits minimally from edge caching.</span>
@@ -137,41 +137,41 @@ class CacheKeyBuilder:
 Modern edge servers implement multi-tier storage for optimal performance:
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EDGE SERVER STORAGE HIERARCHY</h3>
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
-        <div style="color: white; font-weight: 700;">L1: RAM Cache</div>
-      </div>
-      <div style="flex: 1; background: #fef2f2; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #991b1b; font-size: 13px;"><strong>~1ms latency</strong> | Hot objects | LRU eviction | 64-256GB per server</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
-        <div style="color: white; font-weight: 700;">L2: NVMe SSD</div>
-      </div>
-      <div style="flex: 1; background: #fff7ed; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #9a3412; font-size: 13px;"><strong>~5ms latency</strong> | Warm objects | 2-8TB per server | Handles 90%+ of requests</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
-        <div style="color: white; font-weight: 700;">L3: HDD Array</div>
-      </div>
-      <div style="flex: 1; background: #fefce8; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #854d0e; font-size: 13px;"><strong>~20ms latency</strong> | Cold objects | 50-200TB | Long-tail content</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
-        <div style="color: white; font-weight: 700;">L4: Origin Shield</div>
-      </div>
-      <div style="flex: 1; background: #ecfeff; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #155e75; font-size: 13px;"><strong>~50-100ms</strong> | Regional aggregation | Reduces origin load by 90%+</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EDGE SERVER STORAGE HIERARCHY</h3>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
+<div style="color: white; font-weight: 700;">L1: RAM Cache</div>
+</div>
+<div style="flex: 1; background: #fef2f2; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #991b1b; font-size: 13px;"><strong>~1ms latency</strong> | Hot objects | LRU eviction | 64-256GB per server</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
+<div style="color: white; font-weight: 700;">L2: NVMe SSD</div>
+</div>
+<div style="flex: 1; background: #fff7ed; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #9a3412; font-size: 13px;"><strong>~5ms latency</strong> | Warm objects | 2-8TB per server | Handles 90%+ of requests</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
+<div style="color: white; font-weight: 700;">L3: HDD Array</div>
+</div>
+<div style="flex: 1; background: #fefce8; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #854d0e; font-size: 13px;"><strong>~20ms latency</strong> | Cold objects | 50-200TB | Long-tail content</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); padding: 12px 20px; border-radius: 8px; min-width: 140px; text-align: center;">
+<div style="color: white; font-weight: 700;">L4: Origin Shield</div>
+</div>
+<div style="flex: 1; background: #ecfeff; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #155e75; font-size: 13px;"><strong>~50-100ms</strong> | Regional aggregation | Reduces origin load by 90%+</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Cache Admission Policies
@@ -266,35 +266,35 @@ class CacheAdmissionController:
 ### Interview Questions: Edge Caching (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-  <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "How does an edge cache decide what to store?"</div>
-  <div style="color: #1e3a8a; font-size: 14px; margin-bottom: 12px;">
-    <strong>Answer:</strong> Edge caches use HTTP Cache-Control headers from the origin to determine cacheability. The response must have a cacheable status code (200, 301, etc.), not contain <code>no-store</code> or <code>private</code> directives, and ideally specify <code>max-age</code> or <code>s-maxage</code>. The cache key is typically constructed from the URL, with query parameters sorted for consistency.
-  </div>
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "How does an edge cache decide what to store?"</div>
+<div style="color: #1e3a8a; font-size: 14px; margin-bottom: 12px;">
+<strong>Answer:</strong> Edge caches use HTTP Cache-Control headers from the origin to determine cacheability. The response must have a cacheable status code (200, 301, etc.), not contain <code>no-store</code> or <code>private</code> directives, and ideally specify <code>max-age</code> or <code>s-maxage</code>. The cache key is typically constructed from the URL, with query parameters sorted for consistency.
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-  <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How would you prevent cache pollution from bot traffic or one-hit-wonders?"</div>
-  <div style="color: #78350f; font-size: 14px; margin-bottom: 12px;">
-    <strong>Answer:</strong> Implement admission control policies like TinyLFU that require objects to be requested multiple times before admission. Use bloom filters for memory-efficient frequency tracking. Configure size-aware policies that apply higher admission thresholds to larger objects. Additionally, implement bot detection to either deny caching for bot requests or use separate cache partitions.
-  </div>
+<div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How would you prevent cache pollution from bot traffic or one-hit-wonders?"</div>
+<div style="color: #78350f; font-size: 14px; margin-bottom: 12px;">
+<strong>Answer:</strong> Implement admission control policies like TinyLFU that require objects to be requested multiple times before admission. Use bloom filters for memory-efficient frequency tracking. Configure size-aware policies that apply higher admission thresholds to larger objects. Additionally, implement bot detection to either deny caching for bot requests or use separate cache partitions.
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
-  <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Your CDN has 90% hit rate but P99 latency is still high. Diagnose and fix."</div>
-  <div style="color: #831843; font-size: 14px;">
-    <strong>Answer:</strong> High hit rate with high P99 suggests the 10% misses are disproportionately slow. Analyze miss patterns:
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Your CDN has 90% hit rate but P99 latency is still high. Diagnose and fix."</div>
+<div style="color: #831843; font-size: 14px;">
+<strong>Answer:</strong> High hit rate with high P99 suggests the 10% misses are disproportionately slow. Analyze miss patterns:
     <br><br>
-        (1) <strong>Origin latency</strong>: If origin is slow, implement origin shield to reduce origin requests and add connection pooling with keep-alive.
+(1) <strong>Origin latency</strong>: If origin is slow, implement origin shield to reduce origin requests and add connection pooling with keep-alive.
         <br><br>
-            (2) <strong>Cache tier misses</strong>: If L1 RAM misses hit slow HDD tier, increase RAM allocation or implement SSD-only policy for latency-sensitive content.
+(2) <strong>Cache tier misses</strong>: If L1 RAM misses hit slow HDD tier, increase RAM allocation or implement SSD-only policy for latency-sensitive content.
             <br><br>
-                (3) <strong>Request coalescing</strong>: For cache misses on popular content, multiple concurrent requests hit origin. Implement request coalescing (collapsed forwarding) where the first request fetches while others wait.
+(3) <strong>Request coalescing</strong>: For cache misses on popular content, multiple concurrent requests hit origin. Implement request coalescing (collapsed forwarding) where the first request fetches while others wait.
                 <br><br>
-                    (4) <strong>Geographic routing</strong>: Check if some users route to distant PoPs. Implement better Anycast tuning or add PoPs in underserved regions.
+(4) <strong>Geographic routing</strong>: Check if some users route to distant PoPs. Implement better Anycast tuning or add PoPs in underserved regions.
                     <br><br>
-                        (5) <strong>Vary header explosion</strong>: Check if <code>Vary: *</code> or high-cardinality Vary headers cause cache fragmentation, storing same content multiple times.
-                      </div>
-                    </div>
+(5) <strong>Vary header explosion</strong>: Check if <code>Vary: *</code> or high-cardinality Vary headers cause cache fragmentation, storing same content multiple times.
+</div>
+</div>
 
                     ---
 
@@ -304,7 +304,7 @@ class CacheAdmissionController:
 
                     ### Time-Based Expiration (TTL)
 
-                    <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Short TTLs ensure freshness but reduce hit rates; long TTLs improve performance but serve stale content.</span>
+<span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Short TTLs ensure freshness but reduce hit rates; long TTLs improve performance but serve stale content.</span>
 
                     ```python
                     class TTLStrategy:
@@ -477,7 +477,7 @@ class CacheAdmissionController:
 
                     ### Versioned URLs (Cache Busting)
 
-                    <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Design choice: Versioned URLs eliminate invalidation complexity but require updating all references when content changes.</span>
+<span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Design choice: Versioned URLs eliminate invalidation complexity but require updating all references when content changes.</span>
 
                     ```python
                     class ContentVersioning:
@@ -632,48 +632,48 @@ class CacheAdmissionController:
 
                     ### Interview Questions: Cache Invalidation (3 Levels Deep)
 
-                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                      <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What are the main cache invalidation strategies?"</div>
-                      <div style="color: #1e3a8a; font-size: 14px;">
-                        <strong>Answer:</strong> Three primary strategies:
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What are the main cache invalidation strategies?"</div>
+<div style="color: #1e3a8a; font-size: 14px;">
+<strong>Answer:</strong> Three primary strategies:
                         <br><br>
-                            (1) <strong>Time-based (TTL)</strong>: Content expires after a set duration. Simple but can serve stale content.
+(1) <strong>Time-based (TTL)</strong>: Content expires after a set duration. Simple but can serve stale content.
                             <br><br>
-                                (2) <strong>Event-driven purge</strong>: Explicitly invalidate when content changes. Immediate freshness but requires coordination infrastructure.
+(2) <strong>Event-driven purge</strong>: Explicitly invalidate when content changes. Immediate freshness but requires coordination infrastructure.
                                 <br><br>
-                                    (3) <strong>Versioned URLs</strong>: Embed content hash in URL. New content = new URL = no invalidation needed. Eliminates stale content but requires updating all references.
-                                  </div>
-                                </div>
+(3) <strong>Versioned URLs</strong>: Embed content hash in URL. New content = new URL = no invalidation needed. Eliminates stale content but requires updating all references.
+</div>
+</div>
 
-                                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-                                  <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do cache tags (surrogate keys) work and when should you use them?"</div>
-                                  <div style="color: #78350f; font-size: 14px;">
-                                    <strong>Answer:</strong> Cache tags are metadata labels attached to cached objects. When content changes, purge by tag instead of URL.
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do cache tags (surrogate keys) work and when should you use them?"</div>
+<div style="color: #78350f; font-size: 14px;">
+<strong>Answer:</strong> Cache tags are metadata labels attached to cached objects. When content changes, purge by tag instead of URL.
                                     <br><br>
-                                        <strong>Example:</strong> A product page at <code>/products/123</code> is tagged with <code>product:123</code>, <code>category:electronics</code>, <code>brand:apple</code>. When the product price changes, purge <code>product:123</code> to invalidate all pages showing that product (detail page, search results, recommendations).
+<strong>Example:</strong> A product page at <code>/products/123</code> is tagged with <code>product:123</code>, <code>category:electronics</code>, <code>brand:apple</code>. When the product price changes, purge <code>product:123</code> to invalidate all pages showing that product (detail page, search results, recommendations).
                                         <br><br>
-                                            <strong>Use when:</strong> Content relationships are complex (one data change affects many URLs), you need instant invalidation, and you don't control all URL references. <strong>Avoid when:</strong> Content is versioned or TTL-based invalidation is acceptable.
-                                          </div>
-                                        </div>
+<strong>Use when:</strong> Content relationships are complex (one data change affects many URLs), you need instant invalidation, and you don't control all URL references. <strong>Avoid when:</strong> Content is versioned or TTL-based invalidation is acceptable.
+</div>
+</div>
 
-                                        <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
-                                          <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache invalidation system for a news site where breaking news must appear within 30 seconds globally."</div>
-                                          <div style="color: #831843; font-size: 14px;">
-                                            <strong>Answer:</strong> Multi-layered approach:
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache invalidation system for a news site where breaking news must appear within 30 seconds globally."</div>
+<div style="color: #831843; font-size: 14px;">
+<strong>Answer:</strong> Multi-layered approach:
                                             <br><br>
-                                                (1) <strong>Tag-based instant purge</strong>: Each article tagged with <code>article:{id}</code>, <code>section:{name}</code>, <code>homepage</code>. CMS publishes purge event to message queue on save.
+(1) <strong>Tag-based instant purge</strong>: Each article tagged with <code>article:{id}</code>, <code>section:{name}</code>, <code>homepage</code>. CMS publishes purge event to message queue on save.
                                                 <br><br>
-                                                    (2) <strong>Purge propagation</strong>: Regional purge coordinators subscribe to queue. Fan-out purges to edge servers with parallel requests. Target &lt;5 second purge propagation.
+(2) <strong>Purge propagation</strong>: Regional purge coordinators subscribe to queue. Fan-out purges to edge servers with parallel requests. Target &lt;5 second purge propagation.
                                                     <br><br>
-                                                        (3) <strong>Short TTL fallback</strong>: Set <code>max-age=30, stale-while-revalidate=60</code> as safety net. Even without explicit purge, content refreshes within 30-90 seconds.
+(3) <strong>Short TTL fallback</strong>: Set <code>max-age=30, stale-while-revalidate=60</code> as safety net. Even without explicit purge, content refreshes within 30-90 seconds.
                                                         <br><br>
-                                                            (4) <strong>Homepage special handling</strong>: Homepage has shortest TTL (10-15s) since it aggregates all breaking news. Consider edge-side includes (ESI) to cache static shell separately from dynamic content blocks.
+(4) <strong>Homepage special handling</strong>: Homepage has shortest TTL (10-15s) since it aggregates all breaking news. Consider edge-side includes (ESI) to cache static shell separately from dynamic content blocks.
                                                             <br><br>
-                                                                (5) <strong>Monitoring</strong>: Track purge latency percentiles per region. Alert if P95 exceeds 15 seconds. Dashboard showing content freshness lag across PoPs.
+(5) <strong>Monitoring</strong>: Track purge latency percentiles per region. Alert if P95 exceeds 15 seconds. Dashboard showing content freshness lag across PoPs.
                                                                 <br><br>
-                                                                    (6) <strong>Push notifications</strong>: For truly instant breaking news, bypass cache entirely with push notifications to client apps, which then fetch latest.
-                                                                  </div>
-                                                                </div>
+(6) <strong>Push notifications</strong>: For truly instant breaking news, bypass cache entirely with push notifications to client apps, which then fetch latest.
+</div>
+</div>
 
                                                                 ---
 
@@ -681,51 +681,51 @@ class CacheAdmissionController:
 
                                                                 Origin shield is a mid-tier caching layer between edge servers and the origin. It consolidates requests from multiple edge PoPs, dramatically reducing origin load.
 
-                                                                <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-                                                                  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REQUEST FLOW: WITH vs WITHOUT ORIGIN SHIELD</h3>
-                                                                  <div style="display: flex; flex-direction: column; gap: 32px;">
-                                                                    <div>
-                                                                      <div style="color: #dc2626; font-weight: 600; margin-bottom: 16px; text-align: center;">Without Origin Shield (Cache Miss Storm)</div>
-                                                                      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                                                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge NYC</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LAX</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LON</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge TYO</div>
-                                                                        </div>
-                                                                        <div style="color: #64748b; font-size: 20px;">--></div>
-                                                                        <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
-                                                                          <div style="color: white; font-weight: 700;">Origin</div>
-                                                                          <div style="color: #fecaca; font-size: 11px;">4 concurrent requests</div>
-                                                                          <div style="color: #fecaca; font-size: 11px;">for same content!</div>
-                                                                        </div>
-                                                                      </div>
-                                                                    </div>
-                                                                    <div>
-                                                                      <div style="color: #16a34a; font-weight: 600; margin-bottom: 16px; text-align: center;">With Origin Shield (Consolidated Requests)</div>
-                                                                      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                                                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge NYC</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LAX</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LON</div>
-                                                                          <div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge TYO</div>
-                                                                        </div>
-                                                                        <div style="color: #64748b; font-size: 20px;">--></div>
-                                                                        <div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
-                                                                          <div style="color: white; font-weight: 700;">Origin Shield</div>
-                                                                          <div style="color: #cffafe; font-size: 11px;">Coalesces requests</div>
-                                                                        </div>
-                                                                        <div style="color: #64748b; font-size: 20px;">--></div>
-                                                                        <div style="background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
-                                                                          <div style="color: white; font-weight: 700;">Origin</div>
-                                                                          <div style="color: #dcfce7; font-size: 11px;">1 request only!</div>
-                                                                        </div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                                </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REQUEST FLOW: WITH vs WITHOUT ORIGIN SHIELD</h3>
+<div style="display: flex; flex-direction: column; gap: 32px;">
+<div>
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 16px; text-align: center;">Without Origin Shield (Cache Miss Storm)</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge NYC</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LAX</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LON</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge TYO</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">--></div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-weight: 700;">Origin</div>
+<div style="color: #fecaca; font-size: 11px;">4 concurrent requests</div>
+<div style="color: #fecaca; font-size: 11px;">for same content!</div>
+</div>
+</div>
+</div>
+<div>
+<div style="color: #16a34a; font-weight: 600; margin-bottom: 16px; text-align: center;">With Origin Shield (Consolidated Requests)</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge NYC</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LAX</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge LON</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Edge TYO</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">--></div>
+<div style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-weight: 700;">Origin Shield</div>
+<div style="color: #cffafe; font-size: 11px;">Coalesces requests</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">--></div>
+<div style="background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); padding: 16px 24px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-weight: 700;">Origin</div>
+<div style="color: #dcfce7; font-size: 11px;">1 request only!</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-                                                                <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Origin shield adds one network hop latency (~20-50ms) but can reduce origin traffic by 70-90% during cache misses.</span>
+<span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Origin shield adds one network hop latency (~20-50ms) but can reduce origin traffic by 70-90% during cache misses.</span>
 
                                                                 ### Origin Shield Implementation
 
@@ -942,17 +942,17 @@ class CacheAdmissionController:
 
                                                                 ### Interview Questions: Origin Shield (3 Levels Deep)
 
-                                                                <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                                                                  <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is an origin shield and why use one?"</div>
-                                                                  <div style="color: #1e3a8a; font-size: 14px;">
-                                                                    <strong>Answer:</strong> An origin shield is a regional caching layer between edge servers and the origin. When multiple edge PoPs have cache misses for the same content, requests are consolidated at the shield rather than all hitting the origin. Benefits include: (1) reduced origin load by 70-90%, (2) better cache hit rates due to larger cache pool, (3) connection pooling reduces TLS overhead, (4) single point for request coalescing. The trade-off is added latency (one extra hop) for cache misses.
-                                                                  </div>
-                                                                </div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is an origin shield and why use one?"</div>
+<div style="color: #1e3a8a; font-size: 14px;">
+<strong>Answer:</strong> An origin shield is a regional caching layer between edge servers and the origin. When multiple edge PoPs have cache misses for the same content, requests are consolidated at the shield rather than all hitting the origin. Benefits include: (1) reduced origin load by 70-90%, (2) better cache hit rates due to larger cache pool, (3) connection pooling reduces TLS overhead, (4) single point for request coalescing. The trade-off is added latency (one extra hop) for cache misses.
+</div>
+</div>
 
-                                                                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-                                                                  <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How does request coalescing work at the origin shield?"</div>
-                                                                  <div style="color: #78350f; font-size: 14px;">
-                                                                    <strong>Answer:</strong> Request coalescing (or collapsed forwarding) ensures that when multiple requests arrive for the same uncached resource, only one request goes to origin:
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How does request coalescing work at the origin shield?"</div>
+<div style="color: #78350f; font-size: 14px;">
+<strong>Answer:</strong> Request coalescing (or collapsed forwarding) ensures that when multiple requests arrive for the same uncached resource, only one request goes to origin:
                                                                     <br><br>
                                                                         (1) First request acquires a lock for that cache key and initiates origin fetch.
                                                                         <br><br>
@@ -963,25 +963,25 @@ class CacheAdmissionController:
                                                                                     (4) All waiting requests receive the same response simultaneously.
                                                                                     <br><br>
                                                                                         Critical implementation detail: Use double-checked locking to handle race conditions where cache is populated between check and lock acquisition. Also implement timeouts to prevent indefinite waits if the origin request hangs.
-                                                                                      </div>
-                                                                                    </div>
+</div>
+</div>
 
-                                                                                    <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
-                                                                                      <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Your origin shield is causing higher latency during cache warming. How do you optimize?"</div>
-                                                                                      <div style="color: #831843; font-size: 14px;">
-                                                                                        <strong>Answer:</strong> Cache warming through shield adds latency because content must traverse: Origin -> Shield -> Edge -> User. Optimization strategies:
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Your origin shield is causing higher latency during cache warming. How do you optimize?"</div>
+<div style="color: #831843; font-size: 14px;">
+<strong>Answer:</strong> Cache warming through shield adds latency because content must traverse: Origin -> Shield -> Edge -> User. Optimization strategies:
                                                                                         <br><br>
-                                                                                            (1) <strong>Shield bypass for known-cold requests</strong>: For first request after deploy or purge, edge can fetch directly from origin while simultaneously warming shield. Subsequent requests use shield.
+(1) <strong>Shield bypass for known-cold requests</strong>: For first request after deploy or purge, edge can fetch directly from origin while simultaneously warming shield. Subsequent requests use shield.
                                                                                             <br><br>
-                                                                                                (2) <strong>Proactive shield warming</strong>: Push content to shields before edges need it. Trigger warming when content is published, not when first user requests.
+(2) <strong>Proactive shield warming</strong>: Push content to shields before edges need it. Trigger warming when content is published, not when first user requests.
                                                                                                 <br><br>
-                                                                                                    (3) <strong>Tiered warming</strong>: Warm only primary shield region, let secondary shields pull on-demand. Reduces warming time and bandwidth.
+(3) <strong>Tiered warming</strong>: Warm only primary shield region, let secondary shields pull on-demand. Reduces warming time and bandwidth.
                                                                                                     <br><br>
-                                                                                                        (4) <strong>Shield selection by content type</strong>: High-latency origins (overseas) benefit from shield; low-latency origins (same region) may skip shield for warming requests.
+(4) <strong>Shield selection by content type</strong>: High-latency origins (overseas) benefit from shield; low-latency origins (same region) may skip shield for warming requests.
                                                                                                         <br><br>
-                                                                                                            (5) <strong>Predictive prefetch</strong>: Analyze traffic patterns. If content X is often requested after content Y, prefetch X to shield when Y is requested.
-                                                                                                          </div>
-                                                                                                        </div>
+(5) <strong>Predictive prefetch</strong>: Analyze traffic patterns. If content X is often requested after content Y, prefetch X to shield when Y is requested.
+</div>
+</div>
 
                                                                                                         ---
 
@@ -991,7 +991,7 @@ class CacheAdmissionController:
 
                                                                                                         ### DNS-Based Geographic Routing
 
-                                                                                                        <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Assumption: DNS resolution happens at the user's configured resolver, which may not be geographically close to the user (e.g., Google DNS 8.8.8.8).</span>
+<span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Assumption: DNS resolution happens at the user's configured resolver, which may not be geographically close to the user (e.g., Google DNS 8.8.8.8).</span>
 
                                                                                                         ```python
                                                                                                         class GeoDNSResolver:
@@ -1095,19 +1095,19 @@ class CacheAdmissionController:
 
                                                                                                         ### Anycast Routing
 
-                                                                                                        <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-                                                                                                          <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">ANYCAST vs UNICAST ROUTING</h3>
-                                                                                                          <div style="display: flex; flex-direction: column; gap: 24px;">
-                                                                                                            <div style="background: #fef2f2; padding: 20px; border-radius: 12px;">
-                                                                                                              <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">Unicast: One IP = One Server</div>
-                                                                                                              <div style="color: #7f1d1d; font-size: 14px;">Each server has unique IP. DNS must return different IPs per region. Failover requires DNS TTL expiration (minutes to hours). Single point of failure per region.</div>
-                                                                                                            </div>
-                                                                                                            <div style="background: #dcfce7; padding: 20px; border-radius: 12px;">
-                                                                                                              <div style="color: #16a34a; font-weight: 700; margin-bottom: 12px;">Anycast: One IP = Many Servers</div>
-                                                                                                              <div style="color: #166534; font-size: 14px;">Same IP announced from multiple locations via BGP. Network automatically routes to nearest server. Instant failover (BGP convergence ~30-90 seconds). Natural load distribution. Used by Cloudflare, Google, major CDNs.</div>
-                                                                                                            </div>
-                                                                                                          </div>
-                                                                                                        </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">ANYCAST vs UNICAST ROUTING</h3>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<div style="background: #fef2f2; padding: 20px; border-radius: 12px;">
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">Unicast: One IP = One Server</div>
+<div style="color: #7f1d1d; font-size: 14px;">Each server has unique IP. DNS must return different IPs per region. Failover requires DNS TTL expiration (minutes to hours). Single point of failure per region.</div>
+</div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px;">
+<div style="color: #16a34a; font-weight: 700; margin-bottom: 12px;">Anycast: One IP = Many Servers</div>
+<div style="color: #166534; font-size: 14px;">Same IP announced from multiple locations via BGP. Network automatically routes to nearest server. Instant failover (BGP convergence ~30-90 seconds). Natural load distribution. Used by Cloudflare, Google, major CDNs.</div>
+</div>
+</div>
+</div>
 
                                                                                                         ```python
                                                                                                         class AnycastRoutingSimulator:
@@ -1314,48 +1314,48 @@ class CacheAdmissionController:
 
                                                                                                         ### Interview Questions: Geographic Routing (3 Levels Deep)
 
-                                                                                                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                                                                                                          <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "How do CDNs route users to the nearest edge server?"</div>
-                                                                                                          <div style="color: #1e3a8a; font-size: 14px;">
-                                                                                                            <strong>Answer:</strong> Two primary methods:
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "How do CDNs route users to the nearest edge server?"</div>
+<div style="color: #1e3a8a; font-size: 14px;">
+<strong>Answer:</strong> Two primary methods:
                                                                                                             <br><br>
-                                                                                                                (1) <strong>GeoDNS</strong>: DNS server returns different IP addresses based on the requester's location. Uses GeoIP databases to map IP to location. Challenge: DNS resolver may not be near the user.
+(1) <strong>GeoDNS</strong>: DNS server returns different IP addresses based on the requester's location. Uses GeoIP databases to map IP to location. Challenge: DNS resolver may not be near the user.
                                                                                                                 <br><br>
-                                                                                                                    (2) <strong>Anycast</strong>: Same IP address is announced from multiple global locations via BGP. Network routing automatically directs packets to the nearest announcement point. Provides automatic failover. Used by Cloudflare (1.1.1.1), Google (8.8.8.8), and most major CDNs.
-                                                                                                                  </div>
-                                                                                                                </div>
+(2) <strong>Anycast</strong>: Same IP address is announced from multiple global locations via BGP. Network routing automatically directs packets to the nearest announcement point. Provides automatic failover. Used by Cloudflare (1.1.1.1), Google (8.8.8.8), and most major CDNs.
+</div>
+</div>
 
-                                                                                                                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-                                                                                                                  <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "What is EDNS Client Subnet (ECS) and why is it important for CDNs?"</div>
-                                                                                                                  <div style="color: #78350f; font-size: 14px;">
-                                                                                                                    <strong>Answer:</strong> ECS is a DNS extension that includes the client's subnet in DNS queries. Without ECS, GeoDNS only sees the DNS resolver's IP (e.g., 8.8.8.8 in California), not the actual user's location (e.g., user in Tokyo using Google DNS).
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "What is EDNS Client Subnet (ECS) and why is it important for CDNs?"</div>
+<div style="color: #78350f; font-size: 14px;">
+<strong>Answer:</strong> ECS is a DNS extension that includes the client's subnet in DNS queries. Without ECS, GeoDNS only sees the DNS resolver's IP (e.g., 8.8.8.8 in California), not the actual user's location (e.g., user in Tokyo using Google DNS).
                                                                                                                     <br><br>
-                                                                                                                        <strong>How it works:</strong> Recursive resolver includes client subnet (e.g., 203.0.113.0/24) in query to authoritative DNS. Authoritative server uses this subnet for geographic routing decisions instead of resolver IP.
+<strong>How it works:</strong> Recursive resolver includes client subnet (e.g., 203.0.113.0/24) in query to authoritative DNS. Authoritative server uses this subnet for geographic routing decisions instead of resolver IP.
                                                                                                                         <br><br>
-                                                                                                                            <strong>Trade-offs:</strong> Privacy concern (leaks partial client IP), additional DNS traffic (more unique queries = lower cache hit rate at resolvers), but significantly improves routing accuracy for users with geographically distant DNS resolvers.
-                                                                                                                          </div>
-                                                                                                                        </div>
+<strong>Trade-offs:</strong> Privacy concern (leaks partial client IP), additional DNS traffic (more unique queries = lower cache hit rate at resolvers), but significantly improves routing accuracy for users with geographically distant DNS resolvers.
+</div>
+</div>
 
-                                                                                                                        <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
-                                                                                                                          <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Users in Southeast Asia report higher latency than users in Europe, despite having a closer PoP. Diagnose."</div>
-                                                                                                                          <div style="color: #831843; font-size: 14px;">
-                                                                                                                            <strong>Answer:</strong> Multiple potential causes to investigate:
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Users in Southeast Asia report higher latency than users in Europe, despite having a closer PoP. Diagnose."</div>
+<div style="color: #831843; font-size: 14px;">
+<strong>Answer:</strong> Multiple potential causes to investigate:
                                                                                                                             <br><br>
-                                                                                                                                (1) <strong>BGP routing issues</strong>: SEA traffic may be routing through US or EU due to BGP path selection. Check AS path from major SEA ISPs. May need better peering arrangements in SEA.
+(1) <strong>BGP routing issues</strong>: SEA traffic may be routing through US or EU due to BGP path selection. Check AS path from major SEA ISPs. May need better peering arrangements in SEA.
                                                                                                                                 <br><br>
-                                                                                                                                    (2) <strong>Undersea cable congestion</strong>: SEA to APAC cables may be congested. Traffic could be taking longer paths. Check for recent cable cuts or maintenance.
+(2) <strong>Undersea cable congestion</strong>: SEA to APAC cables may be congested. Traffic could be taking longer paths. Check for recent cable cuts or maintenance.
                                                                                                                                     <br><br>
-                                                                                                                                        (3) <strong>PoP capacity</strong>: SEA PoP may be overloaded, causing processing delays. Check server load and queue depths.
+(3) <strong>PoP capacity</strong>: SEA PoP may be overloaded, causing processing delays. Check server load and queue depths.
                                                                                                                                         <br><br>
-                                                                                                                                            (4) <strong>Cache hit rate</strong>: Lower traffic in SEA = colder cache = more origin fetches. Implement regional origin shield or proactive warming for SEA.
+(4) <strong>Cache hit rate</strong>: Lower traffic in SEA = colder cache = more origin fetches. Implement regional origin shield or proactive warming for SEA.
                                                                                                                                             <br><br>
-                                                                                                                                                (5) <strong>DNS resolver misconfiguration</strong>: SEA users might be using non-local DNS resolvers. Verify ECS support. Check if ISP DNS is routing correctly.
+(5) <strong>DNS resolver misconfiguration</strong>: SEA users might be using non-local DNS resolvers. Verify ECS support. Check if ISP DNS is routing correctly.
                                                                                                                                                 <br><br>
-                                                                                                                                                    (6) <strong>Origin location</strong>: If origin is in EU, cache misses from SEA PoP traverse full distance. Add origin shield in APAC region.
+(6) <strong>Origin location</strong>: If origin is in EU, cache misses from SEA PoP traverse full distance. Add origin shield in APAC region.
                                                                                                                                                     <br><br>
-                                                                                                                                                        <strong>Diagnostics:</strong> Run traceroutes from SEA locations, analyze RUM data by region, check cache hit rates by PoP, measure origin-to-shield-to-edge latency breakdown.
-                                                                                                                                                      </div>
-                                                                                                                                                    </div>
+<strong>Diagnostics:</strong> Run traceroutes from SEA locations, analyze RUM data by region, check cache hit rates by PoP, measure origin-to-shield-to-edge latency breakdown.
+</div>
+</div>
 
                                                                                                                                                     ---
 
@@ -1363,7 +1363,7 @@ class CacheAdmissionController:
 
                                                                                                                                                     Cache warming is the proactive population of caches before user requests arrive. This eliminates cold-cache latency penalties and ensures consistent performance from the first request.
 
-                                                                                                                                                    <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Warming consumes bandwidth and origin resources. Over-warming wastes resources on content that's never requested; under-warming causes cold-cache latency spikes.</span>
+<span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Warming consumes bandwidth and origin resources. Over-warming wastes resources on content that's never requested; under-warming causes cold-cache latency spikes.</span>
 
                                                                                                                                                     ### Cache Warming Strategies
 
@@ -1513,38 +1513,38 @@ class CacheAdmissionController:
 
                                                                                                                                                     ### Tiered Warming Architecture
 
-                                                                                                                                                    <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-                                                                                                                                                      <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">TIERED CACHE WARMING</h3>
-                                                                                                                                                      <div style="display: flex; flex-direction: column; gap: 16px;">
-                                                                                                                                                        <div style="display: flex; align-items: center; gap: 16px;">
-                                                                                                                                                          <div style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
-                                                                                                                                                            <div style="color: white; font-weight: 700; font-size: 14px;">Tier 1</div>
-                                                                                                                                                          </div>
-                                                                                                                                                          <div style="flex: 1; background: #f3e8ff; padding: 12px 16px; border-radius: 8px;">
-                                                                                                                                                            <div style="color: #6b21a8; font-weight: 600;">Origin Shield</div>
-                                                                                                                                                            <div style="color: #7c3aed; font-size: 13px;">Warm first. Single fetch benefits all edges. 100% of popular content.</div>
-                                                                                                                                                          </div>
-                                                                                                                                                        </div>
-                                                                                                                                                        <div style="display: flex; align-items: center; gap: 16px;">
-                                                                                                                                                          <div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
-                                                                                                                                                            <div style="color: white; font-weight: 700; font-size: 14px;">Tier 2</div>
-                                                                                                                                                          </div>
-                                                                                                                                                          <div style="flex: 1; background: #dbeafe; padding: 12px 16px; border-radius: 8px;">
-                                                                                                                                                            <div style="color: #1e40af; font-weight: 600;">High-Traffic PoPs</div>
-                                                                                                                                                            <div style="color: #2563eb; font-size: 13px;">NYC, LAX, LON, TYO. Top 50% of content by traffic. Warm during off-peak.</div>
-                                                                                                                                                          </div>
-                                                                                                                                                        </div>
-                                                                                                                                                        <div style="display: flex; align-items: center; gap: 16px;">
-                                                                                                                                                          <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
-                                                                                                                                                            <div style="color: white; font-weight: 700; font-size: 14px;">Tier 3</div>
-                                                                                                                                                          </div>
-                                                                                                                                                          <div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px;">
-                                                                                                                                                            <div style="color: #166534; font-weight: 600;">All Other PoPs</div>
-                                                                                                                                                            <div style="color: #15803d; font-size: 13px;">On-demand from shield. Only warm for known high-traffic events.</div>
-                                                                                                                                                          </div>
-                                                                                                                                                        </div>
-                                                                                                                                                      </div>
-                                                                                                                                                    </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">TIERED CACHE WARMING</h3>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
+<div style="color: white; font-weight: 700; font-size: 14px;">Tier 1</div>
+</div>
+<div style="flex: 1; background: #f3e8ff; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #6b21a8; font-weight: 600;">Origin Shield</div>
+<div style="color: #7c3aed; font-size: 13px;">Warm first. Single fetch benefits all edges. 100% of popular content.</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
+<div style="color: white; font-weight: 700; font-size: 14px;">Tier 2</div>
+</div>
+<div style="flex: 1; background: #dbeafe; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">High-Traffic PoPs</div>
+<div style="color: #2563eb; font-size: 13px;">NYC, LAX, LON, TYO. Top 50% of content by traffic. Warm during off-peak.</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 12px 24px; border-radius: 8px; min-width: 100px; text-align: center;">
+<div style="color: white; font-weight: 700; font-size: 14px;">Tier 3</div>
+</div>
+<div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">All Other PoPs</div>
+<div style="color: #15803d; font-size: 13px;">On-demand from shield. Only warm for known high-traffic events.</div>
+</div>
+</div>
+</div>
+</div>
 
                                                                                                                                                     ```python
                                                                                                                                                     class TieredWarmingStrategy:
@@ -1638,10 +1638,10 @@ class CacheAdmissionController:
 
                                                                                                                                                     ### Interview Questions: Cache Warming (3 Levels Deep)
 
-                                                                                                                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-                                                                                                                                                      <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is cache warming and when should you use it?"</div>
-                                                                                                                                                      <div style="color: #1e3a8a; font-size: 14px;">
-                                                                                                                                                        <strong>Answer:</strong> Cache warming is proactively populating caches before user requests arrive, eliminating cold-cache latency. Use it when:
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is cache warming and when should you use it?"</div>
+<div style="color: #1e3a8a; font-size: 14px;">
+<strong>Answer:</strong> Cache warming is proactively populating caches before user requests arrive, eliminating cold-cache latency. Use it when:
                                                                                                                                                         <br><br>
                                                                                                                                                             (1) After deployments that invalidate cache
                                                                                                                                                             (2) Before predictable traffic spikes (marketing campaigns, sales events)
@@ -1649,42 +1649,42 @@ class CacheAdmissionController:
                                                                                                                                                             (4) For latency-sensitive content where even one slow request is unacceptable
                                                                                                                                                             <br><br>
                                                                                                                                                                 Avoid for: Long-tail content with low request probability, highly dynamic content, resource-constrained environments.
-                                                                                                                                                              </div>
-                                                                                                                                                            </div>
+</div>
+</div>
 
-                                                                                                                                                            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-                                                                                                                                                              <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do you decide which content to warm vs let populate on-demand?"</div>
-                                                                                                                                                              <div style="color: #78350f; font-size: 14px;">
-                                                                                                                                                                <strong>Answer:</strong> Use data-driven selection based on:
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do you decide which content to warm vs let populate on-demand?"</div>
+<div style="color: #78350f; font-size: 14px;">
+<strong>Answer:</strong> Use data-driven selection based on:
                                                                                                                                                                 <br><br>
-                                                                                                                                                                    (1) <strong>Historical traffic analysis</strong>: Content requested >N times/day is worth warming. Below threshold, let populate on-demand.
+(1) <strong>Historical traffic analysis</strong>: Content requested >N times/day is worth warming. Below threshold, let populate on-demand.
                                                                                                                                                                     <br><br>
-                                                                                                                                                                        (2) <strong>Content importance</strong>: Homepage, top navigation, landing pages for campaigns should always be warm regardless of current traffic.
+(2) <strong>Content importance</strong>: Homepage, top navigation, landing pages for campaigns should always be warm regardless of current traffic.
                                                                                                                                                                         <br><br>
-                                                                                                                                                                            (3) <strong>Cost-benefit calculation</strong>: Warming cost (bandwidth, origin load) vs latency penalty (P99 impact, conversion rate). If content is 1MB and requested 10 times/day, warming 100 PoPs costs 1GB for saving 10 cold requests.
+(3) <strong>Cost-benefit calculation</strong>: Warming cost (bandwidth, origin load) vs latency penalty (P99 impact, conversion rate). If content is 1MB and requested 10 times/day, warming 100 PoPs costs 1GB for saving 10 cold requests.
                                                                                                                                                                             <br><br>
-                                                                                                                                                                                (4) <strong>Tiered approach</strong>: Warm 100% at origin shield (serves all edges), 50% at high-traffic PoPs, 20% at medium, 0% at low-traffic (pull from shield on-demand).
-                                                                                                                                                                              </div>
-                                                                                                                                                                            </div>
+(4) <strong>Tiered approach</strong>: Warm 100% at origin shield (serves all edges), 50% at high-traffic PoPs, 20% at medium, 0% at low-traffic (pull from shield on-demand).
+</div>
+</div>
 
-                                                                                                                                                                            <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
-                                                                                                                                                                              <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache warming system for a streaming service launching a highly anticipated show globally at midnight."</div>
-                                                                                                                                                                              <div style="color: #831843; font-size: 14px;">
-                                                                                                                                                                                <strong>Answer:</strong> Multi-phase warming strategy:
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache warming system for a streaming service launching a highly anticipated show globally at midnight."</div>
+<div style="color: #831843; font-size: 14px;">
+<strong>Answer:</strong> Multi-phase warming strategy:
                                                                                                                                                                                 <br><br>
-                                                                                                                                                                                    (1) <strong>Pre-launch (T-24h to T-2h)</strong>: Push all video segments to origin shields. Verify integrity with checksums. This is 80% of the work.
+(1) <strong>Pre-launch (T-24h to T-2h)</strong>: Push all video segments to origin shields. Verify integrity with checksums. This is 80% of the work.
                                                                                                                                                                                     <br><br>
-                                                                                                                                                                                        (2) <strong>Regional warming (T-2h to T-30m)</strong>: Warm high-traffic PoPs in each timezone. Start with regions where midnight arrives first (Pacific Islands -> Asia -> Europe -> Americas). Prioritize first 3 episodes (most will start there).
+(2) <strong>Regional warming (T-2h to T-30m)</strong>: Warm high-traffic PoPs in each timezone. Start with regions where midnight arrives first (Pacific Islands -> Asia -> Europe -> Americas). Prioritize first 3 episodes (most will start there).
                                                                                                                                                                                         <br><br>
-                                                                                                                                                                                            (3) <strong>Edge warming (T-30m)</strong>: Final push to all edge PoPs. Focus on first episode, first 10 minutes (initial segments). Use adaptive bitrate - warm all quality levels for first segments, only highest quality for later segments.
+(3) <strong>Edge warming (T-30m)</strong>: Final push to all edge PoPs. Focus on first episode, first 10 minutes (initial segments). Use adaptive bitrate - warm all quality levels for first segments, only highest quality for later segments.
                                                                                                                                                                                             <br><br>
-                                                                                                                                                                                                (4) <strong>Predictive pre-fetching (T-0 onwards)</strong>: As users start watching, proactively fetch next segments before they're requested. Analyze viewing patterns in real-time to predict drops/binge behavior.
+(4) <strong>Predictive pre-fetching (T-0 onwards)</strong>: As users start watching, proactively fetch next segments before they're requested. Analyze viewing patterns in real-time to predict drops/binge behavior.
                                                                                                                                                                                                 <br><br>
-                                                                                                                                                                                                    (5) <strong>Overflow handling</strong>: Have direct-to-origin fallback for cache misses. Pre-scale origin capacity. Implement request coalescing to prevent stampede.
+(5) <strong>Overflow handling</strong>: Have direct-to-origin fallback for cache misses. Pre-scale origin capacity. Implement request coalescing to prevent stampede.
                                                                                                                                                                                                     <br><br>
-                                                                                                                                                                                                        (6) <strong>Monitoring</strong>: Real-time dashboard showing cache hit rate by region, buffer ratio, error rates. Automated alerts if hit rate drops below 95% in any major PoP.
-                                                                                                                                                                                                      </div>
-                                                                                                                                                                                                    </div>
+(6) <strong>Monitoring</strong>: Real-time dashboard showing cache hit rate by region, buffer ratio, error rates. Automated alerts if hit rate drops below 95% in any major PoP.
+</div>
+</div>
 
                                                                                                                                                                                                     ---
 
@@ -1692,27 +1692,27 @@ class CacheAdmissionController:
 
                                                                                                                                                                                                     Modern CDNs extend beyond caching static content to running compute at the edge, enabling dynamic content generation closer to users.
 
-                                                                                                                                                                                                    <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-                                                                                                                                                                                                      <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EDGE COMPUTING PLATFORMS</h3>
-                                                                                                                                                                                                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
-                                                                                                                                                                                                        <div style="background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); padding: 20px; border-radius: 12px;">
-                                                                                                                                                                                                          <div style="color: white; font-weight: 700; margin-bottom: 8px;">Cloudflare Workers</div>
-                                                                                                                                                                                                          <div style="color: #ffedd5; font-size: 13px;">V8 isolates, JavaScript/WASM, 200+ PoPs, 0ms cold start</div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                        <div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); padding: 20px; border-radius: 12px;">
-                                                                                                                                                                                                          <div style="color: white; font-weight: 700; margin-bottom: 8px;">AWS Lambda@Edge</div>
-                                                                                                                                                                                                          <div style="color: #fef3c7; font-size: 13px;">Node.js/Python, CloudFront integration, viewer/origin triggers</div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                        <div style="background: linear-gradient(135deg, #84cc16 0%, #a3e635 100%); padding: 20px; border-radius: 12px;">
-                                                                                                                                                                                                          <div style="color: white; font-weight: 700; margin-bottom: 8px;">Fastly Compute@Edge</div>
-                                                                                                                                                                                                          <div style="color: #ecfccb; font-size: 13px;">WASM-based, Rust/Go/JS, VCL for routing</div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                        <div style="background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); padding: 20px; border-radius: 12px;">
-                                                                                                                                                                                                          <div style="color: white; font-weight: 700; margin-bottom: 8px;">Vercel Edge Functions</div>
-                                                                                                                                                                                                          <div style="color: #cffafe; font-size: 13px;">Built on Cloudflare, Next.js optimized, ISR support</div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                      </div>
-                                                                                                                                                                                                    </div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EDGE COMPUTING PLATFORMS</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+<div style="background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); padding: 20px; border-radius: 12px;">
+<div style="color: white; font-weight: 700; margin-bottom: 8px;">Cloudflare Workers</div>
+<div style="color: #ffedd5; font-size: 13px;">V8 isolates, JavaScript/WASM, 200+ PoPs, 0ms cold start</div>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); padding: 20px; border-radius: 12px;">
+<div style="color: white; font-weight: 700; margin-bottom: 8px;">AWS Lambda@Edge</div>
+<div style="color: #fef3c7; font-size: 13px;">Node.js/Python, CloudFront integration, viewer/origin triggers</div>
+</div>
+<div style="background: linear-gradient(135deg, #84cc16 0%, #a3e635 100%); padding: 20px; border-radius: 12px;">
+<div style="color: white; font-weight: 700; margin-bottom: 8px;">Fastly Compute@Edge</div>
+<div style="color: #ecfccb; font-size: 13px;">WASM-based, Rust/Go/JS, VCL for routing</div>
+</div>
+<div style="background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); padding: 20px; border-radius: 12px;">
+<div style="color: white; font-weight: 700; margin-bottom: 8px;">Vercel Edge Functions</div>
+<div style="color: #cffafe; font-size: 13px;">Built on Cloudflare, Next.js optimized, ISR support</div>
+</div>
+</div>
+</div>
 
                                                                                                                                                                                                     ### Edge-Side Includes (ESI)
 
@@ -2023,30 +2023,30 @@ class CacheAdmissionController:
 
                                                                                                                                                                                                       ### Security Considerations
 
-                                                                                                                                                                                                      <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-                                                                                                                                                                                                        <div style="color: #dc2626; font-weight: 700; margin-bottom: 16px;">Security Checklist for CDN Configuration</div>
-                                                                                                                                                                                                        <div style="color: #7f1d1d; font-size: 14px;">
-                                                                                                                                                                                                          <strong>1. Origin Protection</strong><br>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 16px;">Security Checklist for CDN Configuration</div>
+<div style="color: #7f1d1d; font-size: 14px;">
+<strong>1. Origin Protection</strong><br>
                                                                                                                                                                                                             - Whitelist CDN IPs at origin firewall<br>
                                                                                                                                                                                                               - Use origin pull authentication headers<br>
                                                                                                                                                                                                                 - Never expose origin IP publicly<br><br>
 
-                                                                                                                                                                                                                    <strong>2. Cache Poisoning Prevention</strong><br>
+<strong>2. Cache Poisoning Prevention</strong><br>
                                                                                                                                                                                                                       - Validate Host header matches expected domains<br>
                                                                                                                                                                                                                         - Sanitize or exclude dangerous headers from cache key<br>
                                                                                                                                                                                                                           - Be careful with Vary headers (can cause key explosion)<br><br>
 
-                                                                                                                                                                                                                              <strong>3. Sensitive Data Protection</strong><br>
+<strong>3. Sensitive Data Protection</strong><br>
                                                                                                                                                                                                                                 - Never cache responses with Set-Cookie<br>
-                                                                                                                                                                                                                                  - Use <code>Cache-Control: private</code> for user-specific data<br>
+- Use <code>Cache-Control: private</code> for user-specific data<br>
                                                                                                                                                                                                                                     - Audit cached content for PII regularly<br><br>
 
-                                                                                                                                                                                                                                        <strong>4. DDoS Mitigation</strong><br>
+<strong>4. DDoS Mitigation</strong><br>
                                                                                                                                                                                                                                           - Enable rate limiting at edge<br>
                                                                                                                                                                                                                                             - Configure challenge pages for suspicious traffic<br>
                                                                                                                                                                                                                                               - Use Anycast for traffic distribution
-                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                          </div>
+</div>
+</div>
 
                                                                                                                                                                                                                                           ---
 
@@ -2062,13 +2062,13 @@ class CacheAdmissionController:
 
                                                                                                                                                                                                                                           ## Summary
 
-                                                                                                                                                                                                                                          <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #86efac;">
-                                                                                                                                                                                                                                            <h3 style="color: #166534; margin: 0 0 16px 0; font-size: 18px;">Key Takeaways for Interviews</h3>
-                                                                                                                                                                                                                                            <div style="color: #15803d; font-size: 14px; line-height: 1.8;">
-                                                                                                                                                                                                                                              <strong>1. Edge Caching</strong>: Cache key construction, admission policies, and storage tiers determine effectiveness. TinyLFU prevents pollution; multi-tier storage optimizes for different access patterns.<br><br>
-                                                                                                                                                                                                                                                  <strong>2. Cache Invalidation</strong>: TTL for simple cases, versioned URLs for static assets, cache tags for complex relationships. Stale-while-revalidate provides best UX during updates.<br><br>
-                                                                                                                                                                                                                                                      <strong>3. Origin Shield</strong>: Mid-tier cache that consolidates edge requests. Request coalescing prevents stampedes. Trade-off is added latency for cache misses.<br><br>
-                                                                                                                                                                                                                                                          <strong>4. Geographic Routing</strong>: Anycast + GeoDNS with ECS. Performance-based routing beats pure geographic for optimal latency.<br><br>
-                                                                                                                                                                                                                                                              <strong>5. Cache Warming</strong>: Proactive for deployments and events. Tiered approach balances coverage vs resource usage. Predictive warming based on traffic patterns.
-                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                          </div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #86efac;">
+<h3 style="color: #166534; margin: 0 0 16px 0; font-size: 18px;">Key Takeaways for Interviews</h3>
+<div style="color: #15803d; font-size: 14px; line-height: 1.8;">
+<strong>1. Edge Caching</strong>: Cache key construction, admission policies, and storage tiers determine effectiveness. TinyLFU prevents pollution; multi-tier storage optimizes for different access patterns.<br><br>
+<strong>2. Cache Invalidation</strong>: TTL for simple cases, versioned URLs for static assets, cache tags for complex relationships. Stale-while-revalidate provides best UX during updates.<br><br>
+<strong>3. Origin Shield</strong>: Mid-tier cache that consolidates edge requests. Request coalescing prevents stampedes. Trade-off is added latency for cache misses.<br><br>
+<strong>4. Geographic Routing</strong>: Anycast + GeoDNS with ECS. Performance-based routing beats pure geographic for optimal latency.<br><br>
+<strong>5. Cache Warming</strong>: Proactive for deployments and events. Tiered approach balances coverage vs resource usage. Predictive warming based on traffic patterns.
+</div>
+</div>

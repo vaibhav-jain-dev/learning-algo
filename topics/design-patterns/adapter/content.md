@@ -14,31 +14,31 @@ The Adapter pattern converts the interface of a class into another interface tha
 ## Foundational Mental Model
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">The Diplomatic Translator Analogy</h3>
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">The Diplomatic Translator Analogy</h3>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
     Consider a diplomatic summit between nations speaking different languages. A translator does more than word-for-word conversion - they understand cultural nuances, idiomatic expressions, and contextual meaning. They ensure the <em>intent</em> is preserved, not just the words.
-  </p>
+</p>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
-    <div style="background: #dbeafe; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700;">Client (Diplomat A)</div>
-      <div style="color: #1e3a8a; font-size: 0.9rem;">Speaks Language A, expects responses in Language A semantics</div>
-    </div>
-    <div style="background: #dcfce7; padding: 16px; border-radius: 12px; border-left: 4px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700;">Adapter (Translator)</div>
-      <div style="color: #14532d; font-size: 0.9rem;">Converts not just words but meaning, idioms, and cultural context</div>
-    </div>
-    <div style="background: #fef3c7; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700;">Adaptee (Diplomat B)</div>
-      <div style="color: #78350f; font-size: 0.9rem;">Speaks Language B with different conceptual framework</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
+<div style="background: #dbeafe; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700;">Client (Diplomat A)</div>
+<div style="color: #1e3a8a; font-size: 0.9rem;">Speaks Language A, expects responses in Language A semantics</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 12px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700;">Adapter (Translator)</div>
+<div style="color: #14532d; font-size: 0.9rem;">Converts not just words but meaning, idioms, and cultural context</div>
+</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700;">Adaptee (Diplomat B)</div>
+<div style="color: #78350f; font-size: 0.9rem;">Speaks Language B with different conceptual framework</div>
+</div>
+</div>
 
-  <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-    <strong style="color: #0f172a;">Critical Insight:</strong>
-    <span style="color: #334155;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter must understand both interfaces deeply enough to preserve semantic equivalence, not just syntactic compatibility.</span> A charge() call must produce the same business outcome whether routed through Stripe or PayPal, despite their radically different APIs.</span>
-  </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">Critical Insight:</strong>
+<span style="color: #334155;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter must understand both interfaces deeply enough to preserve semantic equivalence, not just syntactic compatibility.</span> A charge() call must produce the same business outcome whether routed through Stripe or PayPal, despite their radically different APIs.</span>
+</div>
 </div>
 
 ---
@@ -46,71 +46,71 @@ The Adapter pattern converts the interface of a class into another interface tha
 ## Internal Architecture: How Adapters Actually Work
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Adapter Pattern Internal Flow</h4>
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Adapter Pattern Internal Flow</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px; margin: 24px 0;">
+<div style="display: flex; flex-direction: column; gap: 20px; margin: 24px 0;">
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
-        <div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">Client Code</div>
-        <div style="color: #1e3a8a; font-size: 0.75rem; margin-top: 4px;">PaymentService</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.2rem;">---(1) charge()---></div>
-      <div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
-        <div style="color: #7c3aed; font-weight: 700; font-size: 0.9rem;">Target Interface</div>
-        <div style="color: #6b21a8; font-size: 0.75rem; margin-top: 4px;">PaymentGateway</div>
-      </div>
-    </div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">Client Code</div>
+<div style="color: #1e3a8a; font-size: 0.75rem; margin-top: 4px;">PaymentService</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">---(1) charge()---></div>
+<div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
+<div style="color: #7c3aed; font-weight: 700; font-size: 0.9rem;">Target Interface</div>
+<div style="color: #6b21a8; font-size: 0.75rem; margin-top: 4px;">PaymentGateway</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; justify-content: center;">
-      <div style="color: #a855f7; font-size: 0.9rem;">implements</div>
-    </div>
+<div style="display: flex; align-items: center; justify-content: center;">
+<div style="color: #a855f7; font-size: 0.9rem;">implements</div>
+</div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 200px;">
-        <div style="color: #166534; font-weight: 700; text-align: center; font-size: 0.9rem;">Adapter</div>
-        <div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px; margin-top: 8px;">
-          <strong>(2) Transform Request:</strong><br/>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 200px;">
+<div style="color: #166534; font-weight: 700; text-align: center; font-size: 0.9rem;">Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px; margin-top: 8px;">
+<strong>(2) Transform Request:</strong><br/>
           - Convert Decimal to cents<br/>
           - Map currency codes<br/>
           - Restructure parameters
-        </div>
-      </div>
-      <div style="color: #64748b; font-size: 1.2rem;">---(3)---></div>
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
-        <div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">Adaptee</div>
-        <div style="color: #78350f; font-size: 0.75rem; margin-top: 4px;">StripeClient.create_charge()</div>
-      </div>
-    </div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">---(3)---></div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">Adaptee</div>
+<div style="color: #78350f; font-size: 0.75rem; margin-top: 4px;">StripeClient.create_charge()</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 200px;">
-        <div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px;">
-          <strong>(5) Transform Response:</strong><br/>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 200px;">
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px;">
+<strong>(5) Transform Response:</strong><br/>
           - Convert cents to Decimal<br/>
           - Normalize status codes<br/>
           - Build PaymentResult
-        </div>
-      </div>
-      <div style="color: #64748b; font-size: 1.2rem;"><---(4)---</div>
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
-        <div style="color: #78350f; font-size: 0.75rem;">Raw Stripe Response</div>
-      </div>
-    </div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;"><---(4)---</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
+<div style="color: #78350f; font-size: 0.75rem;">Raw Stripe Response</div>
+</div>
+</div>
 
-  </div>
+</div>
 
-  <div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-top: 16px; border-left: 4px solid #ef4444;">
-    <strong style="color: #991b1b;">Critical Implementation Detail:</strong>
-    <span style="color: #7f1d1d;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter must handle bidirectional transformation - both request adaptation (client to adaptee) and response adaptation (adaptee to client).</span> Many implementations focus only on request transformation and break when adaptee responses differ from expected formats.</span>
-  </div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-top: 16px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">Critical Implementation Detail:</strong>
+<span style="color: #7f1d1d;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter must handle bidirectional transformation - both request adaptation (client to adaptee) and response adaptation (adaptee to client).</span> Many implementations focus only on request transformation and break when adaptee responses differ from expected formats.</span>
+</div>
 </div>
 
 ### Interview Deep-Dive: Internal Mechanisms
 
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
-  <div style="padding: 0 16px 16px 16px; color: #334155;">
+<div style="padding: 0 16px 16px 16px; color: #334155;">
 
     The transformation layer handles four critical responsibilities:
 
@@ -142,9 +142,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
     <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
       <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
-      <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-        This is a critical design challenge. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span>
+This is a critical design challenge. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span>
 
         **Strategy 1: Capability Detection**
         ```python
@@ -180,9 +180,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
         <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
           <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
-          <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-            <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span>
 
             **The LSP Violation Pattern:**
             ```python
@@ -232,14 +232,14 @@ The Adapter pattern converts the interface of a class into another interface tha
             )
             ```
 
-            The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span>
-          </div>
+The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span>
+</div>
         </details>
 
-      </div>
+</div>
     </details>
 
-  </div>
+</div>
 </details>
 
 ---
@@ -248,13 +248,13 @@ The Adapter pattern converts the interface of a class into another interface tha
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
 
-    <div style="background: #dbeafe; padding: 24px; border-radius: 12px; border-top: 4px solid #3b82f6;">
-      <h4 style="color: #1e40af; margin-top: 0;">Object Adapter (Composition)</h4>
-      <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
+<div style="background: #dbeafe; padding: 24px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Object Adapter (Composition)</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
 
-      <pre style="background: #eff6ff; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #1e3a8a;">class StripeAdapter(PaymentGateway):
+<pre style="background: #eff6ff; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #1e3a8a;">class StripeAdapter(PaymentGateway):
           """Object Adapter - uses composition."""
 
           def __init__(self, stripe_client: StripeClient):
@@ -268,34 +268,34 @@ The Adapter pattern converts the interface of a class into another interface tha
           currency=currency,
           source=token
           )
-          return self._transform_response(response)</code></pre>
+return self._transform_response(response)</code></pre>
 
-      <div style="margin-top: 16px;">
-        <div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px;"><strong>Advantages:</strong></div>
-        <ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px;">
-          <li>Works with adaptee and ALL its subclasses</li>
-          <li>Adaptee can be injected (testability)</li>
-          <li>Adapter can wrap multiple adaptees</li>
-          <li>Runtime flexibility to swap adaptees</li>
-          <li>Works in languages without multiple inheritance</li>
-        </ul>
-      </div>
+<div style="margin-top: 16px;">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px;"><strong>Advantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px;">
+<li>Works with adaptee and ALL its subclasses</li>
+<li>Adaptee can be injected (testability)</li>
+<li>Adapter can wrap multiple adaptees</li>
+<li>Runtime flexibility to swap adaptees</li>
+<li>Works in languages without multiple inheritance</li>
+</ul>
+</div>
 
-      <div style="margin-top: 12px;">
-        <div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px;"><strong>Disadvantages:</strong></div>
-        <ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px;">
-          <li>Extra object allocation and indirection</li>
-          <li>Must delegate all adaptee method calls explicitly</li>
-          <li>Cannot override adaptee behavior directly</li>
-        </ul>
-      </div>
-    </div>
+<div style="margin-top: 12px;">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px;"><strong>Disadvantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px;">
+<li>Extra object allocation and indirection</li>
+<li>Must delegate all adaptee method calls explicitly</li>
+<li>Cannot override adaptee behavior directly</li>
+</ul>
+</div>
+</div>
 
-    <div style="background: #dcfce7; padding: 24px; border-radius: 12px; border-top: 4px solid #22c55e;">
-      <h4 style="color: #166534; margin-top: 0;">Class Adapter (Inheritance)</h4>
-      <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter INHERITS from both the target interface and the adaptee class.</span></p>
+<div style="background: #dcfce7; padding: 24px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Class Adapter (Inheritance)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter INHERITS from both the target interface and the adaptee class.</span></p>
 
-      <pre style="background: #f0fdf4; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #166534;">class StripeAdapter(PaymentGateway, StripeClient):
+<pre style="background: #f0fdf4; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #166534;">class StripeAdapter(PaymentGateway, StripeClient):
           """Class Adapter - uses multiple inheritance."""
 
           def __init__(self, api_key: str):
@@ -309,59 +309,59 @@ The Adapter pattern converts the interface of a class into another interface tha
           currency=currency,
           source=token
           )
-          return self._transform_response(response)</code></pre>
+return self._transform_response(response)</code></pre>
 
-      <div style="margin-top: 16px;">
-        <div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px;"><strong>Advantages:</strong></div>
-        <ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px;">
-          <li>No extra object - direct method access</li>
-          <li>Can override adaptee behavior</li>
-          <li>Slightly better performance (no delegation)</li>
-          <li>Adapter IS-A adaptee (can be used where adaptee expected)</li>
-        </ul>
-      </div>
+<div style="margin-top: 16px;">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px;"><strong>Advantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px;">
+<li>No extra object - direct method access</li>
+<li>Can override adaptee behavior</li>
+<li>Slightly better performance (no delegation)</li>
+<li>Adapter IS-A adaptee (can be used where adaptee expected)</li>
+</ul>
+</div>
 
-      <div style="margin-top: 12px;">
-        <div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px;"><strong>Disadvantages:</strong></div>
-        <ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px;">
-          <li>Requires multiple inheritance (not all languages)</li>
-          <li>Tied to ONE specific adaptee class</li>
-          <li>Cannot adapt adaptee subclasses</li>
-          <li>Diamond problem risks with method resolution</li>
-          <li>Tight coupling - harder to test</li>
-        </ul>
-      </div>
-    </div>
+<div style="margin-top: 12px;">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px;"><strong>Disadvantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px;">
+<li>Requires multiple inheritance (not all languages)</li>
+<li>Tied to ONE specific adaptee class</li>
+<li>Cannot adapt adaptee subclasses</li>
+<li>Diamond problem risks with method resolution</li>
+<li>Tight coupling - harder to test</li>
+</ul>
+</div>
+</div>
 
-  </div>
+</div>
 
-  <div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #f59e0b;">
-    <strong style="color: #92400e;">When to Choose Which:</strong>
-    <div style="color: #78350f; margin-top: 8px;">
-      <p><strong>Use Object Adapter (95% of cases) when:</strong></p>
-      <ul style="margin: 8px 0; padding-left: 20px;">
-        <li>You need to adapt multiple related classes (inheritance hierarchies)</li>
-        <li>You want dependency injection for testing</li>
-        <li>Your language doesn't support multiple inheritance (Java, C#)</li>
-        <li>You might need to swap adaptees at runtime</li>
-      </ul>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #f59e0b;">
+<strong style="color: #92400e;">When to Choose Which:</strong>
+<div style="color: #78350f; margin-top: 8px;">
+<p><strong>Use Object Adapter (95% of cases) when:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>You need to adapt multiple related classes (inheritance hierarchies)</li>
+<li>You want dependency injection for testing</li>
+<li>Your language doesn't support multiple inheritance (Java, C#)</li>
+<li>You might need to swap adaptees at runtime</li>
+</ul>
 
-      <p><strong>Use Class Adapter when:</strong></p>
-      <ul style="margin: 8px 0; padding-left: 20px;">
-        <li>You need to override specific adaptee methods</li>
-        <li>Performance is critical and delegation overhead matters</li>
-        <li>You're in C++ or Python and comfortable with multiple inheritance</li>
-        <li>The adaptee is a final/sealed class you need to extend</li>
-      </ul>
-    </div>
-  </div>
+<p><strong>Use Class Adapter when:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>You need to override specific adaptee methods</li>
+<li>Performance is critical and delegation overhead matters</li>
+<li>You're in C++ or Python and comfortable with multiple inheritance</li>
+<li>The adaptee is a final/sealed class you need to extend</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### Interview Deep-Dive: Class vs Object Adapter
 
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
   <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
-  <div style="padding: 0 16px 16px 16px; color: #334155;">
+<div style="padding: 0 16px 16px 16px; color: #334155;">
 
     The key difference is **multiple inheritance support**:
 
@@ -396,9 +396,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
           <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
             <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
-            <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-              <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span>
 
               ```python
               class Base:
@@ -455,7 +455,7 @@ The Adapter pattern converts the interface of a class into another interface tha
 
               <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
-                <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
                   **Memory Footprint:**
 
@@ -514,7 +514,7 @@ The Adapter pattern converts the interface of a class into another interface tha
                   # Difference: ~10% overhead from delegation
                   ```
 
-                  <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.
 
                   **Real-World Trade-off Analysis:**
 
@@ -526,51 +526,51 @@ The Adapter pattern converts the interface of a class into another interface tha
                   | Flexibility | High | Low |
                   | Maintainability | Better | Worse |
 
-                  <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span>
 
-                </div>
+</div>
               </details>
 
-            </div>
+</div>
           </details>
 
-        </div>
+</div>
       </details>
 
       ---
 
       ## Two-Way Adapters: Bidirectional Interface Translation
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-        <h3 style="color: #1e293b; margin-top: 0; font-size: 1.2rem;">Understanding Two-Way Adapters</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.2rem;">Understanding Two-Way Adapters</h3>
 
-        <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
-          <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">A two-way adapter implements BOTH interfaces, allowing either system to use the other transparently.</span> This is essential when two systems need mutual interoperability, not just one-way communication.
-        </p>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">A two-way adapter implements BOTH interfaces, allowing either system to use the other transparently.</span> This is essential when two systems need mutual interoperability, not just one-way communication.
+</p>
 
-        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
-          <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
-            <div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">System A</div>
-            <div style="color: #1e3a8a; font-size: 0.75rem;">Interface A methods</div>
-          </div>
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div style="color: #64748b; font-size: 0.9rem;">---> calls A interface ---></div>
-            <div style="color: #64748b; font-size: 0.9rem;"><--- calls B interface <---</div>
-          </div>
-          <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
-            <div style="color: #166534; font-weight: 700; font-size: 0.9rem;">Two-Way Adapter</div>
-            <div style="color: #14532d; font-size: 0.75rem;">Implements BOTH A and B</div>
-          </div>
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div style="color: #64748b; font-size: 0.9rem;">---> delegates to B ---></div>
-            <div style="color: #64748b; font-size: 0.9rem;"><--- delegates to A <---</div>
-          </div>
-          <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
-            <div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">System B</div>
-            <div style="color: #78350f; font-size: 0.75rem;">Interface B methods</div>
-          </div>
-        </div>
-      </div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 24px 0;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">System A</div>
+<div style="color: #1e3a8a; font-size: 0.75rem;">Interface A methods</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="color: #64748b; font-size: 0.9rem;">---> calls A interface ---></div>
+<div style="color: #64748b; font-size: 0.9rem;"><--- calls B interface <---</div>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px; min-width: 180px; text-align: center;">
+<div style="color: #166534; font-weight: 700; font-size: 0.9rem;">Two-Way Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem;">Implements BOTH A and B</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="color: #64748b; font-size: 0.9rem;">---> delegates to B ---></div>
+<div style="color: #64748b; font-size: 0.9rem;"><--- delegates to A <---</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">System B</div>
+<div style="color: #78350f; font-size: 0.75rem;">Interface B methods</div>
+</div>
+</div>
+</div>
 
       ### Two-Way Adapter Implementation
 
@@ -828,7 +828,7 @@ The Adapter pattern converts the interface of a class into another interface tha
 
       <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
         <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
-        <div style="padding: 0 16px 16px 16px; color: #334155;">
+<div style="padding: 0 16px 16px 16px; color: #334155;">
 
           Two-way adapters are needed when:
 
@@ -862,9 +862,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
           <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
             <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
-            <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-              <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The core challenge is maintaining consistency when both sides can modify shared state.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The core challenge is maintaining consistency when both sides can modify shared state.</span>
 
               **Challenge 1: Race Conditions**
               ```python
@@ -936,9 +936,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
               <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
-                <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-                  <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span>
 
                   ```python
                   from typing import Dict, Set, Optional
@@ -1057,13 +1057,13 @@ The Adapter pattern converts the interface of a class into another interface tha
                   compensation_actions: List[Action]  # For rollback if needed
                   ```
 
-                </div>
+</div>
               </details>
 
-            </div>
+</div>
           </details>
 
-        </div>
+</div>
       </details>
 
       ---
@@ -1788,9 +1788,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
       <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
         <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
-        <div style="padding: 0 16px 16px 16px; color: #334155;">
+<div style="padding: 0 16px 16px 16px; color: #334155;">
 
-          <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span>
 
           **Strategy 1: Version-Specific Adapter Classes**
           ```python
@@ -1852,9 +1852,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
           <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
             <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
-            <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-              <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span>
 
               ```python
               class DegradableStorageAdapter(CloudStorageGateway):
@@ -1927,9 +1927,9 @@ The Adapter pattern converts the interface of a class into another interface tha
 
               <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
-                <div style="padding: 0 12px 12px 12px; color: #334155;">
+<div style="padding: 0 12px 12px 12px; color: #334155;">
 
-                  <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span>
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span>
 
                   ```python
                   from dataclasses import dataclass, field
@@ -2144,24 +2144,24 @@ The Adapter pattern converts the interface of a class into another interface tha
                   print(f"Transformation overhead: {stats['overhead_percentage']:.2f}%")
                   ```
 
-                </div>
+</div>
               </details>
 
-            </div>
+</div>
           </details>
 
-        </div>
+</div>
       </details>
 
       ---
 
       ## Industry Usage and Production Patterns
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
         | Company/Framework | Adapter Implementation | Key Insight |
         |-------------------|----------------------|-------------|
-        | **Django ORM** | Database backends (PostgreSQL, MySQL, SQLite) adapt to unified QuerySet interface | <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapters handle SQL dialect differences and type conversions</span> |
+| **Django ORM** | Database backends (PostgreSQL, MySQL, SQLite) adapt to unified QuerySet interface | <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapters handle SQL dialect differences and type conversions</span> |
         | **AWS SDK** | Service clients adapt HTTP responses to typed objects | Response parsing happens in adapter layer with retries |
         | **Stripe** | Webhooks adapt external events to internal domain events | Signature verification + event normalization in adapter |
         | **Kubernetes** | Container runtimes (Docker, containerd, CRI-O) adapt to CRI interface | Runtime-specific features gracefully degraded |
@@ -2169,71 +2169,71 @@ The Adapter pattern converts the interface of a class into another interface tha
         | **Apache Kafka Connect** | Source/Sink connectors adapt external systems to Kafka topics | Schema registry integration for format translation |
         | **gRPC** | Protocol adapters convert between REST/gRPC/GraphQL | Transcoding happens at adapter boundary |
 
-      </div>
+</div>
 
       ---
 
       ## Adapter vs Related Patterns: Decision Framework
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-          <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
-            <h4 style="color: #1e40af; margin-top: 0;">Adapter</h4>
-            <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Makes existing incompatible interface work with expected interface.</p>
-            <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-              <strong style="color: #1e40af;">Use when:</strong> <span style="color: #1e3a8a;">"I have ClassA but need InterfaceB"</span><br>
-                <strong style="color: #1e40af;">Changes:</strong> <span style="color: #1e3a8a;">Interface signature only</span><br>
-                  <strong style="color: #1e40af;">Relationship:</strong> <span style="color: #1e3a8a;">Wraps ONE object</span>
-                </div>
-              </div>
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Adapter</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Makes existing incompatible interface work with expected interface.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #1e40af;">Use when:</strong> <span style="color: #1e3a8a;">"I have ClassA but need InterfaceB"</span><br>
+<strong style="color: #1e40af;">Changes:</strong> <span style="color: #1e3a8a;">Interface signature only</span><br>
+<strong style="color: #1e40af;">Relationship:</strong> <span style="color: #1e3a8a;">Wraps ONE object</span>
+</div>
+</div>
 
-              <div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
-                <h4 style="color: #166534; margin-top: 0;">[[Decorator]](/topic/design-patterns/decorator)</h4>
-                <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Adds behavior to object without changing its interface.</p>
-                <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                  <strong style="color: #166534;">Use when:</strong> <span style="color: #14532d;">"Add logging to this service"</span><br>
-                    <strong style="color: #166534;">Changes:</strong> <span style="color: #14532d;">Behavior, not interface</span><br>
-                      <strong style="color: #166534;">Relationship:</strong> <span style="color: #14532d;">Same interface as wrapped</span>
-                    </div>
-                  </div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">[[Decorator]](/topic/design-patterns/decorator)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Adds behavior to object without changing its interface.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #166534;">Use when:</strong> <span style="color: #14532d;">"Add logging to this service"</span><br>
+<strong style="color: #166534;">Changes:</strong> <span style="color: #14532d;">Behavior, not interface</span><br>
+<strong style="color: #166534;">Relationship:</strong> <span style="color: #14532d;">Same interface as wrapped</span>
+</div>
+</div>
 
-                  <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
-                    <h4 style="color: #92400e; margin-top: 0;">[[Facade]](/topic/design-patterns/facade)</h4>
-                    <p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Simplifies complex subsystem with unified interface.</p>
-                    <div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                      <strong style="color: #92400e;">Use when:</strong> <span style="color: #78350f;">"Simplify these 10 services"</span><br>
-                        <strong style="color: #92400e;">Changes:</strong> <span style="color: #78350f;">Complexity level</span><br>
-                          <strong style="color: #92400e;">Relationship:</strong> <span style="color: #78350f;">Wraps MULTIPLE objects</span>
-                        </div>
-                      </div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">[[Facade]](/topic/design-patterns/facade)</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Simplifies complex subsystem with unified interface.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #92400e;">Use when:</strong> <span style="color: #78350f;">"Simplify these 10 services"</span><br>
+<strong style="color: #92400e;">Changes:</strong> <span style="color: #78350f;">Complexity level</span><br>
+<strong style="color: #92400e;">Relationship:</strong> <span style="color: #78350f;">Wraps MULTIPLE objects</span>
+</div>
+</div>
 
-                      <div style="background: #f3e8ff; padding: 20px; border-radius: 12px; border-top: 4px solid #a855f7;">
-                        <h4 style="color: #7c3aed; margin-top: 0;">[[Bridge]](/topic/design-patterns/bridge)</h4>
-                        <p style="color: #6b21a8; font-size: 0.9rem; margin-bottom: 12px;">Separates abstraction from implementation for independent variation.</p>
-                        <div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                          <strong style="color: #7c3aed;">Use when:</strong> <span style="color: #6b21a8;">"Both sides need to vary"</span><br>
-                            <strong style="color: #7c3aed;">Changes:</strong> <span style="color: #6b21a8;">Decouples hierarchies</span><br>
-                              <strong style="color: #7c3aed;">Relationship:</strong> <span style="color: #6b21a8;">Designed upfront</span>
-                            </div>
-                          </div>
+<div style="background: #f3e8ff; padding: 20px; border-radius: 12px; border-top: 4px solid #a855f7;">
+<h4 style="color: #7c3aed; margin-top: 0;">[[Bridge]](/topic/design-patterns/bridge)</h4>
+<p style="color: #6b21a8; font-size: 0.9rem; margin-bottom: 12px;">Separates abstraction from implementation for independent variation.</p>
+<div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #7c3aed;">Use when:</strong> <span style="color: #6b21a8;">"Both sides need to vary"</span><br>
+<strong style="color: #7c3aed;">Changes:</strong> <span style="color: #6b21a8;">Decouples hierarchies</span><br>
+<strong style="color: #7c3aed;">Relationship:</strong> <span style="color: #6b21a8;">Designed upfront</span>
+</div>
+</div>
 
-                          <div style="background: #fce7f3; padding: 20px; border-radius: 12px; border-top: 4px solid #ec4899;">
-                            <h4 style="color: #be185d; margin-top: 0;">[[Proxy]](/topic/design-patterns/proxy)</h4>
-                            <p style="color: #9d174d; font-size: 0.9rem; margin-bottom: 12px;">Controls access to object with same interface.</p>
-                            <div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                              <strong style="color: #be185d;">Use when:</strong> <span style="color: #9d174d;">"Control access to this object"</span><br>
-                                <strong style="color: #be185d;">Changes:</strong> <span style="color: #9d174d;">Access policy, not interface</span><br>
-                                  <strong style="color: #be185d;">Relationship:</strong> <span style="color: #9d174d;">Identical interface to subject</span>
-                                </div>
-                              </div>
+<div style="background: #fce7f3; padding: 20px; border-radius: 12px; border-top: 4px solid #ec4899;">
+<h4 style="color: #be185d; margin-top: 0;">[[Proxy]](/topic/design-patterns/proxy)</h4>
+<p style="color: #9d174d; font-size: 0.9rem; margin-bottom: 12px;">Controls access to object with same interface.</p>
+<div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #be185d;">Use when:</strong> <span style="color: #9d174d;">"Control access to this object"</span><br>
+<strong style="color: #be185d;">Changes:</strong> <span style="color: #9d174d;">Access policy, not interface</span><br>
+<strong style="color: #be185d;">Relationship:</strong> <span style="color: #9d174d;">Identical interface to subject</span>
+</div>
+</div>
 
-                            </div>
+</div>
 
-                            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 24px;">
-                              <h4 style="color: #0f172a; margin-top: 0;">Decision Tree</h4>
-                              <div style="color: #334155; font-size: 0.95rem;">
+<div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 24px;">
+<h4 style="color: #0f172a; margin-top: 0;">Decision Tree</h4>
+<div style="color: #334155; font-size: 0.95rem;">
 
                                 ```
                                 Do you have an existing class with wrong interface?
@@ -2249,15 +2249,15 @@ The Adapter pattern converts the interface of a class into another interface tha
                                 └─ NO → Consider if you need a pattern at all
                                 ```
 
-                              </div>
-                            </div>
-                          </div>
+</div>
+</div>
+</div>
 
                           ---
 
                           ## Common Anti-Patterns and Pitfalls
 
-                          <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #fecaca;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #fecaca;">
 
                             ### Anti-Pattern 1: Business Logic in Adapter
 
@@ -2405,13 +2405,13 @@ The Adapter pattern converts the interface of a class into another interface tha
                             raise CapabilityNotSupportedError("refund", self.provider_name)
                             ```
 
-                          </div>
+</div>
 
                           ---
 
                           ## Testing Adapters
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
                             ### Testing Strategy
 
@@ -2578,64 +2578,64 @@ The Adapter pattern converts the interface of a class into another interface tha
                             assert result.transaction_id.startswith("ch_")
                             ```
 
-                          </div>
+</div>
 
                           ---
 
                           ## Key Takeaways
 
-                          <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #93c5fd;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #93c5fd;">
 
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-                              <div>
-                                <h4 style="color: #1e40af; margin-top: 0;">Core Principles</h4>
-                                <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-                                  <li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
-                                  <li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
-                                  <li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
-                                  <li><strong>Semantic Preservation:</strong> Maintain business meaning across interfaces</li>
-                                </ul>
-                              </div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0;">Core Principles</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+<li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
+<li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
+<li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
+<li><strong>Semantic Preservation:</strong> Maintain business meaning across interfaces</li>
+</ul>
+</div>
 
-                              <div>
-                                <h4 style="color: #1e40af; margin-top: 0;">Design Decisions</h4>
-                                <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-                                  <li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
-                                  <li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
-                                  <li><strong>Capability Discovery:</strong> Let clients query supported features</li>
-                                  <li><strong>Telemetry Built-in:</strong> Monitor adaptation overhead and drift</li>
-                                </ul>
-                              </div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0;">Design Decisions</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+<li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
+<li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
+<li><strong>Capability Discovery:</strong> Let clients query supported features</li>
+<li><strong>Telemetry Built-in:</strong> Monitor adaptation overhead and drift</li>
+</ul>
+</div>
 
-                              <div>
-                                <h4 style="color: #1e40af; margin-top: 0;">Production Concerns</h4>
-                                <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-                                  <li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
-                                  <li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
-                                  <li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
-                                  <li><strong>Testing:</strong> Test transformations, errors, and edge cases separately</li>
-                                </ul>
-                              </div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0;">Production Concerns</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+<li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
+<li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
+<li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
+<li><strong>Testing:</strong> Test transformations, errors, and edge cases separately</li>
+</ul>
+</div>
 
-                              <div>
-                                <h4 style="color: #1e40af; margin-top: 0;">Common Pitfalls</h4>
-                                <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-                                  <li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
-                                  <li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
-                                  <li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
-                                  <li><strong>Incomplete Implementation:</strong> Better to refuse than half-implement</li>
-                                </ul>
-                              </div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0;">Common Pitfalls</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+<li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
+<li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
+<li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
+<li><strong>Incomplete Implementation:</strong> Better to refuse than half-implement</li>
+</ul>
+</div>
 
-                            </div>
+</div>
 
-                            <div style="background: #eff6ff; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #3b82f6;">
-                              <strong style="color: #1e40af;">Interview Insight:</strong>
-                              <span style="color: #1e3a8a;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter pattern is deceptively simple in concept but complex in production implementation.</span> Interviewers often probe for understanding of edge cases (lossy adaptation, error handling), production concerns (resilience, monitoring), and design trade-offs (class vs object adapter, interface segregation). Demonstrating awareness of two-way adapters and real API integration challenges shows senior-level thinking.</span>
-                            </div>
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #3b82f6;">
+<strong style="color: #1e40af;">Interview Insight:</strong>
+<span style="color: #1e3a8a;"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter pattern is deceptively simple in concept but complex in production implementation.</span> Interviewers often probe for understanding of edge cases (lossy adaptation, error handling), production concerns (resilience, monitoring), and design trade-offs (class vs object adapter, interface segregation). Demonstrating awareness of two-way adapters and real API integration challenges shows senior-level thinking.</span>
+</div>
 
-                          </div>
+</div>
 
                           ---
 

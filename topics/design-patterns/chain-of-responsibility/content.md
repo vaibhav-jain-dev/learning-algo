@@ -9,8 +9,8 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 **First Documented:** GoF (1994)
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
-  <h4 style="color: #22c55e; margin: 0 0 0.75rem 0;">Core Insight</h4>
-  <p style="color: #eee; margin: 0; line-height: 1.6;">Chain of Responsibility transforms <span style="color: #22c55e; font-weight: 600;">hard-coded request routing</span> into a <span style="color: #22c55e; font-weight: 600;">dynamic chain of potential handlers</span>. The sender doesn't know (or care) which handler will ultimately process the request - only that the request enters the chain. This is the foundation of <span style="color: #22c55e; font-weight: 600;">middleware architectures</span> used in every major web framework.</p>
+<h4 style="color: #22c55e; margin: 0 0 0.75rem 0;">Core Insight</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;">Chain of Responsibility transforms <span style="color: #22c55e; font-weight: 600;">hard-coded request routing</span> into a <span style="color: #22c55e; font-weight: 600;">dynamic chain of potential handlers</span>. The sender doesn't know (or care) which handler will ultimately process the request - only that the request enters the chain. This is the foundation of <span style="color: #22c55e; font-weight: 600;">middleware architectures</span> used in every major web framework.</p>
 </div>
 
 ---
@@ -18,47 +18,47 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 ## Simple Explanation: The Customer Support Escalation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Customer Support Escalation</h3>
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Customer Support Escalation</h3>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
     When you contact customer support with a problem, your request goes through a chain:
-  </p>
+</p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; align-items: center; justify-content: center;">
-    <div style="background: #dbeafe; padding: 14px 18px; border-radius: 10px; text-align: center;">
-      <div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">Chatbot</div>
-      <div style="color: #1e3a8a; font-size: 0.75rem;">FAQs, simple issues</div>
-    </div>
-    <div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
-    <div style="background: #dcfce7; padding: 14px 18px; border-radius: 10px; text-align: center;">
-      <div style="color: #166534; font-weight: 700; font-size: 0.9rem;">L1 Support</div>
-      <div style="color: #14532d; font-size: 0.75rem;">Common problems</div>
-    </div>
-    <div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
-    <div style="background: #fef3c7; padding: 14px 18px; border-radius: 10px; text-align: center;">
-      <div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">L2 Support</div>
-      <div style="color: #78350f; font-size: 0.75rem;">Technical issues</div>
-    </div>
-    <div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
-    <div style="background: #fce7f3; padding: 14px 18px; border-radius: 10px; text-align: center;">
-      <div style="color: #9d174d; font-weight: 700; font-size: 0.9rem;">Engineering</div>
-      <div style="color: #831843; font-size: 0.75rem;">Complex bugs</div>
-    </div>
-    <div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
-    <div style="background: #e0e7ff; padding: 14px 18px; border-radius: 10px; text-align: center;">
-      <div style="color: #3730a3; font-weight: 700; font-size: 0.9rem;">Management</div>
-      <div style="color: #312e81; font-size: 0.75rem;">Escalations</div>
-    </div>
-  </div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; align-items: center; justify-content: center;">
+<div style="background: #dbeafe; padding: 14px 18px; border-radius: 10px; text-align: center;">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem;">Chatbot</div>
+<div style="color: #1e3a8a; font-size: 0.75rem;">FAQs, simple issues</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
+<div style="background: #dcfce7; padding: 14px 18px; border-radius: 10px; text-align: center;">
+<div style="color: #166534; font-weight: 700; font-size: 0.9rem;">L1 Support</div>
+<div style="color: #14532d; font-size: 0.75rem;">Common problems</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
+<div style="background: #fef3c7; padding: 14px 18px; border-radius: 10px; text-align: center;">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem;">L2 Support</div>
+<div style="color: #78350f; font-size: 0.75rem;">Technical issues</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
+<div style="background: #fce7f3; padding: 14px 18px; border-radius: 10px; text-align: center;">
+<div style="color: #9d174d; font-weight: 700; font-size: 0.9rem;">Engineering</div>
+<div style="color: #831843; font-size: 0.75rem;">Complex bugs</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem;">&#8594;</div>
+<div style="background: #e0e7ff; padding: 14px 18px; border-radius: 10px; text-align: center;">
+<div style="color: #3730a3; font-weight: 700; font-size: 0.9rem;">Management</div>
+<div style="color: #312e81; font-size: 0.75rem;">Escalations</div>
+</div>
+</div>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
     Each level tries to handle your issue. If they can't, they escalate to the next level. You don't need to know who will ultimately solve your problem - the chain figures it out.
-  </p>
+</p>
 
-  <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-    <strong style="color: #0f172a;">The Key Insight:</strong>
-    <span style="color: #334155;"> The sender doesn't know (or care) which handler will process the request. Each handler decides: <span style="color: #22c55e; font-weight: 600;">handle it</span>, <span style="color: #22c55e; font-weight: 600;">pass it on</span>, or <span style="color: #22c55e; font-weight: 600;">both</span>.</span>
-  </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">The Key Insight:</strong>
+<span style="color: #334155;"> The sender doesn't know (or care) which handler will process the request. Each handler decides: <span style="color: #22c55e; font-weight: 600;">handle it</span>, <span style="color: #22c55e; font-weight: 600;">pass it on</span>, or <span style="color: #22c55e; font-weight: 600;">both</span>.</span>
+</div>
 </div>
 
 ---
@@ -87,44 +87,44 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-  <p style="color: #334155; margin-bottom: 20px;">Every handler in a chain must decide one of three behaviors:</p>
+<p style="color: #334155; margin-bottom: 20px;">Every handler in a chain must decide one of three behaviors:</p>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 12px; border: 2px solid #22c55e;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-        <div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
-        <h4 style="color: #166534; margin: 0;">Handle and Stop</h4>
-      </div>
-      <p style="color: #14532d; font-size: 0.9rem; margin: 0;">Process the request completely and <span style="color: #22c55e; font-weight: 600;">terminate the chain</span>. No downstream handlers see the request.</p>
-      <div style="background: #166534; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 12px; border: 2px solid #22c55e;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+<div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
+<h4 style="color: #166534; margin: 0;">Handle and Stop</h4>
+</div>
+<p style="color: #14532d; font-size: 0.9rem; margin: 0;">Process the request completely and <span style="color: #22c55e; font-weight: 600;">terminate the chain</span>. No downstream handlers see the request.</p>
+<div style="background: #166534; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
         return Response(200, body)
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 20px; border-radius: 12px; border: 2px solid #3b82f6;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-        <div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
-        <h4 style="color: #1e40af; margin: 0;">Handle and Pass</h4>
-      </div>
-      <p style="color: #1e3a8a; font-size: 0.9rem; margin: 0;">Do some processing (enrich, validate, log) then <span style="color: #22c55e; font-weight: 600;">delegate to next handler</span>. May also process the response.</p>
-      <div style="background: #1e40af; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 20px; border-radius: 12px; border: 2px solid #3b82f6;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+<div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
+<h4 style="color: #1e40af; margin: 0;">Handle and Pass</h4>
+</div>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin: 0;">Do some processing (enrich, validate, log) then <span style="color: #22c55e; font-weight: 600;">delegate to next handler</span>. May also process the response.</p>
+<div style="background: #1e40af; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
         log(req); resp = next(req); log(resp)
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border: 2px solid #f59e0b;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-        <div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
-        <h4 style="color: #92400e; margin: 0;">Pass Without Processing</h4>
-      </div>
-      <p style="color: #78350f; font-size: 0.9rem; margin: 0;">Request doesn't match this handler's criteria. <span style="color: #22c55e; font-weight: 600;">Forward unchanged</span> to next handler.</p>
-      <div style="background: #92400e; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border: 2px solid #f59e0b;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+<div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
+<h4 style="color: #92400e; margin: 0;">Pass Without Processing</h4>
+</div>
+<p style="color: #78350f; font-size: 0.9rem; margin: 0;">Request doesn't match this handler's criteria. <span style="color: #22c55e; font-weight: 600;">Forward unchanged</span> to next handler.</p>
+<div style="background: #92400e; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
         return self._next.handle(request)
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -132,74 +132,74 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
 
-  <div style="display: flex; flex-direction: column; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 24px;">
 
     <!-- Request Flow -->
-    <div>
-      <div style="color: #22c55e; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">REQUEST FLOW (Inbound)</div>
-      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
-        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
-          <div style="color: #888; font-size: 0.7rem;">log request</div>
-        </div>
-        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #f093fb; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #f093fb; font-weight: 600; font-size: 0.85rem;">Auth</div>
-          <div style="color: #888; font-size: 0.7rem;">verify token</div>
-        </div>
-        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #ffd93d; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #ffd93d; font-weight: 600; font-size: 0.85rem;">Rate Limit</div>
-          <div style="color: #888; font-size: 0.7rem;">check quota</div>
-        </div>
-        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
-          <div style="color: #888; font-size: 0.7rem;">check body</div>
-        </div>
-        <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
-      </div>
-    </div>
+<div>
+<div style="color: #22c55e; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">REQUEST FLOW (Inbound)</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
+<div style="color: #888; font-size: 0.7rem;">log request</div>
+</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #f093fb; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #f093fb; font-weight: 600; font-size: 0.85rem;">Auth</div>
+<div style="color: #888; font-size: 0.7rem;">verify token</div>
+</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #ffd93d; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #ffd93d; font-weight: 600; font-size: 0.85rem;">Rate Limit</div>
+<div style="color: #888; font-size: 0.7rem;">check quota</div>
+</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
+<div style="color: #888; font-size: 0.7rem;">check body</div>
+</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
+</div>
+</div>
 
     <!-- Response Flow -->
-    <div>
-      <div style="color: #f093fb; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">RESPONSE FLOW (Outbound)</div>
-      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
-        <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
-          <div style="color: #888; font-size: 0.7rem;">pass-through</div>
-        </div>
-        <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #ffd93d; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #ffd93d; font-weight: 600; font-size: 0.85rem;">Rate Limit</div>
-          <div style="color: #888; font-size: 0.7rem;">add headers</div>
-        </div>
-        <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #f093fb; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #f093fb; font-weight: 600; font-size: 0.85rem;">Auth</div>
-          <div style="color: #888; font-size: 0.7rem;">pass-through</div>
-        </div>
-        <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
-          <div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
-          <div style="color: #888; font-size: 0.7rem;">log response</div>
-        </div>
-        <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
-      </div>
-    </div>
+<div>
+<div style="color: #f093fb; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">RESPONSE FLOW (Outbound)</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
+<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
+<div style="color: #888; font-size: 0.7rem;">pass-through</div>
+</div>
+<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #ffd93d; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #ffd93d; font-weight: 600; font-size: 0.85rem;">Rate Limit</div>
+<div style="color: #888; font-size: 0.7rem;">add headers</div>
+</div>
+<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #f093fb; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #f093fb; font-weight: 600; font-size: 0.85rem;">Auth</div>
+<div style="color: #888; font-size: 0.7rem;">pass-through</div>
+</div>
+<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+<div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
+<div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
+<div style="color: #888; font-size: 0.7rem;">log response</div>
+</div>
+<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
+</div>
+</div>
 
-  </div>
+</div>
 
-  <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; padding: 16px; border-radius: 8px; margin-top: 20px;">
-    <strong style="color: #22c55e;">Key Observation:</strong>
-    <span style="color: #eee;"> The response flows back through the <em>same handlers in reverse order</em>. This enables handlers like Logging to measure total request duration by capturing timestamps on both inbound and outbound passes.</span>
-  </div>
+<div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<strong style="color: #22c55e;">Key Observation:</strong>
+<span style="color: #eee;"> The response flows back through the <em>same handlers in reverse order</em>. This enables handlers like Logging to measure total request duration by capturing timestamps on both inbound and outbound passes.</span>
+</div>
 
 </div>
 
@@ -209,55 +209,55 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-  <p style="color: #334155; margin-bottom: 20px;">One of the most critical design decisions in Chain of Responsibility is <span style="color: #22c55e; font-weight: 600;">how and when the chain terminates</span>. There are several strategies:</p>
+<p style="color: #334155; margin-bottom: 20px;">One of the most critical design decisions in Chain of Responsibility is <span style="color: #22c55e; font-weight: 600;">how and when the chain terminates</span>. There are several strategies:</p>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-    <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #22c55e;">
-      <h4 style="color: #166534; margin-top: 0;">1. First Match Wins</h4>
-      <p style="color: #334155; font-size: 0.9rem;">Chain stops at the <span style="color: #22c55e; font-weight: 600;">first handler that can process</span> the request. Common in routing.</p>
-      <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if self.can_handle(request):
+<div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">1. First Match Wins</h4>
+<p style="color: #334155; font-size: 0.9rem;">Chain stops at the <span style="color: #22c55e; font-weight: 600;">first handler that can process</span> the request. Common in routing.</p>
+<pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if self.can_handle(request):
           return self.process(request)
-          return self._next.handle(request)</code></pre>
-    </div>
+return self._next.handle(request)</code></pre>
+</div>
 
-    <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
-      <h4 style="color: #1e40af; margin-top: 0;">2. Pipeline (All Process)</h4>
-      <p style="color: #334155; font-size: 0.9rem;"><span style="color: #22c55e; font-weight: 600;">Every handler processes</span> and passes along. Chain ends at final handler. Used in middleware.</p>
-      <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>self.before_processing(request)
+<div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">2. Pipeline (All Process)</h4>
+<p style="color: #334155; font-size: 0.9rem;"><span style="color: #22c55e; font-weight: 600;">Every handler processes</span> and passes along. Chain ends at final handler. Used in middleware.</p>
+<pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>self.before_processing(request)
           response = self._next.handle(request)
-          return self.after_processing(response)</code></pre>
-    </div>
+return self.after_processing(response)</code></pre>
+</div>
 
-    <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b;">
-      <h4 style="color: #92400e; margin-top: 0;">3. Short-Circuit on Failure</h4>
-      <p style="color: #334155; font-size: 0.9rem;">Chain stops immediately when a handler <span style="color: #22c55e; font-weight: 600;">rejects the request</span>. Common in auth/validation.</p>
-      <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if not self.is_valid(request):
+<div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">3. Short-Circuit on Failure</h4>
+<p style="color: #334155; font-size: 0.9rem;">Chain stops immediately when a handler <span style="color: #22c55e; font-weight: 600;">rejects the request</span>. Common in auth/validation.</p>
+<pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if not self.is_valid(request):
           return Response(400, "Invalid")
-          return self._next.handle(request)</code></pre>
-    </div>
+return self._next.handle(request)</code></pre>
+</div>
 
-    <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
-      <h4 style="color: #9d174d; margin-top: 0;">4. Default/Fallback Handler</h4>
-      <p style="color: #334155; font-size: 0.9rem;">Chain always ends with a <span style="color: #22c55e; font-weight: 600;">guaranteed handler</span> that catches unhandled requests.</p>
-      <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>class DefaultHandler(Handler):
+<div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #ec4899;">
+<h4 style="color: #9d174d; margin-top: 0;">4. Default/Fallback Handler</h4>
+<p style="color: #334155; font-size: 0.9rem;">Chain always ends with a <span style="color: #22c55e; font-weight: 600;">guaranteed handler</span> that catches unhandled requests.</p>
+<pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>class DefaultHandler(Handler):
           def handle(self, request):
-          return Response(404, "Not Found")</code></pre>
-    </div>
+return Response(404, "Not Found")</code></pre>
+</div>
 
-  </div>
+</div>
 
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <h4 style="color: #991b1b; margin-top: 0;">Critical Design Decision: What Happens if No Handler Processes?</h4>
-  <p style="color: #7f1d1d; margin-bottom: 12px;">If your chain can potentially have <em>no handler</em> process the request, you MUST handle this case:</p>
-  <ul style="color: #7f1d1d; margin: 0; padding-left: 20px;">
-    <li><strong>Return null/None:</strong> Client must check and handle gracefully</li>
-    <li><strong>Throw exception:</strong> Explicit failure, caught at boundary</li>
-    <li><strong>Default handler:</strong> Catch-all at chain end (recommended)</li>
-    <li><strong>Return error response:</strong> HTTP 404, gRPC NOT_FOUND, etc.</li>
-  </ul>
+<h4 style="color: #991b1b; margin-top: 0;">Critical Design Decision: What Happens if No Handler Processes?</h4>
+<p style="color: #7f1d1d; margin-bottom: 12px;">If your chain can potentially have <em>no handler</em> process the request, you MUST handle this case:</p>
+<ul style="color: #7f1d1d; margin: 0; padding-left: 20px;">
+<li><strong>Return null/None:</strong> Client must check and handle gracefully</li>
+<li><strong>Throw exception:</strong> Explicit failure, caught at boundary</li>
+<li><strong>Default handler:</strong> Catch-all at chain end (recommended)</li>
+<li><strong>Return error response:</strong> HTTP 404, gRPC NOT_FOUND, etc.</li>
+</ul>
 </div>
 
 ---
@@ -265,72 +265,72 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 ## Middleware Pattern: The Modern Chain of Responsibility
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
-  <h4 style="color: #22c55e; margin: 0 0 0.75rem 0;">Understanding Middleware</h4>
-  <p style="color: #eee; margin: 0; line-height: 1.6;"><span style="color: #22c55e; font-weight: 600;">Middleware</span> is Chain of Responsibility applied to HTTP request/response processing. Each middleware wraps the next, creating an "onion" architecture where requests pass inward through layers and responses pass outward through the same layers in reverse. This is the dominant pattern in web frameworks: Express.js, Koa, Django, Spring, ASP.NET Core, and virtually every modern HTTP framework.</p>
+<h4 style="color: #22c55e; margin: 0 0 0.75rem 0;">Understanding Middleware</h4>
+<p style="color: #eee; margin: 0; line-height: 1.6;"><span style="color: #22c55e; font-weight: 600;">Middleware</span> is Chain of Responsibility applied to HTTP request/response processing. Each middleware wraps the next, creating an "onion" architecture where requests pass inward through layers and responses pass outward through the same layers in reverse. This is the dominant pattern in web frameworks: Express.js, Koa, Django, Spring, ASP.NET Core, and virtually every modern HTTP framework.</p>
 </div>
 
 ### Middleware Architecture Diagram
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-  <div style="text-align: center; margin-bottom: 24px;">
-    <span style="color: #475569; font-size: 0.9rem; font-weight: 600;">The "Onion" Model of Middleware</span>
-  </div>
+<div style="text-align: center; margin-bottom: 24px;">
+<span style="color: #475569; font-size: 0.9rem; font-weight: 600;">The "Onion" Model of Middleware</span>
+</div>
 
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <div style="position: relative; width: 400px; height: 400px;">
+<div style="display: flex; justify-content: center; align-items: center;">
+<div style="position: relative; width: 400px; height: 400px;">
 
       <!-- Outer layer - Logging -->
-      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(78, 205, 196, 0.1) 100%); border: 3px solid #4ecdc4; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #4ecdc4; font-weight: 700; font-size: 0.85rem;">LOGGING</div>
-      </div>
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(78, 205, 196, 0.1) 100%); border: 3px solid #4ecdc4; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #4ecdc4; font-weight: 700; font-size: 0.85rem;">LOGGING</div>
+</div>
 
       <!-- Auth layer -->
-      <div style="position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px; background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(240, 147, 251, 0.1) 100%); border: 3px solid #f093fb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #f093fb; font-weight: 700; font-size: 0.85rem;">AUTH</div>
-      </div>
+<div style="position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px; background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(240, 147, 251, 0.1) 100%); border: 3px solid #f093fb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #f093fb; font-weight: 700; font-size: 0.85rem;">AUTH</div>
+</div>
 
       <!-- Rate Limit layer -->
-      <div style="position: absolute; top: 80px; left: 80px; right: 80px; bottom: 80px; background: linear-gradient(135deg, rgba(255, 217, 61, 0.2) 0%, rgba(255, 217, 61, 0.1) 100%); border: 3px solid #ffd93d; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #ffd93d; font-weight: 700; font-size: 0.85rem;">RATE LIMIT</div>
-      </div>
+<div style="position: absolute; top: 80px; left: 80px; right: 80px; bottom: 80px; background: linear-gradient(135deg, rgba(255, 217, 61, 0.2) 0%, rgba(255, 217, 61, 0.1) 100%); border: 3px solid #ffd93d; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #ffd93d; font-weight: 700; font-size: 0.85rem;">RATE LIMIT</div>
+</div>
 
       <!-- Validation layer -->
-      <div style="position: absolute; top: 120px; left: 120px; right: 120px; bottom: 120px; background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(116, 185, 255, 0.1) 100%); border: 3px solid #74b9ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #74b9ff; font-weight: 700; font-size: 0.85rem;">VALIDATION</div>
-      </div>
+<div style="position: absolute; top: 120px; left: 120px; right: 120px; bottom: 120px; background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(116, 185, 255, 0.1) 100%); border: 3px solid #74b9ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #74b9ff; font-weight: 700; font-size: 0.85rem;">VALIDATION</div>
+</div>
 
       <!-- Core Handler -->
-      <div style="position: absolute; top: 160px; left: 160px; right: 160px; bottom: 160px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="color: white; font-weight: 700; font-size: 0.9rem; text-align: center;">HANDLER<br><span style="font-size: 0.7rem; opacity: 0.8;">Business Logic</span></div>
-        </div>
+<div style="position: absolute; top: 160px; left: 160px; right: 160px; bottom: 160px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<div style="color: white; font-weight: 700; font-size: 0.9rem; text-align: center;">HANDLER<br><span style="font-size: 0.7rem; opacity: 0.8;">Business Logic</span></div>
+</div>
 
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="display: flex; justify-content: center; gap: 24px; margin-top: 24px; flex-wrap: wrap;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 20px; height: 3px; background: #22c55e;"></div>
-        <span style="color: #22c55e; font-size: 0.8rem;">Request flows inward</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 20px; height: 3px; background: #f093fb;"></div>
-        <span style="color: #f093fb; font-size: 0.8rem;">Response flows outward</span>
-      </div>
-    </div>
+<div style="display: flex; justify-content: center; gap: 24px; margin-top: 24px; flex-wrap: wrap;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 20px; height: 3px; background: #22c55e;"></div>
+<span style="color: #22c55e; font-size: 0.8rem;">Request flows inward</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 20px; height: 3px; background: #f093fb;"></div>
+<span style="color: #f093fb; font-size: 0.8rem;">Response flows outward</span>
+</div>
+</div>
 
-  </div>
+</div>
 
   ### Express.js vs Python Middleware Comparison
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin: 24px 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin: 24px 0;">
 
-    <div style="background: #1a1a2e; border-radius: 12px; padding: 20px; border: 2px solid #f7df1e;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-        <div style="background: #f7df1e; color: black; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">JavaScript</div>
-        <span style="color: #f7df1e; font-weight: 600;">Express.js Middleware</span>
-      </div>
-      <pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code>// Middleware receives (req, res, next)
+<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; border: 2px solid #f7df1e;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+<div style="background: #f7df1e; color: black; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">JavaScript</div>
+<span style="color: #f7df1e; font-weight: 600;">Express.js Middleware</span>
+</div>
+<pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code>// Middleware receives (req, res, next)
           function authMiddleware(req, res, next) {
           const token = req.headers.authorization;
 
@@ -352,15 +352,15 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
           app.use(loggingMiddleware);
           app.use(authMiddleware);
           app.use(rateLimitMiddleware);
-          app.use('/api', router);</code></pre>
-    </div>
+app.use('/api', router);</code></pre>
+</div>
 
-    <div style="background: #1a1a2e; border-radius: 12px; padding: 20px; border: 2px solid #3776ab;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-        <div style="background: #3776ab; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">Python</div>
-        <span style="color: #3776ab; font-weight: 600;">Class-Based Handler Chain</span>
-      </div>
-      <pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code># Handler holds reference to next
+<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; border: 2px solid #3776ab;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+<div style="background: #3776ab; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">Python</div>
+<span style="color: #3776ab; font-weight: 600;">Class-Based Handler Chain</span>
+</div>
+<pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code># Handler holds reference to next
           class AuthHandler(Handler):
           def handle(self, request):
           token = request.headers.get("Authorization")
@@ -380,58 +380,58 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
           return self._next.handle(request)
 
           # Build chain via set_next()
-          logging.set_next(auth).set_next(rate_limit)</code></pre>
-    </div>
+logging.set_next(auth).set_next(rate_limit)</code></pre>
+</div>
 
-  </div>
+</div>
 
   ---
 
   ## Interview Deep-Dive: Chain Fundamentals
 
-  <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-    <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What is the core problem Chain of Responsibility solves?</div>
-    <div style="color: #0c4a6e; line-height: 1.7;">
-      <strong>Answer:</strong> It solves the problem of <span style="color: #22c55e; font-weight: 600;">coupling the sender of a request to its receiver</span>. Without the pattern, the sender must know exactly which object can handle its request, leading to tight coupling and violations of the Open/Closed Principle.
+<div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What is the core problem Chain of Responsibility solves?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> It solves the problem of <span style="color: #22c55e; font-weight: 600;">coupling the sender of a request to its receiver</span>. Without the pattern, the sender must know exactly which object can handle its request, leading to tight coupling and violations of the Open/Closed Principle.
       <br/><br/>
       With Chain of Responsibility, the sender only knows about a single entry point (the first handler). The chain itself determines which handler(s) process the request. This enables:
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li>Adding new handlers without modifying sender code</li>
-        <li>Reordering handlers without modifying sender code</li>
-        <li>Different chains for different contexts (testing, production)</li>
-      </ul>
-    </div>
-  </div>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Adding new handlers without modifying sender code</li>
+<li>Reordering handlers without modifying sender code</li>
+<li>Different chains for different contexts (testing, production)</li>
+</ul>
+</div>
+</div>
 
-  <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-    <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How does Chain of Responsibility differ from the [[Decorator]](/topic/design-patterns/decorator) pattern? They look structurally similar.</div>
-    <div style="color: #701a75; line-height: 1.7;">
-      <strong>Answer:</strong> While both patterns involve chaining objects with similar interfaces, they differ in <span style="color: #22c55e; font-weight: 600;">intent and behavior</span>:
+<div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How does Chain of Responsibility differ from the [[Decorator]](/topic/design-patterns/decorator) pattern? They look structurally similar.</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> While both patterns involve chaining objects with similar interfaces, they differ in <span style="color: #22c55e; font-weight: 600;">intent and behavior</span>:
       <br/><br/>
-      <strong>Chain of Responsibility:</strong>
-      <ul style="margin: 4px 0; padding-left: 20px;">
-        <li>Handlers <em>decide</em> whether to process</li>
-        <li>Request may be handled by zero, one, or many handlers</li>
-        <li>Chain can be <em>short-circuited</em> at any point</li>
-        <li>Primary goal: <em>route</em> requests to appropriate handler</li>
-      </ul>
+<strong>Chain of Responsibility:</strong>
+<ul style="margin: 4px 0; padding-left: 20px;">
+<li>Handlers <em>decide</em> whether to process</li>
+<li>Request may be handled by zero, one, or many handlers</li>
+<li>Chain can be <em>short-circuited</em> at any point</li>
+<li>Primary goal: <em>route</em> requests to appropriate handler</li>
+</ul>
       <br/>
-      <strong>[[Decorator]](/topic/design-patterns/decorator):</strong>
-      <ul style="margin: 4px 0; padding-left: 20px;">
-        <li>Decorators <em>always</em> add behavior</li>
-        <li>Every decorator in the chain executes</li>
-        <li>Chain cannot be short-circuited</li>
-        <li>Primary goal: <em>enhance</em> object capabilities</li>
-      </ul>
+<strong>[[Decorator]](/topic/design-patterns/decorator):</strong>
+<ul style="margin: 4px 0; padding-left: 20px;">
+<li>Decorators <em>always</em> add behavior</li>
+<li>Every decorator in the chain executes</li>
+<li>Chain cannot be short-circuited</li>
+<li>Primary goal: <em>enhance</em> object capabilities</li>
+</ul>
       <br/>
       The key tell: in Decorator, all wrappers execute. In Chain of Responsibility, handlers may pass without processing.
-    </div>
-  </div>
+</div>
+</div>
 
-  <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-    <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler chain where handlers can execute in parallel for independent checks, then merge results. What are the tradeoffs?</div>
-    <div style="color: #7f1d1d; line-height: 1.7;">
-      <strong>Answer:</strong> This is a <span style="color: #22c55e; font-weight: 600;">Fan-Out/Fan-In</span> variant of Chain of Responsibility:
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler chain where handlers can execute in parallel for independent checks, then merge results. What are the tradeoffs?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> This is a <span style="color: #22c55e; font-weight: 600;">Fan-Out/Fan-In</span> variant of Chain of Responsibility:
 
       ```python
       class ParallelHandler(Handler):
@@ -454,56 +454,56 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return self._next.handle(request)
       ```
 
-      <strong>Tradeoffs:</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li><strong>Pro:</strong> Reduced latency when handlers are I/O-bound (auth check + rate limit check in parallel)</li>
-        <li><strong>Pro:</strong> Better resource utilization under high concurrency</li>
-        <li><strong>Con:</strong> Wasted work if early handler would have rejected (can't short-circuit)</li>
-        <li><strong>Con:</strong> Complex error handling - what if 2 of 3 handlers fail?</li>
-        <li><strong>Con:</strong> Handlers can't enrich request for each other (no data flow between parallel handlers)</li>
-        <li><strong>Con:</strong> Debugging is harder - non-deterministic execution order</li>
-      </ul>
+<strong>Tradeoffs:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li><strong>Pro:</strong> Reduced latency when handlers are I/O-bound (auth check + rate limit check in parallel)</li>
+<li><strong>Pro:</strong> Better resource utilization under high concurrency</li>
+<li><strong>Con:</strong> Wasted work if early handler would have rejected (can't short-circuit)</li>
+<li><strong>Con:</strong> Complex error handling - what if 2 of 3 handlers fail?</li>
+<li><strong>Con:</strong> Handlers can't enrich request for each other (no data flow between parallel handlers)</li>
+<li><strong>Con:</strong> Debugging is harder - non-deterministic execution order</li>
+</ul>
 
-      <strong>When to use:</strong> When handlers are independent, I/O-bound, and rejection is rare. Classic example: validating a request against multiple external services (fraud check, inventory check, payment pre-auth).
-    </div>
-  </div>
+<strong>When to use:</strong> When handlers are independent, I/O-bound, and rejection is rare. Classic example: validating a request against multiple external services (fraud check, inventory check, payment pre-auth).
+</div>
+</div>
 
   ---
 
   ## Interview Deep-Dive: Middleware Patterns
 
-  <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-    <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why does middleware order matter? Give a concrete example.</div>
-    <div style="color: #0c4a6e; line-height: 1.7;">
-      <strong>Answer:</strong> Middleware order determines <span style="color: #22c55e; font-weight: 600;">which cross-cutting concerns apply to which requests</span> and in what sequence.
+<div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why does middleware order matter? Give a concrete example.</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Middleware order determines <span style="color: #22c55e; font-weight: 600;">which cross-cutting concerns apply to which requests</span> and in what sequence.
       <br/><br/>
-      <strong>Example - Auth before Rate Limiting:</strong>
+<strong>Example - Auth before Rate Limiting:</strong>
       ```
       CORRECT:  Logging -> Auth -> RateLimit -> Handler
       WRONG:    Logging -> RateLimit -> Auth -> Handler
       ```
 
       If rate limiting comes before auth:
-      <ul style="margin: 4px 0; padding-left: 20px;">
-        <li>Unauthenticated requests consume rate limit quota</li>
-        <li>Attacker can exhaust rate limit for legitimate users</li>
-        <li>Rate limits can't be per-user (user unknown yet)</li>
-      </ul>
+<ul style="margin: 4px 0; padding-left: 20px;">
+<li>Unauthenticated requests consume rate limit quota</li>
+<li>Attacker can exhaust rate limit for legitimate users</li>
+<li>Rate limits can't be per-user (user unknown yet)</li>
+</ul>
 
       Another example - Compression and Encryption:
       ```
       CORRECT:  Compress -> Encrypt (compress plaintext, then encrypt)
       WRONG:    Encrypt -> Compress (encrypted data doesn't compress well)
       ```
-    </div>
-  </div>
+</div>
+</div>
 
-  <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-    <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you handle errors that occur in the middle of a middleware chain? What about cleanup?</div>
-    <div style="color: #701a75; line-height: 1.7;">
-      <strong>Answer:</strong> There are three main strategies:
+<div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you handle errors that occur in the middle of a middleware chain? What about cleanup?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> There are three main strategies:
       <br/><br/>
-      <strong>1. Error Handler Middleware (Recommended):</strong>
+<strong>1. Error Handler Middleware (Recommended):</strong>
       <br/>
       Place an error-catching middleware at the <em>outermost</em> layer:
 
@@ -521,7 +521,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return Response(500, {"error": "Internal error"})
       ```
 
-      <strong>2. Result Objects Instead of Exceptions:</strong>
+<strong>2. Result Objects Instead of Exceptions:</strong>
 
       ```python
       @dataclass
@@ -537,7 +537,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return self._next.handle(request)
       ```
 
-      <strong>3. Cleanup via Context Managers:</strong>
+<strong>3. Cleanup via Context Managers:</strong>
 
       ```python
       class ResourceHandler(Handler):
@@ -548,14 +548,14 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       # Resource automatically cleaned up, even on exception
       ```
 
-      <strong>Best Practice:</strong> Use error middleware at the boundary, Result objects for expected failures, exceptions for unexpected failures.
-    </div>
-  </div>
+<strong>Best Practice:</strong> Use error middleware at the boundary, Result objects for expected failures, exceptions for unexpected failures.
+</div>
+</div>
 
-  <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-    <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a middleware system that supports both synchronous and asynchronous handlers in the same chain. What are the challenges?</div>
-    <div style="color: #7f1d1d; line-height: 1.7;">
-      <strong>Answer:</strong> This is a real challenge in mixed codebases. Here's an approach:
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a middleware system that supports both synchronous and asynchronous handlers in the same chain. What are the challenges?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> This is a real challenge in mixed codebases. Here's an approach:
 
       ```python
       import asyncio
@@ -594,29 +594,29 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return asyncio.run(self.run_async(request))
       ```
 
-      <strong>Challenges:</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li><strong>Colored function problem:</strong> Once you have one async handler, the entire chain must be async-aware</li>
-        <li><strong>Performance:</strong> Wrapping sync handlers in async adds overhead (~1-5 microseconds per handler)</li>
-        <li><strong>Context propagation:</strong> Python's contextvars work differently in sync vs async</li>
-        <li><strong>Testing:</strong> Need both sync and async test utilities</li>
-        <li><strong>Error handling:</strong> Async exceptions behave differently (unhandled exceptions, cancellation)</li>
-      </ul>
+<strong>Challenges:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li><strong>Colored function problem:</strong> Once you have one async handler, the entire chain must be async-aware</li>
+<li><strong>Performance:</strong> Wrapping sync handlers in async adds overhead (~1-5 microseconds per handler)</li>
+<li><strong>Context propagation:</strong> Python's contextvars work differently in sync vs async</li>
+<li><strong>Testing:</strong> Need both sync and async test utilities</li>
+<li><strong>Error handling:</strong> Async exceptions behave differently (unhandled exceptions, cancellation)</li>
+</ul>
 
-      <strong>Recommendation:</strong> In new code, go fully async. For legacy, wrap the sync/async boundary at the outermost layer, not per-handler.
+<strong>Recommendation:</strong> In new code, go fully async. For legacy, wrap the sync/async boundary at the outermost layer, not per-handler.
 
       See [[Concurrency Patterns]](/topic/system-design/concurrency-patterns) for more on async design.
-    </div>
-  </div>
+</div>
+</div>
 
   ---
 
   ## Interview Deep-Dive: Request Processing
 
-  <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-    <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How do handlers communicate data to downstream handlers?</div>
-    <div style="color: #0c4a6e; line-height: 1.7;">
-      <strong>Answer:</strong> The standard approach is <span style="color: #22c55e; font-weight: 600;">request enrichment</span> - handlers add data to the request object:
+<div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How do handlers communicate data to downstream handlers?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> The standard approach is <span style="color: #22c55e; font-weight: 600;">request enrichment</span> - handlers add data to the request object:
 
       ```python
       class AuthHandler(Handler):
@@ -639,19 +639,19 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return self._next.handle(request)
       ```
 
-      <strong>Alternative approaches:</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li><strong>Thread-local/Context variables:</strong> Implicit passing (Python's contextvars, Java's ThreadLocal)</li>
-        <li><strong>Return value chaining:</strong> Each handler returns modified request</li>
-        <li><strong>Separate context object:</strong> Pass (request, context) tuple through chain</li>
-      </ul>
-    </div>
-  </div>
+<strong>Alternative approaches:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li><strong>Thread-local/Context variables:</strong> Implicit passing (Python's contextvars, Java's ThreadLocal)</li>
+<li><strong>Return value chaining:</strong> Each handler returns modified request</li>
+<li><strong>Separate context object:</strong> Pass (request, context) tuple through chain</li>
+</ul>
+</div>
+</div>
 
-  <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-    <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you implement request/response transformation in middleware?</div>
-    <div style="color: #701a75; line-height: 1.7;">
-      <strong>Answer:</strong> The key is that middleware executes <span style="color: #22c55e; font-weight: 600;">twice per request</span> - once on the way in, once on the way out:
+<div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you implement request/response transformation in middleware?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> The key is that middleware executes <span style="color: #22c55e; font-weight: 600;">twice per request</span> - once on the way in, once on the way out:
 
       ```python
       class CompressionHandler(Handler):
@@ -682,18 +682,18 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return response
       ```
 
-      <strong>Critical insight:</strong> The order of inbound processing is opposite to outbound processing. If chain is A -> B -> C -> Handler:
-      <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li>Inbound: A's pre-processing, B's pre-processing, C's pre-processing, Handler</li>
-        <li>Outbound: C's post-processing, B's post-processing, A's post-processing</li>
-      </ul>
-    </div>
-  </div>
+<strong>Critical insight:</strong> The order of inbound processing is opposite to outbound processing. If chain is A -> B -> C -> Handler:
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Inbound: A's pre-processing, B's pre-processing, C's pre-processing, Handler</li>
+<li>Outbound: C's post-processing, B's post-processing, A's post-processing</li>
+</ul>
+</div>
+</div>
 
-  <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-    <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler that retries failed requests. What invariants must you maintain?</div>
-    <div style="color: #7f1d1d; line-height: 1.7;">
-      <strong>Answer:</strong> Retry middleware is deceptively complex:
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler that retries failed requests. What invariants must you maintain?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Retry middleware is deceptively complex:
 
       ```python
       class RetryHandler(Handler):
@@ -738,27 +738,27 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
       return last_response
       ```
 
-      <strong>Critical Invariants:</strong>
-      <ol style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li><strong>Body buffering:</strong> Request body streams can only be read once - must buffer before retry</li>
-        <li><strong>Idempotency:</strong> Only retry idempotent operations (GET, PUT, DELETE). Never blindly retry POST</li>
-        <li><strong>Request isolation:</strong> Each retry must use a fresh request copy (prevents state leakage)</li>
-        <li><strong>Backoff:</strong> Exponential backoff prevents thundering herd on recovering service</li>
-        <li><strong>Timeout budget:</strong> Total retry time must fit within client's timeout</li>
-        <li><strong>Circuit breaker integration:</strong> Stop retrying if service is known-down (see [[Circuit Breaker]](/topic/system-design/removing-bottlenecks))</li>
-      </ol>
-    </div>
-  </div>
+<strong>Critical Invariants:</strong>
+<ol style="margin: 8px 0 0 0; padding-left: 20px;">
+<li><strong>Body buffering:</strong> Request body streams can only be read once - must buffer before retry</li>
+<li><strong>Idempotency:</strong> Only retry idempotent operations (GET, PUT, DELETE). Never blindly retry POST</li>
+<li><strong>Request isolation:</strong> Each retry must use a fresh request copy (prevents state leakage)</li>
+<li><strong>Backoff:</strong> Exponential backoff prevents thundering herd on recovering service</li>
+<li><strong>Timeout budget:</strong> Total retry time must fit within client's timeout</li>
+<li><strong>Circuit breaker integration:</strong> Stop retrying if service is known-down (see [[Circuit Breaker]](/topic/system-design/removing-bottlenecks))</li>
+</ol>
+</div>
+</div>
 
   ---
 
   ## Real-World Example: Authentication Middleware
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-    <h3 style="color: #1e293b; margin-top: 0;">Complete JWT Authentication Handler</h3>
+<h3 style="color: #1e293b; margin-top: 0;">Complete JWT Authentication Handler</h3>
 
-    <p style="color: #334155; margin-bottom: 20px;">This example demonstrates a production-quality authentication handler with <span style="color: #22c55e; font-weight: 600;">multiple authentication strategies</span>, <span style="color: #22c55e; font-weight: 600;">proper error handling</span>, and <span style="color: #22c55e; font-weight: 600;">request enrichment</span>.</p>
+<p style="color: #334155; margin-bottom: 20px;">This example demonstrates a production-quality authentication handler with <span style="color: #22c55e; font-weight: 600;">multiple authentication strategies</span>, <span style="color: #22c55e; font-weight: 600;">proper error handling</span>, and <span style="color: #22c55e; font-weight: 600;">request enrichment</span>.</p>
 
     ```python
     from abc import ABC, abstractmethod
@@ -947,15 +947,15 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
     return ", ".join(self._get_challenge(s) for s in self._strategies)
     ```
 
-  </div>
+</div>
 
   ---
 
   ## Real-World Example: Logging Middleware
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-    <h3 style="color: #1e293b; margin-top: 0;">Production Logging Handler with Structured Output</h3>
+<h3 style="color: #1e293b; margin-top: 0;">Production Logging Handler with Structured Output</h3>
 
     ```python
     import json
@@ -1114,7 +1114,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
     return body_str
     ```
 
-  </div>
+</div>
 
   ---
 
@@ -1441,64 +1441,64 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 
   ## Chain of Responsibility vs Related Patterns
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-      <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
-        <h4 style="color: #1e40af; margin-top: 0;">Chain of Responsibility</h4>
-        <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Passes request through handlers until processed.</p>
-        <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-          <strong style="color: #1e40af;">Handler decides:</strong> <span style="color: #1e3a8a;">Process or pass</span><br>
-            <strong style="color: #1e40af;">Result:</strong> <span style="color: #1e3a8a;">0, 1, or many handlers process</span>
-          </div>
-        </div>
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Chain of Responsibility</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Passes request through handlers until processed.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #1e40af;">Handler decides:</strong> <span style="color: #1e3a8a;">Process or pass</span><br>
+<strong style="color: #1e40af;">Result:</strong> <span style="color: #1e3a8a;">0, 1, or many handlers process</span>
+</div>
+</div>
 
-        <div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
-          <h4 style="color: #166534; margin-top: 0;">[[Decorator]](/topic/design-patterns/decorator)</h4>
-          <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Wraps objects to add behavior.</p>
-          <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-            <strong style="color: #166534;">All decorators:</strong> <span style="color: #14532d;">Always execute</span><br>
-              <strong style="color: #166534;">Result:</strong> <span style="color: #14532d;">All enhance the object</span>
-            </div>
-          </div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">[[Decorator]](/topic/design-patterns/decorator)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Wraps objects to add behavior.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #166534;">All decorators:</strong> <span style="color: #14532d;">Always execute</span><br>
+<strong style="color: #166534;">Result:</strong> <span style="color: #14532d;">All enhance the object</span>
+</div>
+</div>
 
-          <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
-            <h4 style="color: #92400e; margin-top: 0;">[[Command]](/topic/design-patterns/command)</h4>
-            <p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Encapsulates request as object.</p>
-            <div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-              <strong style="color: #92400e;">Request is:</strong> <span style="color: #78350f;">Stored/queued</span><br>
-                <strong style="color: #92400e;">Handler:</strong> <span style="color: #78350f;">Known in advance</span>
-              </div>
-            </div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">[[Command]](/topic/design-patterns/command)</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Encapsulates request as object.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #92400e;">Request is:</strong> <span style="color: #78350f;">Stored/queued</span><br>
+<strong style="color: #92400e;">Handler:</strong> <span style="color: #78350f;">Known in advance</span>
+</div>
+</div>
 
-            <div style="background: #fce7f3; padding: 20px; border-radius: 12px; border-top: 4px solid #ec4899;">
-              <h4 style="color: #9d174d; margin-top: 0;">[[Strategy]](/topic/design-patterns/strategy)</h4>
-              <p style="color: #831843; font-size: 0.9rem; margin-bottom: 12px;">Selects one algorithm at runtime.</p>
-              <div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                <strong style="color: #9d174d;">Selection:</strong> <span style="color: #831843;">Explicit, single</span><br>
-                  <strong style="color: #9d174d;">Result:</strong> <span style="color: #831843;">Exactly one strategy runs</span>
-                </div>
-              </div>
+<div style="background: #fce7f3; padding: 20px; border-radius: 12px; border-top: 4px solid #ec4899;">
+<h4 style="color: #9d174d; margin-top: 0;">[[Strategy]](/topic/design-patterns/strategy)</h4>
+<p style="color: #831843; font-size: 0.9rem; margin-bottom: 12px;">Selects one algorithm at runtime.</p>
+<div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #9d174d;">Selection:</strong> <span style="color: #831843;">Explicit, single</span><br>
+<strong style="color: #9d174d;">Result:</strong> <span style="color: #831843;">Exactly one strategy runs</span>
+</div>
+</div>
 
-            </div>
+</div>
 
-            <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 20px;">
-              <strong style="color: #0f172a;">Quick Decision Guide:</strong>
-              <ul style="color: #334155; margin-bottom: 0;">
-                <li><strong>Chain of Responsibility:</strong> "I don't know who should handle this - let the chain decide"</li>
-                <li><strong>[[Decorator]](/topic/design-patterns/decorator):</strong> "I want to add features to this object"</li>
-                <li><strong>[[Command]](/topic/design-patterns/command):</strong> "I want to parameterize, queue, or log operations"</li>
-                <li><strong>[[Strategy]](/topic/design-patterns/strategy):</strong> "I want to swap algorithms without changing context"</li>
-              </ul>
-            </div>
-          </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<strong style="color: #0f172a;">Quick Decision Guide:</strong>
+<ul style="color: #334155; margin-bottom: 0;">
+<li><strong>Chain of Responsibility:</strong> "I don't know who should handle this - let the chain decide"</li>
+<li><strong>[[Decorator]](/topic/design-patterns/decorator):</strong> "I want to add features to this object"</li>
+<li><strong>[[Command]](/topic/design-patterns/command):</strong> "I want to parameterize, queue, or log operations"</li>
+<li><strong>[[Strategy]](/topic/design-patterns/strategy):</strong> "I want to swap algorithms without changing context"</li>
+</ul>
+</div>
+</div>
 
           ---
 
           ## Common Mistakes and Anti-Patterns
 
-          <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
             ### Mistake 1: Forgetting Default Handler
 
@@ -1576,16 +1576,16 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
             return self._pass_to_next(request)
             ```
 
-          </div>
+</div>
 
           ---
 
           ## Interview Deep-Dive: Advanced Scenarios
 
-          <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-            <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How would you implement chain configuration that can be changed at runtime?</div>
-            <div style="color: #0c4a6e; line-height: 1.7;">
-              <strong>Answer:</strong> Use a <span style="color: #22c55e; font-weight: 600;">ChainBuilder</span> pattern that reconstructs the chain when configuration changes:
+<div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How would you implement chain configuration that can be changed at runtime?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Use a <span style="color: #22c55e; font-weight: 600;">ChainBuilder</span> pattern that reconstructs the chain when configuration changes:
 
               ```python
               class ChainBuilder:
@@ -1631,13 +1631,13 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 
               return builder.build()
               ```
-            </div>
-          </div>
+</div>
+</div>
 
-          <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-            <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you implement branching chains where a handler can route to different sub-chains?</div>
-            <div style="color: #701a75; line-height: 1.7;">
-              <strong>Answer:</strong> Implement a <span style="color: #22c55e; font-weight: 600;">CompositeHandler</span> that routes to sub-chains based on conditions:
+<div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you implement branching chains where a handler can route to different sub-chains?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> Implement a <span style="color: #22c55e; font-weight: 600;">CompositeHandler</span> that routes to sub-chains based on conditions:
 
               ```python
               class BranchingHandler(Handler):
@@ -1675,14 +1675,14 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
               branching.set_default(public_chain)
               ```
 
-              This enables <span style="color: #22c55e; font-weight: 600;">tree-like routing</span> where different paths get different middleware stacks.
-            </div>
-          </div>
+This enables <span style="color: #22c55e; font-weight: 600;">tree-like routing</span> where different paths get different middleware stacks.
+</div>
+</div>
 
-          <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-            <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler chain that supports transactional semantics - if any handler fails, all previous handlers' effects are rolled back.</div>
-            <div style="color: #7f1d1d; line-height: 1.7;">
-              <strong>Answer:</strong> This requires a <span style="color: #22c55e; font-weight: 600;">Saga-like pattern</span> with compensating actions:
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a handler chain that supports transactional semantics - if any handler fails, all previous handlers' effects are rolled back.</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> This requires a <span style="color: #22c55e; font-weight: 600;">Saga-like pattern</span> with compensating actions:
 
               ```python
               from typing import Callable, List, Tuple
@@ -1780,42 +1780,42 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
               self._payment_service.refund(charge_id)
               ```
 
-              <strong>Key considerations:</strong>
-              <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-                <li><strong>Compensation order matters:</strong> Compensate in reverse order of execution</li>
-                <li><strong>Compensation can fail:</strong> Need strategy for partial compensation failures</li>
-                <li><strong>Idempotency:</strong> Compensations must be idempotent (may run multiple times)</li>
-                <li><strong>State tracking:</strong> Must track what was done to know what to undo</li>
-                <li><strong>Timeout handling:</strong> What if compensation takes too long?</li>
-              </ul>
+<strong>Key considerations:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li><strong>Compensation order matters:</strong> Compensate in reverse order of execution</li>
+<li><strong>Compensation can fail:</strong> Need strategy for partial compensation failures</li>
+<li><strong>Idempotency:</strong> Compensations must be idempotent (may run multiple times)</li>
+<li><strong>State tracking:</strong> Must track what was done to know what to undo</li>
+<li><strong>Timeout handling:</strong> What if compensation takes too long?</li>
+</ul>
 
               See [[Event Sourcing]](/topic/system-design/event-sourcing) and [[Distributed Transactions]](/topic/microservices/event-strategies) for related patterns.
-            </div>
-          </div>
+</div>
+</div>
 
           ---
 
           ## Key Takeaways
 
-          <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
-            1. **<span style="color: #22c55e;">Decouples Sender from Receiver</span>** - Sender doesn't know which handler will process the request
+1. **<span style="color: #22c55e;">Decouples Sender from Receiver</span>** - Sender doesn't know which handler will process the request
 
-            2. **<span style="color: #22c55e;">Dynamic Handler Selection</span>** - Chain determines the right handler at runtime
+2. **<span style="color: #22c55e;">Dynamic Handler Selection</span>** - Chain determines the right handler at runtime
 
-            3. **<span style="color: #22c55e;">Single Responsibility</span>** - Each handler focuses on one concern (auth, logging, validation)
+3. **<span style="color: #22c55e;">Single Responsibility</span>** - Each handler focuses on one concern (auth, logging, validation)
 
-            4. **<span style="color: #22c55e;">Order Matters</span>** - Handler sequence affects behavior (always auth before rate limit)
+4. **<span style="color: #22c55e;">Order Matters</span>** - Handler sequence affects behavior (always auth before rate limit)
 
-            5. **<span style="color: #22c55e;">Always Have a Default</span>** - Ensure requests don't fall through unhandled
+5. **<span style="color: #22c55e;">Always Have a Default</span>** - Ensure requests don't fall through unhandled
 
-            6. **<span style="color: #22c55e;">Pipeline vs First-Match</span>** - Understand whether all handlers should execute or just the first match
+6. **<span style="color: #22c55e;">Pipeline vs First-Match</span>** - Understand whether all handlers should execute or just the first match
 
-            7. **<span style="color: #22c55e;">Request Enrichment</span>** - Upstream handlers add context for downstream handlers
+7. **<span style="color: #22c55e;">Request Enrichment</span>** - Upstream handlers add context for downstream handlers
 
-            8. **<span style="color: #22c55e;">Error Handling Strategy</span>** - Plan for failures at any point in the chain
+8. **<span style="color: #22c55e;">Error Handling Strategy</span>** - Plan for failures at any point in the chain
 
-          </div>
+</div>
 
           ---
 

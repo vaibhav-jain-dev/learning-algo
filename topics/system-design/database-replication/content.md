@@ -7,13 +7,13 @@
 The key challenge is keeping all copies synchronized - when you update the original, how and when do the copies get updated? This decision profoundly impacts your system's consistency, availability, and performance characteristics.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
-  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Trade-off Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
+<h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Trade-off Equation</h4>
+<div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
     Replication = Consistency vs Availability vs Latency
-  </div>
-  <div style="margin-top: 16px; color: #475569; font-size: 14px; text-align: center;">
+</div>
+<div style="margin-top: 16px; color: #475569; font-size: 14px; text-align: center;">
     Synchronous replication favors consistency; Asynchronous replication favors availability and latency
-  </div>
+</div>
 </div>
 
 **Critical Assumption**: Replication assumes that network partitions are rare but possible. The choice between synchronous and asynchronous replication fundamentally determines how your system behaves during these partitions.
@@ -25,56 +25,56 @@ The key challenge is keeping all copies synchronized - when you update the origi
 ## Database Replication Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">DATABASE REPLICATION TOPOLOGY COMPARISON</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">DATABASE REPLICATION TOPOLOGY COMPARISON</div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">SINGLE-PRIMARY (Master-Slave)</div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-        <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">SINGLE-PRIMARY (Master-Slave)</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600;">
           PRIMARY (Writes)
-        </div>
-        <div style="display: flex; gap: 8px; color: #6366f1;">
-          <span style="font-size: 20px;">|</span>
-          <span style="font-size: 20px;">|</span>
-          <span style="font-size: 20px;">|</span>
-        </div>
-        <div style="display: flex; gap: 12px;">
-          <div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 1</div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 2</div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 3</div>
-        </div>
-        <div style="color: #64748b; font-size: 12px; text-align: center; margin-top: 8px;">One writer, multiple readers</div>
-      </div>
-    </div>
+</div>
+<div style="display: flex; gap: 8px; color: #6366f1;">
+<span style="font-size: 20px;">|</span>
+<span style="font-size: 20px;">|</span>
+<span style="font-size: 20px;">|</span>
+</div>
+<div style="display: flex; gap: 12px;">
+<div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 1</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 2</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 6px; font-size: 14px;">Replica 3</div>
+</div>
+<div style="color: #64748b; font-size: 12px; text-align: center; margin-top: 8px;">One writer, multiple readers</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">MULTI-PRIMARY (Master-Master)</div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-        <div style="display: flex; gap: 16px;">
-          <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">MULTI-PRIMARY (Master-Master)</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+<div style="display: flex; gap: 16px;">
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
             PRIMARY A
-          </div>
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d97706;">
-            <span style="font-size: 12px;">sync</span>
-            <span>⟷</span>
-          </div>
-          <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d97706;">
+<span style="font-size: 12px;">sync</span>
+<span>⟷</span>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
             PRIMARY B
-          </div>
-        </div>
-        <div style="display: flex; gap: 40px; color: #92400e; font-size: 16px;">
-          <span>|</span>
-          <span>|</span>
-        </div>
-        <div style="display: flex; gap: 40px;">
-          <div style="background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 6px; font-size: 13px;">Replica</div>
-          <div style="background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 6px; font-size: 13px;">Replica</div>
-        </div>
-        <div style="color: #64748b; font-size: 12px; text-align: center; margin-top: 8px;">Multiple writers, conflict resolution required</div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+<div style="display: flex; gap: 40px; color: #92400e; font-size: 16px;">
+<span>|</span>
+<span>|</span>
+</div>
+<div style="display: flex; gap: 40px;">
+<div style="background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 6px; font-size: 13px;">Replica</div>
+<div style="background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 6px; font-size: 13px;">Replica</div>
+</div>
+<div style="color: #64748b; font-size: 12px; text-align: center; margin-top: 8px;">Multiple writers, conflict resolution required</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -85,7 +85,7 @@ The key challenge is keeping all copies synchronized - when you update the origi
 
   **Netflix** uses replication across multiple AWS regions. When you press play, you're often reading from a replica geographically close to you, reducing latency from 200ms to 20ms.
 
-  **GitHub** replicates every repository to multiple data centers. When their primary DC had issues in 2018, they failed over to replicas - but a 43-second <span style="color: #10b981; font-weight: 600;">replication lag</span> caused some data inconsistency, teaching them to improve their replication monitoring.
+**GitHub** replicates every repository to multiple data centers. When their primary DC had issues in 2018, they failed over to replicas - but a 43-second <span style="color: #10b981; font-weight: 600;">replication lag</span> caused some data inconsistency, teaching them to improve their replication monitoring.
 
   **Shopify** handles Black Friday traffic (4M+ requests/second) by routing reads to replicas while writes go to the primary. This lets them scale reads infinitely without overloading their write path.
 
@@ -102,58 +102,58 @@ The key challenge is keeping all copies synchronized - when you update the origi
 <span style="color: #10b981; font-weight: 600;">Master-slave replication</span> (also called primary-replica or leader-follower) is the most common replication topology. One database node (the primary/master) accepts all write operations and propagates changes to read-only replicas (slaves/followers).
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MASTER-SLAVE WRITE PROPAGATION FLOW</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MASTER-SLAVE WRITE PROPAGATION FLOW</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); border-radius: 8px; padding: 12px 20px; color: white;">
-        <span style="font-weight: 600;">Application</span>
-      </div>
-      <div style="display: flex; flex-direction: column; align-items: center; color: #6366f1;">
-        <span style="font-size: 12px;">INSERT/UPDATE</span>
-        <span style="font-size: 18px;">→</span>
-      </div>
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; padding: 12px 20px; color: white; border: 3px solid #1e40af;">
-        <span style="font-weight: 600;">PRIMARY</span>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); border-radius: 8px; padding: 12px 20px; color: white;">
+<span style="font-weight: 600;">Application</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; color: #6366f1;">
+<span style="font-size: 12px;">INSERT/UPDATE</span>
+<span style="font-size: 18px;">→</span>
+</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; padding: 12px 20px; color: white; border: 3px solid #1e40af;">
+<span style="font-weight: 600;">PRIMARY</span>
+</div>
+</div>
 
-    <div style="margin-left: 180px; background: #f1f5f9; border-radius: 8px; padding: 16px; max-width: 400px;">
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Primary Actions:</div>
-      <div style="color: #475569; font-size: 14px; line-height: 1.8;">
-        <div>1. Execute transaction locally</div>
-        <div>2. Write to binary log (MySQL) or WAL (PostgreSQL)</div>
-        <div>3. Commit transaction</div>
-        <div>4. Send log events to replicas</div>
-      </div>
-    </div>
+<div style="margin-left: 180px; background: #f1f5f9; border-radius: 8px; padding: 16px; max-width: 400px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Primary Actions:</div>
+<div style="color: #475569; font-size: 14px; line-height: 1.8;">
+<div>1. Execute transaction locally</div>
+<div>2. Write to binary log (MySQL) or WAL (PostgreSQL)</div>
+<div>3. Commit transaction</div>
+<div>4. Send log events to replicas</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: flex-start; gap: 16px; margin-left: 180px; flex-wrap: wrap;">
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-        <div style="color: #22c55e; font-size: 14px;">binlog/WAL</div>
-        <div style="display: flex; gap: 24px;">
-          <span style="color: #22c55e; font-size: 18px;">↓</span>
-          <span style="color: #22c55e; font-size: 18px;">↓</span>
-          <span style="color: #22c55e; font-size: 18px;">↓</span>
-        </div>
-      </div>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin-left: 180px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="color: #22c55e; font-size: 14px;">binlog/WAL</div>
+<div style="display: flex; gap: 24px;">
+<span style="color: #22c55e; font-size: 18px;">↓</span>
+<span style="color: #22c55e; font-size: 18px;">↓</span>
+<span style="color: #22c55e; font-size: 18px;">↓</span>
+</div>
+</div>
+</div>
 
-    <div style="display: flex; gap: 16px; margin-left: 140px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac;">
-        <div style="color: #166534; font-weight: 600;">Replica 1</div>
-        <div style="color: #22c55e; font-size: 11px;">lag: 50ms</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac;">
-        <div style="color: #166534; font-weight: 600;">Replica 2</div>
-        <div style="color: #22c55e; font-size: 11px;">lag: 120ms</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #fca5a5;">
-        <div style="color: #991b1b; font-weight: 600;">Replica 3</div>
-        <div style="color: #ef4444; font-size: 11px;">lag: 5s (degraded)</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; gap: 16px; margin-left: 140px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600;">Replica 1</div>
+<div style="color: #22c55e; font-size: 11px;">lag: 50ms</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600;">Replica 2</div>
+<div style="color: #22c55e; font-size: 11px;">lag: 120ms</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600;">Replica 3</div>
+<div style="color: #ef4444; font-size: 11px;">lag: 5s (degraded)</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Replication Architecture
@@ -268,45 +268,45 @@ class ReplicationManager:
 ### Edge Cases and Failure Modes
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases in Master-Slave Replication</h4>
-  <div style="display: grid; gap: 12px;">
-    <div style="background: white; padding: 16px; border-radius: 8px;">
-      <strong style="color: #92400e;">Primary Crash Before Binlog Flush</strong>
-      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Transaction commits to storage but binlog event not yet written. After failover, promoted replica is missing this transaction. Solution: Use <span style="color: #10b981; font-weight: 600;">sync_binlog=1</span> (MySQL) to flush binlog on every commit, at cost of write performance.</p>
-    </div>
-    <div style="background: white; padding: 16px; border-radius: 8px;">
-      <strong style="color: #92400e;">Binlog Purged Before Replica Caught Up</strong>
-      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Primary rotates and deletes old binlog files. Slow replica needs events from deleted file. Solution: Monitor replica lag, set <code>expire_logs_days</code> conservatively, or use GTID for position-independent replay.</p>
-    </div>
-    <div style="background: white; padding: 16px; border-radius: 8px;">
-      <strong style="color: #92400e;">Replica Drift Due to Direct Writes</strong>
-      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Someone writes directly to replica (e.g., for analytics). Data diverges from primary. Replication breaks on conflicting changes. Solution: Set <code>read_only=ON</code> on all replicas, enforce at network level.</p>
-    </div>
-    <div style="background: white; padding: 16px; border-radius: 8px;">
-      <strong style="color: #92400e;">Split-Brain After Network Partition</strong>
-      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Network partition isolates primary. Automated failover promotes replica. Partition heals - now two primaries. Solution: Use <span style="color: #10b981; font-weight: 600;">fencing</span> (STONITH) to shut down old primary, or quorum-based [[consensus-algorithms]](/topic/system-design/consensus-algorithms).</p>
-    </div>
-  </div>
+<h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases in Master-Slave Replication</h4>
+<div style="display: grid; gap: 12px;">
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<strong style="color: #92400e;">Primary Crash Before Binlog Flush</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Transaction commits to storage but binlog event not yet written. After failover, promoted replica is missing this transaction. Solution: Use <span style="color: #10b981; font-weight: 600;">sync_binlog=1</span> (MySQL) to flush binlog on every commit, at cost of write performance.</p>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<strong style="color: #92400e;">Binlog Purged Before Replica Caught Up</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Primary rotates and deletes old binlog files. Slow replica needs events from deleted file. Solution: Monitor replica lag, set <code>expire_logs_days</code> conservatively, or use GTID for position-independent replay.</p>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<strong style="color: #92400e;">Replica Drift Due to Direct Writes</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Someone writes directly to replica (e.g., for analytics). Data diverges from primary. Replication breaks on conflicting changes. Solution: Set <code>read_only=ON</code> on all replicas, enforce at network level.</p>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<strong style="color: #92400e;">Split-Brain After Network Partition</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Network partition isolates primary. Automated failover promotes replica. Partition heals - now two primaries. Solution: Use <span style="color: #10b981; font-weight: 600;">fencing</span> (STONITH) to shut down old primary, or quorum-based [[consensus-algorithms]](/topic/system-design/consensus-algorithms).</p>
+</div>
+</div>
 </div>
 
 ### Master-Slave Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is master-slave replication and when would you use it?</h4>
+<h4 style="color: #1e40af; margin-top: 0;">Level 1: What is master-slave replication and when would you use it?</h4>
 
-  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Master-slave replication is a database topology where one primary node accepts all writes and replicates changes to one or more read-only replica nodes. Use it when you need: (1) Read scalability - distribute read traffic across replicas, (2) High availability - promote a replica if primary fails, (3) Geographic distribution - place replicas close to users, (4) Backup isolation - take backups from replica without impacting primary. The trade-off is eventual consistency on reads from replicas.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Master-slave replication is a database topology where one primary node accepts all writes and replicates changes to one or more read-only replica nodes. Use it when you need: (1) Read scalability - distribute read traffic across replicas, (2) High availability - promote a replica if primary fails, (3) Geographic distribution - place replicas close to users, (4) Backup isolation - take backups from replica without impacting primary. The trade-off is eventual consistency on reads from replicas.</p>
 
-  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle the "read-your-writes" consistency problem in a read-replica architecture?</h5>
+<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle the "read-your-writes" consistency problem in a read-replica architecture?</h5>
 
-    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Read-your-writes consistency</span> ensures users always see their own recent writes. Solutions: (1) <strong>Sticky sessions</strong>: Route user's reads to primary for N seconds after their writes. (2) <strong>Causal consistency tokens</strong>: Track write position (LSN/GTID), only read from replicas that have reached that position. (3) <strong>Synchronous replication</strong>: Wait for at least one replica to confirm before returning success (adds latency). (4) <strong>Application-level caching</strong>: Cache written data client-side, merge with replica reads. Best approach depends on use case - social media can tolerate lag, banking cannot. See [[caching]](/topic/system-design/caching) for cache-aside patterns.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Read-your-writes consistency</span> ensures users always see their own recent writes. Solutions: (1) <strong>Sticky sessions</strong>: Route user's reads to primary for N seconds after their writes. (2) <strong>Causal consistency tokens</strong>: Track write position (LSN/GTID), only read from replicas that have reached that position. (3) <strong>Synchronous replication</strong>: Wait for at least one replica to confirm before returning success (adds latency). (4) <strong>Application-level caching</strong>: Cache written data client-side, merge with replica reads. Best approach depends on use case - social media can tolerate lag, banking cannot. See [[caching]](/topic/system-design/caching) for cache-aside patterns.</p>
 
-    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-      <h6 style="color: #1e40af; margin-top: 0;">Level 3: Your primary fails and you need to promote a replica. How do you ensure no data loss and prevent split-brain?</h6>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+<h6 style="color: #1e40af; margin-top: 0;">Level 3: Your primary fails and you need to promote a replica. How do you ensure no data loss and prevent split-brain?</h6>
 
-      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires coordinated failover with multiple safety mechanisms. (1) <strong>Data loss prevention</strong>: Before failover, check all replicas' replication lag. Promote the replica with lowest lag (most up-to-date). If using semi-synchronous replication, at least one replica has all committed transactions. If primary is reachable but unhealthy, drain remaining binlog before shutdown. (2) <strong>Split-brain prevention</strong>: Use <span style="color: #10b981; font-weight: 600;">fencing</span> (STONITH - Shoot The Other Node In The Head) to forcibly power off old primary before promotion. Use <span style="color: #10b981; font-weight: 600;">quorum-based leader election</span> - only promote if majority of nodes agree old primary is down. Implement <span style="color: #10b981; font-weight: 600;">epoch numbers</span> - increment epoch on promotion, reject writes from lower epochs. (3) <strong>Client redirection</strong>: Update DNS (slow, TTL issues), virtual IP failover (fast, same network), or service discovery update. (4) <strong>Post-failover</strong>: When old primary recovers, it must rejoin as replica, not as primary. Validate data consistency with checksum comparison. Tools: MySQL Orchestrator, PostgreSQL Patroni, or cloud-managed failover (RDS Multi-AZ). Related: [[distributed-locking]](/topic/system-design/distributed-locking) for coordinating failover.</p>
-    </div>
-  </div>
+<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires coordinated failover with multiple safety mechanisms. (1) <strong>Data loss prevention</strong>: Before failover, check all replicas' replication lag. Promote the replica with lowest lag (most up-to-date). If using semi-synchronous replication, at least one replica has all committed transactions. If primary is reachable but unhealthy, drain remaining binlog before shutdown. (2) <strong>Split-brain prevention</strong>: Use <span style="color: #10b981; font-weight: 600;">fencing</span> (STONITH - Shoot The Other Node In The Head) to forcibly power off old primary before promotion. Use <span style="color: #10b981; font-weight: 600;">quorum-based leader election</span> - only promote if majority of nodes agree old primary is down. Implement <span style="color: #10b981; font-weight: 600;">epoch numbers</span> - increment epoch on promotion, reject writes from lower epochs. (3) <strong>Client redirection</strong>: Update DNS (slow, TTL issues), virtual IP failover (fast, same network), or service discovery update. (4) <strong>Post-failover</strong>: When old primary recovers, it must rejoin as replica, not as primary. Validate data consistency with checksum comparison. Tools: MySQL Orchestrator, PostgreSQL Patroni, or cloud-managed failover (RDS Multi-AZ). Related: [[distributed-locking]](/topic/system-design/distributed-locking) for coordinating failover.</p>
+</div>
+</div>
 </div>
 
 ---
@@ -318,99 +318,99 @@ class ReplicationManager:
 <span style="color: #10b981; font-weight: 600;">Multi-master replication</span> allows multiple nodes to accept writes simultaneously. Each primary replicates its changes to other primaries, creating a mesh of bidirectional replication. This provides write availability during partitions but introduces the challenge of <span style="color: #10b981; font-weight: 600;">write conflicts</span>.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MULTI-MASTER REPLICATION WITH CONFLICT DETECTION</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MULTI-MASTER REPLICATION WITH CONFLICT DETECTION</div>
 
-  <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
+<div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
         Region US-EAST
-      </div>
-      <div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #1e40af;">
+</div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #1e40af;">
         Primary A
-      </div>
-      <div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
+</div>
+<div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
         User: Alice = 100
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-      <div style="color: #6366f1; font-size: 12px;">bidirectional sync</div>
-      <div style="color: #6366f1; font-size: 24px;">⟷</div>
-      <div style="background: #fef2f2; padding: 8px 16px; border-radius: 6px; border: 1px solid #fca5a5;">
-        <div style="color: #991b1b; font-size: 12px; font-weight: 600;">CONFLICT!</div>
-        <div style="color: #7f1d1d; font-size: 11px;">Both wrote same row</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="color: #6366f1; font-size: 12px;">bidirectional sync</div>
+<div style="color: #6366f1; font-size: 24px;">⟷</div>
+<div style="background: #fef2f2; padding: 8px 16px; border-radius: 6px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-size: 12px; font-weight: 600;">CONFLICT!</div>
+<div style="color: #7f1d1d; font-size: 11px;">Both wrote same row</div>
+</div>
+</div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
         Region EU-WEST
-      </div>
-      <div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #166534;">
+</div>
+<div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #166534;">
         Primary B
-      </div>
-      <div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
+</div>
+<div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
         User: Alice = 150
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 24px; text-align: center; color: #64748b; font-size: 13px;">
+<div style="margin-top: 24px; text-align: center; color: #64748b; font-size: 13px;">
     Concurrent writes to the same row create conflicts requiring resolution strategy
-  </div>
+</div>
 </div>
 
 ### When to Use Multi-Master
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-        <strong style="color: #166534;">Good Use Cases</strong>
-        <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
-          <li>Geographic write locality (reduce latency)</li>
-          <li>Write availability during network partitions</li>
-          <li>Collaborative editing (with CRDTs)</li>
-          <li>Mobile offline-first applications</li>
-        </ul>
-      </div>
-    </div>
-    <div>
-      <div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-        <strong style="color: #991b1b;">Poor Use Cases</strong>
-        <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
-          <li>Strong consistency requirements</li>
-          <li>Financial transactions</li>
-          <li>Inventory management</li>
-          <li>Anything needing ACID guarantees</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<strong style="color: #166534;">Good Use Cases</strong>
+<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+<li>Geographic write locality (reduce latency)</li>
+<li>Write availability during network partitions</li>
+<li>Collaborative editing (with CRDTs)</li>
+<li>Mobile offline-first applications</li>
+</ul>
+</div>
+</div>
+<div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<strong style="color: #991b1b;">Poor Use Cases</strong>
+<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+<li>Strong consistency requirements</li>
+<li>Financial transactions</li>
+<li>Inventory management</li>
+<li>Anything needing ACID guarantees</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 
 ### Conflict Resolution Strategies
 
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc;">Conflict Resolution Approaches</h4>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Last-Write-Wins (LWW)</strong>
-      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Timestamp-based. Higher timestamp wins. Simple but causes data loss. Requires synchronized clocks. Used by: Cassandra, DynamoDB.</p>
-    </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Custom Merge Functions</strong>
-      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Application-specific logic. E.g., for counters: add deltas. For sets: union. Requires domain knowledge. Used by: CouchDB.</p>
-    </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">CRDTs (Conflict-free Replicated Data Types)</strong>
-      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Mathematically guaranteed convergence. G-Counter, PN-Counter, OR-Set. No conflicts by design. Used by: Riak, Redis CRDT.</p>
-    </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Operational Transform (OT)</strong>
-      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Transform operations against concurrent ops. Complex implementation. Used by: Google Docs, real-time collaboration.</p>
-    </div>
-  </div>
+<h4 style="margin-top: 0; color: #f8fafc;">Conflict Resolution Approaches</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
+<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+<strong style="color: white;">Last-Write-Wins (LWW)</strong>
+<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Timestamp-based. Higher timestamp wins. Simple but causes data loss. Requires synchronized clocks. Used by: Cassandra, DynamoDB.</p>
+</div>
+<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+<strong style="color: white;">Custom Merge Functions</strong>
+<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Application-specific logic. E.g., for counters: add deltas. For sets: union. Requires domain knowledge. Used by: CouchDB.</p>
+</div>
+<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+<strong style="color: white;">CRDTs (Conflict-free Replicated Data Types)</strong>
+<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Mathematically guaranteed convergence. G-Counter, PN-Counter, OR-Set. No conflicts by design. Used by: Riak, Redis CRDT.</p>
+</div>
+<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+<strong style="color: white;">Operational Transform (OT)</strong>
+<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Transform operations against concurrent ops. Complex implementation. Used by: Google Docs, real-time collaboration.</p>
+</div>
+</div>
 </div>
 
 ### Conflict Resolution Implementation
@@ -655,21 +655,21 @@ class LWWRegister:
 ### Multi-Master Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Level 1: What are the trade-offs between single-primary and multi-primary replication?</h4>
+<h4 style="color: #1e40af; margin-top: 0;">Level 1: What are the trade-offs between single-primary and multi-primary replication?</h4>
 
-  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Single-primary guarantees no write conflicts - all writes go to one node, providing strong consistency. Multi-primary allows writes at any node, providing better write availability and lower write latency (local writes), but requires conflict resolution. Single-primary has a write throughput ceiling (one node); multi-primary can theoretically scale writes. Single-primary failover has a brief write outage; multi-primary continues serving writes during partitions. Choose single-primary for transactional workloads; multi-primary for global distribution with eventual consistency tolerance.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Single-primary guarantees no write conflicts - all writes go to one node, providing strong consistency. Multi-primary allows writes at any node, providing better write availability and lower write latency (local writes), but requires conflict resolution. Single-primary has a write throughput ceiling (one node); multi-primary can theoretically scale writes. Single-primary failover has a brief write outage; multi-primary continues serving writes during partitions. Choose single-primary for transactional workloads; multi-primary for global distribution with eventual consistency tolerance.</p>
 
-  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-    <h5 style="color: #1e40af; margin-top: 0;">Level 2: Explain the Last-Write-Wins conflict resolution strategy and its limitations.</h5>
+<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h5 style="color: #1e40af; margin-top: 0;">Level 2: Explain the Last-Write-Wins conflict resolution strategy and its limitations.</h5>
 
-    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Last-Write-Wins (LWW)</span> resolves conflicts by comparing timestamps - the write with the highest timestamp wins, others are discarded. Limitations: (1) <strong>Data loss</strong>: Concurrent updates are silently dropped. If User A sets balance=100 and User B sets balance=200 concurrently, one is lost. (2) <strong>Clock synchronization</strong>: Requires synchronized clocks (NTP), but clock skew can cause "earlier" writes to win. (3) <strong>Causality violation</strong>: Doesn't respect happens-before relationships. A reply might be kept while the original message is deleted. (4) <strong>Tiebreaker ambiguity</strong>: Equal timestamps need deterministic tiebreaker (node ID hash). Use cases: Configuration/settings (overwrite is fine), caching (stale data acceptable). Avoid for: Financial transactions, inventory, messaging.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Last-Write-Wins (LWW)</span> resolves conflicts by comparing timestamps - the write with the highest timestamp wins, others are discarded. Limitations: (1) <strong>Data loss</strong>: Concurrent updates are silently dropped. If User A sets balance=100 and User B sets balance=200 concurrently, one is lost. (2) <strong>Clock synchronization</strong>: Requires synchronized clocks (NTP), but clock skew can cause "earlier" writes to win. (3) <strong>Causality violation</strong>: Doesn't respect happens-before relationships. A reply might be kept while the original message is deleted. (4) <strong>Tiebreaker ambiguity</strong>: Equal timestamps need deterministic tiebreaker (node ID hash). Use cases: Configuration/settings (overwrite is fine), caching (stale data acceptable). Avoid for: Financial transactions, inventory, messaging.</p>
 
-    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-      <h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you design a shopping cart that works across multiple data centers with multi-master replication?</h6>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+<h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you design a shopping cart that works across multiple data centers with multi-master replication?</h6>
 
-      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Use <span style="color: #10b981; font-weight: 600;">CRDTs</span> to make the cart conflict-free by design. Model the cart as an <strong>OR-Set (Observed-Remove Set)</strong> where each item addition includes a unique tag. Structure: <code>cart = {(item_id, quantity, add_tag, remove_tags)}</code>. (1) <strong>Add item</strong>: Generate unique tag, add (item, qty, tag, {}) to set. (2) <strong>Remove item</strong>: Don't delete - add all observed add_tags to remove_tags. (3) <strong>Merge</strong>: Union all additions, union all removals. Item is present if any add_tag is not in remove_tags. (4) <strong>Quantity changes</strong>: Model as PN-Counter per item (positive/negative counters). Alternatively, use <strong>operation-based replication</strong>: replicate operations (add_item, remove_item, update_qty) instead of state, apply operations idempotently using operation IDs. Edge cases: (a) Checkout must happen at single DC with inventory check - use [[distributed-locking]](/topic/system-design/distributed-locking) or route checkout to home region. (b) Price changes during cart lifetime - resolve at checkout, not in cart. Companies using this: Amazon (eventual consistency carts), Walmart.</p>
-    </div>
-  </div>
+<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Use <span style="color: #10b981; font-weight: 600;">CRDTs</span> to make the cart conflict-free by design. Model the cart as an <strong>OR-Set (Observed-Remove Set)</strong> where each item addition includes a unique tag. Structure: <code>cart = {(item_id, quantity, add_tag, remove_tags)}</code>. (1) <strong>Add item</strong>: Generate unique tag, add (item, qty, tag, {}) to set. (2) <strong>Remove item</strong>: Don't delete - add all observed add_tags to remove_tags. (3) <strong>Merge</strong>: Union all additions, union all removals. Item is present if any add_tag is not in remove_tags. (4) <strong>Quantity changes</strong>: Model as PN-Counter per item (positive/negative counters). Alternatively, use <strong>operation-based replication</strong>: replicate operations (add_item, remove_item, update_qty) instead of state, apply operations idempotently using operation IDs. Edge cases: (a) Checkout must happen at single DC with inventory check - use [[distributed-locking]](/topic/system-design/distributed-locking) or route checkout to home region. (b) Price changes during cart lifetime - resolve at checkout, not in cart. Companies using this: Amazon (eventual consistency carts), Walmart.</p>
+</div>
+</div>
 </div>
 
 ---
@@ -681,81 +681,81 @@ class LWWRegister:
 The choice between <span style="color: #10b981; font-weight: 600;">synchronous</span> and <span style="color: #10b981; font-weight: 600;">asynchronous replication</span> is the fundamental trade-off in database replication design. It determines the balance between data safety (durability) and write performance (latency).
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SYNCHRONOUS VS ASYNCHRONOUS REPLICATION</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SYNCHRONOUS VS ASYNCHRONOUS REPLICATION</div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">SYNCHRONOUS</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">1</span>
-          <span style="color: #1e293b;">Client sends write</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">2</span>
-          <span style="color: #1e293b;">Primary writes locally</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">3</span>
-          <span style="color: #1e293b;">Primary sends to replica(s)</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</span>
-          <span style="color: #92400e; font-weight: 600;">WAIT for replica ACK</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">5</span>
-          <span style="color: #1e293b;">Return success to client</span>
-        </div>
-      </div>
-      <div style="margin-top: 16px; background: rgba(34, 197, 94, 0.15); border-radius: 6px; padding: 12px;">
-        <div style="color: #166534; font-size: 12px; font-weight: 600;">GUARANTEES:</div>
-        <div style="color: #166534; font-size: 12px;">Zero data loss on primary failure</div>
-        <div style="color: #166534; font-size: 12px;">Strong consistency</div>
-      </div>
-      <div style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 12px;">
-        <div style="color: #991b1b; font-size: 12px; font-weight: 600;">COSTS:</div>
-        <div style="color: #991b1b; font-size: 12px;">+2x network RTT per write</div>
-        <div style="color: #991b1b; font-size: 12px;">Replica failure blocks writes</div>
-      </div>
-    </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">SYNCHRONOUS</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">1</span>
+<span style="color: #1e293b;">Client sends write</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">2</span>
+<span style="color: #1e293b;">Primary writes locally</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">3</span>
+<span style="color: #1e293b;">Primary sends to replica(s)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</span>
+<span style="color: #92400e; font-weight: 600;">WAIT for replica ACK</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">5</span>
+<span style="color: #1e293b;">Return success to client</span>
+</div>
+</div>
+<div style="margin-top: 16px; background: rgba(34, 197, 94, 0.15); border-radius: 6px; padding: 12px;">
+<div style="color: #166534; font-size: 12px; font-weight: 600;">GUARANTEES:</div>
+<div style="color: #166534; font-size: 12px;">Zero data loss on primary failure</div>
+<div style="color: #166534; font-size: 12px;">Strong consistency</div>
+</div>
+<div style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 12px;">
+<div style="color: #991b1b; font-size: 12px; font-weight: 600;">COSTS:</div>
+<div style="color: #991b1b; font-size: 12px;">+2x network RTT per write</div>
+<div style="color: #991b1b; font-size: 12px;">Replica failure blocks writes</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">ASYNCHRONOUS</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">1</span>
-          <span style="color: #1e293b;">Client sends write</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">2</span>
-          <span style="color: #1e293b;">Primary writes locally</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">3</span>
-          <span style="color: #166534; font-weight: 600;">Return success IMMEDIATELY</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #94a3b8; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</span>
-          <span style="color: #64748b;">Send to replica (background)</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #94a3b8; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">5</span>
-          <span style="color: #64748b;">Replica applies eventually</span>
-        </div>
-      </div>
-      <div style="margin-top: 16px; background: rgba(34, 197, 94, 0.15); border-radius: 6px; padding: 12px;">
-        <div style="color: #166534; font-size: 12px; font-weight: 600;">GUARANTEES:</div>
-        <div style="color: #166534; font-size: 12px;">Low write latency</div>
-        <div style="color: #166534; font-size: 12px;">Replica failure doesn't block</div>
-      </div>
-      <div style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 12px;">
-        <div style="color: #991b1b; font-size: 12px; font-weight: 600;">COSTS:</div>
-        <div style="color: #991b1b; font-size: 12px;">Data loss window (replication lag)</div>
-        <div style="color: #991b1b; font-size: 12px;">Eventual consistency only</div>
-      </div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">ASYNCHRONOUS</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">1</span>
+<span style="color: #1e293b;">Client sends write</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">2</span>
+<span style="color: #1e293b;">Primary writes locally</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">3</span>
+<span style="color: #166534; font-weight: 600;">Return success IMMEDIATELY</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #94a3b8; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</span>
+<span style="color: #64748b;">Send to replica (background)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #94a3b8; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px;">5</span>
+<span style="color: #64748b;">Replica applies eventually</span>
+</div>
+</div>
+<div style="margin-top: 16px; background: rgba(34, 197, 94, 0.15); border-radius: 6px; padding: 12px;">
+<div style="color: #166534; font-size: 12px; font-weight: 600;">GUARANTEES:</div>
+<div style="color: #166534; font-size: 12px;">Low write latency</div>
+<div style="color: #166534; font-size: 12px;">Replica failure doesn't block</div>
+</div>
+<div style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; padding: 12px;">
+<div style="color: #991b1b; font-size: 12px; font-weight: 600;">COSTS:</div>
+<div style="color: #991b1b; font-size: 12px;">Data loss window (replication lag)</div>
+<div style="color: #991b1b; font-size: 12px;">Eventual consistency only</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Semi-Synchronous Replication
@@ -763,21 +763,21 @@ The choice between <span style="color: #10b981; font-weight: 600;">synchronous</
 <span style="color: #10b981; font-weight: 600;">Semi-synchronous replication</span> is a hybrid approach that balances durability and performance. The primary waits for acknowledgment from at least one replica before returning success, but not all replicas.
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
-  <h4 style="color: #166534; margin-top: 0;">Semi-Synchronous (MySQL rpl_semi_sync)</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px;">
-    <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e293b; font-weight: 600;">AFTER_SYNC</div>
-      <div style="color: #475569; font-size: 13px; margin-top: 8px;">Wait for replica ACK before storage engine commit. Guarantees replica has transaction on failover.</div>
-    </div>
-    <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e293b; font-weight: 600;">AFTER_COMMIT</div>
-      <div style="color: #475569; font-size: 13px; margin-top: 8px;">Wait for replica ACK after commit. Client sees success before replication. Window for data loss.</div>
-    </div>
-    <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e293b; font-weight: 600;">Fallback</div>
-      <div style="color: #475569; font-size: 13px; margin-top: 8px;">If no replica ACKs within timeout, fall back to async. Prevents write stall but loses guarantee.</div>
-    </div>
-  </div>
+<h4 style="color: #166534; margin-top: 0;">Semi-Synchronous (MySQL rpl_semi_sync)</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px;">
+<div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e293b; font-weight: 600;">AFTER_SYNC</div>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">Wait for replica ACK before storage engine commit. Guarantees replica has transaction on failover.</div>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e293b; font-weight: 600;">AFTER_COMMIT</div>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">Wait for replica ACK after commit. Client sees success before replication. Window for data loss.</div>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e293b; font-weight: 600;">Fallback</div>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">If no replica ACKs within timeout, fall back to async. Prevents write stall but loses guarantee.</div>
+</div>
+</div>
 </div>
 
 ### Replication Mode Implementation
@@ -1001,21 +1001,21 @@ class ReplicationCoordinator:
 ### Sync vs Async Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the difference between synchronous and asynchronous replication?</h4>
+<h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the difference between synchronous and asynchronous replication?</h4>
 
-  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> In <span style="color: #10b981; font-weight: 600;">synchronous replication</span>, the primary waits for replicas to confirm they've received and persisted the data before acknowledging the write to the client. This guarantees no data loss on primary failure but adds latency. In <span style="color: #10b981; font-weight: 600;">asynchronous replication</span>, the primary acknowledges writes immediately after local commit, replicating in the background. This provides low latency but creates a window where committed data could be lost if the primary fails before replication completes.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> In <span style="color: #10b981; font-weight: 600;">synchronous replication</span>, the primary waits for replicas to confirm they've received and persisted the data before acknowledging the write to the client. This guarantees no data loss on primary failure but adds latency. In <span style="color: #10b981; font-weight: 600;">asynchronous replication</span>, the primary acknowledges writes immediately after local commit, replicating in the background. This provides low latency but creates a window where committed data could be lost if the primary fails before replication completes.</p>
 
-  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How does semi-synchronous replication work and when should you use it?</h5>
+<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h5 style="color: #1e40af; margin-top: 0;">Level 2: How does semi-synchronous replication work and when should you use it?</h5>
 
-    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Semi-synchronous replication</span> is a hybrid: the primary waits for at least one replica to acknowledge before returning success to the client. If no replica responds within a timeout, it can fall back to async mode (configurable). Use semi-sync when: (1) You need durability guarantees stronger than async but can't tolerate sync's latency. (2) You have multiple replicas and one slow replica shouldn't block all writes. (3) You're willing to accept degraded mode (async fallback) during replica failures. MySQL's semi-sync has two variants: <code>AFTER_SYNC</code> (wait before engine commit) and <code>AFTER_COMMIT</code> (wait after engine commit). AFTER_SYNC is safer as clients don't see committed data before replication. Trade-off: during fallback, you lose the durability guarantee. Monitor fallback rate and alert.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Semi-synchronous replication</span> is a hybrid: the primary waits for at least one replica to acknowledge before returning success to the client. If no replica responds within a timeout, it can fall back to async mode (configurable). Use semi-sync when: (1) You need durability guarantees stronger than async but can't tolerate sync's latency. (2) You have multiple replicas and one slow replica shouldn't block all writes. (3) You're willing to accept degraded mode (async fallback) during replica failures. MySQL's semi-sync has two variants: <code>AFTER_SYNC</code> (wait before engine commit) and <code>AFTER_COMMIT</code> (wait after engine commit). AFTER_SYNC is safer as clients don't see committed data before replication. Trade-off: during fallback, you lose the durability guarantee. Monitor fallback rate and alert.</p>
 
-    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-      <h6 style="color: #1e40af; margin-top: 0;">Level 3: You're designing a financial system that needs strong durability but also 10ms write latency with replicas in different regions (100ms RTT). How do you architect this?</h6>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+<h6 style="color: #1e40af; margin-top: 0;">Level 3: You're designing a financial system that needs strong durability but also 10ms write latency with replicas in different regions (100ms RTT). How do you architect this?</h6>
 
-      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> You can't have both 10ms latency AND cross-region synchronous replication (100ms RTT makes this impossible). Solution architecture: (1) <strong>Local synchronous replication</strong>: Deploy 3 replicas in the same region/availability zone (1-2ms RTT). Use synchronous replication within region - writes complete in ~15ms with 2x local RTT. (2) <strong>Cross-region async replication</strong>: Replicate asynchronously to disaster recovery region. Accept data loss window equal to replication lag (~100-500ms). (3) <strong>Quorum writes</strong>: Use [[consensus-algorithms]](/topic/system-design/consensus-algorithms) (Raft/Paxos) with 3 local nodes. Write succeeds when 2/3 acknowledge (majority quorum). Survives one node failure without data loss. (4) <strong>Commit semantics</strong>: Client can request <code>COMMIT_SYNC</code> (wait for local quorum) or <code>COMMIT_DURABLE</code> (wait for cross-region, higher latency). (5) <strong>Failure handling</strong>: Local region failure fails over to DR region - accept potential data loss for transactions in flight. Implement idempotency keys and reconciliation for critical transactions. Examples: Spanner uses Paxos per shard; CockroachDB uses Raft per range. See [[cap-theorem]](/topic/system-design/cap-theorem) for theoretical constraints.</p>
-    </div>
-  </div>
+<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> You can't have both 10ms latency AND cross-region synchronous replication (100ms RTT makes this impossible). Solution architecture: (1) <strong>Local synchronous replication</strong>: Deploy 3 replicas in the same region/availability zone (1-2ms RTT). Use synchronous replication within region - writes complete in ~15ms with 2x local RTT. (2) <strong>Cross-region async replication</strong>: Replicate asynchronously to disaster recovery region. Accept data loss window equal to replication lag (~100-500ms). (3) <strong>Quorum writes</strong>: Use [[consensus-algorithms]](/topic/system-design/consensus-algorithms) (Raft/Paxos) with 3 local nodes. Write succeeds when 2/3 acknowledge (majority quorum). Survives one node failure without data loss. (4) <strong>Commit semantics</strong>: Client can request <code>COMMIT_SYNC</code> (wait for local quorum) or <code>COMMIT_DURABLE</code> (wait for cross-region, higher latency). (5) <strong>Failure handling</strong>: Local region failure fails over to DR region - accept potential data loss for transactions in flight. Implement idempotency keys and reconciliation for critical transactions. Examples: Spanner uses Paxos per shard; CockroachDB uses Raft per range. See [[cap-theorem]](/topic/system-design/cap-theorem) for theoretical constraints.</p>
+</div>
+</div>
 </div>
 
 ---
@@ -1027,88 +1027,88 @@ class ReplicationCoordinator:
 <span style="color: #10b981; font-weight: 600;">Replication lag</span> is the delay between when a transaction commits on the primary and when it becomes visible on a replica. This lag is inherent in asynchronous replication and creates consistency challenges.
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <h4 style="color: #991b1b; margin-top: 0;">The Replication Lag Problem</h4>
+<h4 style="color: #991b1b; margin-top: 0;">The Replication Lag Problem</h4>
 
-  <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Scenario: User Updates Profile</div>
-    <div style="font-family: monospace; font-size: 13px; color: #475569; line-height: 1.8;">
-      <div>T=0ms: User writes "name=Alice" to PRIMARY</div>
-      <div>T=1ms: PRIMARY confirms "Success!" to user</div>
-      <div>T=2ms: User reads from REPLICA (load balanced)</div>
-      <div>T=3ms: REPLICA still shows "name=Bob" (replication lag!)</div>
-      <div style="color: #ef4444; font-weight: 600; margin-top: 8px;">Result: User sees old data immediately after update - confusion!</div>
-    </div>
-  </div>
+<div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Scenario: User Updates Profile</div>
+<div style="font-family: monospace; font-size: 13px; color: #475569; line-height: 1.8;">
+<div>T=0ms: User writes "name=Alice" to PRIMARY</div>
+<div>T=1ms: PRIMARY confirms "Success!" to user</div>
+<div>T=2ms: User reads from REPLICA (load balanced)</div>
+<div>T=3ms: REPLICA still shows "name=Bob" (replication lag!)</div>
+<div style="color: #ef4444; font-weight: 600; margin-top: 8px;">Result: User sees old data immediately after update - confusion!</div>
+</div>
+</div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: white; border-radius: 8px; padding: 16px;">
-      <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Causes of Lag</div>
-      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
-        <li>Network latency (especially cross-region)</li>
-        <li>Replica under heavy read load</li>
-        <li>Large transactions (long to apply)</li>
-        <li>DDL operations blocking replication</li>
-        <li>Single-threaded SQL apply (MySQL)</li>
-      </ul>
-    </div>
-    <div style="background: white; border-radius: 8px; padding: 16px;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Monitoring Metrics</div>
-      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
-        <li><code>Seconds_Behind_Master</code> (MySQL)</li>
-        <li><code>pg_stat_replication.replay_lag</code> (PostgreSQL)</li>
-        <li>Binlog position delta</li>
-        <li>GTID gap (MySQL 5.6+)</li>
-        <li>Write timestamp vs replica timestamp</li>
-      </ul>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: white; border-radius: 8px; padding: 16px;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Causes of Lag</div>
+<ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
+<li>Network latency (especially cross-region)</li>
+<li>Replica under heavy read load</li>
+<li>Large transactions (long to apply)</li>
+<li>DDL operations blocking replication</li>
+<li>Single-threaded SQL apply (MySQL)</li>
+</ul>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Monitoring Metrics</div>
+<ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
+<li><code>Seconds_Behind_Master</code> (MySQL)</li>
+<li><code>pg_stat_replication.replay_lag</code> (PostgreSQL)</li>
+<li>Binlog position delta</li>
+<li>GTID gap (MySQL 5.6+)</li>
+<li>Write timestamp vs replica timestamp</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### Lag Mitigation Strategies
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">REPLICATION LAG MITIGATION STRATEGIES</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">REPLICATION LAG MITIGATION STRATEGIES</div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">1. Read-Your-Writes Routing</div>
-      <div style="color: #475569; font-size: 14px;">Track recent write timestamps per session. Route reads to primary for N seconds after write, then allow replica reads.</div>
-      <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">1. Read-Your-Writes Routing</div>
+<div style="color: #475569; font-size: 14px;">Track recent write timestamps per session. Route reads to primary for N seconds after write, then allow replica reads.</div>
+<div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
         if (now - last_write) &lt; 5s:<br>
           &nbsp;&nbsp;return read_from_primary()<br>
             else:<br>
               &nbsp;&nbsp;return read_from_replica()
-            </div>
-          </div>
+</div>
+</div>
 
-          <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
-            <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">2. Causal Consistency Tokens</div>
-            <div style="color: #475569; font-size: 14px;">Return write position (LSN/GTID) with write response. Client includes token with subsequent reads. Replica waits until caught up.</div>
-            <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 12px;">2. Causal Consistency Tokens</div>
+<div style="color: #475569; font-size: 14px;">Return write position (LSN/GTID) with write response. Client includes token with subsequent reads. Replica waits until caught up.</div>
+<div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
               write_response.token = gtid<br>
                 read(token) => wait_for(replica.gtid >= token)
-              </div>
-            </div>
+</div>
+</div>
 
-            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
-              <div style="color: #92400e; font-weight: 600; margin-bottom: 12px;">3. Lag-Aware Load Balancing</div>
-              <div style="color: #475569; font-size: 14px;">Monitor each replica's lag. Exclude replicas exceeding threshold. Route to lowest-lag replica for time-sensitive reads.</div>
-              <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 12px;">3. Lag-Aware Load Balancing</div>
+<div style="color: #475569; font-size: 14px;">Monitor each replica's lag. Exclude replicas exceeding threshold. Route to lowest-lag replica for time-sensitive reads.</div>
+<div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
                 replicas = filter(r.lag &lt; 1s)<br>
                   return min(replicas, key=lag)
-                </div>
-              </div>
+</div>
+</div>
 
-              <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border: 1px solid #f9a8d4;">
-                <div style="color: #9d174d; font-weight: 600; margin-bottom: 12px;">4. Parallel Replication</div>
-                <div style="color: #475569; font-size: 14px;">Apply transactions in parallel on replica. MySQL 5.7+ supports parallel apply per schema. MySQL 8.0+ supports writeset-based parallelism.</div>
-                <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border: 1px solid #f9a8d4;">
+<div style="color: #9d174d; font-weight: 600; margin-bottom: 12px;">4. Parallel Replication</div>
+<div style="color: #475569; font-size: 14px;">Apply transactions in parallel on replica. MySQL 5.7+ supports parallel apply per schema. MySQL 8.0+ supports writeset-based parallelism.</div>
+<div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
                   slave_parallel_workers = 16<br>
                     slave_parallel_type = LOGICAL_CLOCK
-                  </div>
-                </div>
-              </div>
-            </div>
+</div>
+</div>
+</div>
+</div>
 
             ### Replication Lag Implementation
 
@@ -1348,23 +1348,23 @@ class ReplicationCoordinator:
 
             ### Replication Lag Interview Questions (3 Levels Deep)
 
-            <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-              <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is replication lag and why is it problematic?</h4>
+<div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e40af; margin-top: 0;">Level 1: What is replication lag and why is it problematic?</h4>
 
-              <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Replication lag</span> is the delay between when a transaction commits on the primary and when it's applied on a replica. It's problematic because it causes stale reads: a user who just updated their profile might see old data when their read is load-balanced to a lagging replica. In write-heavy systems, lag can grow during peak traffic, causing reads to return data that's seconds or minutes old. During failover, lag determines potential data loss - if the promoted replica was 30 seconds behind, those 30 seconds of transactions may be lost.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> <span style="color: #10b981; font-weight: 600;">Replication lag</span> is the delay between when a transaction commits on the primary and when it's applied on a replica. It's problematic because it causes stale reads: a user who just updated their profile might see old data when their read is load-balanced to a lagging replica. In write-heavy systems, lag can grow during peak traffic, causing reads to return data that's seconds or minutes old. During failover, lag determines potential data loss - if the promoted replica was 30 seconds behind, those 30 seconds of transactions may be lost.</p>
 
-              <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-                <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you implement "read-your-writes" consistency in a replicated database?</h5>
+<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you implement "read-your-writes" consistency in a replicated database?</h5>
 
-                <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Multiple approaches with different trade-offs: (1) <strong>Sticky sessions to primary</strong>: After a write, route that user's reads to primary for N seconds. Simple but increases primary load. (2) <strong>Position-based routing</strong>: Write returns a position token (GTID/LSN). Subsequent reads include this token; route to replicas that have reached that position. More complex but precise. (3) <strong>Synchronous commit</strong>: Wait for replica acknowledgment before returning success. Guarantees replica has data but adds latency. (4) <strong>Application-level caching</strong>: Cache written data locally, merge with replica reads. Works for simple cases but complex for related entities. (5) <strong>Monotonic reads</strong>: Track highest read position per session, only route to replicas at or past that position. Best practice: combine approach 2 (position tokens) with fallback to primary. See [[caching]](/topic/system-design/caching) for cache patterns.</p>
+<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Multiple approaches with different trade-offs: (1) <strong>Sticky sessions to primary</strong>: After a write, route that user's reads to primary for N seconds. Simple but increases primary load. (2) <strong>Position-based routing</strong>: Write returns a position token (GTID/LSN). Subsequent reads include this token; route to replicas that have reached that position. More complex but precise. (3) <strong>Synchronous commit</strong>: Wait for replica acknowledgment before returning success. Guarantees replica has data but adds latency. (4) <strong>Application-level caching</strong>: Cache written data locally, merge with replica reads. Works for simple cases but complex for related entities. (5) <strong>Monotonic reads</strong>: Track highest read position per session, only route to replicas at or past that position. Best practice: combine approach 2 (position tokens) with fallback to primary. See [[caching]](/topic/system-design/caching) for cache patterns.</p>
 
-                <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-                  <h6 style="color: #1e40af; margin-top: 0;">Level 3: Your MySQL replica is consistently 10+ seconds behind during peak hours, causing user complaints. Walk through your debugging and remediation process.</h6>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+<h6 style="color: #1e40af; margin-top: 0;">Level 3: Your MySQL replica is consistently 10+ seconds behind during peak hours, causing user complaints. Walk through your debugging and remediation process.</h6>
 
-                  <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Systematic debugging approach: (1) <strong>Identify bottleneck type</strong>: Check <code>SHOW SLAVE STATUS</code> - is <code>Seconds_Behind_Master</code> increasing (falling behind) or stable (steady-state lag)? Check <code>Slave_IO_Running</code> and <code>Slave_SQL_Running</code>. (2) <strong>IO thread vs SQL thread</strong>: If <code>Master_Log_File</code> matches <code>Relay_Master_Log_File</code>, IO thread is keeping up - bottleneck is SQL apply. If they differ, network or primary is the bottleneck. (3) <strong>SQL thread analysis</strong>: Run <code>SHOW PROCESSLIST</code> on replica. Is SQL thread stuck on one query? Large transactions (ALTER TABLE, bulk INSERT) block replication. Check for lock waits from replica reads. (4) <strong>Remediation for slow apply</strong>: Enable parallel replication (<code>slave_parallel_workers=16</code>, <code>slave_parallel_type=LOGICAL_CLOCK</code>). Move replica to SSD for faster disk writes. Reduce replica read load. (5) <strong>Remediation for large transactions</strong>: Break bulk operations into smaller batches on primary. Use <code>pt-online-schema-change</code> for DDL. (6) <strong>Remediation for network</strong>: Increase <code>slave_net_timeout</code>. Use compression (<code>slave_compressed_protocol=1</code>). Place replica in same datacenter. (7) <strong>Long-term</strong>: If single replica can't keep up, add more replicas to distribute read load. Consider [[database-sharding]](/topic/system-design/database-sharding) to reduce per-shard write volume. Implement [[circuit-breaker]](/topic/design-patterns/circuit-breaker) to route away from lagging replicas.</p>
-                </div>
-              </div>
-            </div>
+<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Systematic debugging approach: (1) <strong>Identify bottleneck type</strong>: Check <code>SHOW SLAVE STATUS</code> - is <code>Seconds_Behind_Master</code> increasing (falling behind) or stable (steady-state lag)? Check <code>Slave_IO_Running</code> and <code>Slave_SQL_Running</code>. (2) <strong>IO thread vs SQL thread</strong>: If <code>Master_Log_File</code> matches <code>Relay_Master_Log_File</code>, IO thread is keeping up - bottleneck is SQL apply. If they differ, network or primary is the bottleneck. (3) <strong>SQL thread analysis</strong>: Run <code>SHOW PROCESSLIST</code> on replica. Is SQL thread stuck on one query? Large transactions (ALTER TABLE, bulk INSERT) block replication. Check for lock waits from replica reads. (4) <strong>Remediation for slow apply</strong>: Enable parallel replication (<code>slave_parallel_workers=16</code>, <code>slave_parallel_type=LOGICAL_CLOCK</code>). Move replica to SSD for faster disk writes. Reduce replica read load. (5) <strong>Remediation for large transactions</strong>: Break bulk operations into smaller batches on primary. Use <code>pt-online-schema-change</code> for DDL. (6) <strong>Remediation for network</strong>: Increase <code>slave_net_timeout</code>. Use compression (<code>slave_compressed_protocol=1</code>). Place replica in same datacenter. (7) <strong>Long-term</strong>: If single replica can't keep up, add more replicas to distribute read load. Consider [[database-sharding]](/topic/system-design/database-sharding) to reduce per-shard write volume. Implement [[circuit-breaker]](/topic/design-patterns/circuit-breaker) to route away from lagging replicas.</p>
+</div>
+</div>
+</div>
 
             ---
 
@@ -1372,106 +1372,106 @@ class ReplicationCoordinator:
 
             ### Deep Mechanics
 
-            <span style="color: #10b981; font-weight: 600;">Failover</span> is the process of promoting a replica to become the new primary when the current primary fails. It's one of the most critical operations in a replicated database system.
+<span style="color: #10b981; font-weight: 600;">Failover</span> is the process of promoting a replica to become the new primary when the current primary fails. It's one of the most critical operations in a replicated database system.
 
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-              <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">AUTOMATIC FAILOVER PROCESS</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">AUTOMATIC FAILOVER PROCESS</div>
 
-              <div style="display: flex; flex-direction: column; gap: 24px;">
-                <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
-                  <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 2px solid #22c55e;">
-                    <div style="color: #166534; font-weight: 600;">PRIMARY</div>
-                    <div style="color: #22c55e; font-size: 12px;">(Active)</div>
-                  </div>
-                  <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                      <span style="color: #6366f1; font-size: 16px;">→</span>
-                      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
-                        <div style="color: #475569; font-weight: 500;">Replica 1</div>
-                        <div style="color: #22c55e; font-size: 11px;">lag: 0.1s</div>
-                      </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                      <span style="color: #6366f1; font-size: 16px;">→</span>
-                      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
-                        <div style="color: #475569; font-weight: 500;">Replica 2</div>
-                        <div style="color: #f59e0b; font-size: 11px;">lag: 2.5s</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="color: #64748b; font-size: 14px; margin-left: auto;">BEFORE FAILURE</div>
-                </div>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">PRIMARY</div>
+<div style="color: #22c55e; font-size: 12px;">(Active)</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<span style="color: #6366f1; font-size: 16px;">→</span>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
+<div style="color: #475569; font-weight: 500;">Replica 1</div>
+<div style="color: #22c55e; font-size: 11px;">lag: 0.1s</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<span style="color: #6366f1; font-size: 16px;">→</span>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
+<div style="color: #475569; font-weight: 500;">Replica 2</div>
+<div style="color: #f59e0b; font-size: 11px;">lag: 2.5s</div>
+</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 14px; margin-left: auto;">BEFORE FAILURE</div>
+</div>
 
-                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                  <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 2px solid #ef4444;">
-                    <div style="color: #991b1b; font-weight: 600;">PRIMARY</div>
-                    <div style="color: #ef4444; font-size: 12px;">FAILED!</div>
-                  </div>
-                  <div style="flex: 1; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; border: 1px solid #93c5fd;">
-                    <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Failover Steps:</div>
-                    <div style="color: #1e293b; font-size: 13px; line-height: 1.8;">
-                      <div>1. Detect failure (heartbeat timeout 10-30s)</div>
-                      <div>2. Fence old primary (STONITH)</div>
-                      <div>3. Select best replica (lowest lag)</div>
-                      <div>4. Wait for replica to apply remaining relay log</div>
-                      <div>5. Promote replica to primary (read-write)</div>
-                      <div>6. Reconfigure other replicas to follow new primary</div>
-                      <div>7. Update DNS/VIP/proxy routing</div>
-                    </div>
-                  </div>
-                </div>
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 2px solid #ef4444;">
+<div style="color: #991b1b; font-weight: 600;">PRIMARY</div>
+<div style="color: #ef4444; font-size: 12px;">FAILED!</div>
+</div>
+<div style="flex: 1; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Failover Steps:</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.8;">
+<div>1. Detect failure (heartbeat timeout 10-30s)</div>
+<div>2. Fence old primary (STONITH)</div>
+<div>3. Select best replica (lowest lag)</div>
+<div>4. Wait for replica to apply remaining relay log</div>
+<div>5. Promote replica to primary (read-write)</div>
+<div>6. Reconfigure other replicas to follow new primary</div>
+<div>7. Update DNS/VIP/proxy routing</div>
+</div>
+</div>
+</div>
 
-                <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
-                  <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 1px dashed #94a3b8; opacity: 0.6;">
-                    <div style="color: #475569; font-weight: 600; text-decoration: line-through;">OLD PRIMARY</div>
-                    <div style="color: #94a3b8; font-size: 12px;">(Fenced)</div>
-                  </div>
-                  <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 14px; min-width: 130px; text-align: center; border: 2px solid #22c55e;">
-                        <div style="color: #166534; font-weight: 600;">NEW PRIMARY</div>
-                        <div style="color: #22c55e; font-size: 11px;">(Promoted Replica 1)</div>
-                      </div>
-                      <span style="color: #6366f1; font-size: 16px;">→</span>
-                      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
-                        <div style="color: #475569; font-weight: 500;">Replica 2</div>
-                        <div style="color: #64748b; font-size: 11px;">(Reconfigured)</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="color: #64748b; font-size: 14px; margin-left: auto;">AFTER FAILOVER</div>
-                </div>
-              </div>
-            </div>
+<div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 12px; padding: 20px; min-width: 150px; text-align: center; border: 1px dashed #94a3b8; opacity: 0.6;">
+<div style="color: #475569; font-weight: 600; text-decoration: line-through;">OLD PRIMARY</div>
+<div style="color: #94a3b8; font-size: 12px;">(Fenced)</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 14px; min-width: 130px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">NEW PRIMARY</div>
+<div style="color: #22c55e; font-size: 11px;">(Promoted Replica 1)</div>
+</div>
+<span style="color: #6366f1; font-size: 16px;">→</span>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 14px; min-width: 120px; text-align: center; border: 1px solid #cbd5e1;">
+<div style="color: #475569; font-weight: 500;">Replica 2</div>
+<div style="color: #64748b; font-size: 11px;">(Reconfigured)</div>
+</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 14px; margin-left: auto;">AFTER FAILOVER</div>
+</div>
+</div>
+</div>
 
             ### Split-Brain Prevention
 
-            <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-              <h4 style="color: #991b1b; margin-top: 0;">Split-Brain: The Worst-Case Scenario</h4>
+<div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #991b1b; margin-top: 0;">Split-Brain: The Worst-Case Scenario</h4>
 
-              <p style="color: #7f1d1d; margin-bottom: 16px;"><span style="color: #10b981; font-weight: 600;">Split-brain</span> occurs when network partition causes two nodes to both believe they are the primary, accepting writes independently. This causes data divergence that's extremely difficult to reconcile.</p>
+<p style="color: #7f1d1d; margin-bottom: 16px;"><span style="color: #10b981; font-weight: 600;">Split-brain</span> occurs when network partition causes two nodes to both believe they are the primary, accepting writes independently. This causes data divergence that's extremely difficult to reconcile.</p>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div style="background: white; padding: 16px; border-radius: 8px;">
-                  <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Prevention Techniques</div>
-                  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
-                    <li><strong>STONITH</strong>: Shoot The Other Node In The Head - forcibly power off old primary</li>
-                    <li><strong>Quorum</strong>: Require majority agreement before promotion</li>
-                    <li><strong>Fencing</strong>: Block old primary's access to shared storage</li>
-                    <li><strong>Lease-based leadership</strong>: Primary must renew lease periodically</li>
-                  </ul>
-                </div>
-                <div style="background: white; padding: 16px; border-radius: 8px;">
-                  <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Detection & Recovery</div>
-                  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
-                    <li><strong>Epoch numbers</strong>: Reject writes from lower epoch</li>
-                    <li><strong>Global transaction IDs</strong>: Detect divergent transactions</li>
-                    <li><strong>Conflict detection</strong>: Compare binlogs after network heals</li>
-                    <li><strong>Manual reconciliation</strong>: DBA decides which transactions to keep</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Prevention Techniques</div>
+<ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
+<li><strong>STONITH</strong>: Shoot The Other Node In The Head - forcibly power off old primary</li>
+<li><strong>Quorum</strong>: Require majority agreement before promotion</li>
+<li><strong>Fencing</strong>: Block old primary's access to shared storage</li>
+<li><strong>Lease-based leadership</strong>: Primary must renew lease periodically</li>
+</ul>
+</div>
+<div style="background: white; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Detection & Recovery</div>
+<ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 13px;">
+<li><strong>Epoch numbers</strong>: Reject writes from lower epoch</li>
+<li><strong>Global transaction IDs</strong>: Detect divergent transactions</li>
+<li><strong>Conflict detection</strong>: Compare binlogs after network heals</li>
+<li><strong>Manual reconciliation</strong>: DBA decides which transactions to keep</li>
+</ul>
+</div>
+</div>
+</div>
 
             ### Failover Implementation
 
@@ -1778,108 +1778,108 @@ class ReplicationCoordinator:
 
             ## Common Pitfalls
 
-            <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-              <h4 style="color: #991b1b; margin-top: 0;">Critical Replication Anti-Patterns</h4>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<h4 style="color: #991b1b; margin-top: 0;">Critical Replication Anti-Patterns</h4>
 
-              <div style="display: grid; gap: 16px;">
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">1. Ignoring Replication Lag</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Reading from replica immediately after write returns stale data. Users see "their update didn't work." <strong>Solution:</strong> Implement read-your-writes consistency with position tokens or sticky sessions. Monitor lag and route around lagging replicas.</p>
-                </div>
+<div style="display: grid; gap: 16px;">
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">1. Ignoring Replication Lag</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Reading from replica immediately after write returns stale data. Users see "their update didn't work." <strong>Solution:</strong> Implement read-your-writes consistency with position tokens or sticky sessions. Monitor lag and route around lagging replicas.</p>
+</div>
 
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">2. Split-Brain on Network Partition</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Both sides of partition think they're primary; both accept writes; data diverges. <strong>Solution:</strong> Use quorum-based leader election with [[consensus-algorithms]](/topic/system-design/consensus-algorithms). Implement STONITH fencing. Use epoch/term numbers to reject stale primaries.</p>
-                </div>
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">2. Split-Brain on Network Partition</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Both sides of partition think they're primary; both accept writes; data diverges. <strong>Solution:</strong> Use quorum-based leader election with [[consensus-algorithms]](/topic/system-design/consensus-algorithms). Implement STONITH fencing. Use epoch/term numbers to reject stale primaries.</p>
+</div>
 
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">3. Promoting Lagged Replica</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Failover promotes replica that's minutes behind; recently committed transactions are lost. <strong>Solution:</strong> Always select replica with lowest lag. Wait for relay log to be fully applied before promotion. Use semi-sync replication for zero data loss guarantee.</p>
-                </div>
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">3. Promoting Lagged Replica</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Failover promotes replica that's minutes behind; recently committed transactions are lost. <strong>Solution:</strong> Always select replica with lowest lag. Wait for relay log to be fully applied before promotion. Use semi-sync replication for zero data loss guarantee.</p>
+</div>
 
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">4. Not Testing Failover</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> First failover is during a real outage. Process is broken, takes hours. <strong>Solution:</strong> Regular failover drills (monthly). Chaos engineering: randomly kill primary in production. Document runbooks for manual failover.</p>
-                </div>
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">4. Not Testing Failover</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> First failover is during a real outage. Process is broken, takes hours. <strong>Solution:</strong> Regular failover drills (monthly). Chaos engineering: randomly kill primary in production. Document runbooks for manual failover.</p>
+</div>
 
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">5. Synchronous Replication Over WAN</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Cross-region sync replication adds 100ms+ to every write; application becomes unusable. <strong>Solution:</strong> Use sync replication only within datacenter. Use async or semi-sync for cross-region DR. Accept RPO > 0 for geo-distributed systems.</p>
-                </div>
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">5. Synchronous Replication Over WAN</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Cross-region sync replication adds 100ms+ to every write; application becomes unusable. <strong>Solution:</strong> Use sync replication only within datacenter. Use async or semi-sync for cross-region DR. Accept RPO > 0 for geo-distributed systems.</p>
+</div>
 
-                <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                  <strong style="color: #991b1b;">6. Writing to Replicas</strong>
-                  <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Developer or script writes directly to replica; data diverges from primary; replication breaks. <strong>Solution:</strong> Set <code>read_only=ON</code> on all replicas. Use network-level access control. Monitor for unexpected writes.</p>
-                </div>
-              </div>
-            </div>
+<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #991b1b;">6. Writing to Replicas</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Problem:</strong> Developer or script writes directly to replica; data diverges from primary; replication breaks. <strong>Solution:</strong> Set <code>read_only=ON</code> on all replicas. Use network-level access control. Monitor for unexpected writes.</p>
+</div>
+</div>
+</div>
 
             ---
 
             ## Quick Reference
 
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-              <h4 style="color: #1e293b; margin-top: 0; font-size: 18px;">Database Replication Cheat Sheet</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h4 style="color: #1e293b; margin-top: 0; font-size: 18px;">Database Replication Cheat Sheet</h4>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                <div>
-                  <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Topology Selection</div>
-                  <div style="font-size: 14px; color: #475569; line-height: 1.8;">
-                    <div><strong>Single-Primary:</strong> Strong consistency, simple, most use cases</div>
-                    <div><strong>Multi-Primary:</strong> Write locality, conflict resolution needed</div>
-                    <div><strong>Chain:</strong> Reduce primary load, increased total lag</div>
-                  </div>
-                </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Topology Selection</div>
+<div style="font-size: 14px; color: #475569; line-height: 1.8;">
+<div><strong>Single-Primary:</strong> Strong consistency, simple, most use cases</div>
+<div><strong>Multi-Primary:</strong> Write locality, conflict resolution needed</div>
+<div><strong>Chain:</strong> Reduce primary load, increased total lag</div>
+</div>
+</div>
 
-                <div>
-                  <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Replication Mode</div>
-                  <div style="font-size: 14px; color: #475569; line-height: 1.8;">
-                    <div><strong>Sync:</strong> Zero data loss, high latency</div>
-                    <div><strong>Semi-sync:</strong> Balanced, 1+ replica ack</div>
-                    <div><strong>Async:</strong> Low latency, data loss window</div>
-                  </div>
-                </div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Replication Mode</div>
+<div style="font-size: 14px; color: #475569; line-height: 1.8;">
+<div><strong>Sync:</strong> Zero data loss, high latency</div>
+<div><strong>Semi-sync:</strong> Balanced, 1+ replica ack</div>
+<div><strong>Async:</strong> Low latency, data loss window</div>
+</div>
+</div>
 
-                <div>
-                  <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Conflict Resolution</div>
-                  <div style="font-size: 14px; color: #475569; line-height: 1.8;">
-                    <div><strong>LWW:</strong> Simple, loses data</div>
-                    <div><strong>Custom merge:</strong> Domain-specific, complex</div>
-                    <div><strong>CRDTs:</strong> Conflict-free by design</div>
-                  </div>
-                </div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Conflict Resolution</div>
+<div style="font-size: 14px; color: #475569; line-height: 1.8;">
+<div><strong>LWW:</strong> Simple, loses data</div>
+<div><strong>Custom merge:</strong> Domain-specific, complex</div>
+<div><strong>CRDTs:</strong> Conflict-free by design</div>
+</div>
+</div>
 
-                <div>
-                  <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Key Metrics</div>
-                  <div style="font-size: 14px; color: #475569; line-height: 1.8;">
-                    <div><strong>Lag:</strong> Seconds_Behind_Master &lt; 5s</div>
-                    <div><strong>GTID gap:</strong> Should be 0</div>
-                    <div><strong>Replication threads:</strong> Both running</div>
-                  </div>
-                </div>
-              </div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Key Metrics</div>
+<div style="font-size: 14px; color: #475569; line-height: 1.8;">
+<div><strong>Lag:</strong> Seconds_Behind_Master &lt; 5s</div>
+<div><strong>GTID gap:</strong> Should be 0</div>
+<div><strong>Replication threads:</strong> Both running</div>
+</div>
+</div>
+</div>
 
-              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-                <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Failover Checklist</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; font-size: 13px;">
-                  <div style="color: #475569;">
-                    <div>[ ] Confirm primary dead</div>
-                    <div>[ ] Acquire quorum lock</div>
-                    <div>[ ] Fence old primary</div>
-                  </div>
-                  <div style="color: #475569;">
-                    <div>[ ] Select lowest-lag replica</div>
-                    <div>[ ] Wait for relay log apply</div>
-                    <div>[ ] Promote to primary</div>
-                  </div>
-                  <div style="color: #475569;">
-                    <div>[ ] Reconfigure other replicas</div>
-                    <div>[ ] Update DNS/routing</div>
-                    <div>[ ] Verify write path</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Failover Checklist</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; font-size: 13px;">
+<div style="color: #475569;">
+<div>[ ] Confirm primary dead</div>
+<div>[ ] Acquire quorum lock</div>
+<div>[ ] Fence old primary</div>
+</div>
+<div style="color: #475569;">
+<div>[ ] Select lowest-lag replica</div>
+<div>[ ] Wait for relay log apply</div>
+<div>[ ] Promote to primary</div>
+</div>
+<div style="color: #475569;">
+<div>[ ] Reconfigure other replicas</div>
+<div>[ ] Update DNS/routing</div>
+<div>[ ] Verify write path</div>
+</div>
+</div>
+</div>
+</div>
 
             ---
 

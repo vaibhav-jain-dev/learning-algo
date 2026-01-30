@@ -5,43 +5,43 @@
 Docker is a platform for developing, shipping, and running applications in containers. <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Containers package an application with all its dependencies, ensuring it runs consistently across any environment</span>.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Docker Architecture</h4>
-  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-    <div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Docker Client</div>
-      <div style="font-size: 12px; opacity: 0.9;">docker CLI</div>
-    </div>
-    <div style="display: flex; align-items: center; font-size: 24px;">→</div>
-    <div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Docker Daemon</div>
-      <div style="font-size: 12px; opacity: 0.9;">dockerd</div>
-    </div>
-    <div style="display: flex; align-items: center; font-size: 24px;">→</div>
-    <div style="display: flex; flex-direction: column; gap: 8px;">
-      <div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Containers</div>
-      <div style="background: #f97316; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Images</div>
-      <div style="background: #06b6d4; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Volumes</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Docker Architecture</h4>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Docker Client</div>
+<div style="font-size: 12px; opacity: 0.9;">docker CLI</div>
+</div>
+<div style="display: flex; align-items: center; font-size: 24px;">→</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Docker Daemon</div>
+<div style="font-size: 12px; opacity: 0.9;">dockerd</div>
+</div>
+<div style="display: flex; align-items: center; font-size: 24px;">→</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Containers</div>
+<div style="background: #f97316; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Images</div>
+<div style="background: #06b6d4; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px;">Volumes</div>
+</div>
+</div>
 </div>
 
 ### Key Concepts
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-    <div style="background: #eff6ff; border-radius: 8px; padding: 16px;">
-      <div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px;">Image</div>
-      <div style="color: #475569; font-size: 14px;">Read-only template with instructions for creating a container. Built from Dockerfile.</div>
-    </div>
-    <div style="background: #f0fdf4; border-radius: 8px; padding: 16px;">
-      <div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">Container</div>
-      <div style="color: #475569; font-size: 14px;">Running instance of an image. Isolated process with its own filesystem, networking.</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 8px; padding: 16px;">
-      <div style="color: #b45309; font-weight: 600; margin-bottom: 8px;">Volume</div>
-      <div style="color: #475569; font-size: 14px;">Persistent storage that exists outside container lifecycle. Data survives container deletion.</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px;">Image</div>
+<div style="color: #475569; font-size: 14px;">Read-only template with instructions for creating a container. Built from Dockerfile.</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px;">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">Container</div>
+<div style="color: #475569; font-size: 14px;">Running instance of an image. Isolated process with its own filesystem, networking.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px;">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px;">Volume</div>
+<div style="color: #475569; font-size: 14px;">Persistent storage that exists outside container lifecycle. Data survives container deletion.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -51,7 +51,7 @@ Docker is a platform for developing, shipping, and running applications in conta
 ### Container Lifecycle
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Running Containers</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Running Containers</h4>
 
   ```bash
   # Run a container (pulls image if not local)
@@ -106,7 +106,7 @@ Docker is a platform for developing, shipping, and running applications in conta
 ### Managing Containers
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Container Management</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Container Management</h4>
 
   ```bash
   # List running containers
@@ -153,12 +153,12 @@ Docker is a platform for developing, shipping, and running applications in conta
               docker rm -f $(docker ps -aq)
               # What it does: Force removes all containers
               ```
-            </div>
+</div>
 
             ### Container Inspection & Debugging
 
-            <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-              <h4 style="color: #1e293b; margin-top: 0;">Debugging Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Debugging Commands</h4>
 
               ```bash
               # View container logs
@@ -217,12 +217,12 @@ Docker is a platform for developing, shipping, and running applications in conta
                                       docker diff <container>
                                         # What it does: Shows files added/changed/deleted since container started
                                         ```
-                                      </div>
+</div>
 
                                       ### Working with Images
 
-                                      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                        <h4 style="color: #1e293b; margin-top: 0;">Image Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Image Commands</h4>
 
                                         ```bash
                                         # List local images
@@ -277,12 +277,12 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         docker load < nginx.tar
                                         # What it does: Imports image from tar archive
                                         ```
-                                      </div>
+</div>
 
                                       ### Building Images
 
-                                      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                        <h4 style="color: #1e293b; margin-top: 0;">Build Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Build Commands</h4>
 
                                         ```bash
                                         # Build image from Dockerfile in current directory
@@ -313,12 +313,12 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         docker builder prune
                                         # What it does: Removes build cache to free space
                                         ```
-                                      </div>
+</div>
 
                                       ### Volumes & Storage
 
-                                      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                        <h4 style="color: #1e293b; margin-top: 0;">Volume Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Volume Commands</h4>
 
                                         ```bash
                                         # Create a volume
@@ -357,12 +357,12 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         docker run -d --tmpfs /tmp nginx
                                         # What it does: Creates temporary filesystem in memory
                                         ```
-                                      </div>
+</div>
 
                                       ### Networking
 
-                                      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                        <h4 style="color: #1e293b; margin-top: 0;">Network Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Network Commands</h4>
 
                                         ```bash
                                         # List networks
@@ -402,21 +402,21 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             # What it does: Removes all unused networks
                                             ```
 
-                                            <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
-                                              <div style="font-weight: 600; color: #1e293b; margin-bottom: 8px;">Network Types</div>
-                                              <div style="font-size: 14px; color: #475569;">
-                                                <div style="padding: 4px 0;"><strong>bridge:</strong> Default. Containers can communicate via IP or container name</div>
-                                                <div style="padding: 4px 0;"><strong>host:</strong> Container shares host's network stack directly</div>
-                                                <div style="padding: 4px 0;"><strong>none:</strong> No networking</div>
-                                                <div style="padding: 4px 0;"><strong>overlay:</strong> Multi-host networking (Docker Swarm)</div>
-                                              </div>
-                                            </div>
-                                          </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="font-weight: 600; color: #1e293b; margin-bottom: 8px;">Network Types</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 4px 0;"><strong>bridge:</strong> Default. Containers can communicate via IP or container name</div>
+<div style="padding: 4px 0;"><strong>host:</strong> Container shares host's network stack directly</div>
+<div style="padding: 4px 0;"><strong>none:</strong> No networking</div>
+<div style="padding: 4px 0;"><strong>overlay:</strong> Multi-host networking (Docker Swarm)</div>
+</div>
+</div>
+</div>
 
                                           ### Docker Compose
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                            <h4 style="color: #1e293b; margin-top: 0;">Compose Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Compose Commands</h4>
 
                                             ```bash
                                             # Start services defined in docker-compose.yml
@@ -472,14 +472,14 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             docker compose config
                                             # What it does: Validates and shows resolved config
                                             ```
-                                          </div>
+</div>
 
                                           ---
 
                                           ## Dockerfile Best Practices
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                            <h4 style="color: #1e293b; margin-top: 0;">Example Dockerfile</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Example Dockerfile</h4>
 
                                             ```dockerfile
                                             # Use specific version, prefer slim/alpine images
@@ -512,25 +512,25 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             CMD ["node", "server.js"]
                                             ```
 
-                                            <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin-top: 16px;">
-                                              <div style="font-weight: 600; color: #15803d; margin-bottom: 8px;">Key Dockerfile Instructions</div>
-                                              <div style="font-size: 14px; color: #475569;">
-                                                <div style="padding: 4px 0;"><strong>FROM:</strong> Base image to build upon</div>
-                                                <div style="padding: 4px 0;"><strong>WORKDIR:</strong> Set working directory for subsequent commands</div>
-                                                <div style="padding: 4px 0;"><strong>COPY:</strong> Copy files from host to image</div>
-                                                <div style="padding: 4px 0;"><strong>RUN:</strong> Execute command during build (creates layer)</div>
-                                                <div style="padding: 4px 0;"><strong>ENV:</strong> Set environment variable</div>
-                                                <div style="padding: 4px 0;"><strong>ARG:</strong> Build-time variable</div>
-                                                <div style="padding: 4px 0;"><strong>EXPOSE:</strong> Document which ports the container listens on</div>
-                                                <div style="padding: 4px 0;"><strong>CMD:</strong> Default command when container starts</div>
-                                                <div style="padding: 4px 0;"><strong>ENTRYPOINT:</strong> Configure container as executable</div>
-                                              </div>
-                                            </div>
-                                          </div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="font-weight: 600; color: #15803d; margin-bottom: 8px;">Key Dockerfile Instructions</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 4px 0;"><strong>FROM:</strong> Base image to build upon</div>
+<div style="padding: 4px 0;"><strong>WORKDIR:</strong> Set working directory for subsequent commands</div>
+<div style="padding: 4px 0;"><strong>COPY:</strong> Copy files from host to image</div>
+<div style="padding: 4px 0;"><strong>RUN:</strong> Execute command during build (creates layer)</div>
+<div style="padding: 4px 0;"><strong>ENV:</strong> Set environment variable</div>
+<div style="padding: 4px 0;"><strong>ARG:</strong> Build-time variable</div>
+<div style="padding: 4px 0;"><strong>EXPOSE:</strong> Document which ports the container listens on</div>
+<div style="padding: 4px 0;"><strong>CMD:</strong> Default command when container starts</div>
+<div style="padding: 4px 0;"><strong>ENTRYPOINT:</strong> Configure container as executable</div>
+</div>
+</div>
+</div>
 
                                           ### Multi-Stage Build
 
-                                          <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Multi-stage builds reduce final image size by separating build and runtime environments</span>.
+<span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Multi-stage builds reduce final image size by separating build and runtime environments</span>.
 
                                           ```dockerfile
                                           # Build stage
@@ -609,8 +609,8 @@ Docker is a platform for developing, shipping, and running applications in conta
 
                                           ## System Cleanup
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                            <h4 style="color: #1e293b; margin-top: 0;">Cleanup Commands</h4>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Cleanup Commands</h4>
 
                                             ```bash
                                             # View Docker disk usage
@@ -632,13 +632,13 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             docker network prune     # Remove unused networks
                                             docker builder prune     # Remove build cache
                                             ```
-                                          </div>
+</div>
 
                                           ---
 
                                           ## Interview Deep Dive
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
                                             ### Q1: What's the difference between CMD and ENTRYPOINT?
 
@@ -669,11 +669,11 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             ENTRYPOINT python app.py         # Wrong - runs in shell, no signals
                                             ```
 
-                                            <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Key insight: Use exec form ["cmd", "arg"] for proper signal handling and PID 1</span>.
+<span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Key insight: Use exec form ["cmd", "arg"] for proper signal handling and PID 1</span>.
 
-                                          </div>
+</div>
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
                                             ### Q2: How do containers achieve isolation?
 
@@ -697,11 +697,11 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             - Copy-on-write for efficiency
                                             - Shared base layers between containers
 
-                                            <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Trade-off: Containers share kernel with host - less isolation than VMs but more efficient</span>.
+<span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Trade-off: Containers share kernel with host - less isolation than VMs but more efficient</span>.
 
-                                          </div>
+</div>
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
                                             ### Q3: How do you optimize Docker image size?
 
@@ -737,61 +737,61 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             CMD ["node", "dist/index.js"]
                                             ```
 
-                                          </div>
+</div>
 
                                           ---
 
                                           ## Quick Reference Card
 
-                                          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                                            <h4 style="color: #1e293b; margin-top: 0;">Docker Cheat Sheet</h4>
-                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                                              <div>
-                                                <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Container Commands</div>
-                                                <div style="font-size: 13px; color: #475569; font-family: monospace;">
-                                                  <div style="padding: 4px 0;">docker run -d -p 80:80 nginx</div>
-                                                  <div style="padding: 4px 0;">docker ps / docker ps -a</div>
-                                                  <div style="padding: 4px 0;">docker logs -f &lt;container&gt;</div>
-                                                  <div style="padding: 4px 0;">docker exec -it &lt;container&gt; sh</div>
-                                                  <div style="padding: 4px 0;">docker stop/start/restart</div>
-                                                  <div style="padding: 4px 0;">docker rm &lt;container&gt;</div>
-                                                </div>
-                                              </div>
-                                              <div>
-                                                <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Image Commands</div>
-                                                <div style="font-size: 13px; color: #475569; font-family: monospace;">
-                                                  <div style="padding: 4px 0;">docker build -t name:tag .</div>
-                                                  <div style="padding: 4px 0;">docker images</div>
-                                                  <div style="padding: 4px 0;">docker pull/push</div>
-                                                  <div style="padding: 4px 0;">docker tag source target</div>
-                                                  <div style="padding: 4px 0;">docker rmi &lt;image&gt;</div>
-                                                  <div style="padding: 4px 0;">docker image prune -a</div>
-                                                </div>
-                                              </div>
-                                              <div>
-                                                <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Compose Commands</div>
-                                                <div style="font-size: 13px; color: #475569; font-family: monospace;">
-                                                  <div style="padding: 4px 0;">docker compose up -d</div>
-                                                  <div style="padding: 4px 0;">docker compose down</div>
-                                                  <div style="padding: 4px 0;">docker compose logs -f</div>
-                                                  <div style="padding: 4px 0;">docker compose ps</div>
-                                                  <div style="padding: 4px 0;">docker compose exec svc sh</div>
-                                                  <div style="padding: 4px 0;">docker compose build</div>
-                                                </div>
-                                              </div>
-                                              <div>
-                                                <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Cleanup Commands</div>
-                                                <div style="font-size: 13px; color: #475569; font-family: monospace;">
-                                                  <div style="padding: 4px 0;">docker system df</div>
-                                                  <div style="padding: 4px 0;">docker system prune -a</div>
-                                                  <div style="padding: 4px 0;">docker volume prune</div>
-                                                  <div style="padding: 4px 0;">docker network prune</div>
-                                                  <div style="padding: 4px 0;">docker container prune</div>
-                                                  <div style="padding: 4px 0;">docker builder prune</div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Docker Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Container Commands</div>
+<div style="font-size: 13px; color: #475569; font-family: monospace;">
+<div style="padding: 4px 0;">docker run -d -p 80:80 nginx</div>
+<div style="padding: 4px 0;">docker ps / docker ps -a</div>
+<div style="padding: 4px 0;">docker logs -f &lt;container&gt;</div>
+<div style="padding: 4px 0;">docker exec -it &lt;container&gt; sh</div>
+<div style="padding: 4px 0;">docker stop/start/restart</div>
+<div style="padding: 4px 0;">docker rm &lt;container&gt;</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Image Commands</div>
+<div style="font-size: 13px; color: #475569; font-family: monospace;">
+<div style="padding: 4px 0;">docker build -t name:tag .</div>
+<div style="padding: 4px 0;">docker images</div>
+<div style="padding: 4px 0;">docker pull/push</div>
+<div style="padding: 4px 0;">docker tag source target</div>
+<div style="padding: 4px 0;">docker rmi &lt;image&gt;</div>
+<div style="padding: 4px 0;">docker image prune -a</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Compose Commands</div>
+<div style="font-size: 13px; color: #475569; font-family: monospace;">
+<div style="padding: 4px 0;">docker compose up -d</div>
+<div style="padding: 4px 0;">docker compose down</div>
+<div style="padding: 4px 0;">docker compose logs -f</div>
+<div style="padding: 4px 0;">docker compose ps</div>
+<div style="padding: 4px 0;">docker compose exec svc sh</div>
+<div style="padding: 4px 0;">docker compose build</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Cleanup Commands</div>
+<div style="font-size: 13px; color: #475569; font-family: monospace;">
+<div style="padding: 4px 0;">docker system df</div>
+<div style="padding: 4px 0;">docker system prune -a</div>
+<div style="padding: 4px 0;">docker volume prune</div>
+<div style="padding: 4px 0;">docker network prune</div>
+<div style="padding: 4px 0;">docker container prune</div>
+<div style="padding: 4px 0;">docker builder prune</div>
+</div>
+</div>
+</div>
+</div>
 
                                           ---
 

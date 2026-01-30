@@ -13,44 +13,44 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
 ## Simple Explanation: The Remote Control Analogy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Universal Remote Controls</h3>
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Universal Remote Controls</h3>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
     Imagine you have different types of remotes (basic, advanced) and different devices (TV, radio, streaming box). Without the Bridge pattern, you'd need:
-  </p>
+</p>
 
-  <div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #ef4444;">
-    <strong style="color: #dc2626;">Without Bridge (Class Explosion):</strong>
-    <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 8px;">
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<strong style="color: #dc2626;">Without Bridge (Class Explosion):</strong>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 8px;">
       BasicTVRemote, BasicRadioRemote, BasicStreamingRemote,<br>
         AdvancedTVRemote, AdvancedRadioRemote, AdvancedStreamingRemote<br>
-          <strong>= 6 classes (2 remotes x 3 devices)</strong>
-        </div>
-      </div>
+<strong>= 6 classes (2 remotes x 3 devices)</strong>
+</div>
+</div>
 
-      <div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #22c55e;">
-        <strong style="color: #166534;">With Bridge (Composition):</strong>
-        <div style="color: #14532d; font-size: 0.9rem; margin-top: 8px;">
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<strong style="color: #166534;">With Bridge (Composition):</strong>
+<div style="color: #14532d; font-size: 0.9rem; margin-top: 8px;">
           2 Remote classes + 3 Device classes<br>
-            <strong>= 5 classes total, any combination works!</strong>
-          </div>
-        </div>
+<strong>= 5 classes total, any combination works!</strong>
+</div>
+</div>
 
-        <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
-          The <strong>Remote (Abstraction)</strong> doesn't care about the device details. It just calls methods like <code>turnOn()</code>, <code>setVolume()</code>. The <strong>Device (Implementation)</strong> handles the specifics.
-        </p>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+The <strong>Remote (Abstraction)</strong> doesn't care about the device details. It just calls methods like <code>turnOn()</code>, <code>setVolume()</code>. The <strong>Device (Implementation)</strong> handles the specifics.
+</p>
 
-        <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-          <strong style="color: #0f172a;">The Key Insight:</strong>
-          <span style="color: #334155;"> Bridge decouples "what you want to do" (abstraction) from "how it's done" (implementation). You can add new remotes or new devices without changing the other side.</span>
-        </div>
-      </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">The Key Insight:</strong>
+<span style="color: #334155;"> Bridge decouples "what you want to do" (abstraction) from "how it's done" (implementation). You can add new remotes or new devices without changing the other side.</span>
+</div>
+</div>
 
       ---
 
       ## Real Company Usage
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
         | Company | How They Use Bridge Pattern |
         |---------|----------------------------|
@@ -61,25 +61,25 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
         | **Payment Systems** | Payment methods (card, wallet) process through different gateways (Stripe, PayPal) |
         | **Logging Frameworks** | Logger levels (debug, info) output to different destinations (file, console, remote) |
 
-      </div>
+</div>
 
       ---
 
       ## The Class Explosion Problem
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-        <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Why Bridge Matters: Avoiding Class Explosion</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Why Bridge Matters: Avoiding Class Explosion</h4>
 
-        <p style="color: #334155; text-align: center; margin-bottom: 20px;">
+<p style="color: #334155; text-align: center; margin-bottom: 20px;">
           Imagine shapes that need to be drawn in different colors:
-        </p>
+</p>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
 
           <!-- Without Bridge -->
-          <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
-            <h5 style="color: #dc2626; margin-top: 0;">Without Bridge (Inheritance)</h5>
-            <div style="font-family: monospace; font-size: 0.8rem; color: #7f1d1d; line-height: 1.8;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
+<h5 style="color: #dc2626; margin-top: 0;">Without Bridge (Inheritance)</h5>
+<div style="font-family: monospace; font-size: 0.8rem; color: #7f1d1d; line-height: 1.8;">
               Shape<br>
                 ├── RedCircle<br>
                   ├── BlueCircle<br>
@@ -90,20 +90,20 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                             ├── RedTriangle<br>
                               ├── BlueTriangle<br>
                                 └── GreenTriangle<br>
-                                </div>
-                                <div style="background: #fee2e2; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #991b1b; font-weight: 600;">
+</div>
+<div style="background: #fee2e2; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #991b1b; font-weight: 600;">
                                   3 shapes x 3 colors = 9 classes
-                                </div>
-                                <div style="color: #b91c1c; font-size: 0.85rem; margin-top: 8px;">
+</div>
+<div style="color: #b91c1c; font-size: 0.85rem; margin-top: 8px;">
                                   Add 1 color? +3 classes<br>
                                     Add 1 shape? +3 classes
-                                  </div>
-                                </div>
+</div>
+</div>
 
                                 <!-- With Bridge -->
-                                <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
-                                  <h5 style="color: #166534; margin-top: 0;">With Bridge (Composition)</h5>
-                                  <div style="font-family: monospace; font-size: 0.8rem; color: #14532d; line-height: 1.8;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin-top: 0;">With Bridge (Composition)</h5>
+<div style="font-family: monospace; font-size: 0.8rem; color: #14532d; line-height: 1.8;">
                                     Shape (has Color)<br>
                                       ├── Circle<br>
                                         ├── Square<br>
@@ -113,93 +113,93 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                 ├── Red<br>
                                                   ├── Blue<br>
                                                     └── Green<br>
-                                                    </div>
-                                                    <div style="background: #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #166534; font-weight: 600;">
+</div>
+<div style="background: #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #166534; font-weight: 600;">
                                                       3 shapes + 3 colors = 6 classes
-                                                    </div>
-                                                    <div style="color: #15803d; font-size: 0.85rem; margin-top: 8px;">
+</div>
+<div style="color: #15803d; font-size: 0.85rem; margin-top: 8px;">
                                                       Add 1 color? +1 class<br>
                                                         Add 1 shape? +1 class
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
-                                                  </div>
-                                                </div>
+</div>
+</div>
 
                                                 ---
 
                                                 ## Pattern Structure
 
-                                                <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-                                                  <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Bridge Pattern Structure</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Bridge Pattern Structure</h4>
 
-                                                  <div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin: 24px 0;">
+<div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin: 24px 0;">
 
                                                     <!-- Abstraction Side -->
-                                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-                                                      <div style="color: #3b82f6; font-weight: 600; font-size: 0.9rem;">ABSTRACTION</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="color: #3b82f6; font-weight: 600; font-size: 0.9rem;">ABSTRACTION</div>
 
-                                                      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
-                                                        <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Abstraction</div>
-                                                        <div style="padding: 16px; color: #1e3a8a; font-size: 0.85rem;">
-                                                          <code>- implementation</code><br>
-                                                            <code>+ operation()</code>
-                                                          </div>
-                                                        </div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Abstraction</div>
+<div style="padding: 16px; color: #1e3a8a; font-size: 0.85rem;">
+<code>- implementation</code><br>
+<code>+ operation()</code>
+</div>
+</div>
 
-                                                        <div style="color: #3b82f6; font-size: 1.5rem;">&#9651;</div>
+<div style="color: #3b82f6; font-size: 1.5rem;">&#9651;</div>
 
-                                                        <div style="background: #eff6ff; border: 2px solid #93c5fd; border-radius: 12px; width: 200px;">
-                                                          <div style="background: #93c5fd; color: #1e40af; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">RefinedAbstraction</div>
-                                                          <div style="padding: 12px; color: #1e40af; font-size: 0.85rem;">
-                                                            <code>+ extendedOp()</code>
-                                                          </div>
-                                                        </div>
-                                                      </div>
+<div style="background: #eff6ff; border: 2px solid #93c5fd; border-radius: 12px; width: 200px;">
+<div style="background: #93c5fd; color: #1e40af; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">RefinedAbstraction</div>
+<div style="padding: 12px; color: #1e40af; font-size: 0.85rem;">
+<code>+ extendedOp()</code>
+</div>
+</div>
+</div>
 
                                                       <!-- Bridge Arrow -->
-                                                      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px;">
-                                                        <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 4px;">has-a</div>
-                                                        <div style="color: #64748b; font-size: 2rem;">&#8594;</div>
-                                                        <div style="color: #64748b; font-size: 0.8rem; margin-top: 4px;">(bridge)</div>
-                                                      </div>
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px;">
+<div style="color: #64748b; font-size: 0.8rem; margin-bottom: 4px;">has-a</div>
+<div style="color: #64748b; font-size: 2rem;">&#8594;</div>
+<div style="color: #64748b; font-size: 0.8rem; margin-top: 4px;">(bridge)</div>
+</div>
 
                                                       <!-- Implementation Side -->
-                                                      <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-                                                        <div style="color: #22c55e; font-weight: 600; font-size: 0.9rem;">IMPLEMENTATION</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="color: #22c55e; font-weight: 600; font-size: 0.9rem;">IMPLEMENTATION</div>
 
-                                                        <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
-                                                          <div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Implementor</div>
-                                                          <div style="padding: 16px; color: #166534; font-size: 0.85rem;">
-                                                            <code>+ operationImpl()</code>
-                                                          </div>
-                                                        </div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
+<div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Implementor</div>
+<div style="padding: 16px; color: #166534; font-size: 0.85rem;">
+<code>+ operationImpl()</code>
+</div>
+</div>
 
-                                                        <div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
 
-                                                        <div style="display: flex; gap: 12px;">
-                                                          <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
+<div style="display: flex; gap: 12px;">
+<div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
                                                             ConcreteImplA
-                                                          </div>
-                                                          <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
+</div>
+<div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
                                                             ConcreteImplB
-                                                          </div>
-                                                        </div>
-                                                      </div>
+</div>
+</div>
+</div>
 
-                                                    </div>
+</div>
 
-                                                    <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-                                                      <strong style="color: #0f172a;">Flow:</strong>
-                                                      <span style="color: #334155;"> Abstraction holds a reference to Implementor. When client calls <code>operation()</code>, Abstraction delegates to <code>implementation.operationImpl()</code>.</span>
-                                                    </div>
-                                                  </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">Flow:</strong>
+<span style="color: #334155;"> Abstraction holds a reference to Implementor. When client calls <code>operation()</code>, Abstraction delegates to <code>implementation.operationImpl()</code>.</span>
+</div>
+</div>
 
                                                   ---
 
                                                   ## When to Use Bridge Pattern
 
-                                                  <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
 
                                                     ### Good Use Cases
 
@@ -210,13 +210,13 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                     5. **Database Drivers** - Same query interface, different database backends
                                                     6. **UI Themes** - Same components, different rendering engines
 
-                                                  </div>
+</div>
 
                                                   ---
 
                                                   ## Anti-Patterns: When NOT to Use
 
-                                                  <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
 
                                                     ### Common Mistakes
 
@@ -225,7 +225,7 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                     3. **Over-Abstraction** - Adding bridge for hypothetical future flexibility
                                                     4. **Confusion with Adapter** - Adapter makes interfaces compatible; Bridge separates concerns
 
-                                                  </div>
+</div>
 
                                                   ```python
                                                   # OVERKILL: Bridge for single implementation
@@ -723,135 +723,135 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
 
                                                   ## Bridge vs Related Patterns
 
-                                                  <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-                                                      <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
-                                                        <h4 style="color: #1e40af; margin-top: 0;">Bridge</h4>
-                                                        <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Separates abstraction from implementation.</p>
-                                                        <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                                                          <strong style="color: #1e40af;">Purpose:</strong> <span style="color: #1e3a8a;">Decouple two hierarchies</span><br>
-                                                            <strong style="color: #1e40af;">When:</strong> <span style="color: #1e3a8a;">Both sides vary independently</span>
-                                                          </div>
-                                                        </div>
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Bridge</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Separates abstraction from implementation.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #1e40af;">Purpose:</strong> <span style="color: #1e3a8a;">Decouple two hierarchies</span><br>
+<strong style="color: #1e40af;">When:</strong> <span style="color: #1e3a8a;">Both sides vary independently</span>
+</div>
+</div>
 
-                                                        <div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
-                                                          <h4 style="color: #166534; margin-top: 0;">Strategy</h4>
-                                                          <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Swaps algorithms at runtime.</p>
-                                                          <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                                                            <strong style="color: #166534;">Purpose:</strong> <span style="color: #14532d;">Algorithm variation</span><br>
-                                                              <strong style="color: #166534;">When:</strong> <span style="color: #14532d;">Only implementation varies</span>
-                                                            </div>
-                                                          </div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Strategy</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Swaps algorithms at runtime.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #166534;">Purpose:</strong> <span style="color: #14532d;">Algorithm variation</span><br>
+<strong style="color: #166534;">When:</strong> <span style="color: #14532d;">Only implementation varies</span>
+</div>
+</div>
 
-                                                          <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
-                                                            <h4 style="color: #92400e; margin-top: 0;">Adapter</h4>
-                                                            <p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Makes interfaces compatible.</p>
-                                                            <div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                                                              <strong style="color: #92400e;">Purpose:</strong> <span style="color: #78350f;">Interface conversion</span><br>
-                                                                <strong style="color: #92400e;">When:</strong> <span style="color: #78350f;">After design (retrofit)</span>
-                                                              </div>
-                                                            </div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">Adapter</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Makes interfaces compatible.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #92400e;">Purpose:</strong> <span style="color: #78350f;">Interface conversion</span><br>
+<strong style="color: #92400e;">When:</strong> <span style="color: #78350f;">After design (retrofit)</span>
+</div>
+</div>
 
-                                                          </div>
+</div>
 
-                                                          <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 20px;">
-                                                            <strong style="color: #0f172a;">Key Distinction:</strong>
-                                                            <ul style="color: #334155; margin-bottom: 0;">
-                                                              <li><strong>Bridge:</strong> Designed upfront to separate abstraction from implementation</li>
-                                                              <li><strong>Adapter:</strong> Applied after the fact to make things work together</li>
-                                                              <li><strong>Strategy:</strong> Single hierarchy with swappable algorithms</li>
-                                                            </ul>
-                                                          </div>
-                                                        </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<strong style="color: #0f172a;">Key Distinction:</strong>
+<ul style="color: #334155; margin-bottom: 0;">
+<li><strong>Bridge:</strong> Designed upfront to separate abstraction from implementation</li>
+<li><strong>Adapter:</strong> Applied after the fact to make things work together</li>
+<li><strong>Strategy:</strong> Single hierarchy with swappable algorithms</li>
+</ul>
+</div>
+</div>
 
                                                         ---
 
                                                         ## Interview Questions
 
-                                                        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
                                                           ### Conceptual Questions
 
                                                           <details style="margin-bottom: 12px;">
                                                             <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What problem does Bridge solve that inheritance cannot?</summary>
-                                                            <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                                              <strong>The Class Explosion Problem:</strong>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>The Class Explosion Problem:</strong>
                                                               <br><br>
                                                                   With inheritance, if you have M abstractions and N implementations, you need M x N classes:
-                                                                  <ul>
-                                                                    <li>3 shapes x 4 colors = 12 classes</li>
-                                                                    <li>Add 1 color = 3 more classes</li>
-                                                                  </ul>
+<ul>
+<li>3 shapes x 4 colors = 12 classes</li>
+<li>Add 1 color = 3 more classes</li>
+</ul>
 
                                                                   With Bridge (composition), you need M + N classes:
-                                                                  <ul>
-                                                                    <li>3 shapes + 4 colors = 7 classes</li>
-                                                                    <li>Add 1 color = 1 more class</li>
-                                                                  </ul>
+<ul>
+<li>3 shapes + 4 colors = 7 classes</li>
+<li>Add 1 color = 1 more class</li>
+</ul>
 
-                                                                  <strong>Additional benefits:</strong>
-                                                                  <ul>
-                                                                    <li>Can change implementation at runtime</li>
-                                                                    <li>Abstraction and implementation can evolve independently</li>
-                                                                    <li>Better adherence to Single Responsibility Principle</li>
-                                                                  </ul>
-                                                                </div>
+<strong>Additional benefits:</strong>
+<ul>
+<li>Can change implementation at runtime</li>
+<li>Abstraction and implementation can evolve independently</li>
+<li>Better adherence to Single Responsibility Principle</li>
+</ul>
+</div>
                                                               </details>
 
                                                               <details style="margin-bottom: 12px;">
                                                                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: How is Bridge different from Strategy?</summary>
-                                                                <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                                                  <strong>Strategy:</strong> Single dimension of variation (just algorithms)
-                                                                  <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Strategy:</strong> Single dimension of variation (just algorithms)
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
                                                                     Context --uses--> Strategy
                                                                     |
                                                                     +------+------+
                                                                     |             |
                                                                     StrategyA     StrategyB
-                                                                  </pre>
+</pre>
 
-                                                                  <strong>Bridge:</strong> Two dimensions of variation (abstraction AND implementation)
-                                                                  <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
+<strong>Bridge:</strong> Two dimensions of variation (abstraction AND implementation)
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
                                                                     Abstraction --has--> Implementor
                                                                     |                    |
                                                                     +-----+-----+        +-----+-----+
                                                                     |                    |
                                                                     RefinedA  RefinedB    ImplA    ImplB
-                                                                  </pre>
+</pre>
 
-                                                                  <strong>Rule of thumb:</strong> If your abstraction hierarchy is just Context with no subclasses, you probably want Strategy, not Bridge.
-                                                                </div>
+<strong>Rule of thumb:</strong> If your abstraction hierarchy is just Context with no subclasses, you probably want Strategy, not Bridge.
+</div>
                                                               </details>
 
                                                               <details style="margin-bottom: 12px;">
                                                                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: When would you choose Bridge over Adapter?</summary>
-                                                                <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                                                  <strong>Bridge:</strong> Use during initial design
-                                                                  <ul>
-                                                                    <li>You anticipate multiple abstractions AND implementations</li>
-                                                                    <li>You want to decouple two hierarchies from the start</li>
-                                                                    <li>Both sides will evolve independently</li>
-                                                                  </ul>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Bridge:</strong> Use during initial design
+<ul>
+<li>You anticipate multiple abstractions AND implementations</li>
+<li>You want to decouple two hierarchies from the start</li>
+<li>Both sides will evolve independently</li>
+</ul>
 
-                                                                  <strong>Adapter:</strong> Use after the fact
-                                                                  <ul>
-                                                                    <li>You have existing incompatible interfaces</li>
-                                                                    <li>You're integrating legacy code or third-party libraries</li>
-                                                                    <li>You want to make something work without modifying it</li>
-                                                                  </ul>
+<strong>Adapter:</strong> Use after the fact
+<ul>
+<li>You have existing incompatible interfaces</li>
+<li>You're integrating legacy code or third-party libraries</li>
+<li>You want to make something work without modifying it</li>
+</ul>
 
-                                                                  <strong>Key difference:</strong> Bridge is intentional separation; Adapter is a compatibility fix.
-                                                                </div>
+<strong>Key difference:</strong> Bridge is intentional separation; Adapter is a compatibility fix.
+</div>
                                                               </details>
 
                                                               ### Coding Questions
 
                                                               <details style="margin-bottom: 12px;">
                                                                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Design a logging system using Bridge</summary>
-                                                                <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                                                  <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
                                                                     # Implementation - WHERE to log
                                                                     class LogOutput(ABC):
                                                                     @abstractmethod
@@ -886,20 +886,20 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                                     # Usage
                                                                     logger = TimestampLogger(FileOutput())
                                                                     logger.log("Application started")
-                                                                  </pre>
-                                                                </div>
+</pre>
+</div>
                                                               </details>
 
                                                               <details style="margin-bottom: 12px;">
                                                                 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you test a Bridge implementation?</summary>
-                                                                <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                                                  <strong>Testing strategies:</strong>
-                                                                  <ol>
-                                                                    <li><strong>Test abstractions with mock implementations:</strong> Verify abstraction calls implementation correctly</li>
-                                                                    <li><strong>Test implementations independently:</strong> Unit test each concrete implementation</li>
-                                                                    <li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
-                                                                  </ol>
-                                                                  <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Testing strategies:</strong>
+<ol>
+<li><strong>Test abstractions with mock implementations:</strong> Verify abstraction calls implementation correctly</li>
+<li><strong>Test implementations independently:</strong> Unit test each concrete implementation</li>
+<li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
+</ol>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
                                                                     def test_alert_notification_formats_message():
                                                                     mock_sender = Mock(spec=NotificationSender)
                                                                     mock_sender.send.return_value = True
@@ -915,17 +915,17 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                                     sender = EmailSender("smtp.test.com")
                                                                     result = sender.send("to@test.com", "Subject", "Body")
                                                                     assert result == True
-                                                                  </pre>
-                                                                </div>
+</pre>
+</div>
                                                               </details>
 
-                                                            </div>
+</div>
 
                                                             ---
 
                                                             ## Common Mistakes
 
-                                                            <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
                                                               ### Mistake 1: Bridge Without Two Hierarchies
 
@@ -978,13 +978,13 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
                                                               self._sender = sender
                                                               ```
 
-                                                            </div>
+</div>
 
                                                             ---
 
                                                             ## Key Takeaways
 
-                                                            <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
                                                               1. **Bridge = Two Hierarchies** - Abstraction AND Implementation both vary
 
@@ -998,7 +998,7 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
 
                                                               6. **Not Always Needed** - If only one dimension varies, use simpler patterns
 
-                                                            </div>
+</div>
 
                                                             ---
 

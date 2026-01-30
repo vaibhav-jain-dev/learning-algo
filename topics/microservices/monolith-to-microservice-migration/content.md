@@ -19,51 +19,51 @@ Monolith-to-microservices migration represents one of the most complex architect
 The Strangler Fig Pattern derives its name from strangler fig trees that grow around host trees, eventually replacing them entirely. In software, this translates to **incrementally replacing monolith functionality with microservices while maintaining system operation**.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">STRANGLER FIG PATTERN: INTERNAL MECHANISM</h3>
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
-      <div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 1</div>
-      <div style="color: #64748b; font-size: 0.9em;">Intercept Layer</div>
-      <div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Route 100% to monolith</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
-      <div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 2</div>
-      <div style="color: #64748b; font-size: 0.9em;">Shadow Mode</div>
-      <div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Dual-write, compare results</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
-      <div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 3</div>
-      <div style="color: #64748b; font-size: 0.9em;">Canary Release</div>
-      <div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Route N% to new service</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
-      <div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 4</div>
-      <div style="color: #64748b; font-size: 0.9em;">Full Cutover</div>
-      <div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Decommission monolith path</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-    <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">THE FACADE/PROXY LAYER</h4>
-    <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 16px; align-items: center;">
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="color: #d1fae5; font-weight: 600;">Clients</div>
-        <div style="color: #64748b; font-size: 0.8em;">Unchanged API contracts</div>
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
-        <div style="color: #fff; font-weight: 600; text-align: center; margin-bottom: 12px;">Routing Logic</div>
-        <div style="color: #d1fae5; font-size: 0.85em;">
-          <div style="margin-bottom: 4px;">if (feature_flag.enabled && user in canary_group)</div>
-          <div style="margin-bottom: 4px; padding-left: 16px;">route_to_microservice()</div>
-          <div style="margin-bottom: 4px;">else</div>
-          <div style="padding-left: 16px;">route_to_monolith()</div>
-        </div>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 8px; text-align: center; color: #7ee787; font-size: 0.85em;">New Service</div>
-        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 8px; text-align: center; color: #f85149; font-size: 0.85em;">Monolith</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">STRANGLER FIG PATTERN: INTERNAL MECHANISM</h3>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 1</div>
+<div style="color: #64748b; font-size: 0.9em;">Intercept Layer</div>
+<div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Route 100% to monolith</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 2</div>
+<div style="color: #64748b; font-size: 0.9em;">Shadow Mode</div>
+<div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Dual-write, compare results</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 3</div>
+<div style="color: #64748b; font-size: 0.9em;">Canary Release</div>
+<div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Route N% to new service</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #f97316; font-weight: 700; font-size: 1.5em; margin-bottom: 8px;">Phase 4</div>
+<div style="color: #64748b; font-size: 0.9em;">Full Cutover</div>
+<div style="color: #58a6ff; font-size: 0.8em; margin-top: 8px;">Decommission monolith path</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">THE FACADE/PROXY LAYER</h4>
+<div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 16px; align-items: center;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #d1fae5; font-weight: 600;">Clients</div>
+<div style="color: #64748b; font-size: 0.8em;">Unchanged API contracts</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
+<div style="color: #fff; font-weight: 600; text-align: center; margin-bottom: 12px;">Routing Logic</div>
+<div style="color: #d1fae5; font-size: 0.85em;">
+<div style="margin-bottom: 4px;">if (feature_flag.enabled && user in canary_group)</div>
+<div style="margin-bottom: 4px; padding-left: 16px;">route_to_microservice()</div>
+<div style="margin-bottom: 4px;">else</div>
+<div style="padding-left: 16px;">route_to_monolith()</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 8px; text-align: center; color: #7ee787; font-size: 0.85em;">New Service</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 8px; text-align: center; color: #f85149; font-size: 0.85em;">Monolith</div>
+</div>
+</div>
+</div>
 </div>
 
 #### The Intercept Layer Implementation
@@ -121,10 +121,10 @@ type EventInterceptor struct {
 ```
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #fb923c; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #f97316; margin: 0 0 12px 0;">CRITICAL ASSUMPTION</h4>
-  <p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
-    The Strangler Fig pattern assumes you have a <strong>well-defined entry point</strong> where traffic can be intercepted. Systems with multiple entry points (batch jobs, direct database access, message queues, file imports) require multiple intercept layers, dramatically increasing complexity. <strong>Interview insight</strong>: Always ask about all entry points to the monolith before proposing this pattern.
-  </p>
+<h4 style="color: #f97316; margin: 0 0 12px 0;">CRITICAL ASSUMPTION</h4>
+<p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
+The Strangler Fig pattern assumes you have a <strong>well-defined entry point</strong> where traffic can be intercepted. Systems with multiple entry points (batch jobs, direct database access, message queues, file imports) require multiple intercept layers, dramatically increasing complexity. <strong>Interview insight</strong>: Always ask about all entry points to the monolith before proposing this pattern.
+</p>
 </div>
 
 ### 1.2 Shadow Mode: The Verification Mechanism
@@ -208,57 +208,57 @@ func (s *ShadowModeComparator) compareAndRecord(
 ```
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #f85149; margin: 0 0 16px 0;">EDGE CASES IN SHADOW MODE</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Write Operations</div>
-      <div style="color: #64748b; font-size: 0.9em;">Shadow writes cause data duplication. Must implement "dry-run" mode or isolated shadow database that gets periodically reset.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">External Side Effects</div>
-      <div style="color: #64748b; font-size: 0.9em;">Shadow service calling payment APIs, sending emails, or triggering webhooks. Must stub all external integrations.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Time-Sensitive Data</div>
-      <div style="color: #64748b; font-size: 0.9em;">Responses containing timestamps, random IDs, or computed values that legitimately differ. Requires semantic comparison.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Race Conditions</div>
-      <div style="color: #64748b; font-size: 0.9em;">Monolith and microservice reading from shared database at different times, seeing different states.</div>
-    </div>
-  </div>
+<h4 style="color: #f85149; margin: 0 0 16px 0;">EDGE CASES IN SHADOW MODE</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Write Operations</div>
+<div style="color: #64748b; font-size: 0.9em;">Shadow writes cause data duplication. Must implement "dry-run" mode or isolated shadow database that gets periodically reset.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">External Side Effects</div>
+<div style="color: #64748b; font-size: 0.9em;">Shadow service calling payment APIs, sending emails, or triggering webhooks. Must stub all external integrations.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Time-Sensitive Data</div>
+<div style="color: #64748b; font-size: 0.9em;">Responses containing timestamps, random IDs, or computed values that legitimately differ. Requires semantic comparison.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Race Conditions</div>
+<div style="color: #64748b; font-size: 0.9em;">Monolith and microservice reading from shared database at different times, seeing different states.</div>
+</div>
+</div>
 </div>
 
 ### 1.3 Interview Questions: Strangler Fig Pattern
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: Why is the Strangler Fig pattern preferred over "big bang" rewrites?</div>
-    <div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Big bang rewrites carry extreme risk: (1) You must maintain two systems until cutover, doubling maintenance burden. (2) All bugs surface simultaneously at launch. (3) No production validation until complete. (4) Rollback means losing all progress. The Strangler pattern enables incremental value delivery, production validation at each step, and surgical rollback of individual components.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: Why is the Strangler Fig pattern preferred over "big bang" rewrites?</div>
+<div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Big bang rewrites carry extreme risk: (1) You must maintain two systems until cutover, doubling maintenance burden. (2) All bugs surface simultaneously at launch. (3) No production validation until complete. (4) Rollback means losing all progress. The Strangler pattern enables incremental value delivery, production validation at each step, and surgical rollback of individual components.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're migrating a payment processing monolith. How would you handle the shadow mode phase for payment endpoints?</div>
-    <div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Payment endpoints are uniquely challenging because they: (1) Have external side effects (charging cards), (2) Must be idempotent, (3) Have strict consistency requirements. Strategy: Implement "verification mode" where the shadow service performs all logic EXCEPT the final payment gateway call. Instead, it validates that it would make the same call with the same parameters. Use idempotency keys to detect where the shadow service would have created different payment intents. For actual payment verification, use a sandbox/test mode on the payment gateway with synthetic test cards that mirror production patterns.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're migrating a payment processing monolith. How would you handle the shadow mode phase for payment endpoints?</div>
+<div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Payment endpoints are uniquely challenging because they: (1) Have external side effects (charging cards), (2) Must be idempotent, (3) Have strict consistency requirements. Strategy: Implement "verification mode" where the shadow service performs all logic EXCEPT the final payment gateway call. Instead, it validates that it would make the same call with the same parameters. Use idempotency keys to detect where the shadow service would have created different payment intents. For actual payment verification, use a sandbox/test mode on the payment gateway with synthetic test cards that mirror production patterns.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: During canary rollout (10% traffic to microservice), you discover the new service has 2x latency. However, reverting causes data inconsistency because 10% of orders were created only in the microservice database. How do you handle this?</div>
-    <div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: This reveals a critical migration anti-pattern - the microservice became the source of truth before validation completed. Immediate mitigation: (1) Route all NEW traffic to monolith. (2) Keep microservice running for existing sessions to complete. (3) For data reconciliation, export the 10% of orders from microservice database. (4) Transform and import into monolith database using the microservice as the authoritative source for those records. (5) Root cause: Should have maintained dual-write with monolith as source of truth until latency validation passed. Prevention: Implement "read from new, write to both" before "write to new only." Use correlation IDs to track which system is authoritative for each record.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: During canary rollout (10% traffic to microservice), you discover the new service has 2x latency. However, reverting causes data inconsistency because 10% of orders were created only in the microservice database. How do you handle this?</div>
+<div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: This reveals a critical migration anti-pattern - the microservice became the source of truth before validation completed. Immediate mitigation: (1) Route all NEW traffic to monolith. (2) Keep microservice running for existing sessions to complete. (3) For data reconciliation, export the 10% of orders from microservice database. (4) Transform and import into monolith database using the microservice as the authoritative source for those records. (5) Root cause: Should have maintained dual-write with monolith as source of truth until latency validation passed. Prevention: Implement "read from new, write to both" before "write to new only." Use correlation IDs to track which system is authoritative for each record.
+</div>
+</div>
 </div>
 
 ---
@@ -270,39 +270,39 @@ func (s *ShadowModeComparator) compareAndRecord(
 Domain decomposition determines **where to cut** the monolith. Poor boundaries create distributed monoliths - systems with all the complexity of microservices and none of the benefits.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DOMAIN DECOMPOSITION DECISION FRAMEWORK</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">GOOD BOUNDARIES</h4>
-      <ul style="color: #d1fae5; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Aligned with business capabilities</li>
-        <li>Own their data completely</li>
-        <li>Communicate via well-defined contracts</li>
-        <li>Can be deployed independently</li>
-        <li>Team can understand entire service</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">BAD BOUNDARIES</h4>
-      <ul style="color: #fecaca; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Based on technical layers (UI, API, DB)</li>
-        <li>Require synchronous calls for every operation</li>
-        <li>Share databases or tables</li>
-        <li>Require coordinated deployments</li>
-        <li>Change together frequently</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">SIGNALS FOR BOUNDARIES</h4>
-      <ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Different rates of change</li>
-        <li>Different scaling requirements</li>
-        <li>Different security/compliance needs</li>
-        <li>Different team ownership</li>
-        <li>Natural transaction boundaries</li>
-      </ul>
-    </div>
-  </div>
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DOMAIN DECOMPOSITION DECISION FRAMEWORK</h3>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">GOOD BOUNDARIES</h4>
+<ul style="color: #d1fae5; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Aligned with business capabilities</li>
+<li>Own their data completely</li>
+<li>Communicate via well-defined contracts</li>
+<li>Can be deployed independently</li>
+<li>Team can understand entire service</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">BAD BOUNDARIES</h4>
+<ul style="color: #fecaca; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Based on technical layers (UI, API, DB)</li>
+<li>Require synchronous calls for every operation</li>
+<li>Share databases or tables</li>
+<li>Require coordinated deployments</li>
+<li>Change together frequently</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">SIGNALS FOR BOUNDARIES</h4>
+<ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Different rates of change</li>
+<li>Different scaling requirements</li>
+<li>Different security/compliance needs</li>
+<li>Different team ownership</li>
+<li>Natural transaction boundaries</li>
+</ul>
+</div>
+</div>
 </div>
 
 #### Analyzing Coupling Patterns
@@ -385,37 +385,37 @@ class CouplingAnalyzer:
 [[Bounded Contexts]](/topics/ddd/bounded-contexts) from Domain-Driven Design provide the theoretical framework for service boundaries. Each microservice should align with exactly one bounded context.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">CONTEXT MAPPING PATTERNS</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #7ee787; margin: 0 0 12px 0;">Partnership</h4>
-      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Two teams collaborate closely, models evolve together</div>
-      <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px;">
-        <div style="color: #7ee787; font-size: 0.85em;"><strong>Use when:</strong> Same organization, shared goals, similar release cadence</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #58a6ff; margin: 0 0 12px 0;">Customer-Supplier</h4>
-      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Upstream provides what downstream needs</div>
-      <div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-size: 0.85em;"><strong>Use when:</strong> Clear dependency direction, upstream can accommodate downstream</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f97316; margin: 0 0 12px 0;">Conformist</h4>
-      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Downstream adopts upstream's model as-is</div>
-      <div style="background: rgba(249,115,22,0.1); border-radius: 8px; padding: 12px;">
-        <div style="color: #f97316; font-size: 0.85em;"><strong>Use when:</strong> Upstream is external/legacy, no negotiation possible</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #a371f7; margin: 0 0 12px 0;">Anti-Corruption Layer</h4>
-      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Translation layer isolates domain from external models</div>
-      <div style="background: rgba(163,113,247,0.1); border-radius: 8px; padding: 12px;">
-        <div style="color: #a371f7; font-size: 0.85em;"><strong>Use when:</strong> Upstream model is incompatible, legacy integration</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">CONTEXT MAPPING PATTERNS</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #7ee787; margin: 0 0 12px 0;">Partnership</h4>
+<div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Two teams collaborate closely, models evolve together</div>
+<div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #7ee787; font-size: 0.85em;"><strong>Use when:</strong> Same organization, shared goals, similar release cadence</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Customer-Supplier</h4>
+<div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Upstream provides what downstream needs</div>
+<div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #58a6ff; font-size: 0.85em;"><strong>Use when:</strong> Clear dependency direction, upstream can accommodate downstream</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f97316; margin: 0 0 12px 0;">Conformist</h4>
+<div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Downstream adopts upstream's model as-is</div>
+<div style="background: rgba(249,115,22,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #f97316; font-size: 0.85em;"><strong>Use when:</strong> Upstream is external/legacy, no negotiation possible</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #a371f7; margin: 0 0 12px 0;">Anti-Corruption Layer</h4>
+<div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">Translation layer isolates domain from external models</div>
+<div style="background: rgba(163,113,247,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #a371f7; font-size: 0.85em;"><strong>Use when:</strong> Upstream model is incompatible, legacy integration</div>
+</div>
+</div>
+</div>
 </div>
 
 #### Anti-Corruption Layer Implementation
@@ -535,45 +535,45 @@ func (acl *UserServiceACL) translateToDomain(legacy *LegacyUserDTO) (*Customer, 
 ```
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #a371f7; margin: 0 0 12px 0;">DESIGN CHOICE: ACL Placement</h4>
-  <p style="color: #e2e8f0; margin: 0 0 12px 0; line-height: 1.6;">
-    The ACL should live in the <strong>consuming service</strong>, not the producing service. This keeps the new service's domain model clean while the producer remains unchanged. The ACL is temporary scaffolding removed once the legacy system is decommissioned.
-  </p>
-  <p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
-    <strong>Trade-off</strong>: Multiple consumers means multiple ACLs with duplicated translation logic. Alternative: Create a dedicated "adapter service" that presents the legacy system through a clean API. This centralizes translation but adds another network hop.
-  </p>
+<h4 style="color: #a371f7; margin: 0 0 12px 0;">DESIGN CHOICE: ACL Placement</h4>
+<p style="color: #e2e8f0; margin: 0 0 12px 0; line-height: 1.6;">
+The ACL should live in the <strong>consuming service</strong>, not the producing service. This keeps the new service's domain model clean while the producer remains unchanged. The ACL is temporary scaffolding removed once the legacy system is decommissioned.
+</p>
+<p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
+<strong>Trade-off</strong>: Multiple consumers means multiple ACLs with duplicated translation logic. Alternative: Create a dedicated "adapter service" that presents the legacy system through a clean API. This centralizes translation but adds another network hop.
+</p>
 </div>
 
 ### 2.3 Interview Questions: Domain Decomposition
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: What is a "distributed monolith" and how does it arise from poor decomposition?</div>
-    <div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: A distributed monolith occurs when services are technically separate but operationally coupled. Symptoms: (1) Services must deploy together due to tight API coupling. (2) A change in one service requires changes in multiple others. (3) Services share database tables or schemas. (4) Synchronous call chains mean one service failure cascades to all. This typically arises from decomposing by technical layer (frontend service, backend service, database service) rather than business capability, or from extracting services before understanding true boundaries.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: What is a "distributed monolith" and how does it arise from poor decomposition?</div>
+<div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: A distributed monolith occurs when services are technically separate but operationally coupled. Symptoms: (1) Services must deploy together due to tight API coupling. (2) A change in one service requires changes in multiple others. (3) Services share database tables or schemas. (4) Synchronous call chains mean one service failure cascades to all. This typically arises from decomposing by technical layer (frontend service, backend service, database service) rather than business capability, or from extracting services before understanding true boundaries.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're decomposing an e-commerce monolith. The "Product" concept is used by Catalog (for display), Inventory (for stock), Pricing (for costs), and Orders (for line items). How do you handle this shared concept?</div>
-    <div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: This is the classic "shared kernel" problem. Solutions in order of preference: (1) <strong>Different bounded contexts</strong>: Each service has its own Product representation. Catalog has ProductDisplay (name, description, images), Inventory has StockItem (SKU, quantity, warehouse), Pricing has PricedItem (SKU, cost, margins), Orders has OrderLineItem (SKU, quantity, unit price at time of order). These are synchronized via events (ProductCreated, PriceChanged). (2) <strong>Product Service</strong>: If genuinely one concept, create a dedicated Product Service that owns the canonical product data. Other services either call it synchronously (cache heavily) or subscribe to its events and maintain local projections. (3) <strong>Shared Library</strong>: Last resort - a shared library with Product DTOs. This creates coupling but may be acceptable for truly stable concepts. The key insight is that "Product" is likely NOT one concept - it means different things in different contexts.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're decomposing an e-commerce monolith. The "Product" concept is used by Catalog (for display), Inventory (for stock), Pricing (for costs), and Orders (for line items). How do you handle this shared concept?</div>
+<div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: This is the classic "shared kernel" problem. Solutions in order of preference: (1) <strong>Different bounded contexts</strong>: Each service has its own Product representation. Catalog has ProductDisplay (name, description, images), Inventory has StockItem (SKU, quantity, warehouse), Pricing has PricedItem (SKU, cost, margins), Orders has OrderLineItem (SKU, quantity, unit price at time of order). These are synchronized via events (ProductCreated, PriceChanged). (2) <strong>Product Service</strong>: If genuinely one concept, create a dedicated Product Service that owns the canonical product data. Other services either call it synchronously (cache heavily) or subscribe to its events and maintain local projections. (3) <strong>Shared Library</strong>: Last resort - a shared library with Product DTOs. This creates coupling but may be acceptable for truly stable concepts. The key insight is that "Product" is likely NOT one concept - it means different things in different contexts.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: After decomposition, you discover that Order Service and Inventory Service have a circular dependency: orders check inventory, but inventory reserves are tied to orders. Breaking one causes the other to fail. How do you resolve this?</div>
-    <div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Circular dependencies indicate incorrect boundaries - the services are actually one logical unit split artificially. Resolution options: (1) <strong>Merge services</strong>: If they truly can't function independently, they're one service. Combine into "Order Fulfillment Service." (2) <strong>Event-driven decoupling</strong>: Replace synchronous calls with events. Order Service publishes OrderCreated, Inventory subscribes and publishes InventoryReserved. Order Service subscribes and updates order status. Neither directly calls the other. (3) <strong>Introduce mediator</strong>: Create an "Order Orchestration Service" (saga) that coordinates between them. Order and Inventory become simple state machines responding to commands. (4) <strong>Extract shared concept</strong>: The "reservation" might be its own bounded context - a Reservation Service that both Order and Inventory interact with. Root cause analysis: This usually happens when decomposing by nouns (Order, Inventory) rather than verbs/capabilities (Place Order, Fulfill Order, Manage Stock).
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: After decomposition, you discover that Order Service and Inventory Service have a circular dependency: orders check inventory, but inventory reserves are tied to orders. Breaking one causes the other to fail. How do you resolve this?</div>
+<div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Circular dependencies indicate incorrect boundaries - the services are actually one logical unit split artificially. Resolution options: (1) <strong>Merge services</strong>: If they truly can't function independently, they're one service. Combine into "Order Fulfillment Service." (2) <strong>Event-driven decoupling</strong>: Replace synchronous calls with events. Order Service publishes OrderCreated, Inventory subscribes and publishes InventoryReserved. Order Service subscribes and updates order status. Neither directly calls the other. (3) <strong>Introduce mediator</strong>: Create an "Order Orchestration Service" (saga) that coordinates between them. Order and Inventory become simple state machines responding to commands. (4) <strong>Extract shared concept</strong>: The "reservation" might be its own bounded context - a Reservation Service that both Order and Inventory interact with. Root cause analysis: This usually happens when decomposing by nouns (Order, Inventory) rather than verbs/capabilities (Place Order, Fulfill Order, Manage Stock).
+</div>
+</div>
 </div>
 
 ---
@@ -589,45 +589,45 @@ Data migration is often the **hardest part** of microservices migration. The mon
 - **Rollback capability** if migration fails
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DATA MIGRATION PATTERNS</h3>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 1: Database View Abstraction</h4>
-      <div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DATA MIGRATION PATTERNS</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 1: Database View Abstraction</h4>
+<div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
         Create database views that present the data as if it were already split. Services read from views. Actual table migration happens transparently.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
-        <div style="color: #7ee787; font-size: 0.85em;"><strong>Best for:</strong> Early migration phases, read-heavy workloads</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 2: Change Data Capture (CDC)</h4>
-      <div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
+<div style="color: #7ee787; font-size: 0.85em;"><strong>Best for:</strong> Early migration phases, read-heavy workloads</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 2: Change Data Capture (CDC)</h4>
+<div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
         Use tools like Debezium to stream changes from monolith DB to new service databases. Enables real-time sync without application changes.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
-        <div style="color: #58a6ff; font-size: 0.85em;"><strong>Best for:</strong> Zero-downtime migration, gradual cutover</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 3: Dual-Write with Reconciliation</h4>
-      <div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
+<div style="color: #58a6ff; font-size: 0.85em;"><strong>Best for:</strong> Zero-downtime migration, gradual cutover</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 3: Dual-Write with Reconciliation</h4>
+<div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
         Application writes to both old and new databases. Background job reconciles differences. Eventual cutover to new database only.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
-        <div style="color: #a371f7; font-size: 0.85em;"><strong>Best for:</strong> Critical data requiring verification</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 4: Event-Sourced Migration</h4>
-      <div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
+<div style="color: #a371f7; font-size: 0.85em;"><strong>Best for:</strong> Critical data requiring verification</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 4: Event-Sourced Migration</h4>
+<div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
         Replay historical events to build new service's state. New service becomes the event-sourced source of truth going forward.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
-        <div style="color: #f97316; font-size: 0.85em;"><strong>Best for:</strong> Systems with event logs, audit requirements</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
+<div style="color: #f97316; font-size: 0.85em;"><strong>Best for:</strong> Systems with event logs, audit requirements</div>
+</div>
+</div>
+</div>
 </div>
 
 ### 3.2 Change Data Capture Implementation
@@ -744,25 +744,25 @@ type CDCSource struct {
 ```
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f85149; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #f85149; margin: 0 0 12px 0;">CDC EDGE CASES AND PITFALLS</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Out-of-Order Delivery</div>
-      <div style="color: #64748b; font-size: 0.85em;">Kafka partitioning may reorder events. Use LSN or version numbers, not timestamps, for ordering. Implement "last-write-wins" with version comparison.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Schema Evolution</div>
-      <div style="color: #64748b; font-size: 0.85em;">Monolith schema changes break CDC transforms. Use schema registry, version transforms, and have rollback plans for each schema change.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Large Snapshots</div>
-      <div style="color: #64748b; font-size: 0.85em;">Initial snapshot of millions of rows can take hours and impact source DB performance. Use snapshot.select.statement.overrides to batch or filter.</div>
-    </div>
-    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
-      <div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Replication Lag</div>
-      <div style="color: #64748b; font-size: 0.85em;">CDC introduces latency (seconds to minutes). Queries that require real-time consistency cannot use CDC-populated replicas.</div>
-    </div>
-  </div>
+<h4 style="color: #f85149; margin: 0 0 12px 0;">CDC EDGE CASES AND PITFALLS</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Out-of-Order Delivery</div>
+<div style="color: #64748b; font-size: 0.85em;">Kafka partitioning may reorder events. Use LSN or version numbers, not timestamps, for ordering. Implement "last-write-wins" with version comparison.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Schema Evolution</div>
+<div style="color: #64748b; font-size: 0.85em;">Monolith schema changes break CDC transforms. Use schema registry, version transforms, and have rollback plans for each schema change.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Large Snapshots</div>
+<div style="color: #64748b; font-size: 0.85em;">Initial snapshot of millions of rows can take hours and impact source DB performance. Use snapshot.select.statement.overrides to batch or filter.</div>
+</div>
+<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px;">
+<div style="color: #f85149; font-weight: 600; margin-bottom: 6px;">Replication Lag</div>
+<div style="color: #64748b; font-size: 0.85em;">CDC introduces latency (seconds to minutes). Queries that require real-time consistency cannot use CDC-populated replicas.</div>
+</div>
+</div>
 </div>
 
 ### 3.3 Dual-Write Pattern with Reconciliation
@@ -897,42 +897,42 @@ func (c *ConflictResolver) Resolve(monolith, micro *User) *User {
 ```
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #fb923c; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #f97316; margin: 0 0 12px 0;">TRADE-OFF: Dual-Write Consistency</h4>
-  <p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
-    Dual-write without distributed transactions (2PC) means you <strong>will have inconsistency windows</strong>. If write to DB1 succeeds but DB2 fails, you have divergent state until reconciliation runs. Options: (1) Accept eventual consistency with reconciliation. (2) Use XA transactions (complex, slow, limited database support). (3) Use the [[Saga Pattern]](/topics/microservices/saga-pattern) with compensation. (4) Use [[Outbox Pattern]](/topics/microservices/outbox-pattern) - write to one DB plus outbox table atomically, process outbox to sync. Option 4 is generally preferred.
-  </p>
+<h4 style="color: #f97316; margin: 0 0 12px 0;">TRADE-OFF: Dual-Write Consistency</h4>
+<p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
+Dual-write without distributed transactions (2PC) means you <strong>will have inconsistency windows</strong>. If write to DB1 succeeds but DB2 fails, you have divergent state until reconciliation runs. Options: (1) Accept eventual consistency with reconciliation. (2) Use XA transactions (complex, slow, limited database support). (3) Use the [[Saga Pattern]](/topics/microservices/saga-pattern) with compensation. (4) Use [[Outbox Pattern]](/topics/microservices/outbox-pattern) - write to one DB plus outbox table atomically, process outbox to sync. Option 4 is generally preferred.
+</p>
 </div>
 
 ### 3.4 Interview Questions: Data Migration
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: Why can't you simply copy the database tables to the new service and redirect traffic?</div>
-    <div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Point-in-time copy creates immediate divergence. From copy completion to traffic redirect, all writes go to the old database. You'd lose that data. Additionally: (1) Foreign key relationships span service boundaries - you can't copy the orders table without users. (2) Schema transformations (INT to UUID, denormalization) require logic, not just copying. (3) There's no rollback path if the new service has issues. (4) Indexes, sequences, and constraints need recreation. (5) Large tables take hours to copy, extending the divergence window.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: Why can't you simply copy the database tables to the new service and redirect traffic?</div>
+<div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Point-in-time copy creates immediate divergence. From copy completion to traffic redirect, all writes go to the old database. You'd lose that data. Additionally: (1) Foreign key relationships span service boundaries - you can't copy the orders table without users. (2) Schema transformations (INT to UUID, denormalization) require logic, not just copying. (3) There's no rollback path if the new service has issues. (4) Indexes, sequences, and constraints need recreation. (5) Large tables take hours to copy, extending the divergence window.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're migrating a table with 500 million rows. CDC initial snapshot will take 8 hours and degrade source database performance. How do you approach this?</div>
-    <div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Multi-pronged approach: (1) <strong>Read replica</strong>: Point CDC at a read replica to avoid impacting production. Accept slight lag. (2) <strong>Filtered snapshot</strong>: Use snapshot.select.statement.overrides to snapshot only recent data (e.g., last 2 years). Older data migrated via batch job during off-peak. (3) <strong>Chunked migration</strong>: Snapshot in chunks using WHERE clauses (id BETWEEN x AND y), process incrementally. (4) <strong>Hybrid approach</strong>: One-time batch load from backup/dump, then CDC catches up from a known LSN position. (5) <strong>Parallel processing</strong>: Multiple connector tasks, each handling a partition of the data. Monitor replication lag on source; pause if it grows. For the new service, batch inserts and disable indexes during initial load, rebuild indexes after.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: You're migrating a table with 500 million rows. CDC initial snapshot will take 8 hours and degrade source database performance. How do you approach this?</div>
+<div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Multi-pronged approach: (1) <strong>Read replica</strong>: Point CDC at a read replica to avoid impacting production. Accept slight lag. (2) <strong>Filtered snapshot</strong>: Use snapshot.select.statement.overrides to snapshot only recent data (e.g., last 2 years). Older data migrated via batch job during off-peak. (3) <strong>Chunked migration</strong>: Snapshot in chunks using WHERE clauses (id BETWEEN x AND y), process incrementally. (4) <strong>Hybrid approach</strong>: One-time batch load from backup/dump, then CDC catches up from a known LSN position. (5) <strong>Parallel processing</strong>: Multiple connector tasks, each handling a partition of the data. Monitor replication lag on source; pause if it grows. For the new service, batch inserts and disable indexes during initial load, rebuild indexes after.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: During dual-write migration, you discover that 0.1% of records have different values between old and new databases. Reconciliation keeps "fixing" them, but they diverge again. What's happening and how do you fix it?</div>
-    <div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: This is a "reconciliation loop" - a symptom of an underlying sync issue. Likely causes: (1) <strong>Race condition</strong>: Write to DB1, reconciliation reads DB1, concurrent write to DB2, reconciliation writes to DB2 overwriting the new value, triggering another reconciliation. Fix: Use optimistic locking with version numbers; reconciliation only updates if version matches. (2) <strong>Transformation asymmetry</strong>: Data transforms differently in each direction. Transform(ReverseTransform(x)) != x. Fix: Ensure transformations are bijective or store canonical form. (3) <strong>Precision loss</strong>: Float/decimal handling differs between databases. 1.005 becomes 1.00 in one, 1.01 in other. Fix: Standardize precision, use integer cents instead of decimal dollars. (4) <strong>Timezone issues</strong>: One DB stores UTC, other stores local. Comparison fails. Fix: Normalize to UTC everywhere. (5) <strong>Triggered updates</strong>: Database trigger in one system updates a timestamp on every write, including reconciliation writes. Fix: Disable triggers or use special "reconciliation" flag to skip them. Debugging: Add extensive logging to reconciliation showing before/after values and diff. Track the specific 0.1% of records - likely share a common characteristic.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: During dual-write migration, you discover that 0.1% of records have different values between old and new databases. Reconciliation keeps "fixing" them, but they diverge again. What's happening and how do you fix it?</div>
+<div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: This is a "reconciliation loop" - a symptom of an underlying sync issue. Likely causes: (1) <strong>Race condition</strong>: Write to DB1, reconciliation reads DB1, concurrent write to DB2, reconciliation writes to DB2 overwriting the new value, triggering another reconciliation. Fix: Use optimistic locking with version numbers; reconciliation only updates if version matches. (2) <strong>Transformation asymmetry</strong>: Data transforms differently in each direction. Transform(ReverseTransform(x)) != x. Fix: Ensure transformations are bijective or store canonical form. (3) <strong>Precision loss</strong>: Float/decimal handling differs between databases. 1.005 becomes 1.00 in one, 1.01 in other. Fix: Standardize precision, use integer cents instead of decimal dollars. (4) <strong>Timezone issues</strong>: One DB stores UTC, other stores local. Comparison fails. Fix: Normalize to UTC everywhere. (5) <strong>Triggered updates</strong>: Database trigger in one system updates a timestamp on every write, including reconciliation writes. Fix: Disable triggers or use special "reconciliation" flag to skip them. Debugging: Add extensive logging to reconciliation showing before/after values and diff. Track the specific 0.1% of records - likely share a common characteristic.
+</div>
+</div>
 </div>
 
 ---
@@ -944,33 +944,33 @@ func (c *ConflictResolver) Resolve(monolith, micro *User) *User {
 The shared database anti-pattern occurs when multiple services read from and write to the same database tables. This fundamentally violates microservices principles and creates a **distributed monolith**.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">SHARED DATABASE: FAILURE MODES</h3>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f85149; margin: 0 0 12px 0;">1. Schema Coupling</h4>
-      <div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
-        Any schema change requires coordinating all services. Adding a column to `users` table requires updating Order Service, Notification Service, Analytics Service simultaneously. <strong>Result:</strong> Big-bang deployments, change freeze periods.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f85149; margin: 0 0 12px 0;">2. Encapsulation Violation</h4>
-      <div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
-        Services bypass each other's APIs and access data directly. Business logic gets duplicated or contradicted across services. <strong>Result:</strong> Data corruption, inconsistent business rules.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f85149; margin: 0 0 12px 0;">3. Scalability Bottleneck</h4>
-      <div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
-        Database becomes the scaling constraint. Can't scale Order Service writes without scaling the shared database. <strong>Result:</strong> Expensive vertical scaling, single point of failure.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f85149; margin: 0 0 12px 0;">4. Technology Lock-in</h4>
-      <div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
-        Can't use the best database for each service's needs. Order Service needs transactions, Analytics needs columnar storage, Search needs inverted indexes. <strong>Result:</strong> Suboptimal data access patterns.
-      </div>
-    </div>
-  </div>
+<h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">SHARED DATABASE: FAILURE MODES</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 12px 0;">1. Schema Coupling</h4>
+<div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
+Any schema change requires coordinating all services. Adding a column to `users` table requires updating Order Service, Notification Service, Analytics Service simultaneously. <strong>Result:</strong> Big-bang deployments, change freeze periods.
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 12px 0;">2. Encapsulation Violation</h4>
+<div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
+Services bypass each other's APIs and access data directly. Business logic gets duplicated or contradicted across services. <strong>Result:</strong> Data corruption, inconsistent business rules.
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 12px 0;">3. Scalability Bottleneck</h4>
+<div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
+Database becomes the scaling constraint. Can't scale Order Service writes without scaling the shared database. <strong>Result:</strong> Expensive vertical scaling, single point of failure.
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 12px 0;">4. Technology Lock-in</h4>
+<div style="color: #64748b; font-size: 0.9em; line-height: 1.6;">
+Can't use the best database for each service's needs. Order Service needs transactions, Analytics needs columnar storage, Search needs inverted indexes. <strong>Result:</strong> Suboptimal data access patterns.
+</div>
+</div>
+</div>
 </div>
 
 ```sql
@@ -1006,45 +1006,45 @@ GROUP BY DATE(o.created_at);
 Decoupling from a shared database requires a systematic approach. You cannot simply "stop using" the shared database.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DECOUPLING STRATEGY: PHASED APPROACH</h3>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 1</span>
-        <span style="color: #fff; font-weight: 600;">Establish Service APIs</span>
-      </div>
-      <div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6;">
+<h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">DECOUPLING STRATEGY: PHASED APPROACH</h3>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 1</span>
+<span style="color: #fff; font-weight: 600;">Establish Service APIs</span>
+</div>
+<div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6;">
         Create API endpoints in each service for data it "owns." Other services call APIs instead of querying tables directly. Database access still shared, but access is now through defined interfaces.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 2</span>
-        <span style="color: #fff; font-weight: 600;">Introduce Data Replication</span>
-      </div>
-      <div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 2</span>
+<span style="color: #fff; font-weight: 600;">Introduce Data Replication</span>
+</div>
+<div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6;">
         Services that need other services' data subscribe to events and maintain local read replicas. Order Service keeps a copy of user data it needs, updated via UserUpdated events.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 3</span>
-        <span style="color: #fff; font-weight: 600;">Split Physical Database</span>
-      </div>
-      <div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 3</span>
+<span style="color: #fff; font-weight: 600;">Split Physical Database</span>
+</div>
+<div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6;">
         Move tables to service-owned databases. User tables move to User Service DB. Order tables move to Order Service DB. Services can no longer JOIN across boundaries.
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 4</span>
-        <span style="color: #fff; font-weight: 600;">Remove Cross-Service Foreign Keys</span>
-      </div>
-      <div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<span style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; color: #fff; font-weight: 600;">Phase 4</span>
+<span style="color: #fff; font-weight: 600;">Remove Cross-Service Foreign Keys</span>
+</div>
+<div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6;">
         Replace FK constraints with application-level validation. Order Service validates user exists by calling User Service API before creating order. Referential integrity maintained through service contracts.
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 #### Implementing Local Read Replicas
@@ -1125,10 +1125,10 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *CreateOrderRequest)
 ```
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #58a6ff; margin: 0 0 12px 0;">ASSUMPTION: Eventual Consistency Acceptable</h4>
-  <p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
-    Local projections introduce <strong>eventual consistency</strong>. User changes their email, but orders created in the next few seconds still show old email. This is usually acceptable for display data. For critical operations (authentication, authorization, payment validation), always call the authoritative service synchronously. The [[CQRS Pattern]](/topics/microservices/cqrs) formalizes this separation between read projections and write operations.
-  </p>
+<h4 style="color: #58a6ff; margin: 0 0 12px 0;">ASSUMPTION: Eventual Consistency Acceptable</h4>
+<p style="color: #e2e8f0; margin: 0; line-height: 1.6;">
+Local projections introduce <strong>eventual consistency</strong>. User changes their email, but orders created in the next few seconds still show old email. This is usually acceptable for display data. For critical operations (authentication, authorization, payment validation), always call the authoritative service synchronously. The [[CQRS Pattern]](/topics/microservices/cqrs) formalizes this separation between read projections and write operations.
+</p>
 </div>
 
 ### 4.3 When Shared Database Is (Temporarily) Acceptable
@@ -1169,33 +1169,33 @@ CREATE SCHEMA order_service;
 ### 4.4 Interview Questions: Shared Database Anti-Pattern
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: If shared databases are an anti-pattern, how do microservices achieve data consistency without distributed transactions?</div>
-    <div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: Microservices embrace eventual consistency through: (1) <strong>Saga pattern</strong> - sequence of local transactions with compensating actions on failure. (2) <strong>Event-driven architecture</strong> - services publish events, others react and update their local state. (3) <strong>Denormalization</strong> - services copy the data they need at transaction time (e.g., order captures customer name, not just ID). (4) <strong>API composition</strong> - aggregating service queries multiple services and combines results. The key insight is that most business processes don't actually require immediate consistency - an order being processed while user profile update is propagating is fine for most use cases. Where strong consistency is truly required, you either keep those operations in a single service or accept the complexity of distributed transactions.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 1: Conceptual Understanding</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Q: If shared databases are an anti-pattern, how do microservices achieve data consistency without distributed transactions?</div>
+<div style="color: #bfdbfe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: Microservices embrace eventual consistency through: (1) <strong>Saga pattern</strong> - sequence of local transactions with compensating actions on failure. (2) <strong>Event-driven architecture</strong> - services publish events, others react and update their local state. (3) <strong>Denormalization</strong> - services copy the data they need at transaction time (e.g., order captures customer name, not just ID). (4) <strong>API composition</strong> - aggregating service queries multiple services and combines results. The key insight is that most business processes don't actually require immediate consistency - an order being processed while user profile update is propagating is fine for most use cases. Where strong consistency is truly required, you either keep those operations in a single service or accept the complexity of distributed transactions.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: Your company has 50 microservices, but they all connect to the same PostgreSQL database. Management says splitting databases would be expensive (50x the cost). How do you argue for or against database-per-service?</div>
-    <div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: First, challenge the cost assumption: 50 services don't need 50 managed database instances. Options: (1) <strong>Schema-per-service</strong> in same instance - logical separation, same cost. (2) <strong>Bounded context groupings</strong> - 50 services might map to 5-8 bounded contexts, each with own database. (3) <strong>Shared instances with isolated databases</strong> - RDS instance can host multiple databases cheaply. However, if truly keeping shared database, enforce strict rules: (1) Services can only access their own schema. (2) No cross-schema foreign keys. (3) No cross-schema queries. (4) Database access exclusively through service APIs (use views or row-level security to enforce). The real cost of shared databases is operational: coordinated deployments, schema migration complexity, blast radius of database issues. Calculate the engineering time spent on these vs. infrastructure cost savings.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 2: Design Trade-offs</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Q: Your company has 50 microservices, but they all connect to the same PostgreSQL database. Management says splitting databases would be expensive (50x the cost). How do you argue for or against database-per-service?</div>
+<div style="color: #ddd6fe; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: First, challenge the cost assumption: 50 services don't need 50 managed database instances. Options: (1) <strong>Schema-per-service</strong> in same instance - logical separation, same cost. (2) <strong>Bounded context groupings</strong> - 50 services might map to 5-8 bounded contexts, each with own database. (3) <strong>Shared instances with isolated databases</strong> - RDS instance can host multiple databases cheaply. However, if truly keeping shared database, enforce strict rules: (1) Services can only access their own schema. (2) No cross-schema foreign keys. (3) No cross-schema queries. (4) Database access exclusively through service APIs (use views or row-level security to enforce). The real cost of shared databases is operational: coordinated deployments, schema migration complexity, blast radius of database issues. Calculate the engineering time spent on these vs. infrastructure cost savings.
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
-  <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-    <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: Analytics team runs a heavy query against the shared database during peak hours, causing connection pool exhaustion for all services. This has happened 3 times this quarter. How do you permanently solve this?</div>
-    <div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
-      <strong>Answer</strong>: This is a classic "noisy neighbor" problem that shared databases create. Immediate mitigations: (1) <strong>Read replicas</strong> - point analytics at replica, isolating read load. (2) <strong>Connection limits per service</strong> - use pgbouncer with per-service pools, analytics gets fixed limit. (3) <strong>Query timeouts</strong> - configure statement_timeout for analytics connections. Long-term solutions: (1) <strong>Extract analytics data</strong> - CDC to dedicated analytics database (data warehouse/lake). Analytics team queries their own system. (2) <strong>Event streaming</strong> - publish events to Kafka, analytics builds its own projections. (3) <strong>CQRS</strong> - separate read models optimized for analytics queries. (4) <strong>Database splitting</strong> - move each service to own database, analytics gets read replicas of relevant databases only. Organizational fix: Analytics team should own their data infrastructure. They receive data via events/CDC, not direct database access. This also solves data governance - they get the data they're authorized to see, properly transformed.
-    </div>
-  </div>
+<h4 style="color: #fff; margin: 0 0 16px 0;">LEVEL 3: Production Incident Scenarios</h4>
+<div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+<div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Q: Analytics team runs a heavy query against the shared database during peak hours, causing connection pool exhaustion for all services. This has happened 3 times this quarter. How do you permanently solve this?</div>
+<div style="color: #fde68a; font-size: 0.9em; line-height: 1.6;">
+<strong>Answer</strong>: This is a classic "noisy neighbor" problem that shared databases create. Immediate mitigations: (1) <strong>Read replicas</strong> - point analytics at replica, isolating read load. (2) <strong>Connection limits per service</strong> - use pgbouncer with per-service pools, analytics gets fixed limit. (3) <strong>Query timeouts</strong> - configure statement_timeout for analytics connections. Long-term solutions: (1) <strong>Extract analytics data</strong> - CDC to dedicated analytics database (data warehouse/lake). Analytics team queries their own system. (2) <strong>Event streaming</strong> - publish events to Kafka, analytics builds its own projections. (3) <strong>CQRS</strong> - separate read models optimized for analytics queries. (4) <strong>Database splitting</strong> - move each service to own database, analytics gets read replicas of relevant databases only. Organizational fix: Analytics team should own their data infrastructure. They receive data via events/CDC, not direct database access. This also solves data governance - they get the data they're authorized to see, properly transformed.
+</div>
+</div>
 </div>
 
 ---
@@ -1205,73 +1205,73 @@ CREATE SCHEMA order_service;
 ### 5.1 The Complete Migration Playbook
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">E-COMMERCE MONOLITH MIGRATION: EXECUTION TIMELINE</h3>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="color: #7ee787; font-weight: 600; font-size: 1.1em;">Month 1-2: Foundation</span>
-        <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Low Risk</span>
-      </div>
-      <ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
-        <li>Deploy API Gateway as strangler facade</li>
-        <li>Set up event infrastructure (Kafka/RabbitMQ)</li>
-        <li>Implement observability (distributed tracing, metrics)</li>
-        <li>Create service templates and CI/CD pipelines</li>
-        <li>Document domain boundaries with domain experts</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="color: #58a6ff; font-weight: 600; font-size: 1.1em;">Month 3-4: User Service Extraction</span>
-        <span style="background: rgba(88,166,255,0.2); color: #58a6ff; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Medium Risk</span>
-      </div>
-      <ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
-        <li>Build User Service with new database schema</li>
-        <li>Implement CDC from monolith user tables</li>
-        <li>Shadow mode: compare User Service responses with monolith</li>
-        <li>Canary rollout: 1% to 10% to 50% traffic to User Service</li>
-        <li>Monolith calls User Service API instead of direct DB access</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="color: #f97316; font-weight: 600; font-size: 1.1em;">Month 5-7: Order Service Extraction</span>
-        <span style="background: rgba(249,115,22,0.2); color: #f97316; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">High Risk</span>
-      </div>
-      <ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
-        <li>Build Order Service; denormalize user data into orders</li>
-        <li>Implement Order Saga for distributed transaction handling</li>
-        <li>Dual-write phase: orders written to both DBs</li>
-        <li>Reconciliation job validates consistency</li>
-        <li>Gradual cutover with instant rollback capability</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="color: #a371f7; font-weight: 600; font-size: 1.1em;">Month 8-9: Logistics Service Extraction</span>
-        <span style="background: rgba(163,113,247,0.2); color: #a371f7; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Medium Risk</span>
-      </div>
-      <ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
-        <li>Logistics Service subscribes to Order events</li>
-        <li>Shipment data migrated with order context denormalized</li>
-        <li>Integration with external carrier APIs moved to new service</li>
-        <li>Monolith logistics code deprecated</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="color: #f85149; font-weight: 600; font-size: 1.1em;">Month 10-12: Decommissioning</span>
-        <span style="background: rgba(248,81,73,0.2); color: #f85149; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Critical</span>
-      </div>
-      <ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
-        <li>All traffic routes to microservices</li>
-        <li>Monolith database in read-only mode (backup)</li>
-        <li>Remove monolith code and infrastructure</li>
-        <li>Archive monolith database for compliance (if required)</li>
-        <li>Retrospective and documentation</li>
-      </ul>
-    </div>
-  </div>
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">E-COMMERCE MONOLITH MIGRATION: EXECUTION TIMELINE</h3>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<span style="color: #7ee787; font-weight: 600; font-size: 1.1em;">Month 1-2: Foundation</span>
+<span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Low Risk</span>
+</div>
+<ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
+<li>Deploy API Gateway as strangler facade</li>
+<li>Set up event infrastructure (Kafka/RabbitMQ)</li>
+<li>Implement observability (distributed tracing, metrics)</li>
+<li>Create service templates and CI/CD pipelines</li>
+<li>Document domain boundaries with domain experts</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<span style="color: #58a6ff; font-weight: 600; font-size: 1.1em;">Month 3-4: User Service Extraction</span>
+<span style="background: rgba(88,166,255,0.2); color: #58a6ff; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Medium Risk</span>
+</div>
+<ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
+<li>Build User Service with new database schema</li>
+<li>Implement CDC from monolith user tables</li>
+<li>Shadow mode: compare User Service responses with monolith</li>
+<li>Canary rollout: 1% to 10% to 50% traffic to User Service</li>
+<li>Monolith calls User Service API instead of direct DB access</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<span style="color: #f97316; font-weight: 600; font-size: 1.1em;">Month 5-7: Order Service Extraction</span>
+<span style="background: rgba(249,115,22,0.2); color: #f97316; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">High Risk</span>
+</div>
+<ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
+<li>Build Order Service; denormalize user data into orders</li>
+<li>Implement Order Saga for distributed transaction handling</li>
+<li>Dual-write phase: orders written to both DBs</li>
+<li>Reconciliation job validates consistency</li>
+<li>Gradual cutover with instant rollback capability</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<span style="color: #a371f7; font-weight: 600; font-size: 1.1em;">Month 8-9: Logistics Service Extraction</span>
+<span style="background: rgba(163,113,247,0.2); color: #a371f7; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Medium Risk</span>
+</div>
+<ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
+<li>Logistics Service subscribes to Order events</li>
+<li>Shipment data migrated with order context denormalized</li>
+<li>Integration with external carrier APIs moved to new service</li>
+<li>Monolith logistics code deprecated</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<span style="color: #f85149; font-weight: 600; font-size: 1.1em;">Month 10-12: Decommissioning</span>
+<span style="background: rgba(248,81,73,0.2); color: #f85149; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">Critical</span>
+</div>
+<ul style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em; line-height: 1.8;">
+<li>All traffic routes to microservices</li>
+<li>Monolith database in read-only mode (backup)</li>
+<li>Remove monolith code and infrastructure</li>
+<li>Archive monolith database for compliance (if required)</li>
+<li>Retrospective and documentation</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### 5.2 Rollback Strategies at Each Phase
@@ -1368,36 +1368,36 @@ func (c *MigrationRollbackController) executeRollback(
 ### 5.3 Success Metrics and Validation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">MIGRATION SUCCESS CRITERIA</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Functional Parity</h4>
-      <ul style="color: #d1fae5; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
-        <li>100% API compatibility</li>
-        <li>Shadow mode divergence &lt; 0.01%</li>
-        <li>All integration tests pass</li>
-        <li>No data loss during migration</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Performance</h4>
-      <ul style="color: #dbeafe; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
-        <li>Latency P50 within 10% of monolith</li>
-        <li>Latency P99 within 20% of monolith</li>
-        <li>Throughput equal or better</li>
-        <li>No increase in error rate</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Operational</h4>
-      <ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
-        <li>Independent deployability proven</li>
-        <li>Rollback tested and documented</li>
-        <li>On-call runbooks updated</li>
-        <li>Team trained on new architecture</li>
-      </ul>
-    </div>
-  </div>
+<h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">MIGRATION SUCCESS CRITERIA</h3>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Functional Parity</h4>
+<ul style="color: #d1fae5; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
+<li>100% API compatibility</li>
+<li>Shadow mode divergence &lt; 0.01%</li>
+<li>All integration tests pass</li>
+<li>No data loss during migration</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Performance</h4>
+<ul style="color: #dbeafe; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
+<li>Latency P50 within 10% of monolith</li>
+<li>Latency P99 within 20% of monolith</li>
+<li>Throughput equal or better</li>
+<li>No increase in error rate</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #fff; margin: 0 0 12px 0; text-align: center;">Operational</h4>
+<ul style="color: #ede9fe; margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.8;">
+<li>Independent deployability proven</li>
+<li>Rollback tested and documented</li>
+<li>On-call runbooks updated</li>
+<li>Team trained on new architecture</li>
+</ul>
+</div>
+</div>
 </div>
 
 ---
@@ -1405,44 +1405,44 @@ func (c *MigrationRollbackController) executeRollback(
 ## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #7ee787; margin: 0 0 16px 0;">Strangler Fig Pattern</h4>
-      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Incremental migration reduces risk</li>
-        <li>Requires well-defined intercept point</li>
-        <li>Shadow mode validates before cutover</li>
-        <li>Always maintain rollback capability</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #58a6ff; margin: 0 0 16px 0;">Domain Decomposition</h4>
-      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Boundaries based on business capabilities</li>
-        <li>Anti-corruption layers isolate legacy</li>
-        <li>Same noun can mean different things in different contexts</li>
-        <li>Circular dependencies indicate wrong boundaries</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f97316; margin: 0 0 16px 0;">Data Migration</h4>
-      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>CDC enables zero-downtime migration</li>
-        <li>Dual-write needs reconciliation</li>
-        <li>Denormalize data at service boundaries</li>
-        <li>Accept eventual consistency for most use cases</li>
-      </ul>
-    </div>
-    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
-      <h4 style="color: #f85149; margin: 0 0 16px 0;">Shared Database Anti-Pattern</h4>
-      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
-        <li>Creates distributed monolith</li>
-        <li>Schema coupling prevents independence</li>
-        <li>Decouple via events and local projections</li>
-        <li>Schema-per-service as transitional step</li>
-      </ul>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #7ee787; margin: 0 0 16px 0;">Strangler Fig Pattern</h4>
+<ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Incremental migration reduces risk</li>
+<li>Requires well-defined intercept point</li>
+<li>Shadow mode validates before cutover</li>
+<li>Always maintain rollback capability</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Domain Decomposition</h4>
+<ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Boundaries based on business capabilities</li>
+<li>Anti-corruption layers isolate legacy</li>
+<li>Same noun can mean different things in different contexts</li>
+<li>Circular dependencies indicate wrong boundaries</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f97316; margin: 0 0 16px 0;">Data Migration</h4>
+<ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>CDC enables zero-downtime migration</li>
+<li>Dual-write needs reconciliation</li>
+<li>Denormalize data at service boundaries</li>
+<li>Accept eventual consistency for most use cases</li>
+</ul>
+</div>
+<div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px;">
+<h4 style="color: #f85149; margin: 0 0 16px 0;">Shared Database Anti-Pattern</h4>
+<ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em; line-height: 1.8;">
+<li>Creates distributed monolith</li>
+<li>Schema coupling prevents independence</li>
+<li>Decouple via events and local projections</li>
+<li>Schema-per-service as transitional step</li>
+</ul>
+</div>
+</div>
 </div>
 
 ---

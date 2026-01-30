@@ -5,10 +5,10 @@
 The Prototype pattern creates new objects by cloning existing instances rather than invoking constructors directly. This creational pattern delegates object instantiation to the objects themselves through a polymorphic `clone()` method, enabling runtime flexibility and eliminating the coupling between client code and concrete classes.
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; margin: 20px 0;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Core Assumption</div>
-  <div style="color: #78350f; font-size: 0.95rem;">
-    The Prototype pattern assumes that <strong>copying an object is cheaper than constructing it from scratch</strong>. This assumption breaks down when objects contain non-cloneable resources (network connections, file handles) or when the cost of deep copying exceeds constructor cost.
-  </div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Core Assumption</div>
+<div style="color: #78350f; font-size: 0.95rem;">
+The Prototype pattern assumes that <strong>copying an object is cheaper than constructing it from scratch</strong>. This assumption breaks down when objects contain non-cloneable resources (network connections, file handles) or when the cost of deep copying exceeds constructor cost.
+</div>
 </div>
 
 At the language level, cloning involves memory allocation for the new object followed by field-by-field copying. The critical distinction lies in how reference-typed fields are handled: shallow copying duplicates pointers while deep copying recursively duplicates the entire object graph. This distinction drives most interview questions about the pattern.
@@ -34,52 +34,52 @@ Distributed cloning faces several challenges: (1) References to remote services 
 Understanding copy semantics is fundamental to implementing Prototype correctly. This distinction appears in nearly every interview discussing the pattern.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Copy Semantics Comparison</h4>
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Copy Semantics Comparison</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
-      <div style="font-weight: 700; color: #1e40af; text-align: center; margin-bottom: 12px;">Shallow Copy</div>
-      <div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
-        <div style="font-size: 0.85rem; color: #1e40af;">
-          <strong>Mechanism:</strong> Allocates new object, copies field values directly. Reference fields point to same objects as original.
-        </div>
-      </div>
-      <div style="font-size: 0.8rem; color: #2563eb;">
-        <div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
-        <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 700; color: #1e40af; text-align: center; margin-bottom: 12px;">Shallow Copy</div>
+<div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+<div style="font-size: 0.85rem; color: #1e40af;">
+<strong>Mechanism:</strong> Allocates new object, copies field values directly. Reference fields point to same objects as original.
+</div>
+</div>
+<div style="font-size: 0.8rem; color: #2563eb;">
+<div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
+<div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
           name: "Doc1"<br>
             data: [ref] ----+
-          </div>
-          <div style="margin-bottom: 6px;"><strong>Object B (shallow clone)</strong></div>
-          <div style="background: #bfdbfe; padding: 8px; border-radius: 4px;">
+</div>
+<div style="margin-bottom: 6px;"><strong>Object B (shallow clone)</strong></div>
+<div style="background: #bfdbfe; padding: 8px; border-radius: 4px;">
             name: "Doc1"<br>
               data: [ref] ----+---> [Shared Array]
-            </div>
-          </div>
-        </div>
+</div>
+</div>
+</div>
 
-        <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 8px; padding: 16px;">
-          <div style="font-weight: 700; color: #065f46; text-align: center; margin-bottom: 12px;">Deep Copy</div>
-          <div style="background: #ecfdf5; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
-            <div style="font-size: 0.85rem; color: #065f46;">
-              <strong>Mechanism:</strong> Recursively copies entire object graph. Each reference field points to a new copy of the referenced object.
-            </div>
-          </div>
-          <div style="font-size: 0.8rem; color: #059669;">
-            <div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
-            <div style="background: #a7f3d0; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+<div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 700; color: #065f46; text-align: center; margin-bottom: 12px;">Deep Copy</div>
+<div style="background: #ecfdf5; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+<div style="font-size: 0.85rem; color: #065f46;">
+<strong>Mechanism:</strong> Recursively copies entire object graph. Each reference field points to a new copy of the referenced object.
+</div>
+</div>
+<div style="font-size: 0.8rem; color: #059669;">
+<div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
+<div style="background: #a7f3d0; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
               name: "Doc1"<br>
                 data: [ref] ----> [Array A]
-              </div>
-              <div style="margin-bottom: 6px;"><strong>Object B (deep clone)</strong></div>
-              <div style="background: #a7f3d0; padding: 8px; border-radius: 4px;">
+</div>
+<div style="margin-bottom: 6px;"><strong>Object B (deep clone)</strong></div>
+<div style="background: #a7f3d0; padding: 8px; border-radius: 4px;">
                 name: "Doc1"<br>
                   data: [ref] ----> [Array B] (copy)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
         ### Memory Layout and Performance Implications
 
@@ -87,12 +87,12 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
         **Deep copy** performs in O(n) where n is the total size of the object graph. Memory consumption doubles (or more, accounting for overhead). For large object graphs, this can cause significant GC pressure and latency spikes.
 
-        <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-left: 4px solid #ec4899; border-radius: 8px; padding: 16px; margin: 20px 0;">
-          <div style="font-weight: 700; color: #9d174d; margin-bottom: 8px;">Critical Trade-off</div>
-          <div style="color: #831843; font-size: 0.95rem;">
-            The choice between shallow and deep copy is not binary. Production implementations often use <strong>hybrid approaches</strong>: deep copy for mutable state, shallow copy (or shared references) for immutable data and expensive-to-copy resources. This requires careful documentation of which fields are shared versus independent.
-          </div>
-        </div>
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-left: 4px solid #ec4899; border-radius: 8px; padding: 16px; margin: 20px 0;">
+<div style="font-weight: 700; color: #9d174d; margin-bottom: 8px;">Critical Trade-off</div>
+<div style="color: #831843; font-size: 0.95rem;">
+The choice between shallow and deep copy is not binary. Production implementations often use <strong>hybrid approaches</strong>: deep copy for mutable state, shallow copy (or shared references) for immutable data and expensive-to-copy resources. This requires careful documentation of which fields are shared versus independent.
+</div>
+</div>
 
         ### Handling Circular References
 
@@ -141,31 +141,31 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
         Java's built-in cloning mechanism via `Cloneable` interface and `Object.clone()` is one of the most criticized features in the language. Understanding its flaws is essential for Java interviews.
 
-        <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 20px 0;">
-          <h4 style="color: #991b1b; margin-top: 0;">Why Java's Cloneable is Broken</h4>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #991b1b; margin-top: 0;">Why Java's Cloneable is Broken</h4>
 
-          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
-            <div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
-              <div style="font-weight: 600; color: #991b1b;">1. Marker Interface Anti-pattern</div>
-              <div style="font-size: 0.9rem; color: #7f1d1d;">Cloneable has no methods. The clone() method is defined in Object, not Cloneable. Implementing Cloneable just changes Object.clone()'s behavior from throwing CloneNotSupportedException to performing a shallow copy.</div>
-            </div>
+<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+<div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
+<div style="font-weight: 600; color: #991b1b;">1. Marker Interface Anti-pattern</div>
+<div style="font-size: 0.9rem; color: #7f1d1d;">Cloneable has no methods. The clone() method is defined in Object, not Cloneable. Implementing Cloneable just changes Object.clone()'s behavior from throwing CloneNotSupportedException to performing a shallow copy.</div>
+</div>
 
-            <div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
-              <div style="font-weight: 600; color: #991b1b;">2. Extralinguistic Object Creation</div>
-              <div style="font-size: 0.9rem; color: #7f1d1d;">clone() creates objects without calling constructors, bypassing initialization logic and invariant establishment. Final fields cannot be set after Object.clone() returns, breaking immutability patterns.</div>
-            </div>
+<div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
+<div style="font-weight: 600; color: #991b1b;">2. Extralinguistic Object Creation</div>
+<div style="font-size: 0.9rem; color: #7f1d1d;">clone() creates objects without calling constructors, bypassing initialization logic and invariant establishment. Final fields cannot be set after Object.clone() returns, breaking immutability patterns.</div>
+</div>
 
-            <div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
-              <div style="font-weight: 600; color: #991b1b;">3. Inheritance Complexity</div>
-              <div style="font-size: 0.9rem; color: #7f1d1d;">If a parent class overrides clone() but a child doesn't, the child's clone will have wrong runtime type unless using super.clone() chain. Covariant return types partially address this but add complexity.</div>
-            </div>
+<div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
+<div style="font-weight: 600; color: #991b1b;">3. Inheritance Complexity</div>
+<div style="font-size: 0.9rem; color: #7f1d1d;">If a parent class overrides clone() but a child doesn't, the child's clone will have wrong runtime type unless using super.clone() chain. Covariant return types partially address this but add complexity.</div>
+</div>
 
-            <div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
-              <div style="font-weight: 600; color: #991b1b;">4. Shallow Copy Default</div>
-              <div style="font-size: 0.9rem; color: #7f1d1d;">Object.clone() performs shallow copy. Every Cloneable implementation must manually deep-copy mutable fields, which is error-prone and often forgotten.</div>
-            </div>
-          </div>
-        </div>
+<div style="background: #fff; border-radius: 8px; padding: 12px; border-left: 4px solid #dc2626;">
+<div style="font-weight: 600; color: #991b1b;">4. Shallow Copy Default</div>
+<div style="font-size: 0.9rem; color: #7f1d1d;">Object.clone() performs shallow copy. Every Cloneable implementation must manually deep-copy mutable fields, which is error-prone and often forgotten.</div>
+</div>
+</div>
+</div>
 
         ### The "Correct" Way to Implement Cloneable (If You Must)
 
@@ -201,42 +201,42 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
           ### Preferred Alternatives to Cloneable
 
-          <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 20px 0;">
-            <h4 style="color: #065f46; margin-top: 0;">Better Approaches in Java</h4>
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #065f46; margin-top: 0;">Better Approaches in Java</h4>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 16px;">
-              <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
-                <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Copy Constructor</div>
-                <div style="font-size: 0.85rem; color: #047857;">
-                  <code>public Document(Document other)</code><br><br>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 16px;">
+<div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
+<div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Copy Constructor</div>
+<div style="font-size: 0.85rem; color: #047857;">
+<code>public Document(Document other)</code><br><br>
                       Explicit, uses normal construction, can set final fields, no checked exceptions.
-                    </div>
-                  </div>
+</div>
+</div>
 
-                  <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
-                    <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Static Factory Method</div>
-                    <div style="font-size: 0.85rem; color: #047857;">
-                      <code>public static Document copyOf(Document d)</code><br><br>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
+<div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Static Factory Method</div>
+<div style="font-size: 0.85rem; color: #047857;">
+<code>public static Document copyOf(Document d)</code><br><br>
                           Can return subtype, can cache, descriptive naming, full control over construction.
-                        </div>
-                      </div>
+</div>
+</div>
 
-                      <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
-                        <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Serialization Round-trip</div>
-                        <div style="font-size: 0.85rem; color: #047857;">
+<div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
+<div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Serialization Round-trip</div>
+<div style="font-size: 0.85rem; color: #047857;">
                           Serialize to bytes, deserialize to new object. Handles entire object graph automatically. Slower but handles complex graphs.
-                        </div>
-                      </div>
+</div>
+</div>
 
-                      <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
-                        <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Builder Pattern</div>
-                        <div style="font-size: 0.85rem; color: #047857;">
-                          <code>Document.builder(original).withId(newId).build()</code><br><br>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
+<div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Builder Pattern</div>
+<div style="font-size: 0.85rem; color: #047857;">
+<code>Document.builder(original).withId(newId).build()</code><br><br>
                               Maximum flexibility, explicit about modifications, works with immutable objects.
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+</div>
+</div>
+</div>
+</div>
 
                       ### Interview Questions: Java Cloneable
 
@@ -258,49 +258,49 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
                       The Prototype Registry (also called Prototype Manager) centralizes prototype storage and provides named access to clones. This is essential when prototypes are expensive to create or configured at startup.
 
-                      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                        <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Prototype Registry Architecture</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Prototype Registry Architecture</h4>
 
-                        <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
-                          <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
-                            <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 16px; text-align: center; min-width: 120px;">
-                              <div style="font-weight: 600; color: #3730a3;">Client</div>
-                              <div style="font-size: 0.75rem; color: #4f46e5; margin-top: 4px;">Requests clones by name</div>
-                            </div>
+<div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
+<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 16px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #3730a3;">Client</div>
+<div style="font-size: 0.75rem; color: #4f46e5; margin-top: 4px;">Requests clones by name</div>
+</div>
 
-                            <div style="color: #64748b; font-size: 1.5rem;">&#8594;</div>
+<div style="color: #64748b; font-size: 1.5rem;">&#8594;</div>
 
-                            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; text-align: center; min-width: 180px;">
-                              <div style="font-weight: 600; color: #92400e;">Prototype Registry</div>
-                              <div style="font-size: 0.75rem; color: #b45309; margin-top: 4px;">
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; text-align: center; min-width: 180px;">
+<div style="font-weight: 600; color: #92400e;">Prototype Registry</div>
+<div style="font-size: 0.75rem; color: #b45309; margin-top: 4px;">
                                 register(name, proto)<br>
                                   clone(name): Prototype<br>
                                     unregister(name)
-                                  </div>
-                                </div>
+</div>
+</div>
 
-                                <div style="color: #64748b; font-size: 1.5rem;">&#8594;</div>
+<div style="color: #64748b; font-size: 1.5rem;">&#8594;</div>
 
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                  <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 6px; padding: 8px 16px; text-align: center;">
-                                    <div style="font-size: 0.8rem; color: #1e40af;">"report" : ReportProto</div>
-                                  </div>
-                                  <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 6px; padding: 8px 16px; text-align: center;">
-                                    <div style="font-size: 0.8rem; color: #065f46;">"invoice" : InvoiceProto</div>
-                                  </div>
-                                  <div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 6px; padding: 8px 16px; text-align: center;">
-                                    <div style="font-size: 0.8rem; color: #9d174d;">"memo" : MemoProto</div>
-                                  </div>
-                                </div>
-                              </div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 6px; padding: 8px 16px; text-align: center;">
+<div style="font-size: 0.8rem; color: #1e40af;">"report" : ReportProto</div>
+</div>
+<div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 6px; padding: 8px 16px; text-align: center;">
+<div style="font-size: 0.8rem; color: #065f46;">"invoice" : InvoiceProto</div>
+</div>
+<div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 6px; padding: 8px 16px; text-align: center;">
+<div style="font-size: 0.8rem; color: #9d174d;">"memo" : MemoProto</div>
+</div>
+</div>
+</div>
 
-                              <div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
-                                <div style="font-size: 0.85rem; color: #475569;">
-                                  <strong>Key Behaviors:</strong> (1) Clients decouple from concrete classes - only know prototype names; (2) Prototypes can be added/removed at runtime; (3) Registry can implement lazy initialization, caching, or pooling strategies.
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
+<div style="font-size: 0.85rem; color: #475569;">
+<strong>Key Behaviors:</strong> (1) Clients decouple from concrete classes - only know prototype names; (2) Prototypes can be added/removed at runtime; (3) Registry can implement lazy initialization, caching, or pooling strategies.
+</div>
+</div>
+</div>
+</div>
 
                           ### Registry Implementation Considerations
 
@@ -369,53 +369,53 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
                           Real-world objects often contain elements that complicate cloning: circular references, external resource handles, lazy-loaded proxies, and observer relationships.
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                            <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Complex Object Cloning Challenges</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Complex Object Cloning Challenges</h4>
 
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Circular References</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Circular References</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   Object A references B, B references A. Naive deep copy causes infinite recursion. Solution: memo-based copying with pre-registration.
-                                </div>
-                              </div>
+</div>
+</div>
 
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">External Resources</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">External Resources</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   Database connections, file handles, sockets cannot be meaningfully copied. Options: share reference, create new connection, or null and lazy-reinitialize.
-                                </div>
-                              </div>
+</div>
+</div>
 
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Lazy-Loaded Proxies</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Lazy-Loaded Proxies</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   ORM proxies (Hibernate, SQLAlchemy) may trigger database loads during cloning. Decide: clone the proxy, force-load then clone, or clone only loaded state.
-                                </div>
-                              </div>
+</div>
+</div>
 
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Observer Relationships</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Observer Relationships</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   If original has registered listeners/observers, should clone inherit them? Usually no - clone should have empty observer list requiring explicit re-registration.
-                                </div>
-                              </div>
+</div>
+</div>
 
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Transient/Derived State</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Transient/Derived State</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   Cached computations, memoized values. Options: copy cached state (faster but may be stale) or invalidate caches (slower but correct).
-                                </div>
-                              </div>
+</div>
+</div>
 
-                              <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
-                                <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Identity Fields</div>
-                                <div style="font-size: 0.85rem; color: #7f1d1d;">
+<div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Identity Fields</div>
+<div style="font-size: 0.85rem; color: #7f1d1d;">
                                   UUIDs, database IDs, creation timestamps must typically be regenerated for clones to avoid identity conflicts.
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+</div>
+</div>
+</div>
+</div>
 
                           ### Clone Contract Documentation
 
@@ -1473,36 +1473,36 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 
                           ## Quick Reference
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-                            <h4 style="color: #1e293b; margin-top: 0;">Pattern Summary</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #1e293b; margin-top: 0;">Pattern Summary</h4>
 
-                            <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-                              <tr style="background: #e2e8f0;">
-                                <td style="padding: 12px; font-weight: 600; border: 1px solid #cbd5e1;">Aspect</td>
-                                <td style="padding: 12px; font-weight: 600; border: 1px solid #cbd5e1;">Details</td>
-                              </tr>
-                              <tr>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Type</strong></td>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;">Creational</td>
-                              </tr>
-                              <tr style="background: #f8fafc;">
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Intent</strong></td>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;">Create objects by cloning existing instances</td>
-                              </tr>
-                              <tr>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Key Mechanism</strong></td>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;">Polymorphic clone() method with deep/shallow copy semantics</td>
-                              </tr>
-                              <tr style="background: #f8fafc;">
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Use When</strong></td>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;">Object construction is expensive; runtime type flexibility needed; many similar configurations required</td>
-                              </tr>
-                              <tr>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Avoid When</strong></td>
-                                <td style="padding: 12px; border: 1px solid #cbd5e1;">Simple construction; objects contain non-cloneable resources; deep copy exceeds construction cost</td>
-                              </tr>
-                            </table>
-                          </div>
+<table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+<tr style="background: #e2e8f0;">
+<td style="padding: 12px; font-weight: 600; border: 1px solid #cbd5e1;">Aspect</td>
+<td style="padding: 12px; font-weight: 600; border: 1px solid #cbd5e1;">Details</td>
+</tr>
+<tr>
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Type</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Creational</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Intent</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Create objects by cloning existing instances</td>
+</tr>
+<tr>
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Key Mechanism</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Polymorphic clone() method with deep/shallow copy semantics</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Use When</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Object construction is expensive; runtime type flexibility needed; many similar configurations required</td>
+</tr>
+<tr>
+<td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Avoid When</strong></td>
+<td style="padding: 12px; border: 1px solid #cbd5e1;">Simple construction; objects contain non-cloneable resources; deep copy exceeds construction cost</td>
+</tr>
+</table>
+</div>
 
                           ### Decision Matrix: Clone Strategy Selection
 

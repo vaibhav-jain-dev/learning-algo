@@ -13,52 +13,52 @@ The Builder pattern separates the construction of a complex object from its repr
 ## Simple Explanation: The Subway Sandwich Analogy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Building a Subway Sandwich</h3>
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem;">Think of Building a Subway Sandwich</h3>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
     When you order at Subway, you don't just say "give me a sandwich." Instead, you go through a step-by-step process:
-  </p>
+</p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0;">
-    <div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-      <span style="background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">1</span>
-      <span style="color: #1e40af; font-weight: 600;">Choose bread</span>
-    </div>
-    <div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-      <span style="background: #22c55e; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">2</span>
-      <span style="color: #166534; font-weight: 600;">Pick protein</span>
-    </div>
-    <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-      <span style="background: #f59e0b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">3</span>
-      <span style="color: #92400e; font-weight: 600;">Add cheese</span>
-    </div>
-    <div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-      <span style="background: #ec4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">4</span>
-      <span style="color: #9d174d; font-weight: 600;">Select veggies</span>
-    </div>
-    <div style="background: #e0e7ff; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
-      <span style="background: #6366f1; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">5</span>
-      <span style="color: #3730a3; font-weight: 600;">Add sauces</span>
-    </div>
-  </div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0;">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">1</span>
+<span style="color: #1e40af; font-weight: 600;">Choose bread</span>
+</div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">2</span>
+<span style="color: #166534; font-weight: 600;">Pick protein</span>
+</div>
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">3</span>
+<span style="color: #92400e; font-weight: 600;">Add cheese</span>
+</div>
+<div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #ec4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">4</span>
+<span style="color: #9d174d; font-weight: 600;">Select veggies</span>
+</div>
+<div style="background: #e0e7ff; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #6366f1; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">5</span>
+<span style="color: #3730a3; font-weight: 600;">Add sauces</span>
+</div>
+</div>
 
-  <p style="color: #334155; font-size: 1rem; line-height: 1.7;">
-    <strong>The sandwich artist (Builder)</strong> follows your instructions step by step.<br>
-      <strong>You (Director)</strong> specify the configuration.<br>
-        <strong>The sandwich (Product)</strong> is built piece by piece and given to you at the end.
-      </p>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<strong>The sandwich artist (Builder)</strong> follows your instructions step by step.<br>
+<strong>You (Director)</strong> specify the configuration.<br>
+<strong>The sandwich (Product)</strong> is built piece by piece and given to you at the end.
+</p>
 
-      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-        <strong style="color: #0f172a;">The Key Insight:</strong>
-        <span style="color: #334155;"> You can skip steps (no cheese), customize each step (extra pickles), or follow preset recipes (the "Italian BMT" combo) - all using the same construction process.</span>
-      </div>
-    </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">The Key Insight:</strong>
+<span style="color: #334155;"> You can skip steps (no cheese), customize each step (extra pickles), or follow preset recipes (the "Italian BMT" combo) - all using the same construction process.</span>
+</div>
+</div>
 
     ---
 
     ## Real Company Usage
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
       | Company | How They Use Builder Pattern |
       |---------|------------------------------|
@@ -70,70 +70,70 @@ The Builder pattern separates the construction of a complex object from its repr
       | **Protocol Buffers** | Message builders for creating complex protobuf messages |
       | **StringBuilder** | Classic example in Java/C# for efficient string construction |
 
-    </div>
+</div>
 
     ---
 
     ## Pattern Structure
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-      <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Builder Pattern Structure</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Builder Pattern Structure</h4>
 
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 24px 0;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 24px 0;">
 
         <!-- Director -->
-        <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 220px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
-          <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Director</div>
-          <div style="padding: 16px; color: #1e3a8a; font-size: 0.9rem;">
-            <code>+ construct(builder)</code><br>
-              <code>+ makePreset()</code>
-            </div>
-          </div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 220px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Director</div>
+<div style="padding: 16px; color: #1e3a8a; font-size: 0.9rem;">
+<code>+ construct(builder)</code><br>
+<code>+ makePreset()</code>
+</div>
+</div>
 
-          <div style="color: #64748b; font-size: 1rem;">uses &#8595;</div>
+<div style="color: #64748b; font-size: 1rem;">uses &#8595;</div>
 
           <!-- Builder Interface -->
-          <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 260px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
-            <div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Builder (interface)</div>
-            <div style="padding: 16px; color: #166534; font-size: 0.9rem;">
-              <code>+ buildPartA()</code><br>
-                <code>+ buildPartB()</code><br>
-                  <code>+ buildPartC()</code><br>
-                    <code>+ getResult(): Product</code>
-                  </div>
-                </div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 260px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
+<div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Builder (interface)</div>
+<div style="padding: 16px; color: #166534; font-size: 0.9rem;">
+<code>+ buildPartA()</code><br>
+<code>+ buildPartB()</code><br>
+<code>+ buildPartC()</code><br>
+<code>+ getResult(): Product</code>
+</div>
+</div>
 
-                <div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
+<div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
 
                 <!-- Concrete Builders -->
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                  <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; width: 180px;">
-                    <div style="background: #86efac; color: #166534; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderA</div>
-                    <div style="padding: 12px; color: #166534; font-size: 0.85rem;">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; width: 180px;">
+<div style="background: #86efac; color: #166534; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderA</div>
+<div style="padding: 12px; color: #166534; font-size: 0.85rem;">
                       Builds ProductA
-                    </div>
-                  </div>
-                  <div style="background: #fef3c7; border: 2px solid #fcd34d; border-radius: 12px; width: 180px;">
-                    <div style="background: #fcd34d; color: #92400e; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderB</div>
-                    <div style="padding: 12px; color: #92400e; font-size: 0.85rem;">
+</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #fcd34d; border-radius: 12px; width: 180px;">
+<div style="background: #fcd34d; color: #92400e; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderB</div>
+<div style="padding: 12px; color: #92400e; font-size: 0.85rem;">
                       Builds ProductB
-                    </div>
-                  </div>
-                </div>
+</div>
+</div>
+</div>
 
-              </div>
+</div>
 
-              <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-                <strong style="color: #0f172a;">Flow:</strong>
-                <span style="color: #334155;"> Director calls builder methods in sequence. Builder accumulates state. Client calls <code>getResult()</code> to get the final product.</span>
-              </div>
-            </div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<strong style="color: #0f172a;">Flow:</strong>
+<span style="color: #334155;"> Director calls builder methods in sequence. Builder accumulates state. Client calls <code>getResult()</code> to get the final product.</span>
+</div>
+</div>
 
             ---
 
             ## When to Use Builder Pattern
 
-            <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
 
               ### Good Use Cases
 
@@ -144,9 +144,9 @@ The Builder pattern separates the construction of a complex object from its repr
               5. **Complex Object Graphs** - Objects with nested complex structures
               6. **Test Data Builders** - Create test fixtures with sensible defaults
 
-            </div>
+</div>
 
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
               ### The Telescoping Constructor Problem
 
@@ -171,13 +171,13 @@ The Builder pattern separates the construction of a complex object from its repr
               )
               ```
 
-            </div>
+</div>
 
             ---
 
             ## Anti-Patterns: When NOT to Use
 
-            <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
 
               ### Common Mistakes
 
@@ -186,7 +186,7 @@ The Builder pattern separates the construction of a complex object from its repr
               3. **Over-Engineering** - If you never need different configurations, skip the pattern
               4. **When Dataclasses Suffice** - Python dataclasses with defaults often eliminate the need
 
-            </div>
+</div>
 
             ```python
             # OVERKILL: Builder for simple object
@@ -342,7 +342,7 @@ The Builder pattern separates the construction of a complex object from its repr
             .to("user@example.com", "manager@example.com")
             .cc("team@company.com")
             .subject("Q4 Report Ready")
-            .html_body("<h1>Report</h1><p>The Q4 report is attached.</p>")
+.html_body("<h1>Report</h1><p>The Q4 report is attached.</p>")
             .attach("q4_report.pdf", "charts.xlsx")
             .priority(Priority.HIGH)
             .header("X-Campaign-ID", "q4-2024")
@@ -768,100 +768,100 @@ The Builder pattern separates the construction of a complex object from its repr
 
             ## Builder vs Related Patterns
 
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
-                <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
-                  <h4 style="color: #1e40af; margin-top: 0;">Builder</h4>
-                  <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Step-by-step construction of complex objects.</p>
-                  <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                    <strong style="color: #1e40af;">Focus:</strong> <span style="color: #1e3a8a;">Construction process</span><br>
-                      <strong style="color: #1e40af;">Returns:</strong> <span style="color: #1e3a8a;">One complex product</span>
-                    </div>
-                  </div>
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-top: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Builder</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px;">Step-by-step construction of complex objects.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #1e40af;">Focus:</strong> <span style="color: #1e3a8a;">Construction process</span><br>
+<strong style="color: #1e40af;">Returns:</strong> <span style="color: #1e3a8a;">One complex product</span>
+</div>
+</div>
 
-                  <div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
-                    <h4 style="color: #166534; margin-top: 0;">Factory Method</h4>
-                    <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Single-step creation with subclass decisions.</p>
-                    <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                      <strong style="color: #166534;">Focus:</strong> <span style="color: #14532d;">Which class to instantiate</span><br>
-                        <strong style="color: #166534;">Returns:</strong> <span style="color: #14532d;">One simple product</span>
-                      </div>
-                    </div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border-top: 4px solid #22c55e;">
+<h4 style="color: #166534; margin-top: 0;">Factory Method</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px;">Single-step creation with subclass decisions.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #166534;">Focus:</strong> <span style="color: #14532d;">Which class to instantiate</span><br>
+<strong style="color: #166534;">Returns:</strong> <span style="color: #14532d;">One simple product</span>
+</div>
+</div>
 
-                    <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
-                      <h4 style="color: #92400e; margin-top: 0;">Abstract Factory</h4>
-                      <p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Creates families of related objects.</p>
-                      <div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
-                        <strong style="color: #92400e;">Focus:</strong> <span style="color: #78350f;">Product families</span><br>
-                          <strong style="color: #92400e;">Returns:</strong> <span style="color: #78350f;">Multiple related products</span>
-                        </div>
-                      </div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-top: 4px solid #f59e0b;">
+<h4 style="color: #92400e; margin-top: 0;">Abstract Factory</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px;">Creates families of related objects.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+<strong style="color: #92400e;">Focus:</strong> <span style="color: #78350f;">Product families</span><br>
+<strong style="color: #92400e;">Returns:</strong> <span style="color: #78350f;">Multiple related products</span>
+</div>
+</div>
 
-                    </div>
-                  </div>
+</div>
+</div>
 
                   ---
 
                   ## Interview Questions
 
-                  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
                     ### Conceptual Questions
 
                     <details style="margin-bottom: 12px;">
                       <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: When would you use Builder over a constructor with default parameters?</summary>
-                      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
                         Use Builder when:
-                        <ul>
-                          <li><strong>Many optional parameters:</strong> 4+ parameters become hard to remember</li>
-                          <li><strong>Complex validation:</strong> Builder can validate in build() before creating object</li>
-                          <li><strong>Immutable objects:</strong> Builder collects state, then creates frozen object</li>
-                          <li><strong>Readable code:</strong> <code>.timeout(30).retries(3)</code> is clearer than positional args</li>
-                          <li><strong>Different representations:</strong> Same process creates different products</li>
-                        </ul>
+<ul>
+<li><strong>Many optional parameters:</strong> 4+ parameters become hard to remember</li>
+<li><strong>Complex validation:</strong> Builder can validate in build() before creating object</li>
+<li><strong>Immutable objects:</strong> Builder collects state, then creates frozen object</li>
+<li><strong>Readable code:</strong> <code>.timeout(30).retries(3)</code> is clearer than positional args</li>
+<li><strong>Different representations:</strong> Same process creates different products</li>
+</ul>
                         Use constructor with defaults when:
-                        <ul>
-                          <li>Object has few parameters (2-3)</li>
-                          <li>Most parameters are required</li>
-                          <li>Simple objects with straightforward construction</li>
-                        </ul>
-                      </div>
+<ul>
+<li>Object has few parameters (2-3)</li>
+<li>Most parameters are required</li>
+<li>Simple objects with straightforward construction</li>
+</ul>
+</div>
                     </details>
 
                     <details style="margin-bottom: 12px;">
                       <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: What's the role of the Director in the Builder pattern?</summary>
-                      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
                         The Director encapsulates construction algorithms:
-                        <ul>
-                          <li><strong>Knows the steps:</strong> Which builder methods to call and in what order</li>
-                          <li><strong>Defines presets:</strong> build_gaming_pc(), build_office_pc()</li>
-                          <li><strong>Optional:</strong> Client can use builder directly without director</li>
-                        </ul>
-                        <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
+<ul>
+<li><strong>Knows the steps:</strong> Which builder methods to call and in what order</li>
+<li><strong>Defines presets:</strong> build_gaming_pc(), build_office_pc()</li>
+<li><strong>Optional:</strong> Client can use builder directly without director</li>
+</ul>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
                           # With Director - encapsulated knowledge
                           director.build_gaming_pc()
 
                           # Without Director - client knows the steps
                           builder.set_cpu().set_gpu().set_ram().build()
-                        </pre>
-                        <strong>In practice:</strong> Modern fluent builders often skip the Director, letting clients chain methods directly.
-                      </div>
+</pre>
+<strong>In practice:</strong> Modern fluent builders often skip the Director, letting clients chain methods directly.
+</div>
                     </details>
 
                     <details style="margin-bottom: 12px;">
                       <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How do you make a Builder thread-safe?</summary>
-                      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                        <strong>Best practice:</strong> Create a new builder instance per thread.
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Best practice:</strong> Create a new builder instance per thread.
                         <br><br>
-                            <strong>If sharing is needed:</strong>
-                            <ul>
-                              <li>Make builder immutable (each method returns a new builder)</li>
-                              <li>Use locks (not recommended - defeats fluent purpose)</li>
-                              <li>Use thread-local storage</li>
-                            </ul>
-                            <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
+<strong>If sharing is needed:</strong>
+<ul>
+<li>Make builder immutable (each method returns a new builder)</li>
+<li>Use locks (not recommended - defeats fluent purpose)</li>
+<li>Use thread-local storage</li>
+</ul>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
                               # Immutable builder approach
                               class ImmutableBuilder:
                               def __init__(self, **kwargs):
@@ -872,16 +872,16 @@ The Builder pattern separates the construction of a complex object from its repr
 
                               def with_age(self, age):
                               return ImmutableBuilder(**self._values, age=age)
-                            </pre>
-                          </div>
+</pre>
+</div>
                         </details>
 
                         ### Coding Questions
 
                         <details style="margin-bottom: 12px;">
                           <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a SQL Query Builder</summary>
-                          <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                            <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
                               class QueryBuilder:
                               def __init__(self):
                               self._select = ["*"]
@@ -937,17 +937,17 @@ The Builder pattern separates the construction of a complex object from its repr
                               .limit(10)
                               .build()
                               )
-                            </pre>
-                          </div>
+</pre>
+</div>
                         </details>
 
                         <details style="margin-bottom: 12px;">
                           <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you add validation to a Builder?</summary>
-                          <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                            <strong>Two approaches:</strong>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
+<strong>Two approaches:</strong>
                             <br><br>
-                                <strong>1. Validate in build() - Recommended:</strong>
-                                <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
+<strong>1. Validate in build() - Recommended:</strong>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
                                   def build(self):
                                   errors = []
                                   if not self._url:
@@ -957,28 +957,28 @@ The Builder pattern separates the construction of a complex object from its repr
                                   if errors:
                                   raise ValueError(f"Invalid config: {errors}")
                                   return Request(...)
-                                </pre>
+</pre>
 
-                                <strong>2. Validate eagerly in setters:</strong>
-                                <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
+<strong>2. Validate eagerly in setters:</strong>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
                                   def timeout(self, seconds):
                                   if seconds < 0:
                                   raise ValueError("Timeout must be positive")
                                   self._timeout = seconds
                                   return self
-                                </pre>
+</pre>
 
-                                <strong>Best practice:</strong> Validate in build() for interdependent validations, in setters for simple constraints.
-                              </div>
+<strong>Best practice:</strong> Validate in build() for interdependent validations, in setters for simple constraints.
+</div>
                             </details>
 
-                          </div>
+</div>
 
                           ---
 
                           ## Common Mistakes
 
-                          <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
                             ### Mistake 1: Forgetting to Reset Builder State
 
@@ -1019,13 +1019,13 @@ The Builder pattern separates the construction of a complex object from its repr
                             return User(name=self._name)
                             ```
 
-                          </div>
+</div>
 
                           ---
 
                           ## Key Takeaways
 
-                          <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
                             1. **Builder separates construction from representation** - Same process can create different objects
 
@@ -1039,7 +1039,7 @@ The Builder pattern separates the construction of a complex object from its repr
 
                             6. **Create immutable products** - Builder collects mutable state, product is frozen
 
-                          </div>
+</div>
 
                           ---
 

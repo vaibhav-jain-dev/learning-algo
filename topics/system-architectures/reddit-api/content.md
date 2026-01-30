@@ -21,78 +21,78 @@ Design a social news aggregation and discussion platform like Reddit with subred
 ## High-Level Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">REDDIT SYSTEM ARCHITECTURE</h3>
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">REDDIT SYSTEM ARCHITECTURE</h3>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
     <!-- CDN Layer -->
-    <div style="background: linear-gradient(135deg, #ff4500 0%, #dc2626 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-      <strong>CloudFront (CDN)</strong>
-    </div>
+<div style="background: linear-gradient(135deg, #ff4500 0%, #dc2626 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+<strong>CloudFront (CDN)</strong>
+</div>
 
-    <div style="color: #ff4500; font-size: 24px;">↓</div>
+<div style="color: #ff4500; font-size: 24px;">↓</div>
 
     <!-- Client Apps -->
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-        <strong>Web App</strong><br><span style="font-size: 11px;">(Next.js)</span>
-        </div>
-        <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-          <strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
-          </div>
-          <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-            <strong>OAuth</strong><br><span style="font-size: 11px;">Server</span>
-            </div>
-          </div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Web App</strong><br><span style="font-size: 11px;">(Next.js)</span>
+</div>
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
+</div>
+<div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>OAuth</strong><br><span style="font-size: 11px;">Server</span>
+</div>
+</div>
 
-          <div style="color: #ff4500; font-size: 24px;">↓</div>
+<div style="color: #ff4500; font-size: 24px;">↓</div>
 
           <!-- API Gateway -->
-          <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-            <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth</span>
-            </div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
+<strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth</span>
+</div>
 
-            <div style="color: #ff4500; font-size: 24px;">↓</div>
+<div style="color: #ff4500; font-size: 24px;">↓</div>
 
             <!-- Services Layer -->
-            <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
-              <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
-                <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Post</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                  <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Comment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Vote</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                    </div>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                      <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Subreddit</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                        <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                          <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Feed</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-                          </div>
-                        </div>
+<div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Post</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Comment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Vote</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Subreddit</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Feed</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
+</div>
 
-                        <div style="color: #ff4500; font-size: 24px;">↓</div>
+<div style="color: #ff4500; font-size: 24px;">↓</div>
 
                         <!-- Data Layer -->
-                        <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-                          <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                            <strong>PostgreSQL</strong><br><span style="font-size: 11px;">(Data)</span>
-                            </div>
-                            <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                              <strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span>
-                              </div>
-                              <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                                <strong>S3</strong><br><span style="font-size: 11px;">(Media)</span>
-                                </div>
-                              </div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>PostgreSQL</strong><br><span style="font-size: 11px;">(Data)</span>
+</div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>S3</strong><br><span style="font-size: 11px;">(Media)</span>
+</div>
+</div>
 
-                            </div>
+</div>
 
-                          </div>
+</div>
 
                           ---
 
                           ## Phase 1: Starting Phase (Low Budget)
 
-                          <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                            <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                               ### Assumptions
                               - **Users**: 10,000 - 100,000 monthly active
@@ -102,55 +102,55 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                               ### Monolithic Architecture
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-                                <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
                                   <!-- Monolith Container -->
-                                  <div style="background: #f1f5f9; border: 2px solid #ff4500; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
-                                    <h4 style="text-align: center; color: #dc2626; margin: 0 0 16px 0;">REDDIT MONOLITH</h4>
+<div style="background: #f1f5f9; border: 2px solid #ff4500; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
+<h4 style="text-align: center; color: #dc2626; margin: 0 0 16px 0;">REDDIT MONOLITH</h4>
 
                                     <!-- Modules Layer -->
-                                    <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-                                      <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 12px;">MODULES</div>
-                                      <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Subreddits</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Posts</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Comments</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Votes</strong></div>
-                                      </div>
-                                      <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Users</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Feeds</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Search</strong></div>
-                                        <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Mods</strong></div>
-                                      </div>
-                                    </div>
+<div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+<div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 12px;">MODULES</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Subreddits</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Posts</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Comments</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Votes</strong></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Users</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Feeds</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Search</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Mods</strong></div>
+</div>
+</div>
 
                                     <!-- Data Access Layer -->
-                                    <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
-                                      <strong style="color: #7c3aed;">DATA ACCESS</strong>
-                                    </div>
-                                  </div>
+<div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
+<strong style="color: #7c3aed;">DATA ACCESS</strong>
+</div>
+</div>
 
-                                  <div style="color: #ff4500; font-size: 24px;">↓</div>
+<div style="color: #ff4500; font-size: 24px;">↓</div>
 
                                   <!-- Databases -->
-                                  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-                                    <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                                      <strong>PostgreSQL</strong>
-                                    </div>
-                                    <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                                      <strong>Redis</strong>
-                                    </div>
-                                    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-                                      <strong>S3</strong>
-                                    </div>
-                                  </div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>PostgreSQL</strong>
+</div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Redis</strong>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>S3</strong>
+</div>
+</div>
 
-                                </div>
+</div>
 
-                              </div>
+</div>
 
                               #### Data Model
 
@@ -245,15 +245,15 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               self.update_author_karma(target_type, target_id, score_delta)
                               ```
 
-                            </div>
-                          </div>
+</div>
+</div>
 
                           ---
 
                           ## Phase 2: Medium User Phase
 
-                          <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                            <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                               ### Assumptions
                               - **Users**: 5M - 50M monthly active
@@ -263,7 +263,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                               ### Microservices Architecture
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
                                 ```
                                 ┌────────────────────┐
@@ -300,12 +300,12 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 └─────────────┘       └─────────────┘       └─────────────┘
                                 ```
 
-                              </div>
+</div>
 
                               ### Feed Generation
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
-                                <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">FEED RANKING ALGORITHM</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">FEED RANKING ALGORITHM</h4>
 
                                 ```
                                 Hot Score Algorithm (Reddit-style):
@@ -366,11 +366,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 return sorted(posts, key=lambda p: p.hot_score * p.relevance_score, reverse=True)
                                 ```
 
-                              </div>
+</div>
 
                               ### Comment Threading
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
                                 ```
                                 Comment Tree Structure:
@@ -426,17 +426,17 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 return Comment.objects.raw(query, [parent_ids, max_depth])
                                 ```
 
-                              </div>
+</div>
 
-                            </div>
-                          </div>
+</div>
+</div>
 
                           ---
 
                           ## Phase 3: High User Base Phase
 
-                          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                            <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                               ### Assumptions
                               - **Users**: 500M+ monthly active
@@ -446,7 +446,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                               ### Global Architecture
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                                 ```
                                 GLOBAL REDDIT INFRASTRUCTURE
@@ -485,12 +485,12 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 └────────────────────────────────────────────────────────────────┘
                                 ```
 
-                              </div>
+</div>
 
                               ### Vote Aggregation at Scale
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
-                                <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HIGH-THROUGHPUT VOTING SYSTEM</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HIGH-THROUGHPUT VOTING SYSTEM</h4>
 
                                 ```
                                 Vote Flow (2B votes/day = 23K votes/second):
@@ -577,16 +577,16 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 }
                                 ```
 
-                              </div>
+</div>
 
-                            </div>
-                          </div>
+</div>
+</div>
 
                           ---
 
                           ## AWS Technologies & Alternatives
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                             | Component | AWS Service | Alternative | Trade-offs |
                             |-----------|-------------|-------------|------------|
@@ -597,17 +597,17 @@ Design a social news aggregation and discussion platform like Reddit with subred
                             | **Search** | OpenSearch | Algolia | OpenSearch: Control, Algolia: Better relevance |
                             | **Media** | S3 + CloudFront | Cloudflare R2 | S3: Ecosystem, R2: No egress fees |
 
-                          </div>
+</div>
 
                           ---
 
                           ## Distributed Systems Considerations
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                             ### 1. Vote Consistency
 
-                            <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               ```
                               Problem: Duplicate votes from race conditions
@@ -628,7 +628,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               └─────────────────────────────────────────────────────────────┘
                               ```
 
-                            </div>
+</div>
 
                             ### 2. Hot Posts Problem
 
@@ -677,17 +677,17 @@ Design a social news aggregation and discussion platform like Reddit with subred
                             return self.connections[shard]
                             ```
 
-                          </div>
+</div>
 
                           ---
 
                           ## Interview Deep Dive Questions
 
-                          <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff4500;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff4500;">
 
                             ### 1. "Why not show real-time vote counts?"
 
-                            <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **What They're Probing**: Understanding of eventual consistency trade-offs, performance at scale, and user experience pragmatism.
 
@@ -697,11 +697,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               **When Simpler Works**:
                               > "At 10K users, store vote counts directly in the post row. A PostgreSQL `UPDATE posts SET score = score + 1` with row-level locking handles hundreds of concurrent votes fine. Add Redis caching when you hit 1000+ votes/second on hot posts."
 
-                            </div>
+</div>
 
                             ### 2. "How does the hot ranking algorithm actually work?"
 
-                            <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **What They're Probing**: Algorithm design thinking, understanding of decay functions, and ability to explain complex math simply.
 
@@ -711,11 +711,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               **When Simpler Works**:
                               > "For a small community forum, `ORDER BY (upvotes - downvotes) * 0.5 + EXTRACT(EPOCH FROM created_at) / 86400` gives you decent hot ranking. Add a materialized view refreshed every 5 minutes. No Kafka, no precomputation needed until you're generating 10K+ posts/day."
 
-                            </div>
+</div>
 
                             ### 3. "Why separate read and write paths for voting?"
 
-                            <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **What They're Probing**: CQRS understanding, performance optimization strategies, and recognizing when complexity pays off.
 
@@ -725,11 +725,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               **When Simpler Works**:
                               > "Below 1M monthly users, a single PostgreSQL instance handles both paths. Use `SELECT ... FOR UPDATE SKIP LOCKED` for vote deduplication, and application-level caching with a 30-second TTL. The complexity of CQRS adds operational overhead that isn't worth it until you're seeing clear database contention."
 
-                            </div>
+</div>
 
                             ### 4. "How do you handle the 'thundering herd' on viral posts?"
 
-                            <div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **What They're Probing**: Cache stampede prevention, rate limiting strategies, and graceful degradation thinking.
 
@@ -739,11 +739,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               **When Simpler Works**:
                               > "For a forum with occasional popular threads, simple cache-aside with mutex is enough: `if cache miss: if acquire_lock(): fetch_and_cache() else: wait_for_cache()`. The singleflight pattern in Go or similar constructs handle this elegantly without distributed locks."
 
-                            </div>
+</div>
 
                             ### 5. "Why use Cassandra for votes instead of PostgreSQL?"
 
-                            <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **What They're Probing**: Database selection rationale, understanding of write patterns, and cost-benefit analysis.
 
@@ -753,15 +753,15 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               **When Simpler Works**:
                               > "PostgreSQL with a partitioned votes table (by month) handles 10M votes/day comfortably. Use `INSERT ... ON CONFLICT DO UPDATE` for idempotency. The operational simplicity of one database type beats Cassandra's performance until you're genuinely hitting PostgreSQL's write limits. I'd consider Cassandra only after seeing sustained 5K+ writes/second."
 
-                            </div>
+</div>
 
-                          </div>
+</div>
 
                           ---
 
                           ## Why This Technology?
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                             ### Decision Matrix
 
@@ -776,7 +776,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                             ### Technology Justification Deep Dive
 
-                            <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **Why Materialized Path for Comments?**
 
@@ -804,20 +804,20 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               └── Trade-off: Path length limits, string operations
                               ```
 
-                            </div>
+</div>
 
-                          </div>
+</div>
 
                           ---
 
                           ## When Simpler Solutions Work
 
-                          <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                            <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                               ### PostgreSQL JSONB for Comments
 
-                              <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                                 **When It Works**: Under 1M total comments, posts with < 500 comments average
 
@@ -846,11 +846,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                                 **Why It Breaks**: JSONB updates rewrite the entire column. At 500+ comments, you're moving megabytes per comment. Switch to normalized tables with materialized path when you see post sizes exceeding 100KB regularly.
 
-                              </div>
+</div>
 
                               ### When You Don't Need Redis for Votes
 
-                              <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                                 **When It Works**: Under 100K daily active users, < 1M votes/day
 
@@ -881,11 +881,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                                 **Why It Breaks**: Row-level locks on hot posts cause contention. When you see `lock wait` times exceeding 50ms on popular posts, introduce Redis for optimistic counting with async reconciliation.
 
-                              </div>
+</div>
 
                               ### Simpler Alternatives Reference
 
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
                                 | Full Solution | Simpler Alternative | Switch When |
                                 |--------------|---------------------|-------------|
@@ -896,11 +896,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 | CDN + Edge caching | Nginx proxy_cache | > 10K requests/second |
                                 | Microservices | Modular monolith | Team > 20 engineers |
 
-                              </div>
+</div>
 
                               ### The $300/month Forum
 
-                              <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                                 **Scenario**: 50K monthly users, 1K posts/day, 10K comments/day
 
@@ -938,20 +938,20 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 - Redis hit rate < 80% → Increase cache size
                                 - Search latency > 500ms → Consider Elasticsearch
 
-                              </div>
+</div>
 
-                            </div>
-                          </div>
+</div>
+</div>
 
                           ---
 
                           ## Trade-off Analysis & Mitigation
 
-                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                             ### Core Trade-offs
 
-                            <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               | Trade-off | Choice Made | What We Lose | Mitigation |
                               |-----------|-------------|--------------|------------|
@@ -961,11 +961,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               | **Search Indexing** | Async (5-30s delay) | Immediate searchability | Show "Post submitted" with direct link |
                               | **Media Processing** | Async transcode | Immediate media display | Progressive loading with blur placeholder |
 
-                            </div>
+</div>
 
                             ### Mitigation Strategies Deep Dive
 
-                            <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
                               ```
                               EVENTUAL CONSISTENCY MITIGATION
@@ -1011,11 +1011,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               └── Don't touch feed caches (count is denormalized)
                               ```
 
-                            </div>
+</div>
 
                             ### Failure Modes & Recovery
 
-                            <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               | Failure | Impact | Detection | Recovery |
                               |---------|--------|-----------|----------|
@@ -1025,15 +1025,15 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               | S3 unavailable | No media | 5xx from CloudFront | Serve placeholder, queue retry |
                               | Elasticsearch down | Search broken | Health endpoint | Fallback to PostgreSQL pg_trgm |
 
-                            </div>
+</div>
 
-                          </div>
+</div>
 
                           ---
 
                           ## Interview Tips
 
-                          <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
                             ### Key Discussion Points
 
@@ -1051,7 +1051,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                             ### Red Flags to Avoid
 
-                            <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               | Red Flag | Why It's Bad | Better Approach |
                               |----------|--------------|-----------------|
@@ -1062,11 +1062,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               | "NoSQL because we need scale" | SQL scales fine with proper indexing and read replicas | "PostgreSQL to 10TB, evaluate migration at clear pain points" |
                               | "Cache everything for 1 hour" | Stale data, cache invalidation nightmares | "Tiered TTLs based on data volatility: user profiles 1hr, feeds 60s, scores 5s" |
 
-                            </div>
+</div>
 
                             ### Impressive Statements
 
-                            <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               | Topic | Statement | Why It Impresses |
                               |-------|-----------|------------------|
@@ -1077,11 +1077,11 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               | **Failure modes** | "When Redis fails, we circuit-break to database with rate limiting rather than complete outage - graceful degradation over hard failure" | Shows production mindset and resilience thinking |
                               | **Growth** | "At 10K users, I'd use PostgreSQL JSONB for comments. At 1M, normalize to tables with materialized paths. At 100M, consider comment service with Cassandra" | Demonstrates ability to right-size solutions |
 
-                            </div>
+</div>
 
                             ### Closing Strong
 
-                            <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
                               **"What would you build first?"**
 
@@ -1091,6 +1091,6 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
                               > "Three places: First, single-subreddit hotspots - r/all or viral AMAs can overwhelm any caching strategy; we'd need request sampling and edge compute. Second, real-time features like chat and live threads require WebSocket infrastructure we haven't designed. Third, global latency - this design assumes single-region; multi-region would need conflict resolution for votes and eventually consistent subreddit state."
 
-                            </div>
+</div>
 
-                          </div>
+</div>

@@ -22,100 +22,100 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 ## High-Level Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">UBER SYSTEM ARCHITECTURE</h3>
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">UBER SYSTEM ARCHITECTURE</h3>
 
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
-      <div style="font-weight: bold; color: white; font-size: 14px;">Mobile Apps</div>
-      <div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 4px;">Rider App | Driver App</div>
-    </div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: bold; color: white; font-size: 14px;">Mobile Apps</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 4px;">Rider App | Driver App</div>
+</div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; color: #8b949e;">
-      <div style="width: 2px; height: 20px; background: #8b949e;"></div>
-      <div style="font-size: 11px; padding: 4px 8px; background: #f8fafc; border-radius: 4px;">WebSocket + REST</div>
-      <div style="width: 2px; height: 20px; background: #8b949e;"></div>
-    </div>
+<div style="display: flex; flex-direction: column; align-items: center; color: #8b949e;">
+<div style="width: 2px; height: 20px; background: #8b949e;"></div>
+<div style="font-size: 11px; padding: 4px 8px; background: #f8fafc; border-radius: 4px;">WebSocket + REST</div>
+<div style="width: 2px; height: 20px; background: #8b949e;"></div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px 48px; text-align: center; width: 80%; max-width: 500px;">
-      <div style="font-weight: bold; color: white; font-size: 16px;">API GATEWAY</div>
-      <div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 4px;">Authentication | Rate Limiting | Geographic Routing</div>
-    </div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px 48px; text-align: center; width: 80%; max-width: 500px;">
+<div style="font-weight: bold; color: white; font-size: 16px;">API GATEWAY</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-top: 4px;">Authentication | Rate Limiting | Geographic Routing</div>
+</div>
 
-    <div style="color: #8b949e; font-size: 16px;">&#9660;</div>
+<div style="color: #8b949e; font-size: 16px;">&#9660;</div>
 
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%;">
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%;">
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">LOCATION SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">LOCATION SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; GPS ingestion pipeline<br/>
           &#8226; H3/Geohash indexing<br/>
           &#8226; Real-time tracking
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">DISPATCH SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">DISPATCH SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; Batch matching<br/>
           &#8226; Hungarian algorithm<br/>
           &#8226; Supply optimization
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">TRIP SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #1d4ed8; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">TRIP SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; State machine<br/>
           &#8226; Event sourcing<br/>
           &#8226; Ride lifecycle
-        </div>
-      </div>
+</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="color: #8b949e; font-size: 16px;">&#9660;</div>
+<div style="color: #8b949e; font-size: 16px;">&#9660;</div>
 
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%;">
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%;">
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PRICING SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PRICING SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; Surge calculation<br/>
           &#8226; Fare estimation<br/>
           &#8226; Dynamic pricing
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f85149; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">ETA SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f85149; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">ETA SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; Route calculation<br/>
           &#8226; Traffic prediction<br/>
           &#8226; ML-based estimates
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #db61a2; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
-        <div style="color: #db61a2; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PAYMENT SERVICE</div>
-        <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #db61a2; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
+<div style="color: #db61a2; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PAYMENT SERVICE</div>
+<div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
           &#8226; Authorization<br/>
           &#8226; Capture/Settlement<br/>
           &#8226; Split payments
-        </div>
-      </div>
+</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="color: #8b949e; font-size: 16px;">&#9660;</div>
+<div style="color: #8b949e; font-size: 16px;">&#9660;</div>
 
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 48px; text-align: center;">
-      <div style="font-weight: bold; color: white; font-size: 14px;">Event Bus (Kafka)</div>
-      <div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">ride_events | location_updates | pricing_changes | trip_state_transitions</div>
-    </div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 48px; text-align: center;">
+<div style="font-weight: bold; color: white; font-size: 14px;">Event Bus (Kafka)</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 11px; margin-top: 4px;">ride_events | location_updates | pricing_changes | trip_state_transitions</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ---
@@ -129,78 +129,78 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 When a rider requests a ride at coordinates (40.758, -73.985), the system must find available drivers within a configurable radius (typically 2-5km) in under 50ms. With 5 million active drivers globally updating locations every 4 seconds, this creates **1.25 million writes per second** to the geospatial index.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">GEOSPATIAL INDEXING STRATEGIES</h4>
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">GEOSPATIAL INDEXING STRATEGIES</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #f0883e;">
-        <div style="color: #f0883e; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Geohash</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Encoding:</strong> Base32 string from lat/lng interleaving<br/>
-          <strong>Precision:</strong> Each character adds ~5 bits<br/>
-          <strong>6 chars:</strong> ~1.2km x 0.6km cell<br/>
-          <strong>Query:</strong> Prefix matching in Redis
-        </div>
-        <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #1d4ed8;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #f0883e;">
+<div style="color: #f0883e; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Geohash</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Encoding:</strong> Base32 string from lat/lng interleaving<br/>
+<strong>Precision:</strong> Each character adds ~5 bits<br/>
+<strong>6 chars:</strong> ~1.2km x 0.6km cell<br/>
+<strong>Query:</strong> Prefix matching in Redis
+</div>
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #1d4ed8;">
           "dr5ru7" = Times Square area
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #a371f7;">
-        <div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">H3 Hexagons (Uber)</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Shape:</strong> Hexagonal cells<br/>
-          <strong>Neighbors:</strong> All 6 equidistant<br/>
-          <strong>Hierarchy:</strong> 7 children per parent<br/>
-          <strong>Resolution 9:</strong> ~174m edge length
-        </div>
-        <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #a371f7;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #a371f7;">
+<div style="color: #a371f7; font-weight: bold; font-size: 14px; margin-bottom: 12px;">H3 Hexagons (Uber)</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Shape:</strong> Hexagonal cells<br/>
+<strong>Neighbors:</strong> All 6 equidistant<br/>
+<strong>Hierarchy:</strong> 7 children per parent<br/>
+<strong>Resolution 9:</strong> ~174m edge length
+</div>
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #a371f7;">
           892a100d2c3ffff = hex cell ID
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #3fb950;">
-        <div style="color: #3fb950; font-weight: bold; font-size: 14px; margin-bottom: 12px;">S2 Cells (Google)</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Shape:</strong> Quadrilateral cells<br/>
-          <strong>Projection:</strong> Cube face mapping<br/>
-          <strong>Hierarchy:</strong> 4 children per parent<br/>
-          <strong>Level 16:</strong> ~150m cell size
-        </div>
-        <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #3fb950;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-top: 4px solid #3fb950;">
+<div style="color: #3fb950; font-weight: bold; font-size: 14px; margin-bottom: 12px;">S2 Cells (Google)</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Shape:</strong> Quadrilateral cells<br/>
+<strong>Projection:</strong> Cube face mapping<br/>
+<strong>Hierarchy:</strong> 4 children per parent<br/>
+<strong>Level 16:</strong> ~150m cell size
+</div>
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #3fb950;">
           89c2847c = S2 cell token
-        </div>
-      </div>
+</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
-      <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Why H3 Over Geohash for Uber Scale</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div>
-          <div style="color: #3fb950; font-size: 12px; margin-bottom: 8px;">H3 Advantages:</div>
-          <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Why H3 Over Geohash for Uber Scale</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div>
+<div style="color: #3fb950; font-size: 12px; margin-bottom: 8px;">H3 Advantages:</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
             &#8226; Uniform neighbor distances (no diagonal distortion)<br/>
             &#8226; Better circle approximation for radius queries<br/>
             &#8226; Efficient k-ring expansion algorithm<br/>
             &#8226; Smooth hierarchical aggregation for analytics
-          </div>
-        </div>
-        <div>
-          <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">Geohash Edge Cases:</div>
-          <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+</div>
+</div>
+<div>
+<div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">Geohash Edge Cases:</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
             &#8226; Neighbors at corners require 8-cell lookup<br/>
             &#8226; Grid cells vary in size by latitude<br/>
             &#8226; Boundary discontinuities at prime meridian<br/>
             &#8226; Diagonal neighbors are farther than adjacent
-          </div>
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Redis Geospatial Implementation
@@ -324,7 +324,7 @@ class GeospatialDriverIndex:
   - PostGIS ST_DWithin on 100K drivers with GIST index: **15-30ms**
   - At 10K ride requests/second, Redis needs 5 connections; PostGIS needs 150+ connection pool
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Use Redis for hot path (driver lookup), PostGIS for complex spatial analytics (airport zones, surge regions).</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Use Redis for hot path (driver lookup), PostGIS for complex spatial analytics (airport zones, surge regions).</span>
 
   ---
 
@@ -377,7 +377,7 @@ class GeospatialDriverIndex:
   - Replication lag means stale reads for recently-moved drivers
   - Simpler architecture, higher infrastructure cost
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Overlapping shards add operational complexity but provide predictable latency. Consistent hashing is simpler but has unpredictable fan-out.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Overlapping shards add operational complexity but provide predictable latency. Consistent hashing is simpler but has unpredictable fan-out.</span>
 
 </div>
 
@@ -394,68 +394,68 @@ See also: [[Consistent Hashing]](/topics/distributed-systems/consistent-hashing)
 At any moment in Manhattan, there might be 500 pending ride requests and 300 available drivers. The goal is to minimize **total pickup time across all riders**, not just for any individual rider. This is the classic **assignment problem** from combinatorial optimization.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">BATCH MATCHING ARCHITECTURE</h4>
+<h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">BATCH MATCHING ARCHITECTURE</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
-      <div style="color: #a371f7; font-weight: bold; margin-bottom: 16px;">Matching Pipeline (Every 2 Seconds)</div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #a371f7; font-weight: bold; margin-bottom: 16px;">Matching Pipeline (Every 2 Seconds)</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center;">
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #f0883e;">
-          <div style="color: #f0883e; font-size: 20px; font-weight: bold;">1</div>
-          <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Collect Pending<br/>Requests</div>
-        </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #f0883e;">
+<div style="color: #f0883e; font-size: 20px; font-weight: bold;">1</div>
+<div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Collect Pending<br/>Requests</div>
+</div>
 
-        <div style="color: #8b949e;">&#8594;</div>
+<div style="color: #8b949e;">&#8594;</div>
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #58a6ff;">
-          <div style="color: #1d4ed8; font-size: 20px; font-weight: bold;">2</div>
-          <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Query Available<br/>Drivers</div>
-        </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #58a6ff;">
+<div style="color: #1d4ed8; font-size: 20px; font-weight: bold;">2</div>
+<div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Query Available<br/>Drivers</div>
+</div>
 
-        <div style="color: #8b949e;">&#8594;</div>
+<div style="color: #8b949e;">&#8594;</div>
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #3fb950;">
-          <div style="color: #3fb950; font-size: 20px; font-weight: bold;">3</div>
-          <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Build Cost<br/>Matrix</div>
-        </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #3fb950;">
+<div style="color: #3fb950; font-size: 20px; font-weight: bold;">3</div>
+<div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Build Cost<br/>Matrix</div>
+</div>
 
-        <div style="color: #8b949e;">&#8594;</div>
+<div style="color: #8b949e;">&#8594;</div>
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #a371f7;">
-          <div style="color: #a371f7; font-size: 20px; font-weight: bold;">4</div>
-          <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Hungarian<br/>Algorithm</div>
-        </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #a371f7;">
+<div style="color: #a371f7; font-size: 20px; font-weight: bold;">4</div>
+<div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Hungarian<br/>Algorithm</div>
+</div>
 
-        <div style="color: #8b949e;">&#8594;</div>
+<div style="color: #8b949e;">&#8594;</div>
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #db61a2;">
-          <div style="color: #db61a2; font-size: 20px; font-weight: bold;">5</div>
-          <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Dispatch<br/>Assignments</div>
-        </div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #db61a2;">
+<div style="color: #db61a2; font-size: 20px; font-weight: bold;">5</div>
+<div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Dispatch<br/>Assignments</div>
+</div>
 
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
-      <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Cost Matrix Construction</div>
-      <div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Cost Matrix Construction</div>
+<div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
 
         Each cell (i, j) represents the "cost" of assigning driver j to rider i:
 
-        <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 12px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 12px;">
           cost[i][j] = (0.50 * pickup_eta_minutes) +<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.20 * driver_rating_penalty) +<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.15 * heading_misalignment) +<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.10 * time_since_last_trip) +<br/>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.05 * vehicle_type_mismatch)
-        </div>
+</div>
 
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Hungarian Algorithm Implementation
@@ -621,7 +621,7 @@ class BatchDispatcher:
   - Greedy: A->X (4 blocks), B->next_driver (8 blocks) = **12 blocks total**
   - Batched: A->Y (2 blocks), B->X (4 blocks) = **6 blocks total**
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Batching adds 1-2 seconds latency (half the batch window) but reduces average pickup time by 15-25% at scale.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Batching adds 1-2 seconds latency (half the batch window) but reduces average pickup time by 15-25% at scale.</span>
 
   ---
 
@@ -651,7 +651,7 @@ class BatchDispatcher:
   DRIVER_ASSIGNED
   ```
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: We don't lock the driver during the offer window. If they accept another ride (from a different platform), they simply won't accept ours.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: We don't lock the driver during the offer window. If they accept another ride (from a different platform), they simply won't accept ours.</span>
 
   ---
 
@@ -685,7 +685,7 @@ class BatchDispatcher:
 
   5. **Destination mode** (legitimate): Allow 2 destination-filtered rides per day, reducing need to game.
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Strict penalties reduce gaming but also reduce driver supply. Balance via A/B testing on driver churn vs. rider experience metrics.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Strict penalties reduce gaming but also reduce driver supply. Balance via A/B testing on driver churn vs. rider experience metrics.</span>
 
 </div>
 
@@ -704,37 +704,37 @@ When demand exceeds supply, surge pricing serves two economic functions:
 2. **Supply increase**: Drivers in nearby areas see the surge and drive toward it
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #f85149; text-align: center; margin: 0 0 24px 0;">SURGE PRICING MECHANISM</h4>
+<h4 style="color: #f85149; text-align: center; margin: 0 0 24px 0;">SURGE PRICING MECHANISM</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
-        <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Supply Measurement</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Metric:</strong> Available drivers in H3 cell (resolution 8)<br/>
-          <strong>Window:</strong> Current snapshot<br/>
-          <strong>Calculation:</strong> Count of status='available' drivers<br/>
-          <strong>Adjustment:</strong> +20% for drivers heading toward cell
-        </div>
-      </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Supply Measurement</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Metric:</strong> Available drivers in H3 cell (resolution 8)<br/>
+<strong>Window:</strong> Current snapshot<br/>
+<strong>Calculation:</strong> Count of status='available' drivers<br/>
+<strong>Adjustment:</strong> +20% for drivers heading toward cell
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
-        <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Demand Measurement</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Metric:</strong> Ride requests in H3 cell<br/>
-          <strong>Window:</strong> Trailing 5-minute average<br/>
-          <strong>Calculation:</strong> Requests + predicted_requests<br/>
-          <strong>Adjustment:</strong> Weight recent requests higher (decay)
-        </div>
-      </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Demand Measurement</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Metric:</strong> Ride requests in H3 cell<br/>
+<strong>Window:</strong> Trailing 5-minute average<br/>
+<strong>Calculation:</strong> Requests + predicted_requests<br/>
+<strong>Adjustment:</strong> Weight recent requests higher (decay)
+</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
-      <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Surge Multiplier Calculation</div>
-      <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #c9d1d9;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Surge Multiplier Calculation</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #c9d1d9;">
         ratio = demand / max(supply, 1)<br/><br/>
         if ratio &lt; 1.0: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Oversupply<br/>
         if ratio 1.0-1.3: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced<br/>
@@ -743,22 +743,22 @@ When demand exceeds supply, surge pricing serves two economic functions:
         if ratio 2.0-2.5: multiplier = 1.75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Heavy surge<br/>
         if ratio 2.5-3.5: multiplier = 2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Very heavy surge<br/>
         if ratio &gt; 3.5: multiplier = 2.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Cap (regulatory)
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
-      <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Surge Smoothing</div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Surge Smoothing</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
         Raw surge calculation can oscillate rapidly. Apply exponential moving average:
-        <div style="background: #f1f5f9; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+<div style="background: #f1f5f9; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px;">
           smoothed_surge = alpha * new_surge + (1 - alpha) * prev_surge<br/>
           where alpha = 0.3 (30% weight to new value)
-        </div>
+</div>
         This prevents "surge whiplash" where prices jump dramatically between refreshes.
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Surge Pricing Implementation
@@ -965,7 +965,7 @@ class SurgePricingService:
   2. **Directional hysteresis**: Takes more imbalance to increase surge than to decrease
   3. **Rounded buckets**: Display 1.0x, 1.25x, 1.5x... not 1.37x
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Smoothing means surge responds slower to real demand spikes. Balance via tuning alpha based on market characteristics.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Smoothing means surge responds slower to real demand spikes. Balance via tuning alpha based on market characteristics.</span>
 
   ---
 
@@ -1059,7 +1059,7 @@ class SurgePricingService:
   })
   ```
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Surge is applied to driver-controllable components (distance, time) but not fixed fees (booking fee, tolls). This ensures drivers benefit from surge, aligning incentives.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Surge is applied to driver-controllable components (distance, time) but not fixed fees (booking fee, tolls). This ensures drivers benefit from surge, aligning incentives.</span>
 
 </div>
 
@@ -1074,62 +1074,62 @@ See also: [[Market Mechanisms]](/topics/economics/market-mechanisms), [[Dynamic 
 ### Components of Uber ETA
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">ETA DECOMPOSITION</h4>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">ETA DECOMPOSITION</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
-      <div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-          <div style="background: #f0883e; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">1</div>
-          <div><strong style="color: #f0883e;">Matching Latency</strong> - Time to find and assign driver (2-5 seconds)</div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-          <div style="background: #58a6ff; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">2</div>
-          <div><strong style="color: #1d4ed8;">Driver Acceptance</strong> - Time for driver to see and accept (8-15 seconds)</div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-          <div style="background: #3fb950; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">3</div>
-          <div><strong style="color: #3fb950;">Pickup Drive Time</strong> - Driver traveling to rider (2-10 minutes)</div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-          <div style="background: #a371f7; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">4</div>
-          <div><strong style="color: #a371f7;">Pickup Complexity</strong> - Finding exact spot, parking (0-5 minutes)</div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 16px;">
-          <div style="background: #db61a2; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">5</div>
-          <div><strong style="color: #db61a2;">Trip Drive Time</strong> - Actual ride to destination (variable)</div>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
+<div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #f0883e; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">1</div>
+<div><strong style="color: #f0883e;">Matching Latency</strong> - Time to find and assign driver (2-5 seconds)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #58a6ff; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">2</div>
+<div><strong style="color: #1d4ed8;">Driver Acceptance</strong> - Time for driver to see and accept (8-15 seconds)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #3fb950; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">3</div>
+<div><strong style="color: #3fb950;">Pickup Drive Time</strong> - Driver traveling to rider (2-10 minutes)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #a371f7; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">4</div>
+<div><strong style="color: #a371f7;">Pickup Complexity</strong> - Finding exact spot, parking (0-5 minutes)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #db61a2; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">5</div>
+<div><strong style="color: #db61a2;">Trip Drive Time</strong> - Actual ride to destination (variable)</div>
+</div>
+</div>
+</div>
 
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
-        <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Pickup ETA (shown before booking)</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Data sources:</strong><br/>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Pickup ETA (shown before booking)</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Data sources:</strong><br/>
           &#8226; Nearest available drivers (real-time)<br/>
           &#8226; Historical pickup times for this cell<br/>
           &#8226; Current traffic conditions<br/>
           &#8226; Location type (street, airport, stadium)
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
-        <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Trip ETA (shown after booking)</div>
-        <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-          <strong>Data sources:</strong><br/>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Trip ETA (shown after booking)</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Data sources:</strong><br/>
           &#8226; Real-time traffic (Google/Mapbox API)<br/>
           &#8226; Historical trip times for route<br/>
           &#8226; Time-of-day patterns<br/>
           &#8226; Special events affecting traffic
-        </div>
-      </div>
+</div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### ETA Prediction Service
@@ -1312,7 +1312,7 @@ class ETAService:
   - Rush hour on this specific road is 20% worse than Google predicts
   - Concert just ended 2 blocks away
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Use Google Maps for turn-by-turn navigation (hard to replicate), but self-hosted OSRM/Valhalla + ML models for ETA prediction.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Use Google Maps for turn-by-turn navigation (hard to replicate), but self-hosted OSRM/Valhalla + ML models for ETA prediction.</span>
 
   ---
 
@@ -1381,7 +1381,7 @@ class ETAService:
 
   5. **A/B testing with holdout**: Randomly show some users +1/-1 minute biased ETA, measure actual completion
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: More aggressive ETA (showing lower times) increases booking rate but also cancellation rate and rider dissatisfaction when ETA is missed.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: More aggressive ETA (showing lower times) increases booking rate but also cancellation rate and rider dissatisfaction when ETA is missed.</span>
 
 </div>
 
@@ -1396,85 +1396,85 @@ See also: [[Time Series Prediction]](/topics/ml/time-series), [[Routing Algorith
 ### State Machine Definition
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #db61a2; text-align: center; margin: 0 0 24px 0;">RIDE STATE MACHINE</h4>
+<h4 style="color: #db61a2; text-align: center; margin: 0 0 24px 0;">RIDE STATE MACHINE</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #8b949e; text-align: center; min-width: 100px;">
-        <div style="color: #8b949e; font-size: 12px; font-weight: bold;">PENDING</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Searching</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #8b949e; text-align: center; min-width: 100px;">
+<div style="color: #8b949e; font-size: 12px; font-weight: bold;">PENDING</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Searching</div>
+</div>
 
-      <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
+<div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #f0883e; text-align: center; min-width: 100px;">
-        <div style="color: #f0883e; font-size: 12px; font-weight: bold;">OFFERED</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Sent to driver</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #f0883e; text-align: center; min-width: 100px;">
+<div style="color: #f0883e; font-size: 12px; font-weight: bold;">OFFERED</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Sent to driver</div>
+</div>
 
-      <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
+<div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #58a6ff; text-align: center; min-width: 100px;">
-        <div style="color: #1d4ed8; font-size: 12px; font-weight: bold;">ACCEPTED</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Driver en route</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #58a6ff; text-align: center; min-width: 100px;">
+<div style="color: #1d4ed8; font-size: 12px; font-weight: bold;">ACCEPTED</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Driver en route</div>
+</div>
 
-      <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
+<div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #a371f7; text-align: center; min-width: 100px;">
-        <div style="color: #a371f7; font-size: 12px; font-weight: bold;">ARRIVED</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At pickup</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #a371f7; text-align: center; min-width: 100px;">
+<div style="color: #a371f7; font-size: 12px; font-weight: bold;">ARRIVED</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At pickup</div>
+</div>
 
-      <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
+<div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #3fb950; text-align: center; min-width: 100px;">
-        <div style="color: #3fb950; font-size: 12px; font-weight: bold;">IN_PROGRESS</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Trip active</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #3fb950; text-align: center; min-width: 100px;">
+<div style="color: #3fb950; font-size: 12px; font-weight: bold;">IN_PROGRESS</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Trip active</div>
+</div>
 
-      <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
+<div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-      <div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #db61a2; text-align: center; min-width: 100px;">
-        <div style="color: #db61a2; font-size: 12px; font-weight: bold;">COMPLETED</div>
-        <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At destination</div>
-      </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #db61a2; text-align: center; min-width: 100px;">
+<div style="color: #db61a2; font-size: 12px; font-weight: bold;">COMPLETED</div>
+<div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At destination</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
-      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Cancellation States (from any pre-trip state)</div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
-          <span style="color: #f85149; font-size: 11px;">CANCELLED_BY_RIDER</span>
-        </div>
-        <div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
-          <span style="color: #f85149; font-size: 11px;">CANCELLED_BY_DRIVER</span>
-        </div>
-        <div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
-          <span style="color: #f85149; font-size: 11px;">CANCELLED_NO_DRIVERS</span>
-        </div>
-        <div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
-          <span style="color: #f85149; font-size: 11px;">CANCELLED_PAYMENT_FAILED</span>
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Cancellation States (from any pre-trip state)</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
+<span style="color: #f85149; font-size: 11px;">CANCELLED_BY_RIDER</span>
+</div>
+<div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
+<span style="color: #f85149; font-size: 11px;">CANCELLED_BY_DRIVER</span>
+</div>
+<div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
+<span style="color: #f85149; font-size: 11px;">CANCELLED_NO_DRIVERS</span>
+</div>
+<div style="background: #3d1f1f; border-radius: 6px; padding: 8px 14px;">
+<span style="color: #f85149; font-size: 11px;">CANCELLED_PAYMENT_FAILED</span>
+</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
-      <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Valid State Transitions</div>
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace; line-height: 2;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Valid State Transitions</div>
+<div style="color: #c9d1d9; font-size: 12px; font-family: monospace; line-height: 2;">
         PENDING &rarr; OFFERED | CANCELLED_NO_DRIVERS<br/>
         OFFERED &rarr; ACCEPTED | PENDING (timeout/decline) | CANCELLED_BY_RIDER<br/>
         ACCEPTED &rarr; ARRIVED | CANCELLED_BY_RIDER | CANCELLED_BY_DRIVER<br/>
         ARRIVED &rarr; IN_PROGRESS | CANCELLED_BY_RIDER (fee) | CANCELLED_BY_DRIVER<br/>
         IN_PROGRESS &rarr; COMPLETED<br/>
         COMPLETED &rarr; (terminal state)
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Event Sourced Implementation
@@ -1745,7 +1745,7 @@ class RideSaga:
 
   4. **Decoupling**: Other services (payment, analytics) subscribe to events rather than polling database
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Event sourcing requires more storage and state derivation is O(n) in event count. Optimize with snapshots every ~50 events.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Event sourcing requires more storage and state derivation is O(n) in event count. Optimize with snapshots every ~50 events.</span>
 
   ---
 
@@ -1849,7 +1849,7 @@ class RideSaga:
   )
   ```
 
-  <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Accept that race conditions will happen. Design for detection and resolution, not prevention. This is more robust than trying to build a "perfect" distributed lock.</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: Accept that race conditions will happen. Design for detection and resolution, not prevention. This is more robust than trying to build a "perfect" distributed lock.</span>
 
 </div>
 
@@ -1860,76 +1860,76 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 ## System Integration Summary
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">END-TO-END RIDE FLOW</h4>
+<h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">END-TO-END RIDE FLOW</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="background: #f0883e; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
-        <div style="color: #f0883e; font-weight: bold;">Rider Opens App</div>
-      </div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        <strong>Geospatial Query</strong>: Find nearest drivers (Redis GEORADIUS)<br/>
-        <strong>ETA Service</strong>: Calculate pickup ETA (cached cell-to-cell + ML adjustment)<br/>
-        <strong>Surge Service</strong>: Get current multiplier for location (H3 cell ratio)<br/>
-        <strong>Display</strong>: "3 min away | 1.25x surge"
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="background: #f0883e; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
+<div style="color: #f0883e; font-weight: bold;">Rider Opens App</div>
+</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Geospatial Query</strong>: Find nearest drivers (Redis GEORADIUS)<br/>
+<strong>ETA Service</strong>: Calculate pickup ETA (cached cell-to-cell + ML adjustment)<br/>
+<strong>Surge Service</strong>: Get current multiplier for location (H3 cell ratio)<br/>
+<strong>Display</strong>: "3 min away | 1.25x surge"
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="background: #58a6ff; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
-        <div style="color: #1d4ed8; font-weight: bold;">Rider Requests Ride</div>
-      </div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        <strong>Payment Service</strong>: Authorize estimated fare<br/>
-        <strong>Trip Service</strong>: Create ride record (state: PENDING)<br/>
-        <strong>Dispatch Service</strong>: Add to next matching batch<br/>
-        <strong>State Event</strong>: ride.pending published to Kafka
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="background: #58a6ff; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
+<div style="color: #1d4ed8; font-weight: bold;">Rider Requests Ride</div>
+</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Payment Service</strong>: Authorize estimated fare<br/>
+<strong>Trip Service</strong>: Create ride record (state: PENDING)<br/>
+<strong>Dispatch Service</strong>: Add to next matching batch<br/>
+<strong>State Event</strong>: ride.pending published to Kafka
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="background: #a371f7; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
-        <div style="color: #a371f7; font-weight: bold;">Batch Matching (Every 2s)</div>
-      </div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        <strong>Dispatch Service</strong>: Collect pending requests + available drivers<br/>
-        <strong>Cost Matrix</strong>: Build rider x driver cost matrix with weighted factors<br/>
-        <strong>Hungarian Algorithm</strong>: Solve optimal assignment<br/>
-        <strong>State Event</strong>: ride.offered published, driver app notified
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="background: #a371f7; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
+<div style="color: #a371f7; font-weight: bold;">Batch Matching (Every 2s)</div>
+</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Dispatch Service</strong>: Collect pending requests + available drivers<br/>
+<strong>Cost Matrix</strong>: Build rider x driver cost matrix with weighted factors<br/>
+<strong>Hungarian Algorithm</strong>: Solve optimal assignment<br/>
+<strong>State Event</strong>: ride.offered published, driver app notified
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="background: #3fb950; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
-        <div style="color: #3fb950; font-weight: bold;">Driver Accepts + Trip</div>
-      </div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        <strong>Location Service</strong>: Track driver position every 4 seconds<br/>
-        <strong>ETA Service</strong>: Continuously update arrival estimate<br/>
-        <strong>State Events</strong>: ride.accepted &rarr; ride.arrived &rarr; ride.in_progress<br/>
-        <strong>Real-time</strong>: WebSocket push to rider app with driver location
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="background: #3fb950; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
+<div style="color: #3fb950; font-weight: bold;">Driver Accepts + Trip</div>
+</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Location Service</strong>: Track driver position every 4 seconds<br/>
+<strong>ETA Service</strong>: Continuously update arrival estimate<br/>
+<strong>State Events</strong>: ride.accepted &rarr; ride.arrived &rarr; ride.in_progress<br/>
+<strong>Real-time</strong>: WebSocket push to rider app with driver location
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #db61a2;">
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="background: #db61a2; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">5</div>
-        <div style="color: #db61a2; font-weight: bold;">Trip Completion</div>
-      </div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        <strong>Fare Service</strong>: Calculate final fare (distance + time + surge)<br/>
-        <strong>Payment Service</strong>: Capture authorized amount<br/>
-        <strong>State Event</strong>: ride.completed published<br/>
-        <strong>Analytics</strong>: Trip data to data warehouse for ML training
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #db61a2;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="background: #db61a2; color: #0d1117; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">5</div>
+<div style="color: #db61a2; font-weight: bold;">Trip Completion</div>
+</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
+<strong>Fare Service</strong>: Calculate final fare (distance + time + surge)<br/>
+<strong>Payment Service</strong>: Capture authorized amount<br/>
+<strong>State Event</strong>: ride.completed published<br/>
+<strong>Analytics</strong>: Trip data to data warehouse for ML training
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ---
@@ -1954,11 +1954,11 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 ## Scaling Milestones
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-  <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
     ### Phase 1: College Town MVP ($300/month)
 
-    <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 50 drivers, 500 rides/day, single city</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 50 drivers, 500 rides/day, single city</span>
 
     - **Infrastructure**: DigitalOcean droplet, managed PostgreSQL+PostGIS
     - **Architecture**: Monolithic Django/Rails app
@@ -1968,7 +1968,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
     ### Phase 2: Regional Player ($50K/month)
 
-    <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5K drivers, 50K rides/day, 5 cities</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5K drivers, 50K rides/day, 5 cities</span>
 
     - **Infrastructure**: AWS with Redis ElastiCache, Aurora PostgreSQL
     - **Architecture**: Beginning microservices (Location, Trip, Payment)
@@ -1978,7 +1978,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
     ### Phase 3: Uber Scale ($10M+/month)
 
-    <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5M drivers, 20M rides/day, 1000+ cities</span>
+<span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5M drivers, 20M rides/day, 1000+ cities</span>
 
     - **Infrastructure**: Multi-region with geographic sharding
     - **Architecture**: Full microservices, Ringpop for stateful services
@@ -1986,7 +1986,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
     - **Maps**: Fully self-hosted with ML-enhanced ETA
     - **Real-time**: Edge PoPs with WebSocket termination
 
-  </div>
+</div>
 </div>
 
 ---
@@ -1995,11 +1995,11 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-    <div style="background: #3d1f1f; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
-      <div style="color: #f85149; font-weight: bold; margin-bottom: 16px;">Red Flags</div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
+<div style="background: #3d1f1f; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 16px;">Red Flags</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
         &#8226; "We need H3 hexagons from day one"<br/>
         &#8226; "Use Kafka for all messaging"<br/>
         &#8226; "Build our own maps engine"<br/>
@@ -2007,12 +2007,12 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
         &#8226; "Microservices before PMF"<br/>
         &#8226; "Exactly-once for locations"<br/>
         &#8226; "Distributed transactions for matching"
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: #1f3d2d; border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
-      <div style="color: #3fb950; font-weight: bold; margin-bottom: 16px;">Strong Signals</div>
-      <div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
+<div style="background: #1f3d2d; border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
+<div style="color: #3fb950; font-weight: bold; margin-bottom: 16px;">Strong Signals</div>
+<div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
         &#8226; "Start with PostGIS, migrate at 1K drivers"<br/>
         &#8226; "Kafka for trip events, Redis for ephemeral"<br/>
         &#8226; "Google Maps API until $10K/month"<br/>
@@ -2020,10 +2020,10 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
         &#8226; "Monolith, extract as team grows"<br/>
         &#8226; "Locations are idempotent, latest wins"<br/>
         &#8226; "Optimistic locking with fast recovery"
-      </div>
-    </div>
+</div>
+</div>
 
-  </div>
+</div>
 
 </div>
 

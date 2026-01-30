@@ -45,9 +45,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   Quick commerce fundamentally inverts traditional retail economics. Instead of optimizing for **selection breadth** (more SKUs = more customers), it optimizes for **fulfillment velocity** (faster delivery = higher willingness to pay).
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
-      <h4 style="color: #a78bfa; margin: 0 0 12px 0;">Traditional E-commerce</h4>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #a78bfa; margin: 0 0 12px 0;">Traditional E-commerce</h4>
 
       - Large central warehouse (100,000+ sq ft)
       - 50,000+ SKUs
@@ -56,9 +56,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       - Low delivery cost per order
       - Works for planned purchases
 
-    </div>
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1f3d2d 0%, #1a2e1a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
-      <h4 style="color: #4ade80; margin: 0 0 12px 0;">Quick Commerce</h4>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1f3d2d 0%, #1a2e1a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
+<h4 style="color: #4ade80; margin: 0 0 12px 0;">Quick Commerce</h4>
 
       - Network of dark stores (2,000-3,000 sq ft each)
       - 2,000-3,000 SKUs per store
@@ -67,12 +67,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       - Higher delivery cost, higher margins
       - Captures impulse and urgent purchases
 
-    </div>
-  </div>
+</div>
+</div>
 
   ### The Unit Economics Reality
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Per-Order Economics (Mature Market)**:
 
@@ -92,46 +92,46 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
     **Break-even requires**: 400+ orders/day/store at current unit economics
 
-  </div>
+</div>
 
   ### The 10-Minute Promise: Latency Budget Breakdown
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-    <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">10-MINUTE DELIVERY LATENCY BUDGET</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">10-MINUTE DELIVERY LATENCY BUDGET</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; font-weight: bold; color: #60a5fa;">0:00 - 0:30</div>
-        <div style="color: #94a3b8; margin-top: 8px;">Order Processing</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Payment, store assignment, picker notification</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: bold; color: #60a5fa;">0:00 - 0:30</div>
+<div style="color: #94a3b8; margin-top: 8px;">Order Processing</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Payment, store assignment, picker notification</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; font-weight: bold; color: #60a5fa;">0:30 - 3:00</div>
-        <div style="color: #94a3b8; margin-top: 8px;">Picking & Packing</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Optimized route, scan items, quality check</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: bold; color: #60a5fa;">0:30 - 3:00</div>
+<div style="color: #94a3b8; margin-top: 8px;">Picking & Packing</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Optimized route, scan items, quality check</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; font-weight: bold; color: #60a5fa;">3:00 - 4:00</div>
-        <div style="color: #94a3b8; margin-top: 8px;">Dispatch</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Rider assignment, handover, route calculation</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: bold; color: #60a5fa;">3:00 - 4:00</div>
+<div style="color: #94a3b8; margin-top: 8px;">Dispatch</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Rider assignment, handover, route calculation</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; font-weight: bold; color: #60a5fa;">4:00 - 10:00</div>
-        <div style="color: #94a3b8; margin-top: 8px;">Last-Mile Delivery</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">2km radius, building entry, handover</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: bold; color: #60a5fa;">4:00 - 10:00</div>
+<div style="color: #94a3b8; margin-top: 8px;">Last-Mile Delivery</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 4px;">2km radius, building entry, handover</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="margin-top: 20px; padding: 16px; background: #0f172a; border-radius: 8px;">
-      <strong style="color: #f59e0b;">Critical Insight:</strong> The picking phase (2.5 minutes) is the most controllable variable. Store layout optimization can reduce this to 1.5 minutes, providing crucial buffer for delivery variability.
-    </div>
+<div style="margin-top: 20px; padding: 16px; background: #0f172a; border-radius: 8px;">
+<strong style="color: #f59e0b;">Critical Insight:</strong> The picking phase (2.5 minutes) is the most controllable variable. Store layout optimization can reduce this to 1.5 minutes, providing crucial buffer for delivery variability.
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -216,52 +216,52 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   A dark store is a micro-fulfillment center designed exclusively for online order fulfillment - no walk-in customers. The "dark" refers to the absence of a retail storefront, not the lighting.
 
-  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-    <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">DARK STORE PHYSICAL LAYOUT</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">DARK STORE PHYSICAL LAYOUT</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
 
-      <div style="background: #1a365d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Zone A: Fast-Moving</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Top 200 SKUs (milk, bread, eggs). Closest to packing station. 60% of picks.</div>
-      </div>
+<div style="background: #1a365d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Zone A: Fast-Moving</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Top 200 SKUs (milk, bread, eggs). Closest to packing station. 60% of picks.</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Zone B: Medium-Moving</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Next 500 SKUs. Slightly further. 25% of picks.</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Zone B: Medium-Moving</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Next 500 SKUs. Slightly further. 25% of picks.</div>
+</div>
 
-      <div style="background: #1e4d5f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Zone C: Slow-Moving</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Remaining 1,500+ SKUs. Furthest from station. 15% of picks.</div>
-      </div>
+<div style="background: #1e4d5f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Zone C: Slow-Moving</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Remaining 1,500+ SKUs. Furthest from station. 15% of picks.</div>
+</div>
 
-      <div style="background: #2d3748; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Cold Storage</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Dairy, frozen, fresh produce. Temperature-controlled zones.</div>
-      </div>
+<div style="background: #2d3748; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Cold Storage</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Dairy, frozen, fresh produce. Temperature-controlled zones.</div>
+</div>
 
-      <div style="background: #374151; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Packing Station</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">3-5 stations. Barcode scanners, bags, thermal printers.</div>
-      </div>
+<div style="background: #374151; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Packing Station</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">3-5 stations. Barcode scanners, bags, thermal printers.</div>
+</div>
 
-      <div style="background: #4b5563; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #93c5fd;">Dispatch Bay</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Rider waiting area. Order handover. GPS device sync.</div>
-      </div>
+<div style="background: #4b5563; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #93c5fd;">Dispatch Bay</div>
+<div style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Rider waiting area. Order handover. GPS device sync.</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="margin-top: 20px; padding: 16px; background: #0f172a; border-radius: 8px;">
-      <strong style="color: #22c55e;">Design Principle:</strong> Layout is optimized for picker efficiency, not customer browsing. A picker should be able to fulfill a 10-item order in under 90 seconds by minimizing walking distance.
-    </div>
+<div style="margin-top: 20px; padding: 16px; background: #0f172a; border-radius: 8px;">
+<strong style="color: #22c55e;">Design Principle:</strong> Layout is optimized for picker efficiency, not customer browsing. A picker should be able to fulfill a 10-item order in under 90 seconds by minimizing walking distance.
+</div>
 
-  </div>
+</div>
 
   ### Dark Store Placement Strategy
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Location Selection Algorithm**:
 
@@ -336,58 +336,58 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
     **Key Trade-off**: A store serving a 2km radius has ~12.5 sq km coverage. In dense urban areas, this means 50,000-200,000 potential customers. But only a fraction order frequently. The sweet spot is placing stores where order density justifies the fixed costs (~INR 3-5 lakh/month).
 
-  </div>
+</div>
 
   ### Store Operations System Design
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
-    <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DARK STORE OPERATIONS SYSTEM</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
+<h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DARK STORE OPERATIONS SYSTEM</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Store Management Service</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Store metadata (location, capacity, hours)</li>
-          <li>Zone configuration</li>
-          <li>Staff scheduling</li>
-          <li>Real-time status (open/closed/busy)</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Store Management Service</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Store metadata (location, capacity, hours)</li>
+<li>Zone configuration</li>
+<li>Staff scheduling</li>
+<li>Real-time status (open/closed/busy)</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Picker Management</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Picker app with optimized pick lists</li>
-          <li>Walking route optimization</li>
-          <li>Performance tracking (picks/hour)</li>
-          <li>Substitution authorization</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Picker Management</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Picker app with optimized pick lists</li>
+<li>Walking route optimization</li>
+<li>Performance tracking (picks/hour)</li>
+<li>Substitution authorization</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Receiving System</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Inbound shipment scheduling</li>
-          <li>Barcode scanning for receipt</li>
-          <li>Expiry date tracking</li>
-          <li>Put-away location assignment</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Receiving System</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Inbound shipment scheduling</li>
+<li>Barcode scanning for receipt</li>
+<li>Expiry date tracking</li>
+<li>Put-away location assignment</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Quality Control</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Expiry monitoring (FEFO enforcement)</li>
-          <li>Temperature logging for cold chain</li>
-          <li>Damage reporting</li>
-          <li>Cycle count scheduling</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Quality Control</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Expiry monitoring (FEFO enforcement)</li>
+<li>Temperature logging for cold chain</li>
+<li>Damage reporting</li>
+<li>Cycle count scheduling</li>
+</ul>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -532,48 +532,48 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   The "last mile" is actually the "last 50 meters" problem. Getting to the neighborhood is straightforward with Google Maps. Getting into the building, finding the right apartment, and completing the handover - that's where 40% of delivery time variability originates.
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #ef4444;">
-    <h4 style="color: #f87171; margin: 0 0 20px 0; text-align: center;">DELIVERY TIME VARIABILITY SOURCES</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #ef4444;">
+<h4 style="color: #f87171; margin: 0 0 20px 0; text-align: center;">DELIVERY TIME VARIABILITY SOURCES</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
 
-      <div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fca5a5;">Traffic</div>
-        <div style="font-size: 24px; color: #fecaca; margin: 8px 0;">30%</div>
-        <div style="font-size: 12px; color: #fca5a5;">Predictable with historical data + real-time signals</div>
-      </div>
+<div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fca5a5;">Traffic</div>
+<div style="font-size: 24px; color: #fecaca; margin: 8px 0;">30%</div>
+<div style="font-size: 12px; color: #fca5a5;">Predictable with historical data + real-time signals</div>
+</div>
 
-      <div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fca5a5;">Building Access</div>
-        <div style="font-size: 24px; color: #fecaca; margin: 8px 0;">25%</div>
-        <div style="font-size: 12px; color: #fca5a5;">Security checks, gate codes, elevator wait times</div>
-      </div>
+<div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fca5a5;">Building Access</div>
+<div style="font-size: 24px; color: #fecaca; margin: 8px 0;">25%</div>
+<div style="font-size: 12px; color: #fca5a5;">Security checks, gate codes, elevator wait times</div>
+</div>
 
-      <div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fca5a5;">Customer Availability</div>
-        <div style="font-size: 24px; color: #fecaca; margin: 8px 0;">20%</div>
-        <div style="font-size: 12px; color: #fca5a5;">Not answering calls, wrong address, not home</div>
-      </div>
+<div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fca5a5;">Customer Availability</div>
+<div style="font-size: 24px; color: #fecaca; margin: 8px 0;">20%</div>
+<div style="font-size: 12px; color: #fca5a5;">Not answering calls, wrong address, not home</div>
+</div>
 
-      <div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fca5a5;">Parking/Navigation</div>
-        <div style="font-size: 24px; color: #fecaca; margin: 8px 0;">15%</div>
-        <div style="font-size: 12px; color: #fca5a5;">Finding building entrance, parking bike</div>
-      </div>
+<div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fca5a5;">Parking/Navigation</div>
+<div style="font-size: 24px; color: #fecaca; margin: 8px 0;">15%</div>
+<div style="font-size: 12px; color: #fca5a5;">Finding building entrance, parking bike</div>
+</div>
 
-      <div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fca5a5;">Weather</div>
-        <div style="font-size: 24px; color: #fecaca; margin: 8px 0;">10%</div>
-        <div style="font-size: 12px; color: #fca5a5;">Rain reduces speed, visibility, safety</div>
-      </div>
+<div style="background: #7f1d1d; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fca5a5;">Weather</div>
+<div style="font-size: 24px; color: #fecaca; margin: 8px 0;">10%</div>
+<div style="font-size: 12px; color: #fca5a5;">Rain reduces speed, visibility, safety</div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### Rider Assignment Algorithm
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Multi-Objective Optimization Problem**:
 
@@ -667,14 +667,14 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     3. Sub-second assignment is required
     4. Interpretability matters for debugging
 
-  </div>
+</div>
 
   ### Order Batching Strategy
 
-  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
-    <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">ORDER BATCHING DECISION MATRIX</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">ORDER BATCHING DECISION MATRIX</h4>
 
-    <div style="background: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="background: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 
       **When to Batch** (deliver 2 orders in one trip):
 
@@ -686,9 +686,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       | Rider capacity | Both fit in bag | Physical constraint |
       | Customer tolerance | Neither is a "premium" customer | Some customers pay for priority |
 
-    </div>
+</div>
 
-    <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
 
       **Batching Trade-offs**:
 
@@ -699,13 +699,13 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       | Reduced carbon footprint | Customer may see rider "going wrong way" on tracking |
       | Enables profitability at lower AOV | Harder to maintain 10-minute promise |
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### Real-Time Tracking System
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Architecture for Live Rider Tracking**:
 
@@ -808,7 +808,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     | Battery optimization | OS throttles GPS updates | Request high-accuracy mode for active deliveries |
     | Spoofing attempts | Fake location to appear faster | Cross-reference with expected trajectory, accelerometer |
 
-  </div>
+</div>
 
 </div>
 
@@ -971,47 +971,47 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   Inventory accuracy is the silent killer of quick commerce. A customer adds items to cart, completes checkout, and then receives a "sorry, out of stock" message because the system showed availability that didn't exist physically. This destroys trust and conversion.
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
-    <h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">INVENTORY ACCURACY SOURCES OF ERROR</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
+<h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">INVENTORY ACCURACY SOURCES OF ERROR</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
 
-      <div style="background: #78350f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fde68a;">Receiving Errors</div>
-        <div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Shipment says 100 units, actual is 98. If not caught at receiving, error persists forever.</div>
-      </div>
+<div style="background: #78350f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fde68a;">Receiving Errors</div>
+<div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Shipment says 100 units, actual is 98. If not caught at receiving, error persists forever.</div>
+</div>
 
-      <div style="background: #78350f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fde68a;">Picking Errors</div>
-        <div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Picker takes wrong item or wrong quantity. System decrements wrong SKU.</div>
-      </div>
+<div style="background: #78350f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fde68a;">Picking Errors</div>
+<div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Picker takes wrong item or wrong quantity. System decrements wrong SKU.</div>
+</div>
 
-      <div style="background: #78350f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fde68a;">Shrinkage</div>
-        <div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Theft, damage, spoilage. Items disappear without system record.</div>
-      </div>
+<div style="background: #78350f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fde68a;">Shrinkage</div>
+<div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Theft, damage, spoilage. Items disappear without system record.</div>
+</div>
 
-      <div style="background: #78350f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fde68a;">Returns Processing</div>
-        <div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Returned items may not be added back to inventory immediately or correctly.</div>
-      </div>
+<div style="background: #78350f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fde68a;">Returns Processing</div>
+<div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Returned items may not be added back to inventory immediately or correctly.</div>
+</div>
 
-      <div style="background: #78350f; border-radius: 8px; padding: 16px;">
-        <div style="font-weight: bold; color: #fde68a;">System Race Conditions</div>
-        <div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Two customers checking out simultaneously for last item. Both see "available."</div>
-      </div>
+<div style="background: #78350f; border-radius: 8px; padding: 16px;">
+<div style="font-weight: bold; color: #fde68a;">System Race Conditions</div>
+<div style="font-size: 13px; color: #fcd34d; margin-top: 8px;">Two customers checking out simultaneously for last item. Both see "available."</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="margin-top: 20px; padding: 16px; background: #451a03; border-radius: 8px;">
-      <strong style="color: #fbbf24;">Industry Benchmark:</strong> Retail inventory accuracy is typically 85-95%. Quick commerce needs 97%+ to maintain customer trust. The 2% gap is the difference between success and failure.
-    </div>
+<div style="margin-top: 20px; padding: 16px; background: #451a03; border-radius: 8px;">
+<strong style="color: #fbbf24;">Industry Benchmark:</strong> Retail inventory accuracy is typically 85-95%. Quick commerce needs 97%+ to maintain customer trust. The 2% gap is the difference between success and failure.
+</div>
 
-  </div>
+</div>
 
   ### Real-Time Inventory Architecture
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Multi-Layer Inventory System**:
 
@@ -1164,55 +1164,55 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     return self.find_substitution(store_id, sku, order_id)
     ```
 
-  </div>
+</div>
 
   ### Inventory Events and State Machine
 
-  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-    <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #93c5fd; margin: 0 0 12px 0;">Inbound Flow</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
-          <div style="margin-bottom: 8px;"><strong>ORDERED</strong>: PO created with supplier</div>
-          <div style="margin-bottom: 8px;"><strong>IN_TRANSIT</strong>: Shipment dispatched</div>
-          <div style="margin-bottom: 8px;"><strong>RECEIVED</strong>: Scanned at dark store</div>
-          <div style="margin-bottom: 8px;"><strong>PUTAWAY</strong>: Placed in storage location</div>
-          <div><strong>AVAILABLE</strong>: Ready for customer orders</div>
-        </div>
-      </div>
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #93c5fd; margin: 0 0 12px 0;">Inbound Flow</h5>
+<div style="font-size: 13px; color: #94a3b8;">
+<div style="margin-bottom: 8px;"><strong>ORDERED</strong>: PO created with supplier</div>
+<div style="margin-bottom: 8px;"><strong>IN_TRANSIT</strong>: Shipment dispatched</div>
+<div style="margin-bottom: 8px;"><strong>RECEIVED</strong>: Scanned at dark store</div>
+<div style="margin-bottom: 8px;"><strong>PUTAWAY</strong>: Placed in storage location</div>
+<div><strong>AVAILABLE</strong>: Ready for customer orders</div>
+</div>
+</div>
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #93c5fd; margin: 0 0 12px 0;">Outbound Flow</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
-          <div style="margin-bottom: 8px;"><strong>AVAILABLE</strong>: Can be ordered</div>
-          <div style="margin-bottom: 8px;"><strong>RESERVED</strong>: Held for specific order</div>
-          <div style="margin-bottom: 8px;"><strong>PICKED</strong>: Physically removed from shelf</div>
-          <div style="margin-bottom: 8px;"><strong>PACKED</strong>: In delivery bag</div>
-          <div><strong>DELIVERED</strong>: With customer (terminal)</div>
-        </div>
-      </div>
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #93c5fd; margin: 0 0 12px 0;">Outbound Flow</h5>
+<div style="font-size: 13px; color: #94a3b8;">
+<div style="margin-bottom: 8px;"><strong>AVAILABLE</strong>: Can be ordered</div>
+<div style="margin-bottom: 8px;"><strong>RESERVED</strong>: Held for specific order</div>
+<div style="margin-bottom: 8px;"><strong>PICKED</strong>: Physically removed from shelf</div>
+<div style="margin-bottom: 8px;"><strong>PACKED</strong>: In delivery bag</div>
+<div><strong>DELIVERED</strong>: With customer (terminal)</div>
+</div>
+</div>
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #93c5fd; margin: 0 0 12px 0;">Exception Flows</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
-          <div style="margin-bottom: 8px;"><strong>RESERVED -> AVAILABLE</strong>: Order cancelled, release reservation</div>
-          <div style="margin-bottom: 8px;"><strong>AVAILABLE -> DAMAGED</strong>: Found during pick, write off</div>
-          <div style="margin-bottom: 8px;"><strong>AVAILABLE -> EXPIRED</strong>: Past sell-by date</div>
-          <div style="margin-bottom: 8px;"><strong>DELIVERED -> AVAILABLE</strong>: Customer return (if sellable)</div>
-          <div><strong>DELIVERED -> DAMAGED</strong>: Customer return (if not sellable)</div>
-        </div>
-      </div>
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #93c5fd; margin: 0 0 12px 0;">Exception Flows</h5>
+<div style="font-size: 13px; color: #94a3b8;">
+<div style="margin-bottom: 8px;"><strong>RESERVED -> AVAILABLE</strong>: Order cancelled, release reservation</div>
+<div style="margin-bottom: 8px;"><strong>AVAILABLE -> DAMAGED</strong>: Found during pick, write off</div>
+<div style="margin-bottom: 8px;"><strong>AVAILABLE -> EXPIRED</strong>: Past sell-by date</div>
+<div style="margin-bottom: 8px;"><strong>DELIVERED -> AVAILABLE</strong>: Customer return (if sellable)</div>
+<div><strong>DELIVERED -> DAMAGED</strong>: Customer return (if not sellable)</div>
+</div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### Cycle Counting and Reconciliation
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Continuous Cycle Count Strategy**:
 
@@ -1309,7 +1309,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     """, [store_id, sku])
     ```
 
-  </div>
+</div>
 
 </div>
 
@@ -1470,9 +1470,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   In quick commerce, the cost of being wrong about demand is asymmetric and severe:
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
-      <h4 style="color: #fca5a5; margin: 0 0 12px 0;">Understock (Stockout)</h4>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h4 style="color: #fca5a5; margin: 0 0 12px 0;">Understock (Stockout)</h4>
 
       - Lost sale (INR 450 average)
       - Lost customer lifetime value (10-20x single order)
@@ -1480,9 +1480,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       - Competitor gains the customer
       - **Cost: INR 5,000-10,000 per incident**
 
-    </div>
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #78350f 0%, #451a03 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <h4 style="color: #fcd34d; margin: 0 0 12px 0;">Overstock</h4>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #78350f 0%, #451a03 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<h4 style="color: #fcd34d; margin: 0 0 12px 0;">Overstock</h4>
 
       - Working capital tied up
       - Storage space consumed
@@ -1490,10 +1490,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       - Markdown/write-off
       - **Cost: 20-100% of product cost**
 
-    </div>
-  </div>
+</div>
+</div>
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **The Forecasting Challenge**:
 
@@ -1508,69 +1508,69 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     | **Lead time** | Days/Weeks | Hours |
     | **Data history** | Years | Months (new stores) |
 
-  </div>
+</div>
 
   ### Forecasting Architecture
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
-    <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DEMAND FORECASTING SYSTEM</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
+<h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DEMAND FORECASTING SYSTEM</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Data Collection Layer</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Historical sales (store x SKU x day)</li>
-          <li>Search queries (demand signal)</li>
-          <li>Cart additions (intent signal)</li>
-          <li>Stockout events (suppressed demand)</li>
-          <li>Weather forecasts</li>
-          <li>Local events calendar</li>
-          <li>Holiday calendar</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Data Collection Layer</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Historical sales (store x SKU x day)</li>
+<li>Search queries (demand signal)</li>
+<li>Cart additions (intent signal)</li>
+<li>Stockout events (suppressed demand)</li>
+<li>Weather forecasts</li>
+<li>Local events calendar</li>
+<li>Holiday calendar</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Feature Engineering</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Day of week encoding</li>
-          <li>Time since last purchase (per customer)</li>
-          <li>Promotional flag</li>
-          <li>Price change indicator</li>
-          <li>Stock level (demand suppression)</li>
-          <li>Competitor promotions</li>
-          <li>Neighborhood demographics</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Feature Engineering</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Day of week encoding</li>
+<li>Time since last purchase (per customer)</li>
+<li>Promotional flag</li>
+<li>Price change indicator</li>
+<li>Stock level (demand suppression)</li>
+<li>Competitor promotions</li>
+<li>Neighborhood demographics</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Model Selection</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li><strong>High velocity SKUs</strong>: LightGBM with lag features</li>
-          <li><strong>Medium velocity</strong>: Prophet for trend + seasonality</li>
-          <li><strong>Low velocity</strong>: Poisson regression / simple averages</li>
-          <li><strong>New SKUs</strong>: Transfer learning from similar products</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Model Selection</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li><strong>High velocity SKUs</strong>: LightGBM with lag features</li>
+<li><strong>Medium velocity</strong>: Prophet for trend + seasonality</li>
+<li><strong>Low velocity</strong>: Poisson regression / simple averages</li>
+<li><strong>New SKUs</strong>: Transfer learning from similar products</li>
+</ul>
+</div>
 
-      <div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
-        <h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Output & Actions</h5>
-        <ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
-          <li>Point forecast (expected demand)</li>
-          <li>Prediction interval (uncertainty)</li>
-          <li>Recommended order quantity</li>
-          <li>Safety stock level</li>
-          <li>Reorder trigger point</li>
-        </ul>
-      </div>
+<div style="background: #1e1b4b; border-radius: 12px; padding: 16px;">
+<h5 style="color: #c4b5fd; margin: 0 0 12px 0;">Output & Actions</h5>
+<ul style="color: #94a3b8; font-size: 13px; margin: 0; padding-left: 16px;">
+<li>Point forecast (expected demand)</li>
+<li>Prediction interval (uncertainty)</li>
+<li>Recommended order quantity</li>
+<li>Safety stock level</li>
+<li>Reorder trigger point</li>
+</ul>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### Forecasting Model Implementation
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     ```python
     class DemandForecastingService:
@@ -1726,18 +1726,18 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     }
     ```
 
-  </div>
+</div>
 
   ### Handling Demand Anomalies
 
-  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
-    <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">DEMAND ANOMALY DETECTION AND HANDLING</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">DEMAND ANOMALY DETECTION AND HANDLING</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Spike Detection</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Spike Detection</h5>
+<div style="font-size: 13px; color: #94a3b8;">
 
           **Triggers**:
           - 3x normal hourly order rate
@@ -1749,12 +1749,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
           - Auto-increase safety stock
           - Trigger emergency replenishment
 
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Drop Detection</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Drop Detection</h5>
+<div style="font-size: 13px; color: #94a3b8;">
 
           **Triggers**:
           - <50% of expected demand
@@ -1766,12 +1766,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
           - Consider markdown
           - Reduce next replenishment
 
-        </div>
-      </div>
+</div>
+</div>
 
-      <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
-        <h5 style="color: #86efac; margin: 0 0 12px 0;">Stockout Recovery</h5>
-        <div style="font-size: 13px; color: #94a3b8;">
+<div style="background: #0f172a; border-radius: 8px; padding: 16px;">
+<h5 style="color: #86efac; margin: 0 0 12px 0;">Stockout Recovery</h5>
+<div style="font-size: 13px; color: #94a3b8;">
 
           **When stockout occurs**:
           - Log as "suppressed demand"
@@ -1781,12 +1781,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
           **Formula**:
           `true_demand = observed_sales + estimated_lost_sales`
 
-        </div>
-      </div>
+</div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -2019,93 +2019,93 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-    <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">ZEPTO SYSTEM ARCHITECTURE</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">ZEPTO SYSTEM ARCHITECTURE</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
 
-      <div style="background: #1e3a5f; border-radius: 12px; padding: 16px; text-align: center;">
-        <div style="font-size: 32px; margin-bottom: 8px;">CUSTOMER</div>
-        <div style="color: #94a3b8; font-size: 13px;">Mobile App / Web</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="font-size: 32px; margin-bottom: 8px;">CUSTOMER</div>
+<div style="color: #94a3b8; font-size: 13px;">Mobile App / Web</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: #374151; height: 2px; margin: 16px 0;"></div>
+<div style="background: #374151; height: 2px; margin: 16px 0;"></div>
 
-    <div style="text-align: center; color: #9ca3af; margin: 8px 0; font-weight: bold;">API Gateway (Kong/AWS ALB)</div>
+<div style="text-align: center; color: #9ca3af; margin: 8px 0; font-weight: bold;">API Gateway (Kong/AWS ALB)</div>
 
-    <div style="background: #374151; height: 2px; margin: 16px 0;"></div>
+<div style="background: #374151; height: 2px; margin: 16px 0;"></div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0;">
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">Catalog Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Products, Pricing, Search</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">Catalog Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Products, Pricing, Search</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">Order Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Cart, Checkout, Status</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">Order Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Cart, Checkout, Status</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">Inventory Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Stock, Reservations</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">Inventory Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Stock, Reservations</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">Fulfillment Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Picking, Packing</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">Fulfillment Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Picking, Packing</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">Delivery Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Assignment, Tracking</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">Delivery Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Assignment, Tracking</div>
+</div>
 
-      <div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #93c5fd;">User Service</div>
-        <div style="font-size: 11px; color: #94a3b8;">Auth, Profiles, Addresses</div>
-      </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #93c5fd;">User Service</div>
+<div style="font-size: 11px; color: #94a3b8;">Auth, Profiles, Addresses</div>
+</div>
 
-    </div>
+</div>
 
-    <div style="background: #374151; height: 2px; margin: 16px 0;"></div>
+<div style="background: #374151; height: 2px; margin: 16px 0;"></div>
 
-    <div style="text-align: center; color: #9ca3af; margin: 8px 0; font-weight: bold;">Event Bus (Kafka)</div>
+<div style="text-align: center; color: #9ca3af; margin: 8px 0; font-weight: bold;">Event Bus (Kafka)</div>
 
-    <div style="background: #374151; height: 2px; margin: 16px 0;"></div>
+<div style="background: #374151; height: 2px; margin: 16px 0;"></div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
 
-      <div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #a5b4fc;">PostgreSQL</div>
-        <div style="font-size: 11px; color: #94a3b8;">Source of Truth</div>
-      </div>
+<div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #a5b4fc;">PostgreSQL</div>
+<div style="font-size: 11px; color: #94a3b8;">Source of Truth</div>
+</div>
 
-      <div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #a5b4fc;">Redis Cluster</div>
-        <div style="font-size: 11px; color: #94a3b8;">Cache, Sessions, Geo</div>
-      </div>
+<div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #a5b4fc;">Redis Cluster</div>
+<div style="font-size: 11px; color: #94a3b8;">Cache, Sessions, Geo</div>
+</div>
 
-      <div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #a5b4fc;">Elasticsearch</div>
-        <div style="font-size: 11px; color: #94a3b8;">Product Search</div>
-      </div>
+<div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #a5b4fc;">Elasticsearch</div>
+<div style="font-size: 11px; color: #94a3b8;">Product Search</div>
+</div>
 
-      <div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-weight: bold; color: #a5b4fc;">S3</div>
-        <div style="font-size: 11px; color: #94a3b8;">Images, Logs</div>
-      </div>
+<div style="background: #312e81; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="font-weight: bold; color: #a5b4fc;">S3</div>
+<div style="font-size: 11px; color: #94a3b8;">Images, Logs</div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### City-Level Sharding Strategy
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     **Why City Sharding?**
 
@@ -2136,12 +2136,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     - User traveling to another city: Query global user service, then local city services
     - Transfer inventory between cities: Asynchronous, not real-time
 
-  </div>
+</div>
 
   ### Technology Stack Rationale
 
-  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
-    <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">TECHNOLOGY DECISIONS AND ALTERNATIVES</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">TECHNOLOGY DECISIONS AND ALTERNATIVES</h4>
 
     | Component | Choice | Why This | Alternative | When Alternative Is Better |
     |-----------|--------|----------|-------------|---------------------------|
@@ -2153,7 +2153,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     | **ML Platform** | SageMaker | AWS integration | Vertex AI | GCP-first architecture |
     | **Monitoring** | Datadog | Full-stack observability | Prometheus/Grafana | Cost sensitive, self-hosted |
 
-  </div>
+</div>
 
 </div>
 
@@ -2163,10 +2163,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-    <div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); border-radius: 16px; padding: 24px;">
-      <h4 style="color: #86efac; margin: 0 0 16px 0;">Phase 1: MVP (1-5 Stores)</h4>
+<div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); border-radius: 16px; padding: 24px;">
+<h4 style="color: #86efac; margin: 0 0 16px 0;">Phase 1: MVP (1-5 Stores)</h4>
 
       **Scale**: 500-2,000 orders/day
 
@@ -2182,10 +2182,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
       **Focus**: Prove the concept, iterate on UX
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); border-radius: 16px; padding: 24px;">
-      <h4 style="color: #93c5fd; margin: 0 0 16px 0;">Phase 2: Growth (20-50 Stores)</h4>
+<div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); border-radius: 16px; padding: 24px;">
+<h4 style="color: #93c5fd; margin: 0 0 16px 0;">Phase 2: Growth (20-50 Stores)</h4>
 
       **Scale**: 10,000-50,000 orders/day
 
@@ -2201,10 +2201,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
       **Focus**: Automate operations, improve reliability
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%); border-radius: 16px; padding: 24px;">
-      <h4 style="color: #d8b4fe; margin: 0 0 16px 0;">Phase 3: Scale (100+ Stores)</h4>
+<div style="background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%); border-radius: 16px; padding: 24px;">
+<h4 style="color: #d8b4fe; margin: 0 0 16px 0;">Phase 3: Scale (100+ Stores)</h4>
 
       **Scale**: 100,000-500,000 orders/day
 
@@ -2220,10 +2220,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
       **Focus**: Unit economics, expansion
 
-    </div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #be123c 0%, #881337 100%); border-radius: 16px; padding: 24px;">
-      <h4 style="color: #fda4af; margin: 0 0 16px 0;">Phase 4: Dominance (500+ Stores)</h4>
+<div style="background: linear-gradient(135deg, #be123c 0%, #881337 100%); border-radius: 16px; padding: 24px;">
+<h4 style="color: #fda4af; margin: 0 0 16px 0;">Phase 4: Dominance (500+ Stores)</h4>
 
       **Scale**: 1M+ orders/day
 
@@ -2239,9 +2239,9 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
       **Focus**: Profitability, moat building
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -2251,13 +2251,13 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
-    <h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">CRITICAL DESIGN TRADE-OFFS</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
+<h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">CRITICAL DESIGN TRADE-OFFS</h4>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-      <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
-        <h5 style="color: #fcd34d; margin: 0 0 12px 0;">1. Consistency vs. Availability</h5>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+<h5 style="color: #fcd34d; margin: 0 0 12px 0;">1. Consistency vs. Availability</h5>
 
         **Decision**: Eventual consistency for most operations, strong consistency for inventory
 
@@ -2271,10 +2271,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
         - PostgreSQL with serializable isolation for payments
         - Kafka for async propagation of non-critical updates
 
-      </div>
+</div>
 
-      <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
-        <h5 style="color: #fcd34d; margin: 0 0 12px 0;">2. Dedicated vs. Gig Riders</h5>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+<h5 style="color: #fcd34d; margin: 0 0 12px 0;">2. Dedicated vs. Gig Riders</h5>
 
         **Decision**: Primarily dedicated fleet with gig overflow
 
@@ -2291,10 +2291,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
         - Shift scheduling based on demand prediction
         - 20% gig buffer for unexpected peaks
 
-      </div>
+</div>
 
-      <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
-        <h5 style="color: #fcd34d; margin: 0 0 12px 0;">3. SKU Breadth vs. Fulfillment Speed</h5>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+<h5 style="color: #fcd34d; margin: 0 0 12px 0;">3. SKU Breadth vs. Fulfillment Speed</h5>
 
         **Decision**: Limited SKU count (2,000-3,000) per store
 
@@ -2312,10 +2312,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
         - "Request a product" feature for demand signal
         - Different SKU mix for different neighborhoods
 
-      </div>
+</div>
 
-      <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
-        <h5 style="color: #fcd34d; margin: 0 0 12px 0;">4. Accuracy vs. Speed in ETA</h5>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+<h5 style="color: #fcd34d; margin: 0 0 12px 0;">4. Accuracy vs. Speed in ETA</h5>
 
         **Decision**: Conservative ETAs with occasional overdelivery
 
@@ -2332,11 +2332,11 @@ Design a 10-minute grocery delivery platform operating through strategically loc
         - Dynamic ETA based on real-time conditions
         - Under-promise, over-deliver philosophy
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
@@ -2346,10 +2346,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-    <div style="background: #14532d; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
-      <h4 style="color: #86efac; margin: 0 0 16px 0;">Impressive Statements</h4>
+<div style="background: #14532d; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
+<h4 style="color: #86efac; margin: 0 0 16px 0;">Impressive Statements</h4>
 
       | Statement | Why It Works |
       |-----------|--------------|
@@ -2360,10 +2360,10 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       | "FIFO assignment handles 90% of cases; optimize only at scale" | Shows you won't over-engineer |
       | "The hard problem isn't the algorithm, it's the last 50 meters" | Shows real-world awareness |
 
-    </div>
+</div>
 
-    <div style="background: #450a0a; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
-      <h4 style="color: #fca5a5; margin: 0 0 16px 0;">Red Flag Statements</h4>
+<div style="background: #450a0a; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Red Flag Statements</h4>
 
       | Statement | Why It's Bad | Better Alternative |
       |-----------|--------------|-------------------|
@@ -2374,13 +2374,13 @@ Design a 10-minute grocery delivery platform operating through strategically loc
       | "We need blockchain" | No practical benefit | "Event sourcing provides audit trail" |
       | "100% availability" | Unrealistic | "99.9% with graceful degradation" |
 
-    </div>
+</div>
 
-  </div>
+</div>
 
   ### The Structured Response Framework
 
-  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
     When asked an open-ended question, structure your response:
 
@@ -2402,7 +2402,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
     **6. WHAT I'D SKIP** (30 seconds)
     > "For this scale, I'd skip [feature] because [simpler alternative] works until [trigger condition]"
 
-  </div>
+</div>
 
 </div>
 

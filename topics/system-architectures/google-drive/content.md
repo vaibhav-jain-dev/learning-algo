@@ -21,196 +21,196 @@ Design a cloud file storage and synchronization service that allows users to sto
 ## High-Level Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-  <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">CLOUD STORAGE ARCHITECTURE</h3>
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">CLOUD STORAGE ARCHITECTURE</h3>
 
   <!-- Client Layer -->
-  <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-      <div style="font-weight: bold; color: #ffffff;">Desktop App</div>
-      <div style="font-size: 12px; color: #e5e7eb;">(Sync Client)</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-      <div style="font-weight: bold; color: #ffffff;">Mobile Apps</div>
-      <div style="font-size: 12px; color: #e5e7eb;">iOS / Android</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-      <div style="font-weight: bold; color: #ffffff;">Web App</div>
-      <div style="font-size: 12px; color: #e5e7eb;">React SPA</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-      <div style="font-weight: bold; color: #ffffff;">API Clients</div>
-      <div style="font-size: 12px; color: #e5e7eb;">Third-party</div>
-    </div>
-  </div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">Desktop App</div>
+<div style="font-size: 12px; color: #e5e7eb;">(Sync Client)</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">Mobile Apps</div>
+<div style="font-size: 12px; color: #e5e7eb;">iOS / Android</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">Web App</div>
+<div style="font-size: 12px; color: #e5e7eb;">React SPA</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">API Clients</div>
+<div style="font-size: 12px; color: #e5e7eb;">Third-party</div>
+</div>
+</div>
 
   <!-- Arrow -->
-  <div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
-    <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
-  </div>
+<div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
 
   <!-- API Gateway -->
-  <div style="display: flex; justify-content: center; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 20px 40px; text-align: center;">
-      <div style="font-weight: bold; color: #ffffff; font-size: 18px;">API Gateway</div>
-      <div style="font-size: 12px; color: #f87171;">Auth, Rate Limiting, Routing</div>
-    </div>
-  </div>
+<div style="display: flex; justify-content: center; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 20px 40px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff; font-size: 18px;">API Gateway</div>
+<div style="font-size: 12px; color: #f87171;">Auth, Rate Limiting, Routing</div>
+</div>
+</div>
 
   <!-- Arrow -->
-  <div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
-    <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
-  </div>
+<div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
 
   <!-- Services Layer -->
-  <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
-    <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
-      <div style="font-weight: bold; color: #f0883e; margin-bottom: 8px;">Metadata Service</div>
-      <div style="font-size: 11px; color: #475569; text-align: left;">
+<div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+<div style="font-weight: bold; color: #f0883e; margin-bottom: 8px;">Metadata Service</div>
+<div style="font-size: 11px; color: #475569; text-align: left;">
         - File info & paths<br>
           - Folder hierarchy<br>
             - Sharing & permissions
-          </div>
-        </div>
-        <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
-          <div style="font-weight: bold; color: #1d4ed8; margin-bottom: 8px;">Sync Service</div>
-          <div style="font-size: 11px; color: #475569; text-align: left;">
+</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+<div style="font-weight: bold; color: #1d4ed8; margin-bottom: 8px;">Sync Service</div>
+<div style="font-size: 11px; color: #475569; text-align: left;">
             - Conflict detection<br>
               - Delta calculation<br>
                 - Merge operations
-              </div>
-            </div>
-            <div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
-              <div style="font-weight: bold; color: #238636; margin-bottom: 8px;">Upload/Download</div>
-              <div style="font-size: 11px; color: #475569; text-align: left;">
+</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 20px; text-align: center; min-width: 160px;">
+<div style="font-weight: bold; color: #238636; margin-bottom: 8px;">Upload/Download</div>
+<div style="font-size: 11px; color: #475569; text-align: left;">
                 - Chunking logic<br>
                   - Resume support<br>
                     - Progress tracking
-                  </div>
-                </div>
-              </div>
+</div>
+</div>
+</div>
 
               <!-- Arrow -->
-              <div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
-                <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
-              </div>
+<div style="text-align: center; font-size: 24px; color: #1d4ed8; margin: 16px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
 
               <!-- Data Layer -->
-              <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-                  <div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
-                  <div style="font-size: 11px; color: #e5e7eb;">(Metadata)</div>
-                </div>
-                <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-                  <div style="font-weight: bold; color: #ffffff;">Redis</div>
-                  <div style="font-size: 11px; color: #e5e7eb;">(Sync State)</div>
-                </div>
-                <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
-                  <div style="font-weight: bold; color: #ffffff;">S3</div>
-                  <div style="font-size: 11px; color: #e5e7eb;">(File Blobs)</div>
-                </div>
-              </div>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
+<div style="font-size: 11px; color: #e5e7eb;">(Metadata)</div>
+</div>
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">Redis</div>
+<div style="font-size: 11px; color: #e5e7eb;">(Sync State)</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px;">
+<div style="font-weight: bold; color: #ffffff;">S3</div>
+<div style="font-size: 11px; color: #e5e7eb;">(File Blobs)</div>
+</div>
+</div>
 
-            </div>
+</div>
 
             ---
 
             ## File Chunking Strategy
 
-            <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-              <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">BLOCK-LEVEL DEDUPLICATION</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">BLOCK-LEVEL DEDUPLICATION</h4>
 
               <!-- File Input -->
-              <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
-                  <div style="font-weight: bold; color: #ffffff;">File: large_video.mp4</div>
-                  <div style="font-size: 14px; color: #7c3aed;">(1GB)</div>
-                </div>
-              </div>
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">File: large_video.mp4</div>
+<div style="font-size: 14px; color: #7c3aed;">(1GB)</div>
+</div>
+</div>
 
               <!-- Arrow -->
-              <div style="text-align: center; color: #1d4ed8; margin: 16px 0;">
-                <div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
-              </div>
+<div style="text-align: center; color: #1d4ed8; margin: 16px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 30px; margin: 0 auto; width: 0;"></div>
+</div>
 
               <!-- Chunking Process Box -->
-              <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">CHUNKING PROCESS</div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">CHUNKING PROCESS</div>
 
                 <!-- Step 1 -->
-                <div style="margin-bottom: 24px;">
-                  <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">1. Split into 4MB chunks</div>
-                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C1</div>
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C2</div>
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C3</div>
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C4</div>
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C5</div>
-                    <div style="color: #475569; padding: 8px;">...</div>
-                    <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C256</div>
-                  </div>
-                </div>
+<div style="margin-bottom: 24px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">1. Split into 4MB chunks</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C1</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C2</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C3</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C4</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C5</div>
+<div style="color: #475569; padding: 8px;">...</div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px;">C256</div>
+</div>
+</div>
 
                 <!-- Step 2 -->
-                <div style="margin-bottom: 24px;">
-                  <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">2. Calculate SHA-256 hash for each chunk</div>
-                  <div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #475569;">
-                    Hash(C1) = <span style="color: #16a34a;">abc123</span><br>
-                      Hash(C2) = <span style="color: #16a34a;">def456</span><br>
+<div style="margin-bottom: 24px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">2. Calculate SHA-256 hash for each chunk</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #475569;">
+Hash(C1) = <span style="color: #16a34a;">abc123</span><br>
+Hash(C2) = <span style="color: #16a34a;">def456</span><br>
                         ...
-                      </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Step 3 -->
-                    <div style="margin-bottom: 24px;">
-                      <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">3. Check if chunk already exists (dedup)</div>
-                      <div style="background: #f8fafc; border-radius: 8px; padding: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                          <span style="color: #16a34a; font-family: monospace;">abc123</span>
-                          <span style="color: #f0883e;">Already exists, skip upload</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                          <span style="color: #16a34a; font-family: monospace;">def456</span>
-                          <span style="color: #1d4ed8;">New chunk, upload to S3</span>
-                        </div>
-                      </div>
-                    </div>
+<div style="margin-bottom: 24px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">3. Check if chunk already exists (dedup)</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="color: #16a34a; font-family: monospace;">abc123</span>
+<span style="color: #f0883e;">Already exists, skip upload</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #16a34a; font-family: monospace;">def456</span>
+<span style="color: #1d4ed8;">New chunk, upload to S3</span>
+</div>
+</div>
+</div>
 
                     <!-- Step 4 -->
-                    <div>
-                      <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">4. Store file manifest</div>
-                      <div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #7c3aed;">
+<div>
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">4. Store file manifest</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #7c3aed;">
                         {<br>
-                          &nbsp;&nbsp;"file_id": "<span style="color: #16a34a;">xyz789</span>",<br>
-                            &nbsp;&nbsp;"chunks": ["<span style="color: #2563eb;">abc123</span>", "<span style="color: #2563eb;">def456</span>", "<span style="color: #2563eb;">ghi789</span>", ...]<br>
+&nbsp;&nbsp;"file_id": "<span style="color: #16a34a;">xyz789</span>",<br>
+&nbsp;&nbsp;"chunks": ["<span style="color: #2563eb;">abc123</span>", "<span style="color: #2563eb;">def456</span>", "<span style="color: #2563eb;">ghi789</span>", ...]<br>
                               }
-                            </div>
-                          </div>
-                        </div>
+</div>
+</div>
+</div>
 
                         <!-- Benefits -->
-                        <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px;">
-                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                            <div style="color: #238636; font-weight: bold;">Deduplication</div>
-                            <div style="color: #475569; font-size: 13px;">Save 40%+ storage across all users</div>
-                          </div>
-                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #58a6ff; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                            <div style="color: #1d4ed8; font-weight: bold;">Resumable Uploads</div>
-                            <div style="color: #475569; font-size: 13px;">Only upload remaining chunks</div>
-                          </div>
-                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                            <div style="color: #f0883e; font-weight: bold;">Efficient Sync</div>
-                            <div style="color: #475569; font-size: 13px;">Only sync changed chunks</div>
-                          </div>
-                        </div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px;">
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #238636; font-weight: bold;">Deduplication</div>
+<div style="color: #475569; font-size: 13px;">Save 40%+ storage across all users</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #58a6ff; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #1d4ed8; font-weight: bold;">Resumable Uploads</div>
+<div style="color: #475569; font-size: 13px;">Only upload remaining chunks</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #f0883e; font-weight: bold;">Efficient Sync</div>
+<div style="color: #475569; font-size: 13px;">Only sync changed chunks</div>
+</div>
+</div>
 
-                      </div>
+</div>
 
                       ---
 
                       ## Phase 1: Starting Phase
 
-                      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                        <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                           ### Assumptions
                           - **Users**: 1,000 - 50,000
@@ -264,38 +264,38 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                           #### Simple Sync Protocol
 
-                          <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                            <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">POLLING-BASED SYNC</div>
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">POLLING-BASED SYNC</div>
 
-                            <div style="color: #475569; margin-bottom: 16px;">Client polls every 30 seconds:</div>
+<div style="color: #475569; margin-bottom: 16px;">Client polls every 30 seconds:</div>
 
-                            <div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; margin-bottom: 16px;">
-                              <span style="color: #16a34a;">GET</span> <span style="color: #2563eb;">/api/sync/changes?since=timestamp</span>
-                            </div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; margin-bottom: 16px;">
+<span style="color: #16a34a;">GET</span> <span style="color: #2563eb;">/api/sync/changes?since=timestamp</span>
+</div>
 
-                            <div style="color: #475569; margin-bottom: 8px;">Response:</div>
-                            <div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #7c3aed;">
+<div style="color: #475569; margin-bottom: 8px;">Response:</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #7c3aed;">
                               {<br>
                                 &nbsp;&nbsp;"changes": [<br>
-                                  &nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #16a34a;">/docs/a.txt</span>", "action": "<span style="color: #f0883e;">modify</span>"},<br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #16a34a;">/images/b.png</span>", "action": "<span style="color: #f85149;">delete</span>"}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #16a34a;">/docs/a.txt</span>", "action": "<span style="color: #f0883e;">modify</span>"},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"path": "<span style="color: #16a34a;">/images/b.png</span>", "action": "<span style="color: #f85149;">delete</span>"}<br>
                                       &nbsp;&nbsp;],<br>
-                                        &nbsp;&nbsp;"cursor": "<span style="color: #2563eb;">new_timestamp</span>"<br>
+&nbsp;&nbsp;"cursor": "<span style="color: #2563eb;">new_timestamp</span>"<br>
                                           }
-                                        </div>
+</div>
 
-                                        <div style="color: #1d4ed8; margin-top: 16px; font-style: italic;">Client downloads changed files based on response</div>
-                                      </div>
+<div style="color: #1d4ed8; margin-top: 16px; font-style: italic;">Client downloads changed files based on response</div>
+</div>
 
-                                    </div>
-                                  </div>
+</div>
+</div>
 
                                   ---
 
                                   ## Phase 2: Medium Scale
 
-                                  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                                    <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                                       ### Assumptions
                                       - **Users**: 1M - 10M
@@ -305,76 +305,76 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                       ### Microservices with Chunking
 
-                                      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
                                         <!-- API Gateway -->
-                                        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                                          <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
-                                            <div style="font-weight: bold; color: #ffffff;">API Gateway</div>
-                                          </div>
-                                        </div>
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">API Gateway</div>
+</div>
+</div>
 
                                         <!-- Arrow -->
-                                        <div style="text-align: center; margin: 12px 0;">
-                                          <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
-                                        </div>
+<div style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                         <!-- Services Row -->
-                                        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
-                                          <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
-                                            <div style="font-weight: bold; color: #f0883e;">Metadata</div>
-                                            <div style="font-size: 11px; color: #475569;">Service</div>
-                                          </div>
-                                          <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
-                                            <div style="font-weight: bold; color: #1d4ed8;">Upload</div>
-                                            <div style="font-size: 11px; color: #475569;">Service</div>
-                                          </div>
-                                          <div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
-                                            <div style="font-weight: bold; color: #238636;">Sync</div>
-                                            <div style="font-size: 11px; color: #475569;">Service</div>
-                                          </div>
-                                        </div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+<div style="font-weight: bold; color: #f0883e;">Metadata</div>
+<div style="font-size: 11px; color: #475569;">Service</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+<div style="font-weight: bold; color: #1d4ed8;">Upload</div>
+<div style="font-size: 11px; color: #475569;">Service</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 16px; text-align: center; min-width: 120px;">
+<div style="font-weight: bold; color: #238636;">Sync</div>
+<div style="font-size: 11px; color: #475569;">Service</div>
+</div>
+</div>
 
                                         <!-- Arrow -->
-                                        <div style="text-align: center; margin: 12px 0;">
-                                          <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
-                                        </div>
+<div style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                         <!-- Chunk Service -->
-                                        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                                          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
-                                            <div style="font-weight: bold; color: #ffffff;">Chunk Service</div>
-                                          </div>
-                                        </div>
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">Chunk Service</div>
+</div>
+</div>
 
                                         <!-- Arrow -->
-                                        <div style="text-align: center; margin: 12px 0;">
-                                          <div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
-                                        </div>
+<div style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #58a6ff; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                         <!-- Blob Storage -->
-                                        <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center;">
-                                          <div style="font-weight: bold; color: #f0883e; margin-bottom: 12px;">BLOB STORAGE</div>
-                                          <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                                            <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 US</div>
-                                            <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 EU</div>
-                                            <div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 AP</div>
-                                          </div>
-                                        </div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; text-align: center;">
+<div style="font-weight: bold; color: #f0883e; margin-bottom: 12px;">BLOB STORAGE</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 US</div>
+<div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 EU</div>
+<div style="background: #f0883e; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold;">S3 AP</div>
+</div>
+</div>
 
                                         <!-- Bottom Data Stores -->
-                                        <div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 16px;">
-                                          <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
-                                            <div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
-                                            <div style="font-size: 11px; color: #e5e7eb;">Cluster</div>
-                                          </div>
-                                          <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
-                                            <div style="font-weight: bold; color: #ffffff;">Kafka</div>
-                                            <div style="font-size: 11px; color: #e5e7eb;">Events</div>
-                                          </div>
-                                        </div>
+<div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; gap: 16px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">PostgreSQL</div>
+<div style="font-size: 11px; color: #e5e7eb;">Cluster</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px 24px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">Kafka</div>
+<div style="font-size: 11px; color: #e5e7eb;">Events</div>
+</div>
+</div>
 
-                                      </div>
+</div>
 
                                       ### Delta Sync Algorithm
 
@@ -433,80 +433,80 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                       ### Conflict Resolution
 
-                                      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
                                         <!-- Three-way diagram -->
-                                        <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: start; margin-bottom: 24px;">
+<div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: start; margin-bottom: 24px;">
 
                                           <!-- Device A -->
-                                          <div style="text-align: center;">
-                                            <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                                              <div style="font-weight: bold; color: #ffffff;">Device A</div>
-                                            </div>
-                                            <div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px; color: #475569;">
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+<div style="font-weight: bold; color: #ffffff;">Device A</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px; color: #475569;">
                                               Edit file.txt<br>
-                                                <span style="color: #16a34a;">"Hello World"</span>
-                                              </div>
-                                            </div>
+<span style="color: #16a34a;">"Hello World"</span>
+</div>
+</div>
 
                                             <!-- Arrow -->
-                                            <div style="color: #1d4ed8; font-size: 24px; padding-top: 40px;">--></div>
+<div style="color: #1d4ed8; font-size: 24px; padding-top: 40px;">--></div>
 
                                             <!-- Server -->
-                                            <div style="text-align: center;">
-                                              <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                                                <div style="font-weight: bold; color: #ffffff;">Server</div>
-                                              </div>
-                                              <div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px;">
-                                                <div style="color: #16a34a;">Accept A (v1 -> v2)</div>
-                                                <div style="color: #f85149; margin-top: 8px; font-weight: bold;">CONFLICT!</div>
-                                              </div>
-                                            </div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+<div style="font-weight: bold; color: #ffffff;">Server</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px;">
+<div style="color: #16a34a;">Accept A (v1 -> v2)</div>
+<div style="color: #f85149; margin-top: 8px; font-weight: bold;">CONFLICT!</div>
+</div>
+</div>
 
                                             <!-- Arrow -->
-                                            <div style="color: #1d4ed8; font-size: 24px; padding-top: 40px;"><--</div>
+<div style="color: #1d4ed8; font-size: 24px; padding-top: 40px;"><--</div>
 
                                             <!-- Device B -->
-                                            <div style="text-align: center;">
-                                              <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                                                <div style="font-weight: bold; color: #ffffff;">Device B</div>
-                                              </div>
-                                              <div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px; color: #475569;">
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+<div style="font-weight: bold; color: #ffffff;">Device B</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px; font-size: 12px; color: #475569;">
                                                 Edit file.txt<br>
-                                                  <span style="color: #2563eb;">"Hello Earth"</span>
-                                                </div>
-                                              </div>
-                                            </div>
+<span style="color: #2563eb;">"Hello Earth"</span>
+</div>
+</div>
+</div>
 
                                             <!-- Resolution Strategies -->
-                                            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                                              <div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #238636; padding: 16px; border-radius: 0 8px 8px 0;">
-                                                <div style="color: #238636; font-weight: bold; margin-bottom: 8px;">Strategy 1: Keep Both</div>
-                                                <div style="font-size: 12px; color: #475569;">
+<div style="display: flex; gap: 16px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #238636; padding: 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #238636; font-weight: bold; margin-bottom: 8px;">Strategy 1: Keep Both</div>
+<div style="font-size: 12px; color: #475569;">
                                                   file.txt<br>
                                                     file (conflict from Device B).txt
-                                                  </div>
-                                                </div>
-                                                <div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #f0883e; padding: 16px; border-radius: 0 8px 8px 0;">
-                                                  <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Strategy 2: Last Write Wins</div>
-                                                  <div style="font-size: 12px; color: #475569;">
+</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border-left: 3px solid #f0883e; padding: 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Strategy 2: Last Write Wins</div>
+<div style="font-size: 12px; color: #475569;">
                                                     Use timestamp to determine winner<br>
                                                       (with warning to other user)
-                                                    </div>
-                                                  </div>
-                                                </div>
+</div>
+</div>
+</div>
 
-                                              </div>
+</div>
 
-                                            </div>
-                                          </div>
+</div>
+</div>
 
                                           ---
 
                                           ## Phase 3: High Scale (Google Drive Scale)
 
-                                          <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                                            <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                                               ### Assumptions
                                               - **Users**: 1B+
@@ -516,151 +516,151 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                               ### Global Architecture
 
-                                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-                                                <div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px;">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
+<div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px;">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
 
                                                 <!-- Edge Layer -->
-                                                <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                                                  <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 16px;">EDGE LAYER</div>
-                                                  <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
-                                                    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge US-East</div>
-                                                    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge EU-West</div>
-                                                    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge AP-South</div>
-                                                    <div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge SA-East</div>
-                                                  </div>
-                                                  <div style="text-align: center; font-size: 12px; color: #475569;">
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 16px;">EDGE LAYER</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+<div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge US-East</div>
+<div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge EU-West</div>
+<div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge AP-South</div>
+<div style="background: #58a6ff; color: #0d1117; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 12px;">Edge SA-East</div>
+</div>
+<div style="text-align: center; font-size: 12px; color: #475569;">
                                                     Upload acceleration | Hot file caching | Thumbnail serving
-                                                  </div>
-                                                </div>
+</div>
+</div>
 
                                                 <!-- Arrow -->
-                                                <div style="text-align: center; margin: 12px 0;">
-                                                  <div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
-                                                </div>
+<div style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                                 <!-- Control Plane -->
-                                                <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                                                  <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 16px;">CONTROL PLANE</div>
-                                                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Metadata</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Quota</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Permission</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Sync</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Collab</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
-                                                      <div style="color: #f0883e; font-weight: bold; font-size: 12px;">Search</div>
-                                                      <div style="color: #475569; font-size: 10px;">Service</div>
-                                                    </div>
-                                                  </div>
-                                                </div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+<div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 16px;">CONTROL PLANE</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Metadata</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Quota</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Permission</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Sync</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Collab</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold; font-size: 12px;">Search</div>
+<div style="color: #475569; font-size: 10px;">Service</div>
+</div>
+</div>
+</div>
 
                                                 <!-- Arrow -->
-                                                <div style="text-align: center; margin: 12px 0;">
-                                                  <div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
-                                                </div>
+<div style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #a371f7; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                                 <!-- Data Plane -->
-                                                <div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 20px;">
-                                                  <div style="text-align: center; font-weight: bold; color: #238636; margin-bottom: 16px;">DATA PLANE - DISTRIBUTED BLOB STORE</div>
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 20px;">
+<div style="text-align: center; font-weight: bold; color: #238636; margin-bottom: 16px;">DATA PLANE - DISTRIBUTED BLOB STORE</div>
 
-                                                  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-                                                    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                      <div style="color: #ffffff; font-weight: bold;">Cold Storage</div>
-                                                      <div style="font-size: 10px; color: #e5e7eb;">(Glacier)</div>
-                                                    </div>
-                                                    <div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                      <div style="color: #ffffff; font-weight: bold;">Warm Storage</div>
-                                                      <div style="font-size: 10px; color: #e5e7eb;">(S3)</div>
-                                                    </div>
-                                                    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                      <div style="color: #ffffff; font-weight: bold;">Hot Storage</div>
-                                                      <div style="font-size: 10px; color: #e5e7eb;">(SSD)</div>
-                                                    </div>
-                                                  </div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #ffffff; font-weight: bold;">Cold Storage</div>
+<div style="font-size: 10px; color: #e5e7eb;">(Glacier)</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0883e 0%, #f79862 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #ffffff; font-weight: bold;">Warm Storage</div>
+<div style="font-size: 10px; color: #e5e7eb;">(S3)</div>
+</div>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #ffffff; font-weight: bold;">Hot Storage</div>
+<div style="font-size: 10px; color: #e5e7eb;">(SSD)</div>
+</div>
+</div>
 
-                                                  <div style="text-align: center; font-size: 12px; color: #475569;">
+<div style="text-align: center; font-size: 12px; color: #475569;">
                                                     3+ replicas across regions | Erasure coding: 1.5x overhead | 11 nines durability
-                                                  </div>
-                                                </div>
+</div>
+</div>
 
-                                              </div>
+</div>
 
                                               ### Storage Tiering
 
-                                              <div style="background: #f1f5f9; border: 2px solid #8957e5; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                                                <div style="text-align: center; font-weight: bold; color: #a371f7; margin-bottom: 20px; font-size: 16px;">INTELLIGENT TIERING</div>
+<div style="background: #f1f5f9; border: 2px solid #8957e5; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #a371f7; margin-bottom: 20px; font-size: 16px;">INTELLIGENT TIERING</div>
 
-                                                <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
                                                   <!-- Hot Tier -->
-                                                  <div style="background: linear-gradient(90deg, #238636 0%, transparent 100%); border-radius: 8px; padding: 16px;">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                      <div>
-                                                        <div style="color: #16a34a; font-weight: bold;">HOT TIER (SSD, Edge Cache)</div>
-                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Recently accessed files (< 7 days), frequently accessed files</div>
-                                                      </div>
-                                                      <div style="color: #16a34a; font-weight: bold;">$0.10/GB/mo</div>
-                                                    </div>
-                                                  </div>
+<div style="background: linear-gradient(90deg, #238636 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #16a34a; font-weight: bold;">HOT TIER (SSD, Edge Cache)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Recently accessed files (< 7 days), frequently accessed files</div>
+</div>
+<div style="color: #16a34a; font-weight: bold;">$0.10/GB/mo</div>
+</div>
+</div>
 
                                                   <!-- Warm Tier -->
-                                                  <div style="background: linear-gradient(90deg, #f0883e 0%, transparent 100%); border-radius: 8px; padding: 16px;">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                      <div>
-                                                        <div style="color: #f0883e; font-weight: bold;">WARM TIER (Standard S3)</div>
-                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Occasional access (7-90 days), user's active files</div>
-                                                      </div>
-                                                      <div style="color: #f0883e; font-weight: bold;">$0.023/GB/mo</div>
-                                                    </div>
-                                                  </div>
+<div style="background: linear-gradient(90deg, #f0883e 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #f0883e; font-weight: bold;">WARM TIER (Standard S3)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Occasional access (7-90 days), user's active files</div>
+</div>
+<div style="color: #f0883e; font-weight: bold;">$0.023/GB/mo</div>
+</div>
+</div>
 
                                                   <!-- Cold Tier -->
-                                                  <div style="background: linear-gradient(90deg, #1f6feb 0%, transparent 100%); border-radius: 8px; padding: 16px;">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                      <div>
-                                                        <div style="color: #1d4ed8; font-weight: bold;">COLD TIER (S3 Glacier)</div>
-                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Rarely accessed (> 90 days), archived files</div>
-                                                      </div>
-                                                      <div style="color: #1d4ed8; font-weight: bold;">$0.004/GB/mo</div>
-                                                    </div>
-                                                  </div>
+<div style="background: linear-gradient(90deg, #1f6feb 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #1d4ed8; font-weight: bold;">COLD TIER (S3 Glacier)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Rarely accessed (> 90 days), archived files</div>
+</div>
+<div style="color: #1d4ed8; font-weight: bold;">$0.004/GB/mo</div>
+</div>
+</div>
 
                                                   <!-- Archive Tier -->
-                                                  <div style="background: linear-gradient(90deg, #8957e5 0%, transparent 100%); border-radius: 8px; padding: 16px;">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                      <div>
-                                                        <div style="color: #a371f7; font-weight: bold;">ARCHIVE TIER (Glacier Deep Archive)</div>
-                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Compliance/legal hold, 12+ hour retrieval time</div>
-                                                      </div>
-                                                      <div style="color: #a371f7; font-weight: bold;">$0.001/GB/mo</div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
+<div style="background: linear-gradient(90deg, #8957e5 0%, transparent 100%); border-radius: 8px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<div style="color: #a371f7; font-weight: bold;">ARCHIVE TIER (Glacier Deep Archive)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Compliance/legal hold, 12+ hour retrieval time</div>
+</div>
+<div style="color: #a371f7; font-weight: bold;">$0.001/GB/mo</div>
+</div>
+</div>
+</div>
+</div>
 
-                                            </div>
-                                          </div>
+</div>
+</div>
 
                                           ---
 
                                           ## AWS Technologies & Alternatives
 
-                                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                                             | Component | AWS Service | Alternative | Trade-offs |
                                             |-----------|-------------|-------------|------------|
@@ -671,36 +671,36 @@ Design a cloud file storage and synchronization service that allows users to sto
                                             | **CDN** | CloudFront | Cloudflare | CloudFront: Integration, CF: Edge compute |
                                             | **Archive** | Glacier | Backblaze B2 | Glacier: Integration, B2: Cost |
 
-                                          </div>
+</div>
 
                                           ---
 
                                           ## Distributed Systems Considerations
 
-                                          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                                             ### 1. Consistency Model
 
-                                            <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                                              <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">CONSISTENCY GUARANTEES</div>
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">CONSISTENCY GUARANTEES</div>
 
-                                              <div style="display: flex; flex-direction: column; gap: 16px;">
-                                                <div style="background: #f8fafc; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                                                  <div style="color: #238636; font-weight: bold;">Metadata (PostgreSQL)</div>
-                                                  <div style="font-size: 12px; color: #475569; margin-top: 4px;">Strong consistency | Synchronous replication</div>
-                                                </div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #f8fafc; border-left: 3px solid #238636; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #238636; font-weight: bold;">Metadata (PostgreSQL)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Strong consistency | Synchronous replication</div>
+</div>
 
-                                                <div style="background: #f8fafc; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                                                  <div style="color: #f0883e; font-weight: bold;">File Content (S3)</div>
-                                                  <div style="font-size: 12px; color: #475569; margin-top: 4px;">Read-after-write consistency | Eventual consistency for listing</div>
-                                                </div>
+<div style="background: #f8fafc; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #f0883e; font-weight: bold;">File Content (S3)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Read-after-write consistency | Eventual consistency for listing</div>
+</div>
 
-                                                <div style="background: #f8fafc; border-left: 3px solid #da3633; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-                                                  <div style="color: #f85149; font-weight: bold;">Sync State (Redis)</div>
-                                                  <div style="font-size: 12px; color: #475569; margin-top: 4px;">Best-effort delivery | Client reconciliation</div>
-                                                </div>
-                                              </div>
-                                            </div>
+<div style="background: #f8fafc; border-left: 3px solid #da3633; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #f85149; font-weight: bold;">Sync State (Redis)</div>
+<div style="font-size: 12px; color: #475569; margin-top: 4px;">Best-effort delivery | Client reconciliation</div>
+</div>
+</div>
+</div>
 
                                             ### 2. Deduplication at Scale
 
@@ -744,46 +744,46 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                             ### 3. Quota Management
 
-                                            <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                                              <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">QUOTA SERVICE</div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">QUOTA SERVICE</div>
 
-                                              <div style="display: flex; flex-direction: column; gap: 16px;">
-                                                <div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
-                                                  <div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Pre-upload check:</div>
-                                                  <div style="font-family: monospace; font-size: 13px; color: #2563eb; background: #f1f5f9; padding: 8px; border-radius: 4px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Pre-upload check:</div>
+<div style="font-family: monospace; font-size: 13px; color: #2563eb; background: #f1f5f9; padding: 8px; border-radius: 4px;">
                                                     current_usage + file_size <= quota
-                                                  </div>
-                                                </div>
+</div>
+</div>
 
-                                                <div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
-                                                  <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Async usage calculation:</div>
-                                                  <div style="font-size: 12px; color: #475569;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Async usage calculation:</div>
+<div style="font-size: 12px; color: #475569;">
                                                     - Background job recalculates usage<br>
                                                       - Handles dedup credits<br>
                                                         - Syncs with billing
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
-                                                    <div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
-                                                      <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Redis for fast checks:</div>
-                                                      <div style="font-family: monospace; font-size: 13px; color: #f85149;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Redis for fast checks:</div>
+<div style="font-family: monospace; font-size: 13px; color: #f85149;">
                                                         INCRBY user:quota:123 file_size
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
+</div>
+</div>
+</div>
+</div>
 
-                                              </div>
+</div>
 
                                               ---
 
                                               ## Interview Deep Dive Questions
 
-                                              <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
                                                 ### 1. "Why chunking instead of whole file upload?"
 
-                                                <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                   **What They're Probing**: Do you understand the trade-offs of complexity vs. efficiency at scale?
 
@@ -836,14 +836,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                   > - Need for cross-user deduplication (saves 40%+ at scale)
                                                   > - Requirement for delta sync (frequently edited files)"
 
-                                                </div>
-                                              </div>
+</div>
+</div>
 
-                                              <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
                                                 ### 2. "How do you handle conflicts in collaborative editing?"
 
-                                                <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                   **What They're Probing**: Understanding of distributed systems, CAP theorem, and user experience trade-offs.
 
@@ -861,25 +861,25 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                                   **Resolution Strategy by File Type**:
 
-                                                  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 16px 0;">
-                                                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
-                                                      <div style="color: #f0883e; font-weight: bold;">Binary files (images, videos):</div>
-                                                      <div style="color: #475569;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+<div style="color: #f0883e; font-weight: bold;">Binary files (images, videos):</div>
+<div style="color: #475569;">
                                                         Create conflict copy: "report.docx" and "report (conflict from MacBook).docx"<br>
                                                           Why: Binary diffs are meaningless to users, let them manually choose
-                                                        </div>
-                                                        <div style="color: #1d4ed8; font-weight: bold;">Text/documents:</div>
-                                                        <div style="color: #475569;">
+</div>
+<div style="color: #1d4ed8; font-weight: bold;">Text/documents:</div>
+<div style="color: #475569;">
                                                           Three-way merge: Compare v5 (base), v6-laptop, v6-phone<br>
                                                             Auto-merge non-overlapping changes, mark conflicts for overlapping
-                                                          </div>
-                                                          <div style="color: #238636; font-weight: bold;">Real-time docs (Google Docs):</div>
-                                                          <div style="color: #475569;">
+</div>
+<div style="color: #238636; font-weight: bold;">Real-time docs (Google Docs):</div>
+<div style="color: #475569;">
                                                             Operational Transform (OT): Every keystroke is an operation with position<br>
                                                               Operations transform against each other to maintain consistency
-                                                            </div>
-                                                          </div>
-                                                        </div>
+</div>
+</div>
+</div>
 
                                                         **Scenario 2: Delete vs Edit Conflict**
 
@@ -931,14 +931,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                         **When Simpler Works**:
                                                         > "For most apps, last-write-wins with a 'version history' feature is enough. Users rarely have true conflicts - most 'conflicts' are the same person on two devices. Version history lets them recover if needed. Only invest in OT/CRDT if real-time collaboration is core to your product."
 
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
-                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #238636;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #238636;">
 
                                                       ### 3. "Why not just use S3 directly for everything?"
 
-                                                      <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                         **What They're Probing**: Do you understand why abstractions exist and when they're necessary?
 
@@ -1019,14 +1019,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                         **When S3 Alone Works**:
                                                         > "For a simple file sharing app with < 100K files, you CAN use S3 directly with DynamoDB for metadata. No chunking, no sync service. Just presigned URLs for upload/download. This handles 90% of use cases for $150/month. I'd only add complexity when we need real sync, dedup, or search."
 
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
-                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #8957e5;">
 
                                                       ### 4. "How would you implement offline support?"
 
-                                                      <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                         **What They're Probing**: Client-side architecture, eventual consistency, and sync complexity.
 
@@ -1034,20 +1034,20 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                                         **The Three Components of Offline Support**:
 
-                                                        <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
-                                                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 16px;">
-                                                            <div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">1. Local Metadata Store</div>
-                                                            <div style="font-size: 12px; color: #475569;">SQLite database tracking file state</div>
-                                                          </div>
-                                                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
-                                                            <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">2. File System Watcher</div>
-                                                            <div style="font-size: 12px; color: #475569;">Detects local changes in real-time</div>
-                                                          </div>
-                                                          <div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
-                                                            <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">3. Sync Queue</div>
-                                                            <div style="font-size: 12px; color: #475569;">Pending changes to upload on reconnect</div>
-                                                          </div>
-                                                        </div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #238636; border-radius: 12px; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">1. Local Metadata Store</div>
+<div style="font-size: 12px; color: #475569;">SQLite database tracking file state</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">2. File System Watcher</div>
+<div style="font-size: 12px; color: #475569;">Detects local changes in real-time</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f1f5f9; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">3. Sync Queue</div>
+<div style="font-size: 12px; color: #475569;">Pending changes to upload on reconnect</div>
+</div>
+</div>
 
                                                         **Step 1: Local SQLite Database Schema**
 
@@ -1166,14 +1166,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                         **When Simpler Works**:
                                                         > "For web-only apps, skip offline entirely. For mobile apps, cache recently accessed files read-only. Full offline editing with sync is a massive engineering investment (6+ months for 2 engineers) - only build it if it's core to your product."
 
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
-                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f78166;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f78166;">
 
                                                       ### 5. "How do you ensure durability and prevent data loss?"
 
-                                                      <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                         **What They're Probing**: Understanding of storage reliability, replication strategies, and failure modes.
 
@@ -1299,14 +1299,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                         **When Simpler Works**:
                                                         > "S3's built-in durability is enough for most apps. Cross-region replication is expensive and adds latency. Only add it for compliance requirements or if you're storing irreplaceable data worth the 2x cost."
 
-                                                      </div>
-                                                    </div>
+</div>
+</div>
 
                                                     ---
 
                                                     ## Why This Technology?
 
-                                                    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                                                       ### Technology Decision Matrix
 
@@ -1320,169 +1320,169 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                                       ### S3 vs Alternatives Deep Dive
 
-                                                      <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
-                                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                                                          <div style="background: #f8fafc; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
-                                                            <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">S3</div>
-                                                            <div style="font-size: 12px; color: #475569;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+<div style="background: #f8fafc; border: 2px solid #f0883e; border-radius: 12px; padding: 16px;">
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">S3</div>
+<div style="font-size: 12px; color: #475569;">
                                                               Durability: 11 nines<br>
                                                                 Cost: $0.023/GB<br>
                                                                   Ecosystem: Best<br>
                                                                     Multi-region: Built-in
-                                                                  </div>
-                                                                  <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
                                                                     CHOOSE WHEN: AWS ecosystem, mature tooling, global reach
-                                                                  </div>
-                                                                </div>
+</div>
+</div>
 
-                                                                <div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
-                                                                  <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">GCS</div>
-                                                                  <div style="font-size: 12px; color: #475569;">
+<div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">GCS</div>
+<div style="font-size: 12px; color: #475569;">
                                                                     Durability: 11 nines<br>
                                                                       Cost: $0.020/GB<br>
                                                                         Ecosystem: Good<br>
                                                                           Multi-region: Built-in
-                                                                        </div>
-                                                                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
                                                                           CHOOSE WHEN: GCP ecosystem, BigQuery integration, ML workloads
-                                                                        </div>
-                                                                      </div>
+</div>
+</div>
 
-                                                                      <div style="background: #f8fafc; border: 2px solid #8957e5; border-radius: 12px; padding: 16px;">
-                                                                        <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Minio (Self-hosted)</div>
-                                                                        <div style="font-size: 12px; color: #475569;">
+<div style="background: #f8fafc; border: 2px solid #8957e5; border-radius: 12px; padding: 16px;">
+<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Minio (Self-hosted)</div>
+<div style="font-size: 12px; color: #475569;">
                                                                           Durability: You manage<br>
                                                                             Cost: Hardware + ops<br>
                                                                               Ecosystem: S3-compatible<br>
                                                                                 Multi-region: Manual
-                                                                              </div>
-                                                                              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #30363d; font-size: 11px; color: #16a34a;">
                                                                                 CHOOSE WHEN: On-premise required, data sovereignty, cost at 10PB+
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
+</div>
+</div>
+</div>
 
-                                                                        </div>
+</div>
 
                                                                         ### DynamoDB vs PostgreSQL for Metadata
 
-                                                                        <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
-                                                                          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                                                                            <div>
-                                                                              <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px; font-size: 16px;">PostgreSQL</div>
-                                                                              <div style="font-size: 13px; color: #475569; line-height: 1.6;">
-                                                                                <strong>Queries:</strong> Complex joins, full-text search<br>
-                                                                                  <strong>Scale:</strong> Sharding required at 10TB+<br>
-                                                                                    <strong>Cost:</strong> Predictable<br>
-                                                                                      <strong>Transactions:</strong> Full ACID
-                                                                                    </div>
-                                                                                    <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
-                                                                                      <strong style="color: #16a34a;">CHOOSE WHEN:</strong><br>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px; font-size: 16px;">PostgreSQL</div>
+<div style="font-size: 13px; color: #475569; line-height: 1.6;">
+<strong>Queries:</strong> Complex joins, full-text search<br>
+<strong>Scale:</strong> Sharding required at 10TB+<br>
+<strong>Cost:</strong> Predictable<br>
+<strong>Transactions:</strong> Full ACID
+</div>
+<div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
+<strong style="color: #16a34a;">CHOOSE WHEN:</strong><br>
                                                                                         Complex permission queries, full-text search, team knows SQL, < 10TB metadata
-                                                                                      </div>
-                                                                                    </div>
+</div>
+</div>
 
-                                                                                    <div>
-                                                                                      <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px; font-size: 16px;">DynamoDB</div>
-                                                                                      <div style="font-size: 13px; color: #475569; line-height: 1.6;">
-                                                                                        <strong>Queries:</strong> Key-value, limited<br>
-                                                                                          <strong>Scale:</strong> Unlimited, automatic<br>
-                                                                                            <strong>Cost:</strong> Per-request (can spike)<br>
-                                                                                              <strong>Transactions:</strong> Limited
-                                                                                            </div>
-                                                                                            <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
-                                                                                              <strong style="color: #16a34a;">CHOOSE WHEN:</strong><br>
+<div>
+<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px; font-size: 16px;">DynamoDB</div>
+<div style="font-size: 13px; color: #475569; line-height: 1.6;">
+<strong>Queries:</strong> Key-value, limited<br>
+<strong>Scale:</strong> Unlimited, automatic<br>
+<strong>Cost:</strong> Per-request (can spike)<br>
+<strong>Transactions:</strong> Limited
+</div>
+<div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-left: 3px solid #238636; border-radius: 0 8px 8px 0; font-size: 12px;">
+<strong style="color: #16a34a;">CHOOSE WHEN:</strong><br>
                                                                                                 Simple access patterns, extreme scale (1M+ RPS), unpredictable traffic, global tables needed
-                                                                                              </div>
-                                                                                            </div>
-                                                                                          </div>
+</div>
+</div>
+</div>
 
-                                                                                          <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #f0883e;">
-                                                                                            <strong>Recommendation:</strong> Start with PostgreSQL. It handles 99% of file storage apps. Migrate specific tables to DynamoDB only when you hit scaling limits.
-                                                                                          </div>
+<div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #f0883e;">
+<strong>Recommendation:</strong> Start with PostgreSQL. It handles 99% of file storage apps. Migrate specific tables to DynamoDB only when you hit scaling limits.
+</div>
 
-                                                                                        </div>
-                                                                                      </div>
+</div>
+</div>
 
                                                                                       ---
 
                                                                                       ## When Simpler Solutions Work
 
-                                                                                      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-                                                                                        <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
                                                                                           ### The "$150/month File Storage" Architecture
 
-                                                                                          <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                             **For: < 10K files, < 1TB storage, < 1K users**
 
                                                                                             <!-- Simple Architecture Diagram -->
-                                                                                            <div style="background: #f8fafc; border: 2px solid #238636; border-radius: 16px; padding: 24px; margin: 16px 0;">
-                                                                                              <div style="text-align: center; font-weight: bold; color: #16a34a; margin-bottom: 20px; font-size: 16px;">SIMPLE FILE STORAGE</div>
+<div style="background: #f8fafc; border: 2px solid #238636; border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="text-align: center; font-weight: bold; color: #16a34a; margin-bottom: 20px; font-size: 16px;">SIMPLE FILE STORAGE</div>
 
                                                                                               <!-- Client -->
-                                                                                              <div style="display: flex; justify-content: center; margin-bottom: 16px;">
-                                                                                                <div style="background: #238636; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold;">Client</div>
-                                                                                              </div>
+<div style="display: flex; justify-content: center; margin-bottom: 16px;">
+<div style="background: #238636; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold;">Client</div>
+</div>
 
                                                                                               <!-- Arrow -->
-                                                                                              <div style="text-align: center; margin: 8px 0;">
-                                                                                                <div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto; width: 0;"></div>
-                                                                                              </div>
+<div style="text-align: center; margin: 8px 0;">
+<div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto; width: 0;"></div>
+</div>
 
                                                                                               <!-- Services Row -->
-                                                                                              <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
-                                                                                                <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                                                                  <div style="color: #1d4ed8; font-weight: bold;">API</div>
-                                                                                                  <div style="font-size: 10px; color: #475569;">(Express)</div>
-                                                                                                </div>
-                                                                                                <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                                                                  <div style="color: #f0883e; font-weight: bold;">Postgres</div>
-                                                                                                  <div style="font-size: 10px; color: #475569;">(Metadata)</div>
-                                                                                                </div>
-                                                                                                <div style="background: #f1f5f9; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center;">
-                                                                                                  <div style="color: #16a34a; font-weight: bold;">S3</div>
-                                                                                                  <div style="font-size: 10px; color: #475569;">(Files)</div>
-                                                                                                </div>
-                                                                                              </div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #1d4ed8; font-weight: bold;">API</div>
+<div style="font-size: 10px; color: #475569;">(Express)</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold;">Postgres</div>
+<div style="font-size: 10px; color: #475569;">(Metadata)</div>
+</div>
+<div style="background: #f1f5f9; border: 2px solid #7ee787; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold;">S3</div>
+<div style="font-size: 10px; color: #475569;">(Files)</div>
+</div>
+</div>
 
                                                                                               <!-- Upload Flow -->
-                                                                                              <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
-                                                                                                <div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Upload flow:</div>
-                                                                                                <div style="font-size: 12px; color: #475569;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Upload flow:</div>
+<div style="font-size: 12px; color: #475569;">
                                                                                                   1. API creates presigned S3 URL<br>
                                                                                                     2. Client uploads directly to S3<br>
                                                                                                       3. API stores metadata in Postgres
-                                                                                                    </div>
-                                                                                                  </div>
+</div>
+</div>
 
                                                                                                   <!-- Cost Breakdown -->
-                                                                                                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
-                                                                                                    <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
-                                                                                                      <div style="color: #16a34a; font-weight: bold;">S3 (1TB)</div>
-                                                                                                      <div style="font-size: 12px; color: #475569;">$23/mo</div>
-                                                                                                    </div>
-                                                                                                    <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
-                                                                                                      <div style="color: #1d4ed8; font-weight: bold;">RDS Postgres</div>
-                                                                                                      <div style="font-size: 12px; color: #475569;">$15/mo</div>
-                                                                                                    </div>
-                                                                                                    <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
-                                                                                                      <div style="color: #f0883e; font-weight: bold;">EC2</div>
-                                                                                                      <div style="font-size: 12px; color: #475569;">$15/mo</div>
-                                                                                                    </div>
-                                                                                                    <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
-                                                                                                      <div style="color: #a371f7; font-weight: bold;">Data Transfer</div>
-                                                                                                      <div style="font-size: 12px; color: #475569;">~$50/mo</div>
-                                                                                                    </div>
-                                                                                                  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px;">
+<div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold;">S3 (1TB)</div>
+<div style="font-size: 12px; color: #475569;">$23/mo</div>
+</div>
+<div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #1d4ed8; font-weight: bold;">RDS Postgres</div>
+<div style="font-size: 12px; color: #475569;">$15/mo</div>
+</div>
+<div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #f0883e; font-weight: bold;">EC2</div>
+<div style="font-size: 12px; color: #475569;">$15/mo</div>
+</div>
+<div style="background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center;">
+<div style="color: #a371f7; font-weight: bold;">Data Transfer</div>
+<div style="font-size: 12px; color: #475569;">~$50/mo</div>
+</div>
+</div>
 
-                                                                                                  <div style="text-align: center; margin-top: 16px; color: #16a34a; font-weight: bold; font-size: 18px;">
+<div style="text-align: center; margin-top: 16px; color: #16a34a; font-weight: bold; font-size: 18px;">
                                                                                                     Total: ~$100-150/month
-                                                                                                  </div>
-                                                                                                </div>
+</div>
+</div>
 
                                                                                                 **What You Skip**:
                                                                                                 - No chunking (S3 multipart handles large files)
@@ -1490,11 +1490,11 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                 - No real-time collaboration (use Google Docs integration instead)
                                                                                                 - No offline support (web-only is fine)
 
-                                                                                              </div>
+</div>
 
                                                                                               ### When You Don't Need Delta Sync
 
-                                                                                              <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                 | Scenario | Delta Sync Needed? | Why |
                                                                                                 |----------|-------------------|-----|
@@ -1508,11 +1508,11 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                 **Key Insight**:
                                                                                                 > "Dropbox's delta sync is overkill for most apps. They built it because their core use case is syncing files you edit constantly (documents, code). If your users upload once and share, skip it entirely."
 
-                                                                                              </div>
+</div>
 
                                                                                               ### Simpler Alternatives Table
 
-                                                                                              <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                 | Complex Feature | Simpler Alternative | When to Use Alternative |
                                                                                                 |-----------------|--------------------|-----------------------|
@@ -1524,73 +1524,73 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                 | Multi-region storage | Single region + backups | Users in one geography |
                                                                                                 | Custom CDN | CloudFront/Cloudflare | Not serving 10K+ req/sec |
 
-                                                                                              </div>
+</div>
 
                                                                                               ### Decision Framework: Build vs. Buy
 
-                                                                                              <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                 <!-- Decision Tree -->
-                                                                                                <div style="background: #f8fafc; border-radius: 12px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px;">
 
                                                                                                   <!-- Question 1 -->
-                                                                                                  <div style="text-align: center; margin-bottom: 20px;">
-                                                                                                    <div style="background: #8957e5; color: white; padding: 12px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
+<div style="text-align: center; margin-bottom: 20px;">
+<div style="background: #8957e5; color: white; padding: 12px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
                                                                                                       Is file storage core to your product?
-                                                                                                    </div>
-                                                                                                  </div>
+</div>
+</div>
 
-                                                                                                  <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
                                                                                                     <!-- YES Branch -->
-                                                                                                    <div style="text-align: center;">
-                                                                                                      <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">YES</div>
-                                                                                                      <div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto 12px; width: 0;"></div>
+<div style="text-align: center;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">YES</div>
+<div style="border-left: 2px solid #7ee787; height: 20px; margin: 0 auto 12px; width: 0;"></div>
 
-                                                                                                      <div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 12px;">
+<div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 12px;">
                                                                                                         Do you have 6+ months<br>and 2+ engineers?
-                                                                                                        </div>
+</div>
 
-                                                                                                        <div style="display: flex; gap: 20px; justify-content: center;">
-                                                                                                          <div style="text-align: center;">
-                                                                                                            <div style="color: #16a34a; font-size: 12px; margin-bottom: 8px;">YES</div>
-                                                                                                            <div style="background: #f1f5f9; border: 2px solid #7ee787; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #16a34a;">
+<div style="display: flex; gap: 20px; justify-content: center;">
+<div style="text-align: center;">
+<div style="color: #16a34a; font-size: 12px; margin-bottom: 8px;">YES</div>
+<div style="background: #f1f5f9; border: 2px solid #7ee787; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #16a34a;">
                                                                                                               Build custom<br>(this design)
-                                                                                                              </div>
-                                                                                                            </div>
-                                                                                                            <div style="text-align: center;">
-                                                                                                              <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">NO</div>
-                                                                                                              <div style="background: #f1f5f9; border: 2px solid #f0883e; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #f0883e;">
+</div>
+</div>
+<div style="text-align: center;">
+<div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">NO</div>
+<div style="background: #f1f5f9; border: 2px solid #f0883e; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #f0883e;">
                                                                                                                 Dropbox API,<br>Box API, Amplify
-                                                                                                                </div>
-                                                                                                              </div>
-                                                                                                            </div>
-                                                                                                          </div>
+</div>
+</div>
+</div>
+</div>
 
                                                                                                           <!-- NO Branch -->
-                                                                                                          <div style="text-align: center;">
-                                                                                                            <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">NO</div>
-                                                                                                            <div style="border-left: 2px solid #f85149; height: 20px; margin: 0 auto 12px; width: 0;"></div>
+<div style="text-align: center;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">NO</div>
+<div style="border-left: 2px solid #f85149; height: 20px; margin: 0 auto 12px; width: 0;"></div>
 
-                                                                                                            <div style="background: #f1f5f9; border: 2px solid #58a6ff; padding: 12px 20px; border-radius: 8px; font-size: 13px; color: #1d4ed8;">
+<div style="background: #f1f5f9; border: 2px solid #58a6ff; padding: 12px 20px; border-radius: 8px; font-size: 13px; color: #1d4ed8;">
                                                                                                               Use Firebase Storage,<br>Cloudinary, or S3 + SDK
-                                                                                                              </div>
-                                                                                                            </div>
-                                                                                                          </div>
-                                                                                                        </div>
+</div>
+</div>
+</div>
+</div>
 
-                                                                                                      </div>
-                                                                                                    </div>
-                                                                                                  </div>
+</div>
+</div>
+</div>
 
                                                                                                   ---
 
                                                                                                   ## Trade-off Analysis & Mitigation
 
-                                                                                                  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
                                                                                                     ### Core Trade-offs
 
-                                                                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f0883e;">
 
                                                                                                       #### 1. Consistency vs. Availability
 
@@ -1605,9 +1605,9 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       - Use eventual consistency for blobs (content doesn't change)
                                                                                                       - Handle conflicts gracefully in UI (don't lose user work)
 
-                                                                                                    </div>
+</div>
 
-                                                                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #58a6ff;">
 
                                                                                                       #### 2. Storage Cost vs. Access Speed
 
@@ -1623,9 +1623,9 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       - Pre-warm files when user opens folder
                                                                                                       - Cache thumbnails aggressively (they're accessed 100x more than files)
 
-                                                                                                    </div>
+</div>
 
-                                                                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #238636;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #238636;">
 
                                                                                                       #### 3. Deduplication vs. Privacy
 
@@ -1641,9 +1641,9 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       - Encrypt chunks with per-user keys for sensitive content
                                                                                                       - For enterprise: offer per-tenant isolation as premium feature
 
-                                                                                                    </div>
+</div>
 
-                                                                                                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #8957e5;">
 
                                                                                                       #### 4. Sync Speed vs. Battery/Bandwidth
 
@@ -1659,11 +1659,11 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       - Batch changes and sync on network change (WiFi vs. cellular)
                                                                                                       - Let users configure sync frequency for mobile
 
-                                                                                                    </div>
+</div>
 
                                                                                                     ### Risk Mitigation Matrix
 
-                                                                                                    <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                       | Risk | Impact | Probability | Mitigation |
                                                                                                       |------|--------|-------------|------------|
@@ -1674,14 +1674,14 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       | Chunk index inconsistency | High | Low | Background consistency checker, reconciliation job |
                                                                                                       | Upload stuck/orphaned | Medium | Medium | Timeout + cleanup job for incomplete uploads |
 
-                                                                                                    </div>
-                                                                                                  </div>
+</div>
+</div>
 
                                                                                                   ---
 
                                                                                                   ## Interview Tips
 
-                                                                                                  <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
                                                                                                     ### Key Discussion Points
 
@@ -1693,7 +1693,7 @@ Design a cloud file storage and synchronization service that allows users to sto
 
                                                                                                     ### Red Flags (What NOT to Say)
 
-                                                                                                    <div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                       | Red Flag Statement | Why It's Wrong | Better Answer |
                                                                                                       |-------------------|----------------|---------------|
@@ -1704,11 +1704,11 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       | "4MB chunks always" | Shows lack of understanding | "Chunk size depends on use case - smaller for text (more dedup), larger for video (less overhead)" |
                                                                                                       | "Just store files on the server filesystem" | Doesn't scale | "Local filesystem for caching, S3 for durable storage" |
 
-                                                                                                    </div>
+</div>
 
                                                                                                     ### Impressive Statements (What TO Say)
 
-                                                                                                    <div style="background: linear-gradient(135deg, #1f3d1f 0%, #3a5d3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #1f3d1f 0%, #3a5d3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                       | Topic | Impressive Statement |
                                                                                                       |-------|---------------------|
@@ -1719,11 +1719,11 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       | **Failure modes** | "The hardest part isn't the upload - it's handling a partial upload that crashes. We need idempotent chunk uploads and a background job to clean up orphaned chunks." |
                                                                                                       | **User empathy** | "Conflict resolution isn't a technical problem, it's a UX problem. Users don't care about vector clocks - they care about not losing their work." |
 
-                                                                                                    </div>
+</div>
 
                                                                                                     ### Common Follow-up Questions
 
-                                                                                                    <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
                                                                                                       - **How do you handle large files (10GB+)?** Chunking with parallel upload, resumability
                                                                                                       - **How do you ensure 11 nines durability?** S3's built-in replication, cross-region for critical data
@@ -1732,5 +1732,5 @@ Design a cloud file storage and synchronization service that allows users to sto
                                                                                                       - **How do you prevent malware uploads?** Async virus scanning, quarantine until scanned, signed URLs expire
                                                                                                       - **How do you handle quota?** Pre-check before upload, atomic increment, background recalculation for dedup credits
 
-                                                                                                    </div>
-                                                                                                  </div>
+</div>
+</div>
