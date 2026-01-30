@@ -5453,7 +5453,9 @@
             try {
                 // The server returns HTML. The actual output is inside the HTML.
                 // First decode any HTML entities in the whole response
+                // Go templates use &#34; for quotes, not &quot;
                 var decoded = html
+                    .replace(/&#34;/g, '"')
                     .replace(/&quot;/g, '"')
                     .replace(/&amp;/g, '&')
                     .replace(/&lt;/g, '<')
@@ -5461,7 +5463,8 @@
                     .replace(/&#39;/g, "'")
                     .replace(/&nbsp;/g, ' ')
                     .replace(/&#x27;/g, "'")
-                    .replace(/&#x2F;/g, '/');
+                    .replace(/&#x2F;/g, '/')
+                    .replace(/&#10;/g, '\n');
 
                 // Then strip HTML tags to get text content
                 var cleanOutput = decoded.replace(/<[^>]*>/g, ' ');
@@ -5472,19 +5475,24 @@
                 var startIdx = cleanOutput.indexOf(startMarker);
                 var endIdx = cleanOutput.indexOf(endMarker);
 
-                console.log('[RunTests] Looking for markers in cleaned output');
-                console.log('[RunTests] Markers found:', startIdx !== -1, endIdx !== -1);
+                console.log('[RunTests] Raw HTML length:', html.length);
+                console.log('[RunTests] Decoded length:', decoded.length);
+                console.log('[RunTests] Clean output sample:', cleanOutput.substring(0, 300));
+                console.log('[RunTests] Markers found - start:', startIdx, 'end:', endIdx);
 
                 if (startIdx !== -1 && endIdx !== -1) {
                     var jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
-                    jsonStr = jsonStr.replace(/[\r\n\s]+/g, ' ').trim();
-                    console.log('[RunTests] JSON:', jsonStr.substring(0, 200));
+                    // Collapse whitespace but preserve JSON structure
+                    jsonStr = jsonStr.replace(/\s+/g, ' ').trim();
+                    console.log('[RunTests] JSON preview:', jsonStr.substring(0, 300));
 
                     testResults = JSON.parse(jsonStr);
-                    console.log('[RunTests] Parsed:', testResults.total, 'tests,', testResults.passed, 'passed');
+                    console.log('[RunTests] Parsed successfully:', testResults.total, 'tests,', testResults.passed, 'passed');
+                } else {
+                    console.log('[RunTests] Markers not found in output');
                 }
             } catch (e) {
-                console.error('[RunTests] Parse error:', e.message);
+                console.error('[RunTests] Parse error:', e.message, e.stack);
             }
 
             if (testResults && testResults.results) {
