@@ -6,7 +6,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff6b35;">
 
-  ### Core Requirements
+### Core Requirements
 
   | Requirement | Specification | Why It Matters |
   |-------------|---------------|----------------|
@@ -21,7 +21,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
 
-  ### Key Assumptions (Explicitly Stated)
+### Key Assumptions (Explicitly Stated)
 
   > **Assumption 1**: Customers value speed over selection. Dark stores stock 2,000-3,000 SKUs vs. 50,000+ in supermarkets.
 
@@ -41,7 +41,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### What Makes Quick Commerce Different
+### What Makes Quick Commerce Different
 
   Quick commerce fundamentally inverts traditional retail economics. Instead of optimizing for **selection breadth** (more SKUs = more customers), it optimizes for **fulfillment velocity** (faster delivery = higher willingness to pay).
 
@@ -70,7 +70,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 </div>
 </div>
 
-  ### The Unit Economics Reality
+### The Unit Economics Reality
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -94,7 +94,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### The 10-Minute Promise: Latency Budget Breakdown
+### The 10-Minute Promise: Latency Budget Breakdown
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">10-MINUTE DELIVERY LATENCY BUDGET</h4>
@@ -139,7 +139,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
-  #### Level 1: "How does quick commerce differ from traditional e-commerce delivery?"
+#### Level 1: "How does quick commerce differ from traditional e-commerce delivery?"
 
   **What They're Testing**: Basic understanding of the business model and value proposition.
 
@@ -148,7 +148,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 2: "What happens to unit economics if average order value drops from INR 450 to INR 250?"
+#### Level 2: "What happens to unit economics if average order value drops from INR 450 to INR 250?"
 
   **What They're Testing**: Understanding of the economic sensitivities and mitigation strategies.
 
@@ -161,7 +161,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 3: "Design the real-time pricing engine that adjusts delivery fees based on current demand, rider availability, and weather conditions."
+#### Level 3: "Design the real-time pricing engine that adjusts delivery fees based on current demand, rider availability, and weather conditions."
 
   **What They're Testing**: Systems design depth, algorithm design, and understanding of dynamic pricing trade-offs.
 
@@ -212,7 +212,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### What Is a Dark Store?
+### What Is a Dark Store?
 
   A dark store is a micro-fulfillment center designed exclusively for online order fulfillment - no walk-in customers. The "dark" refers to the absence of a retail storefront, not the lighting.
 
@@ -259,7 +259,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Dark Store Placement Strategy
+### Dark Store Placement Strategy
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -338,7 +338,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Store Operations System Design
+### Store Operations System Design
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
 <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DARK STORE OPERATIONS SYSTEM</h4>
@@ -395,7 +395,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
-  #### Level 1: "Why use dark stores instead of partnering with existing retail stores?"
+#### Level 1: "Why use dark stores instead of partnering with existing retail stores?"
 
   **What They're Testing**: Understanding of operational constraints and why purpose-built infrastructure matters.
 
@@ -410,7 +410,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 2: "How do you handle the cold start problem when opening a dark store in a new area with no demand data?"
+#### Level 2: "How do you handle the cold start problem when opening a dark store in a new area with no demand data?"
 
   **What They're Testing**: Understanding of bootstrapping strategies and how to make decisions under uncertainty.
 
@@ -436,7 +436,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 3: "Design the picker routing algorithm that generates optimal pick paths through the store, considering picking efficiency, bag weight limits, and fragile item handling."
+#### Level 3: "Design the picker routing algorithm that generates optimal pick paths through the store, considering picking efficiency, bag weight limits, and fragile item handling."
 
   **What They're Testing**: Algorithm design, constraint handling, and real-world operational awareness.
 
@@ -528,7 +528,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### Last-Mile Delivery: The Hidden Complexity
+### Last-Mile Delivery: The Hidden Complexity
 
   The "last mile" is actually the "last 50 meters" problem. Getting to the neighborhood is straightforward with Google Maps. Getting into the building, finding the right apartment, and completing the handover - that's where 40% of delivery time variability originates.
 
@@ -571,7 +571,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Rider Assignment Algorithm
+### Rider Assignment Algorithm
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -669,41 +669,41 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Order Batching Strategy
+### Order Batching Strategy
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">ORDER BATCHING DECISION MATRIX</h4>
 
 <div style="background: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 
-      **When to Batch** (deliver 2 orders in one trip):
+**When to Batch** (deliver 2 orders in one trip):
 
-      | Condition | Threshold | Rationale |
-      |-----------|-----------|-----------|
-      | Destination proximity | < 300m apart | Minimal detour time |
-      | Order readiness | Within 2 min of each other | Second customer doesn't wait too long |
-      | Combined delivery time | < 12 min total | Still within SLA buffer |
-      | Rider capacity | Both fit in bag | Physical constraint |
-      | Customer tolerance | Neither is a "premium" customer | Some customers pay for priority |
+  | Condition | Threshold | Rationale |
+  |-----------|-----------|-----------|
+  | Destination proximity | < 300m apart | Minimal detour time |
+  | Order readiness | Within 2 min of each other | Second customer doesn't wait too long |
+  | Combined delivery time | < 12 min total | Still within SLA buffer |
+  | Rider capacity | Both fit in bag | Physical constraint |
+  | Customer tolerance | Neither is a "premium" customer | Some customers pay for priority |
 
 </div>
 
 <div style="background: #0f172a; border-radius: 8px; padding: 16px;">
 
-      **Batching Trade-offs**:
+**Batching Trade-offs**:
 
-      | Pro | Con |
-      |-----|-----|
-      | 30-40% reduction in per-order delivery cost | Second customer waits 2-4 minutes longer |
-      | Higher rider utilization | Increased complexity in routing |
-      | Reduced carbon footprint | Customer may see rider "going wrong way" on tracking |
-      | Enables profitability at lower AOV | Harder to maintain 10-minute promise |
-
-</div>
+  | Pro | Con |
+  |-----|-----|
+  | 30-40% reduction in per-order delivery cost | Second customer waits 2-4 minutes longer |
+  | Higher rider utilization | Increased complexity in routing |
+  | Reduced carbon footprint | Customer may see rider "going wrong way" on tracking |
+  | Enables profitability at lower AOV | Harder to maintain 10-minute promise |
 
 </div>
 
-  ### Real-Time Tracking System
+</div>
+
+### Real-Time Tracking System
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -816,7 +816,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
-  #### Level 1: "How do you assign orders to riders?"
+#### Level 1: "How do you assign orders to riders?"
 
   **What They're Testing**: Basic understanding of matching algorithms and the factors involved.
 
@@ -827,7 +827,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 2: "How do you handle the scenario where your predicted ETA is consistently wrong for a specific neighborhood?"
+#### Level 2: "How do you handle the scenario where your predicted ETA is consistently wrong for a specific neighborhood?"
 
   **What They're Testing**: Understanding of feedback loops, learning systems, and handling systematic errors.
 
@@ -864,7 +864,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 3: "Design a system that dynamically adjusts the delivery radius of each dark store based on real-time rider availability, traffic conditions, and order volume."
+#### Level 3: "Design a system that dynamically adjusts the delivery radius of each dark store based on real-time rider availability, traffic conditions, and order volume."
 
   **What They're Testing**: Complex adaptive systems design, multiple feedback loops, and edge case handling.
 
@@ -967,7 +967,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### The Inventory Accuracy Challenge
+### The Inventory Accuracy Challenge
 
   Inventory accuracy is the silent killer of quick commerce. A customer adds items to cart, completes checkout, and then receives a "sorry, out of stock" message because the system showed availability that didn't exist physically. This destroys trust and conversion.
 
@@ -1009,7 +1009,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Real-Time Inventory Architecture
+### Real-Time Inventory Architecture
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -1166,7 +1166,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Inventory Events and State Machine
+### Inventory Events and State Machine
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS</h4>
@@ -1210,7 +1210,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Cycle Counting and Reconciliation
+### Cycle Counting and Reconciliation
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -1317,7 +1317,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
-  #### Level 1: "How do you prevent overselling when multiple customers try to buy the last item simultaneously?"
+#### Level 1: "How do you prevent overselling when multiple customers try to buy the last item simultaneously?"
 
   **What They're Testing**: Understanding of concurrent access, atomic operations, and distributed systems basics.
 
@@ -1340,7 +1340,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 2: "What do you do when the picker goes to the shelf and the item isn't there, but the system shows it as available?"
+#### Level 2: "What do you do when the picker goes to the shelf and the item isn't there, but the system shows it as available?"
 
   **What They're Testing**: Understanding of system-reality discrepancies, graceful degradation, and customer experience under failure.
 
@@ -1370,7 +1370,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 3: "Design an inventory system that can handle a sudden 10x spike in order volume during a flash sale without overselling or becoming unavailable."
+#### Level 3: "Design an inventory system that can handle a sudden 10x spike in order volume during a flash sale without overselling or becoming unavailable."
 
   **What They're Testing**: Scalability under load, graceful degradation strategies, and understanding of system limits.
 
@@ -1466,7 +1466,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### Why Demand Prediction Matters
+### Why Demand Prediction Matters
 
   In quick commerce, the cost of being wrong about demand is asymmetric and severe:
 
@@ -1510,7 +1510,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Forecasting Architecture
+### Forecasting Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
 <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DEMAND FORECASTING SYSTEM</h4>
@@ -1568,7 +1568,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Forecasting Model Implementation
+### Forecasting Model Implementation
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -1728,7 +1728,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Handling Demand Anomalies
+### Handling Demand Anomalies
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">DEMAND ANOMALY DETECTION AND HANDLING</h4>
@@ -1739,12 +1739,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Spike Detection</h5>
 <div style="font-size: 13px; color: #94a3b8;">
 
-          **Triggers**:
+**Triggers**:
           - 3x normal hourly order rate
           - Search volume spike for specific SKU
           - Competitor stockout (via scraping)
 
-          **Response**:
+**Response**:
           - Alert category manager
           - Auto-increase safety stock
           - Trigger emergency replenishment
@@ -1756,12 +1756,12 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <h5 style="color: #86efac; margin: 0 0 12px 0;">Demand Drop Detection</h5>
 <div style="font-size: 13px; color: #94a3b8;">
 
-          **Triggers**:
+**Triggers**:
           - <50% of expected demand
           - High add-to-cart, low checkout (price issue?)
           - Competitor promotion
 
-          **Response**:
+**Response**:
           - Check for quality/freshness issues
           - Consider markdown
           - Reduce next replenishment
@@ -1773,13 +1773,13 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <h5 style="color: #86efac; margin: 0 0 12px 0;">Stockout Recovery</h5>
 <div style="font-size: 13px; color: #94a3b8;">
 
-          **When stockout occurs**:
+**When stockout occurs**:
           - Log as "suppressed demand"
           - Estimate true demand (historical + search)
           - Don't let stockout bias future forecasts
 
-          **Formula**:
-          `true_demand = observed_sales + estimated_lost_sales`
+**Formula**:
+  `true_demand = observed_sales + estimated_lost_sales`
 
 </div>
 </div>
@@ -1794,7 +1794,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
-  #### Level 1: "How do you predict demand for a new dark store with no historical data?"
+#### Level 1: "How do you predict demand for a new dark store with no historical data?"
 
   **What They're Testing**: Cold start problem understanding and practical solutions.
 
@@ -1820,7 +1820,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 2: "Your demand forecast was accurate, but you still had stockouts. What went wrong?"
+#### Level 2: "Your demand forecast was accurate, but you still had stockouts. What went wrong?"
 
   **What They're Testing**: Understanding of the gap between forecast and execution, and the inventory pipeline.
 
@@ -1857,7 +1857,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
   ---
 
-  #### Level 3: "Design a demand forecasting system that improves itself over time by learning from its own prediction errors."
+#### Level 3: "Design a demand forecasting system that improves itself over time by learning from its own prediction errors."
 
   **What They're Testing**: ML systems design, feedback loops, and continuous learning.
 
@@ -2103,7 +2103,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### City-Level Sharding Strategy
+### City-Level Sharding Strategy
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -2138,7 +2138,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-  ### Technology Stack Rationale
+### Technology Stack Rationale
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">TECHNOLOGY DECISIONS AND ALTERNATIVES</h4>
@@ -2168,76 +2168,76 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); border-radius: 16px; padding: 24px;">
 <h4 style="color: #86efac; margin: 0 0 16px 0;">Phase 1: MVP (1-5 Stores)</h4>
 
-      **Scale**: 500-2,000 orders/day
+**Scale**: 500-2,000 orders/day
 
-      **Architecture**:
+**Architecture**:
       - Monolithic Python/Django app
       - Single PostgreSQL instance
       - Redis for sessions
       - Manual rider dispatch via WhatsApp
 
-      **Team**: 3-5 engineers
+**Team**: 3-5 engineers
 
-      **Monthly Cost**: $1,000-5,000
+**Monthly Cost**: $1,000-5,000
 
-      **Focus**: Prove the concept, iterate on UX
+**Focus**: Prove the concept, iterate on UX
 
 </div>
 
 <div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); border-radius: 16px; padding: 24px;">
 <h4 style="color: #93c5fd; margin: 0 0 16px 0;">Phase 2: Growth (20-50 Stores)</h4>
 
-      **Scale**: 10,000-50,000 orders/day
+**Scale**: 10,000-50,000 orders/day
 
-      **Architecture**:
+**Architecture**:
       - Extract critical services (inventory, delivery)
       - Add Redis cluster for inventory
       - Add Kafka for event streaming
       - Automated rider assignment
 
-      **Team**: 15-25 engineers
+**Team**: 15-25 engineers
 
-      **Monthly Cost**: $20,000-50,000
+**Monthly Cost**: $20,000-50,000
 
-      **Focus**: Automate operations, improve reliability
+**Focus**: Automate operations, improve reliability
 
 </div>
 
 <div style="background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%); border-radius: 16px; padding: 24px;">
 <h4 style="color: #d8b4fe; margin: 0 0 16px 0;">Phase 3: Scale (100+ Stores)</h4>
 
-      **Scale**: 100,000-500,000 orders/day
+**Scale**: 100,000-500,000 orders/day
 
-      **Architecture**:
+**Architecture**:
       - Full microservices
       - City-level sharding
       - ML for demand forecasting
       - Real-time analytics
 
-      **Team**: 50-100 engineers
+**Team**: 50-100 engineers
 
-      **Monthly Cost**: $100,000-300,000
+**Monthly Cost**: $100,000-300,000
 
-      **Focus**: Unit economics, expansion
+**Focus**: Unit economics, expansion
 
 </div>
 
 <div style="background: linear-gradient(135deg, #be123c 0%, #881337 100%); border-radius: 16px; padding: 24px;">
 <h4 style="color: #fda4af; margin: 0 0 16px 0;">Phase 4: Dominance (500+ Stores)</h4>
 
-      **Scale**: 1M+ orders/day
+**Scale**: 1M+ orders/day
 
-      **Architecture**:
+**Architecture**:
       - Multi-region active-active
       - Advanced ML (personalization, routing)
       - Real-time fraud detection
       - Automated dark store operations
 
-      **Team**: 200+ engineers
+**Team**: 200+ engineers
 
-      **Monthly Cost**: $500,000+
+**Monthly Cost**: $500,000+
 
-      **Focus**: Profitability, moat building
+**Focus**: Profitability, moat building
 
 </div>
 
@@ -2259,14 +2259,14 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">1. Consistency vs. Availability</h5>
 
-        **Decision**: Eventual consistency for most operations, strong consistency for inventory
+**Decision**: Eventual consistency for most operations, strong consistency for inventory
 
-        **Rationale**:
+**Rationale**:
         - Order status can be 2-3 seconds stale without customer noticing
         - Inventory must be strongly consistent to prevent overselling
         - Payment must be strongly consistent for financial accuracy
 
-        **Implementation**:
+**Implementation**:
         - Redis for inventory (atomic ops)
         - PostgreSQL with serializable isolation for payments
         - Kafka for async propagation of non-critical updates
@@ -2276,18 +2276,18 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">2. Dedicated vs. Gig Riders</h5>
 
-        **Decision**: Primarily dedicated fleet with gig overflow
+**Decision**: Primarily dedicated fleet with gig overflow
 
-        **Rationale**:
+**Rationale**:
         - Dedicated riders can be trained, uniformed, and held accountable
         - 10-minute promise requires reliability that gig economy can't guarantee
         - Higher fixed cost is justified by better customer experience
 
-        **Trade-off Accepted**:
+**Trade-off Accepted**:
         - During low demand, paying riders to wait
         - Higher recruitment and training costs
 
-        **Mitigation**:
+**Mitigation**:
         - Shift scheduling based on demand prediction
         - 20% gig buffer for unexpected peaks
 
@@ -2296,18 +2296,18 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">3. SKU Breadth vs. Fulfillment Speed</h5>
 
-        **Decision**: Limited SKU count (2,000-3,000) per store
+**Decision**: Limited SKU count (2,000-3,000) per store
 
-        **Rationale**:
+**Rationale**:
         - Smaller inventory = faster picking
         - Higher turns = fresher products
         - Lower capital requirement per store
 
-        **Trade-off Accepted**:
+**Trade-off Accepted**:
         - Can't serve all customer needs
         - Lost sales for niche products
 
-        **Mitigation**:
+**Mitigation**:
         - Data-driven SKU selection (local preferences)
         - "Request a product" feature for demand signal
         - Different SKU mix for different neighborhoods
@@ -2317,18 +2317,18 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">4. Accuracy vs. Speed in ETA</h5>
 
-        **Decision**: Conservative ETAs with occasional overdelivery
+**Decision**: Conservative ETAs with occasional overdelivery
 
-        **Rationale**:
+**Rationale**:
         - Customer disappointment from missed ETA > delight from faster delivery
         - Buffer allows for handling variability
         - Marketing says "10 minutes" but system targets 8
 
-        **Trade-off Accepted**:
+**Trade-off Accepted**:
         - Competitor might show lower ETA and win the order
         - Some operational slack not utilized
 
-        **Mitigation**:
+**Mitigation**:
         - Dynamic ETA based on real-time conditions
         - Under-promise, over-deliver philosophy
 
@@ -2351,34 +2351,34 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 <div style="background: #14532d; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
 <h4 style="color: #86efac; margin: 0 0 16px 0;">Impressive Statements</h4>
 
-      | Statement | Why It Works |
-      |-----------|--------------|
-      | "The 10-minute promise is a latency budget distributed across 5 operations" | Shows systems thinking |
-      | "Dark stores work because of deliberate SKU limitation - it's a feature, not a bug" | Shows constraint understanding |
-      | "Inventory accuracy of 97% is acceptable with good substitution UX" | Shows practical trade-off thinking |
-      | "I'd start with retail partnerships to validate demand before dark store investment" | Shows business awareness |
-      | "FIFO assignment handles 90% of cases; optimize only at scale" | Shows you won't over-engineer |
-      | "The hard problem isn't the algorithm, it's the last 50 meters" | Shows real-world awareness |
+  | Statement | Why It Works |
+  |-----------|--------------|
+  | "The 10-minute promise is a latency budget distributed across 5 operations" | Shows systems thinking |
+  | "Dark stores work because of deliberate SKU limitation - it's a feature, not a bug" | Shows constraint understanding |
+  | "Inventory accuracy of 97% is acceptable with good substitution UX" | Shows practical trade-off thinking |
+  | "I'd start with retail partnerships to validate demand before dark store investment" | Shows business awareness |
+  | "FIFO assignment handles 90% of cases; optimize only at scale" | Shows you won't over-engineer |
+  | "The hard problem isn't the algorithm, it's the last 50 meters" | Shows real-world awareness |
 
 </div>
 
 <div style="background: #450a0a; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
 <h4 style="color: #fca5a5; margin: 0 0 16px 0;">Red Flag Statements</h4>
 
-      | Statement | Why It's Bad | Better Alternative |
-      |-----------|--------------|-------------------|
-      | "Microservices from day one" | Over-engineering | "Start monolith, extract when needed" |
-      | "ML will optimize everything" | ML needs data you don't have | "Rules first, ML when data exists" |
-      | "Build our own routing engine" | Google Maps exists | "Use Maps API, add custom layer" |
-      | "Real-time sync for everything" | Unnecessary complexity | "Eventual consistency where possible" |
-      | "We need blockchain" | No practical benefit | "Event sourcing provides audit trail" |
-      | "100% availability" | Unrealistic | "99.9% with graceful degradation" |
+  | Statement | Why It's Bad | Better Alternative |
+  |-----------|--------------|-------------------|
+  | "Microservices from day one" | Over-engineering | "Start monolith, extract when needed" |
+  | "ML will optimize everything" | ML needs data you don't have | "Rules first, ML when data exists" |
+  | "Build our own routing engine" | Google Maps exists | "Use Maps API, add custom layer" |
+  | "Real-time sync for everything" | Unnecessary complexity | "Eventual consistency where possible" |
+  | "We need blockchain" | No practical benefit | "Event sourcing provides audit trail" |
+  | "100% availability" | Unrealistic | "99.9% with graceful degradation" |
 
 </div>
 
 </div>
 
-  ### The Structured Response Framework
+### The Structured Response Framework
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -2412,7 +2412,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### Related System Design Topics
+### Related System Design Topics
 
   | Topic | Relevance to Zepto |
   |-------|-------------------|
@@ -2425,7 +2425,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
   | [[api-gateway]](/system-design/api-gateway) | Request routing, auth |
   | [[circuit-breakers]](/system-design/circuit-breakers) | Graceful degradation |
 
-  ### Related Algorithm Topics
+### Related Algorithm Topics
 
   | Topic | Relevance to Zepto |
   |-------|-------------------|

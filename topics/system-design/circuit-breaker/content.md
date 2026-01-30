@@ -90,7 +90,7 @@ Understanding each state and its transitions is critical for both implementation
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
 <div style="color: #64748b; font-size: 20px;">&#8594;</div>
 <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 20px; border-radius: 10px; color: #166534; font-weight: 700; border: 2px solid #22c55e; position: relative;">
-        Circuit Breaker
+  Circuit Breaker
 <div style="position: absolute; top: -8px; right: -8px; background: #22c55e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">CLOSED</div>
 </div>
 <div style="color: #22c55e; font-size: 20px;">&#8594;</div>
@@ -127,7 +127,7 @@ In the <span style="color:#10b981">**CLOSED state**</span>, the circuit breaker 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
 <div style="color: #64748b; font-size: 20px;">&#8594;</div>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 12px 20px; border-radius: 10px; color: #dc2626; font-weight: 700; border: 2px solid #ef4444; position: relative;">
-        Circuit Breaker
+  Circuit Breaker
 <div style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">OPEN</div>
 </div>
 <div style="color: #ef4444; font-size: 20px; font-weight: bold;">&#10007;</div>
@@ -168,12 +168,12 @@ The <span style="color:#10b981">**OPEN state**</span> is the circuit breaker's p
 <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">
-        Probe Request
+  Probe Request
 <div style="font-size: 10px; font-weight: 500; margin-top: 2px;">1 of N allowed</div>
 </div>
 <div style="color: #64748b; font-size: 20px;">&#8594;</div>
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 12px 20px; border-radius: 10px; color: #92400e; font-weight: 700; border: 2px solid #f59e0b; position: relative;">
-        Circuit Breaker
+  Circuit Breaker
 <div style="position: absolute; top: -8px; right: -8px; background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">HALF-OPEN</div>
 </div>
 <div style="color: #f59e0b; font-size: 20px;">&#8594;?</div>
@@ -254,7 +254,7 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 </div>
 </div>
 
-      ### Sliding Window Types
+### Sliding Window Types
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">SLIDING WINDOW IMPLEMENTATIONS</h4>
@@ -290,9 +290,9 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 </div>
 </div>
 
-      ---
+  ---
 
-      ## Timeout Strategies
+## Timeout Strategies
 
 <span style="color:#10b981">**Timeout configuration**</span> is critical - it determines how quickly your circuit breaker responds to failures and how conservatively it tests recovery.
 
@@ -303,7 +303,7 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 <div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Wait Duration in Open State</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">How long to wait before testing recovery.</div>
 <div style="background: #eef2ff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #4338ca;">
-              wait_duration: 30s
+  wait_duration: 30s
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
 <strong>Too short:</strong> Overwhelm recovering service<br>
@@ -314,37 +314,37 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 <div style="color: #be185d; font-weight: 700; margin-bottom: 12px;">Call Timeout</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Maximum time to wait for a response before counting as failure.</div>
 <div style="background: #fdf2f8; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #be185d;">
-                call_timeout: 5s
+  call_timeout: 5s
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
-                Should be less than client's timeout to fail gracefully.
+  Should be less than client's timeout to fail gracefully.
 </div>
 </div>
 <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #14b8a6;">
 <div style="color: #0f766e; font-weight: 700; margin-bottom: 12px;">Exponential Backoff</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Increase wait duration after each failed recovery attempt.</div>
 <div style="background: #f0fdfa; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #0f766e;">
-                base: 30s, max: 5m, multiplier: 2
+  base: 30s, max: 5m, multiplier: 2
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
-                30s &#8594; 60s &#8594; 120s &#8594; 240s &#8594; 300s
+  30s &#8594; 60s &#8594; 120s &#8594; 240s &#8594; 300s
 </div>
 </div>
 </div>
 </div>
 
-        ### Timeout Strategy Comparison
+### Timeout Strategy Comparison
 
-        | Strategy | Behavior | Best For |
-        |----------|----------|----------|
-        | **Fixed Timeout** | Same wait duration every time | Simple services, predictable recovery |
-        | **Exponential Backoff** | Double wait time on each failure | Services with variable recovery time |
-        | **Adaptive Timeout** | Adjust based on historical recovery time | Data-driven optimization |
-        | **Jittered Timeout** | Add randomness to prevent thundering herd | High-scale distributed systems |
+  | Strategy | Behavior | Best For |
+  |----------|----------|----------|
+  | **Fixed Timeout** | Same wait duration every time | Simple services, predictable recovery |
+  | **Exponential Backoff** | Double wait time on each failure | Services with variable recovery time |
+  | **Adaptive Timeout** | Adjust based on historical recovery time | Data-driven optimization |
+  | **Jittered Timeout** | Add randomness to prevent thundering herd | High-scale distributed systems |
 
-        ---
+  ---
 
-        ## The Bulkhead Pattern
+## The Bulkhead Pattern
 
 The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit breakers by isolating resources so a failure in one area cannot exhaust resources needed by others - like watertight compartments in a ship.
 
@@ -402,7 +402,7 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 </div>
 </div>
 
-        ### Bulkhead Types
+### Bulkhead Types
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
@@ -410,32 +410,32 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 <div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Thread Pool Bulkhead</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Dedicate a fixed thread pool to each dependency. Threads waiting for slow service don't block other services.</div>
 <div style="background: #eef2ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #4338ca;">
-                payment_pool: max=10<br>
-                  inventory_pool: max=20<br>
-                    notification_pool: max=5
+  payment_pool: max=10<br>
+  inventory_pool: max=20<br>
+  notification_pool: max=5
 </div>
 </div>
 <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
 <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Semaphore Bulkhead</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Limit concurrent calls using a semaphore. Lighter weight than thread pools but less isolation.</div>
 <div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #92400e;">
-                    max_concurrent_calls: 25<br>
-                      max_wait_duration: 100ms
+  max_concurrent_calls: 25<br>
+  max_wait_duration: 100ms
 </div>
 </div>
 <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
 <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Connection Pool Bulkhead</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Separate [[connection pools]](/topic/system-design/connection-pooling) per dependency. Prevents one service from exhausting all connections.</div>
 <div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #065f46;">
-                      db_primary: max_conn=50<br>
-                        db_replica: max_conn=100<br>
-                          cache: max_conn=25
+  db_primary: max_conn=50<br>
+  db_replica: max_conn=100<br>
+  cache: max_conn=25
 </div>
 </div>
 </div>
 </div>
 
-                  ### Circuit Breaker + Bulkhead Together
+### Circuit Breaker + Bulkhead Together
 
                   ```python
                   # Combining circuit breaker with bulkhead for complete protection
@@ -488,9 +488,9 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
                   self.semaphore.release()
                   ```
 
-                  ---
+  ---
 
-                  ## Cascading Failures: The Problem Circuit Breakers Solve
+## Cascading Failures: The Problem Circuit Breakers Solve
 
 <span style="color:#10b981">**Cascading failures**</span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.
 
@@ -535,7 +535,7 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 </div>
 </div>
 
-                  ### How Circuit Breakers Prevent Cascading Failures
+### How Circuit Breakers Prevent Cascading Failures
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #10b981;">
 <h3 style="color: #065f46; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WITH CIRCUIT BREAKERS</h3>
@@ -572,9 +572,9 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Configuration Parameters Reference
+## Configuration Parameters Reference
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">KEY CONFIGURATION OPTIONS</h3>
@@ -606,11 +606,11 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Code Implementation
+## Code Implementation
 
-                  ### Python - Production-Grade Circuit Breaker
+### Python - Production-Grade Circuit Breaker
 
                   ```python
                   import time
@@ -853,7 +853,7 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
                   return decorator
                   ```
 
-                  ### Go - Circuit Breaker with Bulkhead
+### Go - Circuit Breaker with Bulkhead
 
                   ```go
                   package resilience
@@ -1053,9 +1053,9 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
                   }
                   ```
 
-                  ---
+  ---
 
-                  ## Fallback Strategies
+## Fallback Strategies
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
@@ -1064,36 +1064,36 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Return Cached Data</div>
 <div style="color: #15803d; font-size: 13px; margin-bottom: 12px;">Serve stale but acceptable data from [[cache]](/topic/system-design/caching) when fresh data unavailable.</div>
 <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534;">
-                          return cache.get(key) or DEFAULT
+  return cache.get(key) or DEFAULT
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Queue for Later</div>
 <div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Add request to a [[message queue]](/topic/system-design/message-queues) and process when service recovers.</div>
 <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e40af;">
-                          queue.add(request)<br>return "Processing soon"
+  queue.add(request)<br>return "Processing soon"
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
 <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Default Response</div>
 <div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Return a safe default that allows the user to continue their workflow.</div>
 <div style="background: #fefce8; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #92400e;">
-                            return {"recommendations": []}
+  return {"recommendations": []}
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
 <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">Alternative Service</div>
 <div style="color: #7c3aed; font-size: 13px; margin-bottom: 12px;">Call a backup service or use degraded functionality from another source.</div>
 <div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #6b21a8;">
-                            return backup_service.call()
+  return backup_service.call()
 </div>
 </div>
 </div>
 </div>
 
-                    ---
+  ---
 
-                    ## Common Pitfalls
+## Common Pitfalls
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Not Distinguishing Error Types</div>
@@ -1125,13 +1125,13 @@ The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit 
 <div style="color: #7f1d1d; font-size: 14px;">Circuit breakers detect failures, but if your calls have no timeout, they hang forever and the circuit never sees a failure. Always set timeouts - they're a prerequisite for circuit breakers.</div>
 </div>
 
-                    ---
+  ---
 
-                    ## 3-Level Recursive Interview Questions
+## 3-Level Recursive Interview Questions
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-                      ### Q1: Why use a circuit breaker instead of just retries?
+### Q1: Why use a circuit breaker instead of just retries?
 
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Level 1 Answer:</div>
@@ -1146,7 +1146,7 @@ Retries keep hammering a failing service, potentially making things worse by add
 <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Follow-up L2: How do you decide between retries and circuit breakers - can you use both?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Yes, you should use both together in the right order. The pattern is: **Request -> [[Rate Limiter]](/topic/system-design/rate-limiting) -> Timeout -> Circuit Breaker -> Retry -> Service**
+  Yes, you should use both together in the right order. The pattern is: **Request -> [[Rate Limiter]](/topic/system-design/rate-limiting) -> Timeout -> Circuit Breaker -> Retry -> Service**
 
 Retries handle <span style="color:#10b981">**transient failures**</span> (network blips, temporary overload). Circuit breakers handle <span style="color:#10b981">**persistent failures**</span> (service down, database unavailable). Retries should be attempted INSIDE the circuit breaker - if the circuit is open, don't retry at all. Use exponential backoff with jitter on retries to avoid thundering herd.
 
@@ -1157,16 +1157,16 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Follow-up L3: What happens if your circuit breaker itself fails or has a bug? How do you make it resilient?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          This is critical - a buggy circuit breaker could block all traffic to a healthy service! Strategies:
+  This is critical - a buggy circuit breaker could block all traffic to a healthy service! Strategies:
 
-                          1. **Fail Open**: If circuit breaker logic throws an exception, allow the request through
-                          2. **Health Checks**: Monitor circuit breaker state and alert on anomalies
-                          3. **Configuration Validation**: Validate thresholds at startup
-                          4. **Testing in Production**: Use chaos engineering to verify circuit breaker behavior
-                          5. **Escape Hatch**: Provide an admin override to manually close circuits
-                          6. **Observability**: Emit metrics for every state transition and rejection
+  1. **Fail Open**: If circuit breaker logic throws an exception, allow the request through
+  2. **Health Checks**: Monitor circuit breaker state and alert on anomalies
+  3. **Configuration Validation**: Validate thresholds at startup
+  4. **Testing in Production**: Use chaos engineering to verify circuit breaker behavior
+  5. **Escape Hatch**: Provide an admin override to manually close circuits
+  6. **Observability**: Emit metrics for every state transition and rejection
 
-                          The circuit breaker should never be a single point of failure - it's a safety mechanism, not a required component.
+  The circuit breaker should never be a single point of failure - it's a safety mechanism, not a required component.
 
 </div>
 </div>
@@ -1174,13 +1174,13 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-                      ### Q2: How would you implement circuit breakers in a microservices architecture?
+### Q2: How would you implement circuit breakers in a microservices architecture?
 
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Level 1 Answer:</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Each service should have circuit breakers for every external dependency it calls. Use a library like Resilience4j (Java), Polly (.NET), or implement your own. The circuit breaker wraps outgoing HTTP calls and tracks failures. When failures exceed the threshold, it trips to open state and returns fallback responses. After a timeout, it allows probe requests to test recovery.
+  Each service should have circuit breakers for every external dependency it calls. Use a library like Resilience4j (Java), Polly (.NET), or implement your own. The circuit breaker wraps outgoing HTTP calls and tracks failures. When failures exceed the threshold, it trips to open state and returns fallback responses. After a timeout, it allows probe requests to test recovery.
 
 </div>
 </div>
@@ -1189,17 +1189,17 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Follow-up L2: Should circuit breakers be client-side or use a service mesh? What are the tradeoffs?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Both approaches are valid with different tradeoffs:
+  Both approaches are valid with different tradeoffs:
 
-                          **Client-Side (In-Application)**:
+**Client-Side (In-Application)**:
 - <span style="color:#10b981">**Pros**</span>: Full control, custom fallbacks, language-specific optimizations, no infrastructure dependency
                           - **Cons**: Inconsistent implementations across services, harder to update centrally
 
-                          **Service Mesh (Istio/Linkerd)**:
+**Service Mesh (Istio/Linkerd)**:
 - <span style="color:#10b981">**Pros**</span>: Consistent behavior, language-agnostic, centrally configurable, no code changes
                           - **Cons**: Less flexible fallbacks, infrastructure complexity, sidecar overhead, harder to customize per-endpoint
 
-                          **Hybrid Approach**: Use service mesh for basic circuit breaking (open/close), but implement application-level fallback logic. The mesh handles the "fail fast" part, your code handles "what to do when it fails fast."
+**Hybrid Approach**: Use service mesh for basic circuit breaking (open/close), but implement application-level fallback logic. The mesh handles the "fail fast" part, your code handles "what to do when it fails fast."
 
 </div>
 </div>
@@ -1208,17 +1208,17 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Follow-up L3: How do you handle circuit breakers in a multi-region deployment where latency between regions varies significantly?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Multi-region adds complexity:
+  Multi-region adds complexity:
 
-                          1. **Region-Specific Thresholds**: Cross-region calls naturally have higher latency - adjust slow call thresholds accordingly (e.g., 5s for same-region, 15s for cross-region)
+  1. **Region-Specific Thresholds**: Cross-region calls naturally have higher latency - adjust slow call thresholds accordingly (e.g., 5s for same-region, 15s for cross-region)
 
-                          2. **Per-Region Circuits**: Maintain separate circuit breakers per region. If US-East is down but US-West is healthy, only trip the US-East circuit
+  2. **Per-Region Circuits**: Maintain separate circuit breakers per region. If US-East is down but US-West is healthy, only trip the US-East circuit
 
-                          3. **Region-Aware Fallback**: When circuit opens, fallback to a different region before returning cached/default data
+  3. **Region-Aware Fallback**: When circuit opens, fallback to a different region before returning cached/default data
 
-                          4. **Latency-Based Routing**: Combine with [[load balancing]](/topic/system-design/load-balancing) that routes away from slow regions before circuit trips
+  4. **Latency-Based Routing**: Combine with [[load balancing]](/topic/system-design/load-balancing) that routes away from slow regions before circuit trips
 
-                          5. **Global State Consideration**: Should circuit state be shared across regions? Usually no - each region should make independent decisions to avoid a cascading global failure from a single region's problems
+  5. **Global State Consideration**: Should circuit state be shared across regions? Usually no - each region should make independent decisions to avoid a cascading global failure from a single region's problems
 
                           ```python
                           class RegionAwareCircuitBreaker:
@@ -1236,18 +1236,18 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-                      ### Q3: Design a payment system with circuit breakers. What happens when the payment provider is down?
+### Q3: Design a payment system with circuit breakers. What happens when the payment provider is down?
 
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Level 1 Answer:</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Create separate circuit breakers for each payment provider (Stripe, PayPal, etc.). When primary provider fails:
-                          1. Circuit opens after 5 failures in 60 seconds
-                          2. Fallback to secondary payment provider if available
-                          3. If all providers fail, queue the payment for retry
-                          4. Return "Payment processing" status to user
-                          5. Process queued payments when service recovers
+  Create separate circuit breakers for each payment provider (Stripe, PayPal, etc.). When primary provider fails:
+  1. Circuit opens after 5 failures in 60 seconds
+  2. Fallback to secondary payment provider if available
+  3. If all providers fail, queue the payment for retry
+  4. Return "Payment processing" status to user
+  5. Process queued payments when service recovers
 
 </div>
 </div>
@@ -1258,11 +1258,11 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 
 <span style="color:#10b981">**Idempotency**</span> is critical for payments:
 
-                          1. **Idempotency Keys**: Generate a unique key per payment attempt, store it with the request
-                          2. **Before Queuing**: Record the payment intent with status "pending" in your database
-                          3. **Before Retry**: Check if payment already completed (query provider with idempotency key)
-                          4. **Provider Support**: Most payment providers (Stripe, etc.) accept idempotency keys and return the same result for duplicate requests
-                          5. **Timeout Window**: Stripe's idempotency keys are valid for 24 hours - handle payments older than that differently
+  1. **Idempotency Keys**: Generate a unique key per payment attempt, store it with the request
+  2. **Before Queuing**: Record the payment intent with status "pending" in your database
+  3. **Before Retry**: Check if payment already completed (query provider with idempotency key)
+  4. **Provider Support**: Most payment providers (Stripe, etc.) accept idempotency keys and return the same result for duplicate requests
+  5. **Timeout Window**: Stripe's idempotency keys are valid for 24 hours - handle payments older than that differently
 
                           ```python
                           def queue_payment(payment_request):
@@ -1291,23 +1291,23 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Follow-up L3: During a prolonged outage (hours), how do you handle the growing payment queue and communicate with users?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Extended outage requires both technical and UX solutions:
+  Extended outage requires both technical and UX solutions:
 
-                          **Technical Handling**:
-                          1. **Queue Limits**: Cap queue size, reject new payments with graceful error after limit
-                          2. **Priority Queuing**: High-value or time-sensitive payments get priority
-                          3. **Dead Letter Queue**: Move payments that fail retry limits for manual review
-                          4. **Backpressure**: Reduce incoming traffic through [[rate limiting]](/topic/system-design/rate-limiting) if queue grows too large
-                          5. **Alternative Providers**: Automatic failover to backup payment provider
+**Technical Handling**:
+  1. **Queue Limits**: Cap queue size, reject new payments with graceful error after limit
+  2. **Priority Queuing**: High-value or time-sensitive payments get priority
+  3. **Dead Letter Queue**: Move payments that fail retry limits for manual review
+  4. **Backpressure**: Reduce incoming traffic through [[rate limiting]](/topic/system-design/rate-limiting) if queue grows too large
+  5. **Alternative Providers**: Automatic failover to backup payment provider
 
-                          **User Communication**:
-                          1. **Proactive Notification**: Email/SMS users that payment is delayed
-                          2. **Status Page**: Show payment system status on order confirmation
-                          3. **Guaranteed Processing**: "Your payment will be processed within 24 hours"
-                          4. **Order Fulfillment**: Consider shipping orders before payment confirms (for trusted users)
-                          5. **Expiration Handling**: Cancel payments older than SLA with full refund notification
+**User Communication**:
+  1. **Proactive Notification**: Email/SMS users that payment is delayed
+  2. **Status Page**: Show payment system status on order confirmation
+  3. **Guaranteed Processing**: "Your payment will be processed within 24 hours"
+  4. **Order Fulfillment**: Consider shipping orders before payment confirms (for trusted users)
+  5. **Expiration Handling**: Cancel payments older than SLA with full refund notification
 
-                          **Monitoring & Alerting**:
+**Monitoring & Alerting**:
                           ```python
                           # Alert when queue depth exceeds thresholds
                           if queue.depth > 1000:
@@ -1325,7 +1325,7 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-                      ### Q4: Explain the bulkhead pattern and how it works with circuit breakers.
+### Q4: Explain the bulkhead pattern and how it works with circuit breakers.
 
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Level 1 Answer:</div>
@@ -1333,7 +1333,7 @@ Retries handle <span style="color:#10b981">**transient failures**</span> (networ
 
 The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (threads, connections, memory) for different components so a failure in one doesn't exhaust resources needed by others. Like watertight compartments in a ship - one breach doesn't sink the whole vessel.
 
-                          Combined with circuit breakers: Bulkhead limits HOW MANY concurrent requests can be waiting. Circuit breaker decides WHETHER to send requests based on failure rate. Together, they prevent both resource exhaustion AND cascading failures.
+  Combined with circuit breakers: Bulkhead limits HOW MANY concurrent requests can be waiting. Circuit breaker decides WHETHER to send requests based on failure rate. Together, they prevent both resource exhaustion AND cascading failures.
 
 </div>
 </div>
@@ -1342,26 +1342,26 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
 <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Follow-up L2: How do you size bulkhead pools? What happens if you size them wrong?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Sizing is empirical but follows principles:
+  Sizing is empirical but follows principles:
 
-                          **Too Small**:
+**Too Small**:
                           - Requests rejected even during normal operation
                           - Underutilized resources, poor throughput
                           - Symptoms: High rejection rate, low service latency
 
-                          **Too Large**:
+**Too Large**:
                           - Doesn't provide isolation benefit
                           - One slow service can still exhaust most resources
                           - Symptoms: No rejections but high latency during failures
 
-                          **Sizing Guidelines**:
-                          1. **Start with**: Peak RPS * Average Latency * Safety Factor
+**Sizing Guidelines**:
+  1. **Start with**: Peak RPS * Average Latency * Safety Factor
                           - Example: 100 RPS * 0.1s latency * 2x = 20 concurrent slots
-                          2. **Monitor and Adjust**: Track wait times, rejection rates, and utilization
-                          3. **Consider Timeout**: If timeout is 5s and you want max 100 waiting, pool = 100/5 = 20
-                          4. **Leave Headroom**: Don't allocate 100% of resources to bulkheads
+  2. **Monitor and Adjust**: Track wait times, rejection rates, and utilization
+  3. **Consider Timeout**: If timeout is 5s and you want max 100 waiting, pool = 100/5 = 20
+  4. **Leave Headroom**: Don't allocate 100% of resources to bulkheads
 
-                          **Formula approach**:
+**Formula approach**:
                           ```python
                           pool_size = min(
                           max_expected_concurrent_requests * 1.5,  # Safety margin
@@ -1377,9 +1377,9 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Follow-up L3: In an async/event-driven system, how do you implement bulkheads differently than in a thread-per-request model?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Async systems don't have traditional thread pools, so bulkhead implementation differs:
+  Async systems don't have traditional thread pools, so bulkhead implementation differs:
 
-                          **1. Semaphore-Based Limiting**:
+**1. Semaphore-Based Limiting**:
                           ```python
                           # Async semaphore limits concurrent operations
                           class AsyncBulkhead:
@@ -1391,20 +1391,20 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
                           return await coro
                           ```
 
-                          **2. Connection Pool Limits**: Limit connections per dependency (aiohttp, httpx)
+**2. Connection Pool Limits**: Limit connections per dependency (aiohttp, httpx)
 
-                          **3. Queue Depth Limits**: In [[message queue]](/topic/system-design/message-queues) systems, limit pending messages per destination
+**3. Queue Depth Limits**: In [[message queue]](/topic/system-design/message-queues) systems, limit pending messages per destination
 
-                          **4. Memory-Based Limits**: Track in-flight request payload sizes, not just counts
+**4. Memory-Based Limits**: Track in-flight request payload sizes, not just counts
 
-                          **5. Rate-Based Limits**: Instead of concurrent limits, use tokens-per-second (combines with [[rate limiting]](/topic/system-design/rate-limiting))
+**5. Rate-Based Limits**: Instead of concurrent limits, use tokens-per-second (combines with [[rate limiting]](/topic/system-design/rate-limiting))
 
-                          **Event-Driven (Kafka, etc.)**:
+**Event-Driven (Kafka, etc.)**:
                           - Partition isolation: Assign partitions per consumer group based on criticality
                           - Consumer lag monitoring: Pause consumption if downstream is overwhelmed
                           - Dead letter topics: Isolate failing message processing
 
-                          The key insight: in async systems, bulkheads protect against memory exhaustion and event loop blocking, not thread exhaustion.
+  The key insight: in async systems, bulkheads protect against memory exhaustion and event loop blocking, not thread exhaustion.
 
 </div>
 </div>
@@ -1412,17 +1412,17 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
-                      ### Q5: How do you test circuit breakers and validate they work correctly?
+### Q5: How do you test circuit breakers and validate they work correctly?
 
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Level 1 Answer:</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Testing circuit breakers requires multiple approaches:
-                          1. **Unit Tests**: Mock the downstream service, inject failures, verify state transitions
-                          2. **Integration Tests**: Use fault injection (Toxiproxy, Chaos Monkey) to simulate real failures
-                          3. **Load Tests**: Verify circuit breakers work under high throughput
-                          4. **Chaos Engineering**: Randomly kill services in production (with safeguards) to validate resilience
+  Testing circuit breakers requires multiple approaches:
+  1. **Unit Tests**: Mock the downstream service, inject failures, verify state transitions
+  2. **Integration Tests**: Use fault injection (Toxiproxy, Chaos Monkey) to simulate real failures
+  3. **Load Tests**: Verify circuit breakers work under high throughput
+  4. **Chaos Engineering**: Randomly kill services in production (with safeguards) to validate resilience
 
 </div>
 </div>
@@ -1431,21 +1431,21 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
 <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Follow-up L2: What specific scenarios should you test? What are the edge cases?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          **Core Scenarios**:
-                          1. **Threshold Boundary**: Verify circuit trips at exactly N failures, not N-1 or N+1
-                          2. **Recovery**: Circuit closes after success threshold in half-open
-                          3. **Fallback Execution**: Fallback is called when circuit is open
-                          4. **Timeout Behavior**: Slow calls are counted as failures
+**Core Scenarios**:
+  1. **Threshold Boundary**: Verify circuit trips at exactly N failures, not N-1 or N+1
+  2. **Recovery**: Circuit closes after success threshold in half-open
+  3. **Fallback Execution**: Fallback is called when circuit is open
+  4. **Timeout Behavior**: Slow calls are counted as failures
 
-                          **Edge Cases**:
-                          1. **Race Conditions**: Multiple threads hitting threshold simultaneously
-                          2. **Clock Skew**: Sliding window works correctly with time changes
-                          3. **Rapid State Changes**: Flapping between open/half-open/closed
-                          4. **Memory Pressure**: Circuit works when system is under resource stress
-                          5. **Initialization**: First requests work before enough data to calculate rates
-                          6. **Mixed Errors**: Some calls succeed, some fail, verify correct counting
+**Edge Cases**:
+  1. **Race Conditions**: Multiple threads hitting threshold simultaneously
+  2. **Clock Skew**: Sliding window works correctly with time changes
+  3. **Rapid State Changes**: Flapping between open/half-open/closed
+  4. **Memory Pressure**: Circuit works when system is under resource stress
+  5. **Initialization**: First requests work before enough data to calculate rates
+  6. **Mixed Errors**: Some calls succeed, some fail, verify correct counting
 
-                          **Test Example**:
+**Test Example**:
                           ```python
                           def test_circuit_trips_at_threshold():
                           cb = CircuitBreaker(failure_threshold=5)
@@ -1481,14 +1481,14 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Follow-up L3: How do you safely do chaos engineering with circuit breakers in production?</div>
 <div style="color: #475569; font-size: 14px;">
 
-                          Production chaos engineering requires careful safeguards:
+  Production chaos engineering requires careful safeguards:
 
-                          **1. Blast Radius Control**:
+**1. Blast Radius Control**:
                           - Start with single instance, expand gradually
                           - Use feature flags to limit affected users (1% -> 10% -> 100%)
                           - Test during low-traffic periods first
 
-                          **2. Automatic Rollback**:
+**2. Automatic Rollback**:
                           ```python
                           class ChaosExperiment:
                           def __init__(self):
@@ -1509,30 +1509,30 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
                           self.cleanup()
                           ```
 
-                          **3. Observability Requirements**:
+**3. Observability Requirements**:
                           - Real-time dashboards for all circuit breaker states
                           - Correlation of chaos events with metric changes
                           - Automated alerting on unexpected behavior
 
-                          **4. Gradual Failure Injection**:
+**4. Gradual Failure Injection**:
                           - Don't kill service entirely - start with 10% failures, increase gradually
                           - Use latency injection before failure injection
                           - Test degraded mode before complete failure mode
 
-                          **5. Business Hours / On-Call**:
+**5. Business Hours / On-Call**:
                           - Only run when engineers are available to respond
                           - Have one-click rollback ready
                           - Pre-approved communication templates for incidents
 
-                          **Tools**: Netflix Chaos Monkey, Gremlin, AWS Fault Injection Simulator, LitmusChaos
+**Tools**: Netflix Chaos Monkey, Gremlin, AWS Fault Injection Simulator, LitmusChaos
 
 </div>
 </div>
 </div>
 
-                    ---
+  ---
 
-                    ## Monitoring and Alerting
+## Monitoring and Alerting
 
                     ```python
                     # Prometheus metrics for circuit breaker monitoring
@@ -1595,31 +1595,31 @@ The <span style="color:#10b981">**bulkhead pattern**</span> isolates resources (
                     """
                     ```
 
-                    ---
+  ---
 
-                    ## Circuit Breaker vs Related Patterns
+## Circuit Breaker vs Related Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-                      | Pattern | Purpose | When Triggered | Use Together |
-                      |---------|---------|----------------|--------------|
-                      | **[[Circuit Breaker]](/topic/system-design/circuit-breaker)** | Stop calls to failing service | Failure threshold exceeded | Core pattern |
-                      | **Retry** | Try again on transient failure | Individual call fails | Inside circuit breaker |
-                      | **Timeout** | Limit wait time per call | Call takes too long | Prerequisite for circuit |
-                      | **[[Bulkhead]](/topic/system-design/circuit-breaker#the-bulkhead-pattern)** | Isolate resources | Resource allocation | With circuit breaker |
-                      | **[[Rate Limiter]](/topic/system-design/rate-limiting)** | Limit request rate | Protect downstream | Before circuit breaker |
-                      | **[[Load Balancer]](/topic/system-design/load-balancing)** | Distribute traffic | All requests | Routes around failures |
+  | Pattern | Purpose | When Triggered | Use Together |
+  |---------|---------|----------------|--------------|
+  | **[[Circuit Breaker]](/topic/system-design/circuit-breaker)** | Stop calls to failing service | Failure threshold exceeded | Core pattern |
+  | **Retry** | Try again on transient failure | Individual call fails | Inside circuit breaker |
+  | **Timeout** | Limit wait time per call | Call takes too long | Prerequisite for circuit |
+  | **[[Bulkhead]](/topic/system-design/circuit-breaker#the-bulkhead-pattern)** | Isolate resources | Resource allocation | With circuit breaker |
+  | **[[Rate Limiter]](/topic/system-design/rate-limiting)** | Limit request rate | Protect downstream | Before circuit breaker |
+  | **[[Load Balancer]](/topic/system-design/load-balancing)** | Distribute traffic | All requests | Routes around failures |
 
 </div>
 
-                    **Recommended Order**:
+**Recommended Order**:
                     ```
                     Request -> Rate Limiter -> Load Balancer -> Timeout -> Circuit Breaker -> Retry -> Service
                     ```
 
-                    ---
+  ---
 
-                    ## Related Topics
+## Related Topics
 
                     - [[Microservices Architecture]](/topic/system-design/microservices) - Where circuit breakers are essential
                     - [[Rate Limiting]](/topic/system-design/rate-limiting) - Protecting downstream services

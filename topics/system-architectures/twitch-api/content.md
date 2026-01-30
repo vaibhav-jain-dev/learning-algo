@@ -21,7 +21,7 @@ A live streaming platform enables creators to broadcast video content to million
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #9146ff;">
 
-  ### Functional Requirements
+### Functional Requirements
   - **Live Streaming**: Ingest RTMP, transcode to multiple qualities, deliver via HLS/DASH
   - **Real-time Chat**: Channel chat with sub-second delivery, moderation, emotes
   - **Subscriptions**: Paid subscriber tiers with benefits (emotes, badges, ad-free)
@@ -29,7 +29,7 @@ A live streaming platform enables creators to broadcast video content to million
   - **Clips**: Short highlights extracted from live streams
   - **Discovery**: Browse categories, search, personalized recommendations
 
-  ### Non-Functional Requirements
+### Non-Functional Requirements
   - **Scale**: 100K+ concurrent streamers, 15M+ concurrent viewers
   - **Latency**: 3-15 seconds stream latency, <100ms chat latency
   - **Availability**: 99.99% for video delivery, 99.9% for chat
@@ -83,7 +83,7 @@ A live streaming platform enables creators to broadcast video content to million
 
 <div style="text-align: center; color: #f0883e; font-size: 24px;">↓</div>
 
-            <!-- Media Processing -->
+  <!-- Media Processing -->
 <div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
 <h5 style="color: #f0883e; margin: 0 0 16px 0; text-align: center;">MEDIA PROCESSING (GPU Clusters)</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -103,7 +103,7 @@ A live streaming platform enables creators to broadcast video content to million
 <div style="text-align: center; color: #3fb950; font-size: 24px;">↓</div>
 </div>
 
-            <!-- Origin + VOD -->
+  <!-- Origin + VOD -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px;">
 <h5 style="color: #58a6ff; margin: 0 0 12px 0; text-align: center;">ORIGIN SERVERS</h5>
@@ -117,7 +117,7 @@ A live streaming platform enables creators to broadcast video content to million
 
 <div style="text-align: center; color: #58a6ff; font-size: 24px;">↓</div>
 
-            <!-- CDN Layer -->
+  <!-- CDN Layer -->
 <div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px;">
 <h5 style="color: #58a6ff; margin: 0 0 16px 0; text-align: center;">CDN EDGE LAYER (100+ PoPs Globally)</h5>
 <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
@@ -142,7 +142,7 @@ A live streaming platform enables creators to broadcast video content to million
 
 <div style="text-align: center; color: #1e293b; font-size: 24px;">↓</div>
 
-            <!-- Viewers -->
+  <!-- Viewers -->
 <div style="display: flex; justify-content: center;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b;">
 <strong style="font-size: 16px;">VIEWERS (Millions)</strong>
@@ -152,15 +152,15 @@ A live streaming platform enables creators to broadcast video content to million
 </div>
 </div>
 
-        ### Related Concepts
+### Related Concepts
 
-        This architecture leverages [[CDN]](/topic/system-design/cdn) for edge caching, [[message-queues]](/topic/system-design/message-queues) for chat distribution, [[load-balancing]](/topic/system-design/load-balancing) for ingest server selection, and [[rate-limiting]](/topic/system-design/rate-limiting) for chat flood protection.
+  This architecture leverages [[CDN]](/topic/system-design/cdn) for edge caching, [[message-queues]](/topic/system-design/message-queues) for chat distribution, [[load-balancing]](/topic/system-design/load-balancing) for ingest server selection, and [[rate-limiting]](/topic/system-design/rate-limiting) for chat flood protection.
 
-        ---
+  ---
 
-        ## Section 2: Live Streaming Pipeline
+## Section 2: Live Streaming Pipeline
 
-        ### Deep Mechanics
+### Deep Mechanics
 
 The live streaming pipeline transforms a single <span style="color:#00ff00">**RTMP stream**</span> from the broadcaster into multiple <span style="color:#00ff00">**HLS streams**</span> at different quality levels, delivered globally through CDN edge servers. The pipeline operates in real-time with strict latency budgets.
 
@@ -168,7 +168,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">VIDEO PROCESSING PIPELINE</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-            <!-- Ingest Stage -->
+  <!-- Ingest Stage -->
 <div style="background: rgba(145, 70, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #9146ff;">
 <h5 style="color: #9146ff; margin: 0 0 12px 0;">STAGE 1: INGEST (from broadcaster)</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -184,7 +184,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 </div>
 </div>
 
-              <!-- Transcode Stage -->
+  <!-- Transcode Stage -->
 <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
 <h5 style="color: #f0883e; margin: 0 0 12px 0;">STAGE 2: TRANSCODE (real-time ABR ladder)</h5>
 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px;">
@@ -217,7 +217,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 <p style="color: #475569; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: #1e293b;">Note:</strong> Partners get full ladder. Affiliates get limited transcodes. Regular streamers may get source-only.</p>
 </div>
 
-                                  <!-- Package Stage -->
+  <!-- Package Stage -->
 <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <h5 style="color: #58a6ff; margin: 0 0 12px 0;">STAGE 3: PACKAGE (HLS segmentation)</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -240,7 +240,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 </div>
 </div>
 
-                                          ### Latency Stack Breakdown
+### Latency Stack Breakdown
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Where Latency Comes From</h4>
@@ -288,7 +288,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 </div>
 </div>
 
-                                          ### Live Streaming Interview Questions (3 Levels Deep)
+### Live Streaming Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why does Twitch use HLS instead of WebRTC for live streaming?</h4>
@@ -308,11 +308,11 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 </div>
 </div>
 
-                                          ---
+  ---
 
-                                          ## Section 3: Real-Time Chat System
+## Section 3: Real-Time Chat System
 
-                                          ### Deep Mechanics
+### Deep Mechanics
 
 Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem**</span>: one message from a viewer must reach 100K+ connected clients in near real-time. The architecture uses hierarchical distribution with edge WebSocket servers consuming from a central message bus.
 
@@ -320,7 +320,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">CHAT ARCHITECTURE FOR 100K+ VIEWERS</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-                                              <!-- Chat Ingest -->
+  <!-- Chat Ingest -->
 <div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
 <h5 style="color: #a371f7; margin: 0 0 12px 0;">CHAT INGEST SERVERS</h5>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
@@ -345,7 +345,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 
 <div style="text-align: center; color: #a371f7; font-size: 24px;">↓</div>
 
-                                                      <!-- Message Queue -->
+  <!-- Message Queue -->
 <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
 <h5 style="color: #f0883e; margin: 0 0 12px 0;">MESSAGE QUEUE (Kafka)</h5>
 <p style="color: #475569; font-size: 13px; margin: 0;"><strong style="color: #1e293b;">Topic:</strong> chat.{channel_id} | <strong style="color: #1e293b;">Partitions:</strong> By user_id % N | <strong style="color: #1e293b;">Retention:</strong> 2 hours</p>
@@ -354,7 +354,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 
 <div style="text-align: center; color: #58a6ff; font-size: 24px;">↓</div>
 
-                                                      <!-- Edge WebSocket Servers -->
+  <!-- Edge WebSocket Servers -->
 <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <h5 style="color: #58a6ff; margin: 0 0 16px 0;">EDGE WEBSOCKET SERVERS</h5>
 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
@@ -383,7 +383,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 
 <div style="text-align: center; color: #3fb950; font-size: 24px;">↓</div>
 
-                                                              <!-- Viewers -->
+  <!-- Viewers -->
 <div style="display: flex; justify-content: center;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b;">
 <strong style="font-size: 16px;">VIEWERS (100K+)</strong>
@@ -393,7 +393,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                          ### Chat Implementation
+### Chat Implementation
 
                                                           ```python
                                                           class ChatService:
@@ -495,7 +495,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
                                                           return ModerationResult(blocked=False, filtered_message=message)
                                                           ```
 
-                                                          ### Edge WebSocket Server
+### Edge WebSocket Server
 
                                                           ```python
                                                           class EdgeChatServer:
@@ -588,7 +588,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
                                                           pass
                                                           ```
 
-                                                          ### Chat Interview Questions (3 Levels Deep)
+### Chat Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: How do you scale chat for 100K+ concurrent viewers in a single channel?</h4>
@@ -608,11 +608,11 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                          ---
+  ---
 
-                                                          ## Section 4: VOD Storage and Clips
+## Section 4: VOD Storage and Clips
 
-                                                          ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color:#00ff00">**VOD (Video on Demand)**</span> stores past broadcasts for later viewing. Unlike live streaming where segments are ephemeral, VOD requires long-term storage with efficient retrieval. <span style="color:#00ff00">**Clips**</span> are short highlights extracted from live or VOD content.
 
@@ -620,7 +620,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 <h4 style="color: #3fb950; text-align: center; margin: 0 0 24px 0;">VOD STORAGE ARCHITECTURE</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-                                                              <!-- Live Pipeline -->
+  <!-- Live Pipeline -->
 <div style="display: flex; gap: 20px; align-items: stretch;">
 <div style="background: rgba(145, 70, 255, 0.15); border: 2px solid #9146ff; border-radius: 12px; padding: 20px; flex: 1;">
 <h5 style="color: #9146ff; margin: 0 0 12px 0;">LIVE PIPELINE</h5>
@@ -633,7 +633,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                              <!-- Storage Tiers -->
+  <!-- Storage Tiers -->
 <div style="background: rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
 <h5 style="color: #3fb950; margin: 0 0 16px 0;">TIERED STORAGE</h5>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
@@ -658,7 +658,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                          <!-- VOD Structure -->
+  <!-- VOD Structure -->
 <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <h5 style="color: #58a6ff; margin: 0 0 12px 0;">VOD DATA STRUCTURE</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -689,7 +689,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                                          ### Clip Creation System
+### Clip Creation System
 
                                                                                           ```go
                                                                                           // Real-time clip extraction from live stream or VOD
@@ -796,7 +796,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
                                                                                           }
                                                                                           ```
 
-                                                                                          ### VOD Interview Questions (3 Levels Deep)
+### VOD Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: How do you efficiently store VODs when a popular streamer broadcasts 8 hours daily?</h4>
@@ -816,11 +816,11 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                                          ---
+  ---
 
-                                                                                          ## Section 5: Transcoding Pipeline
+## Section 5: Transcoding Pipeline
 
-                                                                                          ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color:#00ff00">**Real-time transcoding**</span> is the most computationally intensive component. It converts the broadcaster's single input stream into multiple quality levels (ABR ladder) with strict latency requirements - processing must be faster than real-time.
 
@@ -828,7 +828,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">TRANSCODING INFRASTRUCTURE</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-                                                                                              <!-- GPU Cluster -->
+  <!-- GPU Cluster -->
 <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
 <h5 style="color: #f0883e; margin: 0 0 16px 0;">GPU TRANSCODING CLUSTER</h5>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
@@ -854,7 +854,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 <p style="color: #475569; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: #1e293b;">Scale:</strong> 100K concurrent streams × 5 outputs = 500K parallel encoding jobs</p>
 </div>
 
-                                                                                                          <!-- Transcoding Tiers -->
+  <!-- Transcoding Tiers -->
 <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <h5 style="color: #58a6ff; margin: 0 0 16px 0;">TRANSCODING TIERS (Business Logic)</h5>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
@@ -879,7 +879,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                                                                      <!-- Quality Ladder -->
+  <!-- Quality Ladder -->
 <div style="background: rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
 <h5 style="color: #3fb950; margin: 0 0 12px 0;">ABR LADDER ENCODING SETTINGS</h5>
 <div style="overflow-x: auto;">
@@ -932,7 +932,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                                                                  ### Transcoding Implementation
+### Transcoding Implementation
 
                                                                                                                   ```python
                                                                                                                   class TranscodingPipeline:
@@ -1075,7 +1075,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
                                                                                                                   return cmd
                                                                                                                   ```
 
-                                                                                                                  ### Transcoding Interview Questions (3 Levels Deep)
+### Transcoding Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why does Twitch need to transcode streams? Can't viewers just watch the source quality?</h4>
@@ -1095,11 +1095,11 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 </div>
 </div>
 
-                                                                                                                  ---
+  ---
 
-                                                                                                                  ## Section 6: Recommendation Engine
+## Section 6: Recommendation Engine
 
-                                                                                                                  ### Deep Mechanics
+### Deep Mechanics
 
 The <span style="color:#00ff00">**recommendation engine**</span> personalizes content discovery, helping viewers find streams they'll enjoy. Unlike Netflix (catalog of fixed content), Twitch recommendations must account for real-time factors: who is currently live, viewer count trends, and stream recency.
 
@@ -1107,7 +1107,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">RECOMMENDATION SYSTEM ARCHITECTURE</h4>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-                                                                                                                      <!-- Data Sources -->
+  <!-- Data Sources -->
 <div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
 <h5 style="color: #a371f7; margin: 0 0 16px 0;">DATA SOURCES</h5>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
@@ -1130,7 +1130,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 </div>
 </div>
 
-                                                                                                                              <!-- Model Pipeline -->
+  <!-- Model Pipeline -->
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
 <div style="background: rgba(240, 136, 62, 0.15); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
 <h5 style="color: #f0883e; margin: 0 0 12px 0;">CANDIDATE GENERATION</h5>
@@ -1146,7 +1146,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 </div>
 </div>
 
-                                                                                                                              <!-- Signals -->
+  <!-- Signals -->
 <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <h5 style="color: #58a6ff; margin: 0 0 16px 0;">RANKING SIGNALS (Feature Engineering)</h5>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
@@ -1191,7 +1191,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 </div>
 </div>
 
-                                                                                                                          ### Recommendation Implementation
+### Recommendation Implementation
 
                                                                                                                           ```python
                                                                                                                           class RecommendationEngine:
@@ -1369,7 +1369,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
                                                                                                                           return result
                                                                                                                           ```
 
-                                                                                                                          ### Real-Time Features Pipeline
+### Real-Time Features Pipeline
 
                                                                                                                           ```python
                                                                                                                           class RealTimeFeatureService:
@@ -1445,7 +1445,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
                                                                                                                           await job.start()
                                                                                                                           ```
 
-                                                                                                                          ### Recommendation Interview Questions (3 Levels Deep)
+### Recommendation Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: How does Twitch's recommendation system differ from Netflix's?</h4>
@@ -1465,32 +1465,32 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 </div>
 </div>
 
-                                                                                                                          ---
+  ---
 
-                                                                                                                          ## Section 7: Scale Phases
+## Section 7: Scale Phases
 
-                                                                                                                          ### Phase 1: Starting Phase (MVP)
+### Phase 1: Starting Phase (MVP)
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
-                                                                                                                              **Assumptions:**
+**Assumptions:**
                                                                                                                               - **Streamers**: 100 - 1,000 concurrent
                                                                                                                               - **Viewers**: 10K - 100K concurrent
                                                                                                                               - **Chat messages**: 10K - 100K/minute
                                                                                                                               - **Budget**: $10,000 - $50,000/month
 
-                                                                                                                              **Architecture Decision: Use Managed Services**
+**Architecture Decision: Use Managed Services**
 
 <div style="background: rgba(63, 185, 80, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0;">
 
-                                                                                                                                | Component | Managed Service | Monthly Cost |
-                                                                                                                                |-----------|----------------|--------------|
-                                                                                                                                | **Ingest + Transcode** | AWS IVS or Mux | ~$2,000-5,000 |
-                                                                                                                                | **Video Delivery** | Included with IVS/Mux | - |
-                                                                                                                                | **Chat** | Ably or PubNub | ~$500-1,000 |
-                                                                                                                                | **Database** | Supabase or PlanetScale | ~$100-500 |
-                                                                                                                                | **Hosting** | Vercel/Railway | ~$100-500 |
+  | Component | Managed Service | Monthly Cost |
+  |-----------|----------------|--------------|
+  | **Ingest + Transcode** | AWS IVS or Mux | ~$2,000-5,000 |
+  | **Video Delivery** | Included with IVS/Mux | - |
+  | **Chat** | Ably or PubNub | ~$500-1,000 |
+  | **Database** | Supabase or PlanetScale | ~$100-500 |
+  | **Hosting** | Vercel/Railway | ~$100-500 |
 
 </div>
 
@@ -1532,78 +1532,78 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 </div>
 </div>
 
-                                                                                                                          ### Phase 2: Growth Phase
+### Phase 2: Growth Phase
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
-                                                                                                                              **Assumptions:**
+**Assumptions:**
                                                                                                                               - **Streamers**: 10K concurrent
                                                                                                                               - **Viewers**: 1M concurrent
                                                                                                                               - **Chat messages**: 10M/minute
                                                                                                                               - **Budget**: $100,000 - $500,000/month
 
-                                                                                                                              **Architecture Decision: Hybrid (Managed + Custom)**
+**Architecture Decision: Hybrid (Managed + Custom)**
 
-                                                                                                                              At this scale, managed service costs become significant. Start building custom components for highest-cost items while keeping others managed.
+  At this scale, managed service costs become significant. Start building custom components for highest-cost items while keeping others managed.
 
 <div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0;">
 
-                                                                                                                                | Component | Approach | Reason |
-                                                                                                                                |-----------|----------|--------|
-                                                                                                                                | **Ingest** | Custom RTMP servers | Control, cost at scale |
-                                                                                                                                | **Transcode** | Custom GPU cluster | Biggest cost driver |
-                                                                                                                                | **CDN** | CloudFront or Fastly | CDN is commodity, don't build |
-                                                                                                                                | **Chat** | Custom Kafka + WebSocket | Scale requires custom |
-                                                                                                                                | **Recommendations** | Custom ML pipeline | Differentiation |
+  | Component | Approach | Reason |
+  |-----------|----------|--------|
+  | **Ingest** | Custom RTMP servers | Control, cost at scale |
+  | **Transcode** | Custom GPU cluster | Biggest cost driver |
+  | **CDN** | CloudFront or Fastly | CDN is commodity, don't build |
+  | **Chat** | Custom Kafka + WebSocket | Scale requires custom |
+  | **Recommendations** | Custom ML pipeline | Differentiation |
 
 </div>
 
 </div>
 </div>
 
-                                                                                                                          ### Phase 3: Twitch Scale
+### Phase 3: Twitch Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
-                                                                                                                              **Assumptions:**
+**Assumptions:**
                                                                                                                               - **Concurrent streamers**: 100K+
                                                                                                                               - **Concurrent viewers**: 15M+ peak
                                                                                                                               - **Chat messages**: 100M+/minute
                                                                                                                               - **Video bandwidth**: 100+ Tbps
 
-                                                                                                                              **Architecture Decision: Fully Custom**
+**Architecture Decision: Fully Custom**
 
-                                                                                                                              At Twitch scale, nearly everything is custom-built for cost and control.
+  At Twitch scale, nearly everything is custom-built for cost and control.
 
 <div style="background: rgba(163, 113, 247, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0;">
 
-                                                                                                                                | Component | Twitch Approach |
-                                                                                                                                |-----------|-----------------|
-                                                                                                                                | **Ingest** | 50+ global ingest PoPs, custom RTMP extensions |
-                                                                                                                                | **Transcode** | Custom GPU clusters with NVENC, tiered allocation |
-                                                                                                                                | **CDN** | Custom CDN + multi-CDN for redundancy |
-                                                                                                                                | **Chat** | IRC-based protocol, custom fan-out infrastructure |
-                                                                                                                                | **VOD** | Custom tiered storage with S3 + Glacier |
-                                                                                                                                | **Recommendations** | Custom ML platform with real-time features |
+  | Component | Twitch Approach |
+  |-----------|-----------------|
+  | **Ingest** | 50+ global ingest PoPs, custom RTMP extensions |
+  | **Transcode** | Custom GPU clusters with NVENC, tiered allocation |
+  | **CDN** | Custom CDN + multi-CDN for redundancy |
+  | **Chat** | IRC-based protocol, custom fan-out infrastructure |
+  | **VOD** | Custom tiered storage with S3 + Glacier |
+  | **Recommendations** | Custom ML platform with real-time features |
 
 </div>
 
-                                                                                                                              **Why Custom CDN at This Scale:**
+**Why Custom CDN at This Scale:**
 
-                                                                                                                              At 100+ Tbps, CDN costs are $0.01-0.02/GB. That's $30M+/year in CDN fees. Building custom CDN with owned/leased infrastructure becomes economically viable.
+  At 100+ Tbps, CDN costs are $0.01-0.02/GB. That's $30M+/year in CDN fees. Building custom CDN with owned/leased infrastructure becomes economically viable.
 
 </div>
 </div>
 
-                                                                                                                          ---
+  ---
 
-                                                                                                                          ## Trade-off Analysis
+## Trade-off Analysis
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                                                                                                            ### Core Trade-offs in Live Streaming
+### Core Trade-offs in Live Streaming
 
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 <tr style="border-bottom: 2px solid #58a6ff;">
@@ -1646,13 +1646,13 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 
 </div>
 
-                                                                                                                          ---
+  ---
 
-                                                                                                                          ## Interview Tips
+## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                                                                            ### Red Flags in Your Answer
+### Red Flags in Your Answer
 
 <div style="background: #3d1f1f; border-radius: 8px; padding: 16px; margin: 16px 0; border-left: 4px solid #f85149;">
 
@@ -1665,7 +1665,7 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 
 </div>
 
-                                                                                                                            ### Impressive Statements
+### Impressive Statements
 
 <div style="background: #1f3d1f; border-radius: 8px; padding: 16px; margin: 16px 0; border-left: 4px solid #3fb950;">
 
@@ -1678,15 +1678,15 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
 
 </div>
 
-                                                                                                                            ### 30-Second Summary for Interviews
+### 30-Second Summary for Interviews
 
-                                                                                                                            > "A streaming platform has five core systems: **Ingest** (receive RTMP from broadcasters), **Transcode** (convert to multiple qualities in real-time using GPUs), **Delivery** (HLS segments via CDN), **Chat** (WebSocket fan-out with Kafka), and **Recommendations** (two-stage ML pipeline with real-time features). The key insight is that video scales via CDN caching - popular streams are served from edge, making cost-per-viewer approach zero. Chat scales via hierarchical fan-out. Start with managed services (AWS IVS) and only build custom when you hit scale limits or cost thresholds."
+  > "A streaming platform has five core systems: **Ingest** (receive RTMP from broadcasters), **Transcode** (convert to multiple qualities in real-time using GPUs), **Delivery** (HLS segments via CDN), **Chat** (WebSocket fan-out with Kafka), and **Recommendations** (two-stage ML pipeline with real-time features). The key insight is that video scales via CDN caching - popular streams are served from edge, making cost-per-viewer approach zero. Chat scales via hierarchical fan-out. Start with managed services (AWS IVS) and only build custom when you hit scale limits or cost thresholds."
 
 </div>
 
-                                                                                                                          ---
+  ---
 
-                                                                                                                          ## Related Topics
+## Related Topics
 
                                                                                                                           - [[cdn]](/topic/system-design/cdn) - Edge caching and delivery networks
                                                                                                                           - [[message-queues]](/topic/system-design/message-queues) - Kafka for chat distribution

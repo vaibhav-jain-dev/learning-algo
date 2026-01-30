@@ -86,7 +86,7 @@ Understanding the difference between <span style="color: #22c55e; font-weight: 6
 <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #93c5fd;">
 <div style="font-size: 11px; color: #1e40af; font-weight: 600; margin-bottom: 4px;">Original Table</div>
 <div style="font-family: monospace; font-size: 10px; color: #475569;">
-          | id | name | email | orders |
+  | id | name | email | orders |
 </div>
 </div>
 
@@ -120,7 +120,7 @@ Understanding the difference between <span style="color: #22c55e; font-weight: 6
 <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #d8b4fe;">
 <div style="font-size: 11px; color: #7c3aed; font-weight: 600; margin-bottom: 4px;">Original Table</div>
 <div style="font-family: monospace; font-size: 10px; color: #475569;">
-          | id | name | email | blob_data |
+  | id | name | email | blob_data |
 </div>
 </div>
 
@@ -332,7 +332,7 @@ def compute_compound_shard_key(tenant_id: str, user_id: str) -> str:
 
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
+  <thead>
 <tr style="border-bottom: 2px solid #cbd5e1;">
 <th style="padding: 12px; text-align: left; color: #1e40af;">Strategy</th>
 <th style="padding: 12px; text-align: center; color: #1e40af;">Distribution</th>
@@ -341,8 +341,8 @@ def compute_compound_shard_key(tenant_id: str, user_id: str) -> str:
 <th style="padding: 12px; text-align: center; color: #1e40af;">Complexity</th>
 <th style="padding: 12px; text-align: left; color: #1e40af;">Best For</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="border-bottom: 1px solid #e2e8f0; background: #fefce8;">
 <td style="padding: 12px; color: #1e293b; font-weight: 600;">Range-Based</td>
 <td style="padding: 12px; text-align: center;"><span style="color: #d97706; font-weight: 500;">Uneven</span></td>
@@ -383,7 +383,7 @@ def compute_compound_shard_key(tenant_id: str, user_id: str) -> str:
 <td style="padding: 12px; text-align: center;"><span style="color: #d97706; font-weight: 500;">Medium</span></td>
 <td style="padding: 12px; color: #64748b;">Global apps, CDN-like</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>
@@ -511,7 +511,7 @@ def get_shard_by_hash(key: str, num_shards: int) -> int:
 <div style="color: #1e293b; font-size: 13px; font-family: monospace;">
 key "user_123" hashes to position <span style="color: #d97706; font-weight: 600;">45°</span><br>
 Walk clockwise → first node is <span style="color: #16a34a; font-weight: 600;">B (at 90°)</span><br>
-          → Route to Node B
+  → Route to Node B
 </div>
 </div>
 
@@ -620,7 +620,7 @@ Walk clockwise → first node is <span style="color: #16a34a; font-weight: 600;"
 
     ---
 
-    ## Cross-Shard Queries
+## Cross-Shard Queries
 
 Cross-shard queries are one of the biggest challenges in sharded databases. When a query cannot be routed to a single shard, you need <span style="color: #22c55e; font-weight: 600;">scatter-gather</span> or other strategies.
 
@@ -628,25 +628,25 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SCATTER-GATHER PATTERN</div>
 
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-        <!-- Query -->
+  <!-- Query -->
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 10px; padding: 14px 24px; border: 1px solid #fca5a5;">
 <span style="color: #991b1b; font-weight: 600; font-size: 13px;">Query without shard key:</span>
 <span style="color: #7f1d1d; font-family: monospace; font-size: 12px;"> SELECT * FROM orders WHERE total > 1000</span>
 </div>
 
-        <!-- Coordinator -->
+  <!-- Coordinator -->
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #3b82f6; text-align: center;">
 <div style="color: #1e40af; font-weight: 600;">Coordinator</div>
 <div style="color: #3b82f6; font-size: 12px;">Manages query distribution</div>
 </div>
 
-        <!-- Scatter -->
+  <!-- Scatter -->
 <div style="color: #3b82f6; font-weight: 600; font-size: 13px;">1. SCATTER (parallel fan-out)</div>
 <div style="display: flex; gap: 8px; color: #3b82f6; font-size: 18px;">
 <span>↙</span><span>↓</span><span>↓</span><span>↘</span>
 </div>
 
-        <!-- Shards executing -->
+  <!-- Shards executing -->
 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
 <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; font-size: 13px;">Shard 1</div>
@@ -670,13 +670,13 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Gather -->
+  <!-- Gather -->
 <div style="display: flex; gap: 8px; color: #7c3aed; font-size: 18px;">
 <span>↘</span><span>↓</span><span>↓</span><span>↙</span>
 </div>
 <div style="color: #7c3aed; font-weight: 600; font-size: 13px;">2. GATHER (merge results)</div>
 
-        <!-- Result -->
+  <!-- Result -->
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #a855f7; text-align: center;">
 <div style="color: #7c3aed; font-weight: 600;">149 rows merged</div>
 <div style="color: #a855f7; font-size: 12px;">Total latency: 31ms (slowest shard) + 5ms (merge)</div>
@@ -689,31 +689,31 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-    ### Cross-Shard Query Strategies
+### Cross-Shard Query Strategies
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-      **1. Scatter-Gather** (shown above)
+**1. Scatter-Gather** (shown above)
       - Query all shards in parallel, merge results
       - Use for: Analytics, search, aggregations
       - Cost: N network calls, slowest shard dominates latency
 
-      **2. Global Secondary Index**
+**2. Global Secondary Index**
       - Maintain a separate index mapping query fields to shard locations
       - Use for: Frequent lookups by non-shard-key fields
       - Cost: Index maintenance overhead, storage
 
-      **3. Reference Tables**
+**3. Reference Tables**
       - Replicate small lookup tables (countries, categories) to all shards
       - Use for: JOINs with static reference data
       - Cost: Storage duplication, sync complexity
 
-      **4. Denormalization**
+**4. Denormalization**
       - Store related data together on the same shard
       - Use for: Frequently joined data
       - Cost: Data duplication, update complexity
 
-      **5. Application-Level Joins**
+**5. Application-Level Joins**
       - Query each shard separately, join in application code
       - Use for: Complex joins that can't be avoided
       - Cost: Application complexity, memory usage
@@ -827,7 +827,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 
     ---
 
-    ## Resharding Strategies
+## Resharding Strategies
 
 <span style="color: #22c55e; font-weight: 600;">Resharding</span> is the process of redistributing data when adding or removing shards. It's one of the most complex operations in a sharded database.
 
@@ -835,7 +835,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">ONLINE RESHARDING PROCESS</div>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
-        <!-- Step 1 -->
+  <!-- Step 1 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">1</div>
 <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
@@ -844,7 +844,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Step 2 -->
+  <!-- Step 2 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">2</div>
 <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
@@ -853,7 +853,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Step 3 -->
+  <!-- Step 3 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">3</div>
 <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
@@ -862,7 +862,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Step 4 -->
+  <!-- Step 4 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">4</div>
 <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
@@ -871,7 +871,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Step 5 -->
+  <!-- Step 5 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">5</div>
 <div style="flex: 1; background: #ecfdf5; border-radius: 8px; padding: 16px;">
@@ -880,7 +880,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-        <!-- Step 6 -->
+  <!-- Step 6 -->
 <div style="display: flex; align-items: flex-start; gap: 16px;">
 <div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">6</div>
 <div style="flex: 1; background: #ecfdf5; border-radius: 8px; padding: 16px;">
@@ -891,7 +891,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 </div>
 </div>
 
-    ### Resharding Without Downtime
+### Resharding Without Downtime
 
     ```python
     from enum import Enum
@@ -1028,9 +1028,9 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 
     ---
 
-    ## Real-Life Failure Story
+## Real-Life Failure Story
 
-    ### The Notion Sharding Incident (2021)
+### The Notion Sharding Incident (2021)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
@@ -1038,7 +1038,7 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #991b1b; font-weight: 600;">The Incident</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-          Notion experienced a major outage when a shard containing popular templates became overloaded. The shard received 100x normal traffic when a viral template was shared widely. The imbalanced load caused cascading failures as the hot shard couldn't keep up.
+  Notion experienced a major outage when a shard containing popular templates became overloaded. The shard received 100x normal traffic when a viral template was shared widely. The imbalanced load caused cascading failures as the hot shard couldn't keep up.
 </div>
 </div>
 
@@ -1066,29 +1066,29 @@ Cross-shard queries are one of the biggest challenges in sharded databases. When
 
     ---
 
-    ## Interview Questions - 3-Level Deep Dive
+## Interview Questions - 3-Level Deep Dive
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 
-      ### Q1: How do you choose a shard key for a social media application?
+### Q1: How do you choose a shard key for a social media application?
 
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #3b82f6;">
 
-        **Level 1 Answer (Junior):**
-        Choose user_id as the shard key because it has high cardinality and most queries are user-centric. Each user's data lives on one shard, making user profile and feed queries efficient.
+**Level 1 Answer (Junior):**
+  Choose user_id as the shard key because it has high cardinality and most queries are user-centric. Each user's data lives on one shard, making user profile and feed queries efficient.
 
 </div>
 
 <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #22c55e;">
 
-        **Level 2 Answer (Mid-Level):**
-        User_id works for user-centric data, but social media has multiple access patterns:
+**Level 2 Answer (Mid-Level):**
+  User_id works for user-centric data, but social media has multiple access patterns:
 
-        1. **User profile/feed**: Shard by user_id - efficient single-shard queries
-        2. **Timeline (posts from followed users)**: This is cross-shard! Options:
+  1. **User profile/feed**: Shard by user_id - efficient single-shard queries
+  2. **Timeline (posts from followed users)**: This is cross-shard! Options:
         - Fan-out on write: Copy posts to followers' shards (Instagram approach)
         - Fan-out on read: Query all followed users' shards (expensive)
-        3. **Trending/search**: Separate system, not sharded by user_id
+  3. **Trending/search**: Separate system, not sharded by user_id
 
 I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>: user_id for personal data, but maintain denormalized copies for cross-user features.
 
@@ -1096,10 +1096,10 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: #faf5ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #a855f7;">
 
-        **Level 3 Answer (Senior):**
-        The shard key decision requires analyzing the full data model:
+**Level 3 Answer (Senior):**
+  The shard key decision requires analyzing the full data model:
 
-        **Primary entities and their sharding:**
+**Primary entities and their sharding:**
         ```
         users table        → shard by user_id (hash)
         posts table        → shard by author_id (co-locate with user)
@@ -1109,7 +1109,7 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         messages table     → shard by conversation_id
         ```
 
-        **The follows/timeline problem is the hardest:**
+**The follows/timeline problem is the hardest:**
         - Option A: Store follows on follower's shard. Timeline = scatter-gather to all followed users' shards. High read latency.
         - Option B: Store follows on followee's shard. Efficient for "who follows me?" but timeline still scatter-gather.
         - Option C: Fan-out on write (Twitter/Instagram model):
@@ -1117,12 +1117,12 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         - Trades write amplification for read efficiency
         - For celebrities (100M followers), use hybrid: don't fan-out, merge at read time
 
-        **Handling hotspots (celebrity accounts):**
-        1. Secondary sharding for hot users: `shard = hash(user_id + date)` to spread load
-        2. Separate "public" content tier with caching
-        3. Rate limiting per user
+**Handling hotspots (celebrity accounts):**
+  1. Secondary sharding for hot users: `shard = hash(user_id + date)` to spread load
+  2. Separate "public" content tier with caching
+  3. Rate limiting per user
 
-        **Cross-shard consistency:**
+**Cross-shard consistency:**
         - Use [[eventual-consistency]](/topic/system-design/cap-theorem) for timeline (seconds delay acceptable)
         - Use [[distributed-locking]](/topic/system-design/distributed-locking) for critical operations (delete, account changes)
 
@@ -1132,51 +1132,51 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 
-      ### Q2: Explain consistent hashing and why virtual nodes are important.
+### Q2: Explain consistent hashing and why virtual nodes are important.
 
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #3b82f6;">
 
-        **Level 1 Answer (Junior):**
-        Consistent hashing maps both keys and servers to a ring. Keys belong to the first server clockwise from their position. When adding/removing servers, only keys adjacent to the change move, minimizing data redistribution. Virtual nodes are multiple positions per server to improve distribution.
+**Level 1 Answer (Junior):**
+  Consistent hashing maps both keys and servers to a ring. Keys belong to the first server clockwise from their position. When adding/removing servers, only keys adjacent to the change move, minimizing data redistribution. Virtual nodes are multiple positions per server to improve distribution.
 
 </div>
 
 <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #22c55e;">
 
-        **Level 2 Answer (Mid-Level):**
-        Without consistent hashing, adding a shard requires rehashing all keys: `hash(key) % N` changes for most keys when N changes.
+**Level 2 Answer (Mid-Level):**
+  Without consistent hashing, adding a shard requires rehashing all keys: `hash(key) % N` changes for most keys when N changes.
 
-        Consistent hashing fixes this by:
-        1. Hashing servers and keys to the same ring (0 to 2^32)
-        2. Each key is assigned to the first server clockwise
-        3. Adding a server only affects keys in one segment
+  Consistent hashing fixes this by:
+  1. Hashing servers and keys to the same ring (0 to 2^32)
+  2. Each key is assigned to the first server clockwise
+  3. Adding a server only affects keys in one segment
 
-        **Virtual nodes solve the uneven distribution problem:**
+**Virtual nodes solve the uneven distribution problem:**
         - With only 4 physical nodes, one might get 50% of the ring by chance
         - With 100 virtual nodes per physical node (400 total), distribution approaches uniform
         - Also helps during failures: one node's keys spread across many others, not just one
 
-        **Implementation detail:** Virtual nodes are created by hashing `"node_name:0"`, `"node_name:1"`, etc.
+**Implementation detail:** Virtual nodes are created by hashing `"node_name:0"`, `"node_name:1"`, etc.
 
 </div>
 
 <div style="background: #faf5ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #a855f7;">
 
-        **Level 3 Answer (Senior):**
-        Consistent hashing is fundamental to distributed systems like DynamoDB, Cassandra, and Riak.
+**Level 3 Answer (Senior):**
+  Consistent hashing is fundamental to distributed systems like DynamoDB, Cassandra, and Riak.
 
-        **Mathematical properties:**
+**Mathematical properties:**
         - Adding 1 node to N nodes moves only 1/(N+1) of keys
         - This is optimal - you can't do better without a directory
         - Ring positions use 32 or 64-bit hash space
 
-        **Virtual nodes serve multiple purposes:**
-        1. **Load balancing**: With K virtual nodes per physical node, standard deviation of load is O(1/sqrt(K))
-        2. **Heterogeneous hardware**: Powerful nodes get more virtual nodes
-        3. **Graceful failure recovery**: Failed node's load spreads across all others proportionally
-        4. **Incremental rebalancing**: Can move virtual nodes one at a time
+**Virtual nodes serve multiple purposes:**
+  1. **Load balancing**: With K virtual nodes per physical node, standard deviation of load is O(1/sqrt(K))
+  2. **Heterogeneous hardware**: Powerful nodes get more virtual nodes
+  3. **Graceful failure recovery**: Failed node's load spreads across all others proportionally
+  4. **Incremental rebalancing**: Can move virtual nodes one at a time
 
-        **Replication strategy (Dynamo-style):**
+**Replication strategy (Dynamo-style):**
         ```python
         def get_preference_list(key, n_replicas=3):
         """Return N distinct physical nodes, walking clockwise."""
@@ -1190,12 +1190,12 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         return nodes
         ```
 
-        **Weighted consistent hashing (for varying capacity):**
+**Weighted consistent hashing (for varying capacity):**
         - Node with 2x RAM gets 2x virtual nodes
         - But this complicates rebalancing when weights change
         - Alternative: Directory-based with weight metadata
 
-        **Jump consistent hash (Google, 2014):**
+**Jump consistent hash (Google, 2014):**
         - No memory overhead (no ring storage)
         - O(log n) computation
         - But only supports sequential node IDs and no removal
@@ -1206,39 +1206,39 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 
-      ### Q3: How do you handle cross-shard transactions?
+### Q3: How do you handle cross-shard transactions?
 
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #3b82f6;">
 
-        **Level 1 Answer (Junior):**
-        Cross-shard transactions are hard because you can't use a single database transaction. You need either two-phase commit (2PC) where a coordinator ensures all shards commit or rollback together, or saga pattern where you execute operations sequentially with compensating actions for rollback.
+**Level 1 Answer (Junior):**
+  Cross-shard transactions are hard because you can't use a single database transaction. You need either two-phase commit (2PC) where a coordinator ensures all shards commit or rollback together, or saga pattern where you execute operations sequentially with compensating actions for rollback.
 
 </div>
 
 <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #22c55e;">
 
-        **Level 2 Answer (Mid-Level):**
-        Cross-shard transactions violate the core benefit of sharding (independent operation). I'd recommend:
+**Level 2 Answer (Mid-Level):**
+  Cross-shard transactions violate the core benefit of sharding (independent operation). I'd recommend:
 
-        **1. Avoid them by design:**
+**1. Avoid them by design:**
         - Co-locate related data on the same shard
         - Denormalize to eliminate cross-shard joins
         - Accept eventual consistency where possible
 
-        **2. When unavoidable, choose based on requirements:**
+**2. When unavoidable, choose based on requirements:**
 
-        **Two-Phase Commit (2PC):**
+**Two-Phase Commit (2PC):**
         - Strong consistency, but blocks on coordinator failure
         - High latency (2 round-trips minimum)
         - Use for: Financial transactions where correctness > availability
 
-        **Saga Pattern:**
+**Saga Pattern:**
         - Eventual consistency with compensating transactions
         - Each step is a local transaction + event
         - If step fails, execute compensating actions for previous steps
         - Use for: Order processing, booking systems
 
-        **TCC (Try-Confirm-Cancel):**
+**TCC (Try-Confirm-Cancel):**
         - Reserve resources (Try), then Confirm or Cancel
         - Like saga but with explicit reservation phase
         - Better for inventory, seat booking
@@ -1247,17 +1247,17 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: #faf5ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #a855f7;">
 
-        **Level 3 Answer (Senior):**
-        This is where theory meets practice. Let me break down the options with real trade-offs:
+**Level 3 Answer (Senior):**
+  This is where theory meets practice. Let me break down the options with real trade-offs:
 
-        **Why cross-shard transactions are fundamentally hard:**
+**Why cross-shard transactions are fundamentally hard:**
         - CAP theorem: Can't have consistency + availability during partition
         - 2PC is a consensus problem; consensus is expensive
         - Distributed transactions increase failure domain
 
-        **Production-ready approaches:**
+**Production-ready approaches:**
 
-        **1. Choreography-based Saga (event-driven):**
+**1. Choreography-based Saga (event-driven):**
         ```
         OrderService                    PaymentService                  InventoryService
         |                                |                               |
@@ -1272,7 +1272,7 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         - Complex to debug and monitor
         - Compensations must be idempotent
 
-        **2. Orchestration-based Saga:**
+**2. Orchestration-based Saga:**
         ```python
         class OrderSaga:
         steps = [
@@ -1295,17 +1295,17 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         - Easier to reason about and monitor
         - Coordinator is SPOF (need to persist saga state)
 
-        **3. Outbox Pattern (for reliable messaging):**
+**3. Outbox Pattern (for reliable messaging):**
         - Write event to local outbox table in same transaction as data change
         - Separate process reads outbox and publishes to message queue
         - Guarantees at-least-once delivery
 
-        **4. For true ACID across shards (expensive but sometimes needed):**
+**4. For true ACID across shards (expensive but sometimes needed):**
         - Google Spanner: TrueTime + Paxos for global consistency
         - CockroachDB: Serializable isolation across nodes
         - Vitess: Supports cross-shard transactions with 2PC
 
-        **Design principle:** Minimize cross-shard transactions by making shards the unit of consistency. Design domain boundaries around shard boundaries.
+**Design principle:** Minimize cross-shard transactions by making shards the unit of consistency. Design domain boundaries around shard boundaries.
 
 </div>
 
@@ -1313,26 +1313,26 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 
-      ### Q4: How would you reshard a production database with zero downtime?
+### Q4: How would you reshard a production database with zero downtime?
 
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #3b82f6;">
 
-        **Level 1 Answer (Junior):**
-        Use the double-write pattern: write to both old and new shard locations during migration, backfill historical data in background, then switch reads to new locations. Finally, stop writing to old locations and clean up.
+**Level 1 Answer (Junior):**
+  Use the double-write pattern: write to both old and new shard locations during migration, backfill historical data in background, then switch reads to new locations. Finally, stop writing to old locations and clean up.
 
 </div>
 
 <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #22c55e;">
 
-        **Level 2 Answer (Mid-Level):**
-        Zero-downtime resharding requires careful orchestration:
+**Level 2 Answer (Mid-Level):**
+  Zero-downtime resharding requires careful orchestration:
 
-        **Phase 1 - Preparation:**
+**Phase 1 - Preparation:**
         - Deploy new shard infrastructure
         - Update routing logic to understand both old and new schemes
         - Enable feature flag for migration
 
-        **Phase 2 - Double-Write:**
+**Phase 2 - Double-Write:**
         ```python
         def write(key, data):
         old_shard = old_router.get_shard(key)
@@ -1343,22 +1343,22 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         write_to_shard(new_shard, key, data)  # Async is OK
         ```
 
-        **Phase 3 - Backfill:**
+**Phase 3 - Backfill:**
         - Scan old shards chronologically (or by key range)
         - Copy to new shards (skip if newer version exists from double-write)
         - Track progress with checkpoints
 
-        **Phase 4 - Verification:**
+**Phase 4 - Verification:**
         - Compare row counts, checksums
         - Sample random records for deep comparison
         - Monitor for discrepancies
 
-        **Phase 5 - Cutover:**
+**Phase 5 - Cutover:**
         - Switch reads to new shards (gradually with % rollout)
         - Monitor error rates
         - Keep double-writes for safety buffer
 
-        **Phase 6 - Cleanup:**
+**Phase 6 - Cleanup:**
         - Disable writes to old shards
         - Wait for in-flight requests
         - Archive or delete old data
@@ -1367,10 +1367,10 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: #faf5ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #a855f7;">
 
-        **Level 3 Answer (Senior):**
-        I've done this at scale. Here are the hard parts people don't mention:
+**Level 3 Answer (Senior):**
+  I've done this at scale. Here are the hard parts people don't mention:
 
-        **Challenge 1: Maintaining consistency during double-write**
+**Challenge 1: Maintaining consistency during double-write**
         ```python
         # Naive double-write has race conditions:
         # T1: read from old_shard (version 1)
@@ -1385,7 +1385,7 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         WHERE key = ? AND version < ?
         ```
 
-        **Challenge 2: Backfill with high write volume**
+**Challenge 2: Backfill with high write volume**
         - Backfill takes days for TB-scale data
         - Writes during backfill create moving target
         - Solution: Multiple passes with decreasing scope
@@ -1394,7 +1394,7 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         - Pass 3: Copy only records modified since Pass 2 started
         - Continue until Pass N copies < 1000 records
 
-        **Challenge 3: Handling schema differences**
+**Challenge 3: Handling schema differences**
         - New shard might have different schema
         - Need bidirectional transformation during migration
         ```python
@@ -1407,17 +1407,17 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
         return transform_v2_to_v1(new_format)
         ```
 
-        **Challenge 4: Rollback capability**
+**Challenge 4: Rollback capability**
         - Keep old shards intact until fully verified
         - Maintain reverse routing capability
         - Test rollback procedure in staging
 
-        **Challenge 5: Cross-shard transactions during migration**
+**Challenge 5: Cross-shard transactions during migration**
         - If transaction spans migrating + stable shards
         - Pause migration, complete transaction, resume
         - Or: use [[distributed-locking]](/topic/system-design/distributed-locking) per-key during transition
 
-        **Tools we use:**
+**Tools we use:**
         - gh-ost (GitHub) for MySQL online schema changes
         - Vitess for managed MySQL sharding with resharding support
         - Custom state machine for migration orchestration
@@ -1429,36 +1429,36 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 
-      ### Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB?
+### Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB?
 
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #3b82f6;">
 
-        **Level 1 Answer (Junior):**
-        Manual sharding gives you more control but requires building routing, handling cross-shard queries, and managing resharding yourself. Distributed databases like CockroachDB handle this automatically but add latency for consensus and are more expensive.
+**Level 1 Answer (Junior):**
+  Manual sharding gives you more control but requires building routing, handling cross-shard queries, and managing resharding yourself. Distributed databases like CockroachDB handle this automatically but add latency for consensus and are more expensive.
 
 </div>
 
 <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #22c55e;">
 
-        **Level 2 Answer (Mid-Level):**
+**Level 2 Answer (Mid-Level):**
 
-        | Aspect | Manual Sharding | Distributed DB |
-        |--------|-----------------|----------------|
-        | Control | Full control over data placement | Automatic, less predictable |
-        | Consistency | Choose per operation | Usually strong by default |
-        | Latency | Single-shard: ~1ms | All writes: 10-50ms (consensus) |
-        | Cross-shard | You build scatter-gather | Built-in SQL support |
-        | Resharding | Complex, manual process | Automatic rebalancing |
-        | Cost | Cheaper infrastructure | Higher license/complexity cost |
-        | Team skill | Requires deep expertise | Easier to operate |
+  | Aspect | Manual Sharding | Distributed DB |
+  |--------|-----------------|----------------|
+  | Control | Full control over data placement | Automatic, less predictable |
+  | Consistency | Choose per operation | Usually strong by default |
+  | Latency | Single-shard: ~1ms | All writes: 10-50ms (consensus) |
+  | Cross-shard | You build scatter-gather | Built-in SQL support |
+  | Resharding | Complex, manual process | Automatic rebalancing |
+  | Cost | Cheaper infrastructure | Higher license/complexity cost |
+  | Team skill | Requires deep expertise | Easier to operate |
 
-        **When to choose manual sharding:**
+**When to choose manual sharding:**
         - Predictable, simple access patterns
         - Very low latency requirements
         - Large team with database expertise
         - Cost-sensitive at scale
 
-        **When to choose distributed DB:**
+**When to choose distributed DB:**
         - Complex queries, joins across shards
         - Strong consistency requirements
         - Smaller team, less DB expertise
@@ -1468,58 +1468,58 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
 <div style="background: #faf5ff; border-radius: 8px; padding: 16px; margin: 12px 0; border-left: 4px solid #a855f7;">
 
-        **Level 3 Answer (Senior):**
-        This is a fundamental architecture decision. Let me share production experience with both:
+**Level 3 Answer (Senior):**
+  This is a fundamental architecture decision. Let me share production experience with both:
 
-        **Manual Sharding (Instagram, Discord, Uber approach):**
+**Manual Sharding (Instagram, Discord, Uber approach):**
 
-        *Advantages:*
+*Advantages:*
         - Predictable latency: single-shard reads are ~1ms
         - Full control: can optimize for specific access patterns
         - Battle-tested: MySQL/PostgreSQL at scale is well-understood
         - Cost: Commodity hardware, open-source databases
 
-        *Hidden costs:*
+*Hidden costs:*
         - Building shard router + query parser: 3-6 months engineering
         - On-call complexity: shard-aware debugging, rebalancing
         - Every new feature must consider sharding implications
         - Cross-shard transactions: build your own saga/2PC
 
-        **Distributed Database (Spanner, CockroachDB, TiDB):**
+**Distributed Database (Spanner, CockroachDB, TiDB):**
 
-        *Advantages:*
+*Advantages:*
         - SQL semantics preserved (JOINs work across nodes)
         - Automatic rebalancing and resharding
         - Serializable isolation by default
         - Built-in HA with consensus replication
 
-        *Hidden costs:*
+*Hidden costs:*
         - Write latency: 10-50ms minimum (consensus round-trips)
         - Tail latency: Cross-region writes can be 100ms+
         - Debugging: Distributed query plans are complex
         - Cost: 3-5x infrastructure cost vs manual sharding
 
-        **Hybrid approaches (what I'd recommend):**
+**Hybrid approaches (what I'd recommend):**
 
-        1. **Vitess (used by YouTube, Slack):**
+  1. **Vitess (used by YouTube, Slack):**
         - MySQL underneath (predictable)
         - Sharding layer handles routing
         - Supports cross-shard queries (scatter-gather)
         - Easier resharding than manual
 
-        2. **Citus (PostgreSQL extension):**
+  2. **Citus (PostgreSQL extension):**
         - PostgreSQL syntax and tooling
         - Distributed tables for sharded data
         - Reference tables for small lookups
         - Co-located tables for related data
 
-        3. **Start simple, evolve:**
+  3. **Start simple, evolve:**
         - Begin with single database + read replicas
         - When hitting limits, first try vertical scaling
         - Then vertical sharding (split by domain/table)
         - Finally horizontal sharding for hot tables only
 
-        **Decision framework:**
+**Decision framework:**
         ```
         if (p99_latency_requirement < 10ms):
         manual_sharding()  # Consensus is too slow
@@ -1540,67 +1540,67 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
     ---
 
-    ## Common Pitfalls
+## Common Pitfalls
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
-      ### 1. Wrong Shard Key Selection
-      **Problem**: Chose low-cardinality key (country, status) causing hotspots.
-      **Solution**: Use high-cardinality keys (user_id, UUID); compound keys for multi-dimensional access.
+### 1. Wrong Shard Key Selection
+**Problem**: Chose low-cardinality key (country, status) causing hotspots.
+**Solution**: Use high-cardinality keys (user_id, UUID); compound keys for multi-dimensional access.
 
-      ### 2. Cross-Shard Joins Without Planning
-      **Problem**: Application evolved to need JOINs across shards, causing scatter-gather everywhere.
-      **Solution**: Design schema upfront considering sharding. Denormalize or use reference tables.
+### 2. Cross-Shard Joins Without Planning
+**Problem**: Application evolved to need JOINs across shards, causing scatter-gather everywhere.
+**Solution**: Design schema upfront considering sharding. Denormalize or use reference tables.
 
-      ### 3. Sequential ID Collisions
-      **Problem**: Auto-increment IDs from different shards collide (shard1.id=1, shard2.id=1).
-      **Solution**: Use UUIDs, Snowflake IDs, or shard-prefixed sequences: `shard_1_00001`.
+### 3. Sequential ID Collisions
+**Problem**: Auto-increment IDs from different shards collide (shard1.id=1, shard2.id=1).
+**Solution**: Use UUIDs, Snowflake IDs, or shard-prefixed sequences: `shard_1_00001`.
 
-      ### 4. Ignoring Hotspot Potential
-      **Problem**: Viral content or celebrity users overwhelm a single shard.
-      **Solution**: Secondary sharding for hot entities, [[caching]](/topic/system-design/caching), rate limiting, or special "hot" shards.
+### 4. Ignoring Hotspot Potential
+**Problem**: Viral content or celebrity users overwhelm a single shard.
+**Solution**: Secondary sharding for hot entities, [[caching]](/topic/system-design/caching), rate limiting, or special "hot" shards.
 
-      ### 5. Resharding as Afterthought
-      **Problem**: Started with simple hash sharding; now adding shards requires massive data movement.
-      **Solution**: Use consistent hashing from day one. Build resharding capability before you need it.
+### 5. Resharding as Afterthought
+**Problem**: Started with simple hash sharding; now adding shards requires massive data movement.
+**Solution**: Use consistent hashing from day one. Build resharding capability before you need it.
 
-      ### 6. No Per-Shard Observability
-      **Problem**: Aggregate metrics hide individual shard problems until cascade failure.
-      **Solution**: Dashboard per shard: CPU, memory, connections, query latency, replication lag.
+### 6. No Per-Shard Observability
+**Problem**: Aggregate metrics hide individual shard problems until cascade failure.
+**Solution**: Dashboard per shard: CPU, memory, connections, query latency, replication lag.
 
 </div>
 
     ---
 
-    ## Best Practices
+## Best Practices
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
-      1. **Start with more shards than you need** - 16 shards for 100M rows leaves room for 1B without resharding
+  1. **Start with more shards than you need** - 16 shards for 100M rows leaves room for 1B without resharding
 
-      2. **Use consistent hashing from day one** - Even if you don't need dynamic scaling yet
+  2. **Use consistent hashing from day one** - Even if you don't need dynamic scaling yet
 
-      3. **Include shard key in every related table** - Enables co-located joins within shard
+  3. **Include shard key in every related table** - Enables co-located joins within shard
 
-      4. **Replicate each shard** - Shards need [[database-replication]](/topic/system-design/database-replication) too (primary + 2 replicas minimum)
+  4. **Replicate each shard** - Shards need [[database-replication]](/topic/system-design/database-replication) too (primary + 2 replicas minimum)
 
-      5. **Monitor shard balance** - Alert when data skew exceeds 20%; when hotspot detected
+  5. **Monitor shard balance** - Alert when data skew exceeds 20%; when hotspot detected
 
-      6. **Design for single-shard queries** - 95%+ of queries should hit one shard
+  6. **Design for single-shard queries** - 95%+ of queries should hit one shard
 
-      7. **Test resharding in staging** - Before you need it in production
+  7. **Test resharding in staging** - Before you need it in production
 
-      8. **Plan for failure** - What happens when a shard is unavailable? Failover? Read-only mode?
+  8. **Plan for failure** - What happens when a shard is unavailable? Failover? Read-only mode?
 
-      9. **Document shard key in code** - Make it explicit: `@ShardedBy(field = "user_id")`
+  9. **Document shard key in code** - Make it explicit: `@ShardedBy(field = "user_id")`
 
-      10. **Implement circuit breakers** - Prevent one failing shard from overwhelming others via [[circuit-breaker]](/topic/design-patterns/circuit-breaker)
+  10. **Implement circuit breakers** - Prevent one failing shard from overwhelming others via [[circuit-breaker]](/topic/design-patterns/circuit-breaker)
 
 </div>
 
     ---
 
-    ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0;">Database Sharding Cheat Sheet</h4>
@@ -1650,7 +1650,7 @@ I'd use <span style="color: #22c55e; font-weight: 600;">compound sharding</span>
 
     ---
 
-    ## Related Topics
+## Related Topics
 
     - [[database-replication]](/topic/system-design/database-replication) - Each shard needs replicas for HA
     - [[load-balancing]](/topic/system-design/load-balancing) - Consistent hashing algorithms

@@ -403,7 +403,7 @@ sns.set_subscription_attributes(
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  #### Q1: How would you design a system that processes orders with guaranteed exactly-once processing?
+#### Q1: How would you design a system that processes orders with guaranteed exactly-once processing?
 
   **Answer:**
 
@@ -426,7 +426,7 @@ sns.set_subscription_attributes(
 
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Key insight: Even with FIFO, design for idempotency - distributed systems can still have edge cases</span>.
 
-  ##### Level 2 Follow-ups:
+##### Level 2 Follow-ups:
 
   **Q1.1: What happens if processing takes longer than visibility timeout?**
 
@@ -458,7 +458,7 @@ sns.set_subscription_attributes(
   heartbeat_thread.join()
   ```
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q1.1.1: How do you handle the case where heartbeat thread fails but processing continues?**
 
@@ -493,7 +493,7 @@ sns.set_subscription_attributes(
   Group C: Consumer 3 → [msg7, msg8, msg9] (in order)
   ```
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q1.2.1: What if one MessageGroup has much higher traffic than others?**
 
@@ -520,7 +520,7 @@ sns.set_subscription_attributes(
   - Use DynamoDB to track and reorder messages
   - Partition workload across multiple FIFO queues
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q1.3.1: How do you implement application-level ordering with Standard queues?**
 
@@ -569,7 +569,7 @@ sns.set_subscription_attributes(
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  #### Q2: Design a notification system that sends alerts through multiple channels (email, SMS, push) with different priority levels.
+#### Q2: Design a notification system that sends alerts through multiple channels (email, SMS, push) with different priority levels.
 
   **Answer:**
 
@@ -618,7 +618,7 @@ sns.set_subscription_attributes(
   )
   ```
 
-  ##### Level 2 Follow-ups:
+##### Level 2 Follow-ups:
 
   **Q2.1: How do you handle rate limiting for SMS/email providers?**
 
@@ -648,7 +648,7 @@ sns.set_subscription_attributes(
 
   Also use SQS delay queues for backoff when rate limited.
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q2.1.1: How do you distribute rate limits across multiple consumers?**
 
@@ -711,7 +711,7 @@ sns.set_subscription_attributes(
   return results
   ```
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q2.2.1: How do you track delivery status across channels?**
 
@@ -747,7 +747,7 @@ sns.set_subscription_attributes(
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  #### Q3: How would you handle message replay for debugging or reprocessing in SQS?
+#### Q3: How would you handle message replay for debugging or reprocessing in SQS?
 
   **Answer:**
 
@@ -814,7 +814,7 @@ sns.set_subscription_attributes(
   )
   ```
 
-  ##### Level 2 Follow-ups:
+##### Level 2 Follow-ups:
 
   **Q3.1: How do you handle idempotency during replay?**
 
@@ -844,7 +844,7 @@ sns.set_subscription_attributes(
   handle_message(message)
   ```
 
-  ###### Level 3 Follow-ups:
+###### Level 3 Follow-ups:
 
   **Q3.1.1: What's the storage cost of tracking all processed message IDs?**
 

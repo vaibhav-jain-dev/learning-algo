@@ -139,7 +139,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 
   ---
 
-  ## 2. Saga Pattern
+## 2. Saga Pattern
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: SAGA</h3>
@@ -286,7 +286,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 
   ---
 
-  ## 4. Event Sourcing
+## 4. Event Sourcing
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: EVENT SOURCING</h3>
@@ -442,7 +442,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 
     ---
 
-    ## 6. Backend for Frontend (BFF)
+## 6. Backend for Frontend (BFF)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: BACKEND FOR FRONTEND (BFF)</h3>
@@ -513,9 +513,9 @@ This comprehensive guide covers the essential design patterns you need to know w
 </div>
 </div>
 
-        ---
+  ---
 
-        ## 7. Circuit Breaker Pattern
+## 7. Circuit Breaker Pattern
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: CIRCUIT BREAKER</h3>

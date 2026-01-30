@@ -98,13 +98,13 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 </div>
 </div>
 
-      <!-- Arrow -->
+  <!-- Arrow -->
 <div style="display: flex; align-items: center; color: #64748b; font-size: 2rem; padding-top: 20px;">
-        &#8594;
+  &#8594;
 <span style="font-size: 0.7rem; margin-left: 8px;">creates</span>
 </div>
 
-      <!-- Product Side -->
+  <!-- Product Side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 180px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
 <div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Product</div>
@@ -117,10 +117,10 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 
 <div style="display: flex; gap: 12px;">
 <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px 16px; color: #166534; font-size: 0.85rem; text-align: center;">
-            ProductA
+  ProductA
 </div>
 <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px 16px; color: #166534; font-size: 0.85rem; text-align: center;">
-            ProductB
+  ProductB
 </div>
 </div>
 </div>
@@ -135,7 +135,7 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 
   ---
 
-  ## Section 1: Factory Method vs Abstract Factory - The Critical Distinction
+## Section 1: Factory Method vs Abstract Factory - The Critical Distinction
 
   Understanding the difference between Factory Method and [[Abstract Factory]](/topics/design-patterns/abstract-factory) is one of the most common interview questions. They solve different problems despite similar names.
 
@@ -153,9 +153,9 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> IS-A (inheritance)</div>
 <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
 <code style="font-size: 11px;">
-              class Dialog:<br/>
-              &nbsp;&nbsp;def create_button(self) -> Button:<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
+  class Dialog:<br/>
+  &nbsp;&nbsp;def create_button(self) -> Button:<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
 </code>
 </div>
 </div>
@@ -170,10 +170,10 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> HAS-A (composition)</div>
 <div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
 <code style="font-size: 11px;">
-              class WidgetFactory:<br/>
-              &nbsp;&nbsp;def create_button(self) -> Button<br/>
-              &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
-              &nbsp;&nbsp;def create_menu(self) -> Menu
+  class WidgetFactory:<br/>
+  &nbsp;&nbsp;def create_button(self) -> Button<br/>
+  &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
+  &nbsp;&nbsp;def create_menu(self) -> Menu
 </code>
 </div>
 </div>
@@ -182,13 +182,13 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 </div>
 </div>
 
-  ### 1.1 The Fundamental Difference
+### 1.1 The Fundamental Difference
 
 <div style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 8px 0; color: #a16207;">Key Distinction</h4>
 <p style="margin: 0; color: #713f12; font-size: 14px;">
 <span style="color: #166534; font-weight: 600;">Factory Method</span> uses <strong>inheritance</strong> to decide what object to create. The subclass IS the factory.
-      <br><br>
+  <br><br>
 <span style="color: #166534; font-weight: 600;">Abstract Factory</span> uses <strong>composition</strong> to delegate creation to a factory object. The class HAS a factory.
 </p>
 </div>
@@ -224,7 +224,7 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
       self.textfield = factory.create_textfield()
       ```
 
-      ### 1.2 When to Choose Which
+### 1.2 When to Choose Which
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Decision Framework</h4>
@@ -254,80 +254,80 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 </div>
 </div>
 
-      ### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
+### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-        **Level 1: "What is the key difference between Factory Method and Abstract Factory?"**
+**Level 1: "What is the key difference between Factory Method and Abstract Factory?"**
 
 > <span style="color: #166534; font-weight: 600;">Factory Method</span> creates ONE product through inheritance - subclasses override a creation method. <span style="color: #166534; font-weight: 600;">Abstract Factory</span> creates a FAMILY of related products through composition - client holds a factory object. Factory Method is about deferring instantiation to subclasses; Abstract Factory is about enforcing family consistency.
 
-        **Level 2: "Can Abstract Factory be implemented using Factory Methods? Explain the relationship."**
+**Level 2: "Can Abstract Factory be implemented using Factory Methods? Explain the relationship."**
 
-        > Yes, Abstract Factory is often implemented as a collection of Factory Methods. Each creation method in the abstract factory interface IS a factory method:
-        >
-        > ```python
-        > class GUIFactory(ABC):
-        >     @abstractmethod
-        >     def create_button(self) -> Button:  # Factory Method
-        >         pass
-        >
-        >     @abstractmethod
-        >     def create_scrollbar(self) -> Scrollbar:  # Factory Method
-        >         pass
-        > ```
-        >
-        > The distinction is conceptual: Factory Method focuses on ONE product with subclass control; Abstract Factory focuses on MULTIPLE products that form a coherent family. When you have multiple factory methods in an interface that together create a product family, you have an Abstract Factory.
-        >
+  > Yes, Abstract Factory is often implemented as a collection of Factory Methods. Each creation method in the abstract factory interface IS a factory method:
+  >
+  > ```python
+  > class GUIFactory(ABC):
+  >     @abstractmethod
+  >     def create_button(self) -> Button:  # Factory Method
+  >         pass
+  >
+  >     @abstractmethod
+  >     def create_scrollbar(self) -> Scrollbar:  # Factory Method
+  >         pass
+  > ```
+  >
+  > The distinction is conceptual: Factory Method focuses on ONE product with subclass control; Abstract Factory focuses on MULTIPLE products that form a coherent family. When you have multiple factory methods in an interface that together create a product family, you have an Abstract Factory.
+  >
 > **Key insight**: Abstract Factory adds the <span style="color: #166534; font-weight: 600;">family invariant</span> - all products from one factory instance are guaranteed compatible. This constraint doesn't exist in isolated Factory Methods.
 
-        **Level 3: "Design a system that starts with Factory Method and evolves to Abstract Factory. What triggers the evolution? What are the migration challenges?"**
+**Level 3: "Design a system that starts with Factory Method and evolves to Abstract Factory. What triggers the evolution? What are the migration challenges?"**
 
-        > **Evolution triggers**:
-        > 1. Discovery that products have relationships (button click should update scrollbar)
-        > 2. Platform proliferation requiring consistent product families
-        > 3. Bugs from mixing incompatible products
-        >
-        > **Migration path**:
-        > ```python
-        > # Stage 1: Single Factory Method
-        > class Dialog:
-        >     def create_button(self) -> Button:
-        >         return DefaultButton()
-        >
-        > # Stage 2: Multiple independent Factory Methods (code smell!)
-        > class Dialog:
-        >     def create_button(self) -> Button: ...
-        >     def create_textfield(self) -> TextField: ...
-        >     # Problem: No guarantee button/textfield are compatible
-        >
-        > # Stage 3: Extract Abstract Factory
-        > class WidgetFactory(ABC):
-        >     def create_button(self) -> Button: ...
-        >     def create_textfield(self) -> TextField: ...
-        >
-        > class Dialog:
-        >     def __init__(self, factory: WidgetFactory):
-        >         self.factory = factory  # Composition replaces inheritance
-        > ```
-        >
-        > **Migration challenges**:
-        > 1. **Inheritance to composition**: Dialog subclasses must become factory classes
-        > 2. **Compile-time to runtime binding**: Factory is now injected, not baked in
-        > 3. **Inversion of control**: Client code changes from extending Dialog to providing factories
-        > 4. **Testing infrastructure**: Mock strategies change completely
-        >
-        > **Trade-off**: Factory Method is simpler but doesn't scale. Abstract Factory adds complexity but enables family consistency and [[Dependency Injection]](/topics/design-patterns/dependency-injection) integration.
+  > **Evolution triggers**:
+  > 1. Discovery that products have relationships (button click should update scrollbar)
+  > 2. Platform proliferation requiring consistent product families
+  > 3. Bugs from mixing incompatible products
+  >
+  > **Migration path**:
+  > ```python
+  > # Stage 1: Single Factory Method
+  > class Dialog:
+  >     def create_button(self) -> Button:
+  >         return DefaultButton()
+  >
+  > # Stage 2: Multiple independent Factory Methods (code smell!)
+  > class Dialog:
+  >     def create_button(self) -> Button: ...
+  >     def create_textfield(self) -> TextField: ...
+  >     # Problem: No guarantee button/textfield are compatible
+  >
+  > # Stage 3: Extract Abstract Factory
+  > class WidgetFactory(ABC):
+  >     def create_button(self) -> Button: ...
+  >     def create_textfield(self) -> TextField: ...
+  >
+  > class Dialog:
+  >     def __init__(self, factory: WidgetFactory):
+  >         self.factory = factory  # Composition replaces inheritance
+  > ```
+  >
+  > **Migration challenges**:
+  > 1. **Inheritance to composition**: Dialog subclasses must become factory classes
+  > 2. **Compile-time to runtime binding**: Factory is now injected, not baked in
+  > 3. **Inversion of control**: Client code changes from extending Dialog to providing factories
+  > 4. **Testing infrastructure**: Mock strategies change completely
+  >
+  > **Trade-off**: Factory Method is simpler but doesn't scale. Abstract Factory adds complexity but enables family consistency and [[Dependency Injection]](/topics/design-patterns/dependency-injection) integration.
 
 </div>
 
-      ---
+  ---
 
-      ## Section 2: Parameterized Factories
+## Section 2: Parameterized Factories
 
 <span style="color: #166534; font-weight: 600;">Parameterized factories</span> accept parameters that determine which product type to create. This is a common variation that combines the flexibility of runtime decisions with the structure of factory methods.
 
-      ### 2.1 Simple Parameterized Factory
+### 2.1 Simple Parameterized Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Parameterized Factory Decision Flow</h4>
@@ -335,17 +335,17 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
 <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              Input Parameter
+  Input Parameter
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">type="email" | "sms" | "push"</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              Factory Method
+  Factory Method
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">create_notification(type)</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              Product Instance
+  Product Instance
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">EmailNotification()</div>
 </div>
 </div>
@@ -427,7 +427,7 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
       return notification.send(user_id, message)
       ```
 
-      ### 2.2 Registry-Based Parameterized Factory
+### 2.2 Registry-Based Parameterized Factory
 
 A more extensible approach uses a <span style="color: #166534; font-weight: 600;">registry pattern</span> that allows dynamic registration of new product types without modifying the factory.
 
@@ -499,7 +499,7 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600;">
 </p>
 </div>
 
-      ### 2.3 Parameterized Factory with Configuration
+### 2.3 Parameterized Factory with Configuration
 
       ```python
       from dataclasses import dataclass
@@ -552,140 +552,140 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600;">
       return True
       ```
 
-      ### Interview Questions: Parameterized Factories (3 Levels Deep)
+### Interview Questions: Parameterized Factories (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-        **Level 1: "What is a parameterized factory and when would you use it?"**
+**Level 1: "What is a parameterized factory and when would you use it?"**
 
 > A <span style="color: #166534; font-weight: 600;">parameterized factory</span> accepts input parameters that determine which product type to create. Instead of subclasses overriding a method, a single factory method uses conditional logic based on parameters.
-        >
-        > **Use when**:
-        > - Product type is determined at runtime based on configuration or user input
-        > - The number of product types is stable and manageable
-        > - You want to avoid proliferation of subclasses
-        >
-        > **Example**: Creating database connections based on a driver string ("postgres", "mysql", "sqlite")
+  >
+  > **Use when**:
+  > - Product type is determined at runtime based on configuration or user input
+  > - The number of product types is stable and manageable
+  > - You want to avoid proliferation of subclasses
+  >
+  > **Example**: Creating database connections based on a driver string ("postgres", "mysql", "sqlite")
 
-        **Level 2: "Compare if/switch parameterized factories vs registry-based factories. What are the trade-offs?"**
+**Level 2: "Compare if/switch parameterized factories vs registry-based factories. What are the trade-offs?"**
 
-        > **If/Switch Factory**:
-        > ```python
-        > def create(self, type: str):
-        >     if type == "email": return Email()
-        >     elif type == "sms": return SMS()
-        >     else: raise ValueError(f"Unknown: {type}")
-        > ```
-        >
-        > | Aspect | If/Switch | Registry |
-        > |--------|-----------|----------|
-        > | **Adding types** | Modify factory (violates OCP) | Register without modification |
-        > | **Type safety** | Compile-time checking possible | Runtime errors for unknown types |
-        > | **Discoverability** | Explicit in code | Must query registry |
-        > | **Dependency** | Factory depends on all products | Products depend on factory |
-        > | **Plugin support** | No | Yes - external modules can register |
-        >
-        > **Trade-off**: If/switch is simpler for stable, small type sets. Registry is better for extensible systems where types are added dynamically (plugins, modules loading at startup).
+  > **If/Switch Factory**:
+  > ```python
+  > def create(self, type: str):
+  >     if type == "email": return Email()
+  >     elif type == "sms": return SMS()
+  >     else: raise ValueError(f"Unknown: {type}")
+  > ```
+  >
+  > | Aspect | If/Switch | Registry |
+  > |--------|-----------|----------|
+  > | **Adding types** | Modify factory (violates OCP) | Register without modification |
+  > | **Type safety** | Compile-time checking possible | Runtime errors for unknown types |
+  > | **Discoverability** | Explicit in code | Must query registry |
+  > | **Dependency** | Factory depends on all products | Products depend on factory |
+  > | **Plugin support** | No | Yes - external modules can register |
+  >
+  > **Trade-off**: If/switch is simpler for stable, small type sets. Registry is better for extensible systems where types are added dynamically (plugins, modules loading at startup).
 
-        **Level 3: "Design a parameterized factory system that supports: (a) type-safe parameter validation, (b) product caching based on parameters, and (c) lazy instantiation. How do the requirements interact?"**
+**Level 3: "Design a parameterized factory system that supports: (a) type-safe parameter validation, (b) product caching based on parameters, and (c) lazy instantiation. How do the requirements interact?"**
 
-        > This requires combining several patterns:
-        >
-        > ```python
-        > from typing import TypeVar, Generic, Dict, Callable, Any, Optional
-        > from dataclasses import dataclass, field
-        > import threading
-        >
-        > T = TypeVar('T')
-        >
-        > @dataclass(frozen=True)  # Frozen for hashability
-        > class ProductKey:
-        >     """Type-safe, hashable cache key."""
-        >     product_type: str
-        >     config_hash: int
-        >
-        >     @classmethod
-        >     def from_params(cls, product_type: str, **params) -> 'ProductKey':
-        >         # Create stable hash from parameters
-        >         config_hash = hash(tuple(sorted(params.items())))
-        >         return cls(product_type, config_hash)
-        >
-        >
-        > class AdvancedFactory(Generic[T]):
-        >     """
-        >     Factory with caching and lazy instantiation.
-        >     """
-        >
-        >     def __init__(self):
-        >         self._registry: Dict[str, Callable[..., T]] = {}
-        >         self._validators: Dict[str, Callable[[Dict], None]] = {}
-        >         self._cache: Dict[ProductKey, T] = {}
-        >         self._lock = threading.Lock()
-        >
-        >     def register(
-        >         self,
-        >         name: str,
-        >         creator: Callable[..., T],
-        >         validator: Callable[[Dict], None] = None
-        >     ) -> None:
-        >         """Register type with optional validator."""
-        >         self._registry[name] = creator
-        >         if validator:
-        >             self._validators[name] = validator
-        >
-        >     def create(
-        >         self,
-        >         name: str,
-        >         cache: bool = False,
-        >         **params
-        >     ) -> T:
-        >         """Create with optional caching."""
-        >         # (a) Type-safe validation
-        >         if name in self._validators:
-        >             self._validators[name](params)
-        >
-        >         # (b) Check cache
-        >         if cache:
-        >             key = ProductKey.from_params(name, **params)
-        >             if key in self._cache:
-        >                 return self._cache[key]
-        >
-        >         # Create instance
-        >         creator = self._registry.get(name)
-        >         if not creator:
-        >             raise ValueError(f"Unknown type: {name}")
-        >
-        >         instance = creator(**params)
-        >
-        >         # Cache if requested
-        >         if cache:
-        >             with self._lock:
-        >                 self._cache[key] = instance
-        >
-        >         return instance
-        >
-        >     def get_lazy(self, name: str, **params) -> Callable[[], T]:
-        >         """(c) Return lazy provider instead of instance."""
-        >         return lambda: self.create(name, **params)
-        > ```
-        >
-        > **Interaction complexities**:
-        > 1. **Validation + Caching**: Validate BEFORE checking cache (invalid params shouldn't hit cache)
-        > 2. **Caching + Lazy**: Lazy provider should respect cache when eventually called
-        > 3. **Thread safety**: Cache access needs synchronization; validation doesn't
-        > 4. **Memory management**: Cached products may need TTL or LRU eviction
-        >
-        > **Real-world example**: Database connection pools cache connections by (host, port, database) tuple, validate credentials before caching, and provide lazy connection acquisition.
+  > This requires combining several patterns:
+  >
+  > ```python
+  > from typing import TypeVar, Generic, Dict, Callable, Any, Optional
+  > from dataclasses import dataclass, field
+  > import threading
+  >
+  > T = TypeVar('T')
+  >
+  > @dataclass(frozen=True)  # Frozen for hashability
+  > class ProductKey:
+  >     """Type-safe, hashable cache key."""
+  >     product_type: str
+  >     config_hash: int
+  >
+  >     @classmethod
+  >     def from_params(cls, product_type: str, **params) -> 'ProductKey':
+  >         # Create stable hash from parameters
+  >         config_hash = hash(tuple(sorted(params.items())))
+  >         return cls(product_type, config_hash)
+  >
+  >
+  > class AdvancedFactory(Generic[T]):
+  >     """
+  >     Factory with caching and lazy instantiation.
+  >     """
+  >
+  >     def __init__(self):
+  >         self._registry: Dict[str, Callable[..., T]] = {}
+  >         self._validators: Dict[str, Callable[[Dict], None]] = {}
+  >         self._cache: Dict[ProductKey, T] = {}
+  >         self._lock = threading.Lock()
+  >
+  >     def register(
+  >         self,
+  >         name: str,
+  >         creator: Callable[..., T],
+  >         validator: Callable[[Dict], None] = None
+  >     ) -> None:
+  >         """Register type with optional validator."""
+  >         self._registry[name] = creator
+  >         if validator:
+  >             self._validators[name] = validator
+  >
+  >     def create(
+  >         self,
+  >         name: str,
+  >         cache: bool = False,
+  >         **params
+  >     ) -> T:
+  >         """Create with optional caching."""
+  >         # (a) Type-safe validation
+  >         if name in self._validators:
+  >             self._validators[name](params)
+  >
+  >         # (b) Check cache
+  >         if cache:
+  >             key = ProductKey.from_params(name, **params)
+  >             if key in self._cache:
+  >                 return self._cache[key]
+  >
+  >         # Create instance
+  >         creator = self._registry.get(name)
+  >         if not creator:
+  >             raise ValueError(f"Unknown type: {name}")
+  >
+  >         instance = creator(**params)
+  >
+  >         # Cache if requested
+  >         if cache:
+  >             with self._lock:
+  >                 self._cache[key] = instance
+  >
+  >         return instance
+  >
+  >     def get_lazy(self, name: str, **params) -> Callable[[], T]:
+  >         """(c) Return lazy provider instead of instance."""
+  >         return lambda: self.create(name, **params)
+  > ```
+  >
+  > **Interaction complexities**:
+  > 1. **Validation + Caching**: Validate BEFORE checking cache (invalid params shouldn't hit cache)
+  > 2. **Caching + Lazy**: Lazy provider should respect cache when eventually called
+  > 3. **Thread safety**: Cache access needs synchronization; validation doesn't
+  > 4. **Memory management**: Cached products may need TTL or LRU eviction
+  >
+  > **Real-world example**: Database connection pools cache connections by (host, port, database) tuple, validate credentials before caching, and provide lazy connection acquisition.
 
 </div>
 
-      ---
+  ---
 
-      ## Section 3: Dependency Injection Integration
+## Section 3: Dependency Injection Integration
 
-      Factory Method integrates naturally with [[Dependency Injection]](/topics/design-patterns/dependency-injection). Understanding this integration is crucial for modern application architecture.
+  Factory Method integrates naturally with [[Dependency Injection]](/topics/design-patterns/dependency-injection). Understanding this integration is crucial for modern application architecture.
 
-      ### 3.1 Factory as an Injected Dependency
+### 3.1 Factory as an Injected Dependency
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">DI + Factory Integration</h4>
@@ -693,17 +693,17 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600;">
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
 <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              DI Container
+  DI Container
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Configures factory binding</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              Injects Factory
+  Injects Factory
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Into service constructor</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-              Service Creates Products
+  Service Creates Products
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">When needed at runtime</div>
 </div>
 </div>
@@ -803,7 +803,7 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600;">
       print(report.render())
       ```
 
-      ### 3.2 Factory Provider Pattern
+### 3.2 Factory Provider Pattern
 
 When you need <span style="color: #166534; font-weight: 600;">deferred creation</span> or multiple instances from a single injection, use the Factory Provider pattern.
 
@@ -872,7 +872,7 @@ Standard DI creates one instance per injection. Factory providers let you create
 </p>
 </div>
 
-      ### 3.3 Scoped Factories
+### 3.3 Scoped Factories
 
 Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> to create products with appropriate lifecycles.
 
@@ -936,122 +936,122 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       # Scope ends: all connections automatically closed
       ```
 
-      ### Interview Questions: DI Integration (3 Levels Deep)
+### Interview Questions: DI Integration (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-        **Level 1: "How does Factory Method work with Dependency Injection?"**
+**Level 1: "How does Factory Method work with Dependency Injection?"**
 
-        > Factory Method and DI are complementary patterns. DI injects the factory (or factory function) into services, while Factory Method handles the actual product creation. This separation means:
-        >
+  > Factory Method and DI are complementary patterns. DI injects the factory (or factory function) into services, while Factory Method handles the actual product creation. This separation means:
+  >
 > - <span style="color: #166534; font-weight: 600;">DI Container</span>: Decides WHICH factory to use (configured at composition root)
 > - <span style="color: #166534; font-weight: 600;">Factory Method</span>: Decides HOW to create the product
-        >
-        > The service doesn't know which factory it received - it just calls the factory method and gets a product.
+  >
+  > The service doesn't know which factory it received - it just calls the factory method and gets a product.
 
-        **Level 2: "When should you inject a factory vs inject the product directly? What are the implications of each?"**
+**Level 2: "When should you inject a factory vs inject the product directly? What are the implications of each?"**
 
-        > **Inject Product Directly**:
-        > ```python
-        > class Service:
-        >     def __init__(self, database: Database):
-        >         self._db = database  # Injected once at construction
-        > ```
-        > - Product created ONCE at service creation
-        > - Same instance used for all operations
-        > - Simpler, sufficient for singletons/stateless dependencies
-        >
-        > **Inject Factory**:
-        > ```python
-        > class Service:
-        >     def __init__(self, db_factory: Callable[[], Database]):
-        >         self._create_db = db_factory  # Factory injected
-        >
-        >     def process(self):
-        >         db = self._create_db()  # New instance per call
-        > ```
-        > - Products created ON DEMAND during operation
-        > - Multiple instances possible
-        > - Required for: scoped resources, per-request objects, pooled resources
-        >
-        > **Rule of thumb**: If the service needs different product instances during its lifetime, inject the factory. If one instance suffices, inject the product.
+  > **Inject Product Directly**:
+  > ```python
+  > class Service:
+  >     def __init__(self, database: Database):
+  >         self._db = database  # Injected once at construction
+  > ```
+  > - Product created ONCE at service creation
+  > - Same instance used for all operations
+  > - Simpler, sufficient for singletons/stateless dependencies
+  >
+  > **Inject Factory**:
+  > ```python
+  > class Service:
+  >     def __init__(self, db_factory: Callable[[], Database]):
+  >         self._create_db = db_factory  # Factory injected
+  >
+  >     def process(self):
+  >         db = self._create_db()  # New instance per call
+  > ```
+  > - Products created ON DEMAND during operation
+  > - Multiple instances possible
+  > - Required for: scoped resources, per-request objects, pooled resources
+  >
+  > **Rule of thumb**: If the service needs different product instances during its lifetime, inject the factory. If one instance suffices, inject the product.
 
-        **Level 3: "Design a DI system where factories themselves have dependencies. How do you handle factory dependencies while maintaining the factory pattern's benefits?"**
+**Level 3: "Design a DI system where factories themselves have dependencies. How do you handle factory dependencies while maintaining the factory pattern's benefits?"**
 
-        > This is the "factory with dependencies" problem. The factory needs services to create products, but those services are also managed by DI.
-        >
-        > ```python
-        > class DatabaseConnectionFactory:
-        >     """Factory that has its own dependencies."""
-        >
-        >     def __init__(
-        >         self,
-        >         config_service: ConfigService,
-        >         metrics: MetricsService,
-        >         logger: ILogger
-        >     ):
-        >         # Factory dependencies injected
-        >         self._config = config_service
-        >         self._metrics = metrics
-        >         self._logger = logger
-        >
-        >     def create_connection(self, database_name: str) -> Connection:
-        >         # Use dependencies to create product
-        >         config = self._config.get_database_config(database_name)
-        >
-        >         self._logger.info(f"Creating connection to {database_name}")
-        >         conn = Connection(
-        >             host=config.host,
-        >             port=config.port,
-        >             credentials=config.credentials
-        >         )
-        >
-        >         # Wrap with metrics
-        >         return MetricsWrappedConnection(conn, self._metrics)
-        >
-        >
-        > # DI Container configuration
-        > class Container:
-        >     def get_connection_factory(self) -> DatabaseConnectionFactory:
-        >         # Factory's dependencies resolved first
-        >         return DatabaseConnectionFactory(
-        >             config_service=self.get_config_service(),
-        >             metrics=self.get_metrics_service(),
-        >             logger=self.get_logger()
-        >         )
-        >
-        >     def get_user_repository(self) -> UserRepository:
-        >         # Service receives factory, not connection
-        >         return UserRepository(
-        >             connection_factory=self.get_connection_factory()
-        >         )
-        > ```
-        >
-        > **Key considerations**:
-        > 1. **Lifecycle mismatch**: Factory is often singleton, products are transient. Ensure factory dependencies match factory lifecycle.
-        > 2. **Circular dependencies**: If a factory dependency needs products from the same factory, use lazy providers.
-        > 3. **Testing**: Mock the factory dependencies, not the factory itself, for unit tests.
-        >
-        > **Alternative**: Inject factory dependencies as a provider:
-        > ```python
-        > class LazyDependencyFactory:
-        >     def __init__(self, container: Callable[[], Container]):
-        >         self._get_container = container  # Lazy container access
-        >
-        >     def create_connection(self, name: str) -> Connection:
-        >         container = self._get_container()  # Resolve when needed
-        >         config = container.get_config_service().get(name)
-        >         # ...
-        > ```
-        > This breaks the circular dependency by deferring resolution.
+  > This is the "factory with dependencies" problem. The factory needs services to create products, but those services are also managed by DI.
+  >
+  > ```python
+  > class DatabaseConnectionFactory:
+  >     """Factory that has its own dependencies."""
+  >
+  >     def __init__(
+  >         self,
+  >         config_service: ConfigService,
+  >         metrics: MetricsService,
+  >         logger: ILogger
+  >     ):
+  >         # Factory dependencies injected
+  >         self._config = config_service
+  >         self._metrics = metrics
+  >         self._logger = logger
+  >
+  >     def create_connection(self, database_name: str) -> Connection:
+  >         # Use dependencies to create product
+  >         config = self._config.get_database_config(database_name)
+  >
+  >         self._logger.info(f"Creating connection to {database_name}")
+  >         conn = Connection(
+  >             host=config.host,
+  >             port=config.port,
+  >             credentials=config.credentials
+  >         )
+  >
+  >         # Wrap with metrics
+  >         return MetricsWrappedConnection(conn, self._metrics)
+  >
+  >
+  > # DI Container configuration
+  > class Container:
+  >     def get_connection_factory(self) -> DatabaseConnectionFactory:
+  >         # Factory's dependencies resolved first
+  >         return DatabaseConnectionFactory(
+  >             config_service=self.get_config_service(),
+  >             metrics=self.get_metrics_service(),
+  >             logger=self.get_logger()
+  >         )
+  >
+  >     def get_user_repository(self) -> UserRepository:
+  >         # Service receives factory, not connection
+  >         return UserRepository(
+  >             connection_factory=self.get_connection_factory()
+  >         )
+  > ```
+  >
+  > **Key considerations**:
+  > 1. **Lifecycle mismatch**: Factory is often singleton, products are transient. Ensure factory dependencies match factory lifecycle.
+  > 2. **Circular dependencies**: If a factory dependency needs products from the same factory, use lazy providers.
+  > 3. **Testing**: Mock the factory dependencies, not the factory itself, for unit tests.
+  >
+  > **Alternative**: Inject factory dependencies as a provider:
+  > ```python
+  > class LazyDependencyFactory:
+  >     def __init__(self, container: Callable[[], Container]):
+  >         self._get_container = container  # Lazy container access
+  >
+  >     def create_connection(self, name: str) -> Connection:
+  >         container = self._get_container()  # Resolve when needed
+  >         config = container.get_config_service().get(name)
+  >         # ...
+  > ```
+  > This breaks the circular dependency by deferring resolution.
 
 </div>
 
-      ---
+  ---
 
-      ## Section 4: Real-World Examples and Case Studies
+## Section 4: Real-World Examples and Case Studies
 
-      ### 4.1 Cross-Platform Logger Factory
+### 4.1 Cross-Platform Logger Factory
 
       ```python
       from abc import ABC, abstractmethod
@@ -1258,7 +1258,7 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       logger.info("Application started", version="1.0.0", environment="production")
       ```
 
-      ### 4.2 Database Connection Factory
+### 4.2 Database Connection Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Database Factory Architecture</h4>
@@ -1526,7 +1526,7 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       return 1  # Would return last insert ID
       ```
 
-      ### 4.3 HTTP Client Factory
+### 4.3 HTTP Client Factory
 
       ```python
       from abc import ABC, abstractmethod
@@ -1693,13 +1693,13 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       return response.body
       ```
 
-      ---
+  ---
 
-      ## When to Use Factory Method
+## When to Use Factory Method
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
 
-        ### Good Use Cases
+### Good Use Cases
 
 1. <span style="color: #166534; font-weight: 600;">Framework/Library Development</span> - Your code defines the algorithm, users extend to provide implementations
 2. <span style="color: #166534; font-weight: 600;">Plugin Systems</span> - Core system doesn't know what plugins exist at compile time
@@ -1709,25 +1709,25 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
 
 </div>
 
-      ---
+  ---
 
-      ## Anti-Patterns: When NOT to Use
+## Anti-Patterns: When NOT to Use
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
 
-        ### Common Mistakes
+### Common Mistakes
 
-        1. **Over-Engineering** - Using factory method when you only have ONE concrete class
-        2. **Hiding Simple Construction** - Using factory just to avoid the `new` keyword
-        3. **When DI is Available** - If your DI container handles creation, don't duplicate logic
-        4. **Data Objects** - Factory method is for objects with behavior, not plain data transfer objects
-        5. **Confusing with Simple Factory** - A static method that returns objects is NOT the Factory Method pattern
+  1. **Over-Engineering** - Using factory method when you only have ONE concrete class
+  2. **Hiding Simple Construction** - Using factory just to avoid the `new` keyword
+  3. **When DI is Available** - If your DI container handles creation, don't duplicate logic
+  4. **Data Objects** - Factory method is for objects with behavior, not plain data transfer objects
+  5. **Confusing with Simple Factory** - A static method that returns objects is NOT the Factory Method pattern
 
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-        ### The YAGNI Trap
+### The YAGNI Trap
 
         ```python
         # BAD: Over-engineering with factory method for single type
@@ -1748,11 +1748,11 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
 
 </div>
 
-      ---
+  ---
 
-      ## Python Implementation
+## Python Implementation
 
-      ### Basic Factory Method
+### Basic Factory Method
 
       ```python
       from abc import ABC, abstractmethod
@@ -1874,7 +1874,7 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       send_alert(push_service, "device_token_abc", "New message received")
       ```
 
-      ### Production-Grade Factory with Registry
+### Production-Grade Factory with Registry
 
       ```python
       from abc import ABC, abstractmethod
@@ -2050,89 +2050,89 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
       print(f"Payment: {result}")
       ```
 
-      ---
+  ---
 
-      ## Interview Questions: Comprehensive (3 Levels Deep)
+## Interview Questions: Comprehensive (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-        ### Conceptual Questions
+### Conceptual Questions
 
-        <details style="margin-bottom: 12px;">
-          <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What's the difference between Factory Method and Simple Factory?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What's the difference between Factory Method and Simple Factory?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Simple Factory:</strong> A single method/function that creates objects based on parameters. It's not a GoF pattern - just a good practice.
-            <br><br>
+  <br><br>
 <strong>Factory Method:</strong> Uses inheritance where subclasses override the creation method. The key is that the superclass defines an algorithm that uses the factory method, and subclasses customize what gets created.
-                <br><br>
+  <br><br>
 <strong>Key difference:</strong> Factory Method involves <span style="color: #166534; font-weight: 600;">polymorphism</span> and is extensible without modifying existing code (Open/Closed Principle).
 </div>
-                </details>
+</details>
 
-                <details style="margin-bottom: 12px;">
-                  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: Why is Factory Method often used with Template Method?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: Why is Factory Method often used with Template Method?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                    Factory Method provides the "hook" for [[Template Method]](/topics/design-patterns/template-method). The superclass defines an algorithm (template) that includes creating objects. The factory method is the step that subclasses customize.
-                    <br><br>
+  Factory Method provides the "hook" for [[Template Method]](/topics/design-patterns/template-method). The superclass defines an algorithm (template) that includes creating objects. The factory method is the step that subclasses customize.
+  <br><br>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
-                          def process_order(self):           # Template Method
-                          item = self.create_item()       # Factory Method
-                          self.validate(item)             # Fixed step
-                          self.ship(item)                 # Fixed step
+  def process_order(self):           # Template Method
+  item = self.create_item()       # Factory Method
+  self.validate(item)             # Fixed step
+  self.ship(item)                 # Fixed step
 </pre>
 </div>
-                    </details>
+</details>
 
-                    <details style="margin-bottom: 12px;">
-                      <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How does Factory Method relate to Dependency Injection?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How does Factory Method relate to Dependency Injection?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                        Both solve the problem of decoupling object creation from usage, but differently:
-                        <br><br>
+  Both solve the problem of decoupling object creation from usage, but differently:
+  <br><br>
 <strong>Factory Method:</strong> Uses inheritance - subclasses decide what to create at compile time.
-                            <br><br>
+  <br><br>
 <strong>DI:</strong> Uses composition - an external container injects dependencies at runtime.
-                                <br><br>
+  <br><br>
 <strong>Modern preference:</strong> DI is often preferred because it's more flexible and testable. Use Factory Method when you specifically need the inheritance-based extension mechanism.
 </div>
-                                </details>
+</details>
 
-                                ### Coding Questions
+### Coding Questions
 
-                                <details style="margin-bottom: 12px;">
-                                  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a document parser factory that handles PDF, Word, and Excel files</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a document parser factory that handles PDF, Word, and Excel files</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
-                                      from abc import ABC, abstractmethod
+  from abc import ABC, abstractmethod
 
-                                      class DocumentParser(ABC):
-                                      @abstractmethod
-                                      def parse(self, content: bytes) -> dict:
-                                      pass
+  class DocumentParser(ABC):
+  @abstractmethod
+  def parse(self, content: bytes) -> dict:
+  pass
 
-                                      class PDFParser(DocumentParser):
-                                      def parse(self, content: bytes) -> dict:
-                                      return {"type": "pdf", "pages": 10}
+  class PDFParser(DocumentParser):
+  def parse(self, content: bytes) -> dict:
+  return {"type": "pdf", "pages": 10}
 
-                                      class ParserFactory(ABC):
-                                      @abstractmethod
-                                      def create_parser(self) -> DocumentParser:
-                                      pass
+  class ParserFactory(ABC):
+  @abstractmethod
+  def create_parser(self) -> DocumentParser:
+  pass
 
-                                      def process_document(self, content: bytes) -> dict:
-                                      parser = self.create_parser()
-                                      return parser.parse(content)
+  def process_document(self, content: bytes) -> dict:
+  parser = self.create_parser()
+  return parser.parse(content)
 
-                                      class PDFParserFactory(ParserFactory):
-                                      def create_parser(self) -> DocumentParser:
-                                      return PDFParser()
+  class PDFParserFactory(ParserFactory):
+  def create_parser(self) -> DocumentParser:
+  return PDFParser()
 </pre>
 </div>
-                                </details>
+</details>
 
-                                <details style="margin-bottom: 12px;">
-                                  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: What would you change to make this factory thread-safe?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: What would you change to make this factory thread-safe?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                                    Key considerations:
+  Key considerations:
 <ul>
 <li>Use thread-safe data structures (e.g., threading.Lock in Python)</li>
 <li>Consider double-checked locking for singleton instances</li>
@@ -2140,79 +2140,79 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
 <li>Use atomic operations for registry updates</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
-                                      import threading
+  import threading
 
-                                      class ThreadSafeFactory:
-                                      _lock = threading.Lock()
-                                      _instances = {}
+  class ThreadSafeFactory:
+  _lock = threading.Lock()
+  _instances = {}
 
-                                      @classmethod
-                                      def create(cls, name: str):
-                                      with cls._lock:
-                                      if name not in cls._instances:
-                                      cls._instances[name] = cls._create_new(name)
-                                      return cls._instances[name]
+  @classmethod
+  def create(cls, name: str):
+  with cls._lock:
+  if name not in cls._instances:
+  cls._instances[name] = cls._create_new(name)
+  return cls._instances[name]
 </pre>
 </div>
-                                </details>
+</details>
 
-                                ### Advanced Questions (Level 3)
+### Advanced Questions (Level 3)
 
-                                <details style="margin-bottom: 12px;">
-                                  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q6: Design a factory system for a plugin architecture where plugins are loaded at runtime from external packages</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q6: Design a factory system for a plugin architecture where plugins are loaded at runtime from external packages</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
-                                      from abc import ABC, abstractmethod
-                                      from typing import Dict, Type
-                                      import importlib
-                                      import pkgutil
+  from abc import ABC, abstractmethod
+  from typing import Dict, Type
+  import importlib
+  import pkgutil
 
-                                      class Plugin(ABC):
-                                      @abstractmethod
-                                      def execute(self, context: dict) -> dict:
-                                      pass
+  class Plugin(ABC):
+  @abstractmethod
+  def execute(self, context: dict) -> dict:
+  pass
 
-                                      @property
-                                      @abstractmethod
-                                      def name(self) -> str:
-                                      pass
+  @property
+  @abstractmethod
+  def name(self) -> str:
+  pass
 
-                                      class PluginFactory:
-                                      """
-                                      Factory that discovers and loads plugins at runtime.
-                                      Supports entry_points for package-based discovery.
-                                      """
+  class PluginFactory:
+  """
+  Factory that discovers and loads plugins at runtime.
+  Supports entry_points for package-based discovery.
+  """
 
-                                      _plugins: Dict[str, Type[Plugin]] = {}
+  _plugins: Dict[str, Type[Plugin]] = {}
 
-                                      @classmethod
-                                      def discover_plugins(cls, package_name: str) -> None:
-                                      """Discover plugins from a package namespace."""
-                                      package = importlib.import_module(package_name)
+  @classmethod
+  def discover_plugins(cls, package_name: str) -> None:
+  """Discover plugins from a package namespace."""
+  package = importlib.import_module(package_name)
 
-                                      for importer, modname, ispkg in pkgutil.walk_packages(
-                                      package.__path__, package.__name__ + "."
-                                      ):
-                                      module = importlib.import_module(modname)
-                                      for name in dir(module):
-                                      obj = getattr(module, name)
-                                      if (isinstance(obj, type) and
-                                      issubclass(obj, Plugin) and
-                                      obj is not Plugin):
-                                      cls._plugins[obj.name] = obj
+  for importer, modname, ispkg in pkgutil.walk_packages(
+  package.__path__, package.__name__ + "."
+  ):
+  module = importlib.import_module(modname)
+  for name in dir(module):
+  obj = getattr(module, name)
+  if (isinstance(obj, type) and
+  issubclass(obj, Plugin) and
+  obj is not Plugin):
+  cls._plugins[obj.name] = obj
 
-                                      @classmethod
-                                      def create(cls, name: str, **kwargs) -> Plugin:
-                                      if name not in cls._plugins:
-                                      raise ValueError(f"Unknown plugin: {name}")
-                                      return cls._plugins[name](**kwargs)
+  @classmethod
+  def create(cls, name: str, **kwargs) -> Plugin:
+  if name not in cls._plugins:
+  raise ValueError(f"Unknown plugin: {name}")
+  return cls._plugins[name](**kwargs)
 
-                                      @classmethod
-                                      def available_plugins(cls) -> list:
-                                      return list(cls._plugins.keys())
+  @classmethod
+  def available_plugins(cls) -> list:
+  return list(cls._plugins.keys())
 
-                                      # At application startup
-                                      PluginFactory.discover_plugins("myapp.plugins")
+# At application startup
+  PluginFactory.discover_plugins("myapp.plugins")
 </pre>
 
 <strong>Key considerations:</strong>
@@ -2223,48 +2223,48 @@ Factories can be <span style="color: #166534; font-weight: 600;">scoped</span> t
 <li><span style="color: #166534; font-weight: 600;">Dependency injection:</span> Plugins may need access to core services</li>
 </ul>
 </div>
-                                </details>
+</details>
 
-                                <details style="margin-bottom: 12px;">
-                                  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q7: How would you implement factory method in a language without inheritance (like Go)?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q7: How would you implement factory method in a language without inheritance (like Go)?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and function types</span> instead of inheritance:
 
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
-                                      // Go implementation using interfaces and function types
+  // Go implementation using interfaces and function types
 
-                                      type Notification interface {
-                                      Send(recipient, message string) error
-                                      }
+  type Notification interface {
+  Send(recipient, message string) error
+  }
 
-                                      // Factory function type
-                                      type NotificationFactory func() Notification
+  // Factory function type
+  type NotificationFactory func() Notification
 
-                                      // Creator struct with factory function field
-                                      type NotificationService struct {
-                                      createNotification NotificationFactory
-                                      }
+  // Creator struct with factory function field
+  type NotificationService struct {
+  createNotification NotificationFactory
+  }
 
-                                      func NewEmailService() *NotificationService {
-                                      return &NotificationService{
-                                      createNotification: func() Notification {
-                                      return &EmailNotification{}
-                                      },
-                                      }
-                                      }
+  func NewEmailService() *NotificationService {
+  return &NotificationService{
+  createNotification: func() Notification {
+  return &EmailNotification{}
+  },
+  }
+  }
 
-                                      func NewSMSService() *NotificationService {
-                                      return &NotificationService{
-                                      createNotification: func() Notification {
-                                      return &SMSNotification{}
-                                      },
-                                      }
-                                      }
+  func NewSMSService() *NotificationService {
+  return &NotificationService{
+  createNotification: func() Notification {
+  return &SMSNotification{}
+  },
+  }
+  }
 
-                                      func (s *NotificationService) NotifyUser(userID, message string) error {
-                                      notification := s.createNotification()
-                                      return notification.Send(userID, message)
-                                      }
+  func (s *NotificationService) NotifyUser(userID, message string) error {
+  notification := s.createNotification()
+  return notification.Send(userID, message)
+  }
 </pre>
 
 <strong>Trade-offs vs inheritance-based approach:</strong>
@@ -2275,17 +2275,17 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
 <li><span style="color: #166534; font-weight: 600;">Con:</span> Cannot enforce that subclasses implement factory (no abstract classes)</li>
 </ul>
 </div>
-                                </details>
+</details>
 
 </div>
 
-                              ---
+  ---
 
-                              ## Common Mistakes
+## Common Mistakes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
-                                ### Mistake 1: Factory That Does Too Much
+### Mistake 1: Factory That Does Too Much
 
                                 ```python
                                 # BAD: Factory has business logic
@@ -2303,7 +2303,7 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
                                 return self._creators[order_type](**kwargs)
                                 ```
 
-                                ### Mistake 2: Returning Different Interfaces
+### Mistake 2: Returning Different Interfaces
 
                                 ```python
                                 # BAD: Products don't share interface
@@ -2319,7 +2319,7 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
                                 return self._creators[type]()  # All have make_sound()
                                 ```
 
-                                ### Mistake 3: Ignoring Product Lifecycle
+### Mistake 3: Ignoring Product Lifecycle
 
                                 ```python
                                 # BAD: Factory creates but never cleans up
@@ -2341,9 +2341,9 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
 
 </div>
 
-                              ---
+  ---
 
-                              ## Key Takeaways
+## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
@@ -2363,13 +2363,13 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
 
 </div>
 
-                              ---
+  ---
 
-                              ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 
-                                ### Pattern Essence
+### Pattern Essence
 <div style="color: #475569;">
 
                                   - **Intent**: Define interface for creation, let subclasses decide the class
@@ -2378,17 +2378,17 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
 
 </div>
 
-                                ### Decision Checklist
+### Decision Checklist
 
-                                | Question | If Yes |
-                                |----------|--------|
-                                | Only one product type needed? | Use Factory Method |
-                                | Multiple related products that must work together? | Use [[Abstract Factory]](/topics/design-patterns/abstract-factory) |
-                                | Product type determined at runtime? | Use Parameterized Factory |
-                                | Need to inject factory into services? | Combine with [[DI]](/topics/design-patterns/dependency-injection) |
-                                | Only one concrete implementation exists? | Skip pattern - use direct construction |
+  | Question | If Yes |
+  |----------|--------|
+  | Only one product type needed? | Use Factory Method |
+  | Multiple related products that must work together? | Use [[Abstract Factory]](/topics/design-patterns/abstract-factory) |
+  | Product type determined at runtime? | Use Parameterized Factory |
+  | Need to inject factory into services? | Combine with [[DI]](/topics/design-patterns/dependency-injection) |
+  | Only one concrete implementation exists? | Skip pattern - use direct construction |
 
-                                ### Code Smell Indicators
+### Code Smell Indicators
                                 - Scattered `new` statements throughout codebase
                                 - Conditional logic selecting between product types
                                 - Difficulty testing due to hard-coded dependencies
@@ -2396,9 +2396,9 @@ In Go, you use <span style="color: #166534; font-weight: 600;">interfaces and fu
 
 </div>
 
-                              ---
+  ---
 
-                              ## Related Patterns
+## Related Patterns
 
                               - [[Abstract Factory]](/topics/design-patterns/abstract-factory) - Creates families of products (Factory Method creates one)
                               - [[Builder]](/topics/design-patterns/builder) - Complex object construction step-by-step

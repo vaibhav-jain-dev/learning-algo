@@ -171,7 +171,7 @@ Think of storage like different types of containers for your belongings: a filin
 
   ---
 
-  ## Database Types
+## Database Types
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">When to Use Which Database</h4>
@@ -236,7 +236,7 @@ Think of storage like different types of containers for your belongings: a filin
 <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #991b1b; font-weight: 600;">The Challenge</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-      Instagram grew from 0 to 14 million users in one year with just 3 engineers. Their initial PostgreSQL setup couldn't handle the write load from millions of photo uploads and likes. Database replication lag grew to minutes, and users saw inconsistent data.
+  Instagram grew from 0 to 14 million users in one year with just 3 engineers. Their initial PostgreSQL setup couldn't handle the write load from millions of photo uploads and likes. Database replication lag grew to minutes, and users saw inconsistent data.
 </div>
 </div>
 
@@ -264,9 +264,9 @@ Think of storage like different types of containers for your belongings: a filin
 
   ---
 
-  ## Implementation
+## Implementation
 
-  ### Choosing the Right Storage
+### Choosing the Right Storage
 
 ```python
 from dataclasses import dataclass
@@ -384,7 +384,7 @@ for rec in recommendations:
     print(f"- {rec}")
 ```
 
-  ### Database Connection Pooling
+### Database Connection Pooling
 
 ```python
 import contextlib
@@ -553,7 +553,7 @@ class DataAccessLayer:
         self.cache.delete(cache_key)
 ```
 
-  ### Data Sharding Strategy
+### Data Sharding Strategy
 
 ```python
 import hashlib
@@ -692,11 +692,11 @@ class ShardedDatabase:
 
   ---
 
-  ## Interview Questions
+## Interview Questions
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  ### Q1: How would you design storage for a social media feed?
+### Q1: How would you design storage for a social media feed?
 
   **Answer:**
 
@@ -713,7 +713,7 @@ class ShardedDatabase:
   - **Fan-out on read**: Compute feed on request (good for celebrity accounts)
   - **Hybrid**: Push for regular users, pull for celebrities
 
-  ### Q2: SQL vs NoSQL - how do you decide?
+### Q2: SQL vs NoSQL - how do you decide?
 
   **Answer:**
 
@@ -734,7 +734,7 @@ class ShardedDatabase:
   - Elasticsearch for search
   - S3 for files
 
-  ### Q3: How do you handle database scaling?
+### Q3: How do you handle database scaling?
 
   **Answer:**
 
@@ -754,7 +754,7 @@ class ShardedDatabase:
   - **Range-based**: Good for time-series, potential hotspots
   - **Directory-based**: Flexible but adds lookup latency
 
-  ### Q4: What is the CAP theorem and how does it affect storage choices?
+### Q4: What is the CAP theorem and how does it affect storage choices?
 
   **Answer:**
 
@@ -774,7 +774,7 @@ class ShardedDatabase:
 
   **Real-world:** Most systems need partition tolerance, so the choice is really between consistency and availability.
 
-  ### Q5: How do you design for disaster recovery?
+### Q5: How do you design for disaster recovery?
 
   **Answer:**
 

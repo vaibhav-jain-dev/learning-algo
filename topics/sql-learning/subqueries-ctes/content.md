@@ -326,10 +326,10 @@ A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> refe
 <div style="color: #047857; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Non-Correlated</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Executes once, result reused for all outer rows</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #1e293b;">
-        WHERE salary > (<br/>
-        &nbsp;&nbsp;SELECT AVG(salary)<br/>
-        &nbsp;&nbsp;FROM employees<br/>
-        )
+  WHERE salary > (<br/>
+  &nbsp;&nbsp;SELECT AVG(salary)<br/>
+  &nbsp;&nbsp;FROM employees<br/>
+  )
 </div>
 <div style="margin-top: 12px; color: #10b981; font-size: 12px;">Complexity: O(1) subquery execution</div>
 </div>
@@ -337,11 +337,11 @@ A <span style="color:#10b981; font-weight:bold;">correlated subquery</span> refe
 <div style="color: #b45309; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Correlated</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Executes once per outer row (references outer table)</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #1e293b;">
-        WHERE salary > (<br/>
-        &nbsp;&nbsp;SELECT AVG(salary)<br/>
-        &nbsp;&nbsp;FROM employees e2<br/>
+  WHERE salary > (<br/>
+  &nbsp;&nbsp;SELECT AVG(salary)<br/>
+  &nbsp;&nbsp;FROM employees e2<br/>
 &nbsp;&nbsp;<span style="color: #f59e0b;">WHERE e2.dept = e1.dept</span><br/>
-        )
+  )
 </div>
 <div style="margin-top: 12px; color: #f59e0b; font-size: 12px;">Complexity: O(N) subquery executions</div>
 </div>
@@ -1174,15 +1174,15 @@ FROM employees;
 <div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Yes, modern optimizers can perform <span style="color:#10b981; font-weight:bold;">subquery decorrelation</span> (also called "unnesting"). The optimizer transforms the correlated subquery into an equivalent JOIN-based query plan internally:<br/><br/>
 <strong>Process:</strong><br/>
-      1. Optimizer identifies the correlation predicate<br/>
-      2. Creates a derived table with the grouped aggregation<br/>
-      3. Converts to a LEFT JOIN (for scalar subqueries) or SEMI-JOIN (for EXISTS)<br/>
-      4. Pushes predicates through the join<br/><br/>
+  1. Optimizer identifies the correlation predicate<br/>
+  2. Creates a derived table with the grouped aggregation<br/>
+  3. Converts to a LEFT JOIN (for scalar subqueries) or SEMI-JOIN (for EXISTS)<br/>
+  4. Pushes predicates through the join<br/><br/>
 <strong>Example transformation:</strong><br/>
 <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE x > (SELECT AGG FROM t WHERE t.k = outer.k)</code><br/>
-      becomes<br/>
+  becomes<br/>
 <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">LEFT JOIN (SELECT k, AGG FROM t GROUP BY k) ON t.k = outer.k WHERE x > AGG</code><br/><br/>
-      PostgreSQL's EXPLAIN shows this as "SubPlan" vs "Hash Join" - always verify with EXPLAIN ANALYZE.
+  PostgreSQL's EXPLAIN shows this as "SubPlan" vs "Hash Join" - always verify with EXPLAIN ANALYZE.
 </div>
 </div>
 </div>
@@ -1205,9 +1205,9 @@ FROM employees;
 <strong style="color: #7ee787;">A:</strong> This is due to SQL's <span style="color:#10b981; font-weight:bold;">three-valued logic</span> (TRUE, FALSE, UNKNOWN):<br/><br/>
 • <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x NOT IN (1, 2, NULL)</code> expands to <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x != 1 AND x != 2 AND x != NULL</code><br/>
 • <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">x != NULL</code> evaluates to UNKNOWN (not FALSE)<br/>
-      • TRUE AND UNKNOWN = UNKNOWN<br/>
-      • WHERE clause only returns rows where condition is TRUE, not UNKNOWN<br/><br/>
-      This is why NOT EXISTS is safer - it only checks for row existence, not value comparison with NULLs.
+  • TRUE AND UNKNOWN = UNKNOWN<br/>
+  • WHERE clause only returns rows where condition is TRUE, not UNKNOWN<br/><br/>
+  This is why NOT EXISTS is safer - it only checks for row existence, not value comparison with NULLs.
 </div>
 </div>
 
@@ -1217,13 +1217,13 @@ FROM employees;
 <div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Modern optimizers often transform both to the same execution plan (<span style="color:#10b981; font-weight:bold;">semi-join</span>), but there are scenarios where they differ:<br/><br/>
 <strong>IN may be faster when:</strong><br/>
-      • Subquery returns few distinct values that can be hashed<br/>
-      • Outer table is much larger than inner result<br/>
-      • Optimizer can use hash semi-join with in-memory hash table<br/><br/>
+  • Subquery returns few distinct values that can be hashed<br/>
+  • Outer table is much larger than inner result<br/>
+  • Optimizer can use hash semi-join with in-memory hash table<br/><br/>
 <strong>EXISTS may be faster when:</strong><br/>
-      • Subquery would return many rows (early termination helps)<br/>
-      • Index exists on the correlated column in inner table<br/>
-      • Complex conditions make hash building expensive<br/><br/>
+  • Subquery would return many rows (early termination helps)<br/>
+  • Index exists on the correlated column in inner table<br/>
+  • Complex conditions make hash building expensive<br/><br/>
 <strong>Key insight:</strong> Check EXPLAIN plans! PostgreSQL shows "Hash Semi Join" for IN and "Nested Loop Semi Join" for EXISTS - either can be faster depending on data distribution and indexes. The optimizer's cardinality estimates determine the choice.
 </div>
 </div>
@@ -1249,7 +1249,7 @@ FROM employees;
 <strong>2. Path tracking:</strong> Store visited nodes in an array, check before recursing: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WHERE NOT id = ANY(visited_array)</code><br/><br/>
 <strong>3. PostgreSQL 14+ CYCLE clause:</strong> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">CYCLE id SET is_cycle USING path</code><br/><br/>
 <strong>4. Database limits:</strong> SQL Server's <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">OPTION (MAXRECURSION 100)</code><br/><br/>
-      Best practice: always include a termination condition in the WHERE clause of the recursive member.
+  Best practice: always include a termination condition in the WHERE clause of the recursive member.
 </div>
 </div>
 
@@ -1258,16 +1258,16 @@ FROM employees;
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: Explain the execution model of recursive CTEs. What's the difference between linear and tree recursion?</div>
 <div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> <span style="color:#10b981; font-weight:bold;">Execution model:</span><br/>
-      1. Execute anchor member → Result set R0 (working table)<br/>
-      2. Execute recursive member using R0 → R1<br/>
-      3. Replace working table with R1, repeat until empty<br/>
-      4. Final result = UNION ALL of all iterations<br/><br/>
+  1. Execute anchor member → Result set R0 (working table)<br/>
+  2. Execute recursive member using R0 → R1<br/>
+  3. Replace working table with R1, repeat until empty<br/>
+  4. Final result = UNION ALL of all iterations<br/><br/>
 <strong>Linear recursion:</strong> Each iteration produces at most one row per input row (e.g., date series, Fibonacci). Memory usage is O(depth).<br/><br/>
 <strong>Tree recursion:</strong> Each iteration can produce multiple rows (e.g., org hierarchy where one manager has many reports). Memory usage can be O(branching_factor^depth) - exponential!<br/><br/>
 <strong>Performance considerations:</strong><br/>
 • Recursive CTEs are <span style="color:#10b981; font-weight:bold;">always materialized</span> - no predicate pushdown<br/>
-      • For deep hierarchies, consider adjacency list alternatives (nested sets, materialized paths)<br/>
-      • Index the join column in the recursive member (e.g., manager_id)
+  • For deep hierarchies, consider adjacency list alternatives (nested sets, materialized paths)<br/>
+  • Index the join column in the recursive member (e.g., manager_id)
 </div>
 </div>
 </div>
@@ -1303,8 +1303,8 @@ FROM employees;
 <strong style="color: #7ee787;">A:</strong> Before PostgreSQL 12, CTEs were <span style="color:#10b981; font-weight:bold;">optimization fences</span> - the optimizer couldn't push predicates into the CTE or inline it. This meant:<br/><br/>
 • <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">WITH big_cte AS (SELECT * FROM million_rows) SELECT * FROM big_cte WHERE id = 1</code> would materialize ALL million rows before filtering<br/><br/>
 <strong>PostgreSQL 12+ changes:</strong><br/>
-      • Non-recursive CTEs referenced once can be inlined (predicate pushdown works)<br/>
-      • CTEs referenced multiple times or with side effects are still materialized<br/>
+  • Non-recursive CTEs referenced once can be inlined (predicate pushdown works)<br/>
+  • CTEs referenced multiple times or with side effects are still materialized<br/>
 • <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">MATERIALIZED</code> forces old behavior (optimization fence)<br/>
 • <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">NOT MATERIALIZED</code> forces inlining even if referenced multiple times<br/><br/>
 <strong>Practical impact:</strong> In older PostgreSQL, use derived tables (inline subqueries) when you want predicate pushdown. In v12+, CTEs are usually as efficient as derived tables.
@@ -1320,12 +1320,12 @@ FROM employees;
 <div style="color: #f0f6fc; font-weight: bold; margin-bottom: 8px;">Q: How do you optimize a slow subquery?</div>
 <div style="color: #64748b; font-size: 14px; line-height: 1.7;">
 <strong style="color: #7ee787;">A:</strong> Key optimization strategies:<br/>
-      1. Use EXPLAIN ANALYZE to understand current execution<br/>
-      2. Add indexes on columns used in subquery WHERE clauses<br/>
-      3. Convert correlated subqueries to JOINs or window functions<br/>
-      4. Use EXISTS instead of IN for large result sets<br/>
-      5. Ensure subquery returns minimal columns needed<br/>
-      6. Consider materializing results in a CTE if referenced multiple times
+  1. Use EXPLAIN ANALYZE to understand current execution<br/>
+  2. Add indexes on columns used in subquery WHERE clauses<br/>
+  3. Convert correlated subqueries to JOINs or window functions<br/>
+  4. Use EXISTS instead of IN for large result sets<br/>
+  5. Ensure subquery returns minimal columns needed<br/>
+  6. Consider materializing results in a CTE if referenced multiple times
 </div>
 </div>
 
@@ -1350,9 +1350,9 @@ FROM employees;
 <strong style="color: #7ee787;">A:</strong> Advanced strategies for complex multi-subquery optimization:<br/><br/>
 <strong>1. Query rewriting:</strong> Combine multiple correlated subqueries into a single pass using window functions:<br/>
 <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; display: block; margin: 8px 0;">SELECT name, salary,
-        AVG(salary) OVER (PARTITION BY dept),
-        MAX(salary) OVER (PARTITION BY dept),
-        RANK() OVER (PARTITION BY dept ORDER BY salary)
+  AVG(salary) OVER (PARTITION BY dept),
+  MAX(salary) OVER (PARTITION BY dept),
+  RANK() OVER (PARTITION BY dept ORDER BY salary)
 FROM employees;</code><br/>
 <strong>2. Lateral joins:</strong> For row-dependent subqueries, LATERAL allows correlated evaluation with join semantics<br/>
 <strong>3. Materialized intermediate results:</strong> Use temp tables with indexes for shared computations<br/>
@@ -1614,9 +1614,9 @@ ORDER BY total_revenue DESC;
 <h4 style="color: #1e293b; margin: 0 0 12px 0;">Critical Gotchas</h4>
 <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
 <strong style="color: #ef4444;">NOT IN + NULL = No rows!</strong><br/>
-        EXISTS is often faster than IN<br/>
-        CTEs can be referenced multiple times<br/>
-        Recursive CTEs need termination
+  EXISTS is often faster than IN<br/>
+  CTEs can be referenced multiple times<br/>
+  Recursive CTEs need termination
 </div>
 </div>
 </div>

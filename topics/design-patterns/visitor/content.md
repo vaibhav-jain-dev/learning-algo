@@ -1560,7 +1560,7 @@ When traversal is visitor-controlled, forgetting to call <code>accept()</code> o
 <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Breaking Encapsulation Excessively</div>
 <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
-      Visitors need access to element data, but exposing too many internals couples visitors tightly to element implementation. Provide focused accessor methods rather than exposing all fields.
+  Visitors need access to element data, but exposing too many internals couples visitors tightly to element implementation. Provide focused accessor methods rather than exposing all fields.
 </div>
 </div>
 
@@ -1574,14 +1574,14 @@ Visitor instances that accumulate state (counters, collections) may retain state
 <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Infinite Loops in Cyclic Structures</div>
 <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
-      Visiting graphs without cycle detection causes stack overflow or infinite loops. Always track visited nodes when the structure might contain cycles.
+  Visiting graphs without cycle detection causes stack overflow or infinite loops. Always track visited nodes when the structure might contain cycles.
 </div>
 </div>
 
 <div>
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Thread Safety Issues</div>
 <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
-      Visitors with mutable state are not thread-safe. For parallel traversal, either use thread-local visitors, immutable visitors that return new state, or synchronize access to shared state.
+  Visitors with mutable state are not thread-safe. For parallel traversal, either use thread-local visitors, immutable visitors that return new state, or synchronize access to shared state.
 </div>
 </div>
 </div>

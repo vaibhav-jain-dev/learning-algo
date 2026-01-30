@@ -396,9 +396,9 @@ This guide presents detailed case studies of companies that successfully migrate
 <h4 style="color: #f97316; margin: 0 0 16px 0;">PACKWERK: THE ENFORCEMENT TOOL</h4>
 <div style="color: #475569; margin-bottom: 12px; font-size: 0.9em;">Shopify built Packwerk to enforce component boundaries:</div>
 <pre style="background: #1e293b; border-radius: 8px; padding: 16px; margin: 0 0 16px 0; overflow-x: auto; font-size: 0.8em;"><code style="color: #e2e8f0;"># package.yml in each component
-        enforce_privacy: true
-        enforce_dependencies: true
-        dependencies:
+  enforce_privacy: true
+  enforce_dependencies: true
+  dependencies:
 - shop                   <span style="color: #94a3b8;"># Can depend on shop component</span>
 - products               <span style="color: #94a3b8;"># Can depend on products component</span>
 public_path: app/public/   <span style="color: #94a3b8;"># Only this folder is accessible</span></code></pre>

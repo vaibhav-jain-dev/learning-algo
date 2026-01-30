@@ -43,7 +43,7 @@ The Single Responsibility Principle in microservices extends beyond code-level c
 </div>
 </div>
 
-      **The Granularity Trap**: Services that are too fine-grained create a "distributed monolith" - the worst of both worlds. Signs include:
+**The Granularity Trap**: Services that are too fine-grained create a "distributed monolith" - the worst of both worlds. Signs include:
       - Every business operation requires orchestrating 5+ services
       - Circular dependencies between services
       - Cannot deploy one service without deploying others
@@ -85,17 +85,17 @@ class OrderService:
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: How do you determine service boundaries in a microservices architecture?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      Use Domain-Driven Design's bounded contexts. Identify distinct business capabilities with their own ubiquitous language, data ownership, and team alignment. Apply the "can explain without 'and'" test.
+  Use Domain-Driven Design's bounded contexts. Identify distinct business capabilities with their own ubiquitous language, data ownership, and team alignment. Apply the "can explain without 'and'" test.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: What happens when you discover the boundary is wrong after deployment? How do you refactor?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Refactoring requires the Strangler Fig pattern: create new service with correct boundary, route traffic gradually using feature flags, maintain backward compatibility through API versioning, use change data capture to sync during transition, deprecate old service only after full migration verification.
+  Refactoring requires the Strangler Fig pattern: create new service with correct boundary, route traffic gradually using feature flags, maintain backward compatibility through API versioning, use change data capture to sync during transition, deprecate old service only after full migration verification.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: How do you handle data that was shared between the old services during the split? What about in-flight transactions?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      For shared data: establish data ownership first, then replicate needed data via events (eventual consistency) or API calls (synchronous). For in-flight transactions during cutover: implement dual-write during transition with reconciliation jobs, use distributed sagas with compensation for new flows, maintain audit logs with correlation IDs to trace and replay failed operations. Consider "freeze" windows for complex migrations.
+  For shared data: establish data ownership first, then replicate needed data via events (eventual consistency) or API calls (synchronous). For in-flight transactions during cutover: implement dual-write during transition with reconciliation jobs, use distributed sagas with compensation for new flows, maintain audit logs with correlation IDs to trace and replay failed operations. Consider "freeze" windows for complex migrations.
 </div>
 </div>
 </div>
@@ -197,17 +197,17 @@ class OrderService:
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: Why should each microservice own its database? What problems does shared databases cause?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      Shared databases create hidden coupling through schema dependencies, prevent independent deployment (schema changes affect all services), eliminate technology choice, create scaling bottlenecks, and make ownership unclear. Separate databases enable true autonomy.
+  Shared databases create hidden coupling through schema dependencies, prevent independent deployment (schema changes affect all services), eliminate technology choice, create scaling bottlenecks, and make ownership unclear. Separate databases enable true autonomy.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: How do you handle transactions that span multiple services when each has its own database?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Use the [[Saga Pattern]](/microservices/patterns/saga) with either choreography (event-driven) or orchestration (central coordinator). Each service performs local transactions and publishes events. Compensating transactions handle rollback. Avoid distributed transactions (2PC) as they don't scale and create tight coupling.
+  Use the [[Saga Pattern]](/microservices/patterns/saga) with either choreography (event-driven) or orchestration (central coordinator). Each service performs local transactions and publishes events. Compensating transactions handle rollback. Avoid distributed transactions (2PC) as they don't scale and create tight coupling.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: What happens if a compensating transaction fails? How do you handle "uncompensatable" operations like sending emails?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      Compensating transaction failures require: (1) Retry with exponential backoff and dead letter queues, (2) Manual intervention workflows with admin dashboards, (3) Eventual reconciliation jobs that compare states. For uncompensatable operations: use semantic locks (mark operation as "pending" until saga completes), design operations to be reversible (send "order cancelled" email instead of unsending), or accept business-level compensation (refunds, credits). Implement idempotency keys throughout.
+  Compensating transaction failures require: (1) Retry with exponential backoff and dead letter queues, (2) Manual intervention workflows with admin dashboards, (3) Eventual reconciliation jobs that compare states. For uncompensatable operations: use semantic locks (mark operation as "pending" until saga completes), design operations to be reversible (send "order cancelled" email instead of unsending), or accept business-level compensation (refunds, credits). Implement idempotency keys throughout.
 </div>
 </div>
 </div>
@@ -233,12 +233,12 @@ In distributed systems, failure is not exceptional - it is the norm. Network par
 <div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 12px;">Bulkhead Isolation</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.6;">
-        Isolate failures by partitioning resources:
+  Isolate failures by partitioning resources:
 <div style="margin-top: 8px; padding-left: 12px; border-left: 2px solid #e94560;">
-          Thread pool per dependency<br/>
-          Connection pool limits<br/>
-          Separate process/container<br/>
-          Queue per operation type
+  Thread pool per dependency<br/>
+  Connection pool limits<br/>
+  Separate process/container<br/>
+  Queue per operation type
 </div>
 </div>
 </div>
@@ -246,8 +246,8 @@ In distributed systems, failure is not exceptional - it is the norm. Network par
 <div style="color: #ffa500; font-weight: bold; margin-bottom: 12px;">Retry Strategy</div>
 <div style="color: #475569; font-size: 12px;">
 <div style="font-family: monospace; background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px;">
-          delay = min(base * 2^attempt, max)<br/>
-          delay += random(0, delay * 0.1)  # jitter
+  delay = min(base * 2^attempt, max)<br/>
+  delay += random(0, delay * 0.1)  # jitter
 </div>
 <div style="margin-top: 8px;">Max 3 retries, base 100ms, max 10s, with jitter to prevent thundering herd</div>
 </div>
@@ -334,17 +334,17 @@ class ProductService:
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: What is a circuit breaker and when should you use it?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      A circuit breaker prevents cascading failures by stopping calls to failing services. It has three states: CLOSED (normal), OPEN (failing fast), HALF-OPEN (testing recovery). Use it for all inter-service communication to prevent one failing service from bringing down the entire system.
+  A circuit breaker prevents cascading failures by stopping calls to failing services. It has three states: CLOSED (normal), OPEN (failing fast), HALF-OPEN (testing recovery). Use it for all inter-service communication to prevent one failing service from bringing down the entire system.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: How do you configure circuit breaker thresholds? What happens when the circuit opens during a traffic spike?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Thresholds depend on SLAs and traffic patterns: typically 50% failure rate over 20 requests, with 30-second recovery timeout. During traffic spikes with open circuit: (1) Return cached data if available, (2) Serve degraded response, (3) Queue requests if latency-tolerant. Configure sliding window for failure counting to avoid single burst triggering. Use separate circuits per endpoint, not per service.
+  Thresholds depend on SLAs and traffic patterns: typically 50% failure rate over 20 requests, with 30-second recovery timeout. During traffic spikes with open circuit: (1) Return cached data if available, (2) Serve degraded response, (3) Queue requests if latency-tolerant. Configure sliding window for failure counting to avoid single burst triggering. Use separate circuits per endpoint, not per service.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: How do you prevent thundering herd when the circuit transitions from OPEN to HALF-OPEN? What about circuit breakers in async/event-driven systems?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      Thundering herd prevention: (1) Allow only single probe request in HALF-OPEN, (2) Add jitter to recovery timeouts across instances, (3) Gradual ramp-up from HALF-OPEN (10% traffic initially). For async systems: circuit breakers apply to message processing - track consumer failure rates, pause consumption when circuit opens (let messages queue in broker), resume with backpressure. Use dead letter queues for persistent failures. Consider per-partition circuits in Kafka.
+  Thundering herd prevention: (1) Allow only single probe request in HALF-OPEN, (2) Add jitter to recovery timeouts across instances, (3) Gradual ramp-up from HALF-OPEN (10% traffic initially). For async systems: circuit breakers apply to message processing - track consumer failure rates, pause consumption when circuit opens (let messages queue in broker), resume with backpressure. Use dead letter queues for persistent failures. Consider per-partition circuits in Kafka.
 </div>
 </div>
 </div>
@@ -496,17 +496,17 @@ class OrderService:
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: When would you choose microservices over a monolith?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      When you have multiple teams needing independent deployment, different scaling requirements per component, polyglot technology needs, and well-understood domain boundaries. The organizational need for autonomy often drives the technical decision.
+  When you have multiple teams needing independent deployment, different scaling requirements per component, polyglot technology needs, and well-understood domain boundaries. The organizational need for autonomy often drives the technical decision.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: Your startup has 8 engineers and wants to use microservices for "future scalability." How do you advise them?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Advise against it. With 8 engineers, coordination overhead outweighs benefits. Recommend a modular monolith with clear internal boundaries, dependency injection, and event publishing internally. This provides future extraction paths without current complexity. Microservices are a solution to organizational scaling problems they don't yet have.
+  Advise against it. With 8 engineers, coordination overhead outweighs benefits. Recommend a modular monolith with clear internal boundaries, dependency injection, and event publishing internally. This provides future extraction paths without current complexity. Microservices are a solution to organizational scaling problems they don't yet have.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: The company grows to 50 engineers. How do you identify which modules to extract first and in what sequence?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      Prioritize extraction by: (1) Team ownership clarity - modules owned by distinct teams extract first, (2) Change frequency - high-churn modules benefit most from independent deployment, (3) Scaling requirements - components needing different scaling extract early, (4) Coupling analysis - use static analysis to find modules with fewest inbound dependencies. Sequence: extract leaf services (few dependencies) first, core services last. Each extraction should reduce coupling for subsequent extractions.
+  Prioritize extraction by: (1) Team ownership clarity - modules owned by distinct teams extract first, (2) Change frequency - high-churn modules benefit most from independent deployment, (3) Scaling requirements - components needing different scaling extract early, (4) Coupling analysis - use static analysis to find modules with fewest inbound dependencies. Sequence: extract leaf services (few dependencies) first, core services last. Each extraction should reduce coupling for subsequent extractions.
 </div>
 </div>
 </div>
@@ -555,25 +555,25 @@ The Team Topologies framework defines four fundamental team types:
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Stream-Aligned Teams</div>
 <div style="color: rgba(255,255,255,0.8); font-size: 12px; line-height: 1.6;">
-        Primary value-delivery teams. Own one or more services end-to-end. Aligned to business flow (Orders, Checkout, Search). Should be 80%+ of engineering.
+  Primary value-delivery teams. Own one or more services end-to-end. Aligned to business flow (Orders, Checkout, Search). Should be 80%+ of engineering.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Platform Teams</div>
 <div style="color: rgba(255,255,255,0.8); font-size: 12px; line-height: 1.6;">
-        Provide internal platforms as products. Kubernetes, CI/CD, observability. Enable stream-aligned teams through self-service. Minimize cognitive load for feature teams.
+  Provide internal platforms as products. Kubernetes, CI/CD, observability. Enable stream-aligned teams through self-service. Minimize cognitive load for feature teams.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Enabling Teams</div>
 <div style="color: rgba(255,255,255,0.8); font-size: 12px; line-height: 1.6;">
-        Help stream-aligned teams adopt new capabilities. Temporary engagement model. Examples: helping adopt Kubernetes, implementing observability. Goal: make themselves unnecessary.
+  Help stream-aligned teams adopt new capabilities. Temporary engagement model. Examples: helping adopt Kubernetes, implementing observability. Goal: make themselves unnecessary.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Complicated Subsystem Teams</div>
 <div style="color: rgba(255,255,255,0.8); font-size: 12px; line-height: 1.6;">
-        Own complex technical components requiring specialist skills. Examples: ML models, video encoding, compiler. Provide APIs consumed by stream-aligned teams.
+  Own complex technical components requiring specialist skills. Examples: ML models, video encoding, compiler. Provide APIs consumed by stream-aligned teams.
 </div>
 </div>
 </div>
@@ -607,17 +607,17 @@ Amazon's "two-pizza team" (6-10 people) isn't arbitrary. It's based on communica
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: What is Conway's Law and how does it affect microservices architecture?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      Conway's Law states that system design mirrors organizational communication structures. For microservices, this means team boundaries should match service boundaries. A team split by technical layers (frontend/backend/DB) will struggle with microservices; teams split by business capability will naturally create aligned services.
+  Conway's Law states that system design mirrors organizational communication structures. For microservices, this means team boundaries should match service boundaries. A team split by technical layers (frontend/backend/DB) will struggle with microservices; teams split by business capability will naturally create aligned services.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: Your organization has 5 services but only 3 teams. Two services have no clear owner. How do you handle this?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Options: (1) Merge unowned services into related owned services - reduce service count to match teams, (2) Assign shared ownership with rotation - but risks "tragedy of the commons", (3) Create virtual team with members from existing teams - temporary for maintenance. Long-term: services should never exceed team capacity. If you can't staff a service, it shouldn't exist separately.
+  Options: (1) Merge unowned services into related owned services - reduce service count to match teams, (2) Assign shared ownership with rotation - but risks "tragedy of the commons", (3) Create virtual team with members from existing teams - temporary for maintenance. Long-term: services should never exceed team capacity. If you can't staff a service, it shouldn't exist separately.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: How do you handle cross-cutting changes that span multiple teams' services (like adding a new authentication method)?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      Pattern depends on change type: (1) For infrastructure changes (new auth), platform team provides library/sidecar, stream teams integrate on their schedule with deadline. (2) For coordinated features, create temporary "virtual team" with representatives from each affected team - they coordinate implementation and return to home teams. (3) Use feature flags for gradual rollout, allowing teams to integrate independently. (4) Establish architectural runway - platform/enabling teams prepare capabilities ahead of stream teams' needs. Key: avoid synchronous dependencies between teams' work.
+  Pattern depends on change type: (1) For infrastructure changes (new auth), platform team provides library/sidecar, stream teams integrate on their schedule with deadline. (2) For coordinated features, create temporary "virtual team" with representatives from each affected team - they coordinate implementation and return to home teams. (3) Use feature flags for gradual rollout, allowing teams to integrate independently. (4) Establish architectural runway - platform/enabling teams prepare capabilities ahead of stream teams' needs. Key: avoid synchronous dependencies between teams' work.
 </div>
 </div>
 </div>
@@ -673,7 +673,7 @@ Amazon's "two-pizza team" (6-10 people) isn't arbitrary. It's based on communica
 <div style="color: #e94560; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Feature Flags</div>
 <div style="color: #475569; font-size: 12px; margin-bottom: 12px;">Deploy code to all, enable features selectively via configuration</div>
 <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 10px; color: #475569; margin-bottom: 12px;">
-        if (flags.newCheckout) { ... }
+  if (flags.newCheckout) { ... }
 </div>
 <div style="color: #7ee787; font-size: 11px;">+ Decouple deploy from release</div>
 <div style="color: #f85149; font-size: 11px;">- Code complexity, flag debt</div>
@@ -894,17 +894,17 @@ class CanaryController:
 <div style="margin-bottom: 20px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: What is the difference between blue-green and canary deployments?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-      Blue-green runs two complete environments and switches all traffic atomically. Canary gradually shifts traffic percentage to new version while monitoring metrics. Blue-green is simpler but costs 2x resources; canary catches issues with smaller blast radius but requires sophisticated traffic routing and monitoring.
+  Blue-green runs two complete environments and switches all traffic atomically. Canary gradually shifts traffic percentage to new version while monitoring metrics. Blue-green is simpler but costs 2x resources; canary catches issues with smaller blast radius but requires sophisticated traffic routing and monitoring.
 </div>
 
 <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: How do you handle database migrations in a blue-green deployment where both versions need different schemas?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-      Use the expand-contract (parallel change) pattern: (1) Expand: add new columns without removing old ones, make schema backward compatible. (2) Deploy new application version reading/writing both old and new schema. (3) Migrate: backfill new columns from old data. (4) Contract: after successful cutover, remove old columns. This allows both blue and green to work with the same database during transition.
+  Use the expand-contract (parallel change) pattern: (1) Expand: add new columns without removing old ones, make schema backward compatible. (2) Deploy new application version reading/writing both old and new schema. (3) Migrate: backfill new columns from old data. (4) Contract: after successful cutover, remove old columns. This allows both blue and green to work with the same database during transition.
 </div>
 
 <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: During a canary deployment, you discover the new version has a subtle bug that only affects 0.1% of users with a specific data pattern. Your metrics show overall error rates are within threshold. How do you catch this?</div>
 <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-      Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by customer cohorts, device types, data characteristics - monitor each segment separately. (2) Implement anomaly detection that flags unusual patterns even within thresholds. (3) Use log analysis for error clustering - new error signatures trigger alerts. (4) Shadow testing: run canary in parallel processing same requests as production and compare outputs. (5) Real user monitoring (RUM) with user feedback channels. (6) Staged canary targeting: first roll out to internal users, then beta users, then general population.
+  Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by customer cohorts, device types, data characteristics - monitor each segment separately. (2) Implement anomaly detection that flags unusual patterns even within thresholds. (3) Use log analysis for error clustering - new error signatures trigger alerts. (4) Shadow testing: run canary in parallel processing same requests as production and compare outputs. (5) Real user monitoring (RUM) with user feedback channels. (6) Staged canary targeting: first roll out to internal users, then beta users, then general population.
 </div>
 </div>
 </div>
@@ -977,9 +977,9 @@ class CanaryController:
 </div>
 </div>
 
-            ---
+  ---
 
-            ## Related Topics
+## Related Topics
 
             - [[Service Mesh]](/microservices/patterns/service-mesh) - Infrastructure layer for service-to-service communication
             - [[Saga Pattern]](/microservices/patterns/saga) - Managing distributed transactions

@@ -27,7 +27,7 @@ Building microservices requires a rich ecosystem of components that handle servi
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 8px;">API GATEWAY LAYER</div>
 <div style="color: rgba(255,255,255,0.9); font-size: 11px; text-align: center;">
-      Kong / AWS API GW / Nginx / Envoy<br/>
+  Kong / AWS API GW / Nginx / Envoy<br/>
 <span style="opacity: 0.8;">Auth | Routing | Rate Limiting | Transformation</span>
 </div>
 </div>
@@ -36,7 +36,7 @@ Building microservices requires a rich ecosystem of components that handle servi
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 8px;">SERVICE MESH LAYER</div>
 <div style="color: rgba(255,255,255,0.9); font-size: 11px; text-align: center;">
-      Istio / Linkerd / Consul Connect<br/>
+  Istio / Linkerd / Consul Connect<br/>
 <span style="opacity: 0.8;">mTLS | Traffic Management | Observability</span>
 </div>
 </div>
@@ -447,7 +447,7 @@ Reduces latency and database load through **data caching**.
 </div>
 </div>
 
-    ### Polyglot Persistence
+### Polyglot Persistence
 
     | Service | Database | Reason |
     |---------|----------|--------|
@@ -461,9 +461,9 @@ Reduces latency and database load through **data caching**.
 
     ---
 
-    ## 7. Observability Stack
+## 7. Observability Stack
 
-    ### Three Pillars of Observability
+### Three Pillars of Observability
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">OBSERVABILITY PILLARS</h4>

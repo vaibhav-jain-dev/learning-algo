@@ -66,30 +66,30 @@ The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indi
 </div>
 </div>
 
-        ---
+  ---
 
-        ## Virtual Proxy (Lazy Initialization)
+## Virtual Proxy (Lazy Initialization)
 
-        ### Concept and Motivation
+### Concept and Motivation
 
-        A Virtual Proxy defers the creation of expensive objects until they are actually needed. This is critical when object instantiation involves heavy I/O operations, significant memory allocation, or complex computation.
+  A Virtual Proxy defers the creation of expensive objects until they are actually needed. This is critical when object instantiation involves heavy I/O operations, significant memory allocation, or complex computation.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #00d9ff;">
 <div style="color: #00d9ff; font-weight: 600; margin-bottom: 0.75rem;">Key Assumption</div>
 <div style="color: #ddd; line-height: 1.6;">
-            Virtual proxies assume that object creation cost significantly exceeds proxy creation cost, AND that there's a reasonable probability the object won't be needed. If objects are always used immediately, the proxy adds pure overhead.
+  Virtual proxies assume that object creation cost significantly exceeds proxy creation cost, AND that there's a reasonable probability the object won't be needed. If objects are always used immediately, the proxy adds pure overhead.
 </div>
 </div>
 
-        ### Internal Mechanisms
+### Internal Mechanisms
 
-        **Lazy Reference Pattern**: The proxy holds a nullable reference to the real subject. Each method checks if the reference is null, instantiating the real object on first access (double-checked locking pattern in concurrent environments).
+**Lazy Reference Pattern**: The proxy holds a nullable reference to the real subject. Each method checks if the reference is null, instantiating the real object on first access (double-checked locking pattern in concurrent environments).
 
-        **Metadata Caching**: Smart virtual proxies cache lightweight metadata that can answer simple queries without materializing the full object. For example, an image proxy might store dimensions without loading pixel data.
+**Metadata Caching**: Smart virtual proxies cache lightweight metadata that can answer simple queries without materializing the full object. For example, an image proxy might store dimensions without loading pixel data.
 
-        **Creation Context Capture**: The proxy captures all constructor arguments at proxy creation time, storing them until actual instantiation. This creates a temporal decoupling between specification and materialization.
+**Creation Context Capture**: The proxy captures all constructor arguments at proxy creation time, storing them until actual instantiation. This creates a temporal decoupling between specification and materialization.
 
-        ### Implementation - Python
+### Implementation - Python
 
         ```python
         from abc import ABC, abstractmethod
@@ -301,7 +301,7 @@ The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indi
         print(f"Is loaded: {doc.is_loaded()}")  # True
         ```
 
-        ### Interview Questions - Virtual Proxy
+### Interview Questions - Virtual Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
@@ -341,30 +341,30 @@ The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indi
 </div>
 </div>
 
-                                            ---
+  ---
 
-                                            ## Protection Proxy (Access Control)
+## Protection Proxy (Access Control)
 
-                                            ### Concept and Motivation
+### Concept and Motivation
 
-                                            A Protection Proxy controls access to the real subject based on access rights, implementing authorization logic at the object level. This enforces [[Principle of Least Privilege]](/topic/security/least-privilege) by ensuring clients can only perform operations they're authorized for.
+  A Protection Proxy controls access to the real subject based on access rights, implementing authorization logic at the object level. This enforces [[Principle of Least Privilege]](/topic/security/least-privilege) by ensuring clients can only perform operations they're authorized for.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e74c3c;">
 <div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.75rem;">Security Assumption</div>
 <div style="color: #ddd; line-height: 1.6;">
-                                                Protection proxies assume the client cannot bypass the proxy to access the real subject directly. In languages with reflection or unsafe memory access, additional measures (like SecurityManager in Java or private constructors with factory methods) must prevent circumvention.
+  Protection proxies assume the client cannot bypass the proxy to access the real subject directly. In languages with reflection or unsafe memory access, additional measures (like SecurityManager in Java or private constructors with factory methods) must prevent circumvention.
 </div>
 </div>
 
-                                            ### Internal Mechanisms
+### Internal Mechanisms
 
-                                            **Permission Resolution**: The proxy intercepts each method call, extracts the current security context (user, roles, claims), and evaluates whether the operation is permitted. This may involve checking against ACLs, RBAC policies, or ABAC rules.
+**Permission Resolution**: The proxy intercepts each method call, extracts the current security context (user, roles, claims), and evaluates whether the operation is permitted. This may involve checking against ACLs, RBAC policies, or ABAC rules.
 
-                                            **Context Propagation**: The security context must be available at the proxy layer. Common approaches include thread-local storage, explicit context passing, or [[Dependency Injection]](/topic/design-patterns/dependency-injection) of a security service.
+**Context Propagation**: The security context must be available at the proxy layer. Common approaches include thread-local storage, explicit context passing, or [[Dependency Injection]](/topic/design-patterns/dependency-injection) of a security service.
 
-                                            **Audit Trail**: Protection proxies often log access attempts (both successful and denied) for security auditing and compliance requirements.
+**Audit Trail**: Protection proxies often log access attempts (both successful and denied) for security auditing and compliance requirements.
 
-                                            ### Implementation - Python
+### Implementation - Python
 
                                             ```python
                                             from abc import ABC, abstractmethod
@@ -704,7 +704,7 @@ The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indi
                                             SecurityContext.clear()
                                             ```
 
-                                            ### Interview Questions - Protection Proxy
+### Interview Questions - Protection Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
@@ -747,13 +747,13 @@ The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indi
 </div>
 </div>
 
-                                                                                            ---
+  ---
 
-                                                                                            ## Remote Proxy (Location Transparency)
+## Remote Proxy (Location Transparency)
 
-                                                                                            ### Concept and Motivation
+### Concept and Motivation
 
-                                                                                            A Remote Proxy provides a local representative for an object that exists in a different address space - whether another process, machine, or data center. This enables [[Location Transparency]](/topic/distributed-systems/location-transparency), where clients interact with remote objects using the same interface as local ones.
+  A Remote Proxy provides a local representative for an object that exists in a different address space - whether another process, machine, or data center. This enables [[Location Transparency]](/topic/distributed-systems/location-transparency), where clients interact with remote objects using the same interface as local ones.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #9b59b6;">
 <div style="color: #9b59b6; font-weight: 600; margin-bottom: 0.75rem;">Distributed Computing Assumption</div>
@@ -762,15 +762,15 @@ Remote proxies assume network communication is fundamentally different from loca
 </div>
 </div>
 
-                                                                                            ### Internal Mechanisms
+### Internal Mechanisms
 
-                                                                                            **Marshalling/Serialization**: Method arguments must be serialized for network transmission and deserialized on the remote side. This includes handling object graphs, circular references, and versioning of serialized formats.
+**Marshalling/Serialization**: Method arguments must be serialized for network transmission and deserialized on the remote side. This includes handling object graphs, circular references, and versioning of serialized formats.
 
-                                                                                            **Network Protocol**: The proxy encapsulates connection management, protocol handling (HTTP, gRPC, custom binary), request/response correlation, and potentially connection pooling.
+**Network Protocol**: The proxy encapsulates connection management, protocol handling (HTTP, gRPC, custom binary), request/response correlation, and potentially connection pooling.
 
-                                                                                            **Failure Handling**: Network calls can fail in ways local calls cannot. The proxy must handle timeouts, retries, circuit breaking, and communicate failures appropriately to the client.
+**Failure Handling**: Network calls can fail in ways local calls cannot. The proxy must handle timeouts, retries, circuit breaking, and communicate failures appropriately to the client.
 
-                                                                                            ### Architecture Diagram
+### Architecture Diagram
 
 <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
@@ -813,7 +813,7 @@ Remote proxies assume network communication is fundamentally different from loca
 </div>
 </div>
 
-                                                                                            ### Implementation - Go with gRPC-style Patterns
+### Implementation - Go with gRPC-style Patterns
 
                                                                                             ```go
                                                                                             package main
@@ -1136,7 +1136,7 @@ Remote proxies assume network communication is fundamentally different from loca
                                                                                             }
                                                                                             ```
 
-                                                                                            ### Interview Questions - Remote Proxy
+### Interview Questions - Remote Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
@@ -1209,13 +1209,13 @@ Remote proxies assume network communication is fundamentally different from loca
 </div>
 </div>
 
-                                                                                                                                                                                                ---
+  ---
 
-                                                                                                                                                                                                ## Caching Proxy
+## Caching Proxy
 
-                                                                                                                                                                                                ### Concept and Motivation
+### Concept and Motivation
 
-                                                                                                                                                                                                A Caching Proxy stores the results of expensive operations and returns cached results for subsequent identical requests. This implements [[Memoization]](/topic/algorithms/memoization) at the service boundary, trading memory for performance.
+  A Caching Proxy stores the results of expensive operations and returns cached results for subsequent identical requests. This implements [[Memoization]](/topic/algorithms/memoization) at the service boundary, trading memory for performance.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #2ecc71;">
 <div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.75rem;">Caching Trade-off</div>
@@ -1224,17 +1224,17 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 </div>
 </div>
 
-                                                                                                                                                                                                ### Internal Mechanisms
+### Internal Mechanisms
 
-                                                                                                                                                                                                **Cache Key Generation**: The proxy must generate consistent, unique keys from method arguments. This requires handling: object identity vs. equality, argument ordering, null handling, and potentially request context.
+**Cache Key Generation**: The proxy must generate consistent, unique keys from method arguments. This requires handling: object identity vs. equality, argument ordering, null handling, and potentially request context.
 
-                                                                                                                                                                                                **Eviction Policies**: When cache is full, decisions must be made about what to remove. Common policies: LRU (Least Recently Used), LFU (Least Frequently Used), TTL (Time To Live), or size-based eviction.
+**Eviction Policies**: When cache is full, decisions must be made about what to remove. Common policies: LRU (Least Recently Used), LFU (Least Frequently Used), TTL (Time To Live), or size-based eviction.
 
-                                                                                                                                                                                                **Cache Invalidation**: The hardest problem in computer science. Strategies include: TTL-based expiration, explicit invalidation on writes, cache-aside pattern, or event-driven invalidation via [[Pub/Sub]](/topic/distributed-systems/pub-sub).
+**Cache Invalidation**: The hardest problem in computer science. Strategies include: TTL-based expiration, explicit invalidation on writes, cache-aside pattern, or event-driven invalidation via [[Pub/Sub]](/topic/distributed-systems/pub-sub).
 
-                                                                                                                                                                                                **Consistency Models**: Decide on guarantees: strong consistency (always fresh, defeats caching purpose), eventual consistency (may read stale), or bounded staleness (fresh within N seconds).
+**Consistency Models**: Decide on guarantees: strong consistency (always fresh, defeats caching purpose), eventual consistency (may read stale), or bounded staleness (fresh within N seconds).
 
-                                                                                                                                                                                                ### Implementation - Python with Advanced Features
+### Implementation - Python with Advanced Features
 
                                                                                                                                                                                                 ```python
                                                                                                                                                                                                 from abc import ABC, abstractmethod
@@ -1625,7 +1625,7 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
                                                                                                                                                                                                 print(cached_service.get_stats())
                                                                                                                                                                                                 ```
 
-                                                                                                                                                                                                ### Interview Questions - Caching Proxy
+### Interview Questions - Caching Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
@@ -1697,30 +1697,30 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                                                                                                                                                          ## Dynamic Proxy (Runtime Generation)
+## Dynamic Proxy (Runtime Generation)
 
-                                                                                                                                                                                                                                                                                                          ### Concept and Motivation
+### Concept and Motivation
 
-                                                                                                                                                                                                                                                                                                          Dynamic Proxies are generated at runtime rather than compile time, allowing a single proxy implementation to handle any interface. This enables [[Aspect-Oriented Programming]](/topic/design-patterns/aop) patterns where cross-cutting concerns are applied uniformly across many classes.
+  Dynamic Proxies are generated at runtime rather than compile time, allowing a single proxy implementation to handle any interface. This enables [[Aspect-Oriented Programming]](/topic/design-patterns/aop) patterns where cross-cutting concerns are applied uniformly across many classes.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #f39c12;">
 <div style="color: #f39c12; font-weight: 600; margin-bottom: 0.75rem;">Metaprogramming Trade-off</div>
 <div style="color: #ddd; line-height: 1.6;">
-                                                                                                                                                                                                                                                                                                              Dynamic proxies trade compile-time safety for runtime flexibility. Type errors that static proxies catch at compile time become runtime errors. The indirection also makes debugging and stack traces more complex.
+  Dynamic proxies trade compile-time safety for runtime flexibility. Type errors that static proxies catch at compile time become runtime errors. The indirection also makes debugging and stack traces more complex.
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                          ### Internal Mechanisms
+### Internal Mechanisms
 
-                                                                                                                                                                                                                                                                                                          **Reflection-Based Interception**: Dynamic proxies intercept method calls using reflection. The proxy receives method name, argument types, and values, decides what to do, and optionally delegates to the real object.
+**Reflection-Based Interception**: Dynamic proxies intercept method calls using reflection. The proxy receives method name, argument types, and values, decides what to do, and optionally delegates to the real object.
 
-                                                                                                                                                                                                                                                                                                          **Bytecode Generation**: Languages like Java use bytecode generation (java.lang.reflect.Proxy or libraries like cglib/ByteBuddy) to create proxy classes at runtime that implement specified interfaces.
+**Bytecode Generation**: Languages like Java use bytecode generation (java.lang.reflect.Proxy or libraries like cglib/ByteBuddy) to create proxy classes at runtime that implement specified interfaces.
 
-                                                                                                                                                                                                                                                                                                          **Protocol-Based Proxies**: Python and Ruby use protocols (__getattr__, method_missing) to intercept arbitrary attribute access, enabling proxies without explicit interfaces.
+**Protocol-Based Proxies**: Python and Ruby use protocols (__getattr__, method_missing) to intercept arbitrary attribute access, enabling proxies without explicit interfaces.
 
-                                                                                                                                                                                                                                                                                                          ### Implementation - Python with Full Dynamic Proxy
+### Implementation - Python with Full Dynamic Proxy
 
                                                                                                                                                                                                                                                                                                           ```python
                                                                                                                                                                                                                                                                                                           from typing import Any, Callable, Optional, TypeVar, Generic, Protocol
@@ -2087,7 +2087,7 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
                                                                                                                                                                                                                                                                                                             print(f"Caught: {e}")
                                                                                                                                                                                                                                                                                                             ```
 
-                                                                                                                                                                                                                                                                                                            ### Interview Questions - Dynamic Proxy
+### Interview Questions - Dynamic Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
@@ -2118,12 +2118,12 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
 <strong style="color: #2ecc71;">A:</strong><br><br>
 <strong>Internal Mechanism:</strong><br>
-                                                                                                                                                                                                                                                                                                                                                  1. Generates a new class at runtime implementing specified interfaces<br>
-                                                                                                                                                                                                                                                                                                                                                    2. Uses sun.misc.ProxyGenerator to emit bytecode<br>
-                                                                                                                                                                                                                                                                                                                                                      3. Generated class has a field holding the InvocationHandler<br>
-                                                                                                                                                                                                                                                                                                                                                        4. Each interface method is implemented to call handler.invoke()<br>
-                                                                                                                                                                                                                                                                                                                                                          5. Class is loaded via specified ClassLoader<br>
-                                                                                                                                                                                                                                                                                                                                                            6. Instance is created and returned<br><br>
+  1. Generates a new class at runtime implementing specified interfaces<br>
+  2. Uses sun.misc.ProxyGenerator to emit bytecode<br>
+  3. Generated class has a field holding the InvocationHandler<br>
+  4. Each interface method is implemented to call handler.invoke()<br>
+  5. Class is loaded via specified ClassLoader<br>
+  6. Instance is created and returned<br><br>
 
 <strong>Limitations:</strong><br>
 - <strong>Interfaces only:</strong> Cannot proxy concrete classes (need cglib/ByteBuddy)<br>
@@ -2175,28 +2175,28 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
                                                                                                                                                                                                                                                                                                                                                                                                                                               - For writes: check response - 409 Conflict means already processed<br><br>
 
 <strong>Handler Chain Order:</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    Tracing (outermost) -> Circuit Breaker -> Retry -> Load Balancer -> Network<br><br>
+  Tracing (outermost) -> Circuit Breaker -> Retry -> Load Balancer -> Network<br><br>
 
 <strong>Edge Case - Retry After Partial Success:</strong> If request succeeds but response lost, retry might get "already exists" error. Handler should detect this (409 status, specific error code) and treat as success, potentially fetching the created resource to return.
 </div>
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  ## Comparison Matrix
+## Comparison Matrix
 
 <div style="overflow-x: auto; margin: 2rem 0;">
 <table style="width: 100%; border-collapse: collapse; font-family: system-ui, sans-serif; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Proxy Type</th>
 <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Primary Purpose</th>
 <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">When to Use</th>
 <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Key Trade-off</th>
 </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      </thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #1a1a2e;">
 <td style="padding: 0.75rem; border: 1px solid #444; color: #4ecdc4; font-weight: 600;">Virtual</td>
 <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Defer expensive initialization</td>
@@ -2227,13 +2227,13 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">AOP, frameworks, generic handling</td>
 <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Flexibility vs. type safety</td>
 </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  ## Related Patterns
+## Related Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #3498db;">
@@ -2280,9 +2280,9 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        ## Best Practices and Anti-Patterns
+## Best Practices and Anti-Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
 <div style="background: linear-gradient(135deg, #1e3a2f 0%, #2d5a47 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #2ecc71;">
@@ -2310,9 +2310,9 @@ Caching introduces the fundamental trade-off between <strong>freshness</strong> 
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        ## Real-World Applications
+## Real-World Applications
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #444;">
 <div style="color: #f39c12; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">Industry Examples</div>

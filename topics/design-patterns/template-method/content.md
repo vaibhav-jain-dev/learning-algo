@@ -97,7 +97,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 <div style="background: #f0fdf4; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #166534; font-size: 0.95rem;">
-                      When subclasses call back into the base class (violating Hollywood), several concurrency hazards emerge:<br><br>
+  When subclasses call back into the base class (violating Hollywood), several concurrency hazards emerge:<br><br>
 <strong>1. Reentrant Locking Deadlocks:</strong> If the template method holds a lock and a subclass implementation calls another base class method requiring that lock, you get deadlock with non-reentrant locks or obscured bugs with reentrant ones.<br><br>
 <strong>2. Inconsistent State Observation:</strong> The template method may be midway through updating state when a callback inspects it. The subclass sees partially-updated, inconsistent data.<br><br>
 <strong>3. Broken Invariants:</strong> The base class maintains invariants between steps. If subclasses can call arbitrary base methods, they might observe or modify state when invariants are temporarily violated.<br><br>
@@ -108,11 +108,11 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 </div>
 </div>
 
-                            ---
+  ---
 
-                            ## Hook Methods: The Art of Optional Extension
+## Hook Methods: The Art of Optional Extension
 
-                            Hook methods are the secret to making Template Method usable without overwhelming implementers. They provide extension points with sensible defaults, allowing subclasses to customize behavior without requiring implementation.
+  Hook methods are the secret to making Template Method usable without overwhelming implementers. They provide extension points with sensible defaults, allowing subclasses to customize behavior without requiring implementation.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem;">The Four Types of Template Method Operations</div>
@@ -121,7 +121,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 <div style="background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #3b82f6;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #1e40af; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">REQUIRED</span>
-                                    Abstract Operations
+  Abstract Operations
 </div>
 <div style="color: #1e40af; font-size: 0.9rem; line-height: 1.6;">
 <strong>No default implementation.</strong> Subclasses must provide behavior. Use when the step is essential and has no sensible default. Examples: data transformation logic, format-specific rendering.<br><br>
@@ -132,7 +132,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 <div style="background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 2px solid #22c55e;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #166534; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">OPTIONAL</span>
-                                        Hook Methods
+  Hook Methods
 </div>
 <div style="color: #166534; font-size: 0.9rem; line-height: 1.6;">
 <strong>Empty or minimal default.</strong> Subclasses may override to inject behavior. Use for cross-cutting concerns or optional customization. Examples: logging, caching, validation.<br><br>
@@ -143,7 +143,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 <div style="background: #fef3c7; border-radius: 12px; padding: 1.25rem; border: 2px solid #f59e0b;">
 <div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #92400e; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">FIXED</span>
-                                            Concrete Operations
+  Concrete Operations
 </div>
 <div style="color: #92400e; font-size: 0.9rem; line-height: 1.6;">
 <strong>Final implementation.</strong> Should not be overridden. Represents invariant behavior. Use for algorithm-critical steps. Examples: checksum calculation, transaction commit.<br><br>
@@ -154,7 +154,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 <div style="background: #fce7f3; border-radius: 12px; padding: 1.25rem; border: 2px solid #ec4899;">
 <div style="font-weight: 700; color: #9d174d; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #9d174d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">CONTROL</span>
-                                                Predicate Hooks
+  Predicate Hooks
 </div>
 <div style="color: #9d174d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Return boolean to control flow.</strong> Allows subclasses to skip or enable steps. Use for conditional execution paths. Examples: shouldValidate(), isEnabled().<br><br>
@@ -164,7 +164,7 @@ Template Method enforces Hollywood through <strong>inheritance and compile-time 
 </div>
 </div>
 
-                                            ### Hook Design Principles
+### Hook Design Principles
 
 <div style="background: #1e293b; border-radius: 16px; padding: 2rem; margin: 2rem 0;">
 <div style="color: #f8fafc; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Critical Hook Design Decisions</div>
@@ -196,13 +196,13 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: rgba(236, 72, 153, 0.2); border-radius: 10px; padding: 1.25rem; border-left: 4px solid #ec4899;">
 <div style="color: #f472b6; font-weight: 600; margin-bottom: 0.5rem;">Documentation Contract</div>
 <div style="color: #cbd5e1; font-size: 0.95rem;">
-                                                        Each hook must document: (1) when it's called, (2) what state is available, (3) what the return value means, (4) what exceptions are handled. Ambiguity here causes subtle bugs.
+  Each hook must document: (1) when it's called, (2) what state is available, (3) what the return value means, (4) what exceptions are handled. Ambiguity here causes subtle bugs.
 </div>
 </div>
 </div>
 </div>
 
-                                                ### Hook Methods: 3-Level Interview Deep Dive
+### Hook Methods: 3-Level Interview Deep Dive
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: What's the difference between abstract methods and hook methods?</div>
@@ -212,7 +212,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="color: #1e40af; font-size: 0.95rem;">
 <strong>Abstract methods</strong> have no implementation and must be overridden by subclasses. They represent mandatory customization points.<br><br>
 <strong>Hook methods</strong> have a default implementation (often empty) and may optionally be overridden. They provide optional customization points.<br><br>
-                                                              Abstract methods define what varies; hooks define what might vary.
+  Abstract methods define what varies; hooks define what might vary.
 </div>
 </div>
 
@@ -222,7 +222,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #fef3c7; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border-left: 4px solid #f59e0b;">
 <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #92400e; font-size: 0.95rem;">
-                                                                Use this decision framework:<br><br>
+  Use this decision framework:<br><br>
 <strong>Make it ABSTRACT when:</strong><br>
                                                                       - There's no sensible default behavior<br>
                                                                         - Every subclass must provide distinct implementation<br>
@@ -243,7 +243,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #f0fdf4; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #166534; font-size: 0.95rem;">
-                                                                                              The Fragile Base Class Problem occurs when base class changes break subclasses in unexpected ways. Hooks exacerbate this:<br><br>
+  The Fragile Base Class Problem occurs when base class changes break subclasses in unexpected ways. Hooks exacerbate this:<br><br>
 <strong>1. Semantic Contract Drift:</strong> Adding a new hook or changing when existing hooks are called can silently break subclass assumptions. A subclass may rely on certain state being available in a hook, but a base class refactoring changes that.<br><br>
 <strong>2. Hook Ordering Dependencies:</strong> Subclasses may implicitly depend on the order of hook calls. If base class reorganizes the algorithm, subclasses break even though the hooks still exist.<br><br>
 <strong>3. Self-Use Documentation Debt:</strong> The base class must document not just what hooks exist, but which methods call which hooks (self-use). Without this, subclass authors can't safely override.<br><br>
@@ -258,11 +258,11 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                            ---
+  ---
 
-                                                                                                            ## Template Method vs Strategy Pattern
+## Template Method vs Strategy Pattern
 
-                                                                                                            These patterns solve related but distinct problems. Understanding when to use each is a frequent interview topic and a crucial design skill.
+  These patterns solve related but distinct problems. Understanding when to use each is a frequent interview topic and a crucial design skill.
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #fef3c7 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.2rem; margin-bottom: 2rem; text-align: center;">Fundamental Mechanism Comparison</div>
@@ -302,18 +302,18 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                ### Decision Matrix: When to Use Which
+### Decision Matrix: When to Use Which
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0; overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                                                                                                                                    <thead>
+  <thead>
 <tr style="background: #1e293b; color: white;">
 <th style="padding: 1rem; text-align: left; border-radius: 8px 0 0 0;">Criterion</th>
 <th style="padding: 1rem; text-align: center; background: #1e40af;">Template Method</th>
 <th style="padding: 1rem; text-align: center; background: #92400e; border-radius: 0 8px 0 0;">Strategy</th>
 </tr>
-                                                                                                                                    </thead>
-                                                                                                                                    <tbody>
+  </thead>
+  <tbody>
 <tr style="background: white;">
 <td style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Algorithm structure varies?</td>
 <td style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0; text-align: center; color: #16a34a;">No - skeleton is fixed</td>
@@ -344,13 +344,13 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <td style="padding: 0.75rem; text-align: center; color: #dc2626;">Class explosion problem</td>
 <td style="padding: 0.75rem; text-align: center; color: #16a34a;">Compose strategies freely</td>
 </tr>
-                                                                                                                                    </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                                                                                                ### The Hybrid Approach: Template Method with Strategy Injection
+### The Hybrid Approach: Template Method with Strategy Injection
 
-                                                                                                                                In practice, sophisticated designs often combine both patterns. The template method defines the skeleton while accepting strategy objects for specific steps:
+  In practice, sophisticated designs often combine both patterns. The template method defines the skeleton while accepting strategy objects for specific steps:
 
                                                                                                                                 ```python
                                                                                                                                 class DataProcessor:
@@ -395,7 +395,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                ### Template vs Strategy: 3-Level Interview Deep Dive
+### Template vs Strategy: 3-Level Interview Deep Dive
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: When would you choose Template Method over Strategy?</div>
@@ -403,12 +403,12 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border-left: 4px solid #3b82f6;">
 <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #1e40af; font-size: 0.95rem;">
-                                                                                                                                      Choose Template Method when:<br>
+  Choose Template Method when:<br>
                                                                                                                                         - The algorithm structure is invariant across all implementations<br>
                                                                                                                                           - You need to enforce a specific sequence of operations<br>
                                                                                                                                             - Subclasses need access to the parent's internal state<br>
                                                                                                                                               - The variations are compile-time decisions, not runtime<br><br>
-                                                                                                                                                  Choose Strategy when you need runtime algorithm swapping, want loose coupling, or have combinatorial variations that would cause class explosion with inheritance.
+  Choose Strategy when you need runtime algorithm swapping, want loose coupling, or have combinatorial variations that would cause class explosion with inheritance.
 </div>
 </div>
 
@@ -450,11 +450,11 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                                                                    ---
+  ---
 
-                                                                                                                                                                                    ## Framework Extension Points
+## Framework Extension Points
 
-                                                                                                                                                                                    Template Method is the backbone of framework design. Understanding how frameworks expose extension points illuminates both how to use frameworks effectively and how to design extensible systems.
+  Template Method is the backbone of framework design. Understanding how frameworks expose extension points illuminates both how to use frameworks effectively and how to design extensible systems.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem;">Framework Extension Point Taxonomy</div>
@@ -463,7 +463,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #93c5fd;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 0.75rem;">Lifecycle Hooks</div>
 <div style="color: #475569; font-size: 0.9rem; line-height: 1.7;">
-                                                                                                                                                                                            Framework calls your code at specific lifecycle events: initialization, request handling, shutdown.<br><br>
+  Framework calls your code at specific lifecycle events: initialization, request handling, shutdown.<br><br>
 <strong>Examples:</strong><br>
 - React: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">componentDidMount</code>, <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">useEffect</code><br>
 - JUnit: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">@BeforeEach</code>, <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">@AfterAll</code><br>
@@ -474,7 +474,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: rgba(34, 197, 94, 0.15); border-radius: 12px; padding: 1.25rem; border: 1px solid rgba(34, 197, 94, 0.3);">
 <div style="color: #4ade80; font-weight: 700; margin-bottom: 0.75rem;">Processing Pipelines</div>
 <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.7;">
-                                                                                                                                                                                                      Framework defines the pipeline structure; you plug in processors at specific stages.<br><br>
+  Framework defines the pipeline structure; you plug in processors at specific stages.<br><br>
 <strong>Examples:</strong><br>
                                                                                                                                                                                                             - Django: Middleware chain<br>
                                                                                                                                                                                                               - Express: Router middleware<br>
@@ -485,7 +485,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: rgba(245, 158, 11, 0.15); border-radius: 12px; padding: 1.25rem; border: 1px solid rgba(245, 158, 11, 0.3);">
 <div style="color: #fbbf24; font-weight: 700; margin-bottom: 0.75rem;">Abstract Base Classes</div>
 <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.7;">
-                                                                                                                                                                                                                Classic Template Method: extend a base class, override specific methods.<br><br>
+  Classic Template Method: extend a base class, override specific methods.<br><br>
 <strong>Examples:</strong><br>
 - Django CBV: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">ListView.get_queryset()</code><br>
 - Java Servlet: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">HttpServlet.doGet()</code><br>
@@ -496,7 +496,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: rgba(236, 72, 153, 0.15); border-radius: 12px; padding: 1.25rem; border: 1px solid rgba(236, 72, 153, 0.3);">
 <div style="color: #f472b6; font-weight: 700; margin-bottom: 0.75rem;">Configuration Callbacks</div>
 <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.7;">
-                                                                                                                                                                                                                          Framework invokes your configuration code during bootstrap.<br><br>
+  Framework invokes your configuration code during bootstrap.<br><br>
 <strong>Examples:</strong><br>
 - Webpack: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">webpack.config.js</code> module<br>
 - Flask: <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.35rem; border-radius: 4px;">app.config.from_object()</code><br>
@@ -506,7 +506,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                                                                                                            ### Real-World Framework Analysis
+### Real-World Framework Analysis
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem; border-bottom: 2px solid #3b82f6; padding-bottom: 0.75rem;">Django Class-Based Views: Template Method in Action</div>
@@ -517,11 +517,11 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 &nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #f472b6;">def</div> <div style="display: inline; color: #60a5fa;">dispatch</div>(self, request, *args, **kwargs):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #64748b;"># Template method - controls the flow</div><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #f472b6;">if</div> request.method.lower() <div style="color: #f472b6;">in</div> self.http_method_names:<br>
-                                                                                                                                                                                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler = getattr(self, request.method.lower(), self.http_method_not_allowed)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler = getattr(self, request.method.lower(), self.http_method_not_allowed)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #f472b6;">else</div>:<br>
-                                                                                                                                                                                                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler = self.http_method_not_allowed<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler = self.http_method_not_allowed<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #f472b6;">return</div> handler(request, *args, **kwargs)<br>
-                                                                                                                                                                                                                                                <br>
+  <br>
 <div style="color: #64748b;"># Your extension point - implement specific HTTP methods</div>
 <div style="color: #f472b6;">class</div> <div style="display: inline; color: #fbbf24;">MyView</div>(View):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<div style="color: #f472b6;">def</div> <div style="display: inline; color: #60a5fa;">get</div>(self, request):  <div style="color: #64748b;"># Hook/abstract method</div><br>
@@ -559,30 +559,30 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="color: #64748b;">// Simplified conceptual flow:</div><br>
 <div style="color: #f472b6;">function</div> <div style="display: inline; color: #60a5fa;">mountComponent</div>(Component, props) {<br>
 &nbsp;&nbsp;<div style="color: #f472b6;">const</div> instance = <div style="color: #f472b6;">new</div> Component(props);<br>
-                                                                                                                                                                                                                                                                            &nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<br>
 &nbsp;&nbsp;<div style="color: #64748b;">// Hook: initialization</div><br>
 &nbsp;&nbsp;instance.<div style="color: #60a5fa;">componentWillMount</div>();  <div style="color: #64748b;">// deprecated</div><br>
-                                                                                                                                                                                                                                                                                  &nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<br>
 &nbsp;&nbsp;<div style="color: #64748b;">// Core operation: render (abstract - must implement)</div><br>
 &nbsp;&nbsp;<div style="color: #f472b6;">const</div> element = instance.<div style="color: #60a5fa;">render</div>();<br>
-                                                                                                                                                                                                                                                                                        &nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<br>
 &nbsp;&nbsp;<div style="color: #64748b;">// Framework: DOM manipulation</div><br>
 &nbsp;&nbsp;<div style="color: #60a5fa;">commitToDOM</div>(element);<br>
-                                                                                                                                                                                                                                                                                              &nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<br>
 &nbsp;&nbsp;<div style="color: #64748b;">// Hook: post-mount</div><br>
 &nbsp;&nbsp;instance.<div style="color: #60a5fa;">componentDidMount</div>();<br>
-                                                                                                                                                                                                                                                                                                    }
+  }
 </div>
 
 <div style="background: #fef3c7; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
 <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">Key Insight: Why Hooks Replaced Lifecycle Methods</div>
 <div style="color: #92400e; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                      React Hooks (useEffect, useState) moved from Template Method to Strategy-like composition. Instead of overriding lifecycle methods in a class, you compose behavior using function calls. This solved the class explosion problem (HOCs, render props) and made logic reuse easier. The transition illustrates how modern frameworks balance Template Method's guarantees with Strategy's flexibility.
+  React Hooks (useEffect, useState) moved from Template Method to Strategy-like composition. Instead of overriding lifecycle methods in a class, you compose behavior using function calls. This solved the class explosion problem (HOCs, render props) and made logic reuse easier. The transition illustrates how modern frameworks balance Template Method's guarantees with Strategy's flexibility.
 </div>
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                ### Framework Extension Points: 3-Level Interview Deep Dive
+### Framework Extension Points: 3-Level Interview Deep Dive
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: How do modern frameworks use Template Method for extensibility?</div>
@@ -590,8 +590,8 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border-left: 4px solid #3b82f6;">
 <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #1e40af; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                      Frameworks define processing pipelines with specific extension points. The framework controls the overall flow (request parsing, routing, response rendering) while developers implement hooks for business logic (controllers, filters, event handlers).<br><br>
-                                                                                                                                                                                                                                                                                                          Common patterns:<br>
+  Frameworks define processing pipelines with specific extension points. The framework controls the overall flow (request parsing, routing, response rendering) while developers implement hooks for business logic (controllers, filters, event handlers).<br><br>
+  Common patterns:<br>
 - <strong>Lifecycle hooks:</strong> componentDidMount, @PostConstruct, setUp/tearDown<br>
 - <strong>Request processors:</strong> Middleware, filters, interceptors<br>
 - <strong>Base classes:</strong> Abstract controllers, services, repositories to extend
@@ -624,7 +624,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #f0fdf4; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #166534; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                                                            This is a real design challenge in modern async frameworks. Key considerations:<br><br>
+  This is a real design challenge in modern async frameworks. Key considerations:<br><br>
 <strong>1. Unified async interface:</strong> Make all hooks async and await them, even if some implementations are sync. This simplifies the template method but adds overhead.<br><br>
 <strong>2. Hook type detection:</strong> Inspect whether hook returns a coroutine/promise and handle accordingly. Complex but efficient. Example: check <code>asyncio.iscoroutinefunction()</code> in Python.<br><br>
 <strong>3. Separate hook interfaces:</strong> Define <code>on_request()</code> and <code>on_request_async()</code>. Framework checks which exists. Explicit but verbose.<br><br>
@@ -638,11 +638,11 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                              ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                              ## Internal Mechanisms and Edge Cases
+## Internal Mechanisms and Edge Cases
 
-                                                                                                                                                                                                                                                                                                                                                              Understanding the internal mechanics reveals why Template Method behaves as it does and where things can go wrong.
+  Understanding the internal mechanics reveals why Template Method behaves as it does and where things can go wrong.
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #fecaca;">
 <div style="color: #991b1b; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem;">Critical Edge Cases and Gotchas</div>
@@ -686,13 +686,13 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                              ### Method Visibility and Access Control
+### Method Visibility and Access Control
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Proper Visibility Design</div>
 
 <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                  <thead>
+  <thead>
 <tr style="background: #1e293b; color: white;">
 <th style="padding: 1rem; text-align: left;">Method Type</th>
 <th style="padding: 1rem; text-align: center;">Java</th>
@@ -700,8 +700,8 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <th style="padding: 1rem; text-align: center;">C#</th>
 <th style="padding: 1rem; text-align: left;">Rationale</th>
 </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                  </thead>
-                                                                                                                                                                                                                                                                                                                                                                                                  <tbody>
+  </thead>
+  <tbody>
 <tr style="background: white;">
 <td style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Template Method</td>
 <td style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0; text-align: center; font-family: monospace;">public final</td>
@@ -730,13 +730,13 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <td style="padding: 0.75rem; text-align: center; font-family: monospace;">private</td>
 <td style="padding: 0.75rem;">Private: implementation detail, not for override</td>
 </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                  </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                              ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                              ## Comprehensive Python Implementation
+## Comprehensive Python Implementation
 
                                                                                                                                                                                                                                                                                                                                                                                               ```python
                                                                                                                                                                                                                                                                                                                                                                                               from abc import ABC, abstractmethod
@@ -1305,11 +1305,11 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
                                                                                                                                                                                                                                                                                                                                                                                               main()
                                                                                                                                                                                                                                                                                                                                                                                               ```
 
-                                                                                                                                                                                                                                                                                                                                                                                              ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                              ## Comprehensive Interview Questions
+## Comprehensive Interview Questions
 
-                                                                                                                                                                                                                                                                                                                                                                                              ### Pattern Understanding
+### Pattern Understanding
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Explain the Template Method pattern and its key components.</div>
@@ -1317,7 +1317,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border-left: 4px solid #3b82f6;">
 <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #1e40af; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                    Template Method defines an algorithm's skeleton in a base class method (the "template method"), deferring some steps to subclasses. Key components:<br><br>
+  Template Method defines an algorithm's skeleton in a base class method (the "template method"), deferring some steps to subclasses. Key components:<br><br>
 <strong>1. Template Method:</strong> The public method that defines the algorithm sequence. Should be final/non-overridable.<br>
 <strong>2. Abstract Operations:</strong> Steps with no default that subclasses must implement.<br>
 <strong>3. Hook Methods:</strong> Optional steps with defaults that subclasses may override.<br>
@@ -1331,7 +1331,7 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #fef3c7; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; border-left: 4px solid #f59e0b;">
 <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #92400e; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                The "call super" problem occurs when hook methods have important base implementations that subclasses must call. Solutions:<br><br>
+  The "call super" problem occurs when hook methods have important base implementations that subclasses must call. Solutions:<br><br>
 <strong>1. Sandwich Method:</strong> Split the hook into three: before hook, override point, after hook. Base handles before/after, subclass only overrides the middle.<br><br>
 <strong>2. Event-Style Hooks:</strong> Make hooks notification-only with no return value. Base calls hook but doesn't depend on it.<br><br>
 <strong>3. Explicit Composition:</strong> Pass the base behavior as a parameter. <code>_process(super_result=base._process())</code><br><br>
@@ -1345,19 +1345,19 @@ Default should be <strong>safe and minimal</strong>: empty for notification hook
 <div style="background: #f0fdf4; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #166534; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                  This requires careful design to preserve ordering guarantees:<br><br>
+  This requires careful design to preserve ordering guarantees:<br><br>
 <strong>Option 1: Async-First Design</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        Make the template method async and await all hook calls. Sync implementations simply return non-awaitable values (Python) or resolved promises (JS). This is cleanest but requires async runtime support.<br><br>
+  Make the template method async and await all hook calls. Sync implementations simply return non-awaitable values (Python) or resolved promises (JS). This is cleanest but requires async runtime support.<br><br>
 <strong>Option 2: Dual Template Methods</strong><br>
 Provide <code>process()</code> and <code>process_async()</code>. Share validation and setup logic, differ in execution. Duplication but explicit.<br><br>
 <strong>Option 3: Continuation-Passing Style</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    Template method takes a callback chain. Each hook returns a continuation. Framework orchestrates execution. Complex but flexible.<br><br>
+  Template method takes a callback chain. Each hook returns a continuation. Framework orchestrates execution. Complex but flexible.<br><br>
 <strong>Key challenge:</strong> Error handling. Async errors (rejections) must be caught and routed to cleanup hooks just like sync exceptions. Use try/finally patterns that work with both:<br><br>
 <code>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                              try:<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                &nbsp;&nbsp;result = await self._do_process() if asyncio.iscoroutine(...) else self._do_process()<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  finally:<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    &nbsp;&nbsp;await self._cleanup() if asyncio.iscoroutine(...) else self._cleanup()
+  try:<br>
+  &nbsp;&nbsp;result = await self._do_process() if asyncio.iscoroutine(...) else self._do_process()<br>
+  finally:<br>
+  &nbsp;&nbsp;await self._cleanup() if asyncio.iscoroutine(...) else self._cleanup()
 </code>
 </div>
 </div>
@@ -1365,7 +1365,7 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        ### Design Trade-offs
+### Design Trade-offs
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: What are the main advantages and disadvantages of Template Method?</div>
@@ -1400,11 +1400,11 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 - Documentation burden explodes<br>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   - Harder to maintain ordering guarantees<br><br>
 <strong>Balancing heuristics:</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1. One hook per logically distinct customization need<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2. Group related hooks if always overridden together<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            3. Start with fewer hooks; add more when real use cases demand<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              4. Prefer predicate hooks over duplicating entire step hooks<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                5. Document which hooks are "advanced" vs "commonly overridden"
+  1. One hook per logically distinct customization need<br>
+  2. Group related hooks if always overridden together<br>
+  3. Start with fewer hooks; add more when real use cases demand<br>
+  4. Prefer predicate hooks over duplicating entire step hooks<br>
+  5. Document which hooks are "advanced" vs "commonly overridden"
 </div>
 </div>
 
@@ -1414,26 +1414,26 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 <div style="background: #f0fdf4; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Answer:</div>
 <div style="color: #166534; font-size: 0.95rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Evolution path from Template Method to Strategy/composition:<br><br>
+  Evolution path from Template Method to Strategy/composition:<br><br>
 <strong>Step 1: Identify runtime-varying steps</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Not all steps need runtime variation. Identify which specific hooks need it.<br><br>
+  Not all steps need runtime variation. Identify which specific hooks need it.<br><br>
 <strong>Step 2: Extract Strategy interface</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              For each runtime-varying step, create an interface. The Template Method still exists but delegates to injected strategies.<br><br>
+  For each runtime-varying step, create an interface. The Template Method still exists but delegates to injected strategies.<br><br>
 <strong>Step 3: Preserve algorithm guarantees</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    The template method remains responsible for ordering, validation, and cleanup. Strategies only implement individual steps.<br><br>
+  The template method remains responsible for ordering, validation, and cleanup. Strategies only implement individual steps.<br><br>
 <strong>Step 4: Provide migration path</strong><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Create adapter classes that wrap existing subclasses as strategies. Old code keeps working; new code uses composition.<br><br>
+  Create adapter classes that wrap existing subclasses as strategies. Old code keeps working; new code uses composition.<br><br>
 <strong>Example evolution:</strong><br>
 <code>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Before: pure template method<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    class Processor:<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      &nbsp;&nbsp;def _validate(self): ...  # overridden in subclass<br><br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          # After: template method + strategy injection<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class Processor:<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              &nbsp;&nbsp;def __init__(self, validator: Validator = None):<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                &nbsp;&nbsp;&nbsp;&nbsp;self._validator = validator or DefaultValidator()<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  &nbsp;&nbsp;def _validate(self):<br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;self._validator.validate(self.data)
+# Before: pure template method<br>
+  class Processor:<br>
+  &nbsp;&nbsp;def _validate(self): ...  # overridden in subclass<br><br>
+# After: template method + strategy injection<br>
+  class Processor:<br>
+  &nbsp;&nbsp;def __init__(self, validator: Validator = None):<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;self._validator = validator or DefaultValidator()<br>
+  &nbsp;&nbsp;def _validate(self):<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;self._validator.validate(self.data)
 </code><br><br>
 <strong>Key insight:</strong> This hybrid preserves the algorithm structure while enabling runtime flexibility where needed.
 </div>
@@ -1442,9 +1442,9 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ## Common Anti-Patterns and Mistakes
+## Common Anti-Patterns and Mistakes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #fecaca;">
 <div style="color: #991b1b; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem;">Anti-Patterns to Avoid</div>
@@ -1492,9 +1492,9 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ## Best Practices Summary
+## Best Practices Summary
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 2px solid #86efac;">
 <div style="color: #166534; font-weight: 700; font-size: 1.15rem; margin-bottom: 1.5rem;">Best Practices Checklist</div>
@@ -1542,9 +1542,9 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 </div>
 </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ---
+  ---
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ## Related Patterns
+## Related Patterns
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="color: #1e293b; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Pattern Relationships</div>
@@ -1553,28 +1553,28 @@ Provide <code>process()</code> and <code>process_async()</code>. Share validatio
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #3b82f6;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.5rem;">[[Strategy]](/topics/design-patterns/strategy)</div>
 <div style="color: #1e40af; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Composition-based alternative. Use when entire algorithms vary, need runtime swapping, or combinatorial variations exist.
+  Composition-based alternative. Use when entire algorithms vary, need runtime swapping, or combinatorial variations exist.
 </div>
 </div>
 
 <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">[[Factory Method]](/topics/design-patterns/factory-method)</div>
 <div style="color: #166534; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Often used within template methods for object creation steps. The factory method itself is a specialization of template method.
+  Often used within template methods for object creation steps. The factory method itself is a specialization of template method.
 </div>
 </div>
 
 <div style="background: #fef3c7; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #f59e0b;">
 <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">[[Observer]](/topics/design-patterns/observer)</div>
 <div style="color: #92400e; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Lifecycle hooks in template methods often trigger observer notifications. Combine for extensible event-driven frameworks.
+  Lifecycle hooks in template methods often trigger observer notifications. Combine for extensible event-driven frameworks.
 </div>
 </div>
 
 <div style="background: #fce7f3; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #ec4899;">
 <div style="font-weight: 700; color: #9d174d; margin-bottom: 0.5rem;">[[Decorator]](/topics/design-patterns/decorator)</div>
 <div style="color: #9d174d; font-size: 0.9rem;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Can wrap template method instances to add behavior without subclassing. Useful for cross-cutting concerns.
+  Can wrap template method instances to add behavior without subclassing. Useful for cross-cutting concerns.
 </div>
 </div>
 </div>

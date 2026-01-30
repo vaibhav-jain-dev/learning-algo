@@ -53,9 +53,9 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 
   ---
 
-  ## Section 1: Decorator vs Inheritance - The Fundamental Trade-off
+## Section 1: Decorator vs Inheritance - The Fundamental Trade-off
 
-  ### The Combinatorial Explosion Problem
+### The Combinatorial Explosion Problem
 
   Inheritance creates a **static class hierarchy** where each combination of features requires a dedicated class. Consider a notification system with 3 delivery channels and 3 formatting options:
 
@@ -64,14 +64,14 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <h4 style="color: #ff6b6b; margin: 0 0 1rem 0;">Inheritance Approach</h4>
 <div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
 <div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
-          Notifier (base)<br>
-            EmailNotifier<br>
-              SMSNotifier<br>
-                SlackNotifier<br>
-                  HTMLEmailNotifier<br>
-                    PlainTextEmailNotifier<br>
-                      HTMLSMSNotifier<br>
-                        ... (3 x 3 = 9 classes minimum)
+  Notifier (base)<br>
+  EmailNotifier<br>
+  SMSNotifier<br>
+  SlackNotifier<br>
+  HTMLEmailNotifier<br>
+  PlainTextEmailNotifier<br>
+  HTMLSMSNotifier<br>
+  ... (3 x 3 = 9 classes minimum)
 </div>
 <div style="color: #ff6b6b;">Classes grow multiplicatively: O(n * m * k)</div>
 </div>
@@ -80,19 +80,19 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <h4 style="color: #4ecdc4; margin: 0 0 1rem 0;">Decorator Approach</h4>
 <div style="color: #ccc; font-size: 0.9rem; line-height: 1.6;">
 <div style="font-family: monospace; background: #1a1a2e; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
-                        Notifier (interface)<br>
-                          BaseNotifier<br>
-                            EmailDecorator<br>
-                              SMSDecorator<br>
-                                HTMLFormatterDecorator<br>
-                                  ... (3 + 3 = 6 classes total)
+  Notifier (interface)<br>
+  BaseNotifier<br>
+  EmailDecorator<br>
+  SMSDecorator<br>
+  HTMLFormatterDecorator<br>
+  ... (3 + 3 = 6 classes total)
 </div>
 <div style="color: #4ecdc4;">Classes grow additively: O(n + m + k)</div>
 </div>
 </div>
 </div>
 
-                          ### Internal Mechanics: How Delegation Chains Work
+### Internal Mechanics: How Delegation Chains Work
 
                           ```python
                           from abc import ABC, abstractmethod
@@ -199,73 +199,73 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <p style="color: #eee; margin: 0; line-height: 1.6;">The Decorator pattern assumes <strong>interface stability</strong>. All decorators must implement the complete Component interface. Adding methods to the interface requires updating ALL decorators - a significant maintenance cost that inheritance avoids through method inheritance.</p>
 </div>
 
-                          ### Trade-off Analysis
+### Trade-off Analysis
 
-                          | Dimension | Inheritance | Decorator |
-                          |-----------|-------------|-----------|
-                          | **Binding Time** | Compile-time (static) | Runtime (dynamic) |
-                          | **Behavior Modification** | Must subclass | Wrap existing objects |
-                          | **Multiple Behaviors** | Multiple inheritance issues | Stack decorators freely |
-                          | **Memory Overhead** | Single object | Object per decorator layer |
-                          | **Method Access** | Direct access to protected members | Only interface methods visible |
-                          | **Type Identity** | `isinstance()` reliable | May need `unwrap()` utilities |
-                          | **Debugging** | Single class to inspect | Chain of objects to traverse |
+  | Dimension | Inheritance | Decorator |
+  |-----------|-------------|-----------|
+  | **Binding Time** | Compile-time (static) | Runtime (dynamic) |
+  | **Behavior Modification** | Must subclass | Wrap existing objects |
+  | **Multiple Behaviors** | Multiple inheritance issues | Stack decorators freely |
+  | **Memory Overhead** | Single object | Object per decorator layer |
+  | **Method Access** | Direct access to protected members | Only interface methods visible |
+  | **Type Identity** | `isinstance()` reliable | May need `unwrap()` utilities |
+  | **Debugging** | Single class to inspect | Chain of objects to traverse |
 
-                          ### Interview Questions - Level 1 (Foundation)
+### Interview Questions - Level 1 (Foundation)
 
-                          **Q1.1: Why would you choose Decorator over creating a subclass?**
+**Q1.1: Why would you choose Decorator over creating a subclass?**
 
-                          *Expected Answer:* Use Decorator when:
+*Expected Answer:* Use Decorator when:
                           - Behaviors need to be added/removed at runtime
                           - You need arbitrary combinations without class explosion
                           - You're working with third-party classes you can't subclass
                           - The Single Responsibility Principle demands separation of concerns
 
-                          **Q1.2: What's the fundamental structural requirement for Decorator to work?**
+**Q1.2: What's the fundamental structural requirement for Decorator to work?**
 
-                          *Expected Answer:* Both the decorator and the component must share the same interface. The decorator holds a reference to a Component (not a ConcreteComponent), enabling it to wrap either concrete components or other decorators transparently.
+*Expected Answer:* Both the decorator and the component must share the same interface. The decorator holds a reference to a Component (not a ConcreteComponent), enabling it to wrap either concrete components or other decorators transparently.
 
-                          ### Interview Questions - Level 2 (Mechanics)
+### Interview Questions - Level 2 (Mechanics)
 
-                          **Q2.1: How does a decorator chain handle method calls internally?**
+**Q2.1: How does a decorator chain handle method calls internally?**
 
-                          *Expected Answer:* Each decorator receives the call, optionally performs pre-processing, delegates to its wrapped component (which may be another decorator), receives the result, optionally performs post-processing, and returns. This creates a pipeline where:
+*Expected Answer:* Each decorator receives the call, optionally performs pre-processing, delegates to its wrapped component (which may be another decorator), receives the result, optionally performs post-processing, and returns. This creates a pipeline where:
                           - Write operations process data "outside-in" (outermost decorator first)
                           - Read operations process data "inside-out" (innermost component first, then decorators transform the result)
 
-                          **Q2.2: A decorator adds logging. Another adds caching. Does order matter?**
+**Q2.2: A decorator adds logging. Another adds caching. Does order matter?**
 
-                          *Expected Answer:* Yes, critically. If Logging wraps Caching: logs show cache hits/misses. If Caching wraps Logging: cache may return stale logged values, and you won't see logs for cached calls. Order determines which behaviors see which data.
+*Expected Answer:* Yes, critically. If Logging wraps Caching: logs show cache hits/misses. If Caching wraps Logging: cache may return stale logged values, and you won't see logs for cached calls. Order determines which behaviors see which data.
 
-                          ### Interview Questions - Level 3 (Edge Cases & Design)
+### Interview Questions - Level 3 (Edge Cases & Design)
 
-                          **Q3.1: How do you handle decorator-specific methods that aren't in the Component interface?**
+**Q3.1: How do you handle decorator-specific methods that aren't in the Component interface?**
 
-                          *Expected Answer:* This is a fundamental tension. Options:
-                          1. **Visitor pattern**: External object that knows about specific decorator types
-                          2. **Type checking with unwrapping**: `while hasattr(obj, '_wrapped'): if isinstance(obj, SpecificDecorator): ...`
-                          3. **Extended interface**: Define a richer interface that includes optional capabilities
-                          4. **Avoid it**: Design decorators to only add behavior within interface method calls
+*Expected Answer:* This is a fundamental tension. Options:
+  1. **Visitor pattern**: External object that knows about specific decorator types
+  2. **Type checking with unwrapping**: `while hasattr(obj, '_wrapped'): if isinstance(obj, SpecificDecorator): ...`
+  3. **Extended interface**: Define a richer interface that includes optional capabilities
+  4. **Avoid it**: Design decorators to only add behavior within interface method calls
 
-                          The cleanest solution often is ensuring all interactions happen through the Component interface, accepting that decorators are transparent wrappers.
+  The cleanest solution often is ensuring all interactions happen through the Component interface, accepting that decorators are transparent wrappers.
 
-                          **Q3.2: A teammate argues that a Decorator holding state (like a cache) violates the pattern. Are they correct?**
+**Q3.2: A teammate argues that a Decorator holding state (like a cache) violates the pattern. Are they correct?**
 
-                          *Expected Answer:* No, but it requires careful design. Stateful decorators are valid and common (caching, rate limiting, circuit breakers). The concerns are:
+*Expected Answer:* No, but it requires careful design. Stateful decorators are valid and common (caching, rate limiting, circuit breakers). The concerns are:
                           - **Thread safety**: The state must be synchronized if shared
                           - **Lifecycle management**: State may need clearing/resetting
                           - **Testing**: Stateful decorators are harder to test in isolation
                           - **Memory leaks**: Long-lived decorators with unbounded state
 
-                          The pattern doesn't prohibit state; it just focuses on interface conformance and delegation.
+  The pattern doesn't prohibit state; it just focuses on interface conformance and delegation.
 
-                          ---
+  ---
 
-                          ## Section 2: Decorator Stacking - Order, Composition, and Complexity
+## Section 2: Decorator Stacking - Order, Composition, and Complexity
 
-                          ### The Mathematics of Decorator Ordering
+### The Mathematics of Decorator Ordering
 
-                          With `n` decorators, there are `n!` (factorial) possible orderings. Each ordering may produce different behavior depending on whether decorators:
+  With `n` decorators, there are `n!` (factorial) possible orderings. Each ordering may produce different behavior depending on whether decorators:
                           - Transform input before delegation (pre-processing)
                           - Transform output after delegation (post-processing)
                           - Short-circuit the chain conditionally
@@ -275,14 +275,14 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 1rem; color: white;">
 <div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Compression -> Encryption -> FileSource</div>
 <div style="font-family: monospace; font-size: 0.85rem;">
-                                write("Hello") -> compress("Hello") -> encrypt(compressed) -> store(encrypted)
+  write("Hello") -> compress("Hello") -> encrypt(compressed) -> store(encrypted)
 </div>
 </div>
 <div style="text-align: center; color: #888; font-size: 1.5rem;">vs</div>
 <div style="background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); border-radius: 10px; padding: 1rem; color: white;">
 <div style="font-weight: 700; margin-bottom: 0.5rem;">Decorator Stack: Encryption -> Compression -> FileSource</div>
 <div style="font-family: monospace; font-size: 0.85rem;">
-                                write("Hello") -> encrypt("Hello") -> compress(encrypted) -> store(compressed)
+  write("Hello") -> encrypt("Hello") -> compress(encrypted) -> store(compressed)
 </div>
 </div>
 </div>
@@ -292,7 +292,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <p style="color: #eee; margin: 0; line-height: 1.6;">Compress-then-encrypt is generally correct because compression finds patterns in plaintext. Encrypted data appears random and doesn't compress well. Encrypt-then-compress wastes CPU cycles and may even increase size. This is why the order in decorator chains has <strong>real-world security and performance implications</strong>.</p>
 </div>
 
-                          ### Implementing Robust Stacking
+### Implementing Robust Stacking
 
                           ```python
                           from typing import List, Callable, TypeVar, Generic
@@ -473,9 +473,9 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           decorated_handler = pipeline(user_api_handler)
                           ```
 
-                          ### The Unwrapping Problem
+### The Unwrapping Problem
 
-                          When decorators are stacked, you sometimes need to access the underlying component or a specific decorator in the chain.
+  When decorators are stacked, you sometimes need to access the underlying component or a specific decorator in the chain.
 
                           ```python
                           class DecoratorChainMixin:
@@ -514,38 +514,38 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           return depth
                           ```
 
-                          ### Interview Questions - Level 1 (Foundation)
+### Interview Questions - Level 1 (Foundation)
 
-                          **Q1.1: Given decorators A, B, C, if you write `A(B(C(component)))`, what's the execution order?**
+**Q1.1: Given decorators A, B, C, if you write `A(B(C(component)))`, what's the execution order?**
 
-                          *Expected Answer:* On a method call:
-                          1. A's pre-processing runs first
-                          2. A delegates to B
-                          3. B's pre-processing runs
-                          4. B delegates to C
-                          5. C's pre-processing runs
-                          6. C delegates to component
-                          7. Component executes and returns
-                          8. C's post-processing runs on result
-                          9. B's post-processing runs
-                          10. A's post-processing runs and returns final result
+*Expected Answer:* On a method call:
+  1. A's pre-processing runs first
+  2. A delegates to B
+  3. B's pre-processing runs
+  4. B delegates to C
+  5. C's pre-processing runs
+  6. C delegates to component
+  7. Component executes and returns
+  8. C's post-processing runs on result
+  9. B's post-processing runs
+  10. A's post-processing runs and returns final result
 
-                          Request flows "inward" (A->B->C->component), response flows "outward" (component->C->B->A).
+  Request flows "inward" (A->B->C->component), response flows "outward" (component->C->B->A).
 
-                          **Q1.2: Why would you need to unwrap a decorator chain?**
+**Q1.2: Why would you need to unwrap a decorator chain?**
 
-                          *Expected Answer:* Common reasons include:
+*Expected Answer:* Common reasons include:
                           - Debugging: Inspecting internal state of specific decorators
                           - Testing: Verifying decorator configuration
                           - Serialization: Serializing only the core component
                           - Identity checks: Comparing underlying components
                           - Dynamic reconfiguration: Adding/removing decorators at runtime
 
-                          ### Interview Questions - Level 2 (Mechanics)
+### Interview Questions - Level 2 (Mechanics)
 
-                          **Q2.1: How would you implement a "once-only" decorator that executes the wrapped method only on the first call?**
+**Q2.1: How would you implement a "once-only" decorator that executes the wrapped method only on the first call?**
 
-                          *Expected Answer:*
+*Expected Answer:*
                           ```python
                           class OnceOnlyDecorator(Decorator):
                           def __init__(self, wrapped):
@@ -560,29 +560,29 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           return self._cached_result
                           ```
 
-                          Key considerations: Thread safety (use Lock), memory management (consider WeakRef for cached_result if large), reset capability.
+  Key considerations: Thread safety (use Lock), memory management (consider WeakRef for cached_result if large), reset capability.
 
-                          **Q2.2: Two decorators both modify the same header field. How do you handle conflicts?**
+**Q2.2: Two decorators both modify the same header field. How do you handle conflicts?**
 
-                          *Expected Answer:* Options include:
-                          1. **Last-write-wins**: Accept that outer decorators override inner ones
-                          2. **Merge strategy**: Define how values combine (e.g., append for arrays)
-                          3. **Namespace headers**: Each decorator uses prefixed headers (X-RateLimit-*, X-Cache-*)
-                          4. **Priority system**: Decorators declare priority, highest priority wins
-                          5. **Validation layer**: Final decorator validates header consistency
+*Expected Answer:* Options include:
+  1. **Last-write-wins**: Accept that outer decorators override inner ones
+  2. **Merge strategy**: Define how values combine (e.g., append for arrays)
+  3. **Namespace headers**: Each decorator uses prefixed headers (X-RateLimit-*, X-Cache-*)
+  4. **Priority system**: Decorators declare priority, highest priority wins
+  5. **Validation layer**: Final decorator validates header consistency
 
-                          The decorator pattern doesn't solve this; it's an architectural decision.
+  The decorator pattern doesn't solve this; it's an architectural decision.
 
-                          ### Interview Questions - Level 3 (Edge Cases & Design)
+### Interview Questions - Level 3 (Edge Cases & Design)
 
-                          **Q3.1: How do you test a decorator that depends on decorators above it in the chain?**
+**Q3.1: How do you test a decorator that depends on decorators above it in the chain?**
 
-                          *Expected Answer:* Integration testing challenge. Strategies:
-                          1. **Mock the wrapped component**: Test decorator in isolation with mock that returns controlled responses
-                          2. **Context injection**: Use request.context pattern so decorators can communicate without tight coupling
-                          3. **Dependency injection**: Decorator accepts dependencies explicitly rather than assuming chain position
-                          4. **Contract testing**: Define interface contracts that decorators must satisfy
-                          5. **Chain builder helpers**: Factory that builds valid chains for testing
+*Expected Answer:* Integration testing challenge. Strategies:
+  1. **Mock the wrapped component**: Test decorator in isolation with mock that returns controlled responses
+  2. **Context injection**: Use request.context pattern so decorators can communicate without tight coupling
+  3. **Dependency injection**: Decorator accepts dependencies explicitly rather than assuming chain position
+  4. **Contract testing**: Define interface contracts that decorators must satisfy
+  5. **Chain builder helpers**: Factory that builds valid chains for testing
 
                           ```python
                           # Example: Testing auth decorator that needs rate limit info
@@ -597,30 +597,30 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           # ... test assertions
                           ```
 
-                          **Q3.2: A decorator stack has 10 layers. Performance is degrading. How do you diagnose and fix?**
+**Q3.2: A decorator stack has 10 layers. Performance is degrading. How do you diagnose and fix?**
 
-                          *Expected Answer:* Diagnosis:
-                          1. **Profile the chain**: Measure time in each decorator
-                          2. **Check for O(n^2) patterns**: Each decorator iterating the full chain
-                          3. **Memory pressure**: Object allocations per request
-                          4. **Lock contention**: Stateful decorators with shared locks
+*Expected Answer:* Diagnosis:
+  1. **Profile the chain**: Measure time in each decorator
+  2. **Check for O(n^2) patterns**: Each decorator iterating the full chain
+  3. **Memory pressure**: Object allocations per request
+  4. **Lock contention**: Stateful decorators with shared locks
 
-                          Fixes:
-                          1. **Flatten common combinations**: Create specialized composite decorators
-                          2. **Short-circuit patterns**: Early-exit decorators should be outermost
-                          3. **Lazy evaluation**: Don't process until necessary
-                          4. **Object pooling**: Reuse decorator instances where safe
-                          5. **Reduce chain depth**: Question if all 10 layers are necessary
+  Fixes:
+  1. **Flatten common combinations**: Create specialized composite decorators
+  2. **Short-circuit patterns**: Early-exit decorators should be outermost
+  3. **Lazy evaluation**: Don't process until necessary
+  4. **Object pooling**: Reuse decorator instances where safe
+  5. **Reduce chain depth**: Question if all 10 layers are necessary
 
-                          See also: [[Composite Pattern]](/topic/design-patterns/composite) for flattening hierarchies.
+  See also: [[Composite Pattern]](/topic/design-patterns/composite) for flattening hierarchies.
 
-                          ---
+  ---
 
-                          ## Section 3: I/O Streams - The Classic Decorator Application
+## Section 3: I/O Streams - The Classic Decorator Application
 
-                          ### Java's I/O Design Philosophy
+### Java's I/O Design Philosophy
 
-                          Java's `java.io` package is the canonical real-world Decorator implementation. The design enables mixing and matching stream behaviors:
+  Java's `java.io` package is the canonical real-world Decorator implementation. The design enables mixing and matching stream behaviors:
 
 <div style="display: flex; flex-direction: column; gap: 0.5rem; margin: 2rem 0; font-family: monospace; font-size: 0.9rem;">
 <div style="display: flex; align-items: center; gap: 1rem;">
@@ -649,7 +649,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 </div>
 </div>
 
-                          ### Python Implementation with Real-World Concerns
+### Python Implementation with Real-World Concerns
 
                           ```python
                           from abc import ABC, abstractmethod
@@ -981,27 +981,27 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <p style="color: #eee; margin: 0; line-height: 1.6;">Stream decorators MUST propagate <code>close()</code> calls down the chain. Failure to do so causes resource leaks (file handles, network connections). In languages without deterministic destruction, always use try-finally or context managers. Java's try-with-resources and Python's context managers are designed specifically for this pattern.</p>
 </div>
 
-                          ### Interview Questions - Level 1 (Foundation)
+### Interview Questions - Level 1 (Foundation)
 
-                          **Q1.1: Why does Java use `FilterInputStream` as the decorator base instead of just extending `InputStream`?**
+**Q1.1: Why does Java use `FilterInputStream` as the decorator base instead of just extending `InputStream`?**
 
-                          *Expected Answer:* `FilterInputStream` provides default delegation behavior, reducing boilerplate. Each concrete decorator only overrides methods it modifies. Without it, every decorator would need to implement all ~10 InputStream methods with delegation code.
+*Expected Answer:* `FilterInputStream` provides default delegation behavior, reducing boilerplate. Each concrete decorator only overrides methods it modifies. Without it, every decorator would need to implement all ~10 InputStream methods with delegation code.
 
-                          **Q1.2: What happens if you forget to close a BufferedOutputStream in Java?**
+**Q1.2: What happens if you forget to close a BufferedOutputStream in Java?**
 
-                          *Expected Answer:* Data remaining in the buffer is lost. The buffer may not be flushed to the underlying stream, causing incomplete writes. This is why `flush()` must be called before `close()`, and why try-with-resources is essential.
+*Expected Answer:* Data remaining in the buffer is lost. The buffer may not be flushed to the underlying stream, causing incomplete writes. This is why `flush()` must be called before `close()`, and why try-with-resources is essential.
 
-                          ### Interview Questions - Level 2 (Mechanics)
+### Interview Questions - Level 2 (Mechanics)
 
-                          **Q2.1: How does `BufferedInputStream.mark()` and `reset()` work with decorator chaining?**
+**Q2.1: How does `BufferedInputStream.mark()` and `reset()` work with decorator chaining?**
 
-                          *Expected Answer:* `BufferedInputStream` overrides `mark()` to remember position in its buffer and `reset()` to return to that position. However, it can only reset within the buffer bounds. If you read past the `markLimit`, the mark becomes invalid.
+*Expected Answer:* `BufferedInputStream` overrides `mark()` to remember position in its buffer and `reset()` to return to that position. However, it can only reset within the buffer bounds. If you read past the `markLimit`, the mark becomes invalid.
 
-                          The complexity: if another decorator wraps BufferedInputStream, mark/reset semantics depend entirely on BufferedInputStream's buffer - outer decorators can't extend the mark capability.
+  The complexity: if another decorator wraps BufferedInputStream, mark/reset semantics depend entirely on BufferedInputStream's buffer - outer decorators can't extend the mark capability.
 
-                          **Q2.2: Design a decorator that limits total bytes read (quota enforcement). What edge cases must you handle?**
+**Q2.2: Design a decorator that limits total bytes read (quota enforcement). What edge cases must you handle?**
 
-                          *Expected Answer:*
+*Expected Answer:*
                           ```python
                           class QuotaStream(StreamDecorator):
                           def __init__(self, wrapped: Stream, max_bytes: int):
@@ -1019,31 +1019,31 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           return data
                           ```
 
-                          Edge cases:
+  Edge cases:
                           - `size=-1` (read all): Must limit to remaining quota
                           - Empty reads at quota boundary vs actual EOF
                           - Thread safety if shared across threads
                           - Quota accounting for failed reads (if underlying stream throws)
 
-                          ### Interview Questions - Level 3 (Edge Cases & Design)
+### Interview Questions - Level 3 (Edge Cases & Design)
 
-                          **Q3.1: You're debugging: data written through Compression->Encryption->File appears corrupted. How do you diagnose?**
+**Q3.1: You're debugging: data written through Compression->Encryption->File appears corrupted. How do you diagnose?**
 
-                          *Expected Answer:* Systematic approach:
-                          1. **Isolate layers**: Test each decorator independently with known inputs
-                          2. **Verify order**: Compression->Encryption writes compressed-then-encrypted; reading must Decrypt->Decompress (reverse order)
-                          3. **Check flush/close**: Compression maintains state; incomplete flush corrupts data
-                          4. **Buffer boundaries**: Encryption block sizes (16 bytes for AES) may not align with compression output
-                          5. **Add diagnostic layer**: Insert a TeeStream that writes to a debug file before encryption
+*Expected Answer:* Systematic approach:
+  1. **Isolate layers**: Test each decorator independently with known inputs
+  2. **Verify order**: Compression->Encryption writes compressed-then-encrypted; reading must Decrypt->Decompress (reverse order)
+  3. **Check flush/close**: Compression maintains state; incomplete flush corrupts data
+  4. **Buffer boundaries**: Encryption block sizes (16 bytes for AES) may not align with compression output
+  5. **Add diagnostic layer**: Insert a TeeStream that writes to a debug file before encryption
 
-                          Common causes:
+  Common causes:
                           - Flush not called before close
                           - Read path doesn't reverse write path order
                           - Partial block handling in encryption
 
-                          **Q3.2: How would you make stream decorators work with async I/O?**
+**Q3.2: How would you make stream decorators work with async I/O?**
 
-                          *Expected Answer:* Fundamental redesign needed:
+*Expected Answer:* Fundamental redesign needed:
                           ```python
                           class AsyncStream(ABC):
                           @abstractmethod
@@ -1063,21 +1063,21 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           # ...
                           ```
 
-                          Challenges:
+  Challenges:
                           - Can't mix sync and async decorators transparently
                           - Cancellation must propagate through chain
                           - Backpressure handling changes
                           - Testing requires async test frameworks
 
-                          See also: [[Async Patterns]](/topic/concurrency/async-await) for async composition strategies.
+  See also: [[Async Patterns]](/topic/concurrency/async-await) for async composition strategies.
 
-                          ---
+  ---
 
-                          ## Section 4: Middleware Pattern - Decorators in Web Frameworks
+## Section 4: Middleware Pattern - Decorators in Web Frameworks
 
-                          ### Middleware as Request/Response Decoration
+### Middleware as Request/Response Decoration
 
-                          Web framework middleware is the Decorator pattern applied to HTTP handling. Each middleware wraps the next handler, creating a pipeline.
+  Web framework middleware is the Decorator pattern applied to HTTP handling. Each middleware wraps the next handler, creating a pipeline.
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap;">
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Request</div>
@@ -1095,7 +1095,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1rem; border-radius: 8px; color: white; font-size: 0.85rem;">Response</div>
 </div>
 
-                          ### Go Implementation with Real-World Patterns
+### Go Implementation with Real-World Patterns
 
                           ```go
                           package main
@@ -1387,7 +1387,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
 <p style="color: #eee; margin: 0; line-height: 1.6;">Middleware should handle <strong>cross-cutting concerns</strong>: authentication, logging, rate limiting, CORS. Business logic belongs in handlers. If you find middleware making business decisions (e.g., "admin users skip rate limits"), consider moving that logic to the handler or introducing a policy layer.</p>
 </div>
 
-                          ### Express.js Pattern Comparison
+### Express.js Pattern Comparison
 
                           ```javascript
                           // Express middleware follows same decorator pattern
@@ -1429,57 +1429,57 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           }
                           ```
 
-                          ### Interview Questions - Level 1 (Foundation)
+### Interview Questions - Level 1 (Foundation)
 
-                          **Q1.1: What's the difference between middleware and filters?**
+**Q1.1: What's the difference between middleware and filters?**
 
-                          *Expected Answer:* Functionally similar, naming varies by framework:
+*Expected Answer:* Functionally similar, naming varies by framework:
                           - **Middleware** (Express, Koa, Go): Wraps handlers, controls whether to call next
                           - **Filters** (Java Servlet, Spring): Same concept, filter chain pattern
                           - **Interceptors** (Angular, NestJS): Often split into pre/post phases explicitly
 
-                          All implement the Decorator pattern for HTTP request/response processing.
+  All implement the Decorator pattern for HTTP request/response processing.
 
-                          **Q1.2: Why do most frameworks apply middleware in definition order but decorators wrap inside-out?**
+**Q1.2: Why do most frameworks apply middleware in definition order but decorators wrap inside-out?**
 
-                          *Expected Answer:* It's the same thing viewed differently:
+*Expected Answer:* It's the same thing viewed differently:
                           - Definition order: `[A, B, C, Handler]` means A runs first
                           - Wrapping order: `A(B(C(Handler)))` - A is outermost, runs first
 
-                          Frameworks abstract the wrapping, presenting a linear list for developer ergonomics while constructing the decorator chain internally.
+  Frameworks abstract the wrapping, presenting a linear list for developer ergonomics while constructing the decorator chain internally.
 
-                          ### Interview Questions - Level 2 (Mechanics)
+### Interview Questions - Level 2 (Mechanics)
 
-                          **Q2.1: How do you share data between middleware without polluting the request object?**
+**Q2.1: How do you share data between middleware without polluting the request object?**
 
-                          *Expected Answer:* Options:
-                          1. **Context (Go)**: `context.WithValue()` - type-safe, immutable chain
-                          2. **Locals (Express)**: `res.locals` - mutable, scoped to request
-                          3. **Request attributes (Java)**: `request.setAttribute()` - standard servlet API
-                          4. **AsyncLocalStorage (Node.js)**: Thread-local-like storage for async
+*Expected Answer:* Options:
+  1. **Context (Go)**: `context.WithValue()` - type-safe, immutable chain
+  2. **Locals (Express)**: `res.locals` - mutable, scoped to request
+  3. **Request attributes (Java)**: `request.setAttribute()` - standard servlet API
+  4. **AsyncLocalStorage (Node.js)**: Thread-local-like storage for async
 
-                          Go's context is considered cleanest due to immutability and explicit propagation.
+  Go's context is considered cleanest due to immutability and explicit propagation.
 
-                          **Q2.2: Timeout middleware can't truly abort a running handler. Why, and how do you mitigate?**
+**Q2.2: Timeout middleware can't truly abort a running handler. Why, and how do you mitigate?**
 
-                          *Expected Answer:* HTTP handlers can't be forcibly interrupted:
+*Expected Answer:* HTTP handlers can't be forcibly interrupted:
                           - Handler goroutine/thread continues running
                           - Response may be partially written before timeout
                           - Database connections may remain open
 
-                          Mitigations:
-                          1. **Check context**: Handler periodically checks `ctx.Done()`
-                          2. **Database timeouts**: Use context-aware database clients
-                          3. **Response wrapper**: Buffer writes, only flush on success
-                          4. **Circuit breaker**: Track slow handlers, shed load earlier
+  Mitigations:
+  1. **Check context**: Handler periodically checks `ctx.Done()`
+  2. **Database timeouts**: Use context-aware database clients
+  3. **Response wrapper**: Buffer writes, only flush on success
+  4. **Circuit breaker**: Track slow handlers, shed load earlier
 
-                          See also: [[Circuit Breaker Pattern]](/topic/design-patterns/circuit-breaker) for failure handling.
+  See also: [[Circuit Breaker Pattern]](/topic/design-patterns/circuit-breaker) for failure handling.
 
-                          ### Interview Questions - Level 3 (Edge Cases & Design)
+### Interview Questions - Level 3 (Edge Cases & Design)
 
-                          **Q3.1: Design a middleware that retries failed requests. What problems might occur?**
+**Q3.1: Design a middleware that retries failed requests. What problems might occur?**
 
-                          *Expected Answer:*
+*Expected Answer:*
                           ```go
                           func RetryMiddleware(maxRetries int, backoff time.Duration) Middleware {
                           return func(next http.Handler) http.Handler {
@@ -1515,16 +1515,16 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           }
                           ```
 
-                          Problems:
+  Problems:
                           - **Idempotency**: Non-idempotent requests (POST) shouldn't be blindly retried
                           - **Body consumption**: Request body is a stream, can only read once
                           - **Memory**: Buffering large bodies is expensive
                           - **Timing**: Retries may exceed client timeout
                           - **Duplicate effects**: Partial success before failure
 
-                          **Q3.2: How would you implement middleware that works with both HTTP/1.1 and HTTP/2 Server Push?**
+**Q3.2: How would you implement middleware that works with both HTTP/1.1 and HTTP/2 Server Push?**
 
-                          *Expected Answer:* This exposes a Decorator limitation - HTTP/2 pusher is an optional capability:
+*Expected Answer:* This exposes a Decorator limitation - HTTP/2 pusher is an optional capability:
 
                           ```go
                           func PushMiddleware(assets []string) Middleware {
@@ -1544,7 +1544,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           }
                           ```
 
-                          The pattern challenge: `ResponseWriter` has optional `Pusher` interface. When we wrap it (e.g., for logging), we lose the `Pusher` capability unless we explicitly preserve it:
+  The pattern challenge: `ResponseWriter` has optional `Pusher` interface. When we wrap it (e.g., for logging), we lose the `Pusher` capability unless we explicitly preserve it:
 
                           ```go
                           type pushableWrapper struct {
@@ -1553,11 +1553,11 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           }
                           ```
 
-                          This is the "lost capabilities through decoration" problem - each wrapper must explicitly preserve all optional interfaces.
+  This is the "lost capabilities through decoration" problem - each wrapper must explicitly preserve all optional interfaces.
 
-                          ---
+  ---
 
-                          ## Related Patterns and Cross-References
+## Related Patterns and Cross-References
 
                           - [[Proxy Pattern]](/topic/design-patterns/proxy) - Controls access without adding behavior; Decorator adds behavior without controlling access
                           - [[Adapter Pattern]](/topic/design-patterns/adapter) - Changes interface; Decorator preserves interface
@@ -1565,7 +1565,7 @@ The Decorator pattern dynamically attaches additional responsibilities to object
                           - [[Composite Pattern]](/topic/design-patterns/composite) - Tree structure; Decorator is linear chain
                           - [[Strategy Pattern]](/topic/design-patterns/strategy) - Changes algorithm entirely; Decorator wraps and extends
 
-                          ## Summary: When to Use Decorator
+## Summary: When to Use Decorator
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
 <div style="background: linear-gradient(135deg, #4ecdc422 0%, #4ecdc411 100%); border: 1px solid #4ecdc4; border-radius: 10px; padding: 1.25rem;">

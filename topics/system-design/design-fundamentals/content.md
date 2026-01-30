@@ -498,15 +498,15 @@ Availability is the percentage of time a system is operational. Often expressed 
 
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
+  <thead>
 <tr style="background: #e2e8f0;">
 <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Availability</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Year</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Month</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Typical Use Case</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr>
 <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99% (two nines)</td>
 <td style="padding: 12px; border: 1px solid #e2e8f0;">3.65 days</td>
@@ -537,7 +537,7 @@ Availability is the percentage of time a system is operational. Often expressed 
 <td style="padding: 12px; border: 1px solid #e2e8f0;">26 seconds</td>
 <td style="padding: 12px; border: 1px solid #e2e8f0;">Telecom, emergency services</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>
@@ -653,7 +653,7 @@ Maintainability is about making the system easy to operate, understand, and evol
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; border: 2px solid #22c55e;">
 <div style="color: #16a34a; font-weight: 700; font-size: 16px; margin-bottom: 16px;">OPERABILITY</div>
 <div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
-        Making it easy for operations teams to keep the system running smoothly.
+  Making it easy for operations teams to keep the system running smoothly.
 <div style="margin-top: 12px;">
 <div style="margin-bottom: 4px;">Monitoring and alerting</div>
 <div style="margin-bottom: 4px;">Good documentation for procedures</div>
@@ -667,7 +667,7 @@ Maintainability is about making the system easy to operate, understand, and evol
 <div style="background: #eff6ff; border-radius: 12px; padding: 24px; border: 2px solid #2563eb;">
 <div style="color: #2563eb; font-weight: 700; font-size: 16px; margin-bottom: 16px;">SIMPLICITY</div>
 <div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
-        Making it easy for new engineers to understand the system.
+  Making it easy for new engineers to understand the system.
 <div style="margin-top: 12px;">
 <div style="margin-bottom: 4px;">Remove accidental complexity</div>
 <div style="margin-bottom: 4px;">Good abstractions hiding implementation</div>
@@ -681,7 +681,7 @@ Maintainability is about making the system easy to operate, understand, and evol
 <div style="background: #fef3c7; border-radius: 12px; padding: 24px; border: 2px solid #f59e0b;">
 <div style="color: #b45309; font-weight: 700; font-size: 16px; margin-bottom: 16px;">EVOLVABILITY</div>
 <div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
-        Making it easy to make changes and adapt to new requirements.
+  Making it easy to make changes and adapt to new requirements.
 <div style="margin-top: 12px;">
 <div style="margin-bottom: 4px;">Loose coupling between components</div>
 <div style="margin-bottom: 4px;">Well-defined interfaces</div>
@@ -705,21 +705,21 @@ Maintainability is about making the system easy to operate, understand, and evol
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #059669;">
 <div style="color: #059669; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Metrics</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Numeric time-series data. Use for alerting and dashboards. RED method: Rate (requests/sec), Errors (error rate), Duration (latency). USE method for resources: Utilization, Saturation, Errors.
+  Numeric time-series data. Use for alerting and dashboards. RED method: Rate (requests/sec), Errors (error rate), Duration (latency). USE method for resources: Utilization, Saturation, Errors.
 </div>
 </div>
 
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #2563eb;">
 <div style="color: #2563eb; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Logs</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Discrete events with context. Use structured logging (JSON) with correlation IDs. Log at appropriate levels: ERROR for failures, WARN for degradation, INFO for business events, DEBUG for troubleshooting.
+  Discrete events with context. Use structured logging (JSON) with correlation IDs. Log at appropriate levels: ERROR for failures, WARN for degradation, INFO for business events, DEBUG for troubleshooting.
 </div>
 </div>
 
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #7c3aed;">
 <div style="color: #7c3aed; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Traces</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Request flow across services. Essential for distributed systems. Propagate trace context (trace ID, span ID) across service boundaries. Use sampling to reduce overhead (1% of requests is usually sufficient).
+  Request flow across services. Essential for distributed systems. Propagate trace context (trace ID, span ID) across service boundaries. Use sampling to reduce overhead (1% of requests is usually sufficient).
 </div>
 </div>
 
@@ -1128,7 +1128,7 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="background: #22c55e; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
 <div style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">Phase 1: Requirements (5-10 min)</div>
 <div style="font-size: 13px; line-height: 1.6;">
-          Clarify scope and constraints. Ask about users, scale, features. Define functional and non-functional requirements. Establish success metrics.
+  Clarify scope and constraints. Ask about users, scale, features. Define functional and non-functional requirements. Establish success metrics.
 </div>
 </div>
 </div>
@@ -1139,7 +1139,7 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="background: #2563eb; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
 <div style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">Phase 2: Estimation (5 min)</div>
 <div style="font-size: 13px; line-height: 1.6;">
-          Calculate scale: QPS, storage, bandwidth. Identify read/write ratio. Determine if this is a big data problem. Show your math clearly.
+  Calculate scale: QPS, storage, bandwidth. Identify read/write ratio. Determine if this is a big data problem. Show your math clearly.
 </div>
 </div>
 </div>
@@ -1150,7 +1150,7 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="background: #7c3aed; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
 <div style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">Phase 3: High-Level Design (15-20 min)</div>
 <div style="font-size: 13px; line-height: 1.6;">
-          Draw main components. Define APIs. Sketch data flow. Start simple, add complexity as needed. Validate design meets requirements.
+  Draw main components. Define APIs. Sketch data flow. Start simple, add complexity as needed. Validate design meets requirements.
 </div>
 </div>
 </div>
@@ -1161,7 +1161,7 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="background: #f59e0b; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
 <div style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">Phase 4: Deep Dive (15-20 min)</div>
 <div style="font-size: 13px; line-height: 1.6;">
-          Interviewer picks areas to explore. Discuss specific algorithms, data structures. Address failure scenarios. Optimize bottlenecks.
+  Interviewer picks areas to explore. Discuss specific algorithms, data structures. Address failure scenarios. Optimize bottlenecks.
 </div>
 </div>
 </div>
@@ -1303,28 +1303,28 @@ Understanding failures deepens appreciation for design principles.
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #059669;">
 <div style="color: #059669; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Scalability</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Vertical scaling is simple but limited. Horizontal scaling is unlimited but complex. Choose based on workload characteristics, operational capability, and cost constraints. Scale the bottleneck, not everything.
+  Vertical scaling is simple but limited. Horizontal scaling is unlimited but complex. Choose based on workload characteristics, operational capability, and cost constraints. Scale the bottleneck, not everything.
 </div>
 </div>
 
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #2563eb;">
 <div style="color: #2563eb; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Reliability</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Assume everything fails. Design for fault tolerance through redundancy, isolation, and graceful degradation. Circuit breakers prevent cascade failures. Retries need backoff and jitter.
+  Assume everything fails. Design for fault tolerance through redundancy, isolation, and graceful degradation. Circuit breakers prevent cascade failures. Retries need backoff and jitter.
 </div>
 </div>
 
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #7c3aed;">
 <div style="color: #7c3aed; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Maintainability</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Design for the person debugging at 3 AM. Observability (metrics, logs, traces) is not optional. Simplicity enables evolution. Technical debt is a tool, not a failure.
+  Design for the person debugging at 3 AM. Observability (metrics, logs, traces) is not optional. Simplicity enables evolution. Technical debt is a tool, not a failure.
 </div>
 </div>
 
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
 <div style="color: #b45309; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Estimation</div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
-        Know your numbers (latencies, capacities, conversions). Use a systematic framework. Round to powers of 10. The goal is order of magnitude, not precision. Show your work.
+  Know your numbers (latencies, capacities, conversions). Use a systematic framework. Round to powers of 10. The goal is order of magnitude, not precision. Show your work.
 </div>
 </div>
 

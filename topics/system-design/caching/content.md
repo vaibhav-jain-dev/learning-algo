@@ -149,15 +149,15 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; color: #1e293b; font-size: 14px;">
-      <thead>
+  <thead>
 <tr style="background: #e2e8f0;">
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Strategy</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Read Path</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Write Path</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Best For</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #ffffff;">
 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Cache-Aside</td>
 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">App checks cache, then DB</td>
@@ -182,7 +182,7 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 <td style="padding: 12px;">N/A</td>
 <td style="padding: 12px;">Simplified read logic</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>

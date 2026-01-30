@@ -594,7 +594,7 @@ Data migration is often the **hardest part** of microservices migration. The mon
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
 <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 1: Database View Abstraction</h4>
 <div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
-        Create database views that present the data as if it were already split. Services read from views. Actual table migration happens transparently.
+  Create database views that present the data as if it were already split. Services read from views. Actual table migration happens transparently.
 </div>
 <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
 <div style="color: #7ee787; font-size: 0.85em;"><strong>Best for:</strong> Early migration phases, read-heavy workloads</div>
@@ -603,7 +603,7 @@ Data migration is often the **hardest part** of microservices migration. The mon
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px;">
 <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 2: Change Data Capture (CDC)</h4>
 <div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
-        Use tools like Debezium to stream changes from monolith DB to new service databases. Enables real-time sync without application changes.
+  Use tools like Debezium to stream changes from monolith DB to new service databases. Enables real-time sync without application changes.
 </div>
 <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
 <div style="color: #58a6ff; font-size: 0.85em;"><strong>Best for:</strong> Zero-downtime migration, gradual cutover</div>
@@ -612,7 +612,7 @@ Data migration is often the **hardest part** of microservices migration. The mon
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
 <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 3: Dual-Write with Reconciliation</h4>
 <div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
-        Application writes to both old and new databases. Background job reconciles differences. Eventual cutover to new database only.
+  Application writes to both old and new databases. Background job reconciles differences. Eventual cutover to new database only.
 </div>
 <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
 <div style="color: #a371f7; font-size: 0.85em;"><strong>Best for:</strong> Critical data requiring verification</div>
@@ -621,7 +621,7 @@ Data migration is often the **hardest part** of microservices migration. The mon
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
 <h4 style="color: #fff; margin: 0 0 12px 0;">Pattern 4: Event-Sourced Migration</h4>
 <div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6; margin-bottom: 12px;">
-        Replay historical events to build new service's state. New service becomes the event-sourced source of truth going forward.
+  Replay historical events to build new service's state. New service becomes the event-sourced source of truth going forward.
 </div>
 <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px;">
 <div style="color: #f97316; font-size: 0.85em;"><strong>Best for:</strong> Systems with event logs, audit requirements</div>
@@ -1014,7 +1014,7 @@ Decoupling from a shared database requires a systematic approach. You cannot sim
 <span style="color: #fff; font-weight: 600;">Establish Service APIs</span>
 </div>
 <div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6;">
-        Create API endpoints in each service for data it "owns." Other services call APIs instead of querying tables directly. Database access still shared, but access is now through defined interfaces.
+  Create API endpoints in each service for data it "owns." Other services call APIs instead of querying tables directly. Database access still shared, but access is now through defined interfaces.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px;">
@@ -1023,7 +1023,7 @@ Decoupling from a shared database requires a systematic approach. You cannot sim
 <span style="color: #fff; font-weight: 600;">Introduce Data Replication</span>
 </div>
 <div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6;">
-        Services that need other services' data subscribe to events and maintain local read replicas. Order Service keeps a copy of user data it needs, updated via UserUpdated events.
+  Services that need other services' data subscribe to events and maintain local read replicas. Order Service keeps a copy of user data it needs, updated via UserUpdated events.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px;">
@@ -1032,7 +1032,7 @@ Decoupling from a shared database requires a systematic approach. You cannot sim
 <span style="color: #fff; font-weight: 600;">Split Physical Database</span>
 </div>
 <div style="color: #ede9fe; font-size: 0.9em; line-height: 1.6;">
-        Move tables to service-owned databases. User tables move to User Service DB. Order tables move to Order Service DB. Services can no longer JOIN across boundaries.
+  Move tables to service-owned databases. User tables move to User Service DB. Order tables move to Order Service DB. Services can no longer JOIN across boundaries.
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 12px; padding: 20px;">
@@ -1041,7 +1041,7 @@ Decoupling from a shared database requires a systematic approach. You cannot sim
 <span style="color: #fff; font-weight: 600;">Remove Cross-Service Foreign Keys</span>
 </div>
 <div style="color: #fed7aa; font-size: 0.9em; line-height: 1.6;">
-        Replace FK constraints with application-level validation. Order Service validates user exists by calling User Service API before creating order. Referential integrity maintained through service contracts.
+  Replace FK constraints with application-level validation. Order Service validates user exists by calling User Service API before creating order. Referential integrity maintained through service contracts.
 </div>
 </div>
 </div>

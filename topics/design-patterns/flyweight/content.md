@@ -1063,13 +1063,13 @@ The Flyweight pattern often works alongside other patterns to create robust arch
 <h5 style="color: #fbbf24;">1. Mutable Intrinsic State</h5>
 <p style="color: #d6d3d1;">Making flyweight state mutable corrupts all clients simultaneously. Always use frozen/immutable objects.</p>
 <pre style="background: #292524; padding: 10px; border-radius: 4px; color: #a8a29e; overflow-x: auto;">
-      # WRONG: Mutable flyweight
-      class CharStyle:
-      def __init__(self, color):
-      self.color = color  # Can be changed!
+# WRONG: Mutable flyweight
+  class CharStyle:
+  def __init__(self, color):
+  self.color = color  # Can be changed!
 
-      # One client changes color - affects ALL users of this flyweight
-      style.color = "red"  # Bug: every character using this style turns red
+# One client changes color - affects ALL users of this flyweight
+  style.color = "red"  # Bug: every character using this style turns red
 </pre>
 </div>
 
@@ -1077,9 +1077,9 @@ The Flyweight pattern often works alongside other patterns to create robust arch
 <h5 style="color: #fbbf24;">2. Identity Confusion</h5>
 <p style="color: #d6d3d1;">Flyweights must not be used where object identity matters. Two "different" characters share the same flyweight - they're not distinguishable by flyweight identity.</p>
 <pre style="background: #292524; padding: 10px; border-radius: 4px; color: #a8a29e; overflow-x: auto;">
-      # WRONG: Using flyweight for identity
-      if character1.type is character2.type:
-      print("Same character!")  # Bug: just same TYPE, not same instance
+# WRONG: Using flyweight for identity
+  if character1.type is character2.type:
+  print("Same character!")  # Bug: just same TYPE, not same instance
 </pre>
 </div>
 

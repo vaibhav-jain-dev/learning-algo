@@ -47,13 +47,13 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 <div style="font-size: 0.8rem; color: #2563eb;">
 <div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
 <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
-          name: "Doc1"<br>
-            data: [ref] ----+
+  name: "Doc1"<br>
+  data: [ref] ----+
 </div>
 <div style="margin-bottom: 6px;"><strong>Object B (shallow clone)</strong></div>
 <div style="background: #bfdbfe; padding: 8px; border-radius: 4px;">
-            name: "Doc1"<br>
-              data: [ref] ----+---> [Shared Array]
+  name: "Doc1"<br>
+  data: [ref] ----+---> [Shared Array]
 </div>
 </div>
 </div>
@@ -68,24 +68,24 @@ Understanding copy semantics is fundamental to implementing Prototype correctly.
 <div style="font-size: 0.8rem; color: #059669;">
 <div style="margin-bottom: 6px;"><strong>Object A (original)</strong></div>
 <div style="background: #a7f3d0; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
-              name: "Doc1"<br>
-                data: [ref] ----> [Array A]
+  name: "Doc1"<br>
+  data: [ref] ----> [Array A]
 </div>
 <div style="margin-bottom: 6px;"><strong>Object B (deep clone)</strong></div>
 <div style="background: #a7f3d0; padding: 8px; border-radius: 4px;">
-                name: "Doc1"<br>
-                  data: [ref] ----> [Array B] (copy)
+  name: "Doc1"<br>
+  data: [ref] ----> [Array B] (copy)
 </div>
 </div>
 </div>
 </div>
 </div>
 
-        ### Memory Layout and Performance Implications
+### Memory Layout and Performance Implications
 
-        **Shallow copy** performs in O(1) relative to nested object graph size - it only copies the immediate object's fields regardless of how complex the referenced objects are. However, this creates **aliasing**: mutations through one reference affect all objects sharing that reference.
+**Shallow copy** performs in O(1) relative to nested object graph size - it only copies the immediate object's fields regardless of how complex the referenced objects are. However, this creates **aliasing**: mutations through one reference affect all objects sharing that reference.
 
-        **Deep copy** performs in O(n) where n is the total size of the object graph. Memory consumption doubles (or more, accounting for overhead). For large object graphs, this can cause significant GC pressure and latency spikes.
+**Deep copy** performs in O(n) where n is the total size of the object graph. Memory consumption doubles (or more, accounting for overhead). For large object graphs, this can cause significant GC pressure and latency spikes.
 
 <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-left: 4px solid #ec4899; border-radius: 8px; padding: 16px; margin: 20px 0;">
 <div style="font-weight: 700; color: #9d174d; margin-bottom: 8px;">Critical Trade-off</div>
@@ -94,9 +94,9 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 </div>
 
-        ### Handling Circular References
+### Handling Circular References
 
-        Circular references create infinite recursion in naive deep copy implementations. The solution is **memo-based copying**: maintain a dictionary mapping original objects to their clones. Before copying any object, check if it already exists in the memo.
+  Circular references create infinite recursion in naive deep copy implementations. The solution is **memo-based copying**: maintain a dictionary mapping original objects to their clones. Before copying any object, check if it already exists in the memo.
 
         ```python
         def deep_copy_with_memo(obj, memo=None):
@@ -119,27 +119,27 @@ The choice between shallow and deep copy is not binary. Production implementatio
         return clone
         ```
 
-        Python's `copy.deepcopy()` implements this pattern internally. The critical insight is that the clone must be registered in the memo **before** recursively copying its fields - otherwise circular references will still cause infinite recursion.
+  Python's `copy.deepcopy()` implements this pattern internally. The critical insight is that the clone must be registered in the memo **before** recursively copying its fields - otherwise circular references will still cause infinite recursion.
 
-        ### Interview Questions: Shallow vs Deep Copy
+### Interview Questions: Shallow vs Deep Copy
 
-        **Level 1: When is shallow copy sufficient, and when must you use deep copy?**
+**Level 1: When is shallow copy sufficient, and when must you use deep copy?**
 
-        Shallow copy suffices when: (1) All nested objects are immutable (strings, frozen collections), (2) You intentionally want clones to share state (e.g., shared configuration), (3) Performance constraints prohibit deep copying. Deep copy is required when clones must be independently mutable without affecting each other's nested state.
+  Shallow copy suffices when: (1) All nested objects are immutable (strings, frozen collections), (2) You intentionally want clones to share state (e.g., shared configuration), (3) Performance constraints prohibit deep copying. Deep copy is required when clones must be independently mutable without affecting each other's nested state.
 
-        **Level 2: How would you implement a copy strategy that deep-copies some fields while shallow-copying others, and what documentation would you provide?**
+**Level 2: How would you implement a copy strategy that deep-copies some fields while shallow-copying others, and what documentation would you provide?**
 
-        Implement a custom `clone()` method that explicitly handles each field category. Document using a "clone contract" specifying: (1) Which fields are deep-copied (independent after cloning), (2) Which fields are shallow-copied (shared references), (3) Which fields are reset (IDs, timestamps), (4) Which fields reference non-cloneable resources. Consider using annotations or builder patterns to make the strategy explicit in code.
+  Implement a custom `clone()` method that explicitly handles each field category. Document using a "clone contract" specifying: (1) Which fields are deep-copied (independent after cloning), (2) Which fields are shallow-copied (shared references), (3) Which fields are reset (IDs, timestamps), (4) Which fields reference non-cloneable resources. Consider using annotations or builder patterns to make the strategy explicit in code.
 
-        **Level 3: In a system processing 10,000 clone operations per second on objects with 1MB average deep-copy size, what memory and GC implications arise, and how would you design the cloning strategy to minimize latency variance?**
+**Level 3: In a system processing 10,000 clone operations per second on objects with 1MB average deep-copy size, what memory and GC implications arise, and how would you design the cloning strategy to minimize latency variance?**
 
-        At 10K ops/sec with 1MB copies, you're generating 10GB/sec of short-lived objects - catastrophic for GC. Solutions: (1) Use [[Object Pool Pattern]](/topic/design-patterns/object-pool) with explicit recycling instead of cloning; (2) Implement copy-on-write semantics where clones share data until mutation; (3) Use structural sharing (persistent data structures) where unchanged subtrees are shared; (4) Implement region-based cloning where objects are allocated in arenas that can be bulk-freed; (5) Profile to identify the 20% of fields causing 80% of copy cost and consider lazy cloning for those. The key insight is that Prototype may be the wrong pattern at this scale - consider [[Flyweight]](/topic/design-patterns/flyweight) for shared intrinsic state.
+  At 10K ops/sec with 1MB copies, you're generating 10GB/sec of short-lived objects - catastrophic for GC. Solutions: (1) Use [[Object Pool Pattern]](/topic/design-patterns/object-pool) with explicit recycling instead of cloning; (2) Implement copy-on-write semantics where clones share data until mutation; (3) Use structural sharing (persistent data structures) where unchanged subtrees are shared; (4) Implement region-based cloning where objects are allocated in arenas that can be bulk-freed; (5) Profile to identify the 20% of fields causing 80% of copy cost and consider lazy cloning for those. The key insight is that Prototype may be the wrong pattern at this scale - consider [[Flyweight]](/topic/design-patterns/flyweight) for shared intrinsic state.
 
-        ---
+  ---
 
-        ## Java's Cloneable Interface: A Cautionary Tale
+## Java's Cloneable Interface: A Cautionary Tale
 
-        Java's built-in cloning mechanism via `Cloneable` interface and `Object.clone()` is one of the most criticized features in the language. Understanding its flaws is essential for Java interviews.
+  Java's built-in cloning mechanism via `Cloneable` interface and `Object.clone()` is one of the most criticized features in the language. Understanding its flaws is essential for Java interviews.
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">Why Java's Cloneable is Broken</h4>
@@ -167,7 +167,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 </div>
 
-        ### The "Correct" Way to Implement Cloneable (If You Must)
+### The "Correct" Way to Implement Cloneable (If You Must)
 
         ```java
         public class Document implements Cloneable {
@@ -199,7 +199,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
           }
           ```
 
-          ### Preferred Alternatives to Cloneable
+### Preferred Alternatives to Cloneable
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <h4 style="color: #065f46; margin-top: 0;">Better Approaches in Java</h4>
@@ -209,7 +209,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Copy Constructor</div>
 <div style="font-size: 0.85rem; color: #047857;">
 <code>public Document(Document other)</code><br><br>
-                      Explicit, uses normal construction, can set final fields, no checked exceptions.
+  Explicit, uses normal construction, can set final fields, no checked exceptions.
 </div>
 </div>
 
@@ -217,14 +217,14 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Static Factory Method</div>
 <div style="font-size: 0.85rem; color: #047857;">
 <code>public static Document copyOf(Document d)</code><br><br>
-                          Can return subtype, can cache, descriptive naming, full control over construction.
+  Can return subtype, can cache, descriptive naming, full control over construction.
 </div>
 </div>
 
 <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #6ee7b7;">
 <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Serialization Round-trip</div>
 <div style="font-size: 0.85rem; color: #047857;">
-                          Serialize to bytes, deserialize to new object. Handles entire object graph automatically. Slower but handles complex graphs.
+  Serialize to bytes, deserialize to new object. Handles entire object graph automatically. Slower but handles complex graphs.
 </div>
 </div>
 
@@ -232,31 +232,31 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <div style="font-weight: 600; color: #065f46; margin-bottom: 8px;">Builder Pattern</div>
 <div style="font-size: 0.85rem; color: #047857;">
 <code>Document.builder(original).withId(newId).build()</code><br><br>
-                              Maximum flexibility, explicit about modifications, works with immutable objects.
+  Maximum flexibility, explicit about modifications, works with immutable objects.
 </div>
 </div>
 </div>
 </div>
 
-                      ### Interview Questions: Java Cloneable
+### Interview Questions: Java Cloneable
 
-                      **Level 1: Why is implementing Cloneable considered problematic in Java?**
+**Level 1: Why is implementing Cloneable considered problematic in Java?**
 
-                      Cloneable is a marker interface with no clone() method - the method lives in Object. Clone bypasses constructors, making it impossible to enforce invariants or initialize final fields. The default shallow copy behavior requires manual deep-copy code for every mutable field. The checked CloneNotSupportedException is almost always impossible when the class implements Cloneable, yet must still be caught.
+  Cloneable is a marker interface with no clone() method - the method lives in Object. Clone bypasses constructors, making it impossible to enforce invariants or initialize final fields. The default shallow copy behavior requires manual deep-copy code for every mutable field. The checked CloneNotSupportedException is almost always impossible when the class implements Cloneable, yet must still be caught.
 
-                      **Level 2: How would you design a cloneable class hierarchy where both parent and child classes have mutable state that needs deep copying?**
+**Level 2: How would you design a cloneable class hierarchy where both parent and child classes have mutable state that needs deep copying?**
 
-                      Each class in the hierarchy must: (1) Call super.clone() to get proper runtime type, (2) Deep-copy its own mutable fields after super.clone() returns, (3) Document the clone contract for subclasses. The parent's clone() should be protected if not all subclasses should be cloneable. Consider making clone() final in the parent if the class hierarchy's cloning semantics shouldn't be overridden. Use covariant return types for type-safe cloning.
+  Each class in the hierarchy must: (1) Call super.clone() to get proper runtime type, (2) Deep-copy its own mutable fields after super.clone() returns, (3) Document the clone contract for subclasses. The parent's clone() should be protected if not all subclasses should be cloneable. Consider making clone() final in the parent if the class hierarchy's cloning semantics shouldn't be overridden. Use covariant return types for type-safe cloning.
 
-                      **Level 3: Given that Object.clone() bypasses constructors, how would you implement clone() for a class that uses constructor injection for dependencies, maintains invariants checked in the constructor, and has final fields that should differ between original and clone?**
+**Level 3: Given that Object.clone() bypasses constructors, how would you implement clone() for a class that uses constructor injection for dependencies, maintains invariants checked in the constructor, and has final fields that should differ between original and clone?**
 
-                      This scenario exposes Cloneable's fundamental design flaw. Solutions: (1) Abandon Cloneable entirely - use copy constructor that takes both the source object and the dependencies to inject; (2) Use a static factory that creates a new instance via constructor, then copies state: `Document copyOf(Document src, IdGenerator idGen)`; (3) If forced to use clone(), make fields non-final and use a post-clone initialization method (breaks immutability); (4) Use [[Builder Pattern]](/topic/design-patterns/builder) where `toBuilder()` returns a pre-populated builder that can be modified before building a new instance with proper construction.
+  This scenario exposes Cloneable's fundamental design flaw. Solutions: (1) Abandon Cloneable entirely - use copy constructor that takes both the source object and the dependencies to inject; (2) Use a static factory that creates a new instance via constructor, then copies state: `Document copyOf(Document src, IdGenerator idGen)`; (3) If forced to use clone(), make fields non-final and use a post-clone initialization method (breaks immutability); (4) Use [[Builder Pattern]](/topic/design-patterns/builder) where `toBuilder()` returns a pre-populated builder that can be modified before building a new instance with proper construction.
 
-                      ---
+  ---
 
-                      ## Prototype Registry: Managing Prototype Collections
+## Prototype Registry: Managing Prototype Collections
 
-                      The Prototype Registry (also called Prototype Manager) centralizes prototype storage and provides named access to clones. This is essential when prototypes are expensive to create or configured at startup.
+  The Prototype Registry (also called Prototype Manager) centralizes prototype storage and provides named access to clones. This is essential when prototypes are expensive to create or configured at startup.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Prototype Registry Architecture</h4>
@@ -273,9 +273,9 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; text-align: center; min-width: 180px;">
 <div style="font-weight: 600; color: #92400e;">Prototype Registry</div>
 <div style="font-size: 0.75rem; color: #b45309; margin-top: 4px;">
-                                register(name, proto)<br>
-                                  clone(name): Prototype<br>
-                                    unregister(name)
+  register(name, proto)<br>
+  clone(name): Prototype<br>
+  unregister(name)
 </div>
 </div>
 
@@ -302,16 +302,16 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 </div>
 
-                          ### Registry Implementation Considerations
+### Registry Implementation Considerations
 
-                          **Thread Safety**: In concurrent systems, the registry must handle simultaneous registrations and clone requests. Options include:
+**Thread Safety**: In concurrent systems, the registry must handle simultaneous registrations and clone requests. Options include:
                           - Concurrent hash maps for lock-free reads
                           - Read-write locks for read-heavy workloads
                           - Copy-on-write for rarely-modified registries
 
-                          **Hierarchical Registries**: Large systems may use registry hierarchies - local registries that fall back to parent registries, enabling context-specific prototypes with shared defaults.
+**Hierarchical Registries**: Large systems may use registry hierarchies - local registries that fall back to parent registries, enabling context-specific prototypes with shared defaults.
 
-                          **Lazy vs Eager Initialization**: Prototypes can be created eagerly at startup (faster clone requests, longer startup) or lazily on first request (faster startup, first-request latency).
+**Lazy vs Eager Initialization**: Prototypes can be created eagerly at startup (faster clone requests, longer startup) or lazily on first request (faster startup, first-request latency).
 
                           ```python
                           class PrototypeRegistry:
@@ -349,25 +349,25 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           raise KeyError(f"Unknown prototype: {name}")
                           ```
 
-                          ### Interview Questions: Prototype Registry
+### Interview Questions: Prototype Registry
 
-                          **Level 1: What are the benefits of using a Prototype Registry versus having clients manage prototypes directly?**
+**Level 1: What are the benefits of using a Prototype Registry versus having clients manage prototypes directly?**
 
-                          The registry centralizes prototype lifecycle management, enabling: (1) Named access without clients knowing concrete types; (2) Runtime registration/modification of prototypes; (3) Centralized policies for caching, initialization, and access control; (4) Easier testing through registry mocking; (5) Decoupling between prototype creation and usage locations.
+  The registry centralizes prototype lifecycle management, enabling: (1) Named access without clients knowing concrete types; (2) Runtime registration/modification of prototypes; (3) Centralized policies for caching, initialization, and access control; (4) Easier testing through registry mocking; (5) Decoupling between prototype creation and usage locations.
 
-                          **Level 2: How would you design a registry that supports prototype versioning, allowing clients to request specific versions or "latest"?**
+**Level 2: How would you design a registry that supports prototype versioning, allowing clients to request specific versions or "latest"?**
 
-                          Extend the registry key to include version: `Map<(name, version), Prototype>`. Maintain a separate "latest" pointer per name. Implement version resolution strategies: exact match, compatible range (semver), or fallback chain. Consider whether clones should embed their source version for debugging. For audit requirements, log which version was cloned when. Handle version deprecation with grace periods and warnings.
+  Extend the registry key to include version: `Map<(name, version), Prototype>`. Maintain a separate "latest" pointer per name. Implement version resolution strategies: exact match, compatible range (semver), or fallback chain. Consider whether clones should embed their source version for debugging. For audit requirements, log which version was cloned when. Handle version deprecation with grace periods and warnings.
 
-                          **Level 3: Design a distributed prototype registry for a microservices architecture where prototypes may be defined in different services and need to be accessible across the cluster with consistency guarantees.**
+**Level 3: Design a distributed prototype registry for a microservices architecture where prototypes may be defined in different services and need to be accessible across the cluster with consistency guarantees.**
 
-                          Key challenges: (1) **Discovery**: Use service registry (Consul, etcd) to track which services offer which prototypes; (2) **Serialization**: Prototypes must be serializable across service boundaries - define a wire format and versioning scheme; (3) **Caching**: Local caches reduce latency but need invalidation strategies (TTL, pub/sub notifications); (4) **Consistency**: Choose between strong consistency (serialize through leader) or eventual consistency (acceptable staleness). Consider [[CQRS]](/topic/system-design/cqrs) where prototype definitions are commands and local caches are eventually-consistent read models; (5) **Failure handling**: Define behavior when remote registry is unavailable - fail fast, use stale cache, or degrade to local-only prototypes.
+  Key challenges: (1) **Discovery**: Use service registry (Consul, etcd) to track which services offer which prototypes; (2) **Serialization**: Prototypes must be serializable across service boundaries - define a wire format and versioning scheme; (3) **Caching**: Local caches reduce latency but need invalidation strategies (TTL, pub/sub notifications); (4) **Consistency**: Choose between strong consistency (serialize through leader) or eventual consistency (acceptable staleness). Consider [[CQRS]](/topic/system-design/cqrs) where prototype definitions are commands and local caches are eventually-consistent read models; (5) **Failure handling**: Define behavior when remote registry is unavailable - fail fast, use stale cache, or degrade to local-only prototypes.
 
-                          ---
+  ---
 
-                          ## Cloning Complex Objects: Advanced Scenarios
+## Cloning Complex Objects: Advanced Scenarios
 
-                          Real-world objects often contain elements that complicate cloning: circular references, external resource handles, lazy-loaded proxies, and observer relationships.
+  Real-world objects often contain elements that complicate cloning: circular references, external resource handles, lazy-loaded proxies, and observer relationships.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Complex Object Cloning Challenges</h4>
@@ -376,50 +376,50 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Circular References</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  Object A references B, B references A. Naive deep copy causes infinite recursion. Solution: memo-based copying with pre-registration.
+  Object A references B, B references A. Naive deep copy causes infinite recursion. Solution: memo-based copying with pre-registration.
 </div>
 </div>
 
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">External Resources</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  Database connections, file handles, sockets cannot be meaningfully copied. Options: share reference, create new connection, or null and lazy-reinitialize.
+  Database connections, file handles, sockets cannot be meaningfully copied. Options: share reference, create new connection, or null and lazy-reinitialize.
 </div>
 </div>
 
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Lazy-Loaded Proxies</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  ORM proxies (Hibernate, SQLAlchemy) may trigger database loads during cloning. Decide: clone the proxy, force-load then clone, or clone only loaded state.
+  ORM proxies (Hibernate, SQLAlchemy) may trigger database loads during cloning. Decide: clone the proxy, force-load then clone, or clone only loaded state.
 </div>
 </div>
 
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Observer Relationships</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  If original has registered listeners/observers, should clone inherit them? Usually no - clone should have empty observer list requiring explicit re-registration.
+  If original has registered listeners/observers, should clone inherit them? Usually no - clone should have empty observer list requiring explicit re-registration.
 </div>
 </div>
 
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Transient/Derived State</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  Cached computations, memoized values. Options: copy cached state (faster but may be stale) or invalidate caches (slower but correct).
+  Cached computations, memoized values. Options: copy cached state (faster but may be stale) or invalidate caches (slower but correct).
 </div>
 </div>
 
 <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Identity Fields</div>
 <div style="font-size: 0.85rem; color: #7f1d1d;">
-                                  UUIDs, database IDs, creation timestamps must typically be regenerated for clones to avoid identity conflicts.
+  UUIDs, database IDs, creation timestamps must typically be regenerated for clones to avoid identity conflicts.
 </div>
 </div>
 </div>
 </div>
 
-                          ### Clone Contract Documentation
+### Clone Contract Documentation
 
-                          Complex objects need explicit documentation of cloning behavior:
+  Complex objects need explicit documentation of cloning behavior:
 
                           ```python
                           class Order(Prototype):
@@ -447,7 +447,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           """
                           ```
 
-                          ### Implementing Cloneable with External Resources
+### Implementing Cloneable with External Resources
 
                           ```python
                           class DatabaseBackedDocument(Prototype):
@@ -482,27 +482,27 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           return clone
                           ```
 
-                          ### Interview Questions: Cloning Complex Objects
+### Interview Questions: Cloning Complex Objects
 
-                          **Level 1: What special handling is needed when cloning objects that contain database connections or file handles?**
+**Level 1: What special handling is needed when cloning objects that contain database connections or file handles?**
 
-                          These resources cannot be duplicated at the OS/network level. Options: (1) Share the reference if thread-safe and semantically appropriate; (2) Create a new connection for the clone from a connection pool; (3) Set to null in clone and lazy-initialize on first access; (4) Throw an exception if cloning resource-holding objects is prohibited by design. Document the chosen behavior clearly.
+  These resources cannot be duplicated at the OS/network level. Options: (1) Share the reference if thread-safe and semantically appropriate; (2) Create a new connection for the clone from a connection pool; (3) Set to null in clone and lazy-initialize on first access; (4) Throw an exception if cloning resource-holding objects is prohibited by design. Document the chosen behavior clearly.
 
-                          **Level 2: How would you implement clone() for an object graph where some objects should be shared between original and clone while others should be deeply copied?**
+**Level 2: How would you implement clone() for an object graph where some objects should be shared between original and clone while others should be deeply copied?**
 
-                          Implement a custom cloning visitor that traverses the object graph with explicit rules per type. Use annotations or a configuration map to specify clone strategy per field/type: `@CloneStrategy(DEEP)`, `@CloneStrategy(SHALLOW)`, `@CloneStrategy(RESET)`, `@CloneStrategy(SKIP)`. The visitor maintains a memo for already-cloned objects while respecting the per-field strategy. Consider implementing `CloneContext` that carries both the memo and the strategy configuration.
+  Implement a custom cloning visitor that traverses the object graph with explicit rules per type. Use annotations or a configuration map to specify clone strategy per field/type: `@CloneStrategy(DEEP)`, `@CloneStrategy(SHALLOW)`, `@CloneStrategy(RESET)`, `@CloneStrategy(SKIP)`. The visitor maintains a memo for already-cloned objects while respecting the per-field strategy. Consider implementing `CloneContext` that carries both the memo and the strategy configuration.
 
-                          **Level 3: Design a cloning system for a domain model using an ORM (like Hibernate) where entities have lazy-loaded relationships, version fields for optimistic locking, and bidirectional associations. How do you handle detached vs managed entity cloning?**
+**Level 3: Design a cloning system for a domain model using an ORM (like Hibernate) where entities have lazy-loaded relationships, version fields for optimistic locking, and bidirectional associations. How do you handle detached vs managed entity cloning?**
 
-                          This is a deeply challenging scenario: (1) **Lazy loading**: Decide whether to clone proxies as-is (clone will trigger load on access), force-initialize before cloning (N+1 queries), or explicitly load only needed relationships; (2) **Versioning**: Clone must have version=0 or null for new entities, otherwise optimistic locking fails; (3) **Bidirectional associations**: When cloning A->B and B->A, both clones must reference each other, not the originals - requires memo-based approach with post-processing to fix up back-references; (4) **Managed vs detached**: Cloning managed entities may require explicit detachment first; the clone should typically be transient (not yet persisted); (5) **ID generation**: Clear IDs so the ORM treats clones as new entities. Consider implementing as an ORM session extension: `session.clone(entity, depth_config)` that handles these concerns systematically. Use [[Unit of Work]](/topic/design-patterns/unit-of-work) pattern awareness to track clone lifecycle.
+  This is a deeply challenging scenario: (1) **Lazy loading**: Decide whether to clone proxies as-is (clone will trigger load on access), force-initialize before cloning (N+1 queries), or explicitly load only needed relationships; (2) **Versioning**: Clone must have version=0 or null for new entities, otherwise optimistic locking fails; (3) **Bidirectional associations**: When cloning A->B and B->A, both clones must reference each other, not the originals - requires memo-based approach with post-processing to fix up back-references; (4) **Managed vs detached**: Cloning managed entities may require explicit detachment first; the clone should typically be transient (not yet persisted); (5) **ID generation**: Clear IDs so the ORM treats clones as new entities. Consider implementing as an ORM session extension: `session.clone(entity, depth_config)` that handles these concerns systematically. Use [[Unit of Work]](/topic/design-patterns/unit-of-work) pattern awareness to track clone lifecycle.
 
-                          ---
+  ---
 
-                          ## Real-World Implementation Patterns
+## Real-World Implementation Patterns
 
-                          ### Pattern 1: Prototype with Copy-on-Write
+### Pattern 1: Prototype with Copy-on-Write
 
-                          For memory efficiency when clones rarely diverge:
+  For memory efficiency when clones rarely diverge:
 
                           ```python
                           class CopyOnWriteDocument:
@@ -538,7 +538,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           return result
                           ```
 
-                          ### Pattern 2: Versioned Prototype Registry
+### Pattern 2: Versioned Prototype Registry
 
                           ```python
                           class VersionedPrototypeRegistry:
@@ -571,9 +571,9 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           return clone
                           ```
 
-                          ### Pattern 3: Prototype Factory Integration
+### Pattern 3: Prototype Factory Integration
 
-                          Combining Prototype with [[Factory Method]](/topic/design-patterns/factory-method) for flexible object creation:
+  Combining Prototype with [[Factory Method]](/topic/design-patterns/factory-method) for flexible object creation:
 
                           ```python
                           class DocumentFactory:
@@ -601,11 +601,11 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           return Document(title=f"New {doc_type}", content="")
                           ```
 
-                          ---
+  ---
 
-                          ## Code Implementation
+## Code Implementation
 
-                          ### Python Implementation
+### Python Implementation
 
                           ```python
                           """
@@ -1029,7 +1029,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           print("=" * 60)
                           ```
 
-                          ### Go Implementation
+### Go Implementation
 
                           ```go
                           package main
@@ -1469,9 +1469,9 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           }
                           ```
 
-                          ---
+  ---
 
-                          ## Quick Reference
+## Quick Reference
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Pattern Summary</h4>
@@ -1504,19 +1504,19 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </table>
 </div>
 
-                          ### Decision Matrix: Clone Strategy Selection
+### Decision Matrix: Clone Strategy Selection
 
-                          | Scenario | Recommended Approach |
-                          |----------|---------------------|
-                          | All fields immutable | Shallow copy sufficient |
-                          | Mutable nested objects | Deep copy required |
-                          | External resources (DB, files) | Share reference or null + lazy init |
-                          | Large object graphs, rare mutations | Copy-on-write |
-                          | High-frequency cloning, memory constraints | Object pool instead of prototype |
-                          | Identity fields (IDs, timestamps) | Always reset in clone |
-                          | Observer/callback lists | Clear in clone, re-register explicitly |
+  | Scenario | Recommended Approach |
+  |----------|---------------------|
+  | All fields immutable | Shallow copy sufficient |
+  | Mutable nested objects | Deep copy required |
+  | External resources (DB, files) | Share reference or null + lazy init |
+  | Large object graphs, rare mutations | Copy-on-write |
+  | High-frequency cloning, memory constraints | Object pool instead of prototype |
+  | Identity fields (IDs, timestamps) | Always reset in clone |
+  | Observer/callback lists | Clear in clone, re-register explicitly |
 
-                          ### Implementation Checklist
+### Implementation Checklist
 
                           - [ ] Define clone interface with clear contract documentation
                           - [ ] Decide shallow vs deep copy per field and document
@@ -1529,9 +1529,9 @@ The choice between shallow and deep copy is not binary. Production implementatio
                           - [ ] Consider copy-on-write for memory optimization
                           - [ ] Avoid Java Cloneable; use copy constructors instead
 
-                          ---
+  ---
 
-                          ## Related Patterns
+## Related Patterns
 
                           - [[Factory Method]](/topic/design-patterns/factory-method) - Alternative creation approach; use Factory when construction logic is complex, Prototype when configuration is complex
                           - [[Abstract Factory]](/topic/design-patterns/abstract-factory) - Can use prototypes internally to create product families

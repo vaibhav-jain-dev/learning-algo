@@ -427,56 +427,56 @@ For N parallel calls:
 </div>
 </div>
 
-        ### Percentile Calculation Methods
+### Percentile Calculation Methods
 
-        **Exact Method** (for small datasets or offline analysis):
-        1. Sort all measurements
-        2. Percentile P = value at index (N * P / 100)
+**Exact Method** (for small datasets or offline analysis):
+  1. Sort all measurements
+  2. Percentile P = value at index (N * P / 100)
 
-        **Streaming Methods** (for production systems):
+**Streaming Methods** (for production systems):
 
-        1. **T-Digest**: Cluster-based algorithm maintaining approximate quantiles
+  1. **T-Digest**: Cluster-based algorithm maintaining approximate quantiles
         - Space: O(compression_factor), typically 1-10KB
         - Merge: O(m log m) where m is compression factor
         - Accuracy: ~0.1-1% relative error at tails
         - Used by: Elasticsearch, Prometheus, many APM tools
 
-        2. **HDR Histogram**: Fixed-bucket histogram with dynamic range
+  2. **HDR Histogram**: Fixed-bucket histogram with dynamic range
         - Space: O(significant_digits * log(max/min))
         - Merge: O(bucket_count)
         - Accuracy: Configurable, typically 3 significant figures
         - Used by: JVM profilers, HdrHistogram library
 
-        3. **Count-Min Sketch + Quantile Estimation**: Probabilistic data structure
+  3. **Count-Min Sketch + Quantile Estimation**: Probabilistic data structure
         - Space: O(width * depth)
         - Accuracy: Depends on sketch size, generally lower than t-digest
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 4px solid #10b981; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
 <h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 8px;">
 <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">D</span>
-            Design Choice: Percentile Aggregation
+  Design Choice: Percentile Aggregation
 </h4>
 <p style="color: #064e3b; margin-bottom: 0;"><strong>Percentiles are NOT additive</strong>. You cannot average P99 values across servers to get system P99. To aggregate percentiles correctly: (1) merge underlying histograms/sketches, then compute percentile, or (2) use reservoir sampling across the cluster. This is why tools like [[prometheus]](/topics/observability/prometheus) store histogram buckets, not pre-computed percentiles.</p>
 </div>
 
-        ### SLA/SLO Definition with Percentiles
+### SLA/SLO Definition with Percentiles
 
-        | SLO Type | Definition | Example | Measurement Challenge |
-        |----------|------------|---------|----------------------|
-        | P50 | Median latency | P50 < 50ms | Easy to achieve, doesn't protect tail |
-        | P95 | 95th percentile | P95 < 200ms | Balance of user experience and achievability |
-        | P99 | 99th percentile | P99 < 500ms | Catches most outliers, industry standard |
-        | P99.9 | 99.9th percentile | P99.9 < 2s | Requires significant data volume to measure accurately |
-        | P99.99 | 99.99th percentile | P99.99 < 5s | Needs millions of samples; often statistical noise |
+  | SLO Type | Definition | Example | Measurement Challenge |
+  |----------|------------|---------|----------------------|
+  | P50 | Median latency | P50 < 50ms | Easy to achieve, doesn't protect tail |
+  | P95 | 95th percentile | P95 < 200ms | Balance of user experience and achievability |
+  | P99 | 99th percentile | P99 < 500ms | Catches most outliers, industry standard |
+  | P99.9 | 99.9th percentile | P99.9 < 2s | Requires significant data volume to measure accurately |
+  | P99.99 | 99.99th percentile | P99.99 < 5s | Needs millions of samples; often statistical noise |
 
-        **Error Budget Calculation**:
+**Error Budget Calculation**:
         - 99.9% availability = 8.76 hours downtime/year
         - 99% of requests under 200ms = 1% can exceed 200ms
         - Combined: 99.9% availability AND 99% latency target means 1% of 0.1% (0.001%) can be both slow AND unavailable
 
-        ## Latency vs. Throughput Trade-offs
+## Latency vs. Throughput Trade-offs
 
-        ### The Fundamental Tension
+### The Fundamental Tension
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">System Behavior Under Load</h4>
@@ -506,10 +506,10 @@ For N parallel calls:
 <div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; text-align: center;">Queuing Theory (M/M/1 Model)</div>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
 <div style="font-family: monospace; text-align: center; color: #1e40af; font-size: 1.1em;">
-                  W = 1 / (mu - lambda)
+  W = 1 / (mu - lambda)
 </div>
 <div style="text-align: center; color: #64748b; font-size: 0.85em; margin-top: 8px;">
-                  W = wait time, mu = service rate, lambda = arrival rate
+  W = wait time, mu = service rate, lambda = arrival rate
 </div>
 </div>
 <div style="color: #64748b; font-size: 0.9em;">
@@ -525,7 +525,7 @@ For N parallel calls:
 </div>
 </div>
 
-        ### Trade-off Patterns
+### Trade-off Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Common Trade-off Decisions</h4>
@@ -539,7 +539,7 @@ For N parallel calls:
 <strong>Latency cost:</strong> First item waits for batch to fill or timeout
 </div>
 <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
-                Example: Kafka producers batch messages; improves throughput 10x but adds P50 latency equal to linger.ms
+  Example: Kafka producers batch messages; improves throughput 10x but adds P50 latency equal to linger.ms
 </div>
 </div>
 <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
@@ -587,7 +587,7 @@ For N parallel calls:
 <strong>Latency cost:</strong> CPU time for compression/decompression
 </div>
 <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
-                Break-even: When compression time < transmission time saved. Varies by algorithm and network speed.
+  Break-even: When compression time < transmission time saved. Varies by algorithm and network speed.
 </div>
 </div>
 <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
@@ -599,192 +599,192 @@ For N parallel calls:
 <strong>Latency cost (sync):</strong> Writes wait for replica acknowledgment
 </div>
 <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
-                Choice: Sync replication (durability, latency cost) vs. async (risk data loss, lower latency)
+  Choice: Sync replication (durability, latency cost) vs. async (risk data loss, lower latency)
 </div>
 </div>
 </div>
 </div>
 
-        ## Optimization Strategies
+## Optimization Strategies
 
-        ### Latency Optimization Techniques
+### Latency Optimization Techniques
 
-        **1. Eliminate Round Trips**
+**1. Eliminate Round Trips**
         - Combine multiple API calls into batch endpoints
         - Use GraphQL or gRPC streaming to reduce HTTP overhead
         - Implement HTTP/2 or HTTP/3 for multiplexing
         - Use CDN for static assets (move data closer to user)
         - Implement connection pre-warming and keep-alive
 
-        **2. Reduce Processing Time**
+**2. Reduce Processing Time**
         - Profile and optimize hot code paths (the 1% that runs 99% of the time)
         - Use appropriate data structures (O(1) hash lookups vs O(n) scans)
         - Implement query optimization with proper indexes
         - Use compiled languages for CPU-bound critical paths
         - Consider [[algorithmic-optimization]](/topics/algorithms/complexity) for core operations
 
-        **3. Avoid Blocking**
+**3. Avoid Blocking**
         - Replace synchronous I/O with async (Node.js event loop, Python asyncio, Go goroutines)
         - Use non-blocking data structures (lock-free queues, CAS operations)
         - Implement timeout-based circuit breakers for slow dependencies
         - Use deadline propagation to fail fast when time budget exhausted
 
-        **4. Cache Strategically**
+**4. Cache Strategically**
         - Implement multi-tier caching: L1 (in-process) -> L2 (distributed) -> origin
         - Use read-through and write-through patterns appropriately
         - Implement cache warming for predictable access patterns
         - Use [[bloom-filters]](/topics/data-structures/bloom-filter) to avoid cache misses on non-existent keys
 
-        **5. Optimize Network Path**
+**5. Optimize Network Path**
         - Use geographic load balancing to route to nearest datacenter
         - Implement anycast for DNS and edge services
         - Tune TCP parameters (initial congestion window, keepalive)
         - Use QUIC/HTTP3 for improved mobile and high-latency network performance
 
-        ### Throughput Optimization Techniques
+### Throughput Optimization Techniques
 
-        **1. Horizontal Scaling**
+**1. Horizontal Scaling**
         - Design stateless services that scale by adding instances
         - Use consistent hashing for distributed caching ([[consistent-hashing]](/topics/system-design/consistent-hashing))
         - Implement [[database-sharding]](/topics/databases/sharding) for write scaling
         - Use auto-scaling based on throughput metrics, not just CPU
 
-        **2. Resource Pooling**
+**2. Resource Pooling**
         - Size connection pools using Little's Law: `pool_size = throughput * latency * safety_factor`
         - Implement connection pool monitoring and alerting
         - Use connection multiplexing where protocol supports (HTTP/2, gRPC)
         - Consider separate pools for different workload priorities
 
-        **3. Asynchronous Processing**
+**3. Asynchronous Processing**
         - Offload non-critical work to message queues ([[message-queues]](/topics/system-design/message-queues))
         - Implement event-driven architectures for high-volume writes
         - Use batch processing for bulk operations
         - Implement exactly-once semantics carefully for idempotency
 
-        **4. Load Management**
+**4. Load Management**
         - Implement [[rate-limiting]](/topics/system-design/rate-limiting) to protect capacity
         - Use [[load-shedding]](/topics/system-design/load-shedding) to gracefully degrade under overload
         - Implement priority queues for important traffic
         - Use admission control to reject excess load early
 
-        **5. Efficiency Improvements**
+**5. Efficiency Improvements**
         - Use efficient serialization (Protocol Buffers, FlatBuffers vs JSON)
         - Implement zero-copy techniques where applicable
         - Use memory-mapped I/O for large file operations
         - Profile and eliminate memory allocations in hot paths
 
-        ## Real-World Failure Case Study
+## Real-World Failure Case Study
 
-        ### Cloudflare Outage: When Latency Becomes Availability
+### Cloudflare Outage: When Latency Becomes Availability
 
-        **Incident**: July 2, 2019 - Global outage affecting millions of websites
+**Incident**: July 2, 2019 - Global outage affecting millions of websites
 
-        **What Happened**:
-        A single regular expression in Cloudflare's WAF caused catastrophic CPU exhaustion across their entire edge network. The regex was designed to block a specific attack pattern but contained pathological backtracking behavior.
+**What Happened**:
+  A single regular expression in Cloudflare's WAF caused catastrophic CPU exhaustion across their entire edge network. The regex was designed to block a specific attack pattern but contained pathological backtracking behavior.
 
-        **The Latency-to-Outage Cascade**:
-        1. **T+0**: New WAF rule deployed globally
-        2. **T+1min**: CPU utilization spiked to 100% on edge nodes processing the regex
-        3. **T+2min**: Request processing latency increased from <10ms to >30 seconds
-        4. **T+3min**: Connection queues filled, new connections rejected
-        5. **T+5min**: Health checks failed, nodes marked unhealthy
-        6. **T+7min**: Load balancers had no healthy backends, complete outage
-        7. **T+27min**: Root cause identified, rule rolled back
-        8. **T+47min**: Full recovery
+**The Latency-to-Outage Cascade**:
+  1. **T+0**: New WAF rule deployed globally
+  2. **T+1min**: CPU utilization spiked to 100% on edge nodes processing the regex
+  3. **T+2min**: Request processing latency increased from <10ms to >30 seconds
+  4. **T+3min**: Connection queues filled, new connections rejected
+  5. **T+5min**: Health checks failed, nodes marked unhealthy
+  6. **T+7min**: Load balancers had no healthy backends, complete outage
+  7. **T+27min**: Root cause identified, rule rolled back
+  8. **T+47min**: Full recovery
 
-        **Key Insights**:
-        1. **CPU latency caused network-level failure**: A computation problem became an availability problem because latency exceeded all timeouts
-        2. **Global deployment amplified impact**: Simultaneous deployment meant no region could absorb traffic
-        3. **Latency monitoring gap**: They monitored request latency but not individual rule processing time
-        4. **Cascading failure**: High latency -> queue exhaustion -> health check failure -> total outage
+**Key Insights**:
+  1. **CPU latency caused network-level failure**: A computation problem became an availability problem because latency exceeded all timeouts
+  2. **Global deployment amplified impact**: Simultaneous deployment meant no region could absorb traffic
+  3. **Latency monitoring gap**: They monitored request latency but not individual rule processing time
+  4. **Cascading failure**: High latency -> queue exhaustion -> health check failure -> total outage
 
-        **Lessons for System Design**:
+**Lessons for System Design**:
         - Implement CPU time limits on user-facing code paths
         - Use canary deployments for global changes
         - Monitor latency at multiple granularities (request, component, operation)
         - Set aggressive timeouts and fail fast rather than queue indefinitely
 
-        ## Interview Deep Dive
+## Interview Deep Dive
 
-        ### 3-Level Recursive Interview Questions
+### 3-Level Recursive Interview Questions
 
-        #### Level 1: Fundamentals
+#### Level 1: Fundamentals
 
-        **Q1.1: What's the difference between latency and throughput?**
+**Q1.1: What's the difference between latency and throughput?**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Latency = time for single operation (measured in time units)
         - Throughput = operations per time period (measured in ops/second)
         - Related via Little's Law: `Concurrency = Throughput * Latency`
         - Different optimization targets: latency for user experience, throughput for capacity
 
-        **Q1.2: Why do we measure P99 instead of average latency?**
+**Q1.2: Why do we measure P99 instead of average latency?**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Averages hide distribution shape (bimodal distributions, outliers)
         - P99 captures worst-case experience for real users
         - Business impact: at scale, 1% of users is millions of people
         - Tail latency amplification makes P99 even more critical in distributed systems
 
-        **Q1.3: What is Little's Law and when would you use it?**
+**Q1.3: What is Little's Law and when would you use it?**
 
-        **Answer Framework**:
+**Answer Framework**:
         - L = lambda * W (Concurrency = Throughput * Latency)
         - Use for: thread pool sizing, connection pool sizing, capacity planning
         - Assumes: stable system (arrival rate = departure rate)
         - Example: 1000 RPS with 100ms latency needs 100 concurrent connections
 
-        ---
+  ---
 
-        #### Level 2: Intermediate Complexity
+#### Level 2: Intermediate Complexity
 
-        **Q2.1: How does latency change as a system approaches capacity?**
+**Q2.1: How does latency change as a system approaches capacity?**
 
-        **Follow-up from Q1.1**
+**Follow-up from Q1.1**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Queuing theory (M/M/1): W = 1/(mu - lambda)
         - Latency grows hyperbolically, not linearly
         - At 50% utilization: 2x service time
         - At 90% utilization: 10x service time
         - Implication: operate systems at 60-70% capacity maximum for latency stability
 
-        **Q2.2: Explain tail latency amplification in microservices.**
+**Q2.2: Explain tail latency amplification in microservices.**
 
-        **Follow-up from Q1.2**
+**Follow-up from Q1.2**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Fan-out pattern: request calls N services in parallel
         - Probability all complete within P99 = (0.99)^N
         - With 100 parallel calls: 63% chance at least one exceeds P99
         - Mitigation: hedged requests, tied requests, aggressive timeouts
         - This is why P99 matters more than average in distributed systems
 
-        **Q2.3: How would you size a connection pool for a database?**
+**Q2.3: How would you size a connection pool for a database?**
 
-        **Follow-up from Q1.3**
+**Follow-up from Q1.3**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Apply Little's Law: `pool_size = RPS * avg_query_time`
         - Example: 500 RPS, 20ms queries = 10 connections minimum
         - Add safety factor (1.5-2x) for variance
         - Monitor queue time to detect undersizing
         - Too large = resource exhaustion, too small = queuing latency
 
-        ---
+  ---
 
-        #### Level 3: Expert/Edge Cases
+#### Level 3: Expert/Edge Cases
 
-        **Q3.1: Your system has stable throughput but P99 latency is 10x P50. How do you diagnose and fix this?**
+**Q3.1: Your system has stable throughput but P99 latency is 10x P50. How do you diagnose and fix this?**
 
-        **Follow-up from Q2.1**
+**Follow-up from Q2.1**
 
-        **Answer Framework**:
+**Answer Framework**:
         - High P99/P50 ratio indicates bimodal distribution or heavy tail
         - Diagnostic steps:
-        1. Histogram the latency distribution (look for multiple modes)
-        2. Correlate high-latency requests with: GC pauses, cache misses, specific endpoints, specific users
-        3. Check for: lock contention (thread dumps), background tasks (compaction, backups), noisy neighbors (cloud metrics)
+  1. Histogram the latency distribution (look for multiple modes)
+  2. Correlate high-latency requests with: GC pauses, cache misses, specific endpoints, specific users
+  3. Check for: lock contention (thread dumps), background tasks (compaction, backups), noisy neighbors (cloud metrics)
         - Common root causes:
         - Cache misses (10x latency on miss)
         - GC pauses (100ms+ stop-the-world)
@@ -794,38 +794,38 @@ For N parallel calls:
         - GC: tune heap size, reduce allocation
         - Locks: finer granularity, lock-free structures
 
-        **Q3.2: Design a system to accurately measure P99.9 latency across 100 servers with minimal overhead.**
+**Q3.2: Design a system to accurately measure P99.9 latency across 100 servers with minimal overhead.**
 
-        **Follow-up from Q2.2**
+**Follow-up from Q2.2**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Challenge: Percentiles don't aggregate; need raw data or mergeable sketches
         - Options:
-        1. **HDR Histogram**: Ship histograms to central aggregator, merge, compute percentile
+  1. **HDR Histogram**: Ship histograms to central aggregator, merge, compute percentile
         - Pro: Accurate, well-understood
         - Con: Fixed bucket boundaries, ~10KB per histogram
-        2. **T-Digest**: Streaming algorithm, mergeable, accurate at tails
+  2. **T-Digest**: Streaming algorithm, mergeable, accurate at tails
         - Pro: Adaptive resolution, better tail accuracy
         - Con: More complex to implement correctly
-        3. **Reservoir Sampling**: Random sample of requests across cluster
+  3. **Reservoir Sampling**: Random sample of requests across cluster
         - Pro: Simple, exact percentile on samples
         - Con: Sample size limits accuracy
         - At P99.9: Need 10,000 samples minimum for statistical significance
         - Implementation: Prometheus histogram buckets + PromQL histogram_quantile(), or dedicated APM (Datadog, Honeycomb)
 
-        **Q3.3: You're building a real-time bidding system with strict 100ms latency SLA. How do you ensure high throughput while meeting the SLA?**
+**Q3.3: You're building a real-time bidding system with strict 100ms latency SLA. How do you ensure high throughput while meeting the SLA?**
 
-        **Follow-up from Q2.3**
+**Follow-up from Q2.3**
 
-        **Answer Framework**:
+**Answer Framework**:
         - Constraints: 100ms total budget, high throughput (100K+ QPS typical), revenue at stake
         - Architecture decisions:
-        1. **Deadline propagation**: Every call gets remaining time budget
-        2. **Aggressive timeouts**: Dependencies get 20-30ms max, fail fast
-        3. **Hedged requests**: Send to 2 replicas for critical paths
-        4. **Pre-computation**: Pre-cache bid responses for common scenarios
-        5. **Load shedding**: Reject lowest-value requests under load
-        6. **Geographic routing**: Process in datacenter closest to user
+  1. **Deadline propagation**: Every call gets remaining time budget
+  2. **Aggressive timeouts**: Dependencies get 20-30ms max, fail fast
+  3. **Hedged requests**: Send to 2 replicas for critical paths
+  4. **Pre-computation**: Pre-cache bid responses for common scenarios
+  5. **Load shedding**: Reject lowest-value requests under load
+  6. **Geographic routing**: Process in datacenter closest to user
         - Monitoring:
         - Track latency at each stage with distributed tracing
         - Alert on P95 approaching budget, not just P99 exceeding
@@ -835,37 +835,37 @@ For N parallel calls:
         - Fairness vs latency: may drop low-value bids
         - Cost vs latency: need over-provisioning headroom
 
-        ---
+  ---
 
-        ### Additional Expert Questions
+### Additional Expert Questions
 
-        **Q: How do you handle the latency-throughput trade-off when designing a new system?**
+**Q: How do you handle the latency-throughput trade-off when designing a new system?**
 
-        **Framework**:
-        1. Identify which matters more for your use case (user-facing = latency, batch processing = throughput)
-        2. Define SLOs for both metrics
-        3. Design for the constraint, optimize for the other
-        4. Common patterns:
+**Framework**:
+  1. Identify which matters more for your use case (user-facing = latency, batch processing = throughput)
+  2. Define SLOs for both metrics
+  3. Design for the constraint, optimize for the other
+  4. Common patterns:
         - Real-time API: Optimize latency, scale horizontally for throughput
         - Data pipeline: Optimize throughput via batching, accept higher latency
         - Mixed workload: Separate fast path and bulk path
 
-        **Q: Your service P99 latency doubled after a deployment with no code changes, only dependency version bumps. How do you debug?**
+**Q: Your service P99 latency doubled after a deployment with no code changes, only dependency version bumps. How do you debug?**
 
-        **Framework**:
-        1. Correlate with deployment timestamp in metrics
-        2. Check dependency release notes for behavioral changes
-        3. Profile before/after with identical load
-        4. Common culprits:
+**Framework**:
+  1. Correlate with deployment timestamp in metrics
+  2. Check dependency release notes for behavioral changes
+  3. Profile before/after with identical load
+  4. Common culprits:
         - Serialization library changes (JSON library swap)
         - Connection pool default changes
         - Logging verbosity changes
         - GC tuning parameter changes
-        5. Binary search through dependency changes if needed
+  5. Binary search through dependency changes if needed
 
-        **Q: Explain the difference between P99 measured client-side vs server-side.**
+**Q: Explain the difference between P99 measured client-side vs server-side.**
 
-        **Framework**:
+**Framework**:
         - Server-side P99: Processing time only
         - Client-side P99: Processing + network RTT + queuing + retries
         - Client-side is always higher, often significantly
@@ -873,9 +873,9 @@ For N parallel calls:
         - Best practice: Measure and alert on BOTH
         - Client-side P99 is what users actually experience
 
-        ## Code Implementation
+## Code Implementation
 
-        ### Python - Production Latency Tracking with T-Digest
+### Python - Production Latency Tracking with T-Digest
 
         ```python
         import time
@@ -1187,7 +1187,7 @@ For N parallel calls:
         print(f"  Recommended DB pool size: {pool_size}")
         ```
 
-        ### Go - High-Performance Latency Tracking
+### Go - High-Performance Latency Tracking
 
         ```go
         package main
@@ -1519,53 +1519,53 @@ For N parallel calls:
         }
         ```
 
-        ## Quick Reference Card
+## Quick Reference Card
 
-        ### Key Formulas
+### Key Formulas
 
-        | Formula | Description | Use Case |
-        |---------|-------------|----------|
-        | `L = lambda * W` | Little's Law | Capacity planning, pool sizing |
-        | `W = 1/(mu - lambda)` | M/M/1 queue wait time | Predict latency under load |
-        | `P(all < P99) = 0.99^N` | Tail latency amplification | Distributed system design |
-        | `Pool = RPS * latency * 1.5` | Connection pool sizing | Database configuration |
+  | Formula | Description | Use Case |
+  |---------|-------------|----------|
+  | `L = lambda * W` | Little's Law | Capacity planning, pool sizing |
+  | `W = 1/(mu - lambda)` | M/M/1 queue wait time | Predict latency under load |
+  | `P(all < P99) = 0.99^N` | Tail latency amplification | Distributed system design |
+  | `Pool = RPS * latency * 1.5` | Connection pool sizing | Database configuration |
 
-        ### Latency Numbers to Memorize
+### Latency Numbers to Memorize
 
-        | Operation | Latency | Relative |
-        |-----------|---------|----------|
-        | L1 cache | 0.5 ns | 1x |
-        | L2 cache | 7 ns | 14x |
-        | RAM | 100 ns | 200x |
-        | NVMe SSD | 20 us | 40,000x |
-        | Same DC network | 0.5 ms | 1,000,000x |
-        | Cross-continent | 150 ms | 300,000,000x |
+  | Operation | Latency | Relative |
+  |-----------|---------|----------|
+  | L1 cache | 0.5 ns | 1x |
+  | L2 cache | 7 ns | 14x |
+  | RAM | 100 ns | 200x |
+  | NVMe SSD | 20 us | 40,000x |
+  | Same DC network | 0.5 ms | 1,000,000x |
+  | Cross-continent | 150 ms | 300,000,000x |
 
-        ### Optimization Decision Tree
+### Optimization Decision Tree
 
-        **Latency too high?**
-        1. Profile to find bottleneck
-        2. Cache hit rate low? -> Improve caching
-        3. Network RTT high? -> Move closer (CDN, geo-routing)
-        4. Processing slow? -> Algorithm/query optimization
-        5. Queuing? -> Add capacity or shed load
+**Latency too high?**
+  1. Profile to find bottleneck
+  2. Cache hit rate low? -> Improve caching
+  3. Network RTT high? -> Move closer (CDN, geo-routing)
+  4. Processing slow? -> Algorithm/query optimization
+  5. Queuing? -> Add capacity or shed load
 
-        **Throughput too low?**
-        1. CPU bound? -> Horizontal scaling
-        2. I/O bound? -> Async I/O, batching
-        3. Connection limited? -> Pool tuning, multiplexing
-        4. Memory bound? -> More efficient data structures
+**Throughput too low?**
+  1. CPU bound? -> Horizontal scaling
+  2. I/O bound? -> Async I/O, batching
+  3. Connection limited? -> Pool tuning, multiplexing
+  4. Memory bound? -> More efficient data structures
 
-        ### Red Flags
+### Red Flags
 
-        | Symptom | Likely Cause | Action |
-        |---------|--------------|--------|
-        | P99 > 10x P50 | Bimodal distribution | Investigate cache misses, GC |
-        | Latency grows with load | Queuing saturation | Scale horizontally, shed load |
-        | Throughput drops under load | Thrashing/deadlock | Add backpressure, circuit breakers |
-        | P99.9 spikes periodically | Background jobs, GC | Schedule off-peak, tune GC |
+  | Symptom | Likely Cause | Action |
+  |---------|--------------|--------|
+  | P99 > 10x P50 | Bimodal distribution | Investigate cache misses, GC |
+  | Latency grows with load | Queuing saturation | Scale horizontally, shed load |
+  | Throughput drops under load | Thrashing/deadlock | Add backpressure, circuit breakers |
+  | P99.9 spikes periodically | Background jobs, GC | Schedule off-peak, tune GC |
 
-        ### Cross-References
+### Cross-References
 
         - [[caching]](/topics/system-design/caching) - Reduce latency through data locality
         - [[load-balancing]](/topics/system-design/load-balancing) - Distribute load for throughput

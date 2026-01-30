@@ -25,19 +25,19 @@ This guide provides interview-depth coverage of the critical dimensions of API d
 <strong>Request 1:</strong> GET /users/123
 </div>
 <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            Response: {id, name, email}
+  Response: {id, name, email}
 </div>
 <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
 <strong>Request 2:</strong> GET /users/123/orders
 </div>
 <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            Response: [{orderId, total, items}...]
+  Response: [{orderId, total, items}...]
 </div>
 <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
 <strong>Request 3:</strong> GET /products/456
 </div>
 <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            Response: {productId, name, price}
+  Response: {productId, name, price}
 </div>
 </div>
 <div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center;">3 round trips, potential over-fetching</div>
@@ -48,19 +48,19 @@ This guide provides interview-depth coverage of the critical dimensions of API d
 <div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #e11d48;">
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">query {
-            user(id: "123") {
-            name
-            orders(first: 5) {
-            total
-            items { productName }
-            }
-            }
+  user(id: "123") {
+  name
+  orders(first: 5) {
+  total
+  items { productName }
+  }
+  }
 }</div>
 <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">{
-            "user": {
-            "name": "Alice",
-            "orders": [...]
-            }
+  "user": {
+  "name": "Alice",
+  "orders": [...]
+  }
 }</div>
 </div>
 <div style="color: #4ade80; font-size: 12px; margin-top: 12px; text-align: center;">1 round trip, exact data requested</div>
@@ -118,11 +118,11 @@ const orderLoader = new DataLoader(async (userIds) => {
 <div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
 <p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
 <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">query Evil {
-      user(id: "1") {
-      friends { friends { friends { friends { friends {
-      posts { comments { author { posts { comments { ... } } } } }
-      } } } } }
-      }
+  user(id: "1") {
+  friends { friends { friends { friends { friends {
+  posts { comments { author { posts { comments { ... } } } } }
+  } } } } }
+  }
 }</pre>
 <p style="margin-top: 12px;"><strong>Mitigation Strategies:</strong></p>
 <ul style="margin: 8px 0; padding-left: 20px;">
@@ -622,9 +622,9 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Internal Implementation: Version Resolution
+### Internal Implementation: Version Resolution
 
-                A production versioning system requires sophisticated routing:
+  A production versioning system requires sophisticated routing:
 
                 ```javascript
                 // Version resolution middleware
@@ -679,7 +679,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }));
                 ```
 
-                ### Breaking vs Non-Breaking Changes
+### Breaking vs Non-Breaking Changes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin: 0 0 16px 0;">Change Classification</h4>
@@ -715,7 +715,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Deprecation Lifecycle
+### Deprecation Lifecycle
 
                 ```
                 Active -> Deprecated -> Sunset -> Removed
@@ -729,7 +729,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 notice      notice     (optional)
                 ```
 
-                **Deprecation Response Headers:**
+**Deprecation Response Headers:**
                 ```http
                 HTTP/1.1 200 OK
                 Deprecation: Sun, 01 Jan 2025 00:00:00 GMT
@@ -738,35 +738,35 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 X-API-Warn: "This endpoint is deprecated. Migrate to /v2/users"
                 ```
 
-                ### Interview Questions: Versioning
+### Interview Questions: Versioning
 
-                #### Level 1: Conceptual Understanding
+#### Level 1: Conceptual Understanding
 
-                **Q: What is the difference between URL path versioning and header versioning, and when would you choose each?**
+**Q: What is the difference between URL path versioning and header versioning, and when would you choose each?**
 
-                **URL path versioning** (`/v1/users`) embeds the version in the URL. It's explicit, visible in logs and documentation, easily cacheable by CDNs, and simple to route at load balancers. However, it creates URL proliferation and makes version changes feel like endpoint changes.
+**URL path versioning** (`/v1/users`) embeds the version in the URL. It's explicit, visible in logs and documentation, easily cacheable by CDNs, and simple to route at load balancers. However, it creates URL proliferation and makes version changes feel like endpoint changes.
 
-                **Header versioning** (`Accept: application/vnd.api.v2+json`) keeps URLs clean and follows content negotiation principles. It's less visible, harder to test in browsers, and requires infrastructure awareness of headers for routing.
+**Header versioning** (`Accept: application/vnd.api.v2+json`) keeps URLs clean and follows content negotiation principles. It's less visible, harder to test in browsers, and requires infrastructure awareness of headers for routing.
 
-                **Choose URL path when:**
+**Choose URL path when:**
                 - Building public APIs with diverse clients
                 - CDN caching is critical
                 - Operations team routes at load balancer level
                 - API consumers have varying technical sophistication
 
-                **Choose header versioning when:**
+**Choose header versioning when:**
                 - URLs represent true resource identity (HATEOAS)
                 - Clients are sophisticated (SDKs, internal services)
                 - Gradual version rollout is needed per-client
                 - Multiple representations of same version (JSON, XML)
 
-                #### Level 2: Implementation Depth
+#### Level 2: Implementation Depth
 
-                **Q: How would you implement Stripe-style date-based API versioning that allows hundreds of version points?**
+**Q: How would you implement Stripe-style date-based API versioning that allows hundreds of version points?**
 
-                Stripe's versioning uses dates (`2024-01-15`) as version identifiers, with each date representing a consistent API snapshot. Changes are captured as discrete transformations applied in sequence.
+  Stripe's versioning uses dates (`2024-01-15`) as version identifiers, with each date representing a consistent API snapshot. Changes are captured as discrete transformations applied in sequence.
 
-                **Implementation Approach:**
+**Implementation Approach:**
 
                 ```javascript
                 // 1. Define changes as dated, reversible transformations
@@ -838,23 +838,23 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                **Key Implementation Details:**
+**Key Implementation Details:**
                 - Changes are bidirectional (forward for migration, backward for compatibility)
                 - Transformations are composable and ordered by date
                 - New code runs on latest version; transformations applied at response time
                 - Each change is independently testable
 
-                #### Level 3: Architecture and Edge Cases
+#### Level 3: Architecture and Edge Cases
 
-                **Q: Design a version management system for a microservices architecture where services evolve independently but expose a unified API.**
+**Q: Design a version management system for a microservices architecture where services evolve independently but expose a unified API.**
 
-                **Challenge Analysis:**
+**Challenge Analysis:**
                 - N microservices, each with independent release cycles
                 - Gateway exposes unified API version (e.g., v2)
                 - Service A might be on internal v3, Service B on internal v5
                 - Client specifies gateway version; gateway must translate to each service's version
 
-                **Solution Architecture:**
+**Solution Architecture:**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Version Translation Architecture</h4>
@@ -890,9 +890,9 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                **Implementation Components:**
+**Implementation Components:**
 
-                1. **Version Registry:**
+  1. **Version Registry:**
                 ```javascript
                 const versionRegistry = {
                 // Public API version -> internal service versions
@@ -909,7 +909,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 };
                 ```
 
-                2. **Gateway Transform Layer:**
+  2. **Gateway Transform Layer:**
                 ```javascript
                 async function handleRequest(req) {
                 const publicVersion = req.headers['api-version'] || '2024-06';
@@ -935,7 +935,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                3. **Service Contract Testing:**
+  3. **Service Contract Testing:**
                 ```javascript
                 // Each service maintains contract tests for supported versions
                 describe('User Service v3.0 Contract', () => {
@@ -949,25 +949,25 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 });
                 ```
 
-                4. **Version Compatibility Matrix:**
+  4. **Version Compatibility Matrix:**
                 - Automated tests verify gateway + all service version combinations
                 - CI blocks deployments that break compatibility
                 - Dashboard shows which public versions depend on which service versions
 
-                **Edge Cases:**
+**Edge Cases:**
                 - **Service Rollback**: If Order Service rolls back v2.1 -> v2.0, gateway must detect and route 2024-06 clients to error or fallback
                 - **Partial Availability**: If Payment Service v4.0 is down, can gateway serve 2024-06 requests using v3.5 + transforms?
                 - **Transform Chains**: Some transforms depend on others; must validate DAG has no cycles
 
-                See also: [[api-gateway]](/topics/system-design/api-gateway), [[microservices]](/topics/system-design/microservices)
+  See also: [[api-gateway]](/topics/system-design/api-gateway), [[microservices]](/topics/system-design/microservices)
 
-                ---
+  ---
 
-                ## Idempotency
+## Idempotency
 
-                ### The Problem Idempotency Solves
+### The Problem Idempotency Solves
 
-                In distributed systems, requests can fail at any point:
+  In distributed systems, requests can fail at any point:
 
                 ```
                 Client -> Server: POST /payments (create $100 charge)
@@ -979,15 +979,15 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 Result: Customer charged $200 instead of $100
                 ```
 
-                **Idempotency** ensures that performing the same operation multiple times produces the same result as performing it once.
+**Idempotency** ensures that performing the same operation multiple times produces the same result as performing it once.
 
-                ### Mathematical Definition
+### Mathematical Definition
 
-                An operation `f` is idempotent if: `f(f(x)) = f(x)`
+  An operation `f` is idempotent if: `f(f(x)) = f(x)`
 
-                For APIs: Replaying a request with the same idempotency key returns the same response without re-executing side effects.
+  For APIs: Replaying a request with the same idempotency key returns the same response without re-executing side effects.
 
-                ### Implementation Architecture
+### Implementation Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Idempotency Request Flow</h4>
@@ -1030,7 +1030,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Production Implementation
+### Production Implementation
 
                 ```python
                 import hashlib
@@ -1163,7 +1163,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 return decorator
                 ```
 
-                ### Edge Cases and Failure Modes
+### Edge Cases and Failure Modes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #b91c1c; margin: 0 0 16px 0;">Idempotency Edge Cases</h4>
@@ -1187,29 +1187,29 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Interview Questions: Idempotency
+### Interview Questions: Idempotency
 
-                #### Level 1: Conceptual Understanding
+#### Level 1: Conceptual Understanding
 
-                **Q: Why is idempotency important for payment APIs?**
+**Q: Why is idempotency important for payment APIs?**
 
-                Payment APIs involve irreversible financial operations. Network failures are common - the client might not receive the response even when the server processed successfully. Without idempotency:
+  Payment APIs involve irreversible financial operations. Network failures are common - the client might not receive the response even when the server processed successfully. Without idempotency:
 
-                1. **Double charges**: Client retries, payment processes twice
-                2. **Lost refunds**: Refund request lost, customer never credited
-                3. **Inventory oversell**: Order placed twice, stock goes negative
+  1. **Double charges**: Client retries, payment processes twice
+  2. **Lost refunds**: Refund request lost, customer never credited
+  3. **Inventory oversell**: Order placed twice, stock goes negative
 
-                Idempotency ensures that retrying a failed (or timed-out) request is safe. The first request is processed; subsequent requests with the same idempotency key return the cached result without re-executing the payment.
+  Idempotency ensures that retrying a failed (or timed-out) request is safe. The first request is processed; subsequent requests with the same idempotency key return the cached result without re-executing the payment.
 
-                **Key insight**: Idempotency shifts the burden from "prevent retries" (impossible) to "make retries safe" (achievable).
+**Key insight**: Idempotency shifts the burden from "prevent retries" (impossible) to "make retries safe" (achievable).
 
-                #### Level 2: Implementation Depth
+#### Level 2: Implementation Depth
 
-                **Q: How would you implement idempotency that survives both application and database crashes?**
+**Q: How would you implement idempotency that survives both application and database crashes?**
 
-                The core challenge is atomicity: the business logic and idempotency record must be committed together.
+  The core challenge is atomicity: the business logic and idempotency record must be committed together.
 
-                **Solution: Database Transaction with Idempotency Record**
+**Solution: Database Transaction with Idempotency Record**
 
                 ```python
                 from contextlib import contextmanager
@@ -1287,19 +1287,19 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 return jsonify(ctx['response']), 201
                 ```
 
-                **Critical Implementation Detail**: The idempotency record uses `FOR UPDATE` to acquire a row-level lock, preventing concurrent requests with the same key.
+**Critical Implementation Detail**: The idempotency record uses `FOR UPDATE` to acquire a row-level lock, preventing concurrent requests with the same key.
 
-                #### Level 3: Architecture and Edge Cases
+#### Level 3: Architecture and Edge Cases
 
-                **Q: Design an idempotency system for a distributed microservices architecture where a single API call triggers operations across multiple services.**
+**Q: Design an idempotency system for a distributed microservices architecture where a single API call triggers operations across multiple services.**
 
-                **Challenge Analysis:**
+**Challenge Analysis:**
                 - Single idempotency key covers saga spanning multiple services
                 - Each service has independent database
                 - Partial failures leave system in inconsistent state
                 - Need to ensure entire saga is idempotent, not just individual calls
 
-                **Solution: Orchestrated Saga with Per-Step Idempotency**
+**Solution: Orchestrated Saga with Per-Step Idempotency**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Distributed Idempotency Architecture</h4>
@@ -1338,7 +1338,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                **Implementation:**
+**Implementation:**
 
                 ```python
                 class SagaOrchestrator:
@@ -1429,33 +1429,33 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 logger.error(f"Compensation failed: {step_name}", exc_info=e)
                 ```
 
-                **Key Design Decisions:**
-                1. **Derived Keys**: `order_abc123_reserve_inventory` ensures each step is independently idempotent
-                2. **Persistent Saga State**: Crash-safe resume from any point
-                3. **Compensating Actions**: Each forward action has a reverse
-                4. **Compensation Idempotency**: Compensations also have idempotency keys
+**Key Design Decisions:**
+  1. **Derived Keys**: `order_abc123_reserve_inventory` ensures each step is independently idempotent
+  2. **Persistent Saga State**: Crash-safe resume from any point
+  3. **Compensating Actions**: Each forward action has a reverse
+  4. **Compensation Idempotency**: Compensations also have idempotency keys
 
-                **Edge Cases:**
+**Edge Cases:**
                 - **Compensation Failure**: Log and queue for retry; alert for manual intervention
                 - **Timeout During Step**: Saga remains in `processing`; next attempt resumes
                 - **Service Returns Error**: Different from timeout; may not need compensation if step never executed
 
-                See also: [[distributed-transactions]](/topics/system-design/distributed-transactions), [[saga-pattern]](/topics/system-design/saga-pattern)
+  See also: [[distributed-transactions]](/topics/system-design/distributed-transactions), [[saga-pattern]](/topics/system-design/saga-pattern)
 
-                ---
+  ---
 
-                ## Error Handling
+## Error Handling
 
-                ### Error Design Philosophy
+### Error Design Philosophy
 
-                API errors serve two audiences with different needs:
+  API errors serve two audiences with different needs:
 
-                1. **Developers**: Need enough detail to debug integration issues
-                2. **End Users**: Need actionable messages without security-sensitive details
+  1. **Developers**: Need enough detail to debug integration issues
+  2. **End Users**: Need actionable messages without security-sensitive details
 
-                Well-designed errors balance these needs while maintaining consistency across the API.
+  Well-designed errors balance these needs while maintaining consistency across the API.
 
-                ### Error Response Structure
+### Error Response Structure
 
                 ```json
                 {
@@ -1515,7 +1515,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </table>
 </div>
 
-                ### HTTP Status Code Semantics
+### HTTP Status Code Semantics
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin: 0 0 16px 0;">Status Code Decision Tree</h4>
@@ -1541,7 +1541,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Error Categories Implementation
+### Error Categories Implementation
 
                 ```python
                 from enum import Enum
@@ -1658,7 +1658,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }), 500
                 ```
 
-                ### Security Considerations
+### Security Considerations
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #b91c1c; margin: 0 0 16px 0;">Error Information Leakage Risks</h4>
@@ -1686,11 +1686,11 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                ### Interview Questions: Error Handling
+### Interview Questions: Error Handling
 
-                #### Level 1: Conceptual Understanding
+#### Level 1: Conceptual Understanding
 
-                **Q: What's the difference between HTTP 400, 401, 403, and 404, and when should each be used?**
+**Q: What's the difference between HTTP 400, 401, 403, and 404, and when should each be used?**
 
                 - **400 Bad Request**: The request syntax is malformed or contains invalid parameters. The client made an error that must be fixed before retrying. Examples: invalid JSON, missing required field, wrong data type.
 
@@ -1700,11 +1700,11 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 
                 - **404 Not Found**: The resource doesn't exist (or the client shouldn't know it exists). Use when: resource genuinely missing, OR user lacks permission and you don't want to reveal existence.
 
-                **Key insight**: 401 vs 403 is about whether identity is established. 403 vs 404 depends on whether revealing resource existence is a security concern.
+**Key insight**: 401 vs 403 is about whether identity is established. 403 vs 404 depends on whether revealing resource existence is a security concern.
 
-                #### Level 2: Implementation Depth
+#### Level 2: Implementation Depth
 
-                **Q: How would you design a validation error response that handles both single field errors and complex multi-field validation?**
+**Q: How would you design a validation error response that handles both single field errors and complex multi-field validation?**
 
                 ```python
                 class ValidationErrorResponse:
@@ -1818,16 +1818,16 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                #### Level 3: Architecture and Edge Cases
+#### Level 3: Architecture and Edge Cases
 
-                **Q: Design an error handling system for a public API that needs to support i18n, A/B testing of error messages, and gradual error format migration.**
+**Q: Design an error handling system for a public API that needs to support i18n, A/B testing of error messages, and gradual error format migration.**
 
-                **Requirements Analysis:**
+**Requirements Analysis:**
                 - Multiple languages for error messages
                 - Test different message phrasings for conversion impact
                 - Migrate from legacy error format without breaking clients
 
-                **Solution Architecture:**
+**Solution Architecture:**
 
                 ```python
                 class ErrorMessageRegistry:
@@ -1986,31 +1986,31 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }, error.status_code
                 ```
 
-                **Migration Strategy:**
-                1. Deploy with both formats supported
-                2. New clients default to v2
-                3. Track v1 usage through metrics
-                4. Notify v1 clients of deprecation timeline
-                5. Eventually sunset v1
+**Migration Strategy:**
+  1. Deploy with both formats supported
+  2. New clients default to v2
+  3. Track v1 usage through metrics
+  4. Notify v1 clients of deprecation timeline
+  5. Eventually sunset v1
 
-                See also: [[observability]](/topics/system-design/observability), [[rate-limiting]](/topics/system-design/rate-limiting)
+  See also: [[observability]](/topics/system-design/observability), [[rate-limiting]](/topics/system-design/rate-limiting)
 
-                ---
+  ---
 
-                ## Backward Compatibility
+## Backward Compatibility
 
-                ### The Compatibility Contract
+### The Compatibility Contract
 
-                Once an API is published, external developers write code that depends on its behavior. Breaking that behavior costs money:
+  Once an API is published, external developers write code that depends on its behavior. Breaking that behavior costs money:
 
                 - **Integration failures**: Production apps stop working
                 - **Developer time**: Rewriting integrations
                 - **Trust erosion**: Developers hesitate to adopt your API
                 - **Support costs**: Increased tickets during transition
 
-                **Rule of thumb**: Assume any visible behavior is depended upon by someone.
+**Rule of thumb**: Assume any visible behavior is depended upon by someone.
 
-                ### Types of Breaking Changes
+### Types of Breaking Changes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin: 0 0 16px 0;">Breaking Change Categories</h4>
@@ -2027,7 +2027,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 <li>Adding required parameters</li>
 </ul>
 <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 12px;">
-                          Detected by schema validation
+  Detected by schema validation
 </div>
 </div>
 </div>
@@ -2043,16 +2043,16 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 <li>Changing default values</li>
 </ul>
 <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fde68a; color: #92400e; font-size: 12px;">
-                          Often undetected until production failure
+  Often undetected until production failure
 </div>
 </div>
 </div>
 </div>
 </div>
 
-                ### Compatibility Strategies
+### Compatibility Strategies
 
-                #### 1. Additive Changes Only
+#### 1. Additive Changes Only
 
                 ```python
                 # Original response (v1)
@@ -2070,9 +2070,9 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                **Assumption**: Clients must ignore unknown fields. Document this expectation.
+**Assumption**: Clients must ignore unknown fields. Document this expectation.
 
-                #### 2. Field Evolution Pattern
+#### 2. Field Evolution Pattern
 
                 ```python
                 # Need to change user_id from int to string UUID
@@ -2088,7 +2088,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 # Step 3: After sunset period, remove user_id in next major version
                 ```
 
-                #### 3. Response Envelope Versioning
+#### 3. Response Envelope Versioning
 
                 ```python
                 # Include version in response for client detection
@@ -2106,7 +2106,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                ### Contract Testing
+### Contract Testing
 
                 ```python
                 import pytest
@@ -2159,34 +2159,34 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 assert result['id'] == 'usr_abc123'
                 ```
 
-                ### Interview Questions: Backward Compatibility
+### Interview Questions: Backward Compatibility
 
-                #### Level 1: Conceptual Understanding
+#### Level 1: Conceptual Understanding
 
-                **Q: What makes a change "breaking" and how do you identify breaking changes before deployment?**
+**Q: What makes a change "breaking" and how do you identify breaking changes before deployment?**
 
-                A breaking change is any modification that causes correctly-written client code to fail or behave differently. This includes:
+  A breaking change is any modification that causes correctly-written client code to fail or behave differently. This includes:
 
-                **Syntactic breaks** (easily detected):
+**Syntactic breaks** (easily detected):
                 - Removing fields, endpoints, or parameters
                 - Changing types (int to string)
                 - Adding required parameters
 
-                **Semantic breaks** (harder to detect):
+**Semantic breaks** (harder to detect):
                 - Changing what a field means (amount in cents vs dollars)
                 - Changing error responses
                 - Changing rate limits or auth requirements
 
-                **Detection strategies:**
-                1. **Schema diff tools**: Compare OpenAPI specs between versions
-                2. **Contract tests**: Run consumer contracts against new version
-                3. **Shadow traffic**: Replay production requests, compare responses
-                4. **Canary deployment**: Release to 1% of traffic, monitor error rates
-                5. **Client SDK tests**: Run all SDK version test suites against new API
+**Detection strategies:**
+  1. **Schema diff tools**: Compare OpenAPI specs between versions
+  2. **Contract tests**: Run consumer contracts against new version
+  3. **Shadow traffic**: Replay production requests, compare responses
+  4. **Canary deployment**: Release to 1% of traffic, monitor error rates
+  5. **Client SDK tests**: Run all SDK version test suites against new API
 
-                #### Level 2: Implementation Depth
+#### Level 2: Implementation Depth
 
-                **Q: How would you implement a deprecation system that gives clients adequate warning and tracks migration progress?**
+**Q: How would you implement a deprecation system that gives clients adequate warning and tracks migration progress?**
 
                 ```python
                 from datetime import datetime, timedelta
@@ -2310,17 +2310,17 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 """
                 ```
 
-                #### Level 3: Architecture and Edge Cases
+#### Level 3: Architecture and Edge Cases
 
-                **Q: Design a system for safely rolling out breaking changes to an API used by thousands of external developers, minimizing disruption while ensuring eventual migration.**
+**Q: Design a system for safely rolling out breaking changes to an API used by thousands of external developers, minimizing disruption while ensuring eventual migration.**
 
-                **Challenge Analysis:**
+**Challenge Analysis:**
                 - Thousands of integrations with varying activity levels
                 - Some clients actively maintained, others abandoned
                 - Breaking change unavoidable (e.g., security fix, legal requirement)
                 - Must balance migration timeline with client disruption
 
-                **Solution: Multi-Phase Migration with Escape Hatches**
+**Solution: Multi-Phase Migration with Escape Hatches**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Breaking Change Migration Phases</h4>
@@ -2350,7 +2350,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
 </div>
 </div>
 
-                **Implementation:**
+**Implementation:**
 
                 ```python
                 class BreakingChangeMigration:
@@ -2501,37 +2501,37 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 return False
                 ```
 
-                **Edge Cases:**
+**Edge Cases:**
 
-                1. **Abandoned Integrations**: Clients that haven't made requests in months suddenly break when they return. Solution: "Resurrection grace period" - if client was inactive during migration period, grant automatic extension on first request.
+  1. **Abandoned Integrations**: Clients that haven't made requests in months suddenly break when they return. Solution: "Resurrection grace period" - if client was inactive during migration period, grant automatic extension on first request.
 
-                2. **Cascading Failures**: Partner A uses Partner B's integration which uses our API. Partner B migrates, Partner A breaks. Solution: Allow extensions to be requested by downstream dependents.
+  2. **Cascading Failures**: Partner A uses Partner B's integration which uses our API. Partner B migrates, Partner A breaks. Solution: Allow extensions to be requested by downstream dependents.
 
-                3. **Emergency Bypass**: Critical partner discovers issue day before deadline. Solution: 24/7 on-call can grant emergency extensions with CTO approval.
+  3. **Emergency Bypass**: Critical partner discovers issue day before deadline. Solution: 24/7 on-call can grant emergency extensions with CTO approval.
 
-                4. **Compliance Requirements**: Some industries require change approval processes that exceed our timeline. Solution: Enterprise tier with custom migration schedules.
+  4. **Compliance Requirements**: Some industries require change approval processes that exceed our timeline. Solution: Enterprise tier with custom migration schedules.
 
-                See also: [[feature-flags]](/topics/system-design/feature-flags), [[deployment-strategies]](/topics/system-design/deployment)
+  See also: [[feature-flags]](/topics/system-design/feature-flags), [[deployment-strategies]](/topics/system-design/deployment)
 
-                ---
+  ---
 
-                ## Quick Reference
+## Quick Reference
 
-                ### HTTP Methods and Idempotency
+### HTTP Methods and Idempotency
 
-                | Method | Purpose | Idempotent | Safe | Cacheable |
-                |--------|---------|------------|------|-----------|
-                | GET | Read | Yes | Yes | Yes |
-                | HEAD | Headers only | Yes | Yes | Yes |
-                | POST | Create | No* | No | No |
-                | PUT | Replace | Yes | No | No |
-                | PATCH | Update | No | No | No |
-                | DELETE | Remove | Yes | No | No |
-                | OPTIONS | Capabilities | Yes | Yes | No |
+  | Method | Purpose | Idempotent | Safe | Cacheable |
+  |--------|---------|------------|------|-----------|
+  | GET | Read | Yes | Yes | Yes |
+  | HEAD | Headers only | Yes | Yes | Yes |
+  | POST | Create | No* | No | No |
+  | PUT | Replace | Yes | No | No |
+  | PATCH | Update | No | No | No |
+  | DELETE | Remove | Yes | No | No |
+  | OPTIONS | Capabilities | Yes | Yes | No |
 
-                *POST can be made idempotent with idempotency keys
+*POST can be made idempotent with idempotency keys
 
-                ### Status Code Quick Reference
+### Status Code Quick Reference
 
                 ```
                 2xx Success
@@ -2555,7 +2555,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 504 Timeout - Upstream slow
                 ```
 
-                ### Pagination Response Template
+### Pagination Response Template
 
                 ```json
                 {
@@ -2573,7 +2573,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                ### Error Response Template
+### Error Response Template
 
                 ```json
                 {
@@ -2588,7 +2588,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                 }
                 ```
 
-                ### Essential Headers
+### Essential Headers
 
                 ```http
                 # Request
@@ -2608,7 +2608,7 @@ APIs are contracts. Once clients integrate, any breaking change causes productio
                         Sunset: Mon, 01 Jul 2025 00:00:00 GMT
                         ```
 
-                        ## Cross-References
+## Cross-References
 
                         - [[api-gateway]](/topics/system-design/api-gateway) - Gateway patterns, routing, aggregation
                         - [[rate-limiting]](/topics/system-design/rate-limiting) - Token bucket, sliding window algorithms

@@ -29,17 +29,17 @@ Understanding how databases process queries is fundamental to optimization. The 
 <div style="flex: 1; min-width: 280px; max-width: 350px;">
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(90deg, #238636, #2ea043); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          1. Parser
+  1. Parser
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">SQL text to AST</div>
 </div>
 <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
 <div style="background: linear-gradient(90deg, #1f6feb, #388bfd); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          2. Analyzer
+  2. Analyzer
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Semantic validation, resolve names</div>
 </div>
 <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
 <div style="background: linear-gradient(90deg, #8957e5, #a371f7); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          3. Rewriter
+  3. Rewriter
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">View expansion, rule application</div>
 </div>
 </div>
@@ -47,17 +47,17 @@ Understanding how databases process queries is fundamental to optimization. The 
 <div style="flex: 1; min-width: 280px; max-width: 350px;">
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: linear-gradient(90deg, #f0883e, #d29922); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          4. Planner/Optimizer
+  4. Planner/Optimizer
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Generate & choose execution plan</div>
 </div>
 <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
 <div style="background: linear-gradient(90deg, #da3633, #f85149); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          5. Executor
+  5. Executor
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Execute plan, fetch data</div>
 </div>
 <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
 <div style="background: linear-gradient(90deg, #7ee787, #56d364); color: #0d1117; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-          6. Result Set
+  6. Result Set
 <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Return rows to client</div>
 </div>
 </div>
@@ -220,7 +220,7 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 </div>
 </div>
 
-    ### Scan Types: Performance Hierarchy
+### Scan Types: Performance Hierarchy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">SCAN TYPES (Best to Worst for Selective Queries)</h4>
@@ -256,7 +256,7 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 </div>
 </div>
 
-    ### EXPLAIN Interview Questions (3 Levels Deep)
+### EXPLAIN Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What does EXPLAIN ANALYZE show that regular EXPLAIN does not?</h4>
@@ -278,11 +278,11 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 
     ---
 
-    ## Section 3: Join Optimization
+## Section 3: Join Optimization
 
 <span style="color:#22c55e; font-weight:bold;">Join operations</span> are often the most expensive part of query execution. Understanding join algorithms and optimization techniques is critical for performance. See [[Joins Mastery]](/topics/sql-learning/joins-mastery) for foundational join concepts.
 
-    ### Join Algorithm Types
+### Join Algorithm Types
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">JOIN ALGORITHMS COMPARISON</h4>
@@ -321,14 +321,14 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
 <div style="text-align: center;">
 <div style="background: #8957e5; color: #fff; padding: 16px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
-            Is one table very small? (<100 rows)
+  Is one table very small? (<100 rows)
 </div>
 </div>
 <div style="display: flex; justify-content: center; gap: 40px;">
 <div style="text-align: center;">
 <div style="color: #7ee787; font-size: 14px; margin-bottom: 8px;">YES</div>
 <div style="background: #238636; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-              Nested Loop Join
+  Nested Loop Join
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Small build, many lookups</div>
 </div>
@@ -339,21 +339,21 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 </div>
 <div style="text-align: center;">
 <div style="background: #8957e5; color: #fff; padding: 16px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
-            Is join on equality (=)?
+  Is join on equality (=)?
 </div>
 </div>
 <div style="display: flex; justify-content: center; gap: 40px;">
 <div style="text-align: center;">
 <div style="color: #7ee787; font-size: 14px; margin-bottom: 8px;">YES</div>
 <div style="background: #1f6feb; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-              Hash Join
+  Hash Join
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Build hash, probe O(1)</div>
 </div>
 <div style="text-align: center;">
 <div style="color: #f0883e; font-size: 14px; margin-bottom: 8px;">NO (range/inequality)</div>
 <div style="background: #7ee787; color: #0d1117; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
-              Merge Join
+  Merge Join
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Sort both, merge scan</div>
 </div>
@@ -361,7 +361,7 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 </div>
 </div>
 
-    ### Join Optimization Strategies
+### Join Optimization Strategies
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Critical Join Optimization Rules</h4>
@@ -410,7 +410,7 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
     ;
     ```
 
-    ### Join Interview Questions (3 Levels Deep)
+### Join Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why would a query slow down significantly when you add a new JOIN?</h4>
@@ -432,11 +432,11 @@ Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
 
     ---
 
-    ## Section 4: Subquery vs JOIN
+## Section 4: Subquery vs JOIN
 
 Understanding when to use <span style="color:#22c55e; font-weight:bold;">subqueries</span> versus <span style="color:#22c55e; font-weight:bold;">JOINs</span> is crucial for query optimization. Modern optimizers can often transform between them, but explicit optimization still matters.
 
-    ### Subquery Types and Performance
+### Subquery Types and Performance
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
@@ -467,7 +467,7 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 </div>
 </div>
 
-    ### When to Use Subquery vs JOIN
+### When to Use Subquery vs JOIN
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">DECISION MATRIX</h4>
@@ -513,7 +513,7 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 </div>
 </div>
 
-    ### Transforming Correlated Subqueries
+### Transforming Correlated Subqueries
 
     ```sql
     -- BAD: Correlated subquery - runs subquery once per employee
@@ -547,7 +547,7 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 
     See [[Window Functions]](/topics/sql-learning/window-functions) for more on analytical functions.
 
-    ### The NOT IN NULL Trap
+### The NOT IN NULL Trap
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">Critical: NOT IN vs NOT EXISTS with NULLs</h4>
@@ -574,7 +574,7 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
       ```
 </div>
 
-    ### Subquery vs JOIN Interview Questions (3 Levels Deep)
+### Subquery vs JOIN Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Is a JOIN always faster than a subquery?</h4>
@@ -596,7 +596,7 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 
     ---
 
-    ## Section 5: The N+1 Query Problem
+## Section 5: The N+1 Query Problem
 
 The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of the most common performance issues in applications using ORMs. It occurs when code executes 1 query to fetch N parent records, then N additional queries to fetch related data for each parent.
 
@@ -636,7 +636,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 </div>
 </div>
 
-    ### Solutions to N+1 Problem
+### Solutions to N+1 Problem
 
     ```python
     # Python/SQLAlchemy Example
@@ -659,7 +659,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     users = session.query(User).options(selectinload(User.orders)).limit(100).all()
     ```
 
-    ### N+1 in Raw SQL Context
+### N+1 in Raw SQL Context
 
     ```sql
     -- Instead of application-level loop with individual queries:
@@ -682,7 +682,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     ON o.user_id = t.user_id;
     ```
 
-    ### Detecting N+1 in Production
+### Detecting N+1 in Production
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">N+1 Detection Strategies</h4>
@@ -706,7 +706,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 </div>
 </div>
 
-    ### N+1 Interview Questions (3 Levels Deep)
+### N+1 Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the N+1 query problem and how do you solve it?</h4>
@@ -728,7 +728,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Section 6: Pagination Strategies
+## Section 6: Pagination Strategies
 
 <span style="color:#22c55e; font-weight:bold;">Pagination</span> is essential for handling large result sets, but naive OFFSET-based pagination degrades as offset grows. Understanding pagination trade-offs is critical for APIs and data-heavy applications.
 
@@ -770,7 +770,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 </div>
 </div>
 
-    ### OFFSET/LIMIT Problem
+### OFFSET/LIMIT Problem
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">Why OFFSET Gets Slower</h4>
@@ -804,7 +804,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     --   -> Index Scan Backward using idx_created_at (cost=0.43..128478.23 rows=1000000)
     ```
 
-    ### Keyset (Cursor) Pagination
+### Keyset (Cursor) Pagination
 
     ```sql
     -- GOOD: Keyset pagination - uses index efficiently
@@ -826,7 +826,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     -- EXPLAIN shows: Index Scan with condition (constant time seek)
     ```
 
-    ### Seek Method for Multi-Column Ordering
+### Seek Method for Multi-Column Ordering
 
     ```sql
     -- For ORDER BY created_at DESC, priority ASC, id DESC
@@ -849,7 +849,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     LIMIT 20;
     ```
 
-    ### Deferred Join Pattern
+### Deferred Join Pattern
 
     ```sql
     -- When you must support OFFSET but want better performance
@@ -875,7 +875,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     -- Only 20 full row fetches instead of 100,020
     ```
 
-    ### Pagination with Total Count
+### Pagination with Total Count
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">Warning: COUNT(*) Can Be Expensive</h4>
@@ -899,7 +899,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
       ```
 </div>
 
-    ### Pagination Interview Questions (3 Levels Deep)
+### Pagination Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why does OFFSET-based pagination get slower for later pages?</h4>
@@ -921,11 +921,11 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Section 7: Query Rewriting Techniques
+## Section 7: Query Rewriting Techniques
 
 <span style="color:#22c55e; font-weight:bold;">Query rewriting</span> transforms inefficient SQL into optimized equivalents. While modern optimizers handle many cases automatically, explicit rewriting often yields better plans.
 
-    ### Index-Friendly Rewrites
+### Index-Friendly Rewrites
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Patterns for Index Usage</h4>
@@ -982,7 +982,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 </div>
 </div>
 
-    ### EXISTS vs IN vs JOIN
+### EXISTS vs IN vs JOIN
 
     ```sql
     -- Finding users who have placed orders
@@ -1021,7 +1021,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     WHERE o.id IS NULL;
     ```
 
-    ### Aggregate Optimization
+### Aggregate Optimization
 
     ```sql
     -- Checking existence vs counting
@@ -1050,7 +1050,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     ) active_users ON u.id = active_users.user_id;
     ```
 
-    ### Batch Operations
+### Batch Operations
 
     ```sql
     -- BAD: Many small updates (N round trips)
@@ -1089,9 +1089,9 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Section 8: Advanced Optimization Techniques
+## Section 8: Advanced Optimization Techniques
 
-    ### Covering Indexes (Index-Only Scans)
+### Covering Indexes (Index-Only Scans)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 16px 0;">Covering Index Explained</h4>
@@ -1139,7 +1139,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     See [[Indexing Deep Dive]](/topics/sql-learning/indexing-deep-dive) for comprehensive index strategies.
 
-    ### Partial Indexes
+### Partial Indexes
 
     ```sql
     -- Index only relevant subset of data
@@ -1162,7 +1162,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     -- Uses partial index!
     ```
 
-    ### Expression Indexes
+### Expression Indexes
 
     ```sql
     -- Index on computed expressions
@@ -1184,7 +1184,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     ON orders(EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at));
     ```
 
-    ### Materialized Views
+### Materialized Views
 
     ```sql
     -- Pre-compute expensive aggregations
@@ -1217,9 +1217,9 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Section 9: Monitoring and Diagnostics
+## Section 9: Monitoring and Diagnostics
 
-    ### PostgreSQL Performance Views
+### PostgreSQL Performance Views
 
     ```sql
     -- Find slowest queries (requires pg_stat_statements extension)
@@ -1271,7 +1271,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     ORDER BY n_dead_tup DESC;
     ```
 
-    ### MySQL Performance Schema
+### MySQL Performance Schema
 
     ```sql
     -- Enable performance schema (if not enabled)
@@ -1317,7 +1317,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
     ORDER BY time DESC;
     ```
 
-    ### Key Metrics to Track
+### Key Metrics to Track
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 20px 0;">Database Health Indicators</h4>
@@ -1351,7 +1351,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Quick Reference
+## Quick Reference
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Query Optimization Checklist</h4>
@@ -1391,7 +1391,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Interview Preparation Summary
+## Interview Preparation Summary
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Key Topics to Master</h4>
@@ -1417,7 +1417,7 @@ The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of 
 
     ---
 
-    ## Related Topics
+## Related Topics
 
     - [[Indexing Deep Dive]](/topics/sql-learning/indexing-deep-dive) - Comprehensive index strategies and B-tree internals
     - [[SQL Fundamentals]](/topics/sql-learning/sql-fundamentals) - Core SQL concepts and syntax

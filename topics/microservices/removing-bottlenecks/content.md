@@ -18,7 +18,7 @@ Understanding where time is spent before optimizing is fundamental. Premature op
 <div style="background: rgba(0, 217, 255, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(0, 217, 255, 0.3);">
 <div style="color: #00d9ff; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L1: Distributed Tracing</div>
 <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
-        Cross-service latency, request flow visualization, span analysis
+  Cross-service latency, request flow visualization, span analysis
 </div>
 <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
 <span style="color: #ffd93d; font-size: 0.75em;">Tools: Jaeger, Zipkin, AWS X-Ray</span>
@@ -27,7 +27,7 @@ Understanding where time is spent before optimizing is fundamental. Premature op
 <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 107, 107, 0.3);">
 <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L2: Application Profiling</div>
 <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
-        CPU flame graphs, memory allocation, GC pressure, lock contention
+  CPU flame graphs, memory allocation, GC pressure, lock contention
 </div>
 <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
 <span style="color: #ffd93d; font-size: 0.75em;">Tools: pprof, async-profiler, perf</span>
@@ -36,7 +36,7 @@ Understanding where time is spent before optimizing is fundamental. Premature op
 <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(78, 205, 196, 0.3);">
 <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L3: Database Profiling</div>
 <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
-        Query execution plans, lock wait analysis, I/O statistics
+  Query execution plans, lock wait analysis, I/O statistics
 </div>
 <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
 <span style="color: #ffd93d; font-size: 0.75em;">Tools: EXPLAIN ANALYZE, pg_stat_statements</span>
@@ -45,7 +45,7 @@ Understanding where time is spent before optimizing is fundamental. Premature op
 <div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(162, 155, 254, 0.3);">
 <div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L4: System Profiling</div>
 <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
-        Kernel syscalls, network stack, disk I/O, CPU cache misses
+  Kernel syscalls, network stack, disk I/O, CPU cache misses
 </div>
 <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
 <span style="color: #ffd93d; font-size: 0.75em;">Tools: eBPF, strace, iostat, vmstat</span>
@@ -126,7 +126,7 @@ for i in range(1000):
 <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
 <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
-      Use distributed tracing with span analysis. Each service creates a span with start/end timestamps. The bottleneck is the span with the longest duration that's on the critical path. Look for spans where self-time (total time minus child spans) is high - this isolates actual processing time from waiting on downstream services.
+  Use distributed tracing with span analysis. Each service creates a span with start/end timestamps. The bottleneck is the span with the longest duration that's on the critical path. Look for spans where self-time (total time minus child spans) is high - this isolates actual processing time from waiting on downstream services.
 </div>
 </div>
 
@@ -159,7 +159,7 @@ Databases are the most common bottleneck in microservices because they're statef
 <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
 <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Connection Exhaustion</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        Each connection consumes ~10MB RAM (PostgreSQL) for work_mem, sort buffers, and connection state. With 100 microservice instances each opening 20 connections, you need 2000 database connections.
+  Each connection consumes ~10MB RAM (PostgreSQL) for work_mem, sort buffers, and connection state. With 100 microservice instances each opening 20 connections, you need 2000 database connections.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Connection poolers like PgBouncer in transaction mode multiplex many client connections over fewer database connections.</div>
@@ -168,7 +168,7 @@ Databases are the most common bottleneck in microservices because they're statef
 <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
 <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Lock Contention</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        Row-level locks during UPDATE cause transactions to wait. Hot rows (popular products, counters) become serialization points. Even SELECT can block if it needs a share lock conflicting with an exclusive lock.
+  Row-level locks during UPDATE cause transactions to wait. Hot rows (popular products, counters) become serialization points. Even SELECT can block if it needs a share lock conflicting with an exclusive lock.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Optimistic locking with version columns, or sharding hot data across multiple rows.</div>
@@ -177,7 +177,7 @@ Databases are the most common bottleneck in microservices because they're statef
 <div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(162, 155, 254, 0.3);">
 <div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Query Plan Degradation</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        Statistics become stale as data distribution changes. The planner chooses sequential scan over index scan because it believes the table is smaller than it actually is. ANALYZE frequency matters.
+  Statistics become stale as data distribution changes. The planner chooses sequential scan over index scan because it believes the table is smaller than it actually is. ANALYZE frequency matters.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Automated ANALYZE schedules, query plan monitoring, plan baselines (Oracle) or pg_hint_plan.</div>
@@ -186,7 +186,7 @@ Databases are the most common bottleneck in microservices because they're statef
 <div style="background: rgba(255, 217, 61, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 217, 61, 0.3);">
 <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Write Amplification</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        B-tree index updates during INSERT cause page splits. A single row insert might trigger multiple page writes across multiple indexes. Wide rows with many indexes are particularly expensive.
+  B-tree index updates during INSERT cause page splits. A single row insert might trigger multiple page writes across multiple indexes. Wide rows with many indexes are particularly expensive.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Careful index design, partial indexes, periodic REINDEX to reclaim space.</div>
@@ -409,11 +409,11 @@ func ProcessOrderEvent(ctx context.Context, event OrderEvent) error {
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <pre style="margin: 0; color: #1e293b; font-size: 0.85em; overflow-x: auto;">
-      BEGIN TRANSACTION;
-      INSERT INTO orders (id, user_id, total) VALUES (...);
-      INSERT INTO outbox (aggregate_id, event_type, payload)
-      VALUES (order_id, 'OrderCreated', '{"orderId": "..."}');
-      COMMIT;
+  BEGIN TRANSACTION;
+  INSERT INTO orders (id, user_id, total) VALUES (...);
+  INSERT INTO outbox (aggregate_id, event_type, payload)
+  VALUES (order_id, 'OrderCreated', '{"orderId": "..."}');
+  COMMIT;
 -- Separate CDC process or poller reads outbox and publishes to Kafka</pre>
 </div>
 </div>
@@ -475,7 +475,7 @@ Several failure modes: (1) <strong>Check-then-act race condition</strong> - if u
 <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
 <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
-      Implement a state machine with timeout-based recovery: (1) States: PENDING -> PROCESSING -> SENT or FAILED; (2) When claiming a message, set state to PROCESSING with a claim_until timestamp (now + 5 minutes); (3) Background reaper queries for messages WHERE state = 'PROCESSING' AND claim_until < NOW(), resets them to PENDING for retry; (4) After successful send, atomically set state to SENT; (5) For the email service specifically, check with the email provider's API if the message was actually sent (using a client-generated message ID) before retrying - this handles "send succeeded but ack failed" cases. This is essentially implementing a transactional outbox (see [[transactional-outbox]](/microservices/patterns)) with lease-based claiming.
+  Implement a state machine with timeout-based recovery: (1) States: PENDING -> PROCESSING -> SENT or FAILED; (2) When claiming a message, set state to PROCESSING with a claim_until timestamp (now + 5 minutes); (3) Background reaper queries for messages WHERE state = 'PROCESSING' AND claim_until < NOW(), resets them to PENDING for retry; (4) After successful send, atomically set state to SENT; (5) For the email service specifically, check with the email provider's API if the message was actually sent (using a client-generated message ID) before retrying - this handles "send succeeded but ack failed" cases. This is essentially implementing a transactional outbox (see [[transactional-outbox]](/microservices/patterns)) with lease-based claiming.
 </div>
 </div>
 </div>
@@ -691,7 +691,7 @@ Multiple strategies: (1) <strong>Local caching</strong> - each app instance cach
 <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
 <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
-      Implement pub/sub invalidation: (1) When profile updates, publish invalidation event to Redis Pub/Sub channel; (2) Each app instance subscribes to this channel; (3) On receiving invalidation, evict from local cache; (4) Next request fetches fresh data, repopulates local cache. This gives you local cache speed with near-real-time invalidation. For 5-second guarantee: (1) Short local TTL (30s) as backup; (2) Monitor pub/sub lag; (3) Consider using Redis Streams instead of Pub/Sub for persistence (handles instance restarts). Alternative: use a two-tier TTL - local cache 30s, Redis 5min. Local always checks Redis version before using cached value. If version changed, invalidate. This is more network calls but simpler operationally than pub/sub.
+  Implement pub/sub invalidation: (1) When profile updates, publish invalidation event to Redis Pub/Sub channel; (2) Each app instance subscribes to this channel; (3) On receiving invalidation, evict from local cache; (4) Next request fetches fresh data, repopulates local cache. This gives you local cache speed with near-real-time invalidation. For 5-second guarantee: (1) Short local TTL (30s) as backup; (2) Monitor pub/sub lag; (3) Consider using Redis Streams instead of Pub/Sub for persistence (handles instance restarts). Alternative: use a two-tier TTL - local cache 30s, Redis 5min. Local always checks Redis version before using cached value. If version changed, invalidate. This is more network calls but simpler operationally than pub/sub.
 </div>
 </div>
 </div>
@@ -708,7 +708,7 @@ Horizontal scaling adds more instances to handle increased load, as opposed to v
 <div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(16, 185, 129, 0.3);">
 <div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Stateless Services</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        No request should depend on state from a previous request being on the same instance. Session, cache, and file storage must be externalized.
+  No request should depend on state from a previous request being on the same instance. Session, cache, and file storage must be externalized.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Move to:</strong> Redis for sessions, S3 for files, external cache</div>
@@ -717,7 +717,7 @@ Horizontal scaling adds more instances to handle increased load, as opposed to v
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(139, 92, 246, 0.3);">
 <div style="color: #8b5cf6; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Idempotent Operations</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        Requests may be retried due to timeouts or load balancer failover. The same request executed twice must produce the same result.
+  Requests may be retried due to timeouts or load balancer failover. The same request executed twice must produce the same result.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Implement:</strong> Idempotency keys, upserts instead of inserts</div>
@@ -726,7 +726,7 @@ Horizontal scaling adds more instances to handle increased load, as opposed to v
 <div style="background: rgba(245, 158, 11, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.3);">
 <div style="color: #f59e0b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Graceful Shutdown</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
-        Instances are added/removed dynamically. In-flight requests must complete before termination. Health checks must accurately reflect readiness.
+  Instances are added/removed dynamically. In-flight requests must complete before termination. Health checks must accurately reflect readiness.
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #ffd93d; font-size: 0.85em;"><strong>Handle:</strong> SIGTERM, drain connections, fail health checks</div>
@@ -959,16 +959,16 @@ Effective bottleneck removal requires comprehensive observability. The three pil
 <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
 <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Traces</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
-        End-to-end request flow across services.<br/>
-        Identify slow spans and service dependencies.<br/>
+  End-to-end request flow across services.<br/>
+  Identify slow spans and service dependencies.<br/>
 <strong>Key:</strong> Sample high-latency requests for detailed analysis.
 </div>
 </div>
 <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
 <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Logs</div>
 <div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
-        Structured logs with trace IDs for correlation.<br/>
-        Error details and context for debugging.<br/>
+  Structured logs with trace IDs for correlation.<br/>
+  Error details and context for debugging.<br/>
 <strong>Key:</strong> Log slow queries, cache misses, retry events.
 </div>
 </div>

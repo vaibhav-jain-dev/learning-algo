@@ -33,7 +33,7 @@ Every major enterprise framework is built around DI: Spring (Java), ASP.NET Core
 <div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #065f46 0%, #047857 100%); border-radius: 12px; padding: 20px;">
 <div style="font-weight: 700; color: #ecfdf5; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
 <span style="background: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">PREFERRED</span>
-        Constructor Injection
+  Constructor Injection
 </div>
 <div style="color: #d1fae5; font-size: 0.9rem; line-height: 1.6;">
 <div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Invariant:</strong> Object cannot exist in invalid state</div>
@@ -46,7 +46,7 @@ Every major enterprise framework is built around DI: Spring (Java), ASP.NET Core
 <div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #92400e 0%, #b45309 100%); border-radius: 12px; padding: 20px;">
 <div style="font-weight: 700; color: #fef3c7; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
 <span style="background: #f59e0b; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #451a03;">SITUATIONAL</span>
-        Setter Injection
+  Setter Injection
 </div>
 <div style="color: #fef3c7; font-size: 0.9rem; line-height: 1.6;">
 <div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Optional Dependencies:</strong> Object works without them</div>
@@ -240,17 +240,17 @@ A DI Container (also called IoC Container) automates dependency resolution by ma
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
 <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Request Type
+  Request Type
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">container.resolve(UserService)</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Check Registry
+  Check Registry
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Find registered implementation</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #0891b2; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Analyze Constructor
+  Analyze Constructor
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Inspect parameter types</div>
 </div>
 </div>
@@ -259,17 +259,17 @@ A DI Container (also called IoC Container) automates dependency resolution by ma
 
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
 <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Resolve Dependencies
+  Resolve Dependencies
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Recursively build each param</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #ca8a04; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Apply Lifecycle
+  Apply Lifecycle
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Singleton? Scoped? Transient?</div>
 </div>
 <div style="color: #64748b; font-size: 1.5rem;">-></div>
 <div style="background: #dc2626; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
-        Return Instance
+  Return Instance
 <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Fully constructed object</div>
 </div>
 </div>
@@ -497,7 +497,7 @@ The Service Locator pattern provides a global registry that any class can query 
 <div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Hidden Dependencies</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
-          Class signature does not reveal what it needs. You must read every method to discover dependencies, making code reviews and refactoring dangerous.
+  Class signature does not reveal what it needs. You must read every method to discover dependencies, making code reviews and refactoring dangerous.
 </div>
 </div>
 </div>
@@ -506,7 +506,7 @@ The Service Locator pattern provides a global registry that any class can query 
 <div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Testing Nightmare</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
-          Tests must configure global state before each test and clean up after. Parallel tests become impossible without careful isolation. Forgotten setup causes cryptic failures.
+  Tests must configure global state before each test and clean up after. Parallel tests become impossible without careful isolation. Forgotten setup causes cryptic failures.
 </div>
 </div>
 </div>
@@ -515,7 +515,7 @@ The Service Locator pattern provides a global registry that any class can query 
 <div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Runtime Coupling</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
-          Every class depends on the locator. Changing the locator API breaks everything. You've traded explicit dependencies for implicit coupling to infrastructure.
+  Every class depends on the locator. Changing the locator API breaks everything. You've traded explicit dependencies for implicit coupling to infrastructure.
 </div>
 </div>
 </div>
@@ -1410,9 +1410,9 @@ if __name__ == "__main__":
 </div>
 </div>
 
-        ---
+  ---
 
-        ## Related Patterns
+## Related Patterns
 
         - [[Factory Method]](/topics/design-patterns/factory-method) - Create objects without specifying exact classes; often used by DI containers internally
         - [[Abstract Factory]](/topics/design-patterns/abstract-factory) - Create families of related objects; DI can inject different factories per environment
@@ -1423,20 +1423,20 @@ if __name__ == "__main__":
         - [[Inversion of Control]](/topics/design-patterns/inversion-of-control) - The broader principle that DI implements
         - [[SOLID Principles]](/topics/design-patterns/solid-principles) - DI directly enables Dependency Inversion Principle
 
-        ---
+  ---
 
-        ## Key Takeaways for Interviews
+## Key Takeaways for Interviews
 
-        1. **DI is about object construction, not object use** - The pattern separates how objects are created from how they are used
+  1. **DI is about object construction, not object use** - The pattern separates how objects are created from how they are used
 
-        2. **Constructor injection should be your default** - It ensures objects are always valid and makes dependencies explicit
+  2. **Constructor injection should be your default** - It ensures objects are always valid and makes dependencies explicit
 
-        3. **Service Locator hides dependencies** - Visible constructor parameters are always preferable to hidden service lookups
+  3. **Service Locator hides dependencies** - Visible constructor parameters are always preferable to hidden service lookups
 
-        4. **DI containers are optional** - Manual DI (pure DI) is valid and sometimes preferable for smaller systems
+  4. **DI containers are optional** - Manual DI (pure DI) is valid and sometimes preferable for smaller systems
 
-        5. **Too many dependencies signals design problems** - DI makes [[Single Responsibility Principle]](/topics/design-patterns/solid-principles) violations visible
+  5. **Too many dependencies signals design problems** - DI makes [[Single Responsibility Principle]](/topics/design-patterns/solid-principles) violations visible
 
-        6. **Testing transformation is the killer feature** - DI enables fast, deterministic, isolated unit tests
+  6. **Testing transformation is the killer feature** - DI enables fast, deterministic, isolated unit tests
 
-        7. **Lifecycle management matters** - Understanding singleton vs scoped vs transient prevents subtle bugs
+  7. **Lifecycle management matters** - Understanding singleton vs scoped vs transient prevents subtle bugs

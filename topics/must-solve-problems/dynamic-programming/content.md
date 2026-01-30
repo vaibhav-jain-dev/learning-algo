@@ -77,16 +77,16 @@ The key insight of DP is the **optimal substructure** property: the optimal solu
 Problem: Count ways to climb n stairs, taking 1 or 2 steps at a time.
 
 Recurrence: dp[i] = dp[i-1] + dp[i-2]
-           (ways to reach step i from step i-1 OR step i-2)
+  (ways to reach step i from step i-1 OR step i-2)
 
 Stairs:  0    1    2    3    4    5
 Ways:    1    1    2    3    5    8
-               |    |    |    |
-               |    |    |    |
-               |    |    |    +-- dp[3] + dp[4] = 3 + 5
-               |    |    +------ dp[2] + dp[3] = 2 + 3
-               |    +---------- dp[1] + dp[2] = 1 + 2
-               +-------------- dp[0] + dp[1] = 1 + 1
+  |    |    |    |
+  |    |    |    |
+  |    |    |    +-- dp[3] + dp[4] = 3 + 5
+  |    |    +------ dp[2] + dp[3] = 2 + 3
+  |    +---------- dp[1] + dp[2] = 1 + 2
+  +-------------- dp[0] + dp[1] = 1 + 1
 
 Visualization of paths to step 4:
 From step 3 (3 ways): +1 each = 3 ways ending with 1-step
@@ -112,7 +112,7 @@ Grid (m=3, n=4):
     +-----+-----+-----+-----+
 
 Recurrence: dp[i][j] = dp[i-1][j] + dp[i][j-1]
-           (paths from above + paths from left)
+  (paths from above + paths from left)
 
 dp[2][3] = dp[1][3] + dp[2][2] = 4 + 6 = 10
 
@@ -127,7 +127,7 @@ Key: First row and column are all 1s (only one way to reach)
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Strings: "ABCDE" and "ACE"
 
-       ""   A   C   E
+  ""   A   C   E
     +----+---+---+---+
  "" |  0 | 0 | 0 | 0 |
     +----+---+---+---+
@@ -265,17 +265,17 @@ print(lis_binary_search(nums))  # 4
 Items: [(weight=1, value=1), (w=2, v=4), (w=3, v=5), (w=2, v=3)]
 Capacity: 5
 
-          Capacity
-          0   1   2   3   4   5
-       +---+---+---+---+---+---+
+  Capacity
+  0   1   2   3   4   5
+  +---+---+---+---+---+---+
 Item 0 | 0 | 1 | 1 | 1 | 1 | 1 |
-       +---+---+---+---+---+---+
+  +---+---+---+---+---+---+
 Item 1 | 0 | 1 | 4 | 5 | 5 | 5 |
-       +---+---+---+---+---+---+
+  +---+---+---+---+---+---+
 Item 2 | 0 | 1 | 4 | 5 | 6 | 9 |
-       +---+---+---+---+---+---+
+  +---+---+---+---+---+---+
 Item 3 | 0 | 1 | 4 | 5 | 7 | 9 |  <- Max value: 9
-       +---+---+---+---+---+---+
+  +---+---+---+---+---+---+
 
 Recurrence:
   dp[i][w] = max(
@@ -381,7 +381,7 @@ print(coin_change_ways([1, 2, 5], 5))  # 4 ways
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Strings: "abc" -> "yabd"
 
-       ""   y   a   b   d
+  ""   y   a   b   d
     +----+---+---+---+---+
  "" |  0 | 1 | 2 | 3 | 4 |  <- Insert all
     +----+---+---+---+---+
@@ -655,10 +655,10 @@ LIS:          dp[i] = max(dp[j] + 1) for j < i where arr[j] < arr[i]
 Unbounded:    dp[w] = max(dp[w], dp[w-wt[i]] + val[i])
 
 LCS:          dp[i][j] = dp[i-1][j-1] + 1        if match
-                       = max(dp[i-1][j], dp[i][j-1]) otherwise
+  = max(dp[i-1][j], dp[i][j-1]) otherwise
 
 Edit Dist:    dp[i][j] = dp[i-1][j-1]            if match
-                       = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+  = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
 
 Unique Paths: dp[i][j] = dp[i-1][j] + dp[i][j-1]
 

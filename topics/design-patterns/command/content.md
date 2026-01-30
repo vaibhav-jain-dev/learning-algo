@@ -283,47 +283,47 @@ class UndoRedoManager:
 ### Interview Questions: Undo/Redo
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How do you implement undo/redo using the Command pattern?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How do you implement undo/redo using the Command pattern?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8;">
 <strong>Answer:</strong> Maintain two stacks - an undo stack for executed commands and a redo stack for undone commands. Each command implements execute() and undo() methods. On execute(), push to undo stack and clear redo stack. On undo(), pop from undo stack, call undo(), push to redo stack. On redo(), pop from redo stack, call execute(), push to undo stack.
 
-    <details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: What happens when undo() fails partway through? How do you maintain consistency?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: What happens when undo() fails partway through? How do you maintain consistency?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This is the "partial undo" problem. Solutions include:
 
-        1. **Transactional undo**: Wrap undo in a try-catch, and if it fails, attempt to re-execute to restore state
-        2. **Snapshot before undo**: Take a memento before undo, restore on failure
-        3. **Two-phase undo**: First validate undo is possible (dry run), then execute
-        4. **Compensation commands**: Generate a compensating command that will fix any partial state
+  1. **Transactional undo**: Wrap undo in a try-catch, and if it fails, attempt to re-execute to restore state
+  2. **Snapshot before undo**: Take a memento before undo, restore on failure
+  3. **Two-phase undo**: First validate undo is possible (dry run), then execute
+  4. **Compensation commands**: Generate a compensating command that will fix any partial state
 
-        The safest approach is making undo operations atomic - design them so they either fully complete or fully fail without side effects.
+  The safest approach is making undo operations atomic - design them so they either fully complete or fully fail without side effects.
 
-        <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: How would you implement collaborative undo in a multi-user real-time editor where User A and User B can both undo their own actions?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: How would you implement collaborative undo in a multi-user real-time editor where User A and User B can both undo their own actions?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This requires Operational Transformation (OT) or Conflict-free Replicated Data Types (CRDTs). Key challenges:
 
-            1. **Per-user undo stacks**: Each user has their own undo history, but all modify shared state
-            2. **Transform on undo**: When User A undoes their action, the undo must be transformed against all operations User B made after A's original action
-            3. **Causality tracking**: Use vector clocks or Lamport timestamps to establish happened-before relationships
-            4. **Conflict resolution**: Define merge policies when undoing creates conflicts with concurrent edits
+  1. **Per-user undo stacks**: Each user has their own undo history, but all modify shared state
+  2. **Transform on undo**: When User A undoes their action, the undo must be transformed against all operations User B made after A's original action
+  3. **Causality tracking**: Use vector clocks or Lamport timestamps to establish happened-before relationships
+  4. **Conflict resolution**: Define merge policies when undoing creates conflicts with concurrent edits
 
-            Example: User A types "Hello" at position 0, User B types "World" at position 5. If A undoes, you must adjust B's operation to account for the removed text. Google Docs uses OT, while Figma uses CRDTs for this problem.
+  Example: User A types "Hello" at position 0, User B types "World" at position 5. If A undoes, you must adjust B's operation to account for the removed text. Google Docs uses OT, while Figma uses CRDTs for this problem.
 
-            Implementation requires:
+  Implementation requires:
             - Each command includes author ID and logical timestamp
             - Undo transforms the inverse operation against all subsequent operations from other users
             - The transformed undo is broadcast to all clients
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How do you handle commands that cannot be undone?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How do you handle commands that cannot be undone?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8;">
 <strong>Answer:</strong> Mark commands as irreversible and handle them specially:
 
@@ -336,27 +336,27 @@ class UndoRedoManager:
 
     For irreversible commands: warn user before execution, do not add to undo stack, or implement "soft" alternatives (soft delete instead of hard delete).
 
-    <details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: What if an irreversible command is in the middle of a macro? How do you undo the macro?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: What if an irreversible command is in the middle of a macro? How do you undo the macro?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Several strategies:
 
-        1. **Block macro creation**: Prevent irreversible commands from being added to macros
-        2. **Partial undo**: Undo everything before the irreversible command, mark the rest as "cannot undo"
-        3. **Checkpoint macros**: Split macro at irreversible boundaries, warn user that undo will only go back to the checkpoint
-        4. **Compensating actions**: For some "irreversible" operations, provide a compensating action (e.g., "unsend" email within time window)
+  1. **Block macro creation**: Prevent irreversible commands from being added to macros
+  2. **Partial undo**: Undo everything before the irreversible command, mark the rest as "cannot undo"
+  3. **Checkpoint macros**: Split macro at irreversible boundaries, warn user that undo will only go back to the checkpoint
+  4. **Compensating actions**: For some "irreversible" operations, provide a compensating action (e.g., "unsend" email within time window)
 
-        <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design an undo system for a payment processing application where some commands trigger external API calls</summary>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design an undo system for a payment processing application where some commands trigger external API calls</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This requires the [[Saga Pattern]](/topics/design-patterns/saga) combined with Command:
 
-            1. **Two-phase commands**: Separate "prepare" (reversible, local) from "commit" (irreversible, external)
-            2. **Compensation over reversal**: Instead of undoing a payment, issue a refund command
-            3. **Eventual consistency**: Accept that undo may not be immediate - use async compensation
-            4. **Audit trail**: Log all commands and their compensation status for reconciliation
+  1. **Two-phase commands**: Separate "prepare" (reversible, local) from "commit" (irreversible, external)
+  2. **Compensation over reversal**: Instead of undoing a payment, issue a refund command
+  3. **Eventual consistency**: Accept that undo may not be immediate - use async compensation
+  4. **Audit trail**: Log all commands and their compensation status for reconciliation
 
-            Architecture:
+  Architecture:
             ```
             PaymentCommand:
             - execute(): create local pending record, call payment API
@@ -368,15 +368,15 @@ class UndoRedoManager:
             - undo(): cannot undo a refund (business rule)
             ```
 
-            Critical considerations:
+  Critical considerations:
             - Idempotency keys for API calls
             - Timeout handling (what if API call hangs?)
             - State machine for payment lifecycle (pending -> completed -> refunding -> refunded)
             - Dead letter queue for failed compensations
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
@@ -515,7 +515,7 @@ class RecordingMacro(MacroCommand):
 ### Interview Questions: Macro Commands
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How does a MacroCommand differ from simply calling multiple commands in sequence?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How does a MacroCommand differ from simply calling multiple commands in sequence?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8;">
 <strong>Answer:</strong> A MacroCommand provides:
 
@@ -527,12 +527,12 @@ class RecordingMacro(MacroCommand):
 
     Without MacroCommand, undoing 10 sequential commands requires 10 undo operations, and partial failure handling is ad-hoc.
 
-    <details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you handle commands in a macro that depend on the results of previous commands?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you handle commands in a macro that depend on the results of previous commands?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Several approaches:
 
-        1. **Lazy parameter resolution**: Commands take suppliers/callbacks instead of values
+  1. **Lazy parameter resolution**: Commands take suppliers/callbacks instead of values
         ```python
         class DependentCommand(Command):
         def __init__(self, value_supplier: Callable[[], Any]):
@@ -542,7 +542,7 @@ class RecordingMacro(MacroCommand):
         value = self._get_value()  # Resolved at execution time
         ```
 
-        2. **Shared context object**: Commands read/write to a shared context
+  2. **Shared context object**: Commands read/write to a shared context
         ```python
         class MacroContext:
         def __init__(self):
@@ -551,10 +551,10 @@ class RecordingMacro(MacroCommand):
         # Commands access context.results["previous_command_key"]
         ```
 
-        3. **Command chaining**: Commands explicitly link to predecessors
+  3. **Command chaining**: Commands explicitly link to predecessors
 
-        <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a macro system that supports conditional execution, loops, and branching based on command results</summary>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a macro system that supports conditional execution, loops, and branching based on command results</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This essentially becomes a domain-specific workflow engine:
 
@@ -603,18 +603,18 @@ class RecordingMacro(MacroCommand):
             self._iterations_executed.clear()
             ```
 
-            Key design considerations:
+  Key design considerations:
             - **Undo complexity**: Each loop iteration needs independent undo state
             - **Infinite loop protection**: Max iteration limit
             - **Early exit**: Support break/continue semantics
             - **State isolation**: Each iteration may need its own context
             - **Memory**: Long loops create many command objects
 
-            This pattern is used in workflow engines like Temporal, Cadence, and business process automation tools.
+  This pattern is used in workflow engines like Temporal, Cadence, and business process automation tools.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
@@ -843,7 +843,7 @@ class CommandWorker:
 ### Interview Questions: Command Queuing
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: Why use a command queue instead of executing commands immediately?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: Why use a command queue instead of executing commands immediately?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8;">
 <strong>Answer:</strong> Command queuing provides:
 
@@ -855,15 +855,15 @@ class CommandWorker:
     6. **Scalability**: Add more workers without changing producers
     7. **Resilience**: Commands survive process restarts (if persisted)
 
-    <details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you ensure exactly-once execution of queued commands in a distributed system?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you ensure exactly-once execution of queued commands in a distributed system?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Exactly-once is impossible in distributed systems, but you can achieve effectively-once through:
 
-        1. **Idempotency keys**: Each command has a unique ID; receivers track processed IDs
-        2. **Deduplication window**: Store recent command IDs in cache (Redis) for deduplication
-        3. **Transactional outbox**: Write command to database in same transaction as business logic, separate process publishes
-        4. **At-least-once + idempotent handlers**: Accept duplicates but make handlers idempotent
+  1. **Idempotency keys**: Each command has a unique ID; receivers track processed IDs
+  2. **Deduplication window**: Store recent command IDs in cache (Redis) for deduplication
+  3. **Transactional outbox**: Write command to database in same transaction as business logic, separate process publishes
+  4. **At-least-once + idempotent handlers**: Accept duplicates but make handlers idempotent
 
         ```python
         class IdempotentCommandHandler:
@@ -883,8 +883,8 @@ class CommandWorker:
         return True
         ```
 
-        <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a command queue system that maintains ordering guarantees while allowing parallel processing for unrelated commands</summary>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a command queue system that maintains ordering guarantees while allowing parallel processing for unrelated commands</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This requires partitioned ordering - order within a partition, parallelism across partitions:
 
@@ -918,17 +918,17 @@ class CommandWorker:
             self._workers.append(worker)
             ```
 
-            Advanced considerations:
+  Advanced considerations:
             - **Sticky sessions**: Route related commands to same partition
             - **Partition rebalancing**: Handle worker failures without losing ordering
             - **Head-of-line blocking**: One slow command blocks entire partition
             - **Dynamic partitioning**: Adjust partitions based on load
 
-            This pattern is used by Kafka (partition ordering), SQS FIFO (message group ID), and Azure Service Bus (sessions).
+  This pattern is used by Kafka (partition ordering), SQS FIFO (message group ID), and Azure Service Bus (sessions).
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
@@ -1180,7 +1180,7 @@ class TransferFundsCommand(TransactionCommand[str]):
 ### Interview Questions: Transaction Scripts
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How does the Command pattern enable transaction-like behavior without a database?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem;">Level 1: How does the Command pattern enable transaction-like behavior without a database?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8;">
 <strong>Answer:</strong> Command pattern provides transaction semantics through:
 
@@ -1191,15 +1191,15 @@ class TransferFundsCommand(TransactionCommand[str]):
 
     The key is that each command captures enough state to reverse itself, and the transaction manager coordinates multiple commands.
 
-    <details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you handle long-running transactions that span multiple services?</summary>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 2: How do you handle long-running transactions that span multiple services?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Use the [[Saga Pattern]](/topics/design-patterns/saga) instead of traditional transactions:
 
-        1. **Choreography**: Each service publishes events, others react
-        2. **Orchestration**: Central coordinator tells each service what to do
+  1. **Choreography**: Each service publishes events, others react
+  2. **Orchestration**: Central coordinator tells each service what to do
 
-        Each step has a compensating action. If step N fails, execute compensations for steps N-1 to 1 in reverse.
+  Each step has a compensating action. If step N fails, execute compensations for steps N-1 to 1 in reverse.
 
         ```python
         class SagaStep:
@@ -1227,12 +1227,12 @@ class TransferFundsCommand(TransactionCommand[str]):
         await step.compensation.execute()
         ```
 
-        <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a transaction system that handles the case where compensation itself fails</summary>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="font-weight: 600; color: #475569; cursor: pointer;">Level 3: Design a transaction system that handles the case where compensation itself fails</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> This is the "compensation failure" problem, one of the hardest distributed systems challenges:
 
-            **Strategy 1: Retry with exponential backoff**
+**Strategy 1: Retry with exponential backoff**
             ```python
             async def compensate_with_retry(step: SagaStep, max_retries: int = 5):
             for attempt in range(max_retries):
@@ -1246,7 +1246,7 @@ class TransferFundsCommand(TransactionCommand[str]):
             await send_to_manual_resolution_queue(step)
             ```
 
-            **Strategy 2: Idempotent compensations with state machine**
+**Strategy 2: Idempotent compensations with state machine**
             ```python
             class CompensationState(Enum):
             PENDING = auto()
@@ -1258,27 +1258,27 @@ class TransferFundsCommand(TransactionCommand[str]):
             # Background worker retries PENDING/COMPENSATING indefinitely
             ```
 
-            **Strategy 3: Human-in-the-loop escalation**
+**Strategy 3: Human-in-the-loop escalation**
             - After N retries, create a ticket for manual resolution
             - Provide operator with context and suggested actions
             - Log everything for forensics
 
-            **Strategy 4: Semantic locking**
+**Strategy 4: Semantic locking**
             - Mark the affected resource as "in-compensation"
             - Block other operations until compensation succeeds
             - Eventually consistent - system heals itself
 
-            Critical requirements:
+  Critical requirements:
             - All compensations must be idempotent
             - Persistent state tracking for compensations
             - Alerting and monitoring for stuck compensations
             - Clear SLA for manual resolution
 
-            This is why companies like Uber built custom saga frameworks (Cadence, now Temporal) with built-in compensation handling.
+  This is why companies like Uber built custom saga frameworks (Cadence, now Temporal) with built-in compensation handling.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 

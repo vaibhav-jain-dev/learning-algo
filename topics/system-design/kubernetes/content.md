@@ -99,7 +99,7 @@ Store configuration data and sensitive information separately from container ima
       ```
 </div>
 
-    ### Working with Pods
+### Working with Pods
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Pod Commands</h4>
@@ -142,7 +142,7 @@ Store configuration data and sensitive information separately from container ima
                               ```
 </div>
 
-                            ### Pod Logs
+### Pod Logs
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Log Commands</h4>
@@ -164,7 +164,7 @@ Store configuration data and sensitive information separately from container ima
                                                   ```
 </div>
 
-                                                ### Working with Deployments
+### Working with Deployments
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Deployment Commands</h4>
@@ -204,7 +204,7 @@ Store configuration data and sensitive information separately from container ima
                                                                               ```
 </div>
 
-                                                                            ### Working with Services
+### Working with Services
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Service Commands</h4>
@@ -234,7 +234,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                         ```
 </div>
 
-                                                                                      ### Working with ConfigMaps & Secrets
+### Working with ConfigMaps & Secrets
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">ConfigMap & Secret Commands</h4>
@@ -266,7 +266,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                   ```
 </div>
 
-                                                                                                                ### Namespaces
+### Namespaces
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Namespace Commands</h4>
@@ -292,7 +292,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                           ```
 </div>
 
-                                                                                                                        ### Resource Management
+### Resource Management
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Resource Commands</h4>
@@ -319,7 +319,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                     ```
 </div>
 
-                                                                                                                                  ### Debugging & Troubleshooting
+### Debugging & Troubleshooting
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Debug Commands</h4>
@@ -354,7 +354,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                       ```
 </div>
 
-                                                                                                                                                    ### YAML Output & Editing
+### YAML Output & Editing
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">YAML Commands</h4>
@@ -386,7 +386,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                               ```
 </div>
 
-                                                                                                                                                            ### Labels & Selectors
+### Labels & Selectors
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Label Commands</h4>
@@ -412,11 +412,11 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                           ```
 </div>
 
-                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                        ## Common YAML Manifests
+## Common YAML Manifests
 
-                                                                                                                                                                        ### Deployment Example
+### Deployment Example
 
                                                                                                                                                                         ```yaml
                                                                                                                                                                         apiVersion: apps/v1
@@ -467,7 +467,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                         periodSeconds: 5
                                                                                                                                                                         ```
 
-                                                                                                                                                                        ### Service Example
+### Service Example
 
                                                                                                                                                                         ```yaml
                                                                                                                                                                         apiVersion: v1
@@ -497,7 +497,7 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                         type: LoadBalancer
                                                                                                                                                                         ```
 
-                                                                                                                                                                        ### Ingress Example
+### Ingress Example
 
                                                                                                                                                                         ```yaml
                                                                                                                                                                         apiVersion: networking.k8s.io/v1
@@ -525,29 +525,29 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                         secretName: myapp-tls
                                                                                                                                                                         ```
 
-                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                        ## Interview Deep Dive
+## Interview Deep Dive
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                                                                                                                          ### Q1: How does Kubernetes handle pod scheduling?
+### Q1: How does Kubernetes handle pod scheduling?
 
-                                                                                                                                                                          **Answer:**
+**Answer:**
 
-                                                                                                                                                                          The kube-scheduler watches for newly created Pods with no assigned node and selects a node for them to run on through:
+  The kube-scheduler watches for newly created Pods with no assigned node and selects a node for them to run on through:
 
-                                                                                                                                                                          1. **Filtering**: Eliminate nodes that don't meet requirements (resources, taints, affinity)
-                                                                                                                                                                          2. **Scoring**: Rank remaining nodes by factors (resource balance, locality, etc.)
-                                                                                                                                                                          3. **Binding**: Assign Pod to highest-scored node
+  1. **Filtering**: Eliminate nodes that don't meet requirements (resources, taints, affinity)
+  2. **Scoring**: Rank remaining nodes by factors (resource balance, locality, etc.)
+  3. **Binding**: Assign Pod to highest-scored node
 
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Key insight: Scheduler decisions are point-in-time; resource availability may change</span>.
 
-                                                                                                                                                                          #### Level 2 Follow-ups:
+#### Level 2 Follow-ups:
 
-                                                                                                                                                                          **Q1.1: How do you ensure pods land on specific nodes?**
+**Q1.1: How do you ensure pods land on specific nodes?**
 
-                                                                                                                                                                          Use nodeSelector, node affinity, or taints/tolerations:
+  Use nodeSelector, node affinity, or taints/tolerations:
 
                                                                                                                                                                           ```yaml
                                                                                                                                                                           # nodeSelector - simple key-value matching
@@ -568,16 +568,16 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                           - nvidia-a100
                                                                                                                                                                           ```
 
-                                                                                                                                                                          ##### Level 3 Follow-ups:
+##### Level 3 Follow-ups:
 
-                                                                                                                                                                          **Q1.1.1: What's the difference between required and preferred affinity?**
+**Q1.1.1: What's the difference between required and preferred affinity?**
 
                                                                                                                                                                           - **Required**: Pod won't schedule if no matching node exists (hard constraint)
                                                                                                                                                                           - **Preferred**: Scheduler tries but will place elsewhere if needed (soft constraint)
 
-                                                                                                                                                                          **Q1.1.2: How do taints and tolerations work?**
+**Q1.1.2: How do taints and tolerations work?**
 
-                                                                                                                                                                          Taints on nodes repel pods; tolerations on pods allow scheduling on tainted nodes:
+  Taints on nodes repel pods; tolerations on pods allow scheduling on tainted nodes:
 
                                                                                                                                                                           ```bash
                                                                                                                                                                           # Taint a node
@@ -591,24 +591,24 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                           effect: "NoSchedule"
                                                                                                                                                                           ```
 
-                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                          **Q1.2: What happens when a node fails?**
+**Q1.2: What happens when a node fails?**
 
-                                                                                                                                                                          1. Node controller marks node as NotReady after --node-monitor-grace-period (40s default)
-                                                                                                                                                                          2. After --pod-eviction-timeout (5min default), pods are evicted
-                                                                                                                                                                          3. Deployment controller creates replacement pods on healthy nodes
-                                                                                                                                                                          4. StatefulSet pods wait longer due to persistent storage considerations
+  1. Node controller marks node as NotReady after --node-monitor-grace-period (40s default)
+  2. After --pod-eviction-timeout (5min default), pods are evicted
+  3. Deployment controller creates replacement pods on healthy nodes
+  4. StatefulSet pods wait longer due to persistent storage considerations
 
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                                                                                                                          ### Q2: How do you handle zero-downtime deployments in Kubernetes?
+### Q2: How do you handle zero-downtime deployments in Kubernetes?
 
-                                                                                                                                                                          **Answer:**
+**Answer:**
 
-                                                                                                                                                                          1. **Rolling Update Strategy** (default):
+  1. **Rolling Update Strategy** (default):
                                                                                                                                                                           ```yaml
                                                                                                                                                                           spec:
                                                                                                                                                                           strategy:
@@ -618,25 +618,25 @@ Store configuration data and sensitive information separately from container ima
                                                                                                                                                                           maxSurge: 25%        # Max pods over desired count
                                                                                                                                                                           ```
 
-                                                                                                                                                                          2. **Readiness Probes**: Ensure traffic only goes to ready pods
-                                                                                                                                                                          3. **PodDisruptionBudget**: Prevent too many pods going down simultaneously
-                                                                                                                                                                          4. **PreStop Hooks**: Graceful shutdown handling
+  2. **Readiness Probes**: Ensure traffic only goes to ready pods
+  3. **PodDisruptionBudget**: Prevent too many pods going down simultaneously
+  4. **PreStop Hooks**: Graceful shutdown handling
 
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Trade-off: Faster rollouts risk stability; slower rollouts mean longer deployment times</span>.
 
-                                                                                                                                                                          #### Level 2 Follow-ups:
+#### Level 2 Follow-ups:
 
-                                                                                                                                                                          **Q2.1: How do readiness and liveness probes differ?**
+**Q2.1: How do readiness and liveness probes differ?**
 
-                                                                                                                                                                          | Probe | Purpose | Failure Action |
-                                                                                                                                                                          |-------|---------|----------------|
-                                                                                                                                                                          | Liveness | Is container healthy? | Restart container |
-                                                                                                                                                                          | Readiness | Can container serve traffic? | Remove from service endpoints |
-                                                                                                                                                                          | Startup | Has container started? | Block other probes |
+  | Probe | Purpose | Failure Action |
+  |-------|---------|----------------|
+  | Liveness | Is container healthy? | Restart container |
+  | Readiness | Can container serve traffic? | Remove from service endpoints |
+  | Startup | Has container started? | Block other probes |
 
-                                                                                                                                                                          **Q2.2: What's a PodDisruptionBudget?**
+**Q2.2: What's a PodDisruptionBudget?**
 
-                                                                                                                                                                          Limits voluntary disruptions (drains, upgrades):
+  Limits voluntary disruptions (drains, upgrades):
 
                                                                                                                                                                           ```yaml
                                                                                                                                                                           apiVersion: policy/v1
@@ -652,9 +652,9 @@ Store configuration data and sensitive information separately from container ima
 
 </div>
 
-                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                        ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">kubectl Cheat Sheet</h4>
@@ -704,9 +704,9 @@ Store configuration data and sensitive information separately from container ima
 </div>
 </div>
 
-                                                                                                                                                                        ---
+  ---
 
-                                                                                                                                                                        ## Related Topics
+## Related Topics
 
                                                                                                                                                                         - [[Docker]](/topic/system-design/docker) - Container fundamentals
                                                                                                                                                                         - [[Microservices]](/topic/system-design/microservices) - Service architecture

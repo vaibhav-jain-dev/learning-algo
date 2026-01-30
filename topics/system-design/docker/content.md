@@ -155,7 +155,7 @@ Docker is a platform for developing, shipping, and running applications in conta
               ```
 </div>
 
-            ### Container Inspection & Debugging
+### Container Inspection & Debugging
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Debugging Commands</h4>
@@ -219,7 +219,7 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         ```
 </div>
 
-                                      ### Working with Images
+### Working with Images
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Image Commands</h4>
@@ -279,7 +279,7 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         ```
 </div>
 
-                                      ### Building Images
+### Building Images
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Build Commands</h4>
@@ -315,7 +315,7 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         ```
 </div>
 
-                                      ### Volumes & Storage
+### Volumes & Storage
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Volume Commands</h4>
@@ -359,7 +359,7 @@ Docker is a platform for developing, shipping, and running applications in conta
                                         ```
 </div>
 
-                                      ### Networking
+### Networking
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Network Commands</h4>
@@ -413,7 +413,7 @@ Docker is a platform for developing, shipping, and running applications in conta
 </div>
 </div>
 
-                                          ### Docker Compose
+### Docker Compose
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Compose Commands</h4>
@@ -474,9 +474,9 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             ```
 </div>
 
-                                          ---
+  ---
 
-                                          ## Dockerfile Best Practices
+## Dockerfile Best Practices
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Example Dockerfile</h4>
@@ -528,7 +528,7 @@ Docker is a platform for developing, shipping, and running applications in conta
 </div>
 </div>
 
-                                          ### Multi-Stage Build
+### Multi-Stage Build
 
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Multi-stage builds reduce final image size by separating build and runtime environments</span>.
 
@@ -550,9 +550,9 @@ Docker is a platform for developing, shipping, and running applications in conta
                                           CMD ["node", "dist/server.js"]
                                           ```
 
-                                          ---
+  ---
 
-                                          ## Docker Compose Example
+## Docker Compose Example
 
                                           ```yaml
                                           version: '3.8'
@@ -605,9 +605,9 @@ Docker is a platform for developing, shipping, and running applications in conta
                                           driver: bridge
                                           ```
 
-                                          ---
+  ---
 
-                                          ## System Cleanup
+## System Cleanup
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Cleanup Commands</h4>
@@ -634,21 +634,21 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             ```
 </div>
 
-                                          ---
+  ---
 
-                                          ## Interview Deep Dive
+## Interview Deep Dive
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                            ### Q1: What's the difference between CMD and ENTRYPOINT?
+### Q1: What's the difference between CMD and ENTRYPOINT?
 
-                                            **Answer:**
+**Answer:**
 
-                                            | Aspect | CMD | ENTRYPOINT |
-                                            |--------|-----|------------|
-                                            | Purpose | Provides default arguments | Defines the executable |
-                                            | Override | Replaced entirely by run args | Run args appended to it |
-                                            | Use case | Default command, easily overridable | Container as specific tool |
+  | Aspect | CMD | ENTRYPOINT |
+  |--------|-----|------------|
+  | Purpose | Provides default arguments | Defines the executable |
+  | Override | Replaced entirely by run args | Run args appended to it |
+  | Use case | Default command, easily overridable | Container as specific tool |
 
                                             ```dockerfile
                                             # CMD only - easily overridden
@@ -675,13 +675,13 @@ Docker is a platform for developing, shipping, and running applications in conta
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                            ### Q2: How do containers achieve isolation?
+### Q2: How do containers achieve isolation?
 
-                                            **Answer:**
+**Answer:**
 
-                                            Docker uses Linux kernel features for isolation:
+  Docker uses Linux kernel features for isolation:
 
-                                            1. **Namespaces** - Isolate system resources
+  1. **Namespaces** - Isolate system resources
                                             - PID: Process isolation
                                             - NET: Network isolation
                                             - MNT: Filesystem mount points
@@ -689,11 +689,11 @@ Docker is a platform for developing, shipping, and running applications in conta
                                             - IPC: Inter-process communication
                                             - USER: User/group IDs
 
-                                            2. **Cgroups** - Limit resource usage
+  2. **Cgroups** - Limit resource usage
                                             - CPU, memory, disk I/O limits
                                             - Prevent container from consuming all host resources
 
-                                            3. **Union Filesystem** - Layered filesystem
+  3. **Union Filesystem** - Layered filesystem
                                             - Copy-on-write for efficiency
                                             - Shared base layers between containers
 
@@ -703,17 +703,17 @@ Docker is a platform for developing, shipping, and running applications in conta
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                            ### Q3: How do you optimize Docker image size?
+### Q3: How do you optimize Docker image size?
 
-                                            **Answer:**
+**Answer:**
 
-                                            1. **Use slim/alpine base images**: `node:18-alpine` vs `node:18`
-                                            2. **Multi-stage builds**: Separate build and runtime
-                                            3. **Order Dockerfile commands**: Put frequently changing last
-                                            4. **Combine RUN commands**: Reduce layers
-                                            5. **Clean up in same layer**: `RUN apt-get update && apt-get install -y pkg && rm -rf /var/lib/apt/lists/*`
-                                            6. **Use .dockerignore**: Exclude unnecessary files
-                                            7. **Don't install dev dependencies**: `npm ci --only=production`
+  1. **Use slim/alpine base images**: `node:18-alpine` vs `node:18`
+  2. **Multi-stage builds**: Separate build and runtime
+  3. **Order Dockerfile commands**: Put frequently changing last
+  4. **Combine RUN commands**: Reduce layers
+  5. **Clean up in same layer**: `RUN apt-get update && apt-get install -y pkg && rm -rf /var/lib/apt/lists/*`
+  6. **Use .dockerignore**: Exclude unnecessary files
+  7. **Don't install dev dependencies**: `npm ci --only=production`
 
                                             ```dockerfile
                                             # Bad - 1.2GB
@@ -739,9 +739,9 @@ Docker is a platform for developing, shipping, and running applications in conta
 
 </div>
 
-                                          ---
+  ---
 
-                                          ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Docker Cheat Sheet</h4>
@@ -793,9 +793,9 @@ Docker is a platform for developing, shipping, and running applications in conta
 </div>
 </div>
 
-                                          ---
+  ---
 
-                                          ## Related Topics
+## Related Topics
 
                                           - [[Kubernetes]](/topic/system-design/kubernetes) - Container orchestration
                                           - [[Microservices]](/topic/system-design/microservices) - Service architecture

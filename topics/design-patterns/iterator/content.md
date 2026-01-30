@@ -63,7 +63,7 @@ A critical design decision when implementing the Iterator pattern is choosing be
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #3b82f6; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">E</span>
-        External Iterator
+  External Iterator
 </div>
 <div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
 <div style="margin-bottom: 0.5rem;"><strong>Client controls</strong> the iteration</div>
@@ -75,7 +75,7 @@ A critical design decision when implementing the Iterator pattern is choosing be
 <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 <span style="background: #22c55e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">I</span>
-        Internal Iterator
+  Internal Iterator
 </div>
 <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
 <div style="margin-bottom: 0.5rem;"><strong>Collection controls</strong> the iteration</div>
@@ -1419,7 +1419,7 @@ Use a <strong>min-heap of (value, iterator_index)</strong> pairs. Initialize by 
 </div>
 </div>
 <div style="display: flex; align-items: center; color: #64748b; font-size: 1.5rem;">
-      creates &#8594;
+  creates &#8594;
 </div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
@@ -1583,7 +1583,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 ## Comprehensive Interview Questions
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How would you implement an iterator for a binary tree that supports both forward and backward traversal?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How would you implement an iterator for a binary tree that supports both forward and backward traversal?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Create a bidirectional iterator by:
     1. Pre-compute the traversal order and store in a list
@@ -1618,7 +1618,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: What happens if you modify a collection while iterating? How do you handle it?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: What happens if you modify a collection while iterating? How do you handle it?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Modifying during iteration causes undefined behavior:
     - Java throws ConcurrentModificationException (fail-fast)
@@ -1634,7 +1634,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you implement a lazy iterator for database query results?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you implement a lazy iterator for database query results?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Use cursor-based pagination with buffering:
 
@@ -1668,7 +1668,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: Compare internal vs external iterators with code examples.</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: Compare internal vs external iterators with code examples.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong>
     - **External Iterator:** Client controls iteration (next/hasNext). More flexible but client must manage loop.
@@ -1690,7 +1690,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design an iterator for a social media feed that merges multiple sources.</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design an iterator for a social media feed that merges multiple sources.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Key considerations:</strong>
     1. Multiple sources: friends, groups, ads, recommendations
@@ -1734,7 +1734,7 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q6: Explain Morris traversal and when you would use it.</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q6: Explain Morris traversal and when you would use it.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Morris traversal is an O(1) space tree traversal algorithm that uses <span style="color:#22c55e">**threading**</span> - temporarily modifying tree pointers to eliminate the need for a stack.
 

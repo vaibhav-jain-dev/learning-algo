@@ -6,7 +6,7 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e50914;">
 
-  ### Core Requirements
+### Core Requirements
   - **Video Streaming**: Adaptive bitrate streaming
   - **Content Delivery**: Global CDN with low latency
   - **Transcoding**: Multiple formats and resolutions
@@ -32,7 +32,7 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-      <!-- Open Connect CDN Layer -->
+  <!-- Open Connect CDN Layer -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
 <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">US-EAST</span>
@@ -51,7 +51,7 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 <div style="color: #f59e0b; font-size: 14px;">↓ Cache Miss?</div>
 
-            <!-- AWS Region -->
+  <!-- AWS Region -->
 <div style="background: #fff7ed; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 400px;">
 <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 16px;">AWS REGION</div>
 
@@ -79,27 +79,27 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 </div>
 
-            ---
+  ---
 
-            ## Video Transcoding Pipeline
+## Video Transcoding Pipeline
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">CONTENT PROCESSING PIPELINE</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
-                <!-- Original Video -->
+  <!-- Original Video -->
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
 <strong>Original Video (4K Master)</strong>
 </div>
 
 <div style="color: #7c3aed; font-size: 24px;">↓</div>
 
-                <!-- Transcoding Pipeline -->
+  <!-- Transcoding Pipeline -->
 <div style="background: #f1f5f9; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
 <h4 style="text-align: center; color: #d97706; margin: 0 0 20px 0;">TRANSCODING PIPELINE</h4>
 
-                  <!-- Step 1 -->
+  <!-- Step 1 -->
 <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Step 1: Ingest & Validate</div>
 <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
@@ -110,7 +110,7 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 </ul>
 </div>
 
-                  <!-- Step 2 -->
+  <!-- Step 2 -->
 <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">Step 2: Encode Multiple Profiles</div>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
@@ -129,24 +129,24 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 </div>
 </div>
 
-                                <!-- Step 3 -->
+  <!-- Step 3 -->
 <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Step 3: Segment for Streaming</div>
 <div style="color: #475569; font-size: 13px;">
-                                    Split into 4-second chunks (MPEG-DASH / HLS)<br>
+  Split into 4-second chunks (MPEG-DASH / HLS)<br>
 <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;">segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
 Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</code> (DASH)
 </div>
 </div>
 
-                                      <!-- Step 4 -->
+  <!-- Step 4 -->
 <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 12px; text-align: center;">
 <div style="color: #d97706; font-weight: bold;">Step 4: Distribute to CDN</div>
 <div style="color: #475569; font-size: 13px;">Push to S3 → Replicate to Open Connect appliances</div>
 </div>
 </div>
 
-                                    <!-- Stats -->
+  <!-- Stats -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 <div style="background: #dbeafe; border-radius: 8px; padding: 10px 16px; text-align: center;">
 <strong style="color: #1d4ed8;">Processing Time:</strong><br><span style="color: #475569;">~4 hours for 2-hour movie</span>
@@ -160,20 +160,20 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Phase 1: Starting Phase
+## Phase 1: Starting Phase
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                        ### Assumptions
+### Assumptions
                                         - **Users**: 1,000 - 50,000
                                         - **Videos**: 100 - 1,000 titles
                                         - **Concurrent streams**: 100 - 5,000
                                         - **Budget**: $5,000 - $20,000/month
 
-                                        ### Monolithic Architecture
+### Monolithic Architecture
 
                                         ```python
                                         # Simple video streaming service
@@ -229,20 +229,20 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 </div>
 </div>
 
-                                    ---
+  ---
 
-                                    ## Phase 2: Medium Scale
+## Phase 2: Medium Scale
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                        ### Assumptions
+### Assumptions
                                         - **Users**: 10M - 100M
                                         - **Videos**: 10,000 - 50,000 titles
                                         - **Concurrent streams**: 1M - 10M
                                         - **Budget**: $5M - $50M/month
 
-                                        ### Microservices Architecture
+### Microservices Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
@@ -286,7 +286,7 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                        ### Adaptive Bitrate Streaming
+### Adaptive Bitrate Streaming
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -332,20 +332,20 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 </div>
 </div>
 
-                                    ---
+  ---
 
-                                    ## Phase 3: Netflix Scale
+## Phase 3: Netflix Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                        ### Assumptions
+### Assumptions
                                         - **Users**: 250M+ subscribers
                                         - **Videos**: 100,000+ titles
                                         - **Concurrent streams**: 50M+
                                         - **15% of global internet traffic**
 
-                                        ### Open Connect CDN
+### Open Connect CDN
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
@@ -401,7 +401,7 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                        ### Recommendation System
+### Recommendation System
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">PERSONALIZATION PIPELINE</h4>
@@ -467,23 +467,23 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 </div>
 </div>
 
-                                    ---
+  ---
 
-                                    ## AWS Technologies & Alternatives
+## AWS Technologies & Alternatives
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                      | Component | AWS Service | Netflix Uses | Trade-offs |
-                                      |-----------|-------------|--------------|------------|
-                                      | **CDN** | CloudFront | Open Connect | Custom: Better peering, Higher cost |
-                                      | **Compute** | EC2/EKS | EC2 + Titus | Titus: Container orchestration |
-                                      | **Storage** | S3 | S3 | Standard choice for video |
-                                      | **Database** | DynamoDB | Cassandra | Cassandra: Multi-region writes |
-                                      | **Cache** | ElastiCache | EVCache | EVCache: Memcached-based |
-                                      | **ML** | SageMaker | Custom | Netflix: Metaflow, etc. |
-                                      | **Streaming** | Kinesis | Kafka | Kafka: Better for Netflix scale |
+  | Component | AWS Service | Netflix Uses | Trade-offs |
+  |-----------|-------------|--------------|------------|
+  | **CDN** | CloudFront | Open Connect | Custom: Better peering, Higher cost |
+  | **Compute** | EC2/EKS | EC2 + Titus | Titus: Container orchestration |
+  | **Storage** | S3 | S3 | Standard choice for video |
+  | **Database** | DynamoDB | Cassandra | Cassandra: Multi-region writes |
+  | **Cache** | ElastiCache | EVCache | EVCache: Memcached-based |
+  | **ML** | SageMaker | Custom | Netflix: Metaflow, etc. |
+  | **Streaming** | Kinesis | Kafka | Kafka: Better for Netflix scale |
 
-                                      ### Netflix OSS Stack
+### Netflix OSS Stack
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0;">
 
@@ -506,13 +506,13 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Distributed Systems Considerations
+## Distributed Systems Considerations
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                      ### 1. Chaos Engineering
+### 1. Chaos Engineering
 
                                       ```
                                       ┌─────────────────────────────────────────────────────────────┐
@@ -535,7 +535,7 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                       └─────────────────────────────────────────────────────────────┘
                                       ```
 
-                                      ### 2. DRM & Content Protection
+### 2. DRM & Content Protection
 
                                       ```python
                                       class DRMService:
@@ -557,7 +557,7 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                       return self.playready_server.generate_license(video_id)
                                       ```
 
-                                      ### 3. Content Steering
+### 3. Content Steering
 
                                       ```
                                       ┌─────────────────────────────────────────────────────────────┐
@@ -588,86 +588,86 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Interview Deep Dive Questions
+## Interview Deep Dive Questions
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-                                      ### 1. "Why transcode to multiple bitrates upfront instead of on-demand?"
+### 1. "Why transcode to multiple bitrates upfront instead of on-demand?"
 
-                                      **What They're Probing**: Understanding of compute costs vs storage costs, user experience trade-offs, and system design economics.
+**What They're Probing**: Understanding of compute costs vs storage costs, user experience trade-offs, and system design economics.
 
-                                      **Strong Answer**:
-                                      > "Transcoding is CPU-intensive - a 2-hour 4K movie takes ~4 hours to process all formats. Doing this on-demand would mean: (1) Users wait for transcoding before watching, (2) You need massive on-demand GPU capacity for spikes, (3) Popular content gets re-transcoded millions of times. Storage is cheap (~$0.02/GB/month on S3), but GPU compute is expensive (~$3/hour). For a video watched 1M times, upfront transcoding cost is amortized to near-zero per view. The trade-off flips only for rarely-watched content - Netflix uses popularity prediction to decide transcoding priority."
+**Strong Answer**:
+  > "Transcoding is CPU-intensive - a 2-hour 4K movie takes ~4 hours to process all formats. Doing this on-demand would mean: (1) Users wait for transcoding before watching, (2) You need massive on-demand GPU capacity for spikes, (3) Popular content gets re-transcoded millions of times. Storage is cheap (~$0.02/GB/month on S3), but GPU compute is expensive (~$3/hour). For a video watched 1M times, upfront transcoding cost is amortized to near-zero per view. The trade-off flips only for rarely-watched content - Netflix uses popularity prediction to decide transcoding priority."
 
-                                      **When Simpler Works**: For <100 videos, on-demand transcoding with caching is fine. AWS Elemental MediaConvert charges per minute - cost-effective for small catalogs.
+**When Simpler Works**: For <100 videos, on-demand transcoding with caching is fine. AWS Elemental MediaConvert charges per minute - cost-effective for small catalogs.
 
-                                      ---
+  ---
 
-                                      ### 2. "How does adaptive bitrate streaming actually work on the client?"
+### 2. "How does adaptive bitrate streaming actually work on the client?"
 
-                                      **What They're Probing**: Deep understanding of HLS/DASH protocols, client-side algorithms, and network estimation.
+**What They're Probing**: Deep understanding of HLS/DASH protocols, client-side algorithms, and network estimation.
 
-                                      **Strong Answer**:
-                                      > "The client downloads a manifest file (m3u8 for HLS) listing all available quality levels with their segment URLs. The video is split into 2-10 second chunks. The client measures: (1) How long each chunk takes to download, (2) Current buffer level, (3) Recent bandwidth history. Using algorithms like BOLA or MPC, it predicts whether it can finish downloading the next chunk before the buffer empties. If buffer < 5s, it drops quality aggressively. The key insight is that switching happens at segment boundaries - you can't switch mid-segment. Netflix's client also considers device capabilities, battery level on mobile, and whether you're on cellular vs WiFi."
+**Strong Answer**:
+  > "The client downloads a manifest file (m3u8 for HLS) listing all available quality levels with their segment URLs. The video is split into 2-10 second chunks. The client measures: (1) How long each chunk takes to download, (2) Current buffer level, (3) Recent bandwidth history. Using algorithms like BOLA or MPC, it predicts whether it can finish downloading the next chunk before the buffer empties. If buffer < 5s, it drops quality aggressively. The key insight is that switching happens at segment boundaries - you can't switch mid-segment. Netflix's client also considers device capabilities, battery level on mobile, and whether you're on cellular vs WiFi."
 
-                                      **When Simpler Works**: For internal tools or known-bandwidth environments (corporate LAN), single-bitrate streaming eliminates complexity.
+**When Simpler Works**: For internal tools or known-bandwidth environments (corporate LAN), single-bitrate streaming eliminates complexity.
 
-                                      ---
+  ---
 
-                                      ### 3. "Why did Netflix build their own CDN (Open Connect) instead of using Akamai?"
+### 3. "Why did Netflix build their own CDN (Open Connect) instead of using Akamai?"
 
-                                      **What They're Probing**: Understanding of CDN economics at scale, ISP relationships, and build-vs-buy decisions.
+**What They're Probing**: Understanding of CDN economics at scale, ISP relationships, and build-vs-buy decisions.
 
-                                      **Strong Answer**:
-                                      > "At Netflix scale (15% of internet traffic), third-party CDN costs would be astronomical - estimated $1B+/year with Akamai. Open Connect appliances are placed directly inside ISPs, giving: (1) Sub-millisecond latency to users, (2) Zero transit costs for ISPs (they love it), (3) 90%+ cache hit rates since popular content stays local. The control plane remains on AWS - Netflix only moved the data plane. The break-even calculation: ~$500K to deploy an OCA vs perpetual CDN fees. But this only makes sense at massive scale - you need leverage to negotiate ISP partnerships and enough traffic to justify custom hardware."
+**Strong Answer**:
+  > "At Netflix scale (15% of internet traffic), third-party CDN costs would be astronomical - estimated $1B+/year with Akamai. Open Connect appliances are placed directly inside ISPs, giving: (1) Sub-millisecond latency to users, (2) Zero transit costs for ISPs (they love it), (3) 90%+ cache hit rates since popular content stays local. The control plane remains on AWS - Netflix only moved the data plane. The break-even calculation: ~$500K to deploy an OCA vs perpetual CDN fees. But this only makes sense at massive scale - you need leverage to negotiate ISP partnerships and enough traffic to justify custom hardware."
 
-                                      **When Simpler Works**: CloudFront costs ~$0.02-0.085/GB. For <10 PB/month, commercial CDNs are more economical. Akamai/CloudFront also handle DDoS, SSL termination, and global anycast routing automatically.
+**When Simpler Works**: CloudFront costs ~$0.02-0.085/GB. For <10 PB/month, commercial CDNs are more economical. Akamai/CloudFront also handle DDoS, SSL termination, and global anycast routing automatically.
 
-                                      ---
+  ---
 
-                                      ### 4. "How would you handle a viral show that 10x's traffic overnight?"
+### 4. "How would you handle a viral show that 10x's traffic overnight?"
 
-                                      **What They're Probing**: Capacity planning, caching strategies, graceful degradation, and operational readiness.
+**What They're Probing**: Capacity planning, caching strategies, graceful degradation, and operational readiness.
 
-                                      **Strong Answer**:
-                                      > "The key is pre-positioning content on OCAs before release - for a new season of Stranger Things, Netflix pushes content to all OCAs globally days before launch. During spikes: (1) OCAs serve from local cache without hitting origin, (2) Playback API auto-scales on AWS (they can spin up 100K+ instances), (3) Less popular content gets evicted from OCA cache to make room, (4) Quality can be temporarily capped globally (Netflix did this during COVID to reduce bandwidth 25%). The architecture separates concerns: OCAs handle data plane (video bytes), AWS handles control plane (API calls). Even if AWS slows down, videos already playing continue uninterrupted."
+**Strong Answer**:
+  > "The key is pre-positioning content on OCAs before release - for a new season of Stranger Things, Netflix pushes content to all OCAs globally days before launch. During spikes: (1) OCAs serve from local cache without hitting origin, (2) Playback API auto-scales on AWS (they can spin up 100K+ instances), (3) Less popular content gets evicted from OCA cache to make room, (4) Quality can be temporarily capped globally (Netflix did this during COVID to reduce bandwidth 25%). The architecture separates concerns: OCAs handle data plane (video bytes), AWS handles control plane (API calls). Even if AWS slows down, videos already playing continue uninterrupted."
 
-                                      **When Simpler Works**: For predictable traffic patterns, simple auto-scaling rules suffice. CloudFront handles cache warming via origin shield.
+**When Simpler Works**: For predictable traffic patterns, simple auto-scaling rules suffice. CloudFront handles cache warming via origin shield.
 
-                                      ---
+  ---
 
-                                      ### 5. "How do you ensure video plays within 2 seconds of hitting play?"
+### 5. "How do you ensure video plays within 2 seconds of hitting play?"
 
-                                      **What They're Probing**: End-to-end latency optimization, preloading strategies, and performance budgets.
+**What They're Probing**: End-to-end latency optimization, preloading strategies, and performance budgets.
 
-                                      **Strong Answer**:
-                                      > "Netflix breaks down the 2-second budget: (1) Playback API response: <100ms (heavily cached, pre-computed), (2) CDN redirection: <50ms (GeoDNS + server selection), (3) Manifest fetch: <100ms (small file, cached at edge), (4) First segment download: ~500ms (smallest segment is ~500KB at lowest quality), (5) DRM license acquisition: <200ms (regional license servers). They also pre-fetch: when you hover over a title, the manifest is already loading. When you select a profile, top recommendations start preloading. The first segment is always the smallest quality level - the player upgrades after playback starts."
+**Strong Answer**:
+  > "Netflix breaks down the 2-second budget: (1) Playback API response: <100ms (heavily cached, pre-computed), (2) CDN redirection: <50ms (GeoDNS + server selection), (3) Manifest fetch: <100ms (small file, cached at edge), (4) First segment download: ~500ms (smallest segment is ~500KB at lowest quality), (5) DRM license acquisition: <200ms (regional license servers). They also pre-fetch: when you hover over a title, the manifest is already loading. When you select a profile, top recommendations start preloading. The first segment is always the smallest quality level - the player upgrades after playback starts."
 
-                                      **When Simpler Works**: For non-critical applications, 5-10 second start times are acceptable and require much simpler architecture.
+**When Simpler Works**: For non-critical applications, 5-10 second start times are acceptable and require much simpler architecture.
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Why This Technology?
+## Why This Technology?
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                      ### Technology Decision Matrix
+### Technology Decision Matrix
 
-                                      | Technology | Choose When | Avoid When | Netflix Reasoning |
-                                      |------------|-------------|------------|-------------------|
-                                      | **HLS** | Apple ecosystem, broad compatibility | Need lowest latency (<5s) | Universal support across devices |
-                                      | **DASH** | DRM flexibility, future-proofing | Simple use cases | CENC allows single encryption for multiple DRM |
-                                      | **Open Connect** | >100 PB/month, ISP relationships | <10 PB/month, global reach needed fast | 15% of internet = ~$1B+/year CDN savings |
-                                      | **Cassandra** | Multi-region writes, eventual consistency OK | Strong consistency required | User profiles can be eventually consistent |
-                                      | **Kafka** | Event sourcing, replay needed, high throughput | Simple pub/sub, <10K msg/sec | Every user action feeds ML pipeline |
-                                      | **Custom Transcoding** | Unique codec needs, cost optimization at scale | Standard formats sufficient | Per-title encoding optimization |
-                                      | **Microservices** | Different scaling needs per component | Small team (<10), simple domain | Playback scales differently than recommendations |
+  | Technology | Choose When | Avoid When | Netflix Reasoning |
+  |------------|-------------|------------|-------------------|
+  | **HLS** | Apple ecosystem, broad compatibility | Need lowest latency (<5s) | Universal support across devices |
+  | **DASH** | DRM flexibility, future-proofing | Simple use cases | CENC allows single encryption for multiple DRM |
+  | **Open Connect** | >100 PB/month, ISP relationships | <10 PB/month, global reach needed fast | 15% of internet = ~$1B+/year CDN savings |
+  | **Cassandra** | Multi-region writes, eventual consistency OK | Strong consistency required | User profiles can be eventually consistent |
+  | **Kafka** | Event sourcing, replay needed, high throughput | Simple pub/sub, <10K msg/sec | Every user action feeds ML pipeline |
+  | **Custom Transcoding** | Unique codec needs, cost optimization at scale | Standard formats sufficient | Per-title encoding optimization |
+  | **Microservices** | Different scaling needs per component | Small team (<10), simple domain | Playback scales differently than recommendations |
 
-                                      ### Encoding Decision Tree
+### Encoding Decision Tree
 
                                       ```
                                       START: What's your monthly video volume?
@@ -686,7 +686,7 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                       (but per-video cost drops)
                                       ```
 
-                                      ### CDN Selection Framework
+### CDN Selection Framework
 
                                       ```
                                       Monthly Traffic Volume:
@@ -704,14 +704,14 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## When Simpler Solutions Work
+## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                        ### The "$500/Month Video Platform" That Handles 90% of Use Cases
+### The "$500/Month Video Platform" That Handles 90% of Use Cases
 
                                         ```
                                         ┌─────────────────────────────────────────────────────────────────────┐
@@ -744,37 +744,37 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                         └─────────────────────────────────────────────────────────────────────┘
                                         ```
 
-                                        ### When YouTube/Vimeo Embedding Is Enough
+### When YouTube/Vimeo Embedding Is Enough
 
-                                        | Scenario | Just Embed | Build Custom |
-                                        |----------|------------|--------------|
-                                        | Marketing videos on website | Yes | No |
-                                        | Course platform with <1000 students | Yes (Vimeo Pro) | No |
-                                        | Internal training videos | Yes (unlisted YouTube) | No |
-                                        | User-generated content platform | Maybe | Yes, for control |
-                                        | Premium content with DRM | No | Yes |
-                                        | Need viewing analytics per user | No | Yes |
-                                        | Custom player branding critical | No | Yes |
+  | Scenario | Just Embed | Build Custom |
+  |----------|------------|--------------|
+  | Marketing videos on website | Yes | No |
+  | Course platform with <1000 students | Yes (Vimeo Pro) | No |
+  | Internal training videos | Yes (unlisted YouTube) | No |
+  | User-generated content platform | Maybe | Yes, for control |
+  | Premium content with DRM | No | Yes |
+  | Need viewing analytics per user | No | Yes |
+  | Custom player branding critical | No | Yes |
 
-                                        **Rule of Thumb**: If your video is a feature, not the product, embed YouTube/Vimeo.
+**Rule of Thumb**: If your video is a feature, not the product, embed YouTube/Vimeo.
 
-                                        ### When You DON'T Need Your Own CDN
+### When You DON'T Need Your Own CDN
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 16px; margin: 16px 0;">
 
-                                          **Signs You Should Use CloudFront/Akamai Instead of Building:**
+**Signs You Should Use CloudFront/Akamai Instead of Building:**
 
-                                          1. **< $100K/month in CDN costs** - Transaction costs of building outweigh savings
-                                          2. **< 3 engineers dedicated to infrastructure** - You can't operate custom CDN reliably
-                                          3. **Global traffic without ISP relationships** - Can't deploy in ISPs without leverage
-                                          4. **Need it working in < 6 months** - Custom CDN takes years to build properly
-                                          5. **Traffic is unpredictable** - Commercial CDNs handle spikes better
+  1. **< $100K/month in CDN costs** - Transaction costs of building outweigh savings
+  2. **< 3 engineers dedicated to infrastructure** - You can't operate custom CDN reliably
+  3. **Global traffic without ISP relationships** - Can't deploy in ISPs without leverage
+  4. **Need it working in < 6 months** - Custom CDN takes years to build properly
+  5. **Traffic is unpredictable** - Commercial CDNs handle spikes better
 
-                                          **Netflix spent 5+ years building Open Connect with a dedicated team of 50+ engineers.**
+**Netflix spent 5+ years building Open Connect with a dedicated team of 50+ engineers.**
 
 </div>
 
-                                        ### HLS with 3 Quality Levels Covers 90% of Use Cases
+### HLS with 3 Quality Levels Covers 90% of Use Cases
 
                                         ```
                                         Instead of Netflix's 6+ quality levels + multiple codecs:
@@ -800,25 +800,25 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                         └────────────────────────────────────────────────────────────────┘
                                         ```
 
-                                        ### Quick Reference: Build vs Buy
+### Quick Reference: Build vs Buy
 
-                                        | Monthly Scale | Recommendation | Why |
-                                        |---------------|----------------|-----|
-                                        | < 1M views | Cloudflare Stream, Mux, or Vimeo OTT | $500-2K/month, zero ops |
-                                        | 1-10M views | AWS MediaConvert + CloudFront | $5-20K/month, minimal ops |
-                                        | 10-100M views | Dedicated video team, custom pipeline | $50-200K/month, 3-5 engineers |
-                                        | > 100M views | Netflix-style architecture | $500K+/month, 20+ engineers |
+  | Monthly Scale | Recommendation | Why |
+  |---------------|----------------|-----|
+  | < 1M views | Cloudflare Stream, Mux, or Vimeo OTT | $500-2K/month, zero ops |
+  | 1-10M views | AWS MediaConvert + CloudFront | $5-20K/month, minimal ops |
+  | 10-100M views | Dedicated video team, custom pipeline | $50-200K/month, 3-5 engineers |
+  | > 100M views | Netflix-style architecture | $500K+/month, 20+ engineers |
 
 </div>
 </div>
 
-                                    ---
+  ---
 
-                                    ## Trade-off Analysis & Mitigation
+## Trade-off Analysis & Mitigation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                      ### Critical Trade-offs in Video Streaming
+### Critical Trade-offs in Video Streaming
 
                                       ```
                                       ┌─────────────────────────────────────────────────────────────────────┐
@@ -916,33 +916,33 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                       └─────────────────────────────────────────────────────────────────────┘
                                       ```
 
-                                      ### Failure Modes & Recovery
+### Failure Modes & Recovery
 
-                                      | Failure | Impact | Detection | Mitigation |
-                                      |---------|--------|-----------|------------|
-                                      | OCA node failure | Users in that ISP affected | Health checks every 10s | Automatic failover to backup OCA/commercial CDN |
-                                      | Origin S3 outage | New cache misses fail | S3 availability monitoring | Multi-region S3, OCA has local cache for weeks |
-                                      | Transcoding backlog | New content delayed | Queue depth monitoring | Burst to spot instances, prioritize by expected popularity |
-                                      | DRM server overload | Playback fails on all devices | License request latency | Geo-distributed license servers, aggressive caching |
-                                      | DNS resolution failure | Total outage | Synthetic monitoring | Multiple DNS providers, long TTLs during incidents |
+  | Failure | Impact | Detection | Mitigation |
+  |---------|--------|-----------|------------|
+  | OCA node failure | Users in that ISP affected | Health checks every 10s | Automatic failover to backup OCA/commercial CDN |
+  | Origin S3 outage | New cache misses fail | S3 availability monitoring | Multi-region S3, OCA has local cache for weeks |
+  | Transcoding backlog | New content delayed | Queue depth monitoring | Burst to spot instances, prioritize by expected popularity |
+  | DRM server overload | Playback fails on all devices | License request latency | Geo-distributed license servers, aggressive caching |
+  | DNS resolution failure | Total outage | Synthetic monitoring | Multiple DNS providers, long TTLs during incidents |
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Interview Tips
+## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                      ### Key Discussion Points
+### Key Discussion Points
 
-                                      1. **CDN architecture**: Why Netflix built Open Connect and at what scale it makes sense
-                                      2. **Transcoding**: Multiple formats, per-title optimization, cost trade-offs
-                                      3. **ABR streaming**: Client-side algorithms (BOLA, MPC), buffer management
-                                      4. **Recommendations**: ML ensemble, cold start problem, A/B testing
-                                      5. **Chaos engineering**: Controlled failure injection, game days
+  1. **CDN architecture**: Why Netflix built Open Connect and at what scale it makes sense
+  2. **Transcoding**: Multiple formats, per-title optimization, cost trade-offs
+  3. **ABR streaming**: Client-side algorithms (BOLA, MPC), buffer management
+  4. **Recommendations**: ML ensemble, cold start problem, A/B testing
+  5. **Chaos engineering**: Controlled failure injection, game days
 
-                                      ### Common Follow-ups
+### Common Follow-ups
 
                                       - How do you handle live streaming (like sports)? *Different architecture - no pre-transcoding, lower latency requirements, different CDN caching*
                                       - How do you prevent password sharing? *Device fingerprinting, concurrent stream limits, IP geolocation anomalies*
@@ -951,44 +951,44 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 
 </div>
 
-                                    ---
+  ---
 
-                                    ## Red Flags & Impressive Statements
+## Red Flags & Impressive Statements
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                      ### Red Flags (What NOT to Say)
+### Red Flags (What NOT to Say)
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 16px; margin: 16px 0;">
 
-                                        | Red Flag Statement | Why It's Wrong | Better Answer |
-                                        |-------------------|----------------|---------------|
-                                        | "We need Open Connect from day one" | Massive over-engineering for startups | "Start with CloudFront, build custom CDN only when CDN costs exceed $500K/month and you have ISP relationships" |
-                                        | "Transcode everything to all formats" | Ignores cost-benefit analysis | "Transcode popular content upfront, use on-demand transcoding for long-tail with 90-day cache eviction" |
-                                        | "We need microservices immediately" | Complexity without scale justification | "Start monolithic, extract services when specific components need independent scaling" |
-                                        | "Use Cassandra for everything" | Wrong tool for transactional data | "Cassandra for user profiles (eventual consistency OK), PostgreSQL for billing (ACID needed)" |
-                                        | "4K by default" | Bandwidth waste for most users | "Default to 720p/1080p based on device detection, upgrade to 4K only when bandwidth confirms" |
-                                        | "We'll build our own DRM" | Reinventing a solved, regulated problem | "Use Widevine/FairPlay/PlayReady - they have studio relationships and security certifications we can't replicate" |
+  | Red Flag Statement | Why It's Wrong | Better Answer |
+  |-------------------|----------------|---------------|
+  | "We need Open Connect from day one" | Massive over-engineering for startups | "Start with CloudFront, build custom CDN only when CDN costs exceed $500K/month and you have ISP relationships" |
+  | "Transcode everything to all formats" | Ignores cost-benefit analysis | "Transcode popular content upfront, use on-demand transcoding for long-tail with 90-day cache eviction" |
+  | "We need microservices immediately" | Complexity without scale justification | "Start monolithic, extract services when specific components need independent scaling" |
+  | "Use Cassandra for everything" | Wrong tool for transactional data | "Cassandra for user profiles (eventual consistency OK), PostgreSQL for billing (ACID needed)" |
+  | "4K by default" | Bandwidth waste for most users | "Default to 720p/1080p based on device detection, upgrade to 4K only when bandwidth confirms" |
+  | "We'll build our own DRM" | Reinventing a solved, regulated problem | "Use Widevine/FairPlay/PlayReady - they have studio relationships and security certifications we can't replicate" |
 
 </div>
 
-                                      ### Impressive Statements (What TO Say)
+### Impressive Statements (What TO Say)
 
 <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 16px; margin: 16px 0;">
 
-                                        | Impressive Statement | Why It's Good |
-                                        |---------------------|---------------|
-                                        | "For < 1M views/month, I'd use Cloudflare Stream or Mux rather than building transcoding - the $500/month cost doesn't justify engineering time" | Shows business awareness and pragmatism |
-                                        | "HLS with H.264 and 3 quality levels covers 90% of use cases - I'd add VP9/AV1 only when encode cost savings at scale justify the complexity" | Demonstrates understanding of diminishing returns |
-                                        | "Netflix's Open Connect makes sense at 15% of internet traffic - for our scale, CloudFront at $0.02/GB negotiated rate is more economical" | Shows ability to right-size architecture |
-                                        | "I'd separate control plane (playback API on AWS) from data plane (video serving) early - this isolation pattern lets each scale independently" | Reveals deep architectural understanding |
-                                        | "The client-side ABR algorithm is often more important than server-side - Netflix's work on BOLA shows buffer-based algorithms outperform bandwidth estimation" | Shows domain expertise beyond basic design |
-                                        | "Chaos engineering isn't just Chaos Monkey - it's about establishing steady state, hypothesizing, running experiments, and improving. The cultural shift matters more than the tools" | Demonstrates understanding of practices, not just technology |
-                                        | "For a 2-second playback start time, I'd budget: 100ms API, 50ms DNS, 100ms manifest, 500ms first segment, 200ms DRM - then optimize the biggest bucket first" | Shows methodical performance engineering mindset |
+  | Impressive Statement | Why It's Good |
+  |---------------------|---------------|
+  | "For < 1M views/month, I'd use Cloudflare Stream or Mux rather than building transcoding - the $500/month cost doesn't justify engineering time" | Shows business awareness and pragmatism |
+  | "HLS with H.264 and 3 quality levels covers 90% of use cases - I'd add VP9/AV1 only when encode cost savings at scale justify the complexity" | Demonstrates understanding of diminishing returns |
+  | "Netflix's Open Connect makes sense at 15% of internet traffic - for our scale, CloudFront at $0.02/GB negotiated rate is more economical" | Shows ability to right-size architecture |
+  | "I'd separate control plane (playback API on AWS) from data plane (video serving) early - this isolation pattern lets each scale independently" | Reveals deep architectural understanding |
+  | "The client-side ABR algorithm is often more important than server-side - Netflix's work on BOLA shows buffer-based algorithms outperform bandwidth estimation" | Shows domain expertise beyond basic design |
+  | "Chaos engineering isn't just Chaos Monkey - it's about establishing steady state, hypothesizing, running experiments, and improving. The cultural shift matters more than the tools" | Demonstrates understanding of practices, not just technology |
+  | "For a 2-second playback start time, I'd budget: 100ms API, 50ms DNS, 100ms manifest, 500ms first segment, 200ms DRM - then optimize the biggest bucket first" | Shows methodical performance engineering mindset |
 
 </div>
 
-                                      ### Scale-Appropriate Responses
+### Scale-Appropriate Responses
 
                                       ```
                                       ┌─────────────────────────────────────────────────────────────────────┐
@@ -1011,14 +1011,14 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
                                       └─────────────────────────────────────────────────────────────────────┘
                                       ```
 
-                                      ### Questions to Ask Back
+### Questions to Ask Back
 
-                                      These demonstrate senior thinking:
+  These demonstrate senior thinking:
 
-                                      1. **"What's the content acquisition model - UGC, licensed, or original?"** - Affects transcoding pipeline, DRM requirements, and storage strategy
-                                      2. **"What's the acceptable rebuffering rate?"** - Netflix targets <0.1%; 1% might be fine for internal tools
-                                      3. **"Is global availability required immediately, or can we start regional?"** - Dramatically changes CDN strategy
-                                      4. **"What's the device mix - mostly mobile, smart TVs, or web?"** - Affects codec choices and ABR algorithms
-                                      5. **"Is live streaming in scope?"** - Completely different architecture from VOD
+  1. **"What's the content acquisition model - UGC, licensed, or original?"** - Affects transcoding pipeline, DRM requirements, and storage strategy
+  2. **"What's the acceptable rebuffering rate?"** - Netflix targets <0.1%; 1% might be fine for internal tools
+  3. **"Is global availability required immediately, or can we start regional?"** - Dramatically changes CDN strategy
+  4. **"What's the device mix - mostly mobile, smart TVs, or web?"** - Affects codec choices and ABR algorithms
+  5. **"Is live streaming in scope?"** - Completely different architecture from VOD
 
 </div>

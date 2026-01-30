@@ -285,24 +285,24 @@ class CacheAdmissionController:
 <strong>Answer:</strong> High hit rate with high P99 suggests the 10% misses are disproportionately slow. Analyze miss patterns:
     <br><br>
 (1) <strong>Origin latency</strong>: If origin is slow, implement origin shield to reduce origin requests and add connection pooling with keep-alive.
-        <br><br>
+  <br><br>
 (2) <strong>Cache tier misses</strong>: If L1 RAM misses hit slow HDD tier, increase RAM allocation or implement SSD-only policy for latency-sensitive content.
-            <br><br>
+  <br><br>
 (3) <strong>Request coalescing</strong>: For cache misses on popular content, multiple concurrent requests hit origin. Implement request coalescing (collapsed forwarding) where the first request fetches while others wait.
-                <br><br>
+  <br><br>
 (4) <strong>Geographic routing</strong>: Check if some users route to distant PoPs. Implement better Anycast tuning or add PoPs in underserved regions.
-                    <br><br>
+  <br><br>
 (5) <strong>Vary header explosion</strong>: Check if <code>Vary: *</code> or high-cardinality Vary headers cause cache fragmentation, storing same content multiple times.
 </div>
 </div>
 
-                    ---
+  ---
 
-                    ## Cache Invalidation Strategies
+## Cache Invalidation Strategies
 
-                    Cache invalidation is one of the two hard problems in computer science. Understanding invalidation mechanisms deeply is essential for maintaining cache coherence without sacrificing performance.
+  Cache invalidation is one of the two hard problems in computer science. Understanding invalidation mechanisms deeply is essential for maintaining cache coherence without sacrificing performance.
 
-                    ### Time-Based Expiration (TTL)
+### Time-Based Expiration (TTL)
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Short TTLs ensure freshness but reduce hit rates; long TTLs improve performance but serve stale content.</span>
 
@@ -369,7 +369,7 @@ class CacheAdmissionController:
                     }
                     ```
 
-                    ### Purge-Based Invalidation
+### Purge-Based Invalidation
 
                     ```python
                     class PurgeOrchestrator:
@@ -475,7 +475,7 @@ class CacheAdmissionController:
                     }
                     ```
 
-                    ### Versioned URLs (Cache Busting)
+### Versioned URLs (Cache Busting)
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Design choice: Versioned URLs eliminate invalidation complexity but require updating all references when content changes.</span>
 
@@ -560,7 +560,7 @@ class CacheAdmissionController:
                     return re.sub(r'url\(([^)]+)\)', replace_url, css_content)
                     ```
 
-                    ### Stale-While-Revalidate Pattern
+### Stale-While-Revalidate Pattern
 
                     ```python
                     class StaleWhileRevalidateCache:
@@ -630,17 +630,17 @@ class CacheAdmissionController:
                     self.revalidation_in_progress.discard(cache_key)
                     ```
 
-                    ### Interview Questions: Cache Invalidation (3 Levels Deep)
+### Interview Questions: Cache Invalidation (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What are the main cache invalidation strategies?"</div>
 <div style="color: #1e3a8a; font-size: 14px;">
 <strong>Answer:</strong> Three primary strategies:
-                        <br><br>
+  <br><br>
 (1) <strong>Time-based (TTL)</strong>: Content expires after a set duration. Simple but can serve stale content.
-                            <br><br>
+  <br><br>
 (2) <strong>Event-driven purge</strong>: Explicitly invalidate when content changes. Immediate freshness but requires coordination infrastructure.
-                                <br><br>
+  <br><br>
 (3) <strong>Versioned URLs</strong>: Embed content hash in URL. New content = new URL = no invalidation needed. Eliminates stale content but requires updating all references.
 </div>
 </div>
@@ -649,9 +649,9 @@ class CacheAdmissionController:
 <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do cache tags (surrogate keys) work and when should you use them?"</div>
 <div style="color: #78350f; font-size: 14px;">
 <strong>Answer:</strong> Cache tags are metadata labels attached to cached objects. When content changes, purge by tag instead of URL.
-                                    <br><br>
+  <br><br>
 <strong>Example:</strong> A product page at <code>/products/123</code> is tagged with <code>product:123</code>, <code>category:electronics</code>, <code>brand:apple</code>. When the product price changes, purge <code>product:123</code> to invalidate all pages showing that product (detail page, search results, recommendations).
-                                        <br><br>
+  <br><br>
 <strong>Use when:</strong> Content relationships are complex (one data change affects many URLs), you need instant invalidation, and you don't control all URL references. <strong>Avoid when:</strong> Content is versioned or TTL-based invalidation is acceptable.
 </div>
 </div>
@@ -660,26 +660,26 @@ class CacheAdmissionController:
 <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache invalidation system for a news site where breaking news must appear within 30 seconds globally."</div>
 <div style="color: #831843; font-size: 14px;">
 <strong>Answer:</strong> Multi-layered approach:
-                                            <br><br>
+  <br><br>
 (1) <strong>Tag-based instant purge</strong>: Each article tagged with <code>article:{id}</code>, <code>section:{name}</code>, <code>homepage</code>. CMS publishes purge event to message queue on save.
-                                                <br><br>
+  <br><br>
 (2) <strong>Purge propagation</strong>: Regional purge coordinators subscribe to queue. Fan-out purges to edge servers with parallel requests. Target &lt;5 second purge propagation.
-                                                    <br><br>
+  <br><br>
 (3) <strong>Short TTL fallback</strong>: Set <code>max-age=30, stale-while-revalidate=60</code> as safety net. Even without explicit purge, content refreshes within 30-90 seconds.
-                                                        <br><br>
+  <br><br>
 (4) <strong>Homepage special handling</strong>: Homepage has shortest TTL (10-15s) since it aggregates all breaking news. Consider edge-side includes (ESI) to cache static shell separately from dynamic content blocks.
-                                                            <br><br>
+  <br><br>
 (5) <strong>Monitoring</strong>: Track purge latency percentiles per region. Alert if P95 exceeds 15 seconds. Dashboard showing content freshness lag across PoPs.
-                                                                <br><br>
+  <br><br>
 (6) <strong>Push notifications</strong>: For truly instant breaking news, bypass cache entirely with push notifications to client apps, which then fetch latest.
 </div>
 </div>
 
-                                                                ---
+  ---
 
-                                                                ## Origin Shield
+## Origin Shield
 
-                                                                Origin shield is a mid-tier caching layer between edge servers and the origin. It consolidates requests from multiple edge PoPs, dramatically reducing origin load.
+  Origin shield is a mid-tier caching layer between edge servers and the origin. It consolidates requests from multiple edge PoPs, dramatically reducing origin load.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REQUEST FLOW: WITH vs WITHOUT ORIGIN SHIELD</h3>
@@ -727,7 +727,7 @@ class CacheAdmissionController:
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Origin shield adds one network hop latency (~20-50ms) but can reduce origin traffic by 70-90% during cache misses.</span>
 
-                                                                ### Origin Shield Implementation
+### Origin Shield Implementation
 
                                                                 ```python
                                                                 class OriginShield:
@@ -865,7 +865,7 @@ class CacheAdmissionController:
                                                                 return filtered
                                                                 ```
 
-                                                                ### Multi-Region Shield Architecture
+### Multi-Region Shield Architecture
 
                                                                 ```python
                                                                 class MultiRegionShieldRouter:
@@ -940,7 +940,7 @@ class CacheAdmissionController:
                                                                 return await self.direct_origin_fetch(request)
                                                                 ```
 
-                                                                ### Interview Questions: Origin Shield (3 Levels Deep)
+### Interview Questions: Origin Shield (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is an origin shield and why use one?"</div>
@@ -953,16 +953,16 @@ class CacheAdmissionController:
 <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How does request coalescing work at the origin shield?"</div>
 <div style="color: #78350f; font-size: 14px;">
 <strong>Answer:</strong> Request coalescing (or collapsed forwarding) ensures that when multiple requests arrive for the same uncached resource, only one request goes to origin:
-                                                                    <br><br>
-                                                                        (1) First request acquires a lock for that cache key and initiates origin fetch.
-                                                                        <br><br>
-                                                                            (2) Subsequent requests for same key find the lock held and wait on a shared Future/Promise.
-                                                                            <br><br>
-                                                                                (3) When origin responds, the first request populates cache and resolves the Future.
-                                                                                <br><br>
-                                                                                    (4) All waiting requests receive the same response simultaneously.
-                                                                                    <br><br>
-                                                                                        Critical implementation detail: Use double-checked locking to handle race conditions where cache is populated between check and lock acquisition. Also implement timeouts to prevent indefinite waits if the origin request hangs.
+  <br><br>
+  (1) First request acquires a lock for that cache key and initiates origin fetch.
+  <br><br>
+  (2) Subsequent requests for same key find the lock held and wait on a shared Future/Promise.
+  <br><br>
+  (3) When origin responds, the first request populates cache and resolves the Future.
+  <br><br>
+  (4) All waiting requests receive the same response simultaneously.
+  <br><br>
+  Critical implementation detail: Use double-checked locking to handle race conditions where cache is populated between check and lock acquisition. Also implement timeouts to prevent indefinite waits if the origin request hangs.
 </div>
 </div>
 
@@ -970,26 +970,26 @@ class CacheAdmissionController:
 <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Your origin shield is causing higher latency during cache warming. How do you optimize?"</div>
 <div style="color: #831843; font-size: 14px;">
 <strong>Answer:</strong> Cache warming through shield adds latency because content must traverse: Origin -> Shield -> Edge -> User. Optimization strategies:
-                                                                                        <br><br>
+  <br><br>
 (1) <strong>Shield bypass for known-cold requests</strong>: For first request after deploy or purge, edge can fetch directly from origin while simultaneously warming shield. Subsequent requests use shield.
-                                                                                            <br><br>
+  <br><br>
 (2) <strong>Proactive shield warming</strong>: Push content to shields before edges need it. Trigger warming when content is published, not when first user requests.
-                                                                                                <br><br>
+  <br><br>
 (3) <strong>Tiered warming</strong>: Warm only primary shield region, let secondary shields pull on-demand. Reduces warming time and bandwidth.
-                                                                                                    <br><br>
+  <br><br>
 (4) <strong>Shield selection by content type</strong>: High-latency origins (overseas) benefit from shield; low-latency origins (same region) may skip shield for warming requests.
-                                                                                                        <br><br>
+  <br><br>
 (5) <strong>Predictive prefetch</strong>: Analyze traffic patterns. If content X is often requested after content Y, prefetch X to shield when Y is requested.
 </div>
 </div>
 
-                                                                                                        ---
+  ---
 
-                                                                                                        ## Geographic Routing
+## Geographic Routing
 
-                                                                                                        Geographic routing directs users to the nearest or best-performing edge server. This involves [[DNS]](/topic/system-design/dns)-based routing, Anycast networking, and performance-based selection.
+  Geographic routing directs users to the nearest or best-performing edge server. This involves [[DNS]](/topic/system-design/dns)-based routing, Anycast networking, and performance-based selection.
 
-                                                                                                        ### DNS-Based Geographic Routing
+### DNS-Based Geographic Routing
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Assumption: DNS resolution happens at the user's configured resolver, which may not be geographically close to the user (e.g., Google DNS 8.8.8.8).</span>
 
@@ -1093,7 +1093,7 @@ class CacheAdmissionController:
                                                                                                         return sorted(candidates, key=lambda x: x['score'], reverse=True)
                                                                                                         ```
 
-                                                                                                        ### Anycast Routing
+### Anycast Routing
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">ANYCAST vs UNICAST ROUTING</h3>
@@ -1208,7 +1208,7 @@ class CacheAdmissionController:
                                                                                                         return new_pop, convergence_time_s
                                                                                                         ```
 
-                                                                                                        ### Performance-Based Routing
+### Performance-Based Routing
 
                                                                                                         ```python
                                                                                                         class PerformanceBasedRouter:
@@ -1312,15 +1312,15 @@ class CacheAdmissionController:
                                                                                                         return list(scores.keys())[0]  # Fallback
                                                                                                         ```
 
-                                                                                                        ### Interview Questions: Geographic Routing (3 Levels Deep)
+### Interview Questions: Geographic Routing (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "How do CDNs route users to the nearest edge server?"</div>
 <div style="color: #1e3a8a; font-size: 14px;">
 <strong>Answer:</strong> Two primary methods:
-                                                                                                            <br><br>
+  <br><br>
 (1) <strong>GeoDNS</strong>: DNS server returns different IP addresses based on the requester's location. Uses GeoIP databases to map IP to location. Challenge: DNS resolver may not be near the user.
-                                                                                                                <br><br>
+  <br><br>
 (2) <strong>Anycast</strong>: Same IP address is announced from multiple global locations via BGP. Network routing automatically directs packets to the nearest announcement point. Provides automatic failover. Used by Cloudflare (1.1.1.1), Google (8.8.8.8), and most major CDNs.
 </div>
 </div>
@@ -1329,9 +1329,9 @@ class CacheAdmissionController:
 <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "What is EDNS Client Subnet (ECS) and why is it important for CDNs?"</div>
 <div style="color: #78350f; font-size: 14px;">
 <strong>Answer:</strong> ECS is a DNS extension that includes the client's subnet in DNS queries. Without ECS, GeoDNS only sees the DNS resolver's IP (e.g., 8.8.8.8 in California), not the actual user's location (e.g., user in Tokyo using Google DNS).
-                                                                                                                    <br><br>
+  <br><br>
 <strong>How it works:</strong> Recursive resolver includes client subnet (e.g., 203.0.113.0/24) in query to authoritative DNS. Authoritative server uses this subnet for geographic routing decisions instead of resolver IP.
-                                                                                                                        <br><br>
+  <br><br>
 <strong>Trade-offs:</strong> Privacy concern (leaks partial client IP), additional DNS traffic (more unique queries = lower cache hit rate at resolvers), but significantly improves routing accuracy for users with geographically distant DNS resolvers.
 </div>
 </div>
@@ -1340,32 +1340,32 @@ class CacheAdmissionController:
 <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Users in Southeast Asia report higher latency than users in Europe, despite having a closer PoP. Diagnose."</div>
 <div style="color: #831843; font-size: 14px;">
 <strong>Answer:</strong> Multiple potential causes to investigate:
-                                                                                                                            <br><br>
+  <br><br>
 (1) <strong>BGP routing issues</strong>: SEA traffic may be routing through US or EU due to BGP path selection. Check AS path from major SEA ISPs. May need better peering arrangements in SEA.
-                                                                                                                                <br><br>
+  <br><br>
 (2) <strong>Undersea cable congestion</strong>: SEA to APAC cables may be congested. Traffic could be taking longer paths. Check for recent cable cuts or maintenance.
-                                                                                                                                    <br><br>
+  <br><br>
 (3) <strong>PoP capacity</strong>: SEA PoP may be overloaded, causing processing delays. Check server load and queue depths.
-                                                                                                                                        <br><br>
+  <br><br>
 (4) <strong>Cache hit rate</strong>: Lower traffic in SEA = colder cache = more origin fetches. Implement regional origin shield or proactive warming for SEA.
-                                                                                                                                            <br><br>
+  <br><br>
 (5) <strong>DNS resolver misconfiguration</strong>: SEA users might be using non-local DNS resolvers. Verify ECS support. Check if ISP DNS is routing correctly.
-                                                                                                                                                <br><br>
+  <br><br>
 (6) <strong>Origin location</strong>: If origin is in EU, cache misses from SEA PoP traverse full distance. Add origin shield in APAC region.
-                                                                                                                                                    <br><br>
+  <br><br>
 <strong>Diagnostics:</strong> Run traceroutes from SEA locations, analyze RUM data by region, check cache hit rates by PoP, measure origin-to-shield-to-edge latency breakdown.
 </div>
 </div>
 
-                                                                                                                                                    ---
+  ---
 
-                                                                                                                                                    ## Cache Warming
+## Cache Warming
 
-                                                                                                                                                    Cache warming is the proactive population of caches before user requests arrive. This eliminates cold-cache latency penalties and ensures consistent performance from the first request.
+  Cache warming is the proactive population of caches before user requests arrive. This eliminates cold-cache latency penalties and ensures consistent performance from the first request.
 
 <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500;">Trade-off: Warming consumes bandwidth and origin resources. Over-warming wastes resources on content that's never requested; under-warming causes cold-cache latency spikes.</span>
 
-                                                                                                                                                    ### Cache Warming Strategies
+### Cache Warming Strategies
 
                                                                                                                                                     ```python
                                                                                                                                                     class CacheWarmingOrchestrator:
@@ -1511,7 +1511,7 @@ class CacheAdmissionController:
                                                                                                                                                     await asyncio.sleep(0.05)  # 20 requests/second
                                                                                                                                                     ```
 
-                                                                                                                                                    ### Tiered Warming Architecture
+### Tiered Warming Architecture
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">TIERED CACHE WARMING</h3>
@@ -1636,19 +1636,19 @@ class CacheAdmissionController:
                                                                                                                                                     return costs
                                                                                                                                                     ```
 
-                                                                                                                                                    ### Interview Questions: Cache Warming (3 Levels Deep)
+### Interview Questions: Cache Warming (3 Levels Deep)
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 1: "What is cache warming and when should you use it?"</div>
 <div style="color: #1e3a8a; font-size: 14px;">
 <strong>Answer:</strong> Cache warming is proactively populating caches before user requests arrive, eliminating cold-cache latency. Use it when:
-                                                                                                                                                        <br><br>
-                                                                                                                                                            (1) After deployments that invalidate cache
-                                                                                                                                                            (2) Before predictable traffic spikes (marketing campaigns, sales events)
-                                                                                                                                                            (3) When launching in new geographic regions
-                                                                                                                                                            (4) For latency-sensitive content where even one slow request is unacceptable
-                                                                                                                                                            <br><br>
-                                                                                                                                                                Avoid for: Long-tail content with low request probability, highly dynamic content, resource-constrained environments.
+  <br><br>
+  (1) After deployments that invalidate cache
+  (2) Before predictable traffic spikes (marketing campaigns, sales events)
+  (3) When launching in new geographic regions
+  (4) For latency-sensitive content where even one slow request is unacceptable
+  <br><br>
+  Avoid for: Long-tail content with low request probability, highly dynamic content, resource-constrained environments.
 </div>
 </div>
 
@@ -1656,13 +1656,13 @@ class CacheAdmissionController:
 <div style="color: #92400e; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 2: "How do you decide which content to warm vs let populate on-demand?"</div>
 <div style="color: #78350f; font-size: 14px;">
 <strong>Answer:</strong> Use data-driven selection based on:
-                                                                                                                                                                <br><br>
+  <br><br>
 (1) <strong>Historical traffic analysis</strong>: Content requested >N times/day is worth warming. Below threshold, let populate on-demand.
-                                                                                                                                                                    <br><br>
+  <br><br>
 (2) <strong>Content importance</strong>: Homepage, top navigation, landing pages for campaigns should always be warm regardless of current traffic.
-                                                                                                                                                                        <br><br>
+  <br><br>
 (3) <strong>Cost-benefit calculation</strong>: Warming cost (bandwidth, origin load) vs latency penalty (P99 impact, conversion rate). If content is 1MB and requested 10 times/day, warming 100 PoPs costs 1GB for saving 10 cold requests.
-                                                                                                                                                                            <br><br>
+  <br><br>
 (4) <strong>Tiered approach</strong>: Warm 100% at origin shield (serves all edges), 50% at high-traffic PoPs, 20% at medium, 0% at low-traffic (pull from shield on-demand).
 </div>
 </div>
@@ -1671,26 +1671,26 @@ class CacheAdmissionController:
 <div style="color: #9d174d; font-weight: 700; margin-bottom: 16px; font-size: 16px;">Level 3: "Design a cache warming system for a streaming service launching a highly anticipated show globally at midnight."</div>
 <div style="color: #831843; font-size: 14px;">
 <strong>Answer:</strong> Multi-phase warming strategy:
-                                                                                                                                                                                <br><br>
+  <br><br>
 (1) <strong>Pre-launch (T-24h to T-2h)</strong>: Push all video segments to origin shields. Verify integrity with checksums. This is 80% of the work.
-                                                                                                                                                                                    <br><br>
+  <br><br>
 (2) <strong>Regional warming (T-2h to T-30m)</strong>: Warm high-traffic PoPs in each timezone. Start with regions where midnight arrives first (Pacific Islands -> Asia -> Europe -> Americas). Prioritize first 3 episodes (most will start there).
-                                                                                                                                                                                        <br><br>
+  <br><br>
 (3) <strong>Edge warming (T-30m)</strong>: Final push to all edge PoPs. Focus on first episode, first 10 minutes (initial segments). Use adaptive bitrate - warm all quality levels for first segments, only highest quality for later segments.
-                                                                                                                                                                                            <br><br>
+  <br><br>
 (4) <strong>Predictive pre-fetching (T-0 onwards)</strong>: As users start watching, proactively fetch next segments before they're requested. Analyze viewing patterns in real-time to predict drops/binge behavior.
-                                                                                                                                                                                                <br><br>
+  <br><br>
 (5) <strong>Overflow handling</strong>: Have direct-to-origin fallback for cache misses. Pre-scale origin capacity. Implement request coalescing to prevent stampede.
-                                                                                                                                                                                                    <br><br>
+  <br><br>
 (6) <strong>Monitoring</strong>: Real-time dashboard showing cache hit rate by region, buffer ratio, error rates. Automated alerts if hit rate drops below 95% in any major PoP.
 </div>
 </div>
 
-                                                                                                                                                                                                    ---
+  ---
 
-                                                                                                                                                                                                    ## Edge Computing and Dynamic Content
+## Edge Computing and Dynamic Content
 
-                                                                                                                                                                                                    Modern CDNs extend beyond caching static content to running compute at the edge, enabling dynamic content generation closer to users.
+  Modern CDNs extend beyond caching static content to running compute at the edge, enabling dynamic content generation closer to users.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">EDGE COMPUTING PLATFORMS</h3>
@@ -1714,7 +1714,7 @@ class CacheAdmissionController:
 </div>
 </div>
 
-                                                                                                                                                                                                    ### Edge-Side Includes (ESI)
+### Edge-Side Includes (ESI)
 
                                                                                                                                                                                                     ```python
                                                                                                                                                                                                     class ESIProcessor:
@@ -1818,7 +1818,7 @@ class CacheAdmissionController:
                                                                                                                                                                                                       return dict(r for r in results if not isinstance(r, Exception))
                                                                                                                                                                                                       ```
 
-                                                                                                                                                                                                      ### A/B Testing at the Edge
+### A/B Testing at the Edge
 
                                                                                                                                                                                                       ```python
                                                                                                                                                                                                       class EdgeABTesting:
@@ -1921,11 +1921,11 @@ class CacheAdmissionController:
                                                                                                                                                                                                       return hashlib.sha256(fingerprint.encode()).hexdigest()[:16]
                                                                                                                                                                                                       ```
 
-                                                                                                                                                                                                      ---
+  ---
 
-                                                                                                                                                                                                      ## Production Considerations
+## Production Considerations
 
-                                                                                                                                                                                                      ### Monitoring and Observability
+### Monitoring and Observability
 
                                                                                                                                                                                                       ```python
                                                                                                                                                                                                       class CDNMetrics:
@@ -2021,7 +2021,7 @@ class CacheAdmissionController:
                                                                                                                                                                                                       }
                                                                                                                                                                                                       ```
 
-                                                                                                                                                                                                      ### Security Considerations
+### Security Considerations
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 16px;">Security Checklist for CDN Configuration</div>
@@ -2048,9 +2048,9 @@ class CacheAdmissionController:
 </div>
 </div>
 
-                                                                                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                                                                                          ## Related Topics
+## Related Topics
 
                                                                                                                                                                                                                                           - [[Caching Strategies]](/topic/system-design/caching) - Detailed caching patterns and eviction policies
                                                                                                                                                                                                                                           - [[Load Balancing]](/topic/system-design/load-balancing) - Traffic distribution and health checking
@@ -2058,9 +2058,9 @@ class CacheAdmissionController:
                                                                                                                                                                                                                                           - [[Distributed Systems]](/topic/system-design/distributed-systems) - Consistency and partition tolerance
                                                                                                                                                                                                                                           - [[Rate Limiting]](/topic/system-design/rate-limiting) - Traffic control at the edge
 
-                                                                                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                                                                                          ## Summary
+## Summary
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #86efac;">
 <h3 style="color: #166534; margin: 0 0 16px 0; font-size: 18px;">Key Takeaways for Interviews</h3>

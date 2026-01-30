@@ -166,14 +166,14 @@ The OSI model distinction between Layer 4 (Transport) and Layer 7 (Application) 
 <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
 <strong style="color: #166534;">Path-Based Routing</strong>
 <pre style="margin: 8px 0 0 0; color: #166534; font-size: 14px; background: #dcfce7; padding: 12px; border-radius: 6px;">/api/*     --> API Servers (high CPU, low memory)
-        /static/*  --> CDN/Static Servers (high bandwidth)
-        /admin/*   --> Admin Servers (restricted network)
+  /static/*  --> CDN/Static Servers (high bandwidth)
+  /admin/*   --> Admin Servers (restricted network)
 /ws/*      --> WebSocket Servers (persistent connections)</pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #16a34a;">
 <strong style="color: #166534;">Header-Based Routing</strong>
 <pre style="margin: 8px 0 0 0; color: #166534; font-size: 14px; background: #dcfce7; padding: 12px; border-radius: 6px;">X-API-Version: v2  --> V2 API Servers
-        Accept: application/grpc --> gRPC Servers
+  Accept: application/grpc --> gRPC Servers
 X-Tenant-ID: premium --> Premium Tier Servers</pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #15803d;">
@@ -461,28 +461,28 @@ class LeastConnectionsBalancer:
 <div style="position: relative; width: 280px; height: 280px;">
 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 4px solid #cbd5e1; border-radius: 50%;"></div>
 
-      <!-- Hash positions -->
+  <!-- Hash positions -->
 <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 11px; font-weight: 600;">0</div>
 <div style="position: absolute; top: 50%; right: -20px; transform: translateY(-50%); color: #64748b; font-size: 11px; font-weight: 600;">2^31</div>
 <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 11px; font-weight: 600;">2^32</div>
 <div style="position: absolute; top: 50%; left: -25px; transform: translateY(-50%); color: #64748b; font-size: 11px; font-weight: 600;">3*2^31</div>
 
-      <!-- Server A virtual nodes (green) -->
+  <!-- Server A virtual nodes (green) -->
 <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: #22c55e; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; top: 80px; right: 25px; background: #22c55e; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; bottom: 60px; left: 20px; background: #22c55e; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 
-      <!-- Server B virtual nodes (blue) -->
+  <!-- Server B virtual nodes (blue) -->
 <div style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; top: 40px; left: 35px; background: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; bottom: 25px; right: 60px; background: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 
-      <!-- Server C virtual nodes (purple) -->
+  <!-- Server C virtual nodes (purple) -->
 <div style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #a855f7; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: #a855f7; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 <div style="position: absolute; top: 60px; right: 70px; background: #a855f7; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>
 
-      <!-- Key point -->
+  <!-- Key point -->
 <div style="position: absolute; top: 30px; right: 55px; background: #ef4444; width: 10px; height: 10px; border-radius: 50%;"></div>
 </div>
 
@@ -737,7 +737,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 20px;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">TCP Health Check</h5>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">
-        Attempts TCP connection to port. Success = server is listening.
+  Attempts TCP connection to port. Success = server is listening.
 </div>
 <div style="background: white; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
 <div style="color: #166534;">SYN --></div>
@@ -755,7 +755,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">HTTP Health Check</h5>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">
-        Sends HTTP request, validates response status code.
+  Sends HTTP request, validates response status code.
 </div>
 <div style="background: white; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px;">
 <div style="color: #1e40af;">GET /health HTTP/1.1</div>
@@ -773,7 +773,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 20px;">
 <h5 style="color: #7c3aed; margin: 0 0 12px 0;">Deep Health Check</h5>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">
-        Application checks dependencies (DB, cache, external APIs).
+  Application checks dependencies (DB, cache, external APIs).
 </div>
 <div style="background: white; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px;">
 <div style="color: #7c3aed;">GET /health/deep</div>
@@ -803,7 +803,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <span style="color: #1e293b; font-weight: 600;">= 5s</span>
 </div>
 <div style="color: #475569; font-size: 13px;">
-        Time between health checks. Too short = overhead. Too long = slow detection.
+  Time between health checks. Too short = overhead. Too long = slow detection.
 <div style="margin-top: 8px; padding: 8px; background: #f0fdf4; border-radius: 4px;">
 <span style="color: #166534; font-weight: 600;">**Trade-off:**</span> 5s interval means up to 5s of traffic to failing server before detection.
 </div>
@@ -816,7 +816,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <span style="color: #1e293b; font-weight: 600;">= 3</span>
 </div>
 <div style="color: #475569; font-size: 13px;">
-        Consecutive failures before marking unhealthy. Prevents flapping from transient failures.
+  Consecutive failures before marking unhealthy. Prevents flapping from transient failures.
 <div style="margin-top: 8px; padding: 8px; background: #fef2f2; border-radius: 4px;">
 <span style="color: #991b1b;">Detection time = interval × threshold = 15s</span>
 </div>
@@ -829,7 +829,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <span style="color: #1e293b; font-weight: 600;">= 2</span>
 </div>
 <div style="color: #475569; font-size: 13px;">
-        Consecutive successes before marking healthy again. Prevents thundering herd on recovery.
+  Consecutive successes before marking healthy again. Prevents thundering herd on recovery.
 <div style="margin-top: 8px; padding: 8px; background: #f0fdf4; border-radius: 4px;">
 <span style="color: #166534;">Recovery time = interval × threshold = 10s</span>
 </div>
@@ -842,7 +842,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 <span style="color: #1e293b; font-weight: 600;">= 2s</span>
 </div>
 <div style="color: #475569; font-size: 13px;">
-        Max time to wait for health check response. Must be less than interval.
+  Max time to wait for health check response. Must be less than interval.
 <div style="margin-top: 8px; padding: 8px; background: #fef3c7; border-radius: 4px;">
 <span style="color: #92400e;">Timeout counts as failure toward threshold.</span>
 </div>

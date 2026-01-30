@@ -66,7 +66,7 @@ A thread pool maintains a collection of pre-created worker threads that pull tas
 <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
 <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">CPU-Bound Workloads</div>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 15px; color: #1e293b; text-align: center; margin-bottom: 12px;">
-      N<sub>threads</sub> = N<sub>cpu</sub> + 1
+  N<sub>threads</sub> = N<sub>cpu</sub> + 1
 </div>
 <div style="color: #64748b; font-size: 13px;">The +1 accounts for occasional page faults or other stalls. More threads cause context switching overhead that degrades performance.</div>
 </div>
@@ -74,13 +74,13 @@ A thread pool maintains a collection of pre-created worker threads that pull tas
 <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
 <div style="color: #059669; font-weight: 600; margin-bottom: 12px;">I/O-Bound Workloads (Little's Law Derivation)</div>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 15px; color: #1e293b; text-align: center; margin-bottom: 12px;">
-      N<sub>threads</sub> = N<sub>cpu</sub> x U<sub>target</sub> x (1 + W/C)
+  N<sub>threads</sub> = N<sub>cpu</sub> x U<sub>target</sub> x (1 + W/C)
 </div>
 <div style="color: #64748b; font-size: 13px;">
 <strong>U<sub>target</sub></strong> = target CPU utilization (0.0-1.0, typically 0.8)<br/>
 <strong>W</strong> = average wait time (blocking on I/O)<br/>
 <strong>C</strong> = average compute time<br/>
-      Example: 8 cores, 80% target utilization, 100ms wait, 10ms compute = 8 x 0.8 x (1 + 10) = 70 threads
+  Example: 8 cores, 80% target utilization, 100ms wait, 10ms compute = 8 x 0.8 x (1 + 10) = 70 threads
 </div>
 </div>
 
@@ -161,27 +161,27 @@ The producer-consumer pattern decouples task generation from task processing usi
 <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Producer Logic</div>
 <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #1e293b; line-height: 1.8; background: white; padding: 12px; border-radius: 8px;">
-        acquire(mutex)<br/>
-        while (count == BUFFER_SIZE):<br/>
-        &nbsp;&nbsp;wait(not_full, mutex)<br/>
-        buffer[in] = item<br/>
-        in = (in + 1) % BUFFER_SIZE<br/>
-        count++<br/>
-        signal(not_empty)<br/>
-        release(mutex)
+  acquire(mutex)<br/>
+  while (count == BUFFER_SIZE):<br/>
+  &nbsp;&nbsp;wait(not_full, mutex)<br/>
+  buffer[in] = item<br/>
+  in = (in + 1) % BUFFER_SIZE<br/>
+  count++<br/>
+  signal(not_empty)<br/>
+  release(mutex)
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Consumer Logic</div>
 <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #1e293b; line-height: 1.8; background: white; padding: 12px; border-radius: 8px;">
-        acquire(mutex)<br/>
-        while (count == 0):<br/>
-        &nbsp;&nbsp;wait(not_empty, mutex)<br/>
-        item = buffer[out]<br/>
-        out = (out + 1) % BUFFER_SIZE<br/>
-        count--<br/>
-        signal(not_full)<br/>
-        release(mutex)
+  acquire(mutex)<br/>
+  while (count == 0):<br/>
+  &nbsp;&nbsp;wait(not_empty, mutex)<br/>
+  item = buffer[out]<br/>
+  out = (out + 1) % BUFFER_SIZE<br/>
+  count--<br/>
+  signal(not_full)<br/>
+  release(mutex)
 </div>
 </div>
 </div>
@@ -199,7 +199,7 @@ The producer-consumer pattern decouples task generation from task processing usi
 <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Bounded Buffer (Ring Buffer)</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.7; margin-bottom: 12px;">
-        Fixed-size circular array. O(1) enqueue/dequeue. Provides natural backpressure. Memory bounded.
+  Fixed-size circular array. O(1) enqueue/dequeue. Provides natural backpressure. Memory bounded.
 </div>
 <div style="background: #eff6ff; padding: 12px; border-radius: 8px;">
 <div style="color: #1e40af; font-weight: 600; font-size: 12px; margin-bottom: 4px;">Use When:</div>
@@ -209,7 +209,7 @@ The producer-consumer pattern decouples task generation from task processing usi
 <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #8b5cf6;">
 <div style="color: #5b21b6; font-weight: 700; margin-bottom: 12px;">Unbounded Buffer (Linked List)</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.7; margin-bottom: 12px;">
-        Grows dynamically. Producer never blocks. Risk of memory exhaustion if consumer falls behind.
+  Grows dynamically. Producer never blocks. Risk of memory exhaustion if consumer falls behind.
 </div>
 <div style="background: #faf5ff; padding: 12px; border-radius: 8px;">
 <div style="color: #5b21b6; font-weight: 600; font-size: 12px; margin-bottom: 4px;">Use When:</div>
@@ -333,7 +333,7 @@ Multiple readers can safely access shared data simultaneously (reads don't confl
 <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Reader-Preference</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.7; margin-bottom: 12px;">
-        New readers can acquire lock even if writer is waiting. Maximizes read throughput.
+  New readers can acquire lock even if writer is waiting. Maximizes read throughput.
 </div>
 <div style="background: #fee2e2; padding: 12px; border-radius: 8px;">
 <div style="color: #991b1b; font-weight: 600; font-size: 12px;">Risk:</div>
@@ -343,7 +343,7 @@ Multiple readers can safely access shared data simultaneously (reads don't confl
 <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
 <div style="color: #d97706; font-weight: 700; margin-bottom: 12px;">Writer-Preference</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.7; margin-bottom: 12px;">
-        Once writer is waiting, no new readers admitted. Writer gets lock when current readers finish.
+  Once writer is waiting, no new readers admitted. Writer gets lock when current readers finish.
 </div>
 <div style="background: #fee2e2; padding: 12px; border-radius: 8px;">
 <div style="color: #991b1b; font-weight: 600; font-size: 12px;">Risk:</div>
@@ -353,7 +353,7 @@ Multiple readers can safely access shared data simultaneously (reads don't confl
 <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #10b981;">
 <div style="color: #059669; font-weight: 700; margin-bottom: 12px;">Fair (FIFO)</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.7; margin-bottom: 12px;">
-        Service requests in arrival order. No starvation for either party.
+  Service requests in arrival order. No starvation for either party.
 </div>
 <div style="background: #fef3c7; padding: 12px; border-radius: 8px;">
 <div style="color: #92400e; font-weight: 600; font-size: 12px;">Trade-off:</div>
@@ -425,7 +425,7 @@ int writers_waiting = 0;&nbsp;<span style="color: #94a3b8;">// Writers in queue<
 <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #fcd34d;">
 <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Expected Answer:</div>
 <div style="color: #334155; font-size: 14px; line-height: 1.7;">
-        Likely writer starvation causing reader starvation:<br/>
+  Likely writer starvation causing reader starvation:<br/>
 1. <strong>Writer-preference lock + frequent writes:</strong> Each write request blocks new readers. If writes arrive at high rate, readers queue behind each writer.<br/>
 2. <strong>Long-running writer:</strong> A slow write (e.g., full cache refresh) blocks all readers for its duration.<br/><br/>
 <strong>Diagnosis:</strong> Track lock acquisition wait times separately from operation time. Check writer frequency and duration. Monitor queue lengths for read vs write waiters.<br/><br/>
@@ -440,13 +440,13 @@ int writers_waiting = 0;&nbsp;<span style="color: #94a3b8;">// Writers in queue<
 <div style="color: #b91c1c; font-weight: 600; margin-bottom: 8px;">Expected Answer:</div>
 <div style="color: #334155; font-size: 14px; line-height: 1.7;">
 <strong>Phase-Fair RWLock:</strong><br/>
-          Divide time into "read phases" and "write phases". During a read phase, only readers are admitted (up to a limit or time bound). Then switch to write phase where queued writers execute. This provides bounded wait: readers wait at most one write phase, writers wait at most one read phase.<br/><br/>
+  Divide time into "read phases" and "write phases". During a read phase, only readers are admitted (up to a limit or time bound). Then switch to write phase where queued writers execute. This provides bounded wait: readers wait at most one write phase, writers wait at most one read phase.<br/><br/>
 
 <strong>Ticket-Based Fairness:</strong><br/>
-          Each request gets a ticket number. Service in ticket order, but batch consecutive readers together. Writer ticket N waits only for readers with tickets less than N. Provides FIFO guarantees while still allowing reader concurrency.<br/><br/>
+  Each request gets a ticket number. Service in ticket order, but batch consecutive readers together. Writer ticket N waits only for readers with tickets less than N. Provides FIFO guarantees while still allowing reader concurrency.<br/><br/>
 
 <strong>Optimistic Concurrency (Best for Read-Heavy):</strong><br/>
-          Readers proceed without locking using a sequence counter. Read start: save sequence. Read end: check if sequence changed (writer intervened). If changed, retry. Writers increment sequence before and after. Readers never block writers; worst case is reader retry. See [[seqlocks]](/topic/system-design/seqlocks).<br/><br/>
+  Readers proceed without locking using a sequence counter. Read start: save sequence. Read end: check if sequence changed (writer intervened). If changed, retry. Writers increment sequence before and after. Readers never block writers; worst case is reader retry. See [[seqlocks]](/topic/system-design/seqlocks).<br/><br/>
 
 <strong>Trade-off:</strong> Phase-fair adds complexity and may reduce throughput vs simpler policies. Optimistic concurrency requires idempotent reads and has retry overhead under write contention.
 </div>
@@ -506,10 +506,10 @@ int writers_waiting = 0;&nbsp;<span style="color: #94a3b8;">// Writers in queue<
 <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #b91c1c; font-weight: 600; margin-bottom: 8px;">Bug with Binary Semaphore</div>
 <div style="font-family: 'Courier New', monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #fef2f2; padding: 12px; border-radius: 8px;">
-        sem = Semaphore(1)<br/><br/>
+  sem = Semaphore(1)<br/><br/>
 <span style="color: #64748b;">// Thread A</span><br/>
-        sem.wait()<br/>
-        critical_section()<br/>
+  sem.wait()<br/>
+  critical_section()<br/>
 <span style="color: #64748b;">// Forgets to signal!</span><br/><br/>
 <span style="color: #64748b;">// Thread B accidentally</span><br/>
 sem.signal()&nbsp;<span style="color: #64748b;">// "Unlocks" for Thread A!</span>
@@ -518,10 +518,10 @@ sem.signal()&nbsp;<span style="color: #64748b;">// "Unlocks" for Thread A!</span
 <div style="background: white; border-radius: 12px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Mutex Prevents This</div>
 <div style="font-family: 'Courier New', monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #f0fdf4; padding: 12px; border-radius: 8px;">
-        mtx = Mutex()<br/><br/>
+  mtx = Mutex()<br/><br/>
 <span style="color: #64748b;">// Thread A</span><br/>
-        mtx.lock()<br/>
-        critical_section()<br/>
+  mtx.lock()<br/>
+  critical_section()<br/>
 <span style="color: #64748b;">// Forgets to unlock!</span><br/><br/>
 <span style="color: #64748b;">// Thread B</span><br/>
 mtx.unlock()&nbsp;<span style="color: #64748b;">// ERROR: Not owner!</span>
@@ -537,30 +537,30 @@ mtx.unlock()&nbsp;<span style="color: #64748b;">// ERROR: Not owner!</span>
 <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Resource Pool Limiting</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
-        Limit concurrent access to N identical resources (database connections, file handles).
+  Limit concurrent access to N identical resources (database connections, file handles).
 </div>
 <div style="font-family: 'Courier New', monospace; font-size: 11px; background: #f1f5f9; padding: 12px; border-radius: 8px;">
-        pool_sem = Semaphore(MAX_CONNECTIONS)<br/>
+  pool_sem = Semaphore(MAX_CONNECTIONS)<br/>
 pool_sem.wait()&nbsp;&nbsp;<span style="color: #64748b;">// Blocks if pool empty</span><br/>
-        conn = pool.get()<br/>
-        use(conn)<br/>
-        pool.release(conn)<br/>
-        pool_sem.signal()
+  conn = pool.get()<br/>
+  use(conn)<br/>
+  pool.release(conn)<br/>
+  pool_sem.signal()
 </div>
 </div>
 <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
 <div style="color: #5b21b6; font-weight: 700; margin-bottom: 12px;">Event Signaling</div>
 <div style="color: #334155; font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
-        One thread signals completion to another. No shared data, just coordination.
+  One thread signals completion to another. No shared data, just coordination.
 </div>
 <div style="font-family: 'Courier New', monospace; font-size: 11px; background: #f1f5f9; padding: 12px; border-radius: 8px;">
-        ready = Semaphore(0)<br/><br/>
+  ready = Semaphore(0)<br/><br/>
 <span style="color: #64748b;">// Producer</span><br/>
-        prepare_data()<br/>
-        ready.signal()<br/><br/>
+  prepare_data()<br/>
+  ready.signal()<br/><br/>
 <span style="color: #64748b;">// Consumer</span><br/>
-        ready.wait()<br/>
-        use_data()
+  ready.wait()<br/>
+  use_data()
 </div>
 </div>
 </div>
@@ -574,8 +574,8 @@ pool_sem.wait()&nbsp;&nbsp;<span style="color: #64748b;">// Blocks if pool empty
 <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Expected Answer:</div>
 <div style="color: #334155; font-size: 14px; line-height: 1.7;">
-      Use semaphore when: (1) You need to limit access to N resources (counting semaphore for connection pools). (2) You need signaling between threads without protecting shared data. (3) The thread that acquires doesn't need to be the one that releases.<br/><br/>
-      Use mutex when: (1) Protecting a critical section with shared state. (2) You need ownership semantics (recursive locking, priority inheritance). (3) You want enforcement that only the holder can release.
+  Use semaphore when: (1) You need to limit access to N resources (counting semaphore for connection pools). (2) You need signaling between threads without protecting shared data. (3) The thread that acquires doesn't need to be the one that releases.<br/><br/>
+  Use mutex when: (1) Protecting a critical section with shared state. (2) You need ownership semantics (recursive locking, priority inheritance). (3) You want enforcement that only the holder can release.
 </div>
 </div>
 
@@ -598,7 +598,7 @@ pool_sem.wait()&nbsp;&nbsp;<span style="color: #64748b;">// Blocks if pool empty
 <div style="color: #b91c1c; font-weight: 600; margin-bottom: 8px;">Expected Answer:</div>
 <div style="color: #334155; font-size: 14px; line-height: 1.7;">
 <strong>Token Bucket with Semaphore:</strong><br/>
-          Initialize semaphore with burst capacity B. A refiller thread adds tokens at rate N/sec (signals semaphore) up to max B. Requests wait on semaphore.<br/><br/>
+  Initialize semaphore with burst capacity B. A refiller thread adds tokens at rate N/sec (signals semaphore) up to max B. Requests wait on semaphore.<br/><br/>
 
 <strong>Implementation:</strong><br/>
 <code>tokens = Semaphore(BURST_CAPACITY)</code><br/>
@@ -673,15 +673,15 @@ Deadlock requires ALL four conditions to hold simultaneously. Preventing any one
 <div style="color: #991b1b; font-weight: 700; margin-bottom: 12px;">Deadlock Prone</div>
 <div style="font-family: 'Courier New', monospace; font-size: 11px; color: #1e293b; line-height: 1.8; background: white; padding: 12px; border-radius: 8px;">
 <span style="color: #64748b;">// Thread 1</span><br/>
-        lock(account_A)<br/>
+  lock(account_A)<br/>
 lock(account_B)&nbsp;&nbsp;<span style="color: #ef4444;">// Waits if Thread 2 holds B</span><br/>
-        transfer(A, B)<br/>
-        unlock(B); unlock(A)<br/><br/>
+  transfer(A, B)<br/>
+  unlock(B); unlock(A)<br/><br/>
 <span style="color: #64748b;">// Thread 2</span><br/>
-        lock(account_B)<br/>
+  lock(account_B)<br/>
 lock(account_A)&nbsp;&nbsp;<span style="color: #ef4444;">// Waits if Thread 1 holds A</span><br/>
-        transfer(B, A)<br/>
-        unlock(A); unlock(B)
+  transfer(B, A)<br/>
+  unlock(A); unlock(B)
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #86efac;">
@@ -690,11 +690,11 @@ lock(account_A)&nbsp;&nbsp;<span style="color: #ef4444;">// Waits if Thread 1 ho
 <span style="color: #64748b;">// Both threads use same order</span><br/>
 <span style="color: #22c55e;">first = min(A.id, B.id)</span><br/>
 <span style="color: #22c55e;">second = max(A.id, B.id)</span><br/><br/>
-        lock(first)<br/>
-        lock(second)<br/>
-        transfer(from, to)<br/>
-        unlock(second)<br/>
-        unlock(first)
+  lock(first)<br/>
+  lock(second)<br/>
+  transfer(from, to)<br/>
+  unlock(second)<br/>
+  unlock(first)
 </div>
 </div>
 </div>
@@ -749,7 +749,7 @@ lock(account_A)&nbsp;&nbsp;<span style="color: #ef4444;">// Waits if Thread 1 ho
 <div style="background: #eff6ff; border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; flex: 1; min-width: 200px;">
 <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Detection Algorithm</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.6;">
-        Periodically run cycle detection (DFS). Frequency trade-off: too often wastes CPU, too rare delays recovery. Typical: every few seconds or on wait timeout.
+  Periodically run cycle detection (DFS). Frequency trade-off: too often wastes CPU, too rare delays recovery. Typical: every few seconds or on wait timeout.
 </div>
 </div>
 <div style="background: #fef2f2; border-radius: 12px; padding: 16px; border: 2px solid #ef4444; flex: 1; min-width: 200px;">
@@ -796,19 +796,19 @@ lock(account_A)&nbsp;&nbsp;<span style="color: #ef4444;">// Waits if Thread 1 ho
 <div style="color: #b91c1c; font-weight: 600; margin-bottom: 8px;">Expected Answer:</div>
 <div style="color: #334155; font-size: 14px; line-height: 1.7;">
 <strong>Option 1: Global Lock Ordering</strong><br/>
-          Assign global IDs to all lockable resources across shards. Sort and acquire in ID order. Challenge: requires knowing all resources upfront, adds latency for sorted acquisition.<br/><br/>
+  Assign global IDs to all lockable resources across shards. Sort and acquire in ID order. Challenge: requires knowing all resources upfront, adds latency for sorted acquisition.<br/><br/>
 
 <strong>Option 2: Wound-Wait or Wait-Die (Timestamp-Based)</strong><br/>
-          Assign timestamps to transactions at start. When T1 wants lock held by T2:<br/>
+  Assign timestamps to transactions at start. When T1 wants lock held by T2:<br/>
 - <strong>Wound-Wait:</strong> If T1 older, wound (abort) T2. If T1 younger, T1 waits.<br/>
 - <strong>Wait-Die:</strong> If T1 older, T1 waits. If T1 younger, T1 dies (aborts).<br/>
-          No cycles possible since younger transactions never wait for older ones. Used in Google Spanner.<br/><br/>
+  No cycles possible since younger transactions never wait for older ones. Used in Google Spanner.<br/><br/>
 
 <strong>Option 3: Optimistic Concurrency Control</strong><br/>
-          Don't acquire locks during transaction. At commit time, validate no conflicts. If conflict, abort and retry. No locks = no deadlocks. Works well for low-contention workloads. See [[distributed-transactions]](/topic/system-design/distributed-transactions).<br/><br/>
+  Don't acquire locks during transaction. At commit time, validate no conflicts. If conflict, abort and retry. No locks = no deadlocks. Works well for low-contention workloads. See [[distributed-transactions]](/topic/system-design/distributed-transactions).<br/><br/>
 
 <strong>Option 4: Two-Phase Locking with Timeout</strong><br/>
-          Standard 2PL but with lock timeout. On timeout, abort transaction and retry with exponential backoff. Simple but may cause high abort rates under contention.<br/><br/>
+  Standard 2PL but with lock timeout. On timeout, abort transaction and retry with exponential backoff. Simple but may cause high abort rates under contention.<br/><br/>
 
 <strong>Trade-offs:</strong> Global ordering adds coordination latency. Timestamp methods may abort viable transactions. OCC has high abort rates under contention. Timeout wastes work on aborted transactions. Choice depends on workload: read-heavy favors OCC, write-heavy favors timestamp ordering.
 </div>
@@ -1395,10 +1395,10 @@ if __name__ == "__main__":
 <div style="background: #f0fdf4; border-radius: 12px; padding: 16px; border: 2px solid #22c55e; flex: 1; min-width: 200px;">
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Deadlock Prevention</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.8;">
-        1. Lock ordering (by ID/address)<br/>
-        2. Timeout + exponential backoff<br/>
-        3. Lock hierarchy levels<br/>
-        4. Acquire all upfront or none
+  1. Lock ordering (by ID/address)<br/>
+  2. Timeout + exponential backoff<br/>
+  3. Lock hierarchy levels<br/>
+  4. Acquire all upfront or none
 </div>
 </div>
 <div style="background: #fff7ed; border-radius: 12px; padding: 16px; border: 2px solid #f97316; flex: 1; min-width: 200px;">

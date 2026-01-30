@@ -62,13 +62,13 @@ The BST property enables binary search in a tree structure. At each node, you ca
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Finding value 12 in BST:
 
-              10        <- 12 > 10, go RIGHT
-            /    \
-           5      15    <- 12 < 15, go LEFT
-          / \    /  \
-         2   7  12   20 <- 12 == 12, FOUND!
-        /     \
-       1       8
+  10        <- 12 > 10, go RIGHT
+  /    \
+  5      15    <- 12 < 15, go LEFT
+  / \    /  \
+  2   7  12   20 <- 12 == 12, FOUND!
+  /     \
+  1       8
 
 Path: 10 -> 15 -> 12 (only 3 comparisons for 9 nodes!)
 
@@ -87,13 +87,13 @@ In-order traversal (Left -> Node -> Right) of a BST produces elements in sorted 
 <h4 style="color: #1e293b; margin-top: 0;">In-Order Traversal Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 BST Structure:
-              10
-            /    \
-           5      15
-          / \    /  \
-         2   7  12   20
-        /     \
-       1       8
+  10
+  /    \
+  5      15
+  / \    /  \
+  2   7  12   20
+  /     \
+  1       8
 
 In-Order Traversal Process:
 1. Go left to 5, then to 2, then to 1
@@ -110,7 +110,7 @@ In-Order Traversal Process:
 Result: 1, 2, 5, 7, 8, 10, 12, 15, 20 (SORTED!)
 
 Key Insight: For kth smallest, do in-order and count
-            For kth largest, do reverse in-order (Right -> Node -> Left)
+  For kth largest, do reverse in-order (Right -> Node -> Left)
 </pre>
 </div>
 
@@ -123,28 +123,28 @@ When validating a BST, each node must fall within a valid range. This range narr
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Valid BST Validation:
 
-              10           Range: (-inf, +inf) -> 10 is valid
-            /    \
-           5      15       Left: (-inf, 10), Right: (10, +inf)
-          / \    /  \
-         2   7  12   20    Ranges continue narrowing...
+  10           Range: (-inf, +inf) -> 10 is valid
+  /    \
+  5      15       Left: (-inf, 10), Right: (10, +inf)
+  / \    /  \
+  2   7  12   20    Ranges continue narrowing...
 
 For node 7: Range is (-inf, 10) from parent 10
-            Then narrowed to (5, 10) from parent 5
-            7 is in (5, 10) -> VALID
+  Then narrowed to (5, 10) from parent 5
+  7 is in (5, 10) -> VALID
 
 Invalid BST Example:
-              10
-            /    \
-           5      15
-          / \    /
-         2   12 ...        <- 12 is in LEFT subtree of 10!
+  10
+  /    \
+  5      15
+  / \    /
+  2   12 ...        <- 12 is in LEFT subtree of 10!
 
 For node 12: Range should be (-inf, 5) from parent 5
-             12 is NOT in (-inf, 5) -> INVALID!
+  12 is NOT in (-inf, 5) -> INVALID!
 
 Common Mistake: Only checking immediate parent-child relationship
-               misses this type of violation.
+  misses this type of violation.
 </pre>
 </div>
 
@@ -280,23 +280,23 @@ def validate_bst_inorder(tree):
 <h4 style="color: #1e293b; margin-top: 0;">Construction Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Sorted Array: [1, 2, 5, 7, 10, 13, 14, 15, 22]
-              Indices: 0  1  2  3   4   5   6   7   8
+  Indices: 0  1  2  3   4   5   6   7   8
 
 Step 1: Middle index = 4, value = 10 -> ROOT
-        Left subarray: [1, 2, 5, 7]
-        Right subarray: [13, 14, 15, 22]
+  Left subarray: [1, 2, 5, 7]
+  Right subarray: [13, 14, 15, 22]
 
 Step 2: Left middle = 1, value = 2
-        Right middle = 6, value = 14
+  Right middle = 6, value = 14
 
 Result:
-                 10
-               /    \
-              2      14
-             / \    /  \
-            1   5  13   15
-                 \       \
-                  7      22
+  10
+  /    \
+  2      14
+  / \    /  \
+  1   5  13   15
+  \       \
+  7      22
 
 Height: 3 (minimum possible for 9 elements)
 Height of perfectly balanced tree: ceil(log2(n+1))
@@ -418,11 +418,11 @@ Process:
 8. Continue...
 
 Result:
-         10
-        /  \
-       4    17
-      / \     \
-     2   5    19
+  10
+  /  \
+  4    17
+  / \     \
+2   5    19
     /        /
    1        18
 </pre>
@@ -716,9 +716,9 @@ Traversal Orders:
 
 Key Relationships:
   Successor:   Leftmost node in right subtree
-               (or first right ancestor)
+  (or first right ancestor)
   Predecessor: Rightmost node in left subtree
-               (or first left ancestor)
+  (or first left ancestor)
 
   Min value:   Follow left pointers to leaf
   Max value:   Follow right pointers to leaf
@@ -726,7 +726,7 @@ Key Relationships:
 Validation Formula:
   validate(node, min, max):
     return min < node.value < max
-           AND validate(node.left, min, node.value)
-           AND validate(node.right, node.value, max)
+  AND validate(node.left, min, node.value)
+  AND validate(node.right, node.value, max)
 </pre>
 </div>

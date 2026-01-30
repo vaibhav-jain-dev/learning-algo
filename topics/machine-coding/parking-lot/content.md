@@ -90,29 +90,29 @@ A parking lot system manages the lifecycle of vehicles entering, parking, and ex
 <div style="background: #dbeafe; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #1e40af; font-weight: 700; font-size: 16px;">Core Entities</div>
 <div style="color: #3730a3; font-size: 13px; margin-top: 8px;">
-        ParkingLot<br/>
-        ParkingFloor<br/>
-        ParkingSpot<br/>
-        Vehicle (abstract)<br/>
-        Ticket
+  ParkingLot<br/>
+  ParkingFloor<br/>
+  ParkingSpot<br/>
+  Vehicle (abstract)<br/>
+  Ticket
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #166534; font-weight: 700; font-size: 16px;">Strategies</div>
 <div style="color: #15803d; font-size: 13px; margin-top: 8px;">
-        SpotAllocationStrategy<br/>
-        PricingStrategy<br/>
-        PaymentProcessor<br/>
-        NotificationService
+  SpotAllocationStrategy<br/>
+  PricingStrategy<br/>
+  PaymentProcessor<br/>
+  NotificationService
 </div>
 </div>
 <div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #92400e; font-weight: 700; font-size: 16px;">Entry Points</div>
 <div style="color: #b45309; font-size: 13px; margin-top: 8px;">
-        EntryGate<br/>
-        ExitGate<br/>
-        DisplayBoard<br/>
-        AdminPanel
+  EntryGate<br/>
+  ExitGate<br/>
+  DisplayBoard<br/>
+  AdminPanel
 </div>
 </div>
 </div>
@@ -284,33 +284,33 @@ A parking lot system manages the lifecycle of vehicles entering, parking, and ex
 <div style="background: #dbeafe; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #1e40af; font-weight: 700;">Motorcycle</div>
 <div style="color: #3730a3; font-size: 12px; margin-top: 4px;">
-        Size: Small<br/>
-        Can use: S, M, L spots<br/>
-        Rate: $1/hr
+  Size: Small<br/>
+  Can use: S, M, L spots<br/>
+  Rate: $1/hr
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #166534; font-weight: 700;">Car</div>
 <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
-        Size: Medium<br/>
-        Can use: M, L spots<br/>
-        Rate: $2/hr
+  Size: Medium<br/>
+  Can use: M, L spots<br/>
+  Rate: $2/hr
 </div>
 </div>
 <div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #92400e; font-weight: 700;">Truck</div>
 <div style="color: #b45309; font-size: 12px; margin-top: 4px;">
-        Size: Large<br/>
-        Can use: L spots only<br/>
-        Rate: $4/hr
+  Size: Large<br/>
+  Can use: L spots only<br/>
+  Rate: $4/hr
 </div>
 </div>
 <div style="background: #fce7f3; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #9d174d; font-weight: 700;">Bus</div>
 <div style="color: #be185d; font-size: 12px; margin-top: 4px;">
-        Size: X-Large (5 spots)<br/>
-        Can use: 5 contiguous L<br/>
-        Rate: $15/hr
+  Size: X-Large (5 spots)<br/>
+  Can use: 5 contiguous L<br/>
+  Rate: $15/hr
 </div>
 </div>
 </div>
@@ -804,33 +804,33 @@ class LoadBalancedStrategy(SpotAllocationStrategy):
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Flat Hourly Rate</div>
 <div style="color: #475569; font-size: 14px;">
-        Simple: $2/hour for cars<br/>
-        Pros: Easy to understand<br/>
-        Cons: No incentive for short stays
+  Simple: $2/hour for cars<br/>
+  Pros: Easy to understand<br/>
+  Cons: No incentive for short stays
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Tiered Pricing</div>
 <div style="color: #475569; font-size: 14px;">
-        First hour: $5, additional: $2/hr<br/>
-        Pros: Revenue from short stays<br/>
-        Cons: Complex calculation
+  First hour: $5, additional: $2/hr<br/>
+  Pros: Revenue from short stays<br/>
+  Cons: Complex calculation
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Daily Maximum</div>
 <div style="color: #475569; font-size: 14px;">
-        $2/hr, max $20/day<br/>
-        Pros: Predictable for all-day parkers<br/>
-        Cons: Revenue cap
+  $2/hr, max $20/day<br/>
+  Pros: Predictable for all-day parkers<br/>
+  Cons: Revenue cap
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Dynamic/Surge Pricing</div>
 <div style="color: #475569; font-size: 14px;">
-        Price varies with occupancy<br/>
-        Pros: Maximizes revenue<br/>
-        Cons: Customer frustration
+  Price varies with occupancy<br/>
+  Pros: Maximizes revenue<br/>
+  Cons: Customer frustration
 </div>
 </div>
 </div>
@@ -1292,31 +1292,31 @@ class PaymentProcessor:
 <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="color: #991b1b; font-weight: 600;">Race Condition: Double Booking</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-        Two vehicles check same spot availability simultaneously, both see "available", both attempt to park.
+  Two vehicles check same spot availability simultaneously, both see "available", both attempt to park.
 <div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
-          Thread A: check spot #42 -> available<br/>
-          Thread B: check spot #42 -> available<br/>
-          Thread A: park in spot #42 -> success<br/>
-          Thread B: park in spot #42 -> overwrites A!
+  Thread A: check spot #42 -> available<br/>
+  Thread B: check spot #42 -> available<br/>
+  Thread A: park in spot #42 -> success<br/>
+  Thread B: park in spot #42 -> overwrites A!
 </div>
 </div>
 </div>
 <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="color: #991b1b; font-weight: 600;">Race Condition: Counter Inconsistency</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-        Availability counter shows 5 spots, but 6 vehicles enter before counter updates.
+  Availability counter shows 5 spots, but 6 vehicles enter before counter updates.
 <div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
-          Counter: 5 available<br/>
-          Thread A: reads 5, decrements to 4<br/>
-          Thread B: reads 5 (stale!), decrements to 4<br/>
-          Actual: 2 vehicles parked, counter shows 4
+  Counter: 5 available<br/>
+  Thread A: reads 5, decrements to 4<br/>
+  Thread B: reads 5 (stale!), decrements to 4<br/>
+  Actual: 2 vehicles parked, counter shows 4
 </div>
 </div>
 </div>
 <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
 <div style="color: #991b1b; font-weight: 600;">Deadlock: Multi-Spot Allocation</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-        Bus needs spots 1-5, truck needs spots 5-6. Bus locks 1-4, truck locks 6. Both wait for spot 5.
+  Bus needs spots 1-5, truck needs spots 5-6. Bus locks 1-4, truck locks 6. Both wait for spot 5.
 </div>
 </div>
 </div>
@@ -2518,25 +2518,25 @@ if __name__ == "__main__":
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">1. Reservation System</div>
 <div style="color: #475569; font-size: 14px;">
-        Pre-book spots for specific time windows. Requires temporal availability tracking, no-show penalties, and overbooking strategies.
+  Pre-book spots for specific time windows. Requires temporal availability tracking, no-show penalties, and overbooking strategies.
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">2. Valet Parking</div>
 <div style="color: #475569; font-size: 14px;">
-        Staff parks vehicles. Requires key management, damage tracking, priority retrieval queues.
+  Staff parks vehicles. Requires key management, damage tracking, priority retrieval queues.
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">3. Monthly Subscriptions</div>
 <div style="color: #475569; font-size: 14px;">
-        Recurring payments with guaranteed spots. Requires capacity planning, grace periods, subscription tiers.
+  Recurring payments with guaranteed spots. Requires capacity planning, grace periods, subscription tiers.
 </div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">4. Multi-Lot Federation</div>
 <div style="color: #475569; font-size: 14px;">
-        Chain of parking lots with unified ticketing. Requires central coordination, inter-lot transfers, distributed availability.
+  Chain of parking lots with unified ticketing. Requires central coordination, inter-lot transfers, distributed availability.
 </div>
 </div>
 </div>

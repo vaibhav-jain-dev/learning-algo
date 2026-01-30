@@ -506,9 +506,9 @@ Understanding when to put conditions in ON vs WHERE is crucial, especially with 
 <div style="color: #1e40af; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Condition in ON</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Filters right table BEFORE joining. Left table rows still appear with NULL.</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #1e293b;">
-        SELECT u.name, o.total<br/>
-        FROM users u<br/>
-        LEFT JOIN orders o<br/>
+  SELECT u.name, o.total<br/>
+  FROM users u<br/>
+  LEFT JOIN orders o<br/>
 <span style="color: #3b82f6;">ON u.id = o.user_id</span><br/>
 <span style="color: #3b82f6;">AND o.total > 100</span>;
 </div>
@@ -517,10 +517,10 @@ Understanding when to put conditions in ON vs WHERE is crucial, especially with 
 <div style="color: #b45309; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Condition in WHERE</div>
 <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Filters final result AFTER joining. Removes rows that do not match.</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #1e293b;">
-        SELECT u.name, o.total<br/>
-        FROM users u<br/>
-        LEFT JOIN orders o<br/>
-        ON u.id = o.user_id<br/>
+  SELECT u.name, o.total<br/>
+  FROM users u<br/>
+  LEFT JOIN orders o<br/>
+  ON u.id = o.user_id<br/>
 <span style="color: #f59e0b;">WHERE o.total > 100</span>;
 </div>
 </div>

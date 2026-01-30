@@ -109,7 +109,7 @@ The Adapter pattern converts the interface of a class into another interface tha
 ### Interview Deep-Dive: Internal Mechanisms
 
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
 <div style="padding: 0 16px 16px 16px; color: #334155;">
 
     The transformation layer handles four critical responsibilities:
@@ -140,13 +140,13 @@ The Adapter pattern converts the interface of a class into another interface tha
     raise PaymentError(code=map_error_code(stripe_response["error"]["code"]))
     ```
 
-    <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
-      <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 This is a critical design challenge. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span>
 
-        **Strategy 1: Capability Detection**
+**Strategy 1: Capability Detection**
         ```python
         class PaymentAdapter(PaymentGateway):
         def supports_partial_refund(self) -> bool:
@@ -159,7 +159,7 @@ This is a critical design challenge. <span style="background: linear-gradient(13
         # ... proceed with refund
         ```
 
-        **Strategy 2: Best-Effort Emulation**
+**Strategy 2: Best-Effort Emulation**
         ```python
         def get_transaction_history(self, days: int) -> List[Transaction]:
         """Target promises date-range filtering, adaptee only returns last 100."""
@@ -168,7 +168,7 @@ This is a critical design challenge. <span style="background: linear-gradient(13
         return [t for t in all_txns if t.created_at >= cutoff]  # Client-side filter
         ```
 
-        **Strategy 3: Fail-Fast with Clear Errors**
+**Strategy 3: Fail-Fast with Clear Errors**
         ```python
         def capture_authorization(self, auth_id: str):
         """Adaptee doesn't support auth/capture separation."""
@@ -178,22 +178,22 @@ This is a critical design challenge. <span style="background: linear-gradient(13
         )
         ```
 
-        <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
-          <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span>
 
-            **The LSP Violation Pattern:**
+**The LSP Violation Pattern:**
             ```python
             # Client code assumes all PaymentGateway implementations support refunds
             def process_return(gateway: PaymentGateway, txn_id: str):
             gateway.refund(txn_id)  # Throws UnsupportedOperationError for some adapters!
             ```
 
-            **Architectural Solutions:**
+**Architectural Solutions:**
 
-            **1. Interface Segregation (Preferred)**
+**1. Interface Segregation (Preferred)**
             ```python
             class Chargeable(ABC):
             @abstractmethod
@@ -208,7 +208,7 @@ This is a critical design challenge. <span style="background: linear-gradient(13
             def charge(self, amount): ...
             ```
 
-            **2. Capability Interfaces**
+**2. Capability Interfaces**
             ```python
             class PaymentGateway(ABC):
             @abstractmethod
@@ -221,7 +221,7 @@ This is a critical design challenge. <span style="background: linear-gradient(13
             gateway.refund(txn_id, partial_amount)
             ```
 
-            **3. Null Object for Unsupported Operations**
+**3. Null Object for Unsupported Operations**
             ```python
             def refund(self, txn_id: str) -> PaymentResult:
             """Return a 'no-op' result rather than throwing."""
@@ -234,10 +234,10 @@ This is a critical design challenge. <span style="background: linear-gradient(13
 
 The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span>
 </div>
-        </details>
+</details>
 
 </div>
-    </details>
+</details>
 
 </div>
 </details>
@@ -255,19 +255,19 @@ The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f
 <p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
 
 <pre style="background: #eff6ff; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #1e3a8a;">class StripeAdapter(PaymentGateway):
-          """Object Adapter - uses composition."""
+  """Object Adapter - uses composition."""
 
-          def __init__(self, stripe_client: StripeClient):
-          self._client = stripe_client  # Holds reference
+  def __init__(self, stripe_client: StripeClient):
+  self._client = stripe_client  # Holds reference
 
-          def charge(self, amount: Decimal, currency: str,
-          token: str) -> PaymentResult:
-          # Delegates to composed object
-          response = self._client.create_charge(
-          amount_cents=int(amount * 100),
-          currency=currency,
-          source=token
-          )
+  def charge(self, amount: Decimal, currency: str,
+  token: str) -> PaymentResult:
+# Delegates to composed object
+  response = self._client.create_charge(
+  amount_cents=int(amount * 100),
+  currency=currency,
+  source=token
+  )
 return self._transform_response(response)</code></pre>
 
 <div style="margin-top: 16px;">
@@ -296,19 +296,19 @@ return self._transform_response(response)</code></pre>
 <p style="color: #14532d; font-size: 0.9rem; margin-bottom: 16px;"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The adapter INHERITS from both the target interface and the adaptee class.</span></p>
 
 <pre style="background: #f0fdf4; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto;"><code style="color: #166534;">class StripeAdapter(PaymentGateway, StripeClient):
-          """Class Adapter - uses multiple inheritance."""
+  """Class Adapter - uses multiple inheritance."""
 
-          def __init__(self, api_key: str):
-          StripeClient.__init__(self, api_key)  # IS-A StripeClient
+  def __init__(self, api_key: str):
+  StripeClient.__init__(self, api_key)  # IS-A StripeClient
 
-          def charge(self, amount: Decimal, currency: str,
-          token: str) -> PaymentResult:
-          # Direct access to inherited methods
-          response = self.create_charge(  # No delegation!
-          amount_cents=int(amount * 100),
-          currency=currency,
-          source=token
-          )
+  def charge(self, amount: Decimal, currency: str,
+  token: str) -> PaymentResult:
+# Direct access to inherited methods
+  response = self.create_charge(  # No delegation!
+  amount_cents=int(amount * 100),
+  currency=currency,
+  source=token
+  )
 return self._transform_response(response)</code></pre>
 
 <div style="margin-top: 16px;">
@@ -360,7 +360,7 @@ return self._transform_response(response)</code></pre>
 ### Interview Deep-Dive: Class vs Object Adapter
 
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
 <div style="padding: 0 16px 16px 16px; color: #334155;">
 
     The key difference is **multiple inheritance support**:
@@ -394,8 +394,8 @@ return self._transform_response(response)</code></pre>
     # (<class 'StripeAdapter'>, <class 'PaymentGateway'>, <class 'StripeClient'>, ...)
           ```
 
-          <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
-            <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span>
@@ -422,7 +422,7 @@ return self._transform_response(response)</code></pre>
               # (Adapter, Target, Adaptee, Base, object)
               ```
 
-              **The Diamond Problem Manifestation:**
+**The Diamond Problem Manifestation:**
               ```python
               class PaymentInterface:
               def process(self):
@@ -444,7 +444,7 @@ return self._transform_response(response)</code></pre>
               BridgeAdapter().process()  # "Modern processing"
               ```
 
-              **Explicit Resolution:**
+**Explicit Resolution:**
               ```python
               class BridgeAdapter(ModernGateway, LegacySystem):
               def process(self):
@@ -453,11 +453,11 @@ return self._transform_response(response)</code></pre>
               return f"Adapted from: {legacy_result}"
               ```
 
-              <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
-                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
-                  **Memory Footprint:**
+**Memory Footprint:**
 
                   ```python
                   import sys
@@ -485,7 +485,7 @@ return self._transform_response(response)</code></pre>
                   print(sys.getsizeof(class_adapter))  # ~56 bytes
                   ```
 
-                  **Performance Implications:**
+**Performance Implications:**
 
                   ```python
                   import timeit
@@ -516,30 +516,30 @@ return self._transform_response(response)</code></pre>
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.
 
-                  **Real-World Trade-off Analysis:**
+**Real-World Trade-off Analysis:**
 
-                  | Factor | Object Adapter | Class Adapter |
-                  |--------|---------------|---------------|
-                  | Memory per instance | +40-60 bytes | Baseline |
-                  | Method call overhead | ~10% slower | Baseline |
-                  | Testability | Excellent (DI) | Poor (tight coupling) |
-                  | Flexibility | High | Low |
-                  | Maintainability | Better | Worse |
+  | Factor | Object Adapter | Class Adapter |
+  |--------|---------------|---------------|
+  | Memory per instance | +40-60 bytes | Baseline |
+  | Method call overhead | ~10% slower | Baseline |
+  | Testability | Excellent (DI) | Poor (tight coupling) |
+  | Flexibility | High | Low |
+  | Maintainability | Better | Worse |
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span>
 
 </div>
-              </details>
+</details>
 
 </div>
-          </details>
+</details>
 
 </div>
-      </details>
+</details>
 
-      ---
+  ---
 
-      ## Two-Way Adapters: Bidirectional Interface Translation
+## Two-Way Adapters: Bidirectional Interface Translation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h3 style="color: #1e293b; margin-top: 0; font-size: 1.2rem;">Understanding Two-Way Adapters</h3>
@@ -572,7 +572,7 @@ return self._transform_response(response)</code></pre>
 </div>
 </div>
 
-      ### Two-Way Adapter Implementation
+### Two-Way Adapter Implementation
 
       ```python
       from abc import ABC, abstractmethod
@@ -824,15 +824,15 @@ return self._transform_response(response)</code></pre>
       ))
       ```
 
-      ### Interview Deep-Dive: Two-Way Adapters
+### Interview Deep-Dive: Two-Way Adapters
 
-      <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-        <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
 <div style="padding: 0 16px 16px 16px; color: #334155;">
 
-          Two-way adapters are needed when:
+  Two-way adapters are needed when:
 
-          **1. Bidirectional Integration:** Both systems need to initiate communication
+**1. Bidirectional Integration:** Both systems need to initiate communication
           ```python
           # E-commerce integrating with warehouse
           # - E-commerce sends orders TO warehouse
@@ -841,32 +841,32 @@ return self._transform_response(response)</code></pre>
           pass
           ```
 
-          **2. Protocol Bridging:** Converting between fundamentally different communication models
+**2. Protocol Bridging:** Converting between fundamentally different communication models
           ```python
           # REST API <-> GraphQL
           # - REST clients can make requests that become GraphQL queries
           # - GraphQL subscriptions can be exposed as REST webhooks
           ```
 
-          **3. System Migration:** Gradual transition where both old and new systems must coexist
+**3. System Migration:** Gradual transition where both old and new systems must coexist
           ```python
           # During migration from Monolith to Microservices
           # - Monolith calls appear as microservice events
           # - Microservice events appear as monolith method calls
           ```
 
-          **4. Testing/Mocking:** Creating test doubles that work from both directions
+**4. Testing/Mocking:** Creating test doubles that work from both directions
           ```python
           # Mock that can be used by either system under test
           ```
 
-          <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
-            <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">The core challenge is maintaining consistency when both sides can modify shared state.</span>
 
-              **Challenge 1: Race Conditions**
+**Challenge 1: Race Conditions**
               ```python
               # System A sends: "Update inventory to 100"
               # System B sends: "Update inventory to 50"
@@ -885,7 +885,7 @@ return self._transform_response(response)</code></pre>
               # Apply update...
               ```
 
-              **Challenge 2: Event Loops / Infinite Recursion**
+**Challenge 2: Event Loops / Infinite Recursion**
               ```python
               # System A publishes event
               # Adapter converts to System B message
@@ -909,7 +909,7 @@ return self._transform_response(response)</code></pre>
               self._processing.active = False
               ```
 
-              **Challenge 3: Transactional Consistency**
+**Challenge 3: Transactional Consistency**
               ```python
               # What if System A succeeds but System B fails?
               class TransactionalTwoWayAdapter:
@@ -934,8 +934,8 @@ return self._transform_response(response)</code></pre>
               raise
               ```
 
-              <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
-                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span>
@@ -1030,11 +1030,11 @@ return self._transform_response(response)</code></pre>
                   del self._idempotency_store[key]
                   ```
 
-                  **Production Considerations:**
+**Production Considerations:**
 
-                  1. **Distributed Idempotency Store:** Use Redis or a database instead of in-memory dict for multi-instance deployments
+  1. **Distributed Idempotency Store:** Use Redis or a database instead of in-memory dict for multi-instance deployments
 
-                  2. **Idempotency Key Strategy:**
+  2. **Idempotency Key Strategy:**
                   ```python
                   # Option 1: Client-provided idempotency key
                   def forward_from_a(self, message_a, idempotency_key: str = None):
@@ -1047,7 +1047,7 @@ return self._transform_response(response)</code></pre>
                   return hash(f"{source}:{message.content}:{time_bucket}")
                   ```
 
-                  3. **Handling Side Effects:**
+  3. **Handling Side Effects:**
                   ```python
                   # If the forwarded operation has side effects, store them too
                   @dataclass
@@ -1058,19 +1058,19 @@ return self._transform_response(response)</code></pre>
                   ```
 
 </div>
-              </details>
+</details>
 
 </div>
-          </details>
+</details>
 
 </div>
-      </details>
+</details>
 
-      ---
+  ---
 
-      ## Real-World API Adapter Examples
+## Real-World API Adapter Examples
 
-      ### Example 1: Multi-Cloud Storage Adapter
+### Example 1: Multi-Cloud Storage Adapter
 
       ```python
       from abc import ABC, abstractmethod
@@ -1468,7 +1468,7 @@ return self._transform_response(response)</code></pre>
       print(f"Uploaded to {result.provider}: {result.key}")
       ```
 
-      ### Example 2: Payment Gateway Adapter with Retry and Circuit Breaker
+### Example 2: Payment Gateway Adapter with Retry and Circuit Breaker
 
       ```python
       from abc import ABC, abstractmethod
@@ -1784,15 +1784,15 @@ return self._transform_response(response)</code></pre>
       pass
       ```
 
-      ### Interview Deep-Dive: Real-World API Adapters
+### Interview Deep-Dive: Real-World API Adapters
 
-      <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-        <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px;">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
 <div style="padding: 0 16px 16px 16px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span>
 
-          **Strategy 1: Version-Specific Adapter Classes**
+**Strategy 1: Version-Specific Adapter Classes**
           ```python
           class StripeAdapterV1(PaymentGateway):
           """Handles Stripe API v2020-08-01."""
@@ -1817,7 +1817,7 @@ return self._transform_response(response)</code></pre>
           return adapters[api_version](api_key)
           ```
 
-          **Strategy 2: Internal Version Handling**
+**Strategy 2: Internal Version Handling**
           ```python
           class StripeAdapter(PaymentGateway):
           def __init__(self, api_key: str, api_version: str = "2023-10-01"):
@@ -1833,7 +1833,7 @@ return self._transform_response(response)</code></pre>
           return self._api_version < "2022-01-01"
           ```
 
-          **Strategy 3: Adapter Composition**
+**Strategy 3: Adapter Composition**
           ```python
           class VersionedStripeAdapter(PaymentGateway):
           """Composes version-specific handlers."""
@@ -1850,8 +1850,8 @@ return self._transform_response(response)</code></pre>
           return handlers[self._version_family(version)]()
           ```
 
-          <details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
-            <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span>
@@ -1925,8 +1925,8 @@ return self._transform_response(response)</code></pre>
               }
               ```
 
-              <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
-                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px;">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155;">
 
 <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span>
@@ -2145,35 +2145,35 @@ return self._transform_response(response)</code></pre>
                   ```
 
 </div>
-              </details>
+</details>
 
 </div>
-          </details>
+</details>
 
 </div>
-      </details>
+</details>
 
-      ---
+  ---
 
-      ## Industry Usage and Production Patterns
+## Industry Usage and Production Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-        | Company/Framework | Adapter Implementation | Key Insight |
-        |-------------------|----------------------|-------------|
+  | Company/Framework | Adapter Implementation | Key Insight |
+  |-------------------|----------------------|-------------|
 | **Django ORM** | Database backends (PostgreSQL, MySQL, SQLite) adapt to unified QuerySet interface | <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px;">Adapters handle SQL dialect differences and type conversions</span> |
-        | **AWS SDK** | Service clients adapt HTTP responses to typed objects | Response parsing happens in adapter layer with retries |
-        | **Stripe** | Webhooks adapt external events to internal domain events | Signature verification + event normalization in adapter |
-        | **Kubernetes** | Container runtimes (Docker, containerd, CRI-O) adapt to CRI interface | Runtime-specific features gracefully degraded |
-        | **React Testing Library** | Adapts browser DOM APIs to testing interface | Same tests work with different renderers |
-        | **Apache Kafka Connect** | Source/Sink connectors adapt external systems to Kafka topics | Schema registry integration for format translation |
-        | **gRPC** | Protocol adapters convert between REST/gRPC/GraphQL | Transcoding happens at adapter boundary |
+  | **AWS SDK** | Service clients adapt HTTP responses to typed objects | Response parsing happens in adapter layer with retries |
+  | **Stripe** | Webhooks adapt external events to internal domain events | Signature verification + event normalization in adapter |
+  | **Kubernetes** | Container runtimes (Docker, containerd, CRI-O) adapt to CRI interface | Runtime-specific features gracefully degraded |
+  | **React Testing Library** | Adapts browser DOM APIs to testing interface | Same tests work with different renderers |
+  | **Apache Kafka Connect** | Source/Sink connectors adapt external systems to Kafka topics | Schema registry integration for format translation |
+  | **gRPC** | Protocol adapters convert between REST/gRPC/GraphQL | Transcoding happens at adapter boundary |
 
 </div>
 
-      ---
+  ---
 
-      ## Adapter vs Related Patterns: Decision Framework
+## Adapter vs Related Patterns: Decision Framework
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -2253,13 +2253,13 @@ return self._transform_response(response)</code></pre>
 </div>
 </div>
 
-                          ---
+  ---
 
-                          ## Common Anti-Patterns and Pitfalls
+## Common Anti-Patterns and Pitfalls
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #fecaca;">
 
-                            ### Anti-Pattern 1: Business Logic in Adapter
+### Anti-Pattern 1: Business Logic in Adapter
 
                             ```python
                             # BAD: Adapter contains business rules
@@ -2304,7 +2304,7 @@ return self._transform_response(response)</code></pre>
                             return self._gateway.charge(amount, currency, token)
                             ```
 
-                            ### Anti-Pattern 2: Adapter Chains (Adapting Adapters)
+### Anti-Pattern 2: Adapter Chains (Adapting Adapters)
 
                             ```python
                             # BAD: Stacked adapters create complexity and performance issues
@@ -2337,7 +2337,7 @@ return self._transform_response(response)</code></pre>
                             return self._element_to_dataframe(element)  # Direct conversion
                             ```
 
-                            ### Anti-Pattern 3: Leaky Abstraction
+### Anti-Pattern 3: Leaky Abstraction
 
                             ```python
                             # BAD: Adapter exposes adaptee-specific details
@@ -2366,7 +2366,7 @@ return self._transform_response(response)</code></pre>
                             raise ServiceThrottledError(provider="stripe", retry_after=60)
                             ```
 
-                            ### Anti-Pattern 4: Incomplete Interface Implementation
+### Anti-Pattern 4: Incomplete Interface Implementation
 
                             ```python
                             # BAD: Partial implementation surprises callers
@@ -2407,13 +2407,13 @@ return self._transform_response(response)</code></pre>
 
 </div>
 
-                          ---
+  ---
 
-                          ## Testing Adapters
+## Testing Adapters
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-                            ### Testing Strategy
+### Testing Strategy
 
                             ```python
                             import pytest
@@ -2580,9 +2580,9 @@ return self._transform_response(response)</code></pre>
 
 </div>
 
-                          ---
+  ---
 
-                          ## Key Takeaways
+## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #93c5fd;">
 
@@ -2637,9 +2637,9 @@ return self._transform_response(response)</code></pre>
 
 </div>
 
-                          ---
+  ---
 
-                          ## Related Patterns
+## Related Patterns
 
                           - [[Facade]](/topic/design-patterns/facade) - Simplifies complex subsystems; adapter makes incompatible interfaces work together
                           - [[Decorator]](/topic/design-patterns/decorator) - Adds behavior without changing interface; adapter changes interface

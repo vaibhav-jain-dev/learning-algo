@@ -6,7 +6,7 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00d4aa;">
 
-  ### Core Requirements
+### Core Requirements
 
   - **Rider-Driver Matching**: Sub-second geospatial queries to find optimal driver assignments
   - **Real-time Location Tracking**: Process 1M+ GPS updates per second with minimal latency
@@ -49,27 +49,27 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">LOCATION SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; GPS ingestion pipeline<br/>
-          &#8226; H3/Geohash indexing<br/>
-          &#8226; Real-time tracking
+  &#8226; GPS ingestion pipeline<br/>
+  &#8226; H3/Geohash indexing<br/>
+  &#8226; Real-time tracking
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">DISPATCH SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Batch matching<br/>
-          &#8226; Hungarian algorithm<br/>
-          &#8226; Supply optimization
+  &#8226; Batch matching<br/>
+  &#8226; Hungarian algorithm<br/>
+  &#8226; Supply optimization
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">TRIP SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; State machine<br/>
-          &#8226; Event sourcing<br/>
-          &#8226; Ride lifecycle
+  &#8226; State machine<br/>
+  &#8226; Event sourcing<br/>
+  &#8226; Ride lifecycle
 </div>
 </div>
 
@@ -82,27 +82,27 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PRICING SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Surge calculation<br/>
-          &#8226; Fare estimation<br/>
-          &#8226; Dynamic pricing
+  &#8226; Surge calculation<br/>
+  &#8226; Fare estimation<br/>
+  &#8226; Dynamic pricing
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f85149; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">ETA SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Route calculation<br/>
-          &#8226; Traffic prediction<br/>
-          &#8226; ML-based estimates
+  &#8226; Route calculation<br/>
+  &#8226; Traffic prediction<br/>
+  &#8226; ML-based estimates
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #db61a2; border-radius: 12px; padding: 16px; flex: 1; min-width: 150px; max-width: 200px;">
 <div style="color: #db61a2; font-weight: bold; font-size: 13px; margin-bottom: 8px; text-align: center;">PAYMENT SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Authorization<br/>
-          &#8226; Capture/Settlement<br/>
-          &#8226; Split payments
+  &#8226; Authorization<br/>
+  &#8226; Capture/Settlement<br/>
+  &#8226; Split payments
 </div>
 </div>
 
@@ -144,7 +144,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>Query:</strong> Prefix matching in Redis
 </div>
 <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #1d4ed8;">
-          "dr5ru7" = Times Square area
+  "dr5ru7" = Times Square area
 </div>
 </div>
 
@@ -157,7 +157,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>Resolution 9:</strong> ~174m edge length
 </div>
 <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #a371f7;">
-          892a100d2c3ffff = hex cell ID
+  892a100d2c3ffff = hex cell ID
 </div>
 </div>
 
@@ -170,7 +170,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>Level 16:</strong> ~150m cell size
 </div>
 <div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #3fb950;">
-          89c2847c = S2 cell token
+  89c2847c = S2 cell token
 </div>
 </div>
 
@@ -182,19 +182,19 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <div>
 <div style="color: #3fb950; font-size: 12px; margin-bottom: 8px;">H3 Advantages:</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
-            &#8226; Uniform neighbor distances (no diagonal distortion)<br/>
-            &#8226; Better circle approximation for radius queries<br/>
-            &#8226; Efficient k-ring expansion algorithm<br/>
-            &#8226; Smooth hierarchical aggregation for analytics
+  &#8226; Uniform neighbor distances (no diagonal distortion)<br/>
+  &#8226; Better circle approximation for radius queries<br/>
+  &#8226; Efficient k-ring expansion algorithm<br/>
+  &#8226; Smooth hierarchical aggregation for analytics
 </div>
 </div>
 <div>
 <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">Geohash Edge Cases:</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
-            &#8226; Neighbors at corners require 8-cell lookup<br/>
-            &#8226; Grid cells vary in size by latitude<br/>
-            &#8226; Boundary discontinuities at prime meridian<br/>
-            &#8226; Diagonal neighbors are farther than adjacent
+  &#8226; Neighbors at corners require 8-cell lookup<br/>
+  &#8226; Grid cells vary in size by latitude<br/>
+  &#8226; Boundary discontinuities at prime meridian<br/>
+  &#8226; Diagonal neighbors are farther than adjacent
 </div>
 </div>
 </div>
@@ -311,7 +311,7 @@ class GeospatialDriverIndex:
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-  #### Level 1: "Why use Redis GEORADIUS instead of PostgreSQL PostGIS?"
+#### Level 1: "Why use Redis GEORADIUS instead of PostgreSQL PostGIS?"
 
   **What they're probing**: Understanding of latency requirements and memory vs. disk trade-offs.
 
@@ -328,7 +328,7 @@ class GeospatialDriverIndex:
 
   ---
 
-  #### Level 2: "What happens at geohash cell boundaries? A driver at the edge might be closer than one in the same cell."
+#### Level 2: "What happens at geohash cell boundaries? A driver at the edge might be closer than one in the same cell."
 
   **What they're probing**: Edge case awareness and algorithm understanding.
 
@@ -354,7 +354,7 @@ class GeospatialDriverIndex:
 
   ---
 
-  #### Level 3: "How do you handle the case where a rider is at the exact boundary of two sharded Redis clusters?"
+#### Level 3: "How do you handle the case where a rider is at the exact boundary of two sharded Redis clusters?"
 
   **What they're probing**: Distributed systems thinking and sharding strategy.
 
@@ -442,14 +442,14 @@ At any moment in Manhattan, there might be 500 pending ride requests and 300 ava
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Cost Matrix Construction</div>
 <div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
 
-        Each cell (i, j) represents the "cost" of assigning driver j to rider i:
+  Each cell (i, j) represents the "cost" of assigning driver j to rider i:
 
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 12px;">
-          cost[i][j] = (0.50 * pickup_eta_minutes) +<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.20 * driver_rating_penalty) +<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.15 * heading_misalignment) +<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.10 * time_since_last_trip) +<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.05 * vehicle_type_mismatch)
+  cost[i][j] = (0.50 * pickup_eta_minutes) +<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.20 * driver_rating_penalty) +<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.15 * heading_misalignment) +<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.10 * time_since_last_trip) +<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.05 * vehicle_type_mismatch)
 </div>
 
 </div>
@@ -609,7 +609,7 @@ class BatchDispatcher:
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #a371f7;">
 
-  #### Level 1: "Why batch matching instead of assigning drivers immediately as requests come in?"
+#### Level 1: "Why batch matching instead of assigning drivers immediately as requests come in?"
 
   **What they're probing**: Understanding of global vs. local optimization.
 
@@ -625,7 +625,7 @@ class BatchDispatcher:
 
   ---
 
-  #### Level 2: "What if a driver gets assigned but goes offline before accepting? How do you handle assignment failures?"
+#### Level 2: "What if a driver gets assigned but goes offline before accepting? How do you handle assignment failures?"
 
   **What they're probing**: Failure handling and state consistency.
 
@@ -655,7 +655,7 @@ class BatchDispatcher:
 
   ---
 
-  #### Level 3: "How do you prevent drivers from gaming the system - like declining short rides to wait for airport trips?"
+#### Level 3: "How do you prevent drivers from gaming the system - like declining short rides to wait for airport trips?"
 
   **What they're probing**: Incentive design and adversarial thinking.
 
@@ -735,26 +735,26 @@ When demand exceeds supply, surge pricing serves two economic functions:
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Surge Multiplier Calculation</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #c9d1d9;">
-        ratio = demand / max(supply, 1)<br/><br/>
-        if ratio &lt; 1.0: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Oversupply<br/>
-        if ratio 1.0-1.3: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced<br/>
-        if ratio 1.3-1.6: multiplier = 1.25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Light surge<br/>
-        if ratio 1.6-2.0: multiplier = 1.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Moderate surge<br/>
-        if ratio 2.0-2.5: multiplier = 1.75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Heavy surge<br/>
-        if ratio 2.5-3.5: multiplier = 2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Very heavy surge<br/>
-        if ratio &gt; 3.5: multiplier = 2.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Cap (regulatory)
+  ratio = demand / max(supply, 1)<br/><br/>
+  if ratio &lt; 1.0: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Oversupply<br/>
+  if ratio 1.0-1.3: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced<br/>
+  if ratio 1.3-1.6: multiplier = 1.25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Light surge<br/>
+  if ratio 1.6-2.0: multiplier = 1.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Moderate surge<br/>
+  if ratio 2.0-2.5: multiplier = 1.75&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Heavy surge<br/>
+  if ratio 2.5-3.5: multiplier = 2.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Very heavy surge<br/>
+  if ratio &gt; 3.5: multiplier = 2.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Cap (regulatory)
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Surge Smoothing</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-        Raw surge calculation can oscillate rapidly. Apply exponential moving average:
+  Raw surge calculation can oscillate rapidly. Apply exponential moving average:
 <div style="background: #f1f5f9; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px;">
-          smoothed_surge = alpha * new_surge + (1 - alpha) * prev_surge<br/>
-          where alpha = 0.3 (30% weight to new value)
+  smoothed_surge = alpha * new_surge + (1 - alpha) * prev_surge<br/>
+  where alpha = 0.3 (30% weight to new value)
 </div>
-        This prevents "surge whiplash" where prices jump dramatically between refreshes.
+  This prevents "surge whiplash" where prices jump dramatically between refreshes.
 </div>
 </div>
 
@@ -946,7 +946,7 @@ class SurgePricingService:
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
-  #### Level 1: "How do you prevent surge from oscillating wildly - spiking to 3x then crashing to 1x every few minutes?"
+#### Level 1: "How do you prevent surge from oscillating wildly - spiking to 3x then crashing to 1x every few minutes?"
 
   **What they're probing**: Signal processing and control systems thinking.
 
@@ -969,7 +969,7 @@ class SurgePricingService:
 
   ---
 
-  #### Level 2: "A concert just ended and 10,000 people need rides in 15 minutes. How do you handle this predictable surge?"
+#### Level 2: "A concert just ended and 10,000 people need rides in 15 minutes. How do you handle this predictable surge?"
 
   **What they're probing**: Proactive vs. reactive systems, prediction integration.
 
@@ -1017,7 +1017,7 @@ class SurgePricingService:
 
   ---
 
-  #### Level 3: "Regulators say surge pricing is exploitative. How do you design surge that's defensible from ethical and regulatory perspectives?"
+#### Level 3: "Regulators say surge pricing is exploitative. How do you design surge that's defensible from ethical and regulatory perspectives?"
 
   **What they're probing**: Systems thinking beyond pure engineering - ethics, regulation, stakeholder management.
 
@@ -1109,10 +1109,10 @@ See also: [[Market Mechanisms]](/topics/economics/market-mechanisms), [[Dynamic 
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Pickup ETA (shown before booking)</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
 <strong>Data sources:</strong><br/>
-          &#8226; Nearest available drivers (real-time)<br/>
-          &#8226; Historical pickup times for this cell<br/>
-          &#8226; Current traffic conditions<br/>
-          &#8226; Location type (street, airport, stadium)
+  &#8226; Nearest available drivers (real-time)<br/>
+  &#8226; Historical pickup times for this cell<br/>
+  &#8226; Current traffic conditions<br/>
+  &#8226; Location type (street, airport, stadium)
 </div>
 </div>
 
@@ -1120,10 +1120,10 @@ See also: [[Market Mechanisms]](/topics/economics/market-mechanisms), [[Dynamic 
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Trip ETA (shown after booking)</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
 <strong>Data sources:</strong><br/>
-          &#8226; Real-time traffic (Google/Mapbox API)<br/>
-          &#8226; Historical trip times for route<br/>
-          &#8226; Time-of-day patterns<br/>
-          &#8226; Special events affecting traffic
+  &#8226; Real-time traffic (Google/Mapbox API)<br/>
+  &#8226; Historical trip times for route<br/>
+  &#8226; Time-of-day patterns<br/>
+  &#8226; Special events affecting traffic
 </div>
 </div>
 
@@ -1293,7 +1293,7 @@ class ETAService:
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
-  #### Level 1: "Why not just use Google Maps API for all ETA calculations?"
+#### Level 1: "Why not just use Google Maps API for all ETA calculations?"
 
   **What they're probing**: Cost awareness and understanding of API limitations.
 
@@ -1316,7 +1316,7 @@ class ETAService:
 
   ---
 
-  #### Level 2: "How do you handle ETA updates during a trip when traffic conditions change?"
+#### Level 2: "How do you handle ETA updates during a trip when traffic conditions change?"
 
   **What they're probing**: Real-time systems and user experience trade-offs.
 
@@ -1353,7 +1353,7 @@ class ETAService:
 
   ---
 
-  #### Level 3: "How do you train an ML model to improve ETA predictions when ground truth (actual trip time) has survivorship bias?"
+#### Level 3: "How do you train an ML model to improve ETA predictions when ground truth (actual trip time) has survivorship bias?"
 
   **What they're probing**: ML systems thinking, data quality awareness.
 
@@ -1465,12 +1465,12 @@ See also: [[Time Series Prediction]](/topics/ml/time-series), [[Routing Algorith
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
 <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Valid State Transitions</div>
 <div style="color: #c9d1d9; font-size: 12px; font-family: monospace; line-height: 2;">
-        PENDING &rarr; OFFERED | CANCELLED_NO_DRIVERS<br/>
-        OFFERED &rarr; ACCEPTED | PENDING (timeout/decline) | CANCELLED_BY_RIDER<br/>
-        ACCEPTED &rarr; ARRIVED | CANCELLED_BY_RIDER | CANCELLED_BY_DRIVER<br/>
-        ARRIVED &rarr; IN_PROGRESS | CANCELLED_BY_RIDER (fee) | CANCELLED_BY_DRIVER<br/>
-        IN_PROGRESS &rarr; COMPLETED<br/>
-        COMPLETED &rarr; (terminal state)
+  PENDING &rarr; OFFERED | CANCELLED_NO_DRIVERS<br/>
+  OFFERED &rarr; ACCEPTED | PENDING (timeout/decline) | CANCELLED_BY_RIDER<br/>
+  ACCEPTED &rarr; ARRIVED | CANCELLED_BY_RIDER | CANCELLED_BY_DRIVER<br/>
+  ARRIVED &rarr; IN_PROGRESS | CANCELLED_BY_RIDER (fee) | CANCELLED_BY_DRIVER<br/>
+  IN_PROGRESS &rarr; COMPLETED<br/>
+  COMPLETED &rarr; (terminal state)
 </div>
 </div>
 
@@ -1727,7 +1727,7 @@ class RideSaga:
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #db61a2;">
 
-  #### Level 1: "Why use event sourcing instead of just updating the ride status in a database?"
+#### Level 1: "Why use event sourcing instead of just updating the ride status in a database?"
 
   **What they're probing**: Understanding of audit requirements and temporal queries.
 
@@ -1749,7 +1749,7 @@ class RideSaga:
 
   ---
 
-  #### Level 2: "The driver's phone dies mid-trip. How does the state machine handle this?"
+#### Level 2: "The driver's phone dies mid-trip. How does the state machine handle this?"
 
   **What they're probing**: Failure handling, eventual consistency, timeout management.
 
@@ -1791,7 +1791,7 @@ class RideSaga:
 
   ---
 
-  #### Level 3: "How do you handle the case where both rider and driver try to cancel simultaneously, and your distributed lock has a bug?"
+#### Level 3: "How do you handle the case where both rider and driver try to cancel simultaneously, and your distributed lock has a bug?"
 
   **What they're probing**: Race condition handling, CAP theorem understanding, practical distributed systems.
 
@@ -1956,7 +1956,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Phase 1: College Town MVP ($300/month)
+### Phase 1: College Town MVP ($300/month)
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 50 drivers, 500 rides/day, single city</span>
 
@@ -1966,7 +1966,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
     - **Maps**: Google Maps API (~$200/month)
     - **Real-time**: HTTP polling every 5 seconds
 
-    ### Phase 2: Regional Player ($50K/month)
+### Phase 2: Regional Player ($50K/month)
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5K drivers, 50K rides/day, 5 cities</span>
 
@@ -1976,7 +1976,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
     - **Maps**: Mix of Google + OSRM for bulk calculations
     - **Real-time**: WebSockets for active trips
 
-    ### Phase 3: Uber Scale ($10M+/month)
+### Phase 3: Uber Scale ($10M+/month)
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5M drivers, 20M rides/day, 1000+ cities</span>
 
@@ -2000,26 +2000,26 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 <div style="background: #3d1f1f; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 16px;">Red Flags</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
-        &#8226; "We need H3 hexagons from day one"<br/>
-        &#8226; "Use Kafka for all messaging"<br/>
-        &#8226; "Build our own maps engine"<br/>
-        &#8226; "ML-based surge from the start"<br/>
-        &#8226; "Microservices before PMF"<br/>
-        &#8226; "Exactly-once for locations"<br/>
-        &#8226; "Distributed transactions for matching"
+  &#8226; "We need H3 hexagons from day one"<br/>
+  &#8226; "Use Kafka for all messaging"<br/>
+  &#8226; "Build our own maps engine"<br/>
+  &#8226; "ML-based surge from the start"<br/>
+  &#8226; "Microservices before PMF"<br/>
+  &#8226; "Exactly-once for locations"<br/>
+  &#8226; "Distributed transactions for matching"
 </div>
 </div>
 
 <div style="background: #1f3d2d; border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 16px;">Strong Signals</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 2;">
-        &#8226; "Start with PostGIS, migrate at 1K drivers"<br/>
-        &#8226; "Kafka for trip events, Redis for ephemeral"<br/>
-        &#8226; "Google Maps API until $10K/month"<br/>
-        &#8226; "Surge is ratio math, ML for prediction"<br/>
-        &#8226; "Monolith, extract as team grows"<br/>
-        &#8226; "Locations are idempotent, latest wins"<br/>
-        &#8226; "Optimistic locking with fast recovery"
+  &#8226; "Start with PostGIS, migrate at 1K drivers"<br/>
+  &#8226; "Kafka for trip events, Redis for ephemeral"<br/>
+  &#8226; "Google Maps API until $10K/month"<br/>
+  &#8226; "Surge is ratio math, ML for prediction"<br/>
+  &#8226; "Monolith, extract as team grows"<br/>
+  &#8226; "Locations are idempotent, latest wins"<br/>
+  &#8226; "Optimistic locking with fast recovery"
 </div>
 </div>
 

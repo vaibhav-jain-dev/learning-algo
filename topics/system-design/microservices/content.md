@@ -35,7 +35,7 @@ Today, Netflix runs over **1,000 microservices** handling 2 billion API requests
 </div>
 </div>
 <div style="text-align: center; margin-top: 12px; color: #868e96; font-size: 12px;">
-        One codebase, one deployment, one failure point
+  One codebase, one deployment, one failure point
 </div>
 </div>
 <div style="background: #fff; border-radius: 12px; padding: 24px; border: 2px solid #51cf66;">
@@ -46,31 +46,31 @@ Today, Netflix runs over **1,000 microservices** handling 2 billion API requests
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
 <div style="text-align: center;">
 <div style="background: #e7f5ff; border: 2px solid #74c0fc; padding: 12px 8px; border-radius: 8px; color: #1971c2; font-size: 11px; margin-bottom: 8px;">
-            Users<br/>Service
+  Users<br/>Service
 </div>
 <div style="background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px; border-radius: 6px; color: #868e96; font-size: 10px;">
-            User DB
+  User DB
 </div>
 </div>
 <div style="text-align: center;">
 <div style="background: #f3f0ff; border: 2px solid #b197fc; padding: 12px 8px; border-radius: 8px; color: #7048e8; font-size: 11px; margin-bottom: 8px;">
-            Orders<br/>Service
+  Orders<br/>Service
 </div>
 <div style="background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px; border-radius: 6px; color: #868e96; font-size: 10px;">
-            Order DB
+  Order DB
 </div>
 </div>
 <div style="text-align: center;">
 <div style="background: #e6fcf5; border: 2px solid #63e6be; padding: 12px 8px; border-radius: 8px; color: #0ca678; font-size: 11px; margin-bottom: 8px;">
-            Inventory<br/>Service
+  Inventory<br/>Service
 </div>
 <div style="background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px; border-radius: 6px; color: #868e96; font-size: 10px;">
-            Inv DB
+  Inv DB
 </div>
 </div>
 </div>
 <div style="text-align: center; margin-top: 12px; color: #868e96; font-size: 12px;">
-        Independent deployment, isolated failures
+  Independent deployment, isolated failures
 </div>
 </div>
 </div>
@@ -171,9 +171,9 @@ Assume everything will fail. Netflix's famous Chaos Monkey randomly kills produc
 <div style="color: #1971c2; font-weight: 600; margin-bottom: 12px;">Synchronous (Request-Response)</div>
 <div style="color: #495057; font-size: 13px; margin-bottom: 12px;">Service A waits for Service B's response</div>
 <div style="background: #fff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-        Order Service --> User Service<br/>
-        "Get user #123"<br/>
-        <-- Returns user data
+  Order Service --> User Service<br/>
+  "Get user #123"<br/>
+  <-- Returns user data
 </div>
 <div style="margin-top: 12px; font-size: 12px;">
 <span style="color: #2f9e44;">Best for:</span> <span style="color: #495057;">Real-time queries, simple flows</span>
@@ -183,9 +183,9 @@ Assume everything will fail. Netflix's famous Chaos Monkey randomly kills produc
 <div style="color: #e8590c; font-weight: 600; margin-bottom: 12px;">Asynchronous (Event-Driven)</div>
 <div style="color: #495057; font-size: 13px; margin-bottom: 12px;">Service A publishes event, doesn't wait</div>
 <div style="background: #fff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-        Order Service --> Event Bus<br/>
-        "OrderCreated event"<br/>
-        Inventory, Email, Analytics listen
+  Order Service --> Event Bus<br/>
+  "OrderCreated event"<br/>
+  Inventory, Email, Analytics listen
 </div>
 <div style="margin-top: 12px; font-size: 12px;">
 <span style="color: #2f9e44;">Best for:</span> <span style="color: #495057;">Decoupling, high throughput</span>
@@ -200,15 +200,15 @@ Assume everything will fail. Netflix's famous Chaos Monkey randomly kills produc
 <h4 style="color: #7048e8; margin: 0 0 24px 0; text-align: center;">COMMUNICATION PROTOCOLS COMPARISON</h4>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden;">
-      <thead>
+  <thead>
 <tr style="background: #7048e8; color: white;">
 <th style="padding: 12px; text-align: left; font-size: 13px;">Protocol</th>
 <th style="padding: 12px; text-align: left; font-size: 13px;">Latency</th>
 <th style="padding: 12px; text-align: left; font-size: 13px;">Use Case</th>
 <th style="padding: 12px; text-align: left; font-size: 13px;">Trade-offs</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="border-bottom: 1px solid #e9ecef;">
 <td style="padding: 12px; font-size: 13px; color: #495057;"><strong>REST/HTTP</strong></td>
 <td style="padding: 12px; font-size: 13px; color: #495057;">~10-100ms</td>
@@ -233,7 +233,7 @@ Assume everything will fail. Netflix's famous Chaos Monkey randomly kills produc
 <td style="padding: 12px; font-size: 13px; color: #495057;">Async workflows, event sourcing</td>
 <td style="padding: 12px; font-size: 13px; color: #495057;">Decoupled but eventual consistency</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>
@@ -925,8 +925,8 @@ class OrderSaga:
 <div style="background: #fff; border-radius: 12px; padding: 20px; border: 2px solid #b197fc;">
 <div style="color: #7048e8; font-weight: 600; margin-bottom: 12px;">Feature Flags</div>
 <div style="background: #f8f9fa; border-radius: 4px; padding: 8px; margin-bottom: 12px; font-family: monospace; font-size: 11px;">
-        if (feature.enabled("new_checkout"))<br/>
-        &nbsp;&nbsp;showNewCheckout()
+  if (feature.enabled("new_checkout"))<br/>
+  &nbsp;&nbsp;showNewCheckout()
 </div>
 <div style="font-size: 12px; color: #495057;">Toggle features without deployment. Per-user or percentage rollout.</div>
 </div>

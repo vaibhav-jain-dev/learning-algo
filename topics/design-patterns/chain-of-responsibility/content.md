@@ -98,7 +98,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 </div>
 <p style="color: #14532d; font-size: 0.9rem; margin: 0;">Process the request completely and <span style="color: #22c55e; font-weight: 600;">terminate the chain</span>. No downstream handlers see the request.</p>
 <div style="background: #166534; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-        return Response(200, body)
+  return Response(200, body)
 </div>
 </div>
 
@@ -109,7 +109,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 </div>
 <p style="color: #1e3a8a; font-size: 0.9rem; margin: 0;">Do some processing (enrich, validate, log) then <span style="color: #22c55e; font-weight: 600;">delegate to next handler</span>. May also process the response.</p>
 <div style="background: #1e40af; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-        log(req); resp = next(req); log(resp)
+  log(req); resp = next(req); log(resp)
 </div>
 </div>
 
@@ -120,7 +120,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 </div>
 <p style="color: #78350f; font-size: 0.9rem; margin: 0;">Request doesn't match this handler's criteria. <span style="color: #22c55e; font-weight: 600;">Forward unchanged</span> to next handler.</p>
 <div style="background: #92400e; color: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 12px;">
-        return self._next.handle(request)
+  return self._next.handle(request)
 </div>
 </div>
 
@@ -217,7 +217,7 @@ The Chain of Responsibility pattern passes requests along a chain of handlers. E
 <h4 style="color: #166534; margin-top: 0;">1. First Match Wins</h4>
 <p style="color: #334155; font-size: 0.9rem;">Chain stops at the <span style="color: #22c55e; font-weight: 600;">first handler that can process</span> the request. Common in routing.</p>
 <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if self.can_handle(request):
-          return self.process(request)
+  return self.process(request)
 return self._next.handle(request)</code></pre>
 </div>
 
@@ -225,7 +225,7 @@ return self._next.handle(request)</code></pre>
 <h4 style="color: #1e40af; margin-top: 0;">2. Pipeline (All Process)</h4>
 <p style="color: #334155; font-size: 0.9rem;"><span style="color: #22c55e; font-weight: 600;">Every handler processes</span> and passes along. Chain ends at final handler. Used in middleware.</p>
 <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>self.before_processing(request)
-          response = self._next.handle(request)
+  response = self._next.handle(request)
 return self.after_processing(response)</code></pre>
 </div>
 
@@ -233,7 +233,7 @@ return self.after_processing(response)</code></pre>
 <h4 style="color: #92400e; margin-top: 0;">3. Short-Circuit on Failure</h4>
 <p style="color: #334155; font-size: 0.9rem;">Chain stops immediately when a handler <span style="color: #22c55e; font-weight: 600;">rejects the request</span>. Common in auth/validation.</p>
 <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>if not self.is_valid(request):
-          return Response(400, "Invalid")
+  return Response(400, "Invalid")
 return self._next.handle(request)</code></pre>
 </div>
 
@@ -241,7 +241,7 @@ return self._next.handle(request)</code></pre>
 <h4 style="color: #9d174d; margin-top: 0;">4. Default/Fallback Handler</h4>
 <p style="color: #334155; font-size: 0.9rem;">Chain always ends with a <span style="color: #22c55e; font-weight: 600;">guaranteed handler</span> that catches unhandled requests.</p>
 <pre style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto;"><code>class DefaultHandler(Handler):
-          def handle(self, request):
+  def handle(self, request):
 return Response(404, "Not Found")</code></pre>
 </div>
 
@@ -280,27 +280,27 @@ return Response(404, "Not Found")</code></pre>
 <div style="display: flex; justify-content: center; align-items: center;">
 <div style="position: relative; width: 400px; height: 400px;">
 
-      <!-- Outer layer - Logging -->
+  <!-- Outer layer - Logging -->
 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(78, 205, 196, 0.1) 100%); border: 3px solid #4ecdc4; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
 <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #4ecdc4; font-weight: 700; font-size: 0.85rem;">LOGGING</div>
 </div>
 
-      <!-- Auth layer -->
+  <!-- Auth layer -->
 <div style="position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px; background: linear-gradient(135deg, rgba(240, 147, 251, 0.2) 0%, rgba(240, 147, 251, 0.1) 100%); border: 3px solid #f093fb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
 <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #f093fb; font-weight: 700; font-size: 0.85rem;">AUTH</div>
 </div>
 
-      <!-- Rate Limit layer -->
+  <!-- Rate Limit layer -->
 <div style="position: absolute; top: 80px; left: 80px; right: 80px; bottom: 80px; background: linear-gradient(135deg, rgba(255, 217, 61, 0.2) 0%, rgba(255, 217, 61, 0.1) 100%); border: 3px solid #ffd93d; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
 <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #ffd93d; font-weight: 700; font-size: 0.85rem;">RATE LIMIT</div>
 </div>
 
-      <!-- Validation layer -->
+  <!-- Validation layer -->
 <div style="position: absolute; top: 120px; left: 120px; right: 120px; bottom: 120px; background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(116, 185, 255, 0.1) 100%); border: 3px solid #74b9ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
 <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #74b9ff; font-weight: 700; font-size: 0.85rem;">VALIDATION</div>
 </div>
 
-      <!-- Core Handler -->
+  <!-- Core Handler -->
 <div style="position: absolute; top: 160px; left: 160px; right: 160px; bottom: 160px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
 <div style="color: white; font-weight: 700; font-size: 0.9rem; text-align: center;">HANDLER<br><span style="font-size: 0.7rem; opacity: 0.8;">Business Logic</span></div>
 </div>
@@ -321,7 +321,7 @@ return Response(404, "Not Found")</code></pre>
 
 </div>
 
-  ### Express.js vs Python Middleware Comparison
+### Express.js vs Python Middleware Comparison
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin: 24px 0;">
 
@@ -331,27 +331,27 @@ return Response(404, "Not Found")</code></pre>
 <span style="color: #f7df1e; font-weight: 600;">Express.js Middleware</span>
 </div>
 <pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code>// Middleware receives (req, res, next)
-          function authMiddleware(req, res, next) {
-          const token = req.headers.authorization;
+  function authMiddleware(req, res, next) {
+  const token = req.headers.authorization;
 
-          if (!validateToken(token)) {
-          // Short-circuit: don't call next()
-          return res.status(401).json({
-          error: 'Unauthorized'
-          });
-          }
+  if (!validateToken(token)) {
+  // Short-circuit: don't call next()
+  return res.status(401).json({
+  error: 'Unauthorized'
+  });
+  }
 
-          // Enrich request for downstream
-          req.user = decodeToken(token);
+  // Enrich request for downstream
+  req.user = decodeToken(token);
 
-          // Pass to next middleware
-          next();
-          }
+  // Pass to next middleware
+  next();
+  }
 
-          // Chain order = execution order
-          app.use(loggingMiddleware);
-          app.use(authMiddleware);
-          app.use(rateLimitMiddleware);
+  // Chain order = execution order
+  app.use(loggingMiddleware);
+  app.use(authMiddleware);
+  app.use(rateLimitMiddleware);
 app.use('/api', router);</code></pre>
 </div>
 
@@ -361,25 +361,25 @@ app.use('/api', router);</code></pre>
 <span style="color: #3776ab; font-weight: 600;">Class-Based Handler Chain</span>
 </div>
 <pre style="background: #0f172a; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #e2e8f0; margin: 0;"><code># Handler holds reference to next
-          class AuthHandler(Handler):
-          def handle(self, request):
-          token = request.headers.get("Authorization")
+  class AuthHandler(Handler):
+  def handle(self, request):
+  token = request.headers.get("Authorization")
 
-          if not self.validate_token(token):
-          # Short-circuit: return without
-          # calling next
-          return Response(
-          status=401,
-          body={"error": "Unauthorized"}
-          )
+  if not self.validate_token(token):
+# Short-circuit: return without
+# calling next
+  return Response(
+  status=401,
+  body={"error": "Unauthorized"}
+  )
 
-          # Enrich request for downstream
-          request.user = self.decode_token(token)
+# Enrich request for downstream
+  request.user = self.decode_token(token)
 
-          # Pass to next handler
-          return self._next.handle(request)
+# Pass to next handler
+  return self._next.handle(request)
 
-          # Build chain via set_next()
+# Build chain via set_next()
 logging.set_next(auth).set_next(rate_limit)</code></pre>
 </div>
 
@@ -387,14 +387,14 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Interview Deep-Dive: Chain Fundamentals
+## Interview Deep-Dive: Chain Fundamentals
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What is the core problem Chain of Responsibility solves?</div>
 <div style="color: #0c4a6e; line-height: 1.7;">
 <strong>Answer:</strong> It solves the problem of <span style="color: #22c55e; font-weight: 600;">coupling the sender of a request to its receiver</span>. Without the pattern, the sender must know exactly which object can handle its request, leading to tight coupling and violations of the Open/Closed Principle.
-      <br/><br/>
-      With Chain of Responsibility, the sender only knows about a single entry point (the first handler). The chain itself determines which handler(s) process the request. This enables:
+  <br/><br/>
+  With Chain of Responsibility, the sender only knows about a single entry point (the first handler). The chain itself determines which handler(s) process the request. This enables:
 <ul style="margin: 8px 0 0 0; padding-left: 20px;">
 <li>Adding new handlers without modifying sender code</li>
 <li>Reordering handlers without modifying sender code</li>
@@ -407,7 +407,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How does Chain of Responsibility differ from the [[Decorator]](/topic/design-patterns/decorator) pattern? They look structurally similar.</div>
 <div style="color: #701a75; line-height: 1.7;">
 <strong>Answer:</strong> While both patterns involve chaining objects with similar interfaces, they differ in <span style="color: #22c55e; font-weight: 600;">intent and behavior</span>:
-      <br/><br/>
+  <br/><br/>
 <strong>Chain of Responsibility:</strong>
 <ul style="margin: 4px 0; padding-left: 20px;">
 <li>Handlers <em>decide</em> whether to process</li>
@@ -415,7 +415,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 <li>Chain can be <em>short-circuited</em> at any point</li>
 <li>Primary goal: <em>route</em> requests to appropriate handler</li>
 </ul>
-      <br/>
+  <br/>
 <strong>[[Decorator]](/topic/design-patterns/decorator):</strong>
 <ul style="margin: 4px 0; padding-left: 20px;">
 <li>Decorators <em>always</em> add behavior</li>
@@ -423,8 +423,8 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 <li>Chain cannot be short-circuited</li>
 <li>Primary goal: <em>enhance</em> object capabilities</li>
 </ul>
-      <br/>
-      The key tell: in Decorator, all wrappers execute. In Chain of Responsibility, handlers may pass without processing.
+  <br/>
+  The key tell: in Decorator, all wrappers execute. In Chain of Responsibility, handlers may pass without processing.
 </div>
 </div>
 
@@ -470,27 +470,27 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Interview Deep-Dive: Middleware Patterns
+## Interview Deep-Dive: Middleware Patterns
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why does middleware order matter? Give a concrete example.</div>
 <div style="color: #0c4a6e; line-height: 1.7;">
 <strong>Answer:</strong> Middleware order determines <span style="color: #22c55e; font-weight: 600;">which cross-cutting concerns apply to which requests</span> and in what sequence.
-      <br/><br/>
+  <br/><br/>
 <strong>Example - Auth before Rate Limiting:</strong>
       ```
       CORRECT:  Logging -> Auth -> RateLimit -> Handler
       WRONG:    Logging -> RateLimit -> Auth -> Handler
       ```
 
-      If rate limiting comes before auth:
+  If rate limiting comes before auth:
 <ul style="margin: 4px 0; padding-left: 20px;">
 <li>Unauthenticated requests consume rate limit quota</li>
 <li>Attacker can exhaust rate limit for legitimate users</li>
 <li>Rate limits can't be per-user (user unknown yet)</li>
 </ul>
 
-      Another example - Compression and Encryption:
+  Another example - Compression and Encryption:
       ```
       CORRECT:  Compress -> Encrypt (compress plaintext, then encrypt)
       WRONG:    Encrypt -> Compress (encrypted data doesn't compress well)
@@ -502,10 +502,10 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you handle errors that occur in the middle of a middleware chain? What about cleanup?</div>
 <div style="color: #701a75; line-height: 1.7;">
 <strong>Answer:</strong> There are three main strategies:
-      <br/><br/>
+  <br/><br/>
 <strong>1. Error Handler Middleware (Recommended):</strong>
-      <br/>
-      Place an error-catching middleware at the <em>outermost</em> layer:
+  <br/>
+  Place an error-catching middleware at the <em>outermost</em> layer:
 
       ```python
       class ErrorHandlerMiddleware(Handler):
@@ -605,13 +605,13 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
 <strong>Recommendation:</strong> In new code, go fully async. For legacy, wrap the sync/async boundary at the outermost layer, not per-handler.
 
-      See [[Concurrency Patterns]](/topic/system-design/concurrency-patterns) for more on async design.
+  See [[Concurrency Patterns]](/topic/system-design/concurrency-patterns) for more on async design.
 </div>
 </div>
 
   ---
 
-  ## Interview Deep-Dive: Request Processing
+## Interview Deep-Dive: Request Processing
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How do handlers communicate data to downstream handlers?</div>
@@ -752,7 +752,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Real-World Example: Authentication Middleware
+## Real-World Example: Authentication Middleware
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -951,7 +951,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Real-World Example: Logging Middleware
+## Real-World Example: Logging Middleware
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -1118,9 +1118,9 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Python Implementation: Complete Middleware Chain
+## Python Implementation: Complete Middleware Chain
 
-  ### HTTP Middleware Chain
+### HTTP Middleware Chain
 
   ```python
   from abc import ABC, abstractmethod
@@ -1439,7 +1439,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
   ---
 
-  ## Chain of Responsibility vs Related Patterns
+## Chain of Responsibility vs Related Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -1494,13 +1494,13 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Common Mistakes and Anti-Patterns
+## Common Mistakes and Anti-Patterns
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
-            ### Mistake 1: Forgetting Default Handler
+### Mistake 1: Forgetting Default Handler
 
             ```python
             # BAD: Request might not be handled
@@ -1515,7 +1515,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
             chain = auth.set_next(validation).set_next(router).set_next(NotFoundHandler())
             ```
 
-            ### Mistake 2: Circular Chain
+### Mistake 2: Circular Chain
 
             ```python
             # BAD: Infinite loop!
@@ -1526,7 +1526,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
             handler_a.set_next(handler_b).set_next(handler_c)  # Ends at c
             ```
 
-            ### Mistake 3: Order-Dependent Hidden Bugs
+### Mistake 3: Order-Dependent Hidden Bugs
 
             ```python
             # BAD: Auth after rate limit - can rate limit unauthenticated requests
@@ -1536,7 +1536,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
             chain = auth.set_next(rate_limit)
             ```
 
-            ### Mistake 4: Handlers Modifying Shared State
+### Mistake 4: Handlers Modifying Shared State
 
             ```python
             # BAD: Handler modifies shared request object, affects other chains
@@ -1557,7 +1557,7 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
             return self._pass_to_next(enriched)
             ```
 
-            ### Mistake 5: Not Handling Exceptions
+### Mistake 5: Not Handling Exceptions
 
             ```python
             # BAD: Exception in handler breaks entire chain
@@ -1578,9 +1578,9 @@ logging.set_next(auth).set_next(rate_limit)</code></pre>
 
 </div>
 
-          ---
+  ---
 
-          ## Interview Deep-Dive: Advanced Scenarios
+## Interview Deep-Dive: Advanced Scenarios
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How would you implement chain configuration that can be changed at runtime?</div>
@@ -1789,13 +1789,13 @@ This enables <span style="color: #22c55e; font-weight: 600;">tree-like routing</
 <li><strong>Timeout handling:</strong> What if compensation takes too long?</li>
 </ul>
 
-              See [[Event Sourcing]](/topic/system-design/event-sourcing) and [[Distributed Transactions]](/topic/microservices/event-strategies) for related patterns.
+  See [[Event Sourcing]](/topic/system-design/event-sourcing) and [[Distributed Transactions]](/topic/microservices/event-strategies) for related patterns.
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Key Takeaways
+## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
@@ -1817,9 +1817,9 @@ This enables <span style="color: #22c55e; font-weight: 600;">tree-like routing</
 
 </div>
 
-          ---
+  ---
 
-          ## Related Patterns
+## Related Patterns
 
           - [[Command]](/topic/design-patterns/command) - Encapsulates requests as objects for queuing, logging, undo
           - [[Decorator]](/topic/design-patterns/decorator) - Similar structure but all decorators always execute

@@ -178,10 +178,10 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
 <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Solution: Sliding Window Counter</div>
 <div style="color: #047857; font-size: 13px;">
-      Weight the previous window based on how much of it overlaps with the current sliding window.
+  Weight the previous window based on how much of it overlaps with the current sliding window.
 <div style="margin-top: 8px; font-family: monospace; background: #d1fae5; padding: 8px; border-radius: 4px;">
-        count = prev_window * (1 - progress) + curr_window<br>
-          count = 90 * 0.75 + 10 = 77.5 (under 100 limit)
+  count = prev_window * (1 - progress) + curr_window<br>
+  count = 90 * 0.75 + 10 = 77.5 (under 100 limit)
 </div>
 </div>
 </div>
@@ -189,9 +189,9 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Real-Life Failure Story
+## Real-Life Failure Story
 
-  ### The Cloudflare Rate Limiting Incident (2020)
+### The Cloudflare Rate Limiting Incident (2020)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
@@ -199,7 +199,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #991b1b; font-weight: 600;">The Incident</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-        A misconfigured rate limiter caused Cloudflare to reject legitimate traffic during a major DDoS attack. The rate limiting rules were too aggressive and didn't distinguish between attack traffic and legitimate users, causing a 27-minute outage affecting millions of websites.
+  A misconfigured rate limiter caused Cloudflare to reject legitimate traffic during a major DDoS attack. The rate limiting rules were too aggressive and didn't distinguish between attack traffic and legitimate users, causing a 27-minute outage affecting millions of websites.
 </div>
 </div>
 
@@ -226,9 +226,9 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Implementation
+## Implementation
 
-  ### Token Bucket Algorithm
+### Token Bucket Algorithm
 
   ```python
   import time
@@ -332,7 +332,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
   del self.buckets[cid]
   ```
 
-  ### Sliding Window Counter
+### Sliding Window Counter
 
   ```python
   import time
@@ -407,7 +407,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
   }
   ```
 
-  ### Distributed Rate Limiter with Redis
+### Distributed Rate Limiter with Redis
 
   ```python
   import redis
@@ -556,7 +556,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
   return allowed, metadata
   ```
 
-  ### HTTP Middleware
+### HTTP Middleware
 
   ```python
   from functools import wraps
@@ -645,11 +645,11 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Interview Questions
+## Interview Questions
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-    ### Q1: How would you implement rate limiting in a distributed system?
+### Q1: How would you implement rate limiting in a distributed system?
 
     **Answer:** Use a centralized store (Redis) with atomic operations to ensure consistency across multiple application instances.
 
@@ -671,7 +671,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
     return self.redis_limiter.allow(client_id)
     ```
 
-    ### Q2: Token bucket vs sliding window - when to use each?
+### Q2: Token bucket vs sliding window - when to use each?
 
     **Answer:**
 
@@ -687,7 +687,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
     - More accurate rate enforcement
     - Example: Payment APIs where you truly want X requests per minute max
 
-    ### Q3: How do you handle rate limiting for users behind shared IPs (NAT)?
+### Q3: How do you handle rate limiting for users behind shared IPs (NAT)?
 
     **Answer:** Use multiple identification dimensions:
 
@@ -710,7 +710,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
     Also consider higher limits for known shared IPs (corporate proxies, cloud providers).
 
-    ### Q4: What happens when your rate limiter fails?
+### Q4: What happens when your rate limiter fails?
 
     **Answer:** Design for failure with a clear strategy:
 
@@ -728,7 +728,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
     **Best Practice:** Implement circuit breaker pattern with fallback to local rate limiting.
 
-    ### Q5: How would you design rate limiting for different pricing tiers?
+### Q5: How would you design rate limiting for different pricing tiers?
 
     **Answer:**
 
@@ -766,7 +766,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Common Mistakes
+## Common Mistakes
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Anti-Patterns</h4>
@@ -806,7 +806,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Cheat Sheet</h4>
@@ -856,7 +856,7 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 
   ---
 
-  ## Related Topics
+## Related Topics
 
   - [API Gateway](/topic/system-design/api-gateway) - Centralized rate limiting
   - [Load Balancing](/topic/system-design/load-balancing) - Distributing traffic

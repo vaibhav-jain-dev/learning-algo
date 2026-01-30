@@ -55,13 +55,13 @@ class UIFactory(ABC):
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #166534;">Family Consistency (Abstract Factory)</h5>
 <p style="margin: 0; font-size: 13px; color: #15803d;">
-      All products created by MacFactory work together. All products created by WindowsFactory work together. You cannot mix.
+  All products created by MacFactory work together. All products created by WindowsFactory work together. You cannot mix.
 </p>
 </div>
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #991b1b;">Product Consistency (Factory Method)</h5>
 <p style="margin: 0; font-size: 13px; color: #b91c1c;">
-      Each factory method creates one product type. No guarantee about relationships between different products.
+  Each factory method creates one product type. No guarantee about relationships between different products.
 </p>
 </div>
 </div>
@@ -92,36 +92,36 @@ class UIFactory(ABC):
     > type WinFamily = { readonly brand: 'win' };
     >
     > function createDialog<F>(btn: Button<F>, scroll: Scrollbar<F>) { ... }
-          > // Mixing families is now a type error
-          > ```
-          > Trade-off: Requires generic propagation throughout the codebase; verbose.
-          >
-          > **Approach 2: Module-level Isolation**
-          > Each family is a separate module with internal concrete types, exporting only through a unified interface.
-          > Trade-off: Duplicated interface definitions; harder to add new families.
-          >
-          > **Approach 3: Dependent Types (Idris, Agda)**
-          > Family membership encoded as a type-level proof term.
-          > Trade-off: Extreme complexity; not practical for most production systems.
-          >
-          > The pragmatic solution for most systems is Approach 1 combined with [[Dependency Injection]](/topics/design-patterns/dependency-injection) to ensure factory consistency at the composition root.
+  > // Mixing families is now a type error
+  > ```
+  > Trade-off: Requires generic propagation throughout the codebase; verbose.
+  >
+  > **Approach 2: Module-level Isolation**
+  > Each family is a separate module with internal concrete types, exporting only through a unified interface.
+  > Trade-off: Duplicated interface definitions; harder to add new families.
+  >
+  > **Approach 3: Dependent Types (Idris, Agda)**
+  > Family membership encoded as a type-level proof term.
+  > Trade-off: Extreme complexity; not practical for most production systems.
+  >
+  > The pragmatic solution for most systems is Approach 1 combined with [[Dependency Injection]](/topics/design-patterns/dependency-injection) to ensure factory consistency at the composition root.
 
 </div>
 
-        ---
+  ---
 
-        ## Section 2: UI Toolkit Example - The Canonical Use Case
+## Section 2: UI Toolkit Example - The Canonical Use Case
 
-        ### 2.1 Why UI Toolkits Are the Perfect Example
+### 2.1 Why UI Toolkits Are the Perfect Example
 
-        UI toolkits demonstrate Abstract Factory's value because:
+  UI toolkits demonstrate Abstract Factory's value because:
 
-        1. **Visual coherence is immediately observable** - A Windows button in a Mac app looks wrong
-        2. **Event systems are tightly coupled** - Mac uses responder chains; Windows uses message loops
-        3. **Rendering pipelines differ** - DirectX vs. Metal vs. OpenGL backends
-        4. **Accessibility APIs vary** - Screen readers expect platform-specific semantics
+  1. **Visual coherence is immediately observable** - A Windows button in a Mac app looks wrong
+  2. **Event systems are tightly coupled** - Mac uses responder chains; Windows uses message loops
+  3. **Rendering pipelines differ** - DirectX vs. Metal vs. OpenGL backends
+  4. **Accessibility APIs vary** - Screen readers expect platform-specific semantics
 
-        ### 2.2 Anatomy of a Cross-Platform UI Factory
+### 2.2 Anatomy of a Cross-Platform UI Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Cross-Platform UI Factory Architecture</h4>
@@ -133,11 +133,11 @@ class UIFactory(ABC):
 <div style="font-weight: 700; color: #1e40af; font-size: 14px;">WidgetFactory</div>
 <div style="font-size: 11px; color: #3b82f6; margin-top: 4px;">interface</div>
 <div style="font-family: monospace; font-size: 11px; color: #1e3a5f; margin-top: 8px; text-align: left;">
-                  +createButton()<br/>
-                  +createScrollbar()<br/>
-                  +createTextInput()<br/>
-                  +createMenu()<br/>
-                  +getEventLoop()
+  +createButton()<br/>
+  +createScrollbar()<br/>
+  +createTextInput()<br/>
+  +createMenu()<br/>
+  +getEventLoop()
 </div>
 </div>
 </div>
@@ -175,9 +175,9 @@ class UIFactory(ABC):
 </div>
 </div>
 
-        ### 2.3 Hidden Complexity: Event System Coupling
+### 2.3 Hidden Complexity: Event System Coupling
 
-        The most underappreciated aspect of UI Abstract Factories is **event system coupling**:
+  The most underappreciated aspect of UI Abstract Factories is **event system coupling**:
 
         ```python
         class Button(ABC):
@@ -203,7 +203,7 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 </p>
 </div>
 
-        ### 2.4 Real Implementation: Java Swing's Pluggable Look and Feel
+### 2.4 Real Implementation: Java Swing's Pluggable Look and Feel
 
         ```java
         // Java's UIManager is an Abstract Factory in disguise
@@ -225,69 +225,69 @@ If you create a MacButton but run it with a Windows event loop, the button will 
         }
         ```
 
-        **Why Swing's approach is interesting**: The UI delegates are created lazily and cached. The factory doesn't create widgets; it creates *renderers* for widgets. This is a variant called **Abstract Factory with Flyweight**.
+**Why Swing's approach is interesting**: The UI delegates are created lazily and cached. The factory doesn't create widgets; it creates *renderers* for widgets. This is a variant called **Abstract Factory with Flyweight**.
 
-        ### Interview Questions: UI Toolkit (3 Levels Deep)
+### Interview Questions: UI Toolkit (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-          **Level 1: "Why is UI toolkit development a canonical example of Abstract Factory?"**
+**Level 1: "Why is UI toolkit development a canonical example of Abstract Factory?"**
 
-          > UI toolkits need to create multiple related components (buttons, scrollbars, text inputs) that must be visually and behaviorally consistent. A Mac button must work with Mac menus and Mac event handling. Abstract Factory guarantees this by making the platform choice a single decision point that affects all component creation.
+  > UI toolkits need to create multiple related components (buttons, scrollbars, text inputs) that must be visually and behaviorally consistent. A Mac button must work with Mac menus and Mac event handling. Abstract Factory guarantees this by making the platform choice a single decision point that affects all component creation.
 
-          **Level 2: "Beyond visual consistency, what other 'hidden' products must a UI factory family include?"**
+**Level 2: "Beyond visual consistency, what other 'hidden' products must a UI factory family include?"**
 
-          > A complete UI factory family includes:
-          > 1. **Event loop/message pump** - Platform-specific event dispatching
-          > 2. **Accessibility provider** - Screen reader integration (AT-SPI on Linux, MSAA/UIA on Windows, NSAccessibility on Mac)
-          > 3. **Clipboard handler** - Platform clipboard formats differ
-          > 4. **Drag-and-drop coordinator** - Drop target/source protocols vary
-          > 5. **Font rasterizer** - ClearType vs. FreeType vs. Core Text
-          > 6. **Input method editor** - IME integration for CJK languages
-          > 7. **Theme provider** - System theme colors, dark mode detection
-          >
-          > Missing any of these creates subtle bugs: text looks wrong, accessibility doesn't work, copy-paste fails for certain data types.
+  > A complete UI factory family includes:
+  > 1. **Event loop/message pump** - Platform-specific event dispatching
+  > 2. **Accessibility provider** - Screen reader integration (AT-SPI on Linux, MSAA/UIA on Windows, NSAccessibility on Mac)
+  > 3. **Clipboard handler** - Platform clipboard formats differ
+  > 4. **Drag-and-drop coordinator** - Drop target/source protocols vary
+  > 5. **Font rasterizer** - ClearType vs. FreeType vs. Core Text
+  > 6. **Input method editor** - IME integration for CJK languages
+  > 7. **Theme provider** - System theme colors, dark mode detection
+  >
+  > Missing any of these creates subtle bugs: text looks wrong, accessibility doesn't work, copy-paste fails for certain data types.
 
-          **Level 3: "Design a UI factory that supports runtime theme switching without recreating all widgets. What patterns would you combine with Abstract Factory?"**
+**Level 3: "Design a UI factory that supports runtime theme switching without recreating all widgets. What patterns would you combine with Abstract Factory?"**
 
-          > Runtime theme switching requires separating **widget identity** from **widget appearance**:
-          >
-          > **Solution: Abstract Factory + [[Strategy]](/topics/design-patterns/strategy) + [[Observer]](/topics/design-patterns/observer)**
-          >
-          > ```python
-          > class Button:
-          >     def __init__(self, renderer: ButtonRenderer, theme_manager: ThemeManager):
-          >         self.renderer = renderer
-          >         theme_manager.subscribe(self._on_theme_change)
-          >
-          >     def _on_theme_change(self, new_theme: Theme):
-          >         # Get new renderer from current factory
-          >         self.renderer = new_theme.factory.create_button_renderer()
-          >         self.invalidate()  # Trigger repaint
-          >
-          > class ThemeManager:
-          >     def switch_theme(self, new_factory: WidgetFactory):
-          >         self.current_factory = new_factory
-          >         self.notify_subscribers(Theme(new_factory))
-          > ```
-          >
-          > **Trade-offs**:
-          > - Memory: Each widget holds a reference to its renderer (slight overhead)
-          > - Complexity: Two-layer abstraction (widget + renderer) is harder to understand
-          > - Performance: Theme switch triggers O(n) updates for n widgets
-          > - Consistency: Brief visual inconsistency during transition if not batched
-          >
-          > **Alternative**: Use [[Flyweight]](/topics/design-patterns/flyweight) for shared rendering state, reducing memory overhead.
+  > Runtime theme switching requires separating **widget identity** from **widget appearance**:
+  >
+  > **Solution: Abstract Factory + [[Strategy]](/topics/design-patterns/strategy) + [[Observer]](/topics/design-patterns/observer)**
+  >
+  > ```python
+  > class Button:
+  >     def __init__(self, renderer: ButtonRenderer, theme_manager: ThemeManager):
+  >         self.renderer = renderer
+  >         theme_manager.subscribe(self._on_theme_change)
+  >
+  >     def _on_theme_change(self, new_theme: Theme):
+  >         # Get new renderer from current factory
+  >         self.renderer = new_theme.factory.create_button_renderer()
+  >         self.invalidate()  # Trigger repaint
+  >
+  > class ThemeManager:
+  >     def switch_theme(self, new_factory: WidgetFactory):
+  >         self.current_factory = new_factory
+  >         self.notify_subscribers(Theme(new_factory))
+  > ```
+  >
+  > **Trade-offs**:
+  > - Memory: Each widget holds a reference to its renderer (slight overhead)
+  > - Complexity: Two-layer abstraction (widget + renderer) is harder to understand
+  > - Performance: Theme switch triggers O(n) updates for n widgets
+  > - Consistency: Brief visual inconsistency during transition if not batched
+  >
+  > **Alternative**: Use [[Flyweight]](/topics/design-patterns/flyweight) for shared rendering state, reducing memory overhead.
 
 </div>
 
-        ---
+  ---
 
-        ## Section 3: Cross-Platform Development - Beyond UI
+## Section 3: Cross-Platform Development - Beyond UI
 
-        ### 3.1 Platform Abstraction Layers
+### 3.1 Platform Abstraction Layers
 
-        Abstract Factory excels at creating **Platform Abstraction Layers (PALs)**:
+  Abstract Factory excels at creating **Platform Abstraction Layers (PALs)**:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Platform Abstraction Layer Architecture</h4>
@@ -306,7 +306,7 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="font-weight: 700; color: #1e40af;">PlatformFactory Interface</div>
 <div style="font-size: 12px; color: #3b82f6; margin-top: 8px;">
-                createFileSystem() | createNetwork() | createThreading() | createGraphics()
+  createFileSystem() | createNetwork() | createThreading() | createGraphics()
 </div>
 </div>
 
@@ -336,9 +336,9 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 </div>
 </div>
 
-        ### 3.2 The Cross-Cutting Concerns Problem
+### 3.2 The Cross-Cutting Concerns Problem
 
-        A subtle issue arises when products have **cross-cutting dependencies**:
+  A subtle issue arises when products have **cross-cutting dependencies**:
 
         ```python
         class PlatformFactory(ABC):
@@ -365,13 +365,13 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 <div style="background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 8px 0; color: #1e40af;">Design Choice: Factory as Service Locator</h4>
 <p style="margin: 0; color: #1e3a5f; font-size: 14px;">
-            One solution is to make the factory itself a parameter to product constructors. The logger receives the factory and lazily retrieves dependencies. This is controversial - it resembles Service Locator, which hides dependencies. The trade-off is explicit: cross-cutting concerns require either dependency hiding or complex initialization ordering.
+  One solution is to make the factory itself a parameter to product constructors. The logger receives the factory and lazily retrieves dependencies. This is controversial - it resembles Service Locator, which hides dependencies. The trade-off is explicit: cross-cutting concerns require either dependency hiding or complex initialization ordering.
 </p>
 </div>
 
-        ### 3.3 Conditional Compilation vs. Abstract Factory
+### 3.3 Conditional Compilation vs. Abstract Factory
 
-        Many cross-platform codebases use **conditional compilation** instead of Abstract Factory:
+  Many cross-platform codebases use **conditional compilation** instead of Abstract Factory:
 
         ```cpp
         // Conditional compilation approach
@@ -387,17 +387,17 @@ If you create a MacButton but run it with a Windows event loop, the button will 
         #endif
         ```
 
-        **Trade-off analysis**:
+**Trade-off analysis**:
 
-        | Aspect | Abstract Factory | Conditional Compilation |
-        |--------|------------------|------------------------|
-        | Runtime switching | Yes | No (compile-time only) |
-        | Binary size | Larger (all platforms) | Smaller (one platform) |
-        | Testing | Mock factory injection | Requires target platform |
-        | Complexity | Higher abstraction overhead | Lower, but scattered |
-        | Link-time dependencies | All platforms linked | Only active platform |
+  | Aspect | Abstract Factory | Conditional Compilation |
+  |--------|------------------|------------------------|
+  | Runtime switching | Yes | No (compile-time only) |
+  | Binary size | Larger (all platforms) | Smaller (one platform) |
+  | Testing | Mock factory injection | Requires target platform |
+  | Complexity | Higher abstraction overhead | Lower, but scattered |
+  | Link-time dependencies | All platforms linked | Only active platform |
 
-        ### 3.4 Cloud Provider Abstraction (Real-World Case Study)
+### 3.4 Cloud Provider Abstraction (Real-World Case Study)
 
         ```python
         class CloudInfrastructureFactory(ABC):
@@ -473,92 +473,92 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </p>
 </div>
 
-        ### Interview Questions: Cross-Platform Development (3 Levels Deep)
+### Interview Questions: Cross-Platform Development (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-          **Level 1: "How does Abstract Factory help with cross-platform development?"**
+**Level 1: "How does Abstract Factory help with cross-platform development?"**
 
-          > Abstract Factory creates a single abstraction point for platform differences. Application code depends only on abstract interfaces (FileSystem, Network, etc.), and a platform-specific factory provides concrete implementations. Switching platforms means changing only the factory instantiation, not the application logic.
+  > Abstract Factory creates a single abstraction point for platform differences. Application code depends only on abstract interfaces (FileSystem, Network, etc.), and a platform-specific factory provides concrete implementations. Switching platforms means changing only the factory instantiation, not the application logic.
 
-          **Level 2: "What happens when platforms have fundamentally different capabilities? How do you handle the 'leaky abstraction' problem?"**
+**Level 2: "What happens when platforms have fundamentally different capabilities? How do you handle the 'leaky abstraction' problem?"**
 
-          > Platform capability gaps create leaky abstractions. Solutions:
-          >
-          > 1. **Lowest Common Denominator**: Define the interface as the intersection of all platforms. Simple but limits functionality.
-          >
-          > 2. **Capability Query**: Add `supports_feature(feature: str) -> bool` to products. Application code checks before using advanced features.
-          >
-          > 3. **Optional Interfaces**: Use interface segregation - `StorageService` vs `VersionedStorageService`. Only implement advanced interfaces on capable platforms.
-          >
-          > 4. **Adapter + Emulation**: Emulate missing features. Example: Emulate S3's eventual consistency model on GCS by adding artificial delays in the adapter.
-          >
-          > 5. **Fail-Fast with Clear Error**: Throw `NotSupportedOnPlatform` with guidance on alternatives.
-          >
-          > The choice depends on whether the feature is essential or optional. Essential features need emulation; optional ones need capability queries.
+  > Platform capability gaps create leaky abstractions. Solutions:
+  >
+  > 1. **Lowest Common Denominator**: Define the interface as the intersection of all platforms. Simple but limits functionality.
+  >
+  > 2. **Capability Query**: Add `supports_feature(feature: str) -> bool` to products. Application code checks before using advanced features.
+  >
+  > 3. **Optional Interfaces**: Use interface segregation - `StorageService` vs `VersionedStorageService`. Only implement advanced interfaces on capable platforms.
+  >
+  > 4. **Adapter + Emulation**: Emulate missing features. Example: Emulate S3's eventual consistency model on GCS by adding artificial delays in the adapter.
+  >
+  > 5. **Fail-Fast with Clear Error**: Throw `NotSupportedOnPlatform` with guidance on alternatives.
+  >
+  > The choice depends on whether the feature is essential or optional. Essential features need emulation; optional ones need capability queries.
 
-          **Level 3: "Design a multi-cloud factory system that handles: (a) partial failures during multi-service operations, (b) service version incompatibilities, and (c) live cloud provider migration without downtime."**
+**Level 3: "Design a multi-cloud factory system that handles: (a) partial failures during multi-service operations, (b) service version incompatibilities, and (c) live cloud provider migration without downtime."**
 
-          > This requires combining Abstract Factory with several other patterns:
-          >
-          > **(a) Partial Failures - [[Saga Pattern]](/topics/system-design/saga)**:
-          > ```python
-          > class CloudTransactionFactory(CloudFactory):
-          >     def create_provisioning_saga(self) -> ProvisioningSaga:
-          >         return ProvisioningSaga(
-          >             steps=[
-          >                 self.create_compute,  # Step 1
-          >                 self.create_storage,  # Step 2
-          >                 self.create_database, # Step 3
-          >             ],
-          >             compensations=[
-          >                 self._destroy_compute,
-          >                 self._destroy_storage,
-          >                 self._destroy_database,
-          >             ]
-          >         )
-          > ```
-          >
-          > **(b) Version Incompatibilities - Factory Versioning**:
-          > ```python
-          > class CloudFactoryRegistry:
-          >     def get_factory(self, provider: str, api_version: str) -> CloudFactory:
-          >         # Returns factory compatible with specific API version
-          >         # Internally maps to versioned implementations
-          >         key = f"{provider}:{api_version}"
-          >         return self._factories[key]
-          > ```
-          >
-          > **(c) Live Migration - [[Blue-Green Deployment]](/topics/system-design/blue-green) + Dual-Write**:
-          > ```python
-          > class MigratingFactory(CloudFactory):
-          >     def __init__(self, source: CloudFactory, target: CloudFactory,
-          >                  migration_state: MigrationState):
-          >         self.source = source
-          >         self.target = target
-          >         self.state = migration_state
-          >
-          >     def create_storage(self) -> StorageService:
-          >         if self.state.phase == 'dual_write':
-          >             return DualWriteStorage(
-          >                 self.source.create_storage(),
-          >                 self.target.create_storage()
-          >             )
-          >         elif self.state.phase == 'target_primary':
-          >             return self.target.create_storage()
-          >         else:
-          >             return self.source.create_storage()
-          > ```
-          >
-          > **Trade-offs**: Migration adds latency (dual writes), complexity (state machines), and cost (running two systems). The benefit is zero-downtime migration and ability to rollback.
+  > This requires combining Abstract Factory with several other patterns:
+  >
+  > **(a) Partial Failures - [[Saga Pattern]](/topics/system-design/saga)**:
+  > ```python
+  > class CloudTransactionFactory(CloudFactory):
+  >     def create_provisioning_saga(self) -> ProvisioningSaga:
+  >         return ProvisioningSaga(
+  >             steps=[
+  >                 self.create_compute,  # Step 1
+  >                 self.create_storage,  # Step 2
+  >                 self.create_database, # Step 3
+  >             ],
+  >             compensations=[
+  >                 self._destroy_compute,
+  >                 self._destroy_storage,
+  >                 self._destroy_database,
+  >             ]
+  >         )
+  > ```
+  >
+  > **(b) Version Incompatibilities - Factory Versioning**:
+  > ```python
+  > class CloudFactoryRegistry:
+  >     def get_factory(self, provider: str, api_version: str) -> CloudFactory:
+  >         # Returns factory compatible with specific API version
+  >         # Internally maps to versioned implementations
+  >         key = f"{provider}:{api_version}"
+  >         return self._factories[key]
+  > ```
+  >
+  > **(c) Live Migration - [[Blue-Green Deployment]](/topics/system-design/blue-green) + Dual-Write**:
+  > ```python
+  > class MigratingFactory(CloudFactory):
+  >     def __init__(self, source: CloudFactory, target: CloudFactory,
+  >                  migration_state: MigrationState):
+  >         self.source = source
+  >         self.target = target
+  >         self.state = migration_state
+  >
+  >     def create_storage(self) -> StorageService:
+  >         if self.state.phase == 'dual_write':
+  >             return DualWriteStorage(
+  >                 self.source.create_storage(),
+  >                 self.target.create_storage()
+  >             )
+  >         elif self.state.phase == 'target_primary':
+  >             return self.target.create_storage()
+  >         else:
+  >             return self.source.create_storage()
+  > ```
+  >
+  > **Trade-offs**: Migration adds latency (dual writes), complexity (state machines), and cost (running two systems). The benefit is zero-downtime migration and ability to rollback.
 
 </div>
 
-        ---
+  ---
 
-        ## Section 4: Factory Method vs Abstract Factory - Critical Distinctions
+## Section 4: Factory Method vs Abstract Factory - Critical Distinctions
 
-        ### 4.1 Structural Comparison
+### 4.1 Structural Comparison
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Factory Method vs Abstract Factory</h4>
@@ -574,9 +574,9 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 <div style="margin-bottom: 8px;"><strong>Relationship:</strong> IS-A (inheritance)</div>
 <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
 <code style="font-size: 11px;">
-                    class Dialog:<br/>
-                    &nbsp;&nbsp;def create_button(self) -> Button:<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
+  class Dialog:<br/>
+  &nbsp;&nbsp;def create_button(self) -> Button:<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
 </code>
 </div>
 </div>
@@ -591,10 +591,10 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 <div style="margin-bottom: 8px;"><strong>Relationship:</strong> HAS-A (composition)</div>
 <div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
 <code style="font-size: 11px;">
-                    class WidgetFactory:<br/>
-                    &nbsp;&nbsp;def create_button(self) -> Button<br/>
-                    &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
-                    &nbsp;&nbsp;def create_menu(self) -> Menu
+  class WidgetFactory:<br/>
+  &nbsp;&nbsp;def create_button(self) -> Button<br/>
+  &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
+  &nbsp;&nbsp;def create_menu(self) -> Menu
 </code>
 </div>
 </div>
@@ -603,7 +603,7 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 </div>
 
-        ### 4.2 When to Use Which
+### 4.2 When to Use Which
 
 <div style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 8px 0; color: #a16207;">Decision Framework</h4>
@@ -623,9 +623,9 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 </div>
 
-        ### 4.3 The Composition Relationship
+### 4.3 The Composition Relationship
 
-        Abstract Factory often **contains** Factory Methods:
+  Abstract Factory often **contains** Factory Methods:
 
         ```python
         class WidgetFactory(ABC):
@@ -645,9 +645,9 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
         # The collection of related Factory Methods IS an Abstract Factory
         ```
 
-        ### 4.4 Evolution Path
+### 4.4 Evolution Path
 
-        Systems often evolve from Factory Method to Abstract Factory:
+  Systems often evolve from Factory Method to Abstract Factory:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #334155; margin: 0 0 16px 0; text-align: center;">Pattern Evolution</h4>
@@ -679,11 +679,11 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 
 <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #cbd5e1; font-size: 12px; color: #64748b; text-align: center;">
-            Evolve when: single product becomes family, OR platform variations emerge
+  Evolve when: single product becomes family, OR platform variations emerge
 </div>
 </div>
 
-        ### 4.5 Anti-Pattern: Premature Abstract Factory
+### 4.5 Anti-Pattern: Premature Abstract Factory
 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 8px 0; color: #991b1b;">Common Mistake: Over-Engineering</h4>
@@ -692,74 +692,74 @@ Creating an Abstract Factory when you only have one product family and no plans 
 </p>
 </div>
 
-        ### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
+### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
 
 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
 
-          **Level 1: "What is the key difference between Factory Method and Abstract Factory?"**
+**Level 1: "What is the key difference between Factory Method and Abstract Factory?"**
 
-          > Factory Method creates ONE product through inheritance (subclass overrides a creation method). Abstract Factory creates a FAMILY of related products through composition (client holds a factory object). Factory Method is about deferring instantiation to subclasses; Abstract Factory is about enforcing family consistency.
+  > Factory Method creates ONE product through inheritance (subclass overrides a creation method). Abstract Factory creates a FAMILY of related products through composition (client holds a factory object). Factory Method is about deferring instantiation to subclasses; Abstract Factory is about enforcing family consistency.
 
-          **Level 2: "Can you have an Abstract Factory that uses only one product? Would that be a valid use of the pattern?"**
+**Level 2: "Can you have an Abstract Factory that uses only one product? Would that be a valid use of the pattern?"**
 
-          > Technically yes, but it's likely a design smell. If there's only one product, you lose the main benefit: family consistency guarantees. However, there are valid cases:
-          >
-          > 1. **Future-proofing**: You know more products are coming
-          > 2. **Testing**: The factory interface enables mock injection even for one product
-          > 3. **Configuration**: Factory encapsulates complex construction parameters
-          >
-          > But generally, single-product "Abstract Factories" should be Factory Methods. The pattern's essence is *families* - without multiple related products, the abstraction isn't pulling its weight.
+  > Technically yes, but it's likely a design smell. If there's only one product, you lose the main benefit: family consistency guarantees. However, there are valid cases:
+  >
+  > 1. **Future-proofing**: You know more products are coming
+  > 2. **Testing**: The factory interface enables mock injection even for one product
+  > 3. **Configuration**: Factory encapsulates complex construction parameters
+  >
+  > But generally, single-product "Abstract Factories" should be Factory Methods. The pattern's essence is *families* - without multiple related products, the abstraction isn't pulling its weight.
 
-          **Level 3: "Design a system that needs to switch between Factory Method and Abstract Factory at runtime based on configuration. What are the implications for your type system and client code?"**
+**Level 3: "Design a system that needs to switch between Factory Method and Abstract Factory at runtime based on configuration. What are the implications for your type system and client code?"**
 
-          > This is a fascinating edge case requiring careful design:
-          >
-          > ```python
-          > class ProductionStrategy(ABC):
-          >     @abstractmethod
-          >     def get_button(self, context: Context) -> Button:
-          >         """May create new or return cached, family-aware or not."""
-          >         pass
-          >
-          > class SimpleFactoryStrategy(ProductionStrategy):
-          >     """Uses Factory Method - no family constraints."""
-          >     def get_button(self, context: Context) -> Button:
-          >         return context.create_button()  # Factory Method call
-          >
-          > class FamilyFactoryStrategy(ProductionStrategy):
-          >     """Uses Abstract Factory - enforces family."""
-          >     def __init__(self, factory: WidgetFactory):
-          >         self.factory = factory
-          >
-          >     def get_button(self, context: Context) -> Button:
-          >         return self.factory.create_button()  # Abstract Factory call
-          >
-          > class Application:
-          >     def __init__(self, strategy: ProductionStrategy):
-          >         self.strategy = strategy  # Injected based on config
-          > ```
-          >
-          > **Implications**:
-          >
-          > 1. **Type System**: Both strategies must return the same abstract type (`Button`). The difference is in guarantees, not types.
-          >
-          > 2. **Family Safety**: When using `SimpleFactoryStrategy`, family mixing is possible. Client code can't assume safety.
-          >
-          > 3. **Capability Query**: Consider adding `strategy.guarantees_family_consistency() -> bool` so clients can adapt.
-          >
-          > 4. **Documentation**: The contract is behavioral, not structural. Must be clearly documented.
-          >
-          > 5. **Testing**: Each strategy needs separate test suites - one verifying family constraints, one verifying single-product flexibility.
-          >
-          > This pattern is useful in frameworks that serve both simple use cases (factory method sufficient) and complex multi-platform cases (abstract factory needed).
+  > This is a fascinating edge case requiring careful design:
+  >
+  > ```python
+  > class ProductionStrategy(ABC):
+  >     @abstractmethod
+  >     def get_button(self, context: Context) -> Button:
+  >         """May create new or return cached, family-aware or not."""
+  >         pass
+  >
+  > class SimpleFactoryStrategy(ProductionStrategy):
+  >     """Uses Factory Method - no family constraints."""
+  >     def get_button(self, context: Context) -> Button:
+  >         return context.create_button()  # Factory Method call
+  >
+  > class FamilyFactoryStrategy(ProductionStrategy):
+  >     """Uses Abstract Factory - enforces family."""
+  >     def __init__(self, factory: WidgetFactory):
+  >         self.factory = factory
+  >
+  >     def get_button(self, context: Context) -> Button:
+  >         return self.factory.create_button()  # Abstract Factory call
+  >
+  > class Application:
+  >     def __init__(self, strategy: ProductionStrategy):
+  >         self.strategy = strategy  # Injected based on config
+  > ```
+  >
+  > **Implications**:
+  >
+  > 1. **Type System**: Both strategies must return the same abstract type (`Button`). The difference is in guarantees, not types.
+  >
+  > 2. **Family Safety**: When using `SimpleFactoryStrategy`, family mixing is possible. Client code can't assume safety.
+  >
+  > 3. **Capability Query**: Consider adding `strategy.guarantees_family_consistency() -> bool` so clients can adapt.
+  >
+  > 4. **Documentation**: The contract is behavioral, not structural. Must be clearly documented.
+  >
+  > 5. **Testing**: Each strategy needs separate test suites - one verifying family constraints, one verifying single-product flexibility.
+  >
+  > This pattern is useful in frameworks that serve both simple use cases (factory method sufficient) and complex multi-platform cases (abstract factory needed).
 
 </div>
 
-        ---
+  ---
 
-        ## Section 5: Implementation Deep Dive
+## Section 5: Implementation Deep Dive
 
-        ### 5.1 Python Implementation: Database Driver Factory
+### 5.1 Python Implementation: Database Driver Factory
 
         ```python
         from abc import ABC, abstractmethod
@@ -1364,7 +1364,7 @@ Creating an Abstract Factory when you only have one product family and no plans 
         main()
         ```
 
-        ### 5.2 Go Implementation: Cross-Platform File System
+### 5.2 Go Implementation: Cross-Platform File System
 
         ```go
         package main
@@ -1968,13 +1968,13 @@ Creating an Abstract Factory when you only have one product family and no plans 
         }
         ```
 
-        ---
+  ---
 
-        ## Section 6: Advanced Topics and Edge Cases
+## Section 6: Advanced Topics and Edge Cases
 
-        ### 6.1 Factory Composition: Combining Multiple Factories
+### 6.1 Factory Composition: Combining Multiple Factories
 
-        Sometimes systems need products from multiple factories:
+  Sometimes systems need products from multiple factories:
 
         ```python
         class CompositeCloudFactory:
@@ -2003,13 +2003,13 @@ Creating an Abstract Factory when you only have one product family and no plans 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 8px 0; color: #991b1b;">Design Trade-off: Composite Factories</h4>
 <p style="margin: 0; color: #7f1d1d; font-size: 14px;">
-            Composite factories sacrifice family consistency for flexibility. Use only when: (1) Products are truly independent, (2) Cross-provider communication is handled explicitly, (3) The performance/cost benefits outweigh the complexity. Document the "allowed combinations" clearly.
+  Composite factories sacrifice family consistency for flexibility. Use only when: (1) Products are truly independent, (2) Cross-provider communication is handled explicitly, (3) The performance/cost benefits outweigh the complexity. Document the "allowed combinations" clearly.
 </p>
 </div>
 
-        ### 6.2 Factory Caching and Singleton Integration
+### 6.2 Factory Caching and Singleton Integration
 
-        Factories often integrate with [[Singleton]](/topics/design-patterns/singleton):
+  Factories often integrate with [[Singleton]](/topics/design-patterns/singleton):
 
         ```python
         class FactoryRegistry:
@@ -2035,9 +2035,9 @@ Creating an Abstract Factory when you only have one product family and no plans 
         return self._factories[name]
         ```
 
-        ### 6.3 Lazy Product Creation
+### 6.3 Lazy Product Creation
 
-        For expensive products, defer creation:
+  For expensive products, defer creation:
 
         ```python
         class LazyDatabaseFactory(DatabaseFactory):
@@ -2056,7 +2056,7 @@ Creating an Abstract Factory when you only have one product family and no plans 
         return self._pool
         ```
 
-        ### 6.4 Testing with Mock Factories
+### 6.4 Testing with Mock Factories
 
         ```python
         class MockDatabaseFactory(DatabaseFactory[MockFamily]):
@@ -2086,30 +2086,30 @@ Creating an Abstract Factory when you only have one product family and no plans 
         assert len(self.created_connections) == expected
         ```
 
-        ---
+  ---
 
-        ## Section 7: Common Pitfalls and Anti-Patterns
+## Section 7: Common Pitfalls and Anti-Patterns
 
-        ### 7.1 The "God Factory" Anti-Pattern
+### 7.1 The "God Factory" Anti-Pattern
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 20px; margin: 20px 0;">
 <h4 style="margin: 0 0 12px 0; color: #991b1b;">Anti-Pattern: God Factory</h4>
 <div style="color: #7f1d1d; font-size: 14px;">
 <p><strong>Problem:</strong> Factory that creates too many unrelated products:</p>
 <pre style="background: #fee2e2; padding: 12px; border-radius: 4px; overflow-x: auto;">
-              class ApplicationFactory:
-              def create_database(self): ...
-              def create_cache(self): ...
-              def create_email_sender(self): ...  # Unrelated!
-              def create_pdf_generator(self): ... # Unrelated!
-              def create_logger(self): ...
-              def create_metrics(self): ...
+  class ApplicationFactory:
+  def create_database(self): ...
+  def create_cache(self): ...
+  def create_email_sender(self): ...  # Unrelated!
+  def create_pdf_generator(self): ... # Unrelated!
+  def create_logger(self): ...
+  def create_metrics(self): ...
 </pre>
 <p style="margin-top: 12px;"><strong>Solution:</strong> Split into multiple focused factories. Use [[Interface Segregation]](/topics/design-patterns/solid) principle.</p>
 </div>
 </div>
 
-        ### 7.2 Violating Liskov Substitution
+### 7.2 Violating Liskov Substitution
 
         ```python
         # BAD: Products behave differently across families
@@ -2128,9 +2128,9 @@ Creating an Abstract Factory when you only have one product family and no plans 
         # Client code expecting immediate click will break on Mac!
         ```
 
-        ### 7.3 Factory Configuration Explosion
+### 7.3 Factory Configuration Explosion
 
-        When factories have many configuration options, use [[Builder]](/topics/design-patterns/builder):
+  When factories have many configuration options, use [[Builder]](/topics/design-patterns/builder):
 
         ```python
         # BAD: Constructor with too many parameters
@@ -2161,63 +2161,63 @@ Creating an Abstract Factory when you only have one product family and no plans 
         .build())
         ```
 
-        ---
+  ---
 
-        ## Section 8: Related Patterns
+## Section 8: Related Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0;">
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Factory Method]](/topics/design-patterns/factory-method)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Single product creation via inheritance. Abstract Factory often composed of multiple Factory Methods.
+  Single product creation via inheritance. Abstract Factory often composed of multiple Factory Methods.
 </p>
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Builder]](/topics/design-patterns/builder)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Step-by-step construction. Use when products require complex configuration before creation.
+  Step-by-step construction. Use when products require complex configuration before creation.
 </p>
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Prototype]](/topics/design-patterns/prototype)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Clone-based creation. Alternative when products are expensive to create from scratch.
+  Clone-based creation. Alternative when products are expensive to create from scratch.
 </p>
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Singleton]](/topics/design-patterns/singleton)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Factories are often singletons. Ensures consistent factory instance across application.
+  Factories are often singletons. Ensures consistent factory instance across application.
 </p>
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Dependency Injection]](/topics/design-patterns/dependency-injection)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Factories are injected into clients. Enables testing and configuration flexibility.
+  Factories are injected into clients. Enables testing and configuration flexibility.
 </p>
 </div>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
 <h5 style="margin: 0 0 8px 0; color: #334155;">[[Strategy]](/topics/design-patterns/strategy)</h5>
 <p style="margin: 0; font-size: 13px; color: #64748b;">
-              Factory selection itself can be a strategy. Runtime factory switching based on context.
+  Factory selection itself can be a strategy. Runtime factory switching based on context.
 </p>
 </div>
 
 </div>
 
-        ---
+  ---
 
-        ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 
-          ### Pattern Essence
+### Pattern Essence
 <div style="color: #475569;">
 
             - **Intent**: Create families of related objects without specifying concrete classes
@@ -2226,40 +2226,40 @@ Creating an Abstract Factory when you only have one product family and no plans 
 
 </div>
 
-          ### Decision Checklist
+### Decision Checklist
 
-          | Question | If Yes |
-          |----------|--------|
-          | Multiple related objects that must work together? | Use Abstract Factory |
-          | Only one product type with variations? | Use Factory Method |
-          | Products need complex multi-step construction? | Combine with Builder |
-          | Only one product family, no plans for more? | Avoid - use direct construction |
-          | Products from different families can mix safely? | Consider Factory Method per product |
+  | Question | If Yes |
+  |----------|--------|
+  | Multiple related objects that must work together? | Use Abstract Factory |
+  | Only one product type with variations? | Use Factory Method |
+  | Products need complex multi-step construction? | Combine with Builder |
+  | Only one product family, no plans for more? | Avoid - use direct construction |
+  | Products from different families can mix safely? | Consider Factory Method per product |
 
-          ### Key Trade-offs
+### Key Trade-offs
 
-          | Aspect | Pro | Con |
-          |--------|-----|-----|
-          | Adding families | Easy - new factory class | N/A |
-          | Adding products | N/A | Hard - modify all factories |
-          | Testing | Mock factory injection | More interfaces to mock |
-          | Flexibility | Switch families at runtime | Locked into family constraints |
-          | Complexity | Clear separation | Additional abstraction layer |
+  | Aspect | Pro | Con |
+  |--------|-----|-----|
+  | Adding families | Easy - new factory class | N/A |
+  | Adding products | N/A | Hard - modify all factories |
+  | Testing | Mock factory injection | More interfaces to mock |
+  | Flexibility | Switch families at runtime | Locked into family constraints |
+  | Complexity | Clear separation | Additional abstraction layer |
 
-          ### Code Smell Indicators
+### Code Smell Indicators
           - Scattered `if/switch` on type for object creation
           - Products accidentally mixed from different sources
           - Difficulty testing due to concrete dependencies
           - Factory with 10+ unrelated creation methods (God Factory)
 
-          ### Implementation Checklist
-          1. Identify product families and product types
-          2. Define abstract product interfaces (one per product type)
-          3. Implement concrete products for each family
-          4. Define abstract factory interface
-          5. Implement concrete factory for each family
-          6. Client code depends only on abstract interfaces
-          7. Inject factory at composition root
-          8. Document family constraints and product relationships
+### Implementation Checklist
+  1. Identify product families and product types
+  2. Define abstract product interfaces (one per product type)
+  3. Implement concrete products for each family
+  4. Define abstract factory interface
+  5. Implement concrete factory for each family
+  6. Client code depends only on abstract interfaces
+  7. Inject factory at composition root
+  8. Document family constraints and product relationships
 
 </div>

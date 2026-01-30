@@ -383,7 +383,7 @@ class SagaExecutionCoordinator:
 </div>
 </div>
 
-  ### Pivot and Retriable Transactions
+### Pivot and Retriable Transactions
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">TRANSACTION CLASSIFICATION</h4>
@@ -425,7 +425,7 @@ Unlike ACID transactions, sagas do not provide isolation. This leads to three an
 <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Lost Updates</div>
 <div style="color: #1e293b; margin-bottom: 8px;">
-        Saga 1 reads X, Saga 2 reads X, Saga 1 writes X, Saga 2 writes X (overwrites Saga 1's change)
+  Saga 1 reads X, Saga 2 reads X, Saga 1 writes X, Saga 2 writes X (overwrites Saga 1's change)
 </div>
 <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Version numbers with optimistic locking, semantic locks</div>
 </div>
@@ -433,7 +433,7 @@ Unlike ACID transactions, sagas do not provide isolation. This leads to three an
 <div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
 <div style="color: #f78166; font-weight: bold; margin-bottom: 8px;">Dirty Reads</div>
 <div style="color: #1e293b; margin-bottom: 8px;">
-        Saga 2 reads data written by Saga 1's uncommitted (later compensated) transaction
+  Saga 2 reads data written by Saga 1's uncommitted (later compensated) transaction
 </div>
 <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Semantic locks prevent reading pending data, or use "read your own writes" pattern</div>
 </div>
@@ -441,7 +441,7 @@ Unlike ACID transactions, sagas do not provide isolation. This leads to three an
 <div style="background: rgba(137,87,229,0.1); border-radius: 8px; padding: 16px;">
 <div style="color: #8957e5; font-weight: bold; margin-bottom: 8px;">Non-Repeatable Reads</div>
 <div style="color: #1e293b; margin-bottom: 8px;">
-        Saga reads X, another saga modifies X, first saga reads X again and gets different value
+  Saga reads X, another saga modifies X, first saga reads X again and gets different value
 </div>
 <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Pass all needed data in saga context rather than re-reading from services</div>
 </div>
@@ -680,7 +680,7 @@ def consume(message):
 </div>
 </div>
 
-                              ### Breaking vs Non-Breaking Changes
+### Breaking vs Non-Breaking Changes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">CHANGE CLASSIFICATION</h4>
@@ -801,7 +801,7 @@ def consume(message):
 
 <div>
 <div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 16px;">
-        A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
+  A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
 </div>
 
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px;">
@@ -964,7 +964,7 @@ class DeadLetterQueueHandler:
 </div>
 </div>
 
-          ### DLQ Monitoring and Alerting
+### DLQ Monitoring and Alerting
 
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL METRICS TO MONITOR</div>
@@ -989,7 +989,7 @@ class DeadLetterQueueHandler:
 </div>
 </div>
 
-  ### DLQ vs Retry Topics
+### DLQ vs Retry Topics
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">RETRY TOPIC PATTERN (KAFKA)</h4>
@@ -1035,7 +1035,7 @@ class DeadLetterQueueHandler:
 </div>
 </div>
 
-    ### Interview Questions: Dead Letter Queues
+### Interview Questions: Dead Letter Queues
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>

@@ -55,26 +55,26 @@ Binary trees are hierarchical, recursive structures where each subtree is itself
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 FULL BINARY TREE:
 Every node has 0 or 2 children (never just 1)
-        1
-       / \
-      2   3       Valid Full Tree
-     / \
+  1
+  / \
+  2   3       Valid Full Tree
+/ \
     4   5
 
 COMPLETE BINARY TREE:
 All levels filled except possibly last, which is left-aligned
-        1
-       / \
-      2   3       Valid Complete Tree
-     / \  /
+  1
+  / \
+  2   3       Valid Complete Tree
+/ \  /
     4  5 6
 
 PERFECT BINARY TREE:
 All internal nodes have 2 children, all leaves at same level
-        1
-       / \
-      2   3       Valid Perfect Tree (also full and complete)
-     / \ / \
+  1
+  / \
+  2   3       Valid Perfect Tree (also full and complete)
+/ \ / \
     4  5 6  7
 
 BALANCED BINARY TREE:
@@ -89,10 +89,10 @@ Height = O(log n), guaranteeing efficient operations
 <h4 style="color: #1e293b; margin-top: 0;">DFS Traversal Orders</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
 Tree:
-        1
-       / \
-      2   3
-     / \   \
+  1
+  / \
+  2   3
+/ \   \
     4   5   6
 
 PRE-ORDER (Root -> Left -> Right): 1, 2, 4, 5, 3, 6
@@ -122,10 +122,10 @@ LEVEL-ORDER (BFS): 1, 2, 3, 4, 5, 6
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Branch Sums Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-        1
-       / \
-      2   3
-     / \ / \
+  1
+  / \
+  2   3
+/ \ / \
     4  5 6  7
    / \
   8   9
@@ -226,15 +226,15 @@ def node_depths_iterative(root):
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Diameter Visualization</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-        1
-       / \
-      3   2
-     / \
+  1
+  / \
+  3   2
+/ \
     7   4
    /     \
   8       5
-           \
-            6
+  \
+  6
 
 Diameter path: 8 -> 7 -> 3 -> 4 -> 5 -> 6
 Length: 6 edges (or 7 nodes, depending on definition)
@@ -330,13 +330,13 @@ def invert_binary_tree_bfs(tree):
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Max Path Sum Logic</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-        1
-       / \
-      2   3
-     / \   \
+  1
+  / \
+  2   3
+/ \   \
     4   5   6
-       / \
-      7   8
+  / \
+  7   8
 
 At each node, we consider:
 1. max_path_through_node = node + max(left_gain, 0) + max(right_gain, 0)
@@ -423,10 +423,10 @@ def height_balanced_binary_tree(tree):
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Distance K Strategy</h4>
 <pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-        1
-       / \
-      2   3
-     / \
+  1
+  / \
+  2   3
+/ \
     4   5
 
 Target: node 2, K: 2
@@ -677,8 +677,8 @@ def postorder(node):          def levelorder(root):
     postorder(node.left)          while queue:
     postorder(node.right)             node = queue.pop(0)
     process(node)                     process(node)
-                                      if node.left: queue.append(node.left)
-                                      if node.right: queue.append(node.right)
+  if node.left: queue.append(node.left)
+  if node.right: queue.append(node.right)
 
 Tree Properties:
   - Perfect tree with height h: 2^(h+1) - 1 nodes

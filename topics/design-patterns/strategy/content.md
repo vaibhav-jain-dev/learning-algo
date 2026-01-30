@@ -961,16 +961,16 @@ weekday_discount = conditional_strategy(
                   }
                   }
                   ```
-                  <br/>
-                  This provides flexibility while maintaining type safety. The context handles normalization, so clients can use whichever form is most convenient.
+  <br/>
+  This provides flexibility while maintaining type safety. The context handles normalization, so clients can use whichever form is most convenient.
 </div>
 </div>
 
-              ---
+  ---
 
-              ## Real-World Implementation: Payment Processing
+## Real-World Implementation: Payment Processing
 
-              Payment systems are a canonical Strategy pattern use case. Different payment methods have fundamentally different processing flows, fee structures, and validation requirements.
+  Payment systems are a canonical Strategy pattern use case. Different payment methods have fundamentally different processing flows, fee structures, and validation requirements.
 
               ```python
               from abc import ABC, abstractmethod
@@ -1527,14 +1527,14 @@ weekday_discount = conditional_strategy(
               print(f"Net amount: ${result.net_amount}")
               ```
 
-              ### Interview Deep-Dive: Payment Processing
+### Interview Deep-Dive: Payment Processing
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why is idempotency important in payment strategies?</div>
 <div style="color: #0c4a6e; line-height: 1.7;">
 <strong>Answer:</strong> Network failures can cause clients to retry payment requests. Without idempotency, a retry could charge the customer twice. The idempotency key ensures that even if the same request is sent multiple times, the payment is only processed once.
-                  <br/><br/>
-                  Implementation: store the idempotency key with the transaction result. On subsequent requests with the same key, return the stored result instead of processing again.
+  <br/><br/>
+  Implementation: store the idempotency key with the transaction result. On subsequent requests with the same key, return the stored result instead of processing again.
 </div>
 </div>
 
@@ -1542,7 +1542,7 @@ weekday_discount = conditional_strategy(
 <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you handle payment method failover (e.g., if credit card fails, try ACH)?</div>
 <div style="color: #701a75; line-height: 1.7;">
 <strong>Answer:</strong> Implement a fallback chain strategy:
-                  <br/><br/>
+  <br/><br/>
                   ```python
                   class FallbackPaymentStrategy(PaymentStrategy):
                   def __init__(self, primary: PaymentStrategy,
@@ -1568,8 +1568,8 @@ weekday_discount = conditional_strategy(
 
                   return result  # Return last failure
                   ```
-                  <br/>
-                  Key consideration: you need details for each fallback method. Either collect them upfront or prompt the user when fallback triggers.
+  <br/>
+  Key consideration: you need details for each fallback method. Either collect them upfront or prompt the user when fallback triggers.
 </div>
 </div>
 
@@ -1577,7 +1577,7 @@ weekday_discount = conditional_strategy(
 <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a payment system that handles currency conversion with strategies for different conversion providers.</div>
 <div style="color: #7f1d1d; line-height: 1.7;">
 <strong>Answer:</strong> Layer two strategy patterns - one for currency conversion, one for payment processing:
-                  <br/><br/>
+  <br/><br/>
                   ```python
                   class CurrencyConversionStrategy(ABC):
                   @abstractmethod
@@ -1618,14 +1618,14 @@ weekday_discount = conditional_strategy(
                   return self._payments[payment_method].process(
                   request, details)
                   ```
-                  <br/>
-                  The conversion strategy can swap between providers (XE, Wise, bank rates) based on amount, currency pair, or time of day. This separation lets you optimize conversion rates independently of payment processing.
+  <br/>
+  The conversion strategy can swap between providers (XE, Wise, bank rates) based on amount, currency pair, or time of day. This separation lets you optimize conversion rates independently of payment processing.
 </div>
 </div>
 
-              ---
+  ---
 
-              ## Design Choices and Trade-offs
+## Design Choices and Trade-offs
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Key Design Decisions</div>
@@ -1635,9 +1635,9 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.5rem;">Interface Granularity</div>
 <div style="font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
 <strong>Single method:</strong> Simple, focused strategies (SRP). Risk: proliferation of strategy interfaces.
-                      <br/>
+  <br/>
 <strong>Multiple methods:</strong> Related operations grouped together. Risk: strategies may not need all methods.
-                      <br/>
+  <br/>
 <strong>Recommendation:</strong> Start with single-method interfaces. Combine only when methods are always used together.
 </div>
 </div>
@@ -1646,9 +1646,9 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Constructor vs Setter Injection</div>
 <div style="font-size: 0.9rem; color: #166534; line-height: 1.6;">
 <strong>Constructor:</strong> Strategy is required, immutable after construction. Guarantees valid state.
-                      <br/>
+  <br/>
 <strong>Setter:</strong> Strategy can be changed at runtime. Requires null checks or default strategy.
-                      <br/>
+  <br/>
 <strong>Recommendation:</strong> Use constructor for mandatory strategies, setter for optional/changeable ones.
 </div>
 </div>
@@ -1657,9 +1657,9 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Strategy Lifecycle</div>
 <div style="font-size: 0.9rem; color: #92400e; line-height: 1.6;">
 <strong>Singleton strategies:</strong> Shared across contexts, must be stateless, memory efficient.
-                      <br/>
+  <br/>
 <strong>Per-context strategies:</strong> Can maintain state, more memory overhead, simpler reasoning.
-                      <br/>
+  <br/>
 <strong>Recommendation:</strong> Default to singletons. Use per-context only when state is truly needed.
 </div>
 </div>
@@ -1668,33 +1668,33 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 700; color: #9d174d; margin-bottom: 0.5rem;">Error Handling</div>
 <div style="font-size: 0.9rem; color: #9d174d; line-height: 1.6;">
 <strong>Exceptions:</strong> Natural error propagation, but requires try-catch everywhere.
-                      <br/>
+  <br/>
 <strong>Result objects:</strong> Explicit error handling, self-documenting, enables pattern matching.
-                      <br/>
+  <br/>
 <strong>Recommendation:</strong> Result objects for expected failures (validation), exceptions for unexpected errors.
 </div>
 </div>
 </div>
 </div>
 
-              ### Assumptions and Invariants
+### Assumptions and Invariants
 
 <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;">
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Common Assumptions (Document These!)</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.8;">
 <strong>1. Strategies are interchangeable:</strong> Any strategy should be substitutable for any other without breaking the context. Violated if strategies have different preconditions.
-                  <br/>
+  <br/>
 <strong>2. Strategies are side-effect free:</strong> Calling a strategy shouldn't change global state. Violated by strategies that log, cache, or modify shared resources.
-                  <br/>
+  <br/>
 <strong>3. Strategy selection is stable:</strong> Once selected, the strategy doesn't need to change mid-operation. Violated by long-running operations that should adapt.
-                  <br/>
+  <br/>
 <strong>4. Context provides complete information:</strong> Strategies receive everything they need. Violated when strategies need to fetch additional data.
 </div>
 </div>
 
-              ---
+  ---
 
-              ## Common Anti-Patterns and Solutions
+## Common Anti-Patterns and Solutions
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
 <div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Anti-Patterns to Avoid</div>
@@ -1703,7 +1703,7 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. The God Strategy</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Problem:</strong> Strategy interface with 10+ methods because "they're all related."
-                    <br/>
+  <br/>
 <strong>Solution:</strong> Split into focused interfaces. Use [[Interface Segregation]](/topics/solid/interface-segregation). A strategy should do one thing well.
 </div>
 </div>
@@ -1712,7 +1712,7 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Context-Dependent Strategies</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Problem:</strong> Strategies call methods on context or access context's private state.
-                    <br/>
+  <br/>
 <strong>Solution:</strong> Pass required data explicitly. Strategies should be testable in isolation without a real context.
 </div>
 </div>
@@ -1721,7 +1721,7 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Strategy Selection Spaghetti</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Problem:</strong> Complex if-else chains in client code to select strategies.
-                    <br/>
+  <br/>
 <strong>Solution:</strong> Extract selection logic into a factory or registry. Selection criteria become explicit and testable.
 </div>
 </div>
@@ -1730,7 +1730,7 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Leaky Abstractions</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Problem:</strong> Client code checks strategy type to handle special cases: <code>if isinstance(strategy, FastStrategy)</code>
-                    <br/>
+  <br/>
 <strong>Solution:</strong> Add methods to interface for capability queries, or use [[Visitor Pattern]](/topics/design-patterns/visitor) for type-specific behavior.
 </div>
 </div>
@@ -1739,15 +1739,15 @@ weekday_discount = conditional_strategy(
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Premature Strategy-fication</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 <strong>Problem:</strong> Creating strategy infrastructure for a single algorithm "for future flexibility."
-                    <br/>
+  <br/>
 <strong>Solution:</strong> YAGNI. Start with direct implementation. Refactor to Strategy when you actually have the second algorithm.
 </div>
 </div>
 </div>
 
-              ---
+  ---
 
-              ## Testing Strategies
+## Testing Strategies
 
               ```python
               import unittest
@@ -1850,9 +1850,9 @@ weekday_discount = conditional_strategy(
               mock_strategy.calculate_discount.assert_called_once()
               ```
 
-              ---
+  ---
 
-              ## Related Patterns
+## Related Patterns
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Pattern Relationships</div>
@@ -1890,9 +1890,9 @@ weekday_discount = conditional_strategy(
 </div>
 </div>
 
-              ---
+  ---
 
-              ## Summary: Interview Checklist
+## Summary: Interview Checklist
 
 <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: white;">
 <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Key Points for Interviews</div>

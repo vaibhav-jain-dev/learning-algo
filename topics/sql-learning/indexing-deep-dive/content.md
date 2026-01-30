@@ -259,15 +259,15 @@ The <span style="color: #22c55e; font-weight: 600;">B-Tree (Balanced Tree)</span
 <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 16px; border-radius: 8px;">
 <div style="font-size: 12px; color: #166534; font-weight: bold;">Bucket 42 Contents:</div>
 <div style="font-size: 13px; color: #166534; margin-top: 8px; font-family: monospace;">
-        'user@email.com' → Row 1847<br>
-          'test@mail.com' → Row 3921<br>
+  'user@email.com' → Row 1847<br>
+  'test@mail.com' → Row 3921<br>
 <span style="color: #92400e;">(collision chain)</span>
 </div>
 </div>
 </div>
 </div>
 
-    ### When to Use Hash Indexes
+### When to Use Hash Indexes
 
     ```sql
     -- Hash indexes are useful for exact equality on high-cardinality columns
@@ -301,7 +301,7 @@ The <span style="color: #22c55e; font-weight: 600;">B-Tree (Balanced Tree)</span
 </div>
 </div>
 
-    ### Hash Index Interview Questions (3 Levels Deep)
+### Hash Index Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: When would you choose a hash index over a B-Tree index?</h4>
@@ -323,9 +323,9 @@ The <span style="color: #22c55e; font-weight: 600;">B-Tree (Balanced Tree)</span
 
     ---
 
-    ## Section 3: Composite (Multi-Column) Indexes
+## Section 3: Composite (Multi-Column) Indexes
 
-    ### Deep Mechanics
+### Deep Mechanics
 
 A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes multiple columns together, stored as concatenated keys in the B-Tree. The <span style="color: #22c55e; font-weight: 600;">leftmost prefix rule</span> determines which queries can use the index.
 
@@ -343,17 +343,17 @@ A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes
 <p style="color: #a7f3d0; margin: 16px 0 0 0; font-size: 14px;">Keys are sorted lexicographically by concatenated values. Think of it like a phone book sorted by (LastName, FirstName).</p>
 </div>
 
-    ### Leftmost Prefix Rule Visualization
+### Leftmost Prefix Rule Visualization
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center;">Composite Index: (A, B, C)</h4>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
-        <!-- Can Use Index -->
+  <!-- Can Use Index -->
 <div>
 <h5 style="color: #166534; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
 <span style="background: #22c55e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 14px;">✓</span>
-            CAN Use Index
+  CAN Use Index
 </h5>
 <div style="display: flex; flex-direction: column; gap: 12px;">
 <div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
@@ -379,11 +379,11 @@ A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes
 </div>
 </div>
 
-        <!-- Cannot Use Index -->
+  <!-- Cannot Use Index -->
 <div>
 <h5 style="color: #991b1b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
 <span style="background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 14px;">✗</span>
-            CANNOT Use Index Efficiently
+  CANNOT Use Index Efficiently
 </h5>
 <div style="display: flex; flex-direction: column; gap: 12px;">
 <div style="background: #fef2f2; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
@@ -416,7 +416,7 @@ A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes
 </div>
 </div>
 
-    ### Column Order Strategy
+### Column Order Strategy
 
     ```sql
     -- WRONG: Low selectivity column first
@@ -436,7 +436,7 @@ A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes
     FROM orders;
     ```
 
-    ### Composite Index Interview Questions (3 Levels Deep)
+### Composite Index Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why does column order matter in a composite index?</h4>
@@ -458,9 +458,9 @@ A <span style="color: #22c55e; font-weight: 600;">composite index</span> indexes
 
     ---
 
-    ## Section 4: Covering Indexes and Index-Only Scans
+## Section 4: Covering Indexes and Index-Only Scans
 
-    ### Deep Mechanics
+### Deep Mechanics
 
 A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains all columns needed by a query, eliminating the need to access the heap (table data). This enables an <span style="color: #22c55e; font-weight: 600;">index-only scan</span>—the fastest possible query execution path.
 
@@ -471,15 +471,15 @@ A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains
 <div style="background: #fef2f2; border: 2px solid #ef4444; padding: 16px; border-radius: 8px; flex: 1;">
 <strong style="color: #991b1b;">Regular Index Scan (2 I/O operations)</strong>
 <div style="font-size: 13px; color: #78350f; margin-top: 8px;">
-              1. Read index → Find row pointer<br>
-                2. Read table page → Get column values<br>
+  1. Read index → Find row pointer<br>
+  2. Read table page → Get column values<br>
 <span style="color: #991b1b; font-style: italic;">Random I/O to heap = expensive</span>
 </div>
 </div>
 <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 16px; border-radius: 8px; flex: 1;">
 <strong style="color: #166534;">Index-Only Scan (1 I/O operation)</strong>
 <div style="font-size: 13px; color: #15803d; margin-top: 8px;">
-                  1. Read index → Get all column values directly<br>
+  1. Read index → Get all column values directly<br>
 <span style="color: #166534; font-style: italic;">No heap access = much faster</span>
 </div>
 </div>
@@ -487,13 +487,13 @@ A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains
 </div>
 </div>
 
-          ### Index-Only Scan Flow
+### Index-Only Scan Flow
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center;">Index-Only Scan vs Regular Index Scan</h4>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px;">
-              <!-- Regular Index Scan -->
+  <!-- Regular Index Scan -->
 <div>
 <h5 style="color: #991b1b; text-align: center; margin-bottom: 16px;">Regular Index Scan</h5>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
@@ -518,7 +518,7 @@ A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains
 </div>
 </div>
 
-              <!-- Index-Only Scan -->
+  <!-- Index-Only Scan -->
 <div>
 <h5 style="color: #166534; text-align: center; margin-bottom: 16px;">Index-Only Scan</h5>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
@@ -543,7 +543,7 @@ A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains
 </div>
 </div>
 
-          ### Creating Covering Indexes
+### Creating Covering Indexes
 
           ```sql
           -- PostgreSQL 11+ syntax with INCLUDE
@@ -566,7 +566,7 @@ A <span style="color: #22c55e; font-weight: 600;">covering index</span> contains
           -- 3. No overhead maintaining sort order for INCLUDE columns
           ```
 
-          ### Visibility Map and Index-Only Scans
+### Visibility Map and Index-Only Scans
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">PostgreSQL Visibility Map Requirement</h4>
@@ -580,7 +580,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 
-          ### Covering Index Interview Questions (3 Levels Deep)
+### Covering Index Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is a covering index and when should you use one?</h4>
@@ -600,29 +600,29 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Section 5: Index Selectivity
+## Section 5: Index Selectivity
 
-          ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color: #22c55e; font-weight: 600;">Index selectivity</span> measures how effectively an index filters rows. It's calculated as the ratio of distinct values to total rows: `selectivity = cardinality / total_rows`. A selectivity of 1.0 means every value is unique (perfect for indexing); near 0 means many duplicates (poor for indexing).
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
 <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Selectivity Formula</h4>
 <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #ffffff; padding: 20px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #e2e8f0;">
-              Selectivity = COUNT(DISTINCT column) / COUNT(*)<br><br>
+  Selectivity = COUNT(DISTINCT column) / COUNT(*)<br><br>
 <span style="font-size: 14px; color: #475569;">Higher selectivity = Better index candidate</span>
 </div>
 </div>
 
-              ### Selectivity Examples
+### Selectivity Examples
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center;">Selectivity Spectrum</h4>
 
 <div style="display: flex; align-items: stretch; margin-top: 24px; border-radius: 12px; overflow: hidden;">
-                  <!-- Poor selectivity -->
+  <!-- Poor selectivity -->
 <div style="background: linear-gradient(to bottom, #fef2f2, #fee2e2); flex: 1; padding: 20px; text-align: center; border-right: 2px solid white;">
 <div style="font-size: 12px; color: #991b1b; font-weight: bold;">POOR SELECTIVITY</div>
 <div style="font-size: 32px; font-weight: bold; color: #ef4444; margin: 12px 0;">~0.00001</div>
@@ -631,7 +631,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 <div style="background: white; border-radius: 6px; padding: 8px; margin-top: 12px; font-size: 11px; color: #78350f;">Index often ignored by planner</div>
 </div>
 
-                    <!-- Medium selectivity -->
+  <!-- Medium selectivity -->
 <div style="background: linear-gradient(to bottom, #fef3c7, #fde68a); flex: 1; padding: 20px; text-align: center; border-right: 2px solid white;">
 <div style="font-size: 12px; color: #92400e; font-weight: bold;">MEDIUM SELECTIVITY</div>
 <div style="font-size: 32px; font-weight: bold; color: #f59e0b; margin: 12px 0;">~0.001</div>
@@ -640,7 +640,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 <div style="background: white; border-radius: 6px; padding: 8px; margin-top: 12px; font-size: 11px; color: #78350f;">Useful with additional filters</div>
 </div>
 
-                      <!-- Good selectivity -->
+  <!-- Good selectivity -->
 <div style="background: linear-gradient(to bottom, #d1fae5, #a7f3d0); flex: 1; padding: 20px; text-align: center; border-right: 2px solid white;">
 <div style="font-size: 12px; color: #166534; font-weight: bold;">GOOD SELECTIVITY</div>
 <div style="font-size: 32px; font-weight: bold; color: #22c55e; margin: 12px 0;">~0.1</div>
@@ -649,7 +649,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 <div style="background: white; border-radius: 6px; padding: 8px; margin-top: 12px; font-size: 11px; color: #15803d;">Index likely to be used</div>
 </div>
 
-                      <!-- Perfect selectivity -->
+  <!-- Perfect selectivity -->
 <div style="background: linear-gradient(to bottom, #dbeafe, #bfdbfe); flex: 1; padding: 20px; text-align: center;">
 <div style="font-size: 12px; color: #1e40af; font-weight: bold;">PERFECT SELECTIVITY</div>
 <div style="font-size: 32px; font-weight: bold; color: #3b82f6; margin: 12px 0;">1.0</div>
@@ -660,7 +660,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 
-                  ### Calculating Selectivity
+### Calculating Selectivity
 
                   ```sql
                   -- Calculate selectivity for all columns in a table
@@ -689,7 +689,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
                   -- Result: 0.000003 (only 3 values in 1M rows)
                   ```
 
-                  ### Why Low-Selectivity Indexes Are Problematic
+### Why Low-Selectivity Indexes Are Problematic
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">The Math Behind Selectivity Decisions</h4>
@@ -722,7 +722,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 
-                  ### Selectivity Interview Questions (3 Levels Deep)
+### Selectivity Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is index selectivity and why does it matter for query performance?</h4>
@@ -742,11 +742,11 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Section 6: Query Planner and Optimizer
+## Section 6: Query Planner and Optimizer
 
-                  ### Deep Mechanics
+### Deep Mechanics
 
 The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimizer) analyzes SQL queries and generates an execution plan that minimizes estimated cost. It evaluates multiple strategies (index scan vs. sequential scan, join algorithms, join order) and selects the plan with lowest cost based on statistics.
 
@@ -772,7 +772,7 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 </div>
 </div>
 
-                  ### Understanding EXPLAIN Output
+### Understanding EXPLAIN Output
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Anatomy of EXPLAIN ANALYZE</h4>
@@ -826,7 +826,7 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 </div>
 </div>
 
-                  ### Scan Types Hierarchy
+### Scan Types Hierarchy
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center;">Scan Types: Best to Worst (for selective queries)</h4>
@@ -835,31 +835,31 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #22c55e; color: white; padding: 12px 20px; border-radius: 8px; min-width: 180px; text-align: center; font-weight: bold;">Index Only Scan</div>
 <div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px; color: #166534; font-size: 14px;">
-                          All data from index. No heap access. Fastest possible. Requires covering index + visibility map.
+  All data from index. No heap access. Fastest possible. Requires covering index + visibility map.
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 180px; text-align: center; font-weight: bold;">Index Scan</div>
 <div style="flex: 1; background: #dbeafe; padding: 12px 16px; border-radius: 8px; color: #1e40af; font-size: 14px;">
-                          Find rows via index, fetch from heap. Good for selective queries. Random I/O to heap.
+  Find rows via index, fetch from heap. Good for selective queries. Random I/O to heap.
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; min-width: 180px; text-align: center; font-weight: bold;">Bitmap Index Scan</div>
 <div style="flex: 1; background: #fef3c7; padding: 12px 16px; border-radius: 8px; color: #92400e; font-size: 14px;">
-                          Build bitmap of matching rows, then fetch. Reduces random I/O. Good for OR conditions, medium selectivity.
+  Build bitmap of matching rows, then fetch. Reduces random I/O. Good for OR conditions, medium selectivity.
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #ef4444; color: white; padding: 12px 20px; border-radius: 8px; min-width: 180px; text-align: center; font-weight: bold;">Sequential Scan</div>
 <div style="flex: 1; background: #fef2f2; padding: 12px 16px; border-radius: 8px; color: #991b1b; font-size: 14px;">
-                          Read entire table. Fast for small tables or low selectivity. Benefits from OS readahead.
+  Read entire table. Fast for small tables or low selectivity. Benefits from OS readahead.
 </div>
 </div>
 </div>
 </div>
 
-                  ### Query Planner Interview Questions (3 Levels Deep)
+### Query Planner Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: How does the query planner decide between using an index scan vs. sequential scan?</h4>
@@ -879,24 +879,24 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Section 7: Index Types Comparison
+## Section 7: Index Types Comparison
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center;">Complete Index Types Reference</h4>
 
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
-                        <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white;">
 <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Index Type</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Best For</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Operations</th>
 <th style="padding: 12px; text-align: left; border: 1px solid #2563eb;">Example</th>
 </tr>
-                        </thead>
-                        <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f0fdf4;">
 <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong style="color: #166534;">B-Tree</strong></td>
 <td style="padding: 12px; border: 1px solid #e2e8f0;">General purpose, most queries</td>
@@ -933,16 +933,16 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 <td style="padding: 12px; border: 1px solid #e2e8f0;">Similar to GiST, prefix-based</td>
 <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>CREATE INDEX idx ON t USING SPGIST(ip_addr)</code></td>
 </tr>
-                        </tbody>
+  </tbody>
 </table>
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Section 8: Index Maintenance and Monitoring
+## Section 8: Index Maintenance and Monitoring
 
-                  ### Monitoring Index Health
+### Monitoring Index Health
 
                   ```sql
                   -- Index size and usage statistics
@@ -982,7 +982,7 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
                   ORDER BY pg_total_relation_size(relid) DESC;
                   ```
 
-                  ### Index Rebuild Strategies
+### Index Rebuild Strategies
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">When to Rebuild Indexes</h4>
@@ -1019,9 +1019,9 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
                   ALTER INDEX idx_users_email_new RENAME TO idx_users_email;
                   ```
 
-                  ---
+  ---
 
-                  ## Best Practices Summary
+## Best Practices Summary
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
 <h4 style="margin-top: 0; color: #1e293b; font-size: 18px; text-align: center;">Index Design Checklist</h4>
@@ -1056,9 +1056,9 @@ The <span style="color: #22c55e; font-weight: 600;">query planner</span> (optimi
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Related Topics
+## Related Topics
 
                   - [[query-optimization]](/topic/sql-learning/query-optimization) - EXPLAIN analysis and query rewriting
                   - [[joins-mastery]](/topic/sql-learning/joins-mastery) - Join algorithms and optimization

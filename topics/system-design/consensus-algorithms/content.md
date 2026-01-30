@@ -143,7 +143,7 @@ In distributed systems, consensus is the foundation for building reliable databa
 <div style="background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px; max-width: 280px;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">The Key Insight</div>
 <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        If W + R > N, any read quorum overlaps with any write quorum. The shared node(s) have the latest write, ensuring reads see fresh data.
+  If W + R > N, any read quorum overlaps with any write quorum. The shared node(s) have the latest write, ensuring reads see fresh data.
 </div>
 </div>
 </div>
@@ -172,7 +172,7 @@ In distributed systems, consensus is the foundation for building reliable databa
 <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">CONSENSUS ALGORITHM COMPARISON</div>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
+  <thead>
 <tr style="border-bottom: 2px solid #cbd5e1;">
 <th style="padding: 12px; text-align: left; color: #1e40af;">Algorithm</th>
 <th style="padding: 12px; text-align: center; color: #1e40af;">Fault Model</th>
@@ -180,8 +180,8 @@ In distributed systems, consensus is the foundation for building reliable databa
 <th style="padding: 12px; text-align: center; color: #1e40af;">Message Complexity</th>
 <th style="padding: 12px; text-align: left; color: #1e40af;">Used In</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px; color: #1e293b; font-weight: 500;">Paxos</td>
 <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
@@ -224,7 +224,7 @@ In distributed systems, consensus is the foundation for building reliable databa
 <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
 <td style="padding: 12px; color: #64748b;">PBFT basis</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -547,9 +547,9 @@ Timeouts are randomized (e.g., 150-300ms) to prevent <span style="color:#16a34a;
 <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
 <div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">Log Matching Property</div>
 <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-      If two logs contain an entry with the same index and term, then:
-      <br/>1. They store the same command
-      <br/>2. All preceding entries are identical
+  If two logs contain an entry with the same index and term, then:
+  <br/>1. They store the same command
+  <br/>2. All preceding entries are identical
 </div>
 </div>
 </div>
@@ -672,18 +672,18 @@ Timeouts are randomized (e.g., 150-300ms) to prevent <span style="color:#16a34a;
 <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Partition A (Old Leader)</div>
 <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        Cannot commit new entries (no quorum)<br/>
+  Cannot commit new entries (no quorum)<br/>
 Existing leader becomes <strong>read-only</strong><br/>
-        Eventually steps down when term increases
+  Eventually steps down when term increases
 </div>
 </div>
 
 <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Partition B (New Leader)</div>
 <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        Election timeout triggers new election<br/>
-        New leader elected with higher term<br/>
-        Continues accepting writes normally
+  Election timeout triggers new election<br/>
+  New leader elected with higher term<br/>
+  Continues accepting writes normally
 </div>
 </div>
 </div>
@@ -744,14 +744,14 @@ Existing leader becomes <strong>read-only</strong><br/>
 <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; margin-bottom: 20px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">The Problem</div>
 <div style="color: #475569; font-size: 13px;">
-      Traitor B tells A "I'll attack" but tells C "I'll retreat". How can loyal generals agree?
+  Traitor B tells A "I'll attack" but tells C "I'll retreat". How can loyal generals agree?
 </div>
 </div>
 
 <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">BFT Solution (3f+1 nodes)</div>
 <div style="color: #475569; font-size: 13px;">
-      With 4 generals and 1 traitor: A, C, D share messages. Even if B lies differently to each, the 3 loyal generals see majority "ATTACK" and agree.
+  With 4 generals and 1 traitor: A, C, D share messages. Even if B lies differently to each, the 3 loyal generals see majority "ATTACK" and agree.
 </div>
 </div>
 </div>
@@ -765,30 +765,30 @@ Existing leader becomes <strong>read-only</strong><br/>
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #3b82f6;">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Phase 1: Pre-prepare</div>
 <div style="color: #475569; font-size: 13px;">
-        Primary (leader) broadcasts request to all replicas with sequence number
+  Primary (leader) broadcasts request to all replicas with sequence number
 </div>
 <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #3b82f6;">
-        Primary -> All: PRE-PREPARE(view, seq, request)
+  Primary -> All: PRE-PREPARE(view, seq, request)
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #f59e0b;">
 <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Phase 2: Prepare</div>
 <div style="color: #475569; font-size: 13px;">
-        Each replica broadcasts PREPARE to all others. Wait for 2f+1 matching prepares.
+  Each replica broadcasts PREPARE to all others. Wait for 2f+1 matching prepares.
 </div>
 <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #b45309;">
-        Replica i -> All: PREPARE(view, seq, digest, i)
+  Replica i -> All: PREPARE(view, seq, digest, i)
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
 <div style="color: #166534; font-weight: 700; margin-bottom: 8px;">Phase 3: Commit</div>
 <div style="color: #475569; font-size: 13px;">
-        Each replica broadcasts COMMIT. Wait for 2f+1 matching commits, then execute.
+  Each replica broadcasts COMMIT. Wait for 2f+1 matching commits, then execute.
 </div>
 <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #15803d;">
-        Replica i -> All: COMMIT(view, seq, i)
+  Replica i -> All: COMMIT(view, seq, i)
 </div>
 </div>
 </div>
@@ -797,17 +797,17 @@ Existing leader becomes <strong>read-only</strong><br/>
 <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
 <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Cost</div>
 <div style="color: #475569; font-size: 13px;">
-        O(n^2) messages per consensus<br/>
-        Limited to ~20-100 nodes<br/>
-        Higher latency than Raft/Paxos
+  O(n^2) messages per consensus<br/>
+  Limited to ~20-100 nodes<br/>
+  Higher latency than Raft/Paxos
 </div>
 </div>
 <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Benefit</div>
 <div style="color: #475569; font-size: 13px;">
-        Tolerates malicious nodes<br/>
-        Essential for blockchains<br/>
-        Cryptographic guarantees
+  Tolerates malicious nodes<br/>
+  Essential for blockchains<br/>
+  Cryptographic guarantees
 </div>
 </div>
 </div>
@@ -820,14 +820,14 @@ Existing leader becomes <strong>read-only</strong><br/>
 
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
+  <thead>
 <tr style="border-bottom: 2px solid #cbd5e1;">
 <th style="padding: 12px; text-align: left; color: #1e40af;">Scenario</th>
 <th style="padding: 12px; text-align: center; color: #1e40af;">Recommendation</th>
 <th style="padding: 12px; text-align: left; color: #1e40af;">Why</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px; color: #1e293b;">Internal microservices</td>
 <td style="padding: 12px; text-align: center;"><span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px;">CFT (Raft)</span></td>
@@ -853,7 +853,7 @@ Existing leader becomes <strong>read-only</strong><br/>
 <td style="padding: 12px; text-align: center;"><span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px;">BFT or CFT+Audit</span></td>
 <td style="padding: 12px; color: #64748b;">Depends on trust model</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>
@@ -1220,31 +1220,31 @@ func (n *RaftNode) sendHeartbeats() {
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
-  ### 1. Split Brain During Network Partitions
+### 1. Split Brain During Network Partitions
   **Problem**: Two leaders elected in different partitions.
 **Solution**: Require majority <span style="color:#16a34a;">quorum</span> for all operations. Minority partition becomes read-only.
 
-  ### 2. Forgetting to Persist State
+### 2. Forgetting to Persist State
   **Problem**: Node restarts and loses voted_for, causing double-voting.
   **Solution**: Always fsync currentTerm and votedFor before responding to RPCs.
 
-  ### 3. Election Timeout Too Short
+### 3. Election Timeout Too Short
   **Problem**: Constant elections during high latency, no progress.
   **Solution**: Set timeout to at least 10x your p99 network latency.
 
-  ### 4. Not Handling Stale Leaders
+### 4. Not Handling Stale Leaders
   **Problem**: Old leader continues accepting writes after partition heals.
   **Solution**: Check term in every operation; step down if stale.
 
-  ### 5. Log Divergence
+### 5. Log Divergence
   **Problem**: Followers have conflicting log entries after leader failure.
   **Solution**: Always overwrite conflicting entries (Raft's Log Matching property).
 
-  ### 6. Committing Entries from Previous Terms
+### 6. Committing Entries from Previous Terms
   **Problem**: Leader commits old-term entries that might be overwritten.
   **Solution**: Only commit entries from current term; previous entries commit indirectly.
 
-  ### 7. Ignoring Pre-Vote Optimization
+### 7. Ignoring Pre-Vote Optimization
   **Problem**: Isolated nodes rejoin and disrupt cluster with stale elections.
   **Solution**: Implement pre-vote: candidates check if they could win before incrementing term.
 
@@ -1256,7 +1256,7 @@ func (n *RaftNode) sendHeartbeats() {
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q1: Why is Raft preferred over Paxos in practice?
+### Q1: Why is Raft preferred over Paxos in practice?
 
 **Answer**: Raft is preferred because it was explicitly designed for understandability. It decomposes consensus into three independent sub-problems (<span style="color:#16a34a;">leader election</span>, <span style="color:#16a34a;">log replication</span>, <span style="color:#16a34a;">safety</span>), uses a strong leader model, and has clear state transitions. Paxos, while theoretically elegant, is notoriously difficult to implement correctly.
 
@@ -1268,9 +1268,9 @@ func (n *RaftNode) sendHeartbeats() {
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 1.1.1: Can Paxos outperform Raft in any scenario?**
+**Follow-up 1.1.1: Can Paxos outperform Raft in any scenario?**
 
-      Yes, in scenarios with multiple concurrent proposers or geo-distributed systems. Paxos doesn't require a stable leader, so it can make progress during leader churn. Multi-Paxos can also pipeline proposals more aggressively. Google Spanner uses Paxos partially because their geo-distributed setup benefits from its flexibility in leader placement and the ability to handle multiple data centers as first-class participants.
+  Yes, in scenarios with multiple concurrent proposers or geo-distributed systems. Paxos doesn't require a stable leader, so it can make progress during leader churn. Multi-Paxos can also pipeline proposals more aggressively. Google Spanner uses Paxos partially because their geo-distributed setup benefits from its flexibility in leader placement and the ability to handle multiple data centers as first-class participants.
 
 </div>
 </div>
@@ -1283,7 +1283,7 @@ func (n *RaftNode) sendHeartbeats() {
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 1.2.1: How do production systems mitigate leader failure impact?**
+**Follow-up 1.2.1: How do production systems mitigate leader failure impact?**
 
 Production systems use several techniques: (1) <span style="color:#16a34a;">Pre-vote optimization</span> to prevent disruptive elections, (2) <span style="color:#16a34a;">Leader stickiness</span> with lease-based leadership to reduce unnecessary elections, (3) <span style="color:#16a34a;">Client-side retries</span> with exponential backoff during elections, (4) <span style="color:#16a34a;">Multi-Raft</span> where data is sharded across multiple Raft groups (used by CockroachDB, TiKV) so leader failures affect only one shard.
 
@@ -1293,7 +1293,7 @@ Production systems use several techniques: (1) <span style="color:#16a34a;">Pre-
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q2: How does Raft handle network partitions?
+### Q2: How does Raft handle network partitions?
 
   **Answer**: During a partition, the minority side cannot elect a leader (lacks quorum) and becomes read-only. The majority side continues operating with a new leader if needed. When the partition heals, nodes in the minority catch up from the leader's log, and any stale leader steps down upon seeing a higher term.
 
@@ -1305,7 +1305,7 @@ Production systems use several techniques: (1) <span style="color:#16a34a;">Pre-
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 2.1.1: How do you prevent data loss for uncommitted entries?**
+**Follow-up 2.1.1: How do you prevent data loss for uncommitted entries?**
 
 Uncommitted entries on the old leader may be lost. This is by design - Raft only guarantees durability for <span style="color:#16a34a;">committed</span> entries (replicated to majority). Clients should not consider a write successful until receiving confirmation. For critical operations, use application-level acknowledgment (e.g., read-your-writes by reading back). Some systems implement "sticky sessions" to ensure clients always talk to the same replica until explicitly redirected.
 
@@ -1320,9 +1320,9 @@ Uncommitted entries on the old leader may be lost. This is by design - Raft only
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 2.2.1: Explain the ReadIndex optimization in detail.**
+**Follow-up 2.2.1: Explain the ReadIndex optimization in detail.**
 
-      ReadIndex allows linearizable reads without writing to the log: (1) Leader records current commitIndex as readIndex, (2) Leader sends heartbeat to confirm it's still leader, (3) Leader waits until appliedIndex >= readIndex, (4) Leader executes read. This avoids log writes for reads while maintaining linearizability. For follower reads, the follower asks the leader for the current commitIndex, then waits locally until it has applied that index. See [[database replication]](/topic/system-design/database-replication) for more on read consistency models.
+  ReadIndex allows linearizable reads without writing to the log: (1) Leader records current commitIndex as readIndex, (2) Leader sends heartbeat to confirm it's still leader, (3) Leader waits until appliedIndex >= readIndex, (4) Leader executes read. This avoids log writes for reads while maintaining linearizability. For follower reads, the follower asks the leader for the current commitIndex, then waits locally until it has applied that index. See [[database replication]](/topic/system-design/database-replication) for more on read consistency models.
 
 </div>
 </div>
@@ -1330,7 +1330,7 @@ Uncommitted entries on the old leader may be lost. This is by design - Raft only
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q3: What's the difference between crash and Byzantine failures?
+### Q3: What's the difference between crash and Byzantine failures?
 
 **Answer**: <span style="color:#16a34a;">Crash failures</span> assume nodes fail by stopping (fail-stop model) - they either work correctly or don't respond. <span style="color:#16a34a;">Byzantine failures</span> assume nodes can behave arbitrarily - lying, sending conflicting messages, or colluding. Crash-fault tolerant systems need 2f+1 nodes for f failures; Byzantine-fault tolerant systems need 3f+1.
 
@@ -1342,7 +1342,7 @@ Uncommitted entries on the old leader may be lost. This is by design - Raft only
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 3.1.1: How does PBFT achieve consensus with malicious nodes?**
+**Follow-up 3.1.1: How does PBFT achieve consensus with malicious nodes?**
 
 PBFT uses three phases with all-to-all communication: (1) <span style="color:#16a34a;">Pre-prepare</span>: leader broadcasts request, (2) <span style="color:#16a34a;">Prepare</span>: each node broadcasts to all others, waits for 2f+1 matching prepares, (3) <span style="color:#16a34a;">Commit</span>: each node broadcasts commit, waits for 2f+1 matching commits. The redundant communication (O(n^2) messages) ensures that even if Byzantine nodes send conflicting messages, honest nodes see consistent quorums. Cryptographic signatures prevent message forgery.
 
@@ -1357,7 +1357,7 @@ PBFT uses three phases with all-to-all communication: (1) <span style="color:#16
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 3.2.1: What are modern BFT optimizations for better performance?**
+**Follow-up 3.2.1: What are modern BFT optimizations for better performance?**
 
 Modern BFT systems use several optimizations: (1) <span style="color:#16a34a;">Speculative execution</span>: execute before full consensus, rollback if needed (Zyzzyva), (2) <span style="color:#16a34a;">Threshold signatures</span>: aggregate signatures to reduce message size, (3) <span style="color:#16a34a;">Trusted execution environments (TEE)</span>: use hardware enclaves to reduce Byzantine assumptions (CCF), (4) <span style="color:#16a34a;">HotStuff</span>: linear message complexity through pipelining and leader rotation, used by Facebook's Diem/Libra.
 
@@ -1367,7 +1367,7 @@ Modern BFT systems use several optimizations: (1) <span style="color:#16a34a;">S
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q4: How many failures can a 5-node Raft cluster tolerate?
+### Q4: How many failures can a 5-node Raft cluster tolerate?
 
   **Answer**: A 5-node cluster can tolerate 2 failures. With 5 nodes, the quorum (majority) is 3. As long as 3 nodes are alive, the cluster can elect a leader and commit entries. The formula is: with n nodes, tolerates (n-1)/2 failures.
 
@@ -1379,7 +1379,7 @@ Modern BFT systems use several optimizations: (1) <span style="color:#16a34a;">S
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 4.1.1: How do you handle multi-datacenter deployments with Raft?**
+**Follow-up 4.1.1: How do you handle multi-datacenter deployments with Raft?**
 
 Multi-DC deployments face a tradeoff: (1) <span style="color:#16a34a;">Quorum within single DC</span>: fast commits but vulnerable to DC failure, (2) <span style="color:#16a34a;">Quorum across DCs</span>: DC-failure tolerant but high latency (cross-DC round trips). Solutions include: (a) Witness nodes in third DC (just vote, don't store data), (b) Flexible Paxos with asymmetric quorums, (c) Multi-Raft with strategic shard placement. CockroachDB lets you configure "localities" to prefer same-region replicas. See [[availability]](/topic/system-design/availability) for more on multi-DC patterns.
 
@@ -1394,9 +1394,9 @@ Multi-DC deployments face a tradeoff: (1) <span style="color:#16a34a;">Quorum wi
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 4.2.1: Can you recover from loss of quorum without data loss?**
+**Follow-up 4.2.1: Can you recover from loss of quorum without data loss?**
 
-      If logs are intact on disk, yes - you can manually force a new configuration with the surviving nodes. This is an operational procedure, not automatic. etcd provides `--force-new-cluster` for this. CockroachDB has similar recovery procedures. The key insight is that Raft's safety guarantees are for the algorithm's operation - manual intervention with operational tools can bypass normal quorum requirements when necessary, but you must ensure no concurrent operations.
+  If logs are intact on disk, yes - you can manually force a new configuration with the surviving nodes. This is an operational procedure, not automatic. etcd provides `--force-new-cluster` for this. CockroachDB has similar recovery procedures. The key insight is that Raft's safety guarantees are for the algorithm's operation - manual intervention with operational tools can bypass normal quorum requirements when necessary, but you must ensure no concurrent operations.
 
 </div>
 </div>
@@ -1404,7 +1404,7 @@ Multi-DC deployments face a tradeoff: (1) <span style="color:#16a34a;">Quorum wi
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q5: Explain the difference between committed and applied in Raft.
+### Q5: Explain the difference between committed and applied in Raft.
 
 **Answer**: <span style="color:#16a34a;">Committed</span> means an entry is replicated on a majority of nodes and is guaranteed durable - it will never be lost or overwritten. <span style="color:#16a34a;">Applied</span> means the entry has been executed by the state machine, producing side effects (e.g., updating a database). Committed entries must be applied in order, but there's often a lag between commit and apply.
 
@@ -1416,7 +1416,7 @@ Multi-DC deployments face a tradeoff: (1) <span style="color:#16a34a;">Quorum wi
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 5.1.1: How do you handle slow state machine apply?**
+**Follow-up 5.1.1: How do you handle slow state machine apply?**
 
 If the state machine apply is slow (e.g., complex database operations), committed entries can queue up. Solutions: (1) <span style="color:#16a34a;">Async apply</span>: respond to client after commit, apply asynchronously (but track what's applied for reads), (2) <span style="color:#16a34a;">Batch apply</span>: group multiple entries into single state machine operation, (3) <span style="color:#16a34a;">Separate commit and apply threads</span>: parallelize the two operations, (4) <span style="color:#16a34a;">Snapshot-based recovery</span>: if too far behind, restore from snapshot instead of replaying log.
 
@@ -1431,9 +1431,9 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 5.2.1: How do snapshots interact with log compaction?**
+**Follow-up 5.2.1: How do snapshots interact with log compaction?**
 
-      Snapshots capture state machine state at a point in time (lastApplied). Once snapshotted, log entries before that index can be discarded. When a follower is very behind, the leader sends the snapshot instead of replaying the entire log. Key considerations: (1) Snapshot must be consistent (atomic point-in-time capture), (2) Include Raft metadata (term, index) in snapshot, (3) Handle partial snapshot transfers gracefully, (4) Don't discard entries that uncommitted followers still need.
+  Snapshots capture state machine state at a point in time (lastApplied). Once snapshotted, log entries before that index can be discarded. When a follower is very behind, the leader sends the snapshot instead of replaying the entire log. Key considerations: (1) Snapshot must be consistent (atomic point-in-time capture), (2) Include Raft metadata (term, index) in snapshot, (3) Handle partial snapshot transfers gracefully, (4) Don't discard entries that uncommitted followers still need.
 
 </div>
 </div>
@@ -1441,7 +1441,7 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q6: How does Raft prevent split-brain with an even number of nodes?
+### Q6: How does Raft prevent split-brain with an even number of nodes?
 
   **Answer**: Majority requires (n/2)+1 nodes. With 4 nodes, you need 3 to agree. Even in a perfect 2-2 split, neither side has 3 nodes, so neither can elect a leader. The cluster becomes unavailable rather than risking inconsistency. This is the [[CAP theorem]](/topic/system-design/cap-theorem) in action - Raft chooses consistency over availability during partitions.
 
@@ -1453,9 +1453,9 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 6.1.1: How do witnesses affect read scalability and recovery?**
+**Follow-up 6.1.1: How do witnesses affect read scalability and recovery?**
 
-      Witnesses can vote for leader election but cannot serve reads (no data). They can't become leader in most implementations. For recovery after majority loss, witnesses don't help - you need actual data nodes. In split-brain prevention, witnesses are valuable, but for data durability, you still need sufficient data-bearing replicas. Design your witness placement based on failure domain analysis, not just node count.
+  Witnesses can vote for leader election but cannot serve reads (no data). They can't become leader in most implementations. For recovery after majority loss, witnesses don't help - you need actual data nodes. In split-brain prevention, witnesses are valuable, but for data durability, you still need sufficient data-bearing replicas. Design your witness placement based on failure domain analysis, not just node count.
 
 </div>
 </div>
@@ -1468,9 +1468,9 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 6.2.1: What's the practical use case for flexible quorums?**
+**Follow-up 6.2.1: What's the practical use case for flexible quorums?**
 
-      Flexible quorums shine in geo-distributed systems. Example: 5 nodes across 3 DCs (2+2+1). With standard quorum (3), every write requires cross-DC round trip. With flexible quorum: write quorum of 3 (can be satisfied within single DC if you have 3 there), read quorum of 3 (ensures seeing latest write). You optimize for the common case (writes within DC) while maintaining safety. This is how Google Spanner achieves low latency despite global distribution.
+  Flexible quorums shine in geo-distributed systems. Example: 5 nodes across 3 DCs (2+2+1). With standard quorum (3), every write requires cross-DC round trip. With flexible quorum: write quorum of 3 (can be satisfied within single DC if you have 3 there), read quorum of 3 (ensures seeing latest write). You optimize for the common case (writes within DC) while maintaining safety. This is how Google Spanner achieves low latency despite global distribution.
 
 </div>
 </div>
@@ -1478,7 +1478,7 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-  ### Q7: What happens if a leader commits an entry but crashes before notifying followers?
+### Q7: What happens if a leader commits an entry but crashes before notifying followers?
 
   **Answer**: The entry is safe because it was replicated to a majority before commit. The new leader will necessarily have that entry (leader election requires the most up-to-date log). The new leader includes it in subsequent AppendEntries, and followers will commit it when they see the leader's higher commitIndex.
 
@@ -1490,9 +1490,9 @@ If the state machine apply is slow (e.g., complex database operations), committe
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 7.1.1: What about uncommitted entries from the old leader's current term?**
+**Follow-up 7.1.1: What about uncommitted entries from the old leader's current term?**
 
-      Uncommitted entries from the old leader's term might be lost if they weren't on a majority. The new leader might have different entries at those indices. This is safe because the client never received confirmation. However, there's a subtle issue: a new leader cannot immediately commit entries from previous terms by counting replicas. It must first commit an entry from its own term, which then indirectly commits all prior entries. This prevents the "figure 8" scenario in the Raft paper.
+  Uncommitted entries from the old leader's term might be lost if they weren't on a majority. The new leader might have different entries at those indices. This is safe because the client never received confirmation. However, there's a subtle issue: a new leader cannot immediately commit entries from previous terms by counting replicas. It must first commit an entry from its own term, which then indirectly commits all prior entries. This prevents the "figure 8" scenario in the Raft paper.
 
 </div>
 </div>
@@ -1505,9 +1505,9 @@ Clients should use <span style="color:#16a34a;">idempotent requests</span> with 
 
 <div style="background: rgba(139, 92, 246, 0.1); border-radius: 8px; padding: 12px; margin: 12px 0; border-left: 3px solid #8b5cf6;">
 
-      **Follow-up 7.2.1: How long should you keep client request IDs to prevent duplicates?**
+**Follow-up 7.2.1: How long should you keep client request IDs to prevent duplicates?**
 
-      This depends on your client timeout and retry policy. Typically: (1) Use client sessions with TTL (e.g., 30 seconds), (2) Store request ID -> response mapping in state machine, (3) Clean up entries when session expires or client explicitly ends session. For exactly-once semantics, you need persistent storage of request IDs. Some systems (like etcd) bound this by limiting concurrent client requests and using sequence numbers per session.
+  This depends on your client timeout and retry policy. Typically: (1) Use client sessions with TTL (e.g., 30 seconds), (2) Store request ID -> response mapping in state machine, (3) Clean up entries when session expires or client explicitly ends session. For exactly-once semantics, you need persistent storage of request IDs. Some systems (like etcd) bound this by limiting concurrent client requests and using sequence numbers per session.
 
 </div>
 </div>

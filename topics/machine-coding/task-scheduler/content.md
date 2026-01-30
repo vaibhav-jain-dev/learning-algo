@@ -35,9 +35,9 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #22c55e;">
 <div style="color: #166534; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Insert (Push)</div>
 <div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
-        1. Add element at end<br>
+  1. Add element at end<br>
 2. <span style="color: #ea580c;">Bubble-up</span>: swap with parent while smaller<br>
-            3. Stop when heap invariant restored
+  3. Stop when heap invariant restored
 </div>
 <div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
 </div>
@@ -45,8 +45,8 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="background: #fef2f2; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #ef4444;">
 <div style="color: #991b1b; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Extract-Min (Pop)</div>
 <div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
-            1. Remove root (min element)<br>
-              2. Move last element to root<br>
+  1. Remove root (min element)<br>
+  2. Move last element to root<br>
 3. <span style="color: #ea580c;">Bubble-down</span>: swap with smaller child
 </div>
 <div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(log n)</div>
@@ -55,9 +55,9 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="background: #f5f3ff; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px; border-left: 3px solid #8b5cf6;">
 <div style="color: #5b21b6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Peek</div>
 <div style="color: #1e293b; font-size: 11px; line-height: 1.8;">
-                1. Return root element<br>
-                  2. No modification needed<br>
-                    3. Heap unchanged
+  1. Return root element<br>
+  2. No modification needed<br>
+  3. Heap unchanged
 </div>
 <div style="color: #64748b; font-size: 10px; margin-top: 8px;">Time: O(1)</div>
 </div>
@@ -67,7 +67,7 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="background: #fff7ed; padding: 16px; border-radius: 8px; margin-top: 16px; border-left: 3px solid #f97316;">
 <div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Critical Insight: Decrease-Key Problem</div>
 <div style="color: #1e293b; font-size: 11px;">
-                  Standard binary heaps lack efficient decrease-key (needed for task rescheduling). Solutions:
+  Standard binary heaps lack efficient decrease-key (needed for task rescheduling). Solutions:
 <ul style="margin: 8px 0 0 16px; padding: 0;">
 <li><strong>Lazy deletion</strong>: Mark old entry invalid, insert new one. O(1) update but O(n) space waste</li>
 <li><strong>Index tracking</strong>: Maintain position map. O(log n) update with O(n) extra space</li>
@@ -79,80 +79,80 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
-              **Assumption**: Tasks arrive independently and uniformly over time.
+**Assumption**: Tasks arrive independently and uniformly over time.
 
-              **Trade-off Analysis: Data Structure Selection**
+**Trade-off Analysis: Data Structure Selection**
 
-              | Structure | Peek | Insert | Delete | Decrease-Key | Use Case |
-              |-----------|------|--------|--------|--------------|----------|
-              | Binary Heap | O(1) | O(log n) | O(n)* | O(n) | General purpose |
-              | Indexed Heap | O(1) | O(log n) | O(log n) | O(log n) | Frequent updates |
-              | Skip List | O(1) | O(log n) | O(log n) | O(log n) | Concurrent access |
-              | Timing Wheel | O(1) | O(1) | O(1) | O(1) | Fixed granularity |
+  | Structure | Peek | Insert | Delete | Decrease-Key | Use Case |
+  |-----------|------|--------|--------|--------------|----------|
+  | Binary Heap | O(1) | O(log n) | O(n)* | O(n) | General purpose |
+  | Indexed Heap | O(1) | O(log n) | O(log n) | O(log n) | Frequent updates |
+  | Skip List | O(1) | O(log n) | O(log n) | O(log n) | Concurrent access |
+  | Timing Wheel | O(1) | O(1) | O(1) | O(1) | Fixed granularity |
 
-              *Delete requires finding the element first
+*Delete requires finding the element first
 
-              **Design Choice**: For most schedulers, a binary heap with lazy deletion provides the best simplicity-to-performance ratio. Use timing wheels when you have millions of tasks with second-level granularity (like network timeouts).
+**Design Choice**: For most schedulers, a binary heap with lazy deletion provides the best simplicity-to-performance ratio. Use timing wheels when you have millions of tasks with second-level granularity (like network timeouts).
 
 </div>
 
-            #### Interview Questions: Priority Queue
+#### Interview Questions: Priority Queue
 
 <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
-              **Level 1**: Why use a min-heap instead of a sorted array for task scheduling?
+**Level 1**: Why use a min-heap instead of a sorted array for task scheduling?
 
-              <details>
-                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                Sorted arrays have O(n) insertion (shifting elements) but O(1) removal of minimum. Min-heaps have O(log n) for both. Since schedulers frequently insert new tasks, the heap's balanced performance wins. With 10,000 tasks, heap insertion takes ~13 comparisons vs 5,000 average shifts for sorted arrays.
+  Sorted arrays have O(n) insertion (shifting elements) but O(1) removal of minimum. Min-heaps have O(log n) for both. Since schedulers frequently insert new tasks, the heap's balanced performance wins. With 10,000 tasks, heap insertion takes ~13 comparisons vs 5,000 average shifts for sorted arrays.
 
-              </details>
+</details>
 
-              **Level 2**: How would you handle efficient task cancellation in a heap-based scheduler?
+**Level 2**: How would you handle efficient task cancellation in a heap-based scheduler?
 
-              <details>
-                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                Three approaches:
-                1. **Lazy deletion**: Mark task as cancelled, skip during extraction. Pros: O(1) cancel. Cons: Memory bloat, requires periodic cleanup.
-                2. **Index map**: Maintain `task_id -> heap_index` map. On cancel, swap with last element, bubble up/down. Pros: O(log n) cancel. Cons: Complex index maintenance.
-                3. **Soft state**: Store tasks in both heap and hash map. Hash map is source of truth for status. Heap position doesn't matter for cancelled tasks.
+  Three approaches:
+  1. **Lazy deletion**: Mark task as cancelled, skip during extraction. Pros: O(1) cancel. Cons: Memory bloat, requires periodic cleanup.
+  2. **Index map**: Maintain `task_id -> heap_index` map. On cancel, swap with last element, bubble up/down. Pros: O(log n) cancel. Cons: Complex index maintenance.
+  3. **Soft state**: Store tasks in both heap and hash map. Hash map is source of truth for status. Heap position doesn't matter for cancelled tasks.
 
-                Production systems typically use lazy deletion with periodic compaction when cancelled tasks exceed a threshold (e.g., 20% of heap).
+  Production systems typically use lazy deletion with periodic compaction when cancelled tasks exceed a threshold (e.g., 20% of heap).
 
-              </details>
+</details>
 
-              **Level 3**: Design a priority queue that supports O(1) insertion for tasks scheduled within the next hour, while maintaining correctness for all tasks.
+**Level 3**: Design a priority queue that supports O(1) insertion for tasks scheduled within the next hour, while maintaining correctness for all tasks.
 
-              <details>
-                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                Use a **Hierarchical Timing Wheel** combined with a heap:
+  Use a **Hierarchical Timing Wheel** combined with a heap:
 
-                1. **Near-future tasks (0-60 min)**: Timing wheel with 60 slots (1-minute granularity). Insert is O(1) - hash timestamp to slot.
-                2. **Far-future tasks (>60 min)**: Standard min-heap for arbitrary future times.
-                3. **Overflow handling**: Background thread moves tasks from heap to wheel as they enter the 60-minute window.
+  1. **Near-future tasks (0-60 min)**: Timing wheel with 60 slots (1-minute granularity). Insert is O(1) - hash timestamp to slot.
+  2. **Far-future tasks (>60 min)**: Standard min-heap for arbitrary future times.
+  3. **Overflow handling**: Background thread moves tasks from heap to wheel as they enter the 60-minute window.
 
-                This exploits the observation that most scheduled tasks execute within a short horizon. Netflix's scheduling system uses this pattern, achieving 99th percentile insert latency under 100 microseconds for millions of concurrent timers.
+  This exploits the observation that most scheduled tasks execute within a short horizon. Netflix's scheduling system uses this pattern, achieving 99th percentile insert latency under 100 microseconds for millions of concurrent timers.
 
-                The wheel "ticks" every minute, promoting slot tasks to execution queue. Heap only consulted when wheel slots empty and we need to refill from far-future tasks.
+  The wheel "ticks" every minute, promoting slot tasks to execution queue. Heap only consulted when wheel slots empty and we need to refill from far-future tasks.
 
-              </details>
+</details>
 
 </div>
 
-            ---
+  ---
 
-            ### 2. Cron Expression Parsing
+### 2. Cron Expression Parsing
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-              **The Cron Expression Format**
+**The Cron Expression Format**
 
-              Standard cron: `minute hour day-of-month month day-of-week`
+  Standard cron: `minute hour day-of-month month day-of-week`
 
-              Extended (6-field): `second minute hour day-of-month month day-of-week`
+  Extended (6-field): `second minute hour day-of-month month day-of-week`
 
 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="text-align: center; min-width: 100px;">
@@ -182,7 +182,7 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 </div>
 </div>
 
-              **Special Characters**:
+**Special Characters**:
               - `*` - Any value
               - `,` - Value list separator (`1,3,5`)
               - `-` - Range (`1-5`)
@@ -231,11 +231,11 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #f97316;">
 <div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Example: Parsing "*/15 9-17 * * MON-FRI"</div>
 <div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
-                    minute: */15 &#8594; {0, 15, 30, 45}<br>
-                      hour: 9-17 &#8594; {9, 10, 11, 12, 13, 14, 15, 16, 17}<br>
-                        day: * &#8594; {1, 2, ..., 31}<br>
-                          month: * &#8594; {1, 2, ..., 12}<br>
-                            dow: MON-FRI &#8594; {1, 2, 3, 4, 5}
+  minute: */15 &#8594; {0, 15, 30, 45}<br>
+  hour: 9-17 &#8594; {9, 10, 11, 12, 13, 14, 15, 16, 17}<br>
+  day: * &#8594; {1, 2, ..., 31}<br>
+  month: * &#8594; {1, 2, ..., 12}<br>
+  dow: MON-FRI &#8594; {1, 2, 3, 4, 5}
 </div>
 </div>
 
@@ -244,11 +244,11 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
-                      **Assumption**: Server timezone is consistent. Daylight saving time transitions are handled.
+**Assumption**: Server timezone is consistent. Daylight saving time transitions are handled.
 
-                      **The Next Execution Time Algorithm**
+**The Next Execution Time Algorithm**
 
-                      Given current time and cron expression, find the next valid execution time:
+  Given current time and cron expression, find the next valid execution time:
 
                       ```python
                       def next_execution(cron, from_time):
@@ -268,126 +268,126 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                       raise ValueError("No valid execution time in next 4 years")
                       ```
 
-                      **Trade-off**: Naive iteration vs smart jumping
+**Trade-off**: Naive iteration vs smart jumping
 
                       - **Naive**: Check every minute. Simple but slow for sparse schedules (`0 0 29 2 *` runs once every ~4 years)
                       - **Smart jumping**: Skip to next valid value per field. Complex but O(fields) per calculation
 
-                      **Design Choice**: Most production cron libraries use smart jumping with field-by-field advancement. When a field doesn't match, jump to its next valid value and reset all smaller fields.
+**Design Choice**: Most production cron libraries use smart jumping with field-by-field advancement. When a field doesn't match, jump to its next valid value and reset all smaller fields.
 
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
-                      **Edge Cases That Break Naive Implementations**
+**Edge Cases That Break Naive Implementations**
 
-                      1. **February 30th**: `0 0 30 2 *` - Never fires. Must detect impossible schedules.
+  1. **February 30th**: `0 0 30 2 *` - Never fires. Must detect impossible schedules.
 
-                      2. **DST Spring Forward**: 2:30 AM doesn't exist on spring-forward day. Options:
+  2. **DST Spring Forward**: 2:30 AM doesn't exist on spring-forward day. Options:
                       - Skip the execution entirely
                       - Execute at 3:00 AM instead
                       - Execute at 1:59 AM (before gap)
 
-                      3. **DST Fall Back**: 1:30 AM occurs twice. Options:
+  3. **DST Fall Back**: 1:30 AM occurs twice. Options:
                       - Execute twice (dangerous for non-idempotent tasks)
                       - Execute on first occurrence only
                       - Execute on second occurrence only
 
-                      4. **Day-of-month AND Day-of-week**: Does `0 0 15 * MON` mean "15th AND Monday" or "15th OR Monday"?
+  4. **Day-of-month AND Day-of-week**: Does `0 0 15 * MON` mean "15th AND Monday" or "15th OR Monday"?
                       - Original cron: OR semantics
                       - Quartz scheduler: AND semantics
                       - Must document clearly!
 
-                      5. **Leap seconds**: 23:59:60 exists on some days. Most systems ignore this.
+  5. **Leap seconds**: 23:59:60 exists on some days. Most systems ignore this.
 
 </div>
 
-                    #### Interview Questions: Cron Expressions
+#### Interview Questions: Cron Expressions
 
 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                      **Level 1**: Parse the cron expression `0 */2 * * *` and explain when it fires.
+**Level 1**: Parse the cron expression `0 */2 * * *` and explain when it fires.
 
-                      <details>
-                        <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
                         - minute: 0 (exactly on the hour)
                         - hour: */2 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22} (every 2 hours)
                         - day/month/dow: * (any)
 
-                        Fires at: 00:00, 02:00, 04:00, 06:00, 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00 every day.
+  Fires at: 00:00, 02:00, 04:00, 06:00, 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, 20:00, 22:00 every day.
 
-                      </details>
+</details>
 
-                      **Level 2**: How would you handle timezone-aware cron scheduling when users are in different timezones?
+**Level 2**: How would you handle timezone-aware cron scheduling when users are in different timezones?
 
-                      <details>
-                        <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                        Store and compute in UTC internally, convert for user display:
+  Store and compute in UTC internally, convert for user display:
 
-                        1. **Storage**: Store cron expression + user's timezone (e.g., "America/New_York")
-                        2. **Calculation**:
+  1. **Storage**: Store cron expression + user's timezone (e.g., "America/New_York")
+  2. **Calculation**:
                         ```python
                         user_tz = pytz.timezone(task.timezone)
                         now_in_user_tz = datetime.now(user_tz)
                         next_fire_user_tz = calculate_next(cron, now_in_user_tz)
                         next_fire_utc = next_fire_user_tz.astimezone(pytz.UTC)
                         ```
-                        3. **DST handling**: Use timezone-aware libraries (pytz, java.time.ZonedDateTime) that handle DST transitions.
+  3. **DST handling**: Use timezone-aware libraries (pytz, java.time.ZonedDateTime) that handle DST transitions.
 
-                        Critical: Never store just UTC offset (-05:00). Store timezone name so DST rules apply correctly.
+  Critical: Never store just UTC offset (-05:00). Store timezone name so DST rules apply correctly.
 
-                      </details>
+</details>
 
-                      **Level 3**: Design an efficient data structure to support querying "which tasks fire in the next N minutes" across 1 million cron-scheduled tasks.
+**Level 3**: Design an efficient data structure to support querying "which tasks fire in the next N minutes" across 1 million cron-scheduled tasks.
 
-                      <details>
-                        <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                        **Problem**: Computing next-fire for 1M tasks on every query is too slow.
+**Problem**: Computing next-fire for 1M tasks on every query is too slow.
 
-                        **Solution**: Pre-computed timeline with lazy refresh
+**Solution**: Pre-computed timeline with lazy refresh
 
-                        1. **Background worker**: Continuously computes next-fire times and maintains a sorted index:
+  1. **Background worker**: Continuously computes next-fire times and maintains a sorted index:
                         ```
                         next_fire_index: SortedDict[timestamp] -> Set[task_ids]
                         ```
 
-                        2. **Query "tasks in next N minutes"**:
+  2. **Query "tasks in next N minutes"**:
                         ```python
                         now = time.time()
                         return next_fire_index.range(now, now + N*60)
                         ```
-                        Time: O(log M + K) where M = unique timestamps, K = matching tasks
+  Time: O(log M + K) where M = unique timestamps, K = matching tasks
 
-                        3. **Index maintenance**:
+  3. **Index maintenance**:
                         - After task executes: Calculate new next-fire, insert into index
                         - Periodic cleanup: Remove past timestamps
                         - On cron update: Remove old entry, calculate new, insert
 
-                        4. **Memory optimization**: Only index next 24 hours. Tasks beyond that use on-demand calculation with caching.
+  4. **Memory optimization**: Only index next 24 hours. Tasks beyond that use on-demand calculation with caching.
 
-                        Airflow uses a similar approach with a "next_dagrun" precomputed column that's updated after each run.
+  Airflow uses a similar approach with a "next_dagrun" precomputed column that's updated after each run.
 
-                      </details>
+</details>
 
 </div>
 
-                    ---
+  ---
 
-                    ### 3. Distributed Scheduling
+### 3. Distributed Scheduling
 
 <div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
-                      **The Distributed Scheduling Challenge**
+**The Distributed Scheduling Challenge**
 
-                      Single-node schedulers don't scale. Multiple scheduler nodes introduce:
+  Single-node schedulers don't scale. Multiple scheduler nodes introduce:
                       - **Consistency**: Same task might be picked by multiple nodes
                       - **Availability**: Node failure shouldn't stop task execution
                       - **Partition tolerance**: Network splits shouldn't cause duplicate execution
 
-                      This is a classic [[CAP theorem]](/system-design/cap-theorem) trade-off scenario.
+  This is a classic [[CAP theorem]](/system-design/cap-theorem) trade-off scenario.
 
 </div>
 
@@ -469,9 +469,9 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
-                          **Assumption**: Network partitions are possible but rare. Clocks are synchronized within acceptable bounds (NTP).
+**Assumption**: Network partitions are possible but rare. Clocks are synchronized within acceptable bounds (NTP).
 
-                          **The Lock-Based Approach (Pessimistic)**
+**The Lock-Based Approach (Pessimistic)**
 
                           ```python
                           def try_execute_task(task_id):
@@ -488,12 +488,12 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                           return False  # Another node has the lock
                           ```
 
-                          **Trade-off**: Lock granularity
+**Trade-off**: Lock granularity
                           - **Task-level locks**: High parallelism but many lock operations
                           - **Partition-level locks**: Fewer locks but reduced parallelism
                           - **Global lock**: Simplest but defeats the purpose of distribution
 
-                          **Design Choice**: Task-level locks with lock pooling. Maintain a connection pool to Redis/ZooKeeper to amortize connection overhead.
+**Design Choice**: Task-level locks with lock pooling. Maintain a connection pool to Redis/ZooKeeper to amortize connection overhead.
 
 </div>
 
@@ -504,17 +504,17 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px;">The "Claim" Pattern</div>
 <div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
 <span style="color: #c2410c;">-- Atomic claim: only one node succeeds</span><br>
-                                UPDATE tasks<br>
-                                  SET status = 'running',<br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;claimed_by = 'node-1',<br>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;claimed_at = NOW()<br>
-                                        WHERE id = (SELECT id FROM tasks<br>
-                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE status = 'pending'<br>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND scheduled_time <= NOW()<br>
-                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER BY scheduled_time, priority DESC<br>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT 1<br>
+  UPDATE tasks<br>
+  SET status = 'running',<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;claimed_by = 'node-1',<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;claimed_at = NOW()<br>
+  WHERE id = (SELECT id FROM tasks<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE status = 'pending'<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND scheduled_time <= NOW()<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER BY scheduled_time, priority DESC<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT 1<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dc2626;">FOR UPDATE SKIP LOCKED</span>)<br>
-                                                    RETURNING *;
+  RETURNING *;
 </div>
 </div>
 
@@ -532,44 +532,44 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
-                                                **Critical Distributed Scheduling Pitfalls**
+**Critical Distributed Scheduling Pitfalls**
 
-                                                1. **Clock Skew**: Node A's clock is 5 seconds ahead. It picks up tasks "early" before they're due on other nodes. Solution: Use server-side timestamps (DB/Redis), not client timestamps.
+  1. **Clock Skew**: Node A's clock is 5 seconds ahead. It picks up tasks "early" before they're due on other nodes. Solution: Use server-side timestamps (DB/Redis), not client timestamps.
 
-                                                2. **Split Brain**: Two nodes both believe they're the leader. Both execute the same task. Solution: Fencing tokens - each task execution includes a monotonic token; storage rejects older tokens.
+  2. **Split Brain**: Two nodes both believe they're the leader. Both execute the same task. Solution: Fencing tokens - each task execution includes a monotonic token; storage rejects older tokens.
 
-                                                3. **Zombie Workers**: Node claims task, dies, task stays "running" forever. Solution: Heartbeat + timeout-based recovery (covered in failure recovery section).
+  3. **Zombie Workers**: Node claims task, dies, task stays "running" forever. Solution: Heartbeat + timeout-based recovery (covered in failure recovery section).
 
-                                                4. **Thundering Herd**: All N nodes poll database simultaneously on each tick. Solution: Jittered polling intervals, claim batches of tasks.
+  4. **Thundering Herd**: All N nodes poll database simultaneously on each tick. Solution: Jittered polling intervals, claim batches of tasks.
 
-                                                5. **Rebalancing Storms**: Node joins/leaves, all partitions reassign, massive state transfer. Solution: Consistent hashing with virtual nodes for minimal reassignment.
+  5. **Rebalancing Storms**: Node joins/leaves, all partitions reassign, massive state transfer. Solution: Consistent hashing with virtual nodes for minimal reassignment.
 
 </div>
 
-                                              #### Interview Questions: Distributed Scheduling
+#### Interview Questions: Distributed Scheduling
 
 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                **Level 1**: Why can't we simply use a shared database table with optimistic locking for distributed task scheduling?
+**Level 1**: Why can't we simply use a shared database table with optimistic locking for distributed task scheduling?
 
-                                                <details>
-                                                  <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                  Optimistic locking (version numbers/timestamps) causes high contention:
+  Optimistic locking (version numbers/timestamps) causes high contention:
 
-                                                  1. Node A reads task with version=1
-                                                  2. Node B reads same task with version=1
-                                                  3. Node A updates with version=2, succeeds
-                                                  4. Node B's update fails (version mismatch), must retry
+  1. Node A reads task with version=1
+  2. Node B reads same task with version=1
+  3. Node A updates with version=2, succeeds
+  4. Node B's update fails (version mismatch), must retry
 
-                                                  With N nodes and M due tasks, collision rate approaches 100% as N grows. Each collision wastes a round trip. Pessimistic locking (`SELECT FOR UPDATE SKIP LOCKED`) or distributed locks are preferred because they prevent the conflict upfront.
+  With N nodes and M due tasks, collision rate approaches 100% as N grows. Each collision wastes a round trip. Pessimistic locking (`SELECT FOR UPDATE SKIP LOCKED`) or distributed locks are preferred because they prevent the conflict upfront.
 
-                                                </details>
+</details>
 
-                                                **Level 2**: How would you implement leader election for a scheduler cluster using Redis?
+**Level 2**: How would you implement leader election for a scheduler cluster using Redis?
 
-                                                <details>
-                                                  <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
                                                   ```python
                                                   class RedisLeaderElection:
@@ -609,24 +609,24 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                   return self.is_leader
                                                   ```
 
-                                                  Critical: Use Lua script for refresh to ensure atomicity. Otherwise another node might acquire between GET and EXPIRE.
+  Critical: Use Lua script for refresh to ensure atomicity. Otherwise another node might acquire between GET and EXPIRE.
 
-                                                </details>
+</details>
 
-                                                **Level 3**: Design a scheduler that guarantees exactly-once execution even during network partitions, without relying on distributed transactions.
+**Level 3**: Design a scheduler that guarantees exactly-once execution even during network partitions, without relying on distributed transactions.
 
-                                                <details>
-                                                  <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                  **Approach: Idempotent execution + outbox pattern + deduplication**
+**Approach: Idempotent execution + outbox pattern + deduplication**
 
-                                                  1. **Task state machine with fencing**:
+  1. **Task state machine with fencing**:
                                                   ```sql
                                                   ALTER TABLE tasks ADD COLUMN fence_token BIGINT;
                                                   -- Monotonically increasing, assigned by coordinator
                                                   ```
 
-                                                  2. **Claim with fence token**:
+  2. **Claim with fence token**:
                                                   ```sql
                                                   UPDATE tasks
                                                   SET status = 'claimed',
@@ -636,7 +636,7 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                   RETURNING fence_token;
                                                   ```
 
-                                                  3. **Execution wrapper**:
+  3. **Execution wrapper**:
                                                   ```python
                                                   def execute_with_fence(task, fence_token):
                                                   # All downstream writes include fence_token
@@ -650,7 +650,7 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                   """, task.id, fence_token)
                                                   ```
 
-                                                  4. **Downstream idempotency**:
+  4. **Downstream idempotency**:
                                                   ```python
                                                   def process_payment(order_id, fence_token):
                                                   # Check if already processed with same or higher fence
@@ -670,27 +670,27 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                   return result
                                                   ```
 
-                                                  This ensures that even if two nodes somehow both try to execute (partition scenario), only the one with the valid fence token succeeds at writes. The other's writes are rejected, and its completion update fails.
+  This ensures that even if two nodes somehow both try to execute (partition scenario), only the one with the valid fence token succeeds at writes. The other's writes are rejected, and its completion update fails.
 
-                                                </details>
+</details>
 
 </div>
 
-                                              ---
+  ---
 
-                                              ### 4. Failure Recovery
+### 4. Failure Recovery
 
 <div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
-                                                **Failure Modes in Task Scheduling**
+**Failure Modes in Task Scheduling**
 
-                                                | Failure Type | Symptom | Recovery Strategy |
-                                                |-------------|---------|-------------------|
-                                                | Worker crash | Task stuck in "running" | Timeout-based detection, reassignment |
-                                                | Network partition | Worker alive but unreachable | Heartbeat failure, may cause duplicate |
-                                                | Task timeout | Execution exceeds limit | Kill task, mark failed, optional retry |
-                                                | Dependency failure | Upstream task failed | Skip dependent tasks or wait |
-                                                | Resource exhaustion | OOM, disk full | Graceful degradation, alerting |
+  | Failure Type | Symptom | Recovery Strategy |
+  |-------------|---------|-------------------|
+  | Worker crash | Task stuck in "running" | Timeout-based detection, reassignment |
+  | Network partition | Worker alive but unreachable | Heartbeat failure, may cause duplicate |
+  | Task timeout | Execution exceeds limit | Kill task, mark failed, optional retry |
+  | Dependency failure | Upstream task failed | Skip dependent tasks or wait |
+  | Resource exhaustion | OOM, disk full | Graceful degradation, alerting |
 
 </div>
 
@@ -704,20 +704,20 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 <div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Worker Heartbeat Loop</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8;">
-                                                        while running:<br>
-                                                          &nbsp;&nbsp;send_heartbeat(worker_id, current_task)<br>
-                                                            &nbsp;&nbsp;sleep(heartbeat_interval)
+  while running:<br>
+  &nbsp;&nbsp;send_heartbeat(worker_id, current_task)<br>
+  &nbsp;&nbsp;sleep(heartbeat_interval)
 </div>
 </div>
 
 <div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Recovery Monitor Loop</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8;">
-                                                            while running:<br>
-                                                              &nbsp;&nbsp;stale = find_stale_heartbeats(threshold)<br>
-                                                                &nbsp;&nbsp;for worker in stale:<br>
-                                                                  &nbsp;&nbsp;&nbsp;&nbsp;recover_tasks(worker)<br>
-                                                                    &nbsp;&nbsp;sleep(check_interval)
+  while running:<br>
+  &nbsp;&nbsp;stale = find_stale_heartbeats(threshold)<br>
+  &nbsp;&nbsp;for worker in stale:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;recover_tasks(worker)<br>
+  &nbsp;&nbsp;sleep(check_interval)
 </div>
 </div>
 
@@ -737,9 +737,9 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
-                                                                **Assumption**: Task execution is either idempotent or has built-in deduplication.
+**Assumption**: Task execution is either idempotent or has built-in deduplication.
 
-                                                                **Retry Strategies with [[Exponential Backoff]](/algorithms/exponential-backoff)**
+**Retry Strategies with [[Exponential Backoff]](/algorithms/exponential-backoff)**
 
                                                                 ```python
                                                                 def calculate_retry_delay(attempt, base_delay=1, max_delay=3600, jitter=True):
@@ -764,16 +764,16 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                                 # Attempt 12+: ~0-3600s (capped)
                                                                 ```
 
-                                                                **Trade-off**: Retry policy options
+**Trade-off**: Retry policy options
 
-                                                                | Policy | Behavior | Use Case |
-                                                                |--------|----------|----------|
-                                                                | Fixed delay | Same wait between retries | Idempotent, predictable failures |
-                                                                | Linear backoff | Delay increases by fixed amount | Rate-limited APIs |
-                                                                | Exponential backoff | Delay doubles each time | Transient failures, overload |
-                                                                | Exponential + jitter | Randomized exponential | Thundering herd prevention |
+  | Policy | Behavior | Use Case |
+  |--------|----------|----------|
+  | Fixed delay | Same wait between retries | Idempotent, predictable failures |
+  | Linear backoff | Delay increases by fixed amount | Rate-limited APIs |
+  | Exponential backoff | Delay doubles each time | Transient failures, overload |
+  | Exponential + jitter | Randomized exponential | Thundering herd prevention |
 
-                                                                **Design Choice**: Exponential backoff with full jitter is the default for modern systems. It spreads retry load over time, preventing synchronized retry storms after an outage recovers.
+**Design Choice**: Exponential backoff with full jitter is the default for modern systems. It spreads retry load over time, preventing synchronized retry storms after an outage recovers.
 
 </div>
 
@@ -843,49 +843,49 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
-                                                                          **The "Stuck Task" Problem**
+**The "Stuck Task" Problem**
 
-                                                                          Scenario: Worker claims task, starts execution, hangs indefinitely (deadlock, infinite loop, waiting on external resource).
+  Scenario: Worker claims task, starts execution, hangs indefinitely (deadlock, infinite loop, waiting on external resource).
 
-                                                                          **Detection Approaches**:
+**Detection Approaches**:
 
-                                                                          1. **Heartbeat-based**: Worker sends periodic "I'm alive and working on task X" messages. Absence indicates death.
+  1. **Heartbeat-based**: Worker sends periodic "I'm alive and working on task X" messages. Absence indicates death.
 
-                                                                          2. **Visibility timeout**: Task becomes invisible to other workers for T seconds. If not completed within T, becomes visible again for retry. (SQS model)
+  2. **Visibility timeout**: Task becomes invisible to other workers for T seconds. If not completed within T, becomes visible again for retry. (SQS model)
 
-                                                                          3. **Lease-based**: Worker acquires time-limited lease. Must renew periodically. Expired lease = task available for reprocessing.
+  3. **Lease-based**: Worker acquires time-limited lease. Must renew periodically. Expired lease = task available for reprocessing.
 
-                                                                          **Recovery Approaches**:
+**Recovery Approaches**:
 
-                                                                          1. **Timeout + Retry**: After visibility timeout, another worker picks up. Original might still be running (duplicate risk).
+  1. **Timeout + Retry**: After visibility timeout, another worker picks up. Original might still be running (duplicate risk).
 
-                                                                          2. **Process killing**: Monitor sends SIGTERM to stuck process, waits, then SIGKILL. Requires process visibility.
+  2. **Process killing**: Monitor sends SIGTERM to stuck process, waits, then SIGKILL. Requires process visibility.
 
-                                                                          3. **Checkpoint-resume**: Task periodically saves progress. On recovery, resume from last checkpoint rather than restart.
+  3. **Checkpoint-resume**: Task periodically saves progress. On recovery, resume from last checkpoint rather than restart.
 
 </div>
 
-                                                                        #### Interview Questions: Failure Recovery
+#### Interview Questions: Failure Recovery
 
 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                          **Level 1**: What's the difference between at-least-once and at-most-once task execution semantics?
+**Level 1**: What's the difference between at-least-once and at-most-once task execution semantics?
 
-                                                                          <details>
-                                                                            <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                            **At-most-once**: Task executed 0 or 1 times. Achieved by acknowledging before execution. If worker dies during execution, task is lost. Use for: logging, metrics, non-critical notifications.
+**At-most-once**: Task executed 0 or 1 times. Achieved by acknowledging before execution. If worker dies during execution, task is lost. Use for: logging, metrics, non-critical notifications.
 
-                                                                            **At-least-once**: Task executed 1 or more times. Achieved by acknowledging after execution. If worker dies after execution but before ack, task is re-executed. Use for: payments (with idempotency), order processing.
+**At-least-once**: Task executed 1 or more times. Achieved by acknowledging after execution. If worker dies after execution but before ack, task is re-executed. Use for: payments (with idempotency), order processing.
 
-                                                                            **Exactly-once**: Task executed exactly 1 time. Requires idempotent operations + at-least-once delivery + deduplication. Hardest to achieve.
+**Exactly-once**: Task executed exactly 1 time. Requires idempotent operations + at-least-once delivery + deduplication. Hardest to achieve.
 
-                                                                          </details>
+</details>
 
-                                                                          **Level 2**: Design a visibility timeout mechanism for a database-backed task queue.
+**Level 2**: Design a visibility timeout mechanism for a database-backed task queue.
 
-                                                                          <details>
-                                                                            <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
                                                                             ```sql
                                                                             -- Schema
@@ -926,14 +926,14 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                                             -- visible when visible_after passes
                                                                             ```
 
-                                                                            The key insight: `visible_after` serves dual purpose - scheduling AND failure recovery. Processing tasks with old `visible_after` are implicitly "timed out" and become claimable.
+  The key insight: `visible_after` serves dual purpose - scheduling AND failure recovery. Processing tasks with old `visible_after` are implicitly "timed out" and become claimable.
 
-                                                                          </details>
+</details>
 
-                                                                          **Level 3**: How would you implement checkpoint-based recovery for long-running tasks that process millions of records?
+**Level 3**: How would you implement checkpoint-based recovery for long-running tasks that process millions of records?
 
-                                                                          <details>
-                                                                            <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
                                                                             ```python
                                                                             class CheckpointedTask:
@@ -973,34 +973,34 @@ Design a task scheduler that executes tasks at specified times or intervals. Sup
                                                                             return state
                                                                             ```
 
-                                                                            **Checkpoint design considerations**:
+**Checkpoint design considerations**:
 
-                                                                            1. **Frequency**: Every N records or every T seconds. Balance between recovery granularity and checkpoint overhead.
+  1. **Frequency**: Every N records or every T seconds. Balance between recovery granularity and checkpoint overhead.
 
-                                                                            2. **Atomicity**: If processing and checkpointing aren't atomic, records between last checkpoint and failure may be processed twice. Solution: Process batch, checkpoint, then commit batch to output.
+  2. **Atomicity**: If processing and checkpointing aren't atomic, records between last checkpoint and failure may be processed twice. Solution: Process batch, checkpoint, then commit batch to output.
 
-                                                                            3. **Checkpoint storage**:
+  3. **Checkpoint storage**:
                                                                             - Redis: Fast but volatile. Use for short-lived tasks.
                                                                             - Database: Durable. Use for critical long-running tasks.
                                                                             - Object storage (S3): For very large state that doesn't fit in Redis/DB.
 
-                                                                            4. **Checkpoint compaction**: For tasks that run forever (streams), periodically compact old checkpoints to prevent unbounded growth.
+  4. **Checkpoint compaction**: For tasks that run forever (streams), periodically compact old checkpoints to prevent unbounded growth.
 
-                                                                          </details>
+</details>
 
 </div>
 
-                                                                        ---
+  ---
 
-                                                                        ### 5. Job Dependencies and DAG Execution
+### 5. Job Dependencies and DAG Execution
 
 <div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
-                                                                          **Why Job Dependencies Matter**
+**Why Job Dependencies Matter**
 
 Real-world workflows rarely consist of independent tasks. <span style="color: #166534;">**Data pipelines**</span>, <span style="color: #166534;">**ETL processes**</span>, and <span style="color: #166534;">**CI/CD builds**</span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.
 
-                                                                          **The Core Problem**: How do you ensure Task B doesn't start until Task A completes successfully, while maximizing parallelism across independent branches?
+**The Core Problem**: How do you ensure Task B doesn't start until Task A completes successfully, while maximizing parallelism across independent branches?
 
 **Solution**: Model workflows as <span style="color: #166534;">**Directed Acyclic Graphs (DAGs)**</span> where nodes are tasks and edges represent dependencies.
 
@@ -1071,9 +1071,9 @@ Real-world workflows rarely consist of independent tasks. <span style="color: #1
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
-                                                                          **Assumption**: Tasks within a DAG share execution context (variables, outputs).
+**Assumption**: Tasks within a DAG share execution context (variables, outputs).
 
-                                                                          **Dependency Resolution Algorithm** using [[Topological Sort]](/algorithms/topological-sort):
+**Dependency Resolution Algorithm** using [[Topological Sort]](/algorithms/topological-sort):
 
                                                                           ```python
                                                                           class DAGScheduler:
@@ -1123,16 +1123,16 @@ Real-world workflows rarely consist of independent tasks. <span style="color: #1
                                                                           return any(dfs(t) for t in self.tasks if color[t] == WHITE)
                                                                           ```
 
-                                                                          **Trade-off**: Dependency specification approaches
+**Trade-off**: Dependency specification approaches
 
-                                                                          | Approach | Syntax | Pros | Cons |
-                                                                          |----------|--------|------|------|
-                                                                          | Explicit edges | `task_b.depends_on(task_a)` | Clear, flexible | Verbose for many deps |
-                                                                          | Decorator-based | `@depends_on("task_a")` | Concise | Magic behavior |
-                                                                          | Return-value based | `task_b(task_a())` | Type-safe | Forces single upstream |
-                                                                          | Configuration file | YAML/JSON DAG definition | External tooling | Separate from code |
+  | Approach | Syntax | Pros | Cons |
+  |----------|--------|------|------|
+  | Explicit edges | `task_b.depends_on(task_a)` | Clear, flexible | Verbose for many deps |
+  | Decorator-based | `@depends_on("task_a")` | Concise | Magic behavior |
+  | Return-value based | `task_b(task_a())` | Type-safe | Forces single upstream |
+  | Configuration file | YAML/JSON DAG definition | External tooling | Separate from code |
 
-                                                                          **Design Choice**: Apache Airflow uses explicit `>>` operator (`task_a >> task_b`) for readability. Prefect uses return values for type safety. Choose based on team familiarity.
+**Design Choice**: Apache Airflow uses explicit `>>` operator (`task_a >> task_b`) for readability. Prefect uses return values for type safety. Choose based on team familiarity.
 
 </div>
 
@@ -1205,7 +1205,7 @@ Real-world workflows rarely consist of independent tasks. <span style="color: #1
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
-                                                                              **Critical Edge Cases in Dependency Management**
+**Critical Edge Cases in Dependency Management**
 
 1. <span style="color: #166534;">**Diamond Dependencies**</span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.
 
@@ -1222,20 +1222,20 @@ Real-world workflows rarely consist of independent tasks. <span style="color: #1
 
 </div>
 
-                                                                            #### Interview Questions: Job Dependencies
+#### Interview Questions: Job Dependencies
 
 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                              **Level 1**: What happens if you have a cycle in your task dependency graph?
+**Level 1**: What happens if you have a cycle in your task dependency graph?
 
-                                                                              <details>
-                                                                                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
 A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span style="color: #166534;">**deadlock**</span>.
 
-                                                                                **Detection**: Run [[cycle detection]](/algorithms/graph-cycle-detection) using DFS. If you find a back edge (edge to a node currently in the recursion stack), there's a cycle.
+**Detection**: Run [[cycle detection]](/algorithms/graph-cycle-detection) using DFS. If you find a back edge (edge to a node currently in the recursion stack), there's a cycle.
 
-                                                                                **Prevention**: Validate DAG structure at definition time, before any task executes. Reject workflows with cycles.
+**Prevention**: Validate DAG structure at definition time, before any task executes. Reject workflows with cycles.
 
                                                                                 ```python
                                                                                 def validate_dag(dependencies):
@@ -1259,16 +1259,16 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                 return processed == len(dependencies)  # False if cycle exists
                                                                                 ```
 
-                                                                              </details>
+</details>
 
-                                                                              **Level 2**: How would you implement partial DAG re-execution after a mid-pipeline failure?
+**Level 2**: How would you implement partial DAG re-execution after a mid-pipeline failure?
 
-                                                                              <details>
-                                                                                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                                Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume from task 3 without re-running tasks 1-2.
+  Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume from task 3 without re-running tasks 1-2.
 
-                                                                                **Implementation**:
+**Implementation**:
 
 1. <span style="color: #166534;">**Persist task outputs**</span>: Store each task's output with execution ID
                                                                                 ```python
@@ -1302,18 +1302,18 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 
 4. <span style="color: #166534;">**Dependency resolution**</span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.
 
-                                                                                Airflow calls this "clearing" a task - it resets the task and all downstream tasks to pending state.
+  Airflow calls this "clearing" a task - it resets the task and all downstream tasks to pending state.
 
-                                                                              </details>
+</details>
 
-                                                                              **Level 3**: Design a scheduler that supports dynamic task fan-out where one task spawns N child tasks at runtime, and a downstream task must wait for all N to complete.
+**Level 3**: Design a scheduler that supports dynamic task fan-out where one task spawns N child tasks at runtime, and a downstream task must wait for all N to complete.
 
-                                                                              <details>
-                                                                                <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                                **Challenge**: Traditional DAGs have static structure. Here, the number of child tasks is unknown until runtime.
+**Challenge**: Traditional DAGs have static structure. Here, the number of child tasks is unknown until runtime.
 
-                                                                                **Solution: Dynamic Task Groups with Barrier Synchronization**
+**Solution: Dynamic Task Groups with Barrier Synchronization**
 
                                                                                 ```python
                                                                                 class DynamicDAGScheduler:
@@ -1401,7 +1401,7 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                 return (self.success_count + self.failure_count) == self.expected
                                                                                 ```
 
-                                                                                **Key Design Decisions**:
+**Key Design Decisions**:
 
 1. <span style="color: #166534;">**Group abstraction**</span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.
 
@@ -1415,30 +1415,30 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                 return [outputs[f"{group_id}_{i}"] for i in range(barrier.expected)]
                                                                                 ```
 
-                                                                                Real-world example: Airflow's `expand()` (formerly `mapped tasks`) implements exactly this pattern.
+  Real-world example: Airflow's `expand()` (formerly `mapped tasks`) implements exactly this pattern.
 
-                                                                              </details>
+</details>
 
 </div>
 
-                                                                            ---
+  ---
 
-                                                                            ### 6. Idempotency
+### 6. Idempotency
 
 <div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
-                                                                              **Why Idempotency is Non-Negotiable for Schedulers**
+**Why Idempotency is Non-Negotiable for Schedulers**
 
-                                                                              In distributed systems, exactly-once delivery is a myth. Networks fail, workers crash, retries happen. Your system WILL execute the same task multiple times. The question is: will that break things?
+  In distributed systems, exactly-once delivery is a myth. Networks fail, workers crash, retries happen. Your system WILL execute the same task multiple times. The question is: will that break things?
 
-                                                                              **Definition**: An operation is idempotent if executing it multiple times has the same effect as executing it once.
+**Definition**: An operation is idempotent if executing it multiple times has the same effect as executing it once.
 
-                                                                              **Idempotent operations**:
+**Idempotent operations**:
                                                                               - `SET user.email = 'new@email.com'` (absolute assignment)
                                                                               - `DELETE FROM users WHERE id = 5`
                                                                               - `PUT /api/users/5` (full replacement)
 
-                                                                              **Non-idempotent operations**:
+**Non-idempotent operations**:
                                                                               - `INCREMENT user.balance BY 100` (additive)
                                                                               - `INSERT INTO orders (...)` (creates new row each time)
                                                                               - `POST /api/orders` (creates new resource)
@@ -1455,16 +1455,16 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8;">
 <span style="color: #c2410c;">def</span> process_with_idempotency(idempotency_key, operation):<br>
 &nbsp;&nbsp;<span style="color: #64748b;"># Check if already processed</span><br>
-                                                                                        &nbsp;&nbsp;existing = idempotency_store.get(idempotency_key)<br>
+  &nbsp;&nbsp;existing = idempotency_store.get(idempotency_key)<br>
 &nbsp;&nbsp;<span style="color: #c2410c;">if</span> existing:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #c2410c;">return</span> existing.result &nbsp;<span style="color: #64748b;"># Return cached result</span><br>
-                                                                                              <br>
+  <br>
 &nbsp;&nbsp;<span style="color: #64748b;"># Execute operation</span><br>
-                                                                                                  &nbsp;&nbsp;result = operation()<br>
-                                                                                                    <br>
+  &nbsp;&nbsp;result = operation()<br>
+  <br>
 &nbsp;&nbsp;<span style="color: #64748b;"># Store result (with TTL for cleanup)</span><br>
 &nbsp;&nbsp;idempotency_store.set(idempotency_key, result, ttl=<span style="color: #1e40af;">86400</span>)<br>
-                                                                                                          <br>
+  <br>
 &nbsp;&nbsp;<span style="color: #c2410c;">return</span> result
 </div>
 </div>
@@ -1496,18 +1496,18 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
-                                                                                                              **Assumption**: Idempotency keys are unique per logical operation instance.
+**Assumption**: Idempotency keys are unique per logical operation instance.
 
-                                                                                                              **Trade-off**: Idempotency storage strategies
+**Trade-off**: Idempotency storage strategies
 
-                                                                                                              | Strategy | Pros | Cons |
-                                                                                                              |----------|------|------|
-                                                                                                              | In-memory cache | Fast, simple | Lost on restart, limited size |
-                                                                                                              | Redis | Fast, distributed | Extra infrastructure, TTL management |
-                                                                                                              | Database table | Durable, queryable | Slower writes, storage growth |
-                                                                                                              | Request log + hash | Full audit trail | Highest overhead |
+  | Strategy | Pros | Cons |
+  |----------|------|------|
+  | In-memory cache | Fast, simple | Lost on restart, limited size |
+  | Redis | Fast, distributed | Extra infrastructure, TTL management |
+  | Database table | Durable, queryable | Slower writes, storage growth |
+  | Request log + hash | Full audit trail | Highest overhead |
 
-                                                                                                              **Design Choice**: Use Redis with 24-hour TTL for most scheduled tasks. Tasks that run daily have natural idempotency keys (task_id + date). For critical financial operations, use database with indefinite retention.
+**Design Choice**: Use Redis with 24-hour TTL for most scheduled tasks. Tasks that run daily have natural idempotency keys (task_id + date). For critical financial operations, use database with indefinite retention.
 
 </div>
 
@@ -1520,9 +1520,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: Additive Operations</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
 <span style="color: #64748b;">-- Non-idempotent: runs twice = double credit</span><br>
-                                                                                                                      UPDATE accounts<br>
-                                                                                                                        SET balance = balance + 100<br>
-                                                                                                                          WHERE user_id = 5;
+  UPDATE accounts<br>
+  SET balance = balance + 100<br>
+  WHERE user_id = 5;
 </div>
 </div>
 
@@ -1530,13 +1530,13 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Transaction Log</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
 <span style="color: #64748b;">-- Idempotent: unique constraint prevents duplicate</span><br>
-                                                                                                                            INSERT INTO transactions<br>
-                                                                                                                              &nbsp;&nbsp;(id, user_id, amount, idempotency_key)<br>
-                                                                                                                                VALUES (gen_id(), 5, 100, 'task-123-2024-01-15')<br>
-                                                                                                                                  ON CONFLICT (idempotency_key) DO NOTHING;<br><br>
+  INSERT INTO transactions<br>
+  &nbsp;&nbsp;(id, user_id, amount, idempotency_key)<br>
+  VALUES (gen_id(), 5, 100, 'task-123-2024-01-15')<br>
+  ON CONFLICT (idempotency_key) DO NOTHING;<br><br>
 <span style="color: #64748b;">-- Balance computed from transactions</span><br>
-                                                                                                                                        SELECT SUM(amount) FROM transactions<br>
-                                                                                                                                          WHERE user_id = 5;
+  SELECT SUM(amount) FROM transactions<br>
+  WHERE user_id = 5;
 </div>
 </div>
 
@@ -1544,10 +1544,10 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Problem: External API Calls</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
 <span style="color: #64748b;"># Non-idempotent: duplicate emails</span><br>
-                                                                                                                                            email_api.send(<br>
-                                                                                                                                              &nbsp;&nbsp;to='user@example.com',<br>
-                                                                                                                                                &nbsp;&nbsp;subject='Your order shipped'<br>
-                                                                                                                                                  )
+  email_api.send(<br>
+  &nbsp;&nbsp;to='user@example.com',<br>
+  &nbsp;&nbsp;subject='Your order shipped'<br>
+  )
 </div>
 </div>
 
@@ -1555,10 +1555,10 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px;">Solution: Check-then-send with Lock</div>
 <div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6;">
 <span style="color: #64748b;"># Idempotent: check before sending</span><br>
-                                                                                                                                                    key = f'email_sent:{order_id}:shipped'<br>
-                                                                                                                                                      if not redis.setnx(key, '1', ex=86400):<br>
+  key = f'email_sent:{order_id}:shipped'<br>
+  if not redis.setnx(key, '1', ex=86400):<br>
 &nbsp;&nbsp;return <span style="color: #64748b;"># Already sent</span><br><br>
-                                                                                                                                                            email_api.send(...)<br>
+  email_api.send(...)<br>
 <span style="color: #64748b;"># If send fails, key expires, retry works</span>
 </div>
 </div>
@@ -1568,9 +1568,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
-                                                                                                                                                        **The Idempotency-Atomicity Gap**
+**The Idempotency-Atomicity Gap**
 
-                                                                                                                                                        Dangerous pattern:
+  Dangerous pattern:
                                                                                                                                                         ```python
                                                                                                                                                         def process_order(order_id, idempotency_key):
                                                                                                                                                         if is_processed(idempotency_key):
@@ -1582,9 +1582,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                         mark_processed(idempotency_key, result) # Step 3 - never executes
                                                                                                                                                         ```
 
-                                                                                                                                                        On retry: `is_processed` returns False, payment charged again!
+  On retry: `is_processed` returns False, payment charged again!
 
-                                                                                                                                                        **Solution: Transactional outbox**
+**Solution: Transactional outbox**
 
                                                                                                                                                         ```python
                                                                                                                                                         def process_order(order_id, idempotency_key):
@@ -1603,26 +1603,26 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 
 </div>
 
-                                                                                                                                                      #### Interview Questions: Idempotency
+#### Interview Questions: Idempotency
 
 <div style="background: #f5f3ff; border-left: 4px solid #8b5cf6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                                                                                                                        **Level 1**: Why is `INSERT INTO table VALUES (...)` not idempotent, and how would you make it idempotent?
+**Level 1**: Why is `INSERT INTO table VALUES (...)` not idempotent, and how would you make it idempotent?
 
-                                                                                                                                                        <details>
-                                                                                                                                                          <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                                                                                                          Each INSERT creates a new row with a new auto-generated ID. Running twice = two rows.
+  Each INSERT creates a new row with a new auto-generated ID. Running twice = two rows.
 
-                                                                                                                                                          **Solutions**:
+**Solutions**:
 
-                                                                                                                                                          1. **Natural key constraint**:
+  1. **Natural key constraint**:
                                                                                                                                                           ```sql
                                                                                                                                                           CREATE UNIQUE INDEX ON orders(customer_id, order_date, product_id);
                                                                                                                                                           INSERT INTO orders (...) ON CONFLICT DO NOTHING;
                                                                                                                                                           ```
 
-                                                                                                                                                          2. **Idempotency key column**:
+  2. **Idempotency key column**:
                                                                                                                                                           ```sql
                                                                                                                                                           ALTER TABLE orders ADD COLUMN idempotency_key VARCHAR UNIQUE;
                                                                                                                                                           INSERT INTO orders (..., idempotency_key)
@@ -1630,20 +1630,20 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                           ON CONFLICT (idempotency_key) DO NOTHING;
                                                                                                                                                           ```
 
-                                                                                                                                                          3. **UPSERT pattern**:
+  3. **UPSERT pattern**:
                                                                                                                                                           ```sql
                                                                                                                                                           INSERT INTO orders (...) VALUES (...)
                                                                                                                                                           ON CONFLICT (order_id) DO UPDATE SET updated_at = NOW();
                                                                                                                                                           ```
 
-                                                                                                                                                        </details>
+</details>
 
-                                                                                                                                                        **Level 2**: How do you handle idempotency when your task calls multiple external services sequentially?
+**Level 2**: How do you handle idempotency when your task calls multiple external services sequentially?
 
-                                                                                                                                                        <details>
-                                                                                                                                                          <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                                                                                                          **Saga pattern with compensation**:
+**Saga pattern with compensation**:
 
                                                                                                                                                           ```python
                                                                                                                                                           class OrderSaga:
@@ -1692,18 +1692,18 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                           inventory_service.release(order_id, idempotency_key=f"{idempotency_key}:release")
                                                                                                                                                           ```
 
-                                                                                                                                                          Key insight: Each external call has its own idempotency key derived from the parent. Saga state tracks which steps completed, enabling retry from any failure point.
+  Key insight: Each external call has its own idempotency key derived from the parent. Saga state tracks which steps completed, enabling retry from any failure point.
 
-                                                                                                                                                        </details>
+</details>
 
-                                                                                                                                                        **Level 3**: Design an idempotency system that handles concurrent duplicate requests arriving within milliseconds of each other.
+**Level 3**: Design an idempotency system that handles concurrent duplicate requests arriving within milliseconds of each other.
 
-                                                                                                                                                        <details>
-                                                                                                                                                          <summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer;">Answer</summary>
 
-                                                                                                                                                          **Problem**: Two requests with same idempotency key arrive simultaneously. Both check "is processed?" -> both get "no" -> both execute.
+**Problem**: Two requests with same idempotency key arrive simultaneously. Both check "is processed?" -> both get "no" -> both execute.
 
-                                                                                                                                                          **Solution: Distributed lock with request coalescing**
+**Solution: Distributed lock with request coalescing**
 
                                                                                                                                                           ```python
                                                                                                                                                           class IdempotencyService:
@@ -1767,22 +1767,22 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                           raise TimeoutError(f"Idempotency result not available for {idempotency_key}")
                                                                                                                                                           ```
 
-                                                                                                                                                          **Race condition eliminated**:
-                                                                                                                                                          1. First request acquires lock, executes, stores result
-                                                                                                                                                          2. Concurrent requests see lock exists, wait for result
-                                                                                                                                                          3. All requests return same result
+**Race condition eliminated**:
+  1. First request acquires lock, executes, stores result
+  2. Concurrent requests see lock exists, wait for result
+  3. All requests return same result
 
-                                                                                                                                                          **Bonus optimization**: Use Redis pub/sub to notify waiters instead of polling.
+**Bonus optimization**: Use Redis pub/sub to notify waiters instead of polling.
 
-                                                                                                                                                        </details>
+</details>
 
 </div>
 
-                                                                                                                                                      ---
+  ---
 
-                                                                                                                                                      ## Complete Implementation
+## Complete Implementation
 
-                                                                                                                                                      ### Python (Production-Ready)
+### Python (Production-Ready)
 
                                                                                                                                                       ```python
                                                                                                                                                       import heapq
@@ -2456,7 +2456,7 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                       scheduler.stop()
                                                                                                                                                       ```
 
-                                                                                                                                                      ### Go Implementation
+### Go Implementation
 
                                                                                                                                                       ```go
                                                                                                                                                       package main
@@ -3157,9 +3157,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                       }
                                                                                                                                                       ```
 
-                                                                                                                                                      ---
+  ---
 
-                                                                                                                                                      ## Design Considerations Summary
+## Design Considerations Summary
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Architecture Decision Matrix</h4>
@@ -3169,49 +3169,49 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Single Node</div>
 <div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
-                                                                                                                                                              Use when: < 10K tasks, simple ops<br>
-                                                                                                                                                                Data structure: Binary min-heap<br>
-                                                                                                                                                                  Concurrency: Condition variables<br>
-                                                                                                                                                                    Recovery: Process restart
+  Use when: < 10K tasks, simple ops<br>
+  Data structure: Binary min-heap<br>
+  Concurrency: Condition variables<br>
+  Recovery: Process restart
 </div>
 </div>
 
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #1e40af; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Leader)</div>
 <div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
-                                                                                                                                                                    Use when: Need HA, < 100K tasks<br>
-                                                                                                                                                                      Coordination: ZooKeeper/etcd<br>
-                                                                                                                                                                        Concurrency: Leader election<br>
-                                                                                                                                                                          Recovery: Automatic failover
+  Use when: Need HA, < 100K tasks<br>
+  Coordination: ZooKeeper/etcd<br>
+  Concurrency: Leader election<br>
+  Recovery: Automatic failover
 </div>
 </div>
 
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #5b21b6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Node (Partitioned)</div>
 <div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
-                                                                                                                                                                          Use when: > 100K tasks, horizontal scale<br>
-                                                                                                                                                                            Coordination: Consistent hashing<br>
-                                                                                                                                                                              Concurrency: Partition locks<br>
-                                                                                                                                                                                Recovery: Partition rebalancing
+  Use when: > 100K tasks, horizontal scale<br>
+  Coordination: Consistent hashing<br>
+  Concurrency: Partition locks<br>
+  Recovery: Partition rebalancing
 </div>
 </div>
 
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Database-Backed</div>
 <div style="color: #1e293b; font-size: 10px; line-height: 1.6;">
-                                                                                                                                                                                Use when: Durability critical, audit needed<br>
-                                                                                                                                                                                  Data structure: Indexed table<br>
-                                                                                                                                                                                    Concurrency: SKIP LOCKED<br>
-                                                                                                                                                                                      Recovery: Transaction rollback
+  Use when: Durability critical, audit needed<br>
+  Data structure: Indexed table<br>
+  Concurrency: SKIP LOCKED<br>
+  Recovery: Transaction rollback
 </div>
 </div>
 
 </div>
 </div>
 
-                                                                                                                                                                              ---
+  ---
 
-                                                                                                                                                                              ## Deep-Dive Interview Q&A: 3-Level Recursive Format
+## Deep-Dive Interview Q&A: 3-Level Recursive Format
 
 <div style="background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e40af; margin: 0 0 24px 0;">Complete Task Scheduler System Design</h3>
@@ -3219,21 +3219,21 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
 <div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "Design a task scheduler system"</div>
 
-                                                                                                                                                                                  <details>
-                                                                                                                                                                                    <summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
 <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
-                                                                                                                                                                                      **High-Level Architecture**:
+**High-Level Architecture**:
 
-                                                                                                                                                                                      A task scheduler consists of four main components:
+  A task scheduler consists of four main components:
 
 1. <span style="color: #166534;">**Task Storage**</span>: Where task definitions and states are persisted
 2. <span style="color: #166534;">**Scheduler Core**</span>: Determines which tasks to execute and when
 3. <span style="color: #166534;">**Worker Pool**</span>: Executes the actual task logic
 4. <span style="color: #166534;">**Coordination Layer**</span>: Handles distributed concerns (if multi-node)
 
-                                                                                                                                                                                      **Core Data Structures**:
+**Core Data Structures**:
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       class Task:
@@ -3253,14 +3253,14 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       storage: TaskStorage             # Persistence layer
                                                                                                                                                                                       ```
 
-                                                                                                                                                                                      **Scheduling Algorithm**:
+**Scheduling Algorithm**:
 
 1. Maintain a <span style="color: #166534;">**min-heap**</span> ordered by scheduled_time
-                                                                                                                                                                                      2. Worker threads wait on condition variable
-                                                                                                                                                                                      3. When top task's scheduled_time <= now, pop and execute
-                                                                                                                                                                                      4. After execution, handle retries or schedule next occurrence
+  2. Worker threads wait on condition variable
+  3. When top task's scheduled_time <= now, pop and execute
+  4. After execution, handle retries or schedule next occurrence
 
-                                                                                                                                                                                      **Key Features to Mention**:
+**Key Features to Mention**:
                                                                                                                                                                                       - One-time and recurring task support
                                                                                                                                                                                       - Priority-based execution
                                                                                                                                                                                       - Failure handling with configurable retries
@@ -3268,20 +3268,20 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       - Persistence for crash recovery
 
 </div>
-                                                                                                                                                                                  </details>
+</details>
 </div>
 
 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
 <div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
 
-                                                                                                                                                                                  <details>
-                                                                                                                                                                                    <summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
 <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **The Core Challenge**: In distributed systems, "exactly-once" is theoretically impossible due to the [[Two Generals Problem]](/algorithms/two-generals). We achieve <span style="color: #166534;">**effectively exactly-once**</span> through:
 
-                                                                                                                                                                                      **Strategy 1: At-Least-Once Delivery + Idempotency**
+**Strategy 1: At-Least-Once Delivery + Idempotency**
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       def execute_task(task):
@@ -3301,7 +3301,7 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       raise
                                                                                                                                                                                       ```
 
-                                                                                                                                                                                      **Strategy 2: Fencing Tokens**
+**Strategy 2: Fencing Tokens**
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       def claim_task(task_id, worker_id):
@@ -3323,7 +3323,7 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       external_service.call(task.payload, fence_token=fence_token)
                                                                                                                                                                                       ```
 
-                                                                                                                                                                                      **Strategy 3: Outbox Pattern for External Effects**
+**Strategy 3: Outbox Pattern for External Effects**
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       def process_order(order_id):
@@ -3340,28 +3340,28 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       # with idempotency keys
                                                                                                                                                                                       ```
 
-                                                                                                                                                                                      **Key Insight**: The combination ensures that even if a task runs twice, external effects happen exactly once (via idempotency keys) and internal state is consistent (via fencing).
+**Key Insight**: The combination ensures that even if a task runs twice, external effects happen exactly once (via idempotency keys) and internal state is consistent (via fencing).
 
 </div>
-                                                                                                                                                                                  </details>
+</details>
 </div>
 
 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px;">
 <div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
 
-                                                                                                                                                                                  <details>
-                                                                                                                                                                                    <summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
 <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
-                                                                                                                                                                                      **Failure Modes**:
+**Failure Modes**:
 
 1. <span style="color: #dc2626;">**Redis down before SETNX**</span>: Can't check, can't proceed
 2. <span style="color: #dc2626;">**Redis down after SETNX, before task execution**</span>: Key set but work not done
 3. <span style="color: #dc2626;">**Redis down after execution, before caching result**</span>: Work done but key may expire
 4. <span style="color: #dc2626;">**Redis comes back with data loss**</span>: Keys gone, duplicates possible
 
-                                                                                                                                                                                      **Solution: Multi-Layer Idempotency**
+**Solution: Multi-Layer Idempotency**
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       class RobustIdempotencyManager:
@@ -3439,19 +3439,19 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       raise TimeoutError("Waiting for idempotency result")
                                                                                                                                                                                       ```
 
-                                                                                                                                                                                      **Trade-offs**:
+**Trade-offs**:
 
-                                                                                                                                                                                      | Approach | Durability | Speed | Complexity |
-                                                                                                                                                                                      |----------|------------|-------|------------|
-                                                                                                                                                                                      | Redis only | Low (data loss) | Fast | Low |
-                                                                                                                                                                                      | Database only | High | Slower | Low |
-                                                                                                                                                                                      | Redis + DB | High | Fast for hits | Medium |
-                                                                                                                                                                                      | Redis + DB + Polling | High | Fast + handles races | High |
+  | Approach | Durability | Speed | Complexity |
+  |----------|------------|-------|------------|
+  | Redis only | Low (data loss) | Fast | Low |
+  | Database only | High | Slower | Low |
+  | Redis + DB | High | Fast for hits | Medium |
+  | Redis + DB + Polling | High | Fast + handles races | High |
 
-                                                                                                                                                                                      **Production Recommendation**: Use Redis as cache layer, database as source of truth. Accept 2x latency when Redis is down. Set up [[Redis Sentinel]](/databases/redis-sentinel) or Cluster for HA.
+**Production Recommendation**: Use Redis as cache layer, database as source of truth. Accept 2x latency when Redis is down. Set up [[Redis Sentinel]](/databases/redis-sentinel) or Cluster for HA.
 
 </div>
-                                                                                                                                                                                  </details>
+</details>
 </div>
 
 </div>
@@ -3462,14 +3462,14 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
 <div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 1: "How do you scale a task scheduler horizontally?"</div>
 
-                                                                                                                                                                                  <details>
-                                                                                                                                                                                    <summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
 <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
-                                                                                                                                                                                      **Approach 1: Leader-Based (Active-Passive)**
+**Approach 1: Leader-Based (Active-Passive)**
 
-                                                                                                                                                                                      One node is the scheduler (leader), others are workers only:
+  One node is the scheduler (leader), others are workers only:
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0;">
 <div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; border-left: 3px solid #3b82f6; text-align: center;">
@@ -3500,9 +3500,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       - On leader failure, election promotes new leader
                                                                                                                                                                                       - **Good for**: < 100K tasks, simple coordination needs
 
-                                                                                                                                                                                      **Approach 2: Partition-Based (Active-Active)**
+**Approach 2: Partition-Based (Active-Active)**
 
-                                                                                                                                                                                      Tasks are sharded across scheduler nodes:
+  Tasks are sharded across scheduler nodes:
 
                                                                                                                                                                                       ```python
                                                                                                                                                                                       def get_scheduler_for_task(task_id, num_schedulers):
@@ -3521,9 +3521,9 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       - [[Consistent Hashing]](/algorithms/consistent-hashing) minimizes rebalancing
                                                                                                                                                                                       - **Good for**: > 100K tasks, high throughput needs
 
-                                                                                                                                                                                      **Approach 3: Database-Centric (Shared Nothing)**
+**Approach 3: Database-Centric (Shared Nothing)**
 
-                                                                                                                                                                                      No in-memory scheduling, all coordination through database:
+  No in-memory scheduling, all coordination through database:
 
                                                                                                                                                                                       ```sql
                                                                                                                                                                                       -- Each worker polls independently
@@ -3541,20 +3541,20 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                       - **Good for**: Durability-critical, moderate throughput
 
 </div>
-                                                                                                                                                                                  </details>
+</details>
 </div>
 
 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px;">
 <div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
 
-                                                                                                                                                                                  <details>
-                                                                                                                                                                                    <summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
+<details>
+<summary style="color: #5b21b6; cursor: pointer; font-size: 13px;">Comprehensive Answer</summary>
 
 <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px;">
 
 **Principle**: <span style="color: #166534;">Separate task ownership from task execution</span>
 
-                                                                                                                                                                                      **Solution Architecture**:
+**Solution Architecture**:
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; align-items: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0;">
 <div style="background: #eff6ff; padding: 16px 24px; border-radius: 8px; border: 1px solid #3b82f6; text-align: center; width: 100%; max-width: 400px;">
@@ -3567,82 +3567,82 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
 <span style="color: #3b82f6;">&#8593;</span>
 <span style="color: #3b82f6;">&#8593;</span>
 </div>
-                                                                                                                                                                                        [Scheduler-1]       [Scheduler-2]       [Scheduler-3]
-                                                                                                                                                                                        (owns tasks       (owns tasks          (owns tasks
-                                                                                                                                                                                        0-999)            1000-1999)           2000-2999)
+  [Scheduler-1]       [Scheduler-2]       [Scheduler-3]
+  (owns tasks       (owns tasks          (owns tasks
+  0-999)            1000-1999)           2000-2999)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Heartbeat-Based Ownership**:
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class DistributedScheduler:
-                                                                                                                                                                                        def __init__(self, node_id, task_store):
-                                                                                                                                                                                        self.node_id = node_id
-                                                                                                                                                                                        self.store = task_store
-                                                                                                                                                                                        self.heartbeat_interval = 10  # seconds
-                                                                                                                                                                                        self.failure_threshold = 30   # seconds
+  class DistributedScheduler:
+  def __init__(self, node_id, task_store):
+  self.node_id = node_id
+  self.store = task_store
+  self.heartbeat_interval = 10  # seconds
+  self.failure_threshold = 30   # seconds
 
-                                                                                                                                                                                        def ownership_loop(self):
-                                                                                                                                                                                        while running:
-                                                                                                                                                                                        # Update heartbeat for all tasks I own
-                                                                                                                                                                                        self.store.execute("""
-                                                                                                                                                                                        UPDATE tasks
-                                                                                                                                                                                        SET heartbeat_time = NOW()
-                                                                                                                                                                                        WHERE owner_node = %s AND status = 'running'
-                                                                                                                                                                                        """, self.node_id)
+  def ownership_loop(self):
+  while running:
+# Update heartbeat for all tasks I own
+  self.store.execute("""
+  UPDATE tasks
+  SET heartbeat_time = NOW()
+  WHERE owner_node = %s AND status = 'running'
+  """, self.node_id)
 
-                                                                                                                                                                                        time.sleep(self.heartbeat_interval)
+  time.sleep(self.heartbeat_interval)
 
-                                                                                                                                                                                        def recovery_loop(self):
-                                                                                                                                                                                        """Run on every node - detects and recovers orphaned tasks."""
-                                                                                                                                                                                        while running:
-                                                                                                                                                                                        # Find tasks with stale heartbeats
-                                                                                                                                                                                        orphaned = self.store.query("""
-                                                                                                                                                                                        SELECT id FROM tasks
-                                                                                                                                                                                        WHERE status = 'running'
-                                                                                                                                                                                        AND heartbeat_time < NOW() - INTERVAL '%s seconds'
-                                                                                                                                                                                        """, self.failure_threshold)
+  def recovery_loop(self):
+  """Run on every node - detects and recovers orphaned tasks."""
+  while running:
+# Find tasks with stale heartbeats
+  orphaned = self.store.query("""
+  SELECT id FROM tasks
+  WHERE status = 'running'
+  AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+  """, self.failure_threshold)
 
-                                                                                                                                                                                        for task_id in orphaned:
-                                                                                                                                                                                        self.attempt_recovery(task_id)
+  for task_id in orphaned:
+  self.attempt_recovery(task_id)
 
-                                                                                                                                                                                        time.sleep(self.heartbeat_interval)
+  time.sleep(self.heartbeat_interval)
 
-                                                                                                                                                                                        def attempt_recovery(self, task_id):
-                                                                                                                                                                                        # Atomic claim - only one node succeeds
-                                                                                                                                                                                        claimed = self.store.execute("""
-                                                                                                                                                                                        UPDATE tasks
-                                                                                                                                                                                        SET owner_node = %s,
-                                                                                                                                                                                        heartbeat_time = NOW(),
-                                                                                                                                                                                        status = 'pending',
-                                                                                                                                                                                        retry_count = retry_count + 1
-                                                                                                                                                                                        WHERE id = %s
-                                                                                                                                                                                        AND heartbeat_time < NOW() - INTERVAL '%s seconds'
-                                                                                                                                                                                        """, self.node_id, task_id, self.failure_threshold)
+  def attempt_recovery(self, task_id):
+# Atomic claim - only one node succeeds
+  claimed = self.store.execute("""
+  UPDATE tasks
+  SET owner_node = %s,
+  heartbeat_time = NOW(),
+  status = 'pending',
+  retry_count = retry_count + 1
+  WHERE id = %s
+  AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+  """, self.node_id, task_id, self.failure_threshold)
 
-                                                                                                                                                                                        if claimed:
-                                                                                                                                                                                        log.info(f"Recovered orphaned task {task_id}")
+  if claimed:
+  log.info(f"Recovered orphaned task {task_id}")
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Partition Rebalancing on Node Join/Leave**:
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def rebalance_partitions(current_nodes, new_nodes):
-                                                                                                                                                                                        """Use consistent hashing to minimize movement."""
-                                                                                                                                                                                        old_ring = ConsistentHashRing(current_nodes)
-                                                                                                                                                                                        new_ring = ConsistentHashRing(new_nodes)
+  def rebalance_partitions(current_nodes, new_nodes):
+  """Use consistent hashing to minimize movement."""
+  old_ring = ConsistentHashRing(current_nodes)
+  new_ring = ConsistentHashRing(new_nodes)
 
-                                                                                                                                                                                        migrations = []
-                                                                                                                                                                                        for task_id in all_task_ids():
-                                                                                                                                                                                        old_owner = old_ring.get_node(task_id)
-                                                                                                                                                                                        new_owner = new_ring.get_node(task_id)
+  migrations = []
+  for task_id in all_task_ids():
+  old_owner = old_ring.get_node(task_id)
+  new_owner = new_ring.get_node(task_id)
 
-                                                                                                                                                                                        if old_owner != new_owner:
-                                                                                                                                                                                        migrations.append((task_id, old_owner, new_owner))
+  if old_owner != new_owner:
+  migrations.append((task_id, old_owner, new_owner))
 
-                                                                                                                                                                                        # With 100 virtual nodes per physical node,
-                                                                                                                                                                                        # only ~1/N tasks move when node joins/leaves
-                                                                                                                                                                                        return migrations
+# With 100 virtual nodes per physical node,
+# only ~1/N tasks move when node joins/leaves
+  return migrations
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Key Insight**: Never trust in-memory state for task ownership. Always persist to durable store and use heartbeats to detect failures.
@@ -3667,112 +3667,112 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                         **Solution 1: Staggered Recovery with Jitter**
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def recovery_loop(self):
-                                                                                                                                                                                        while running:
-                                                                                                                                                                                        # Random jitter prevents synchronized recovery attempts
-                                                                                                                                                                                        jitter = random.uniform(0, self.heartbeat_interval / 2)
-                                                                                                                                                                                        time.sleep(self.heartbeat_interval + jitter)
+  def recovery_loop(self):
+  while running:
+# Random jitter prevents synchronized recovery attempts
+  jitter = random.uniform(0, self.heartbeat_interval / 2)
+  time.sleep(self.heartbeat_interval + jitter)
 
-                                                                                                                                                                                        # Limit batch size per recovery cycle
-                                                                                                                                                                                        orphaned = self.store.query("""
-                                                                                                                                                                                        SELECT id FROM tasks
-                                                                                                                                                                                        WHERE status = 'running'
-                                                                                                                                                                                        AND heartbeat_time < NOW() - INTERVAL '%s seconds'
-                                                                                                                                                                                        LIMIT 10  -- Don't grab everything at once
-                                                                                                                                                                                        """, self.failure_threshold)
+# Limit batch size per recovery cycle
+  orphaned = self.store.query("""
+  SELECT id FROM tasks
+  WHERE status = 'running'
+  AND heartbeat_time < NOW() - INTERVAL '%s seconds'
+  LIMIT 10  -- Don't grab everything at once
+  """, self.failure_threshold)
 
-                                                                                                                                                                                        for task_id in orphaned:
-                                                                                                                                                                                        # Additional per-task jitter
-                                                                                                                                                                                        time.sleep(random.uniform(0.1, 0.5))
-                                                                                                                                                                                        self.attempt_recovery(task_id)
+  for task_id in orphaned:
+# Additional per-task jitter
+  time.sleep(random.uniform(0.1, 0.5))
+  self.attempt_recovery(task_id)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Solution 2: Lease-Based Batch Assignment**
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def claim_orphan_batch(self):
-                                                                                                                                                                                        """Claim a batch of orphaned tasks atomically."""
-                                                                                                                                                                                        # Single query claims up to N tasks for this node
-                                                                                                                                                                                        # No thundering herd - each node claims different tasks
-                                                                                                                                                                                        claimed = self.store.execute("""
-                                                                                                                                                                                        WITH claimable AS (
-                                                                                                                                                                                        SELECT id FROM tasks
-                                                                                                                                                                                        WHERE status = 'running'
-                                                                                                                                                                                        AND heartbeat_time < NOW() - INTERVAL '30 seconds'
-                                                                                                                                                                                        ORDER BY id  -- Deterministic ordering
-                                                                                                                                                                                        LIMIT 50
-                                                                                                                                                                                        FOR UPDATE SKIP LOCKED  -- Don't block other nodes
-                                                                                                                                                                                        )
-                                                                                                                                                                                        UPDATE tasks
-                                                                                                                                                                                        SET owner_node = %s,
-                                                                                                                                                                                        heartbeat_time = NOW(),
-                                                                                                                                                                                        status = 'pending'
-                                                                                                                                                                                        WHERE id IN (SELECT id FROM claimable)
-                                                                                                                                                                                        RETURNING id
-                                                                                                                                                                                        """, self.node_id)
+  def claim_orphan_batch(self):
+  """Claim a batch of orphaned tasks atomically."""
+# Single query claims up to N tasks for this node
+# No thundering herd - each node claims different tasks
+  claimed = self.store.execute("""
+  WITH claimable AS (
+  SELECT id FROM tasks
+  WHERE status = 'running'
+  AND heartbeat_time < NOW() - INTERVAL '30 seconds'
+  ORDER BY id  -- Deterministic ordering
+  LIMIT 50
+  FOR UPDATE SKIP LOCKED  -- Don't block other nodes
+  )
+  UPDATE tasks
+  SET owner_node = %s,
+  heartbeat_time = NOW(),
+  status = 'pending'
+  WHERE id IN (SELECT id FROM claimable)
+  RETURNING id
+  """, self.node_id)
 
-                                                                                                                                                                                        return claimed
+  return claimed
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Solution 3: Coordinator-Based Redistribution**
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class ClusterCoordinator:
-                                                                                                                                                                                        """Elected leader handles all redistribution."""
+  class ClusterCoordinator:
+  """Elected leader handles all redistribution."""
 
-                                                                                                                                                                                        def on_node_failure(self, failed_node):
-                                                                                                                                                                                        # Only coordinator runs this, no thundering herd
-                                                                                                                                                                                        orphaned_tasks = self.get_tasks_owned_by(failed_node)
+  def on_node_failure(self, failed_node):
+# Only coordinator runs this, no thundering herd
+  orphaned_tasks = self.get_tasks_owned_by(failed_node)
 
-                                                                                                                                                                                        surviving_nodes = self.get_healthy_nodes()
+  surviving_nodes = self.get_healthy_nodes()
 
-                                                                                                                                                                                        # Evenly distribute across survivors
-                                                                                                                                                                                        assignments = self.compute_assignment(orphaned_tasks, surviving_nodes)
+# Evenly distribute across survivors
+  assignments = self.compute_assignment(orphaned_tasks, surviving_nodes)
 
-                                                                                                                                                                                        for node, tasks in assignments.items():
-                                                                                                                                                                                        # Batch update per node
-                                                                                                                                                                                        self.store.execute("""
-                                                                                                                                                                                        UPDATE tasks
-                                                                                                                                                                                        SET owner_node = %s, status = 'pending'
-                                                                                                                                                                                        WHERE id = ANY(%s)
-                                                                                                                                                                                        """, node, tasks)
+  for node, tasks in assignments.items():
+# Batch update per node
+  self.store.execute("""
+  UPDATE tasks
+  SET owner_node = %s, status = 'pending'
+  WHERE id = ANY(%s)
+  """, node, tasks)
 
-                                                                                                                                                                                        # Notify node about new tasks
-                                                                                                                                                                                        self.notify_node(node, tasks)
+# Notify node about new tasks
+  self.notify_node(node, tasks)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Solution 4: Pull-Based with Rate Limiting**
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class RateLimitedRecovery:
-                                                                                                                                                                                        def __init__(self, max_claims_per_second=10):
-                                                                                                                                                                                        self.limiter = TokenBucket(max_claims_per_second)
+  class RateLimitedRecovery:
+  def __init__(self, max_claims_per_second=10):
+  self.limiter = TokenBucket(max_claims_per_second)
 
-                                                                                                                                                                                        def recovery_loop(self):
-                                                                                                                                                                                        while running:
-                                                                                                                                                                                        # Wait for token before claiming
-                                                                                                                                                                                        self.limiter.acquire()
+  def recovery_loop(self):
+  while running:
+# Wait for token before claiming
+  self.limiter.acquire()
 
-                                                                                                                                                                                        task = self.claim_one_orphan()
-                                                                                                                                                                                        if task:
-                                                                                                                                                                                        self.schedule_for_execution(task)
-                                                                                                                                                                                        else:
-                                                                                                                                                                                        time.sleep(1)  # No orphans, back off
+  task = self.claim_one_orphan()
+  if task:
+  self.schedule_for_execution(task)
+  else:
+  time.sleep(1)  # No orphans, back off
 
-                                                                                                                                                                                        def claim_one_orphan(self):
-                                                                                                                                                                                        """Claim exactly one orphan per call."""
-                                                                                                                                                                                        return self.store.execute("""
-                                                                                                                                                                                        UPDATE tasks
-                                                                                                                                                                                        SET owner_node = %s, status = 'pending'
-                                                                                                                                                                                        WHERE id = (
-                                                                                                                                                                                        SELECT id FROM tasks
-                                                                                                                                                                                        WHERE status = 'running'
-                                                                                                                                                                                        AND heartbeat_time < NOW() - INTERVAL '30 seconds'
-                                                                                                                                                                                        LIMIT 1
-                                                                                                                                                                                        FOR UPDATE SKIP LOCKED
-                                                                                                                                                                                        )
-                                                                                                                                                                                        RETURNING *
-                                                                                                                                                                                        """, self.node_id)
+  def claim_one_orphan(self):
+  """Claim exactly one orphan per call."""
+  return self.store.execute("""
+  UPDATE tasks
+  SET owner_node = %s, status = 'pending'
+  WHERE id = (
+  SELECT id FROM tasks
+  WHERE status = 'running'
+  AND heartbeat_time < NOW() - INTERVAL '30 seconds'
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED
+  )
+  RETURNING *
+  """, self.node_id)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Comparison**:
@@ -3806,65 +3806,65 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                         **Core Concept**: Parse cron expression into field constraints, then find next matching datetime.
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class CronSchedule:
-                                                                                                                                                                                        def __init__(self, expression: str):
-                                                                                                                                                                                        # "*/15 9-17 * * MON-FRI"
-                                                                                                                                                                                        parts = expression.split()
-                                                                                                                                                                                        self.minute = CronField(parts[0], 0, 59)
-                                                                                                                                                                                        self.hour = CronField(parts[1], 0, 23)
-                                                                                                                                                                                        self.day = CronField(parts[2], 1, 31)
-                                                                                                                                                                                        self.month = CronField(parts[3], 1, 12)
-                                                                                                                                                                                        self.dow = CronField(parts[4], 0, 6)
+  class CronSchedule:
+  def __init__(self, expression: str):
+# "*/15 9-17 * * MON-FRI"
+  parts = expression.split()
+  self.minute = CronField(parts[0], 0, 59)
+  self.hour = CronField(parts[1], 0, 23)
+  self.day = CronField(parts[2], 1, 31)
+  self.month = CronField(parts[3], 1, 12)
+  self.dow = CronField(parts[4], 0, 6)
 
-                                                                                                                                                                                        def next_run(self, after: datetime) -> datetime:
-                                                                                                                                                                                        """Find next datetime matching all field constraints."""
-                                                                                                                                                                                        candidate = after.replace(second=0, microsecond=0) + timedelta(minutes=1)
+  def next_run(self, after: datetime) -> datetime:
+  """Find next datetime matching all field constraints."""
+  candidate = after.replace(second=0, microsecond=0) + timedelta(minutes=1)
 
-                                                                                                                                                                                        for _ in range(4 * 366 * 24 * 60):  # Max 4 years
-                                                                                                                                                                                        if self._matches(candidate):
-                                                                                                                                                                                        return candidate
-                                                                                                                                                                                        candidate = self._advance(candidate)
+  for _ in range(4 * 366 * 24 * 60):  # Max 4 years
+  if self._matches(candidate):
+  return candidate
+  candidate = self._advance(candidate)
 
-                                                                                                                                                                                        raise ValueError("No matching time in next 4 years")
+  raise ValueError("No matching time in next 4 years")
 
-                                                                                                                                                                                        def _matches(self, dt: datetime) -> bool:
-                                                                                                                                                                                        return (
-                                                                                                                                                                                        self.minute.contains(dt.minute) and
-                                                                                                                                                                                        self.hour.contains(dt.hour) and
-                                                                                                                                                                                        self.day.contains(dt.day) and
-                                                                                                                                                                                        self.month.contains(dt.month) and
-                                                                                                                                                                                        self.dow.contains(dt.weekday())
-                                                                                                                                                                                        )
+  def _matches(self, dt: datetime) -> bool:
+  return (
+  self.minute.contains(dt.minute) and
+  self.hour.contains(dt.hour) and
+  self.day.contains(dt.day) and
+  self.month.contains(dt.month) and
+  self.dow.contains(dt.weekday())
+  )
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Optimized Advancement** (jump to next valid value):
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def _advance(self, dt: datetime) -> datetime:
-                                                                                                                                                                                        # If month doesn't match, jump to next valid month
-                                                                                                                                                                                        if not self.month.contains(dt.month):
-                                                                                                                                                                                        next_month = self.month.next_value(dt.month)
-                                                                                                                                                                                        if next_month is None:  # Wrap to next year
-                                                                                                                                                                                        return dt.replace(year=dt.year+1, month=self.month.min_value, day=1, hour=0, minute=0)
-                                                                                                                                                                                        return dt.replace(month=next_month, day=1, hour=0, minute=0)
+  def _advance(self, dt: datetime) -> datetime:
+# If month doesn't match, jump to next valid month
+  if not self.month.contains(dt.month):
+  next_month = self.month.next_value(dt.month)
+  if next_month is None:  # Wrap to next year
+  return dt.replace(year=dt.year+1, month=self.month.min_value, day=1, hour=0, minute=0)
+  return dt.replace(month=next_month, day=1, hour=0, minute=0)
 
-                                                                                                                                                                                        # Similarly for day, hour, minute...
-                                                                                                                                                                                        # Each field jumps to next valid value, resetting lower fields
+# Similarly for day, hour, minute...
+# Each field jumps to next valid value, resetting lower fields
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Integration with Scheduler**:
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def schedule_next_occurrence(task):
-                                                                                                                                                                                        if task.cron_expr:
-                                                                                                                                                                                        next_run = task.cron_expr.next_run(datetime.now())
-                                                                                                                                                                                        new_task = Task(
-                                                                                                                                                                                        id=generate_id(),
-                                                                                                                                                                                        cron_expr=task.cron_expr,
-                                                                                                                                                                                        scheduled_time=next_run,
-                                                                                                                                                                                        # ... copy other fields
-                                                                                                                                                                                        )
-                                                                                                                                                                                        scheduler.enqueue(new_task)
+  def schedule_next_occurrence(task):
+  if task.cron_expr:
+  next_run = task.cron_expr.next_run(datetime.now())
+  new_task = Task(
+  id=generate_id(),
+  cron_expr=task.cron_expr,
+  scheduled_time=next_run,
+# ... copy other fields
+  )
+  scheduler.enqueue(new_task)
                                                                                                                                                                                         ```
 
 </div>
@@ -3886,72 +3886,72 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                         **Scenario 1**: Task scheduled for 2:30 AM on spring-forward day
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        # Three options:
-                                                                                                                                                                                        SKIP = "skip"           # Don't run at all that day
-                                                                                                                                                                                        RUN_AFTER = "run_after"  # Run at 3:00 AM instead
-                                                                                                                                                                                        RUN_BEFORE = "run_before" # Run at 1:59 AM instead
+# Three options:
+  SKIP = "skip"           # Don't run at all that day
+  RUN_AFTER = "run_after"  # Run at 3:00 AM instead
+  RUN_BEFORE = "run_before" # Run at 1:59 AM instead
 
-                                                                                                                                                                                        def resolve_nonexistent_time(scheduled_time, tz, policy):
-                                                                                                                                                                                        try:
-                                                                                                                                                                                        tz.localize(scheduled_time, is_dst=None)
-                                                                                                                                                                                        return scheduled_time  # Time exists normally
-                                                                                                                                                                                        except AmbiguousTimeError:
-                                                                                                                                                                                        # Fall back - time exists twice
-                                                                                                                                                                                        return handle_ambiguous(scheduled_time, tz)
-                                                                                                                                                                                        except NonExistentTimeError:
-                                                                                                                                                                                        # Spring forward - time doesn't exist
-                                                                                                                                                                                        if policy == SKIP:
-                                                                                                                                                                                        return None
-                                                                                                                                                                                        elif policy == RUN_AFTER:
-                                                                                                                                                                                        # Jump forward by DST offset (usually 1 hour)
-                                                                                                                                                                                        return scheduled_time + timedelta(hours=1)
-                                                                                                                                                                                        elif policy == RUN_BEFORE:
-                                                                                                                                                                                        return scheduled_time - timedelta(minutes=1)
+  def resolve_nonexistent_time(scheduled_time, tz, policy):
+  try:
+  tz.localize(scheduled_time, is_dst=None)
+  return scheduled_time  # Time exists normally
+  except AmbiguousTimeError:
+# Fall back - time exists twice
+  return handle_ambiguous(scheduled_time, tz)
+  except NonExistentTimeError:
+# Spring forward - time doesn't exist
+  if policy == SKIP:
+  return None
+  elif policy == RUN_AFTER:
+# Jump forward by DST offset (usually 1 hour)
+  return scheduled_time + timedelta(hours=1)
+  elif policy == RUN_BEFORE:
+  return scheduled_time - timedelta(minutes=1)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Scenario 2**: Task scheduled for 1:30 AM on fall-back day
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def handle_ambiguous(scheduled_time, tz):
-                                                                                                                                                                                        # is_dst=True: first occurrence (before clocks change)
-                                                                                                                                                                                        # is_dst=False: second occurrence (after clocks change)
+  def handle_ambiguous(scheduled_time, tz):
+# is_dst=True: first occurrence (before clocks change)
+# is_dst=False: second occurrence (after clocks change)
 
-                                                                                                                                                                                        # Policy options:
-                                                                                                                                                                                        FIRST = "first"   # Run on first 1:30 AM
-                                                                                                                                                                                        SECOND = "second" # Run on second 1:30 AM
-                                                                                                                                                                                        BOTH = "both"     # Run twice (dangerous for non-idempotent tasks!)
+# Policy options:
+  FIRST = "first"   # Run on first 1:30 AM
+  SECOND = "second" # Run on second 1:30 AM
+  BOTH = "both"     # Run twice (dangerous for non-idempotent tasks!)
 
-                                                                                                                                                                                        if policy == FIRST:
-                                                                                                                                                                                        return tz.localize(scheduled_time, is_dst=True)
-                                                                                                                                                                                        elif policy == SECOND:
-                                                                                                                                                                                        return tz.localize(scheduled_time, is_dst=False)
-                                                                                                                                                                                        elif policy == BOTH:
-                                                                                                                                                                                        return [
-                                                                                                                                                                                        tz.localize(scheduled_time, is_dst=True),
-                                                                                                                                                                                        tz.localize(scheduled_time, is_dst=False)
-                                                                                                                                                                                        ]
+  if policy == FIRST:
+  return tz.localize(scheduled_time, is_dst=True)
+  elif policy == SECOND:
+  return tz.localize(scheduled_time, is_dst=False)
+  elif policy == BOTH:
+  return [
+  tz.localize(scheduled_time, is_dst=True),
+  tz.localize(scheduled_time, is_dst=False)
+  ]
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Best Practice**: Store and compute in UTC internally
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class TimezoneAwareCronTask:
-                                                                                                                                                                                        def __init__(self, cron_expr, user_timezone):
-                                                                                                                                                                                        self.cron = CronSchedule(cron_expr)
-                                                                                                                                                                                        self.tz = pytz.timezone(user_timezone)
+  class TimezoneAwareCronTask:
+  def __init__(self, cron_expr, user_timezone):
+  self.cron = CronSchedule(cron_expr)
+  self.tz = pytz.timezone(user_timezone)
 
-                                                                                                                                                                                        def next_run_utc(self, after_utc):
-                                                                                                                                                                                        # Convert to user's timezone for cron matching
-                                                                                                                                                                                        after_local = after_utc.astimezone(self.tz)
+  def next_run_utc(self, after_utc):
+# Convert to user's timezone for cron matching
+  after_local = after_utc.astimezone(self.tz)
 
-                                                                                                                                                                                        # Find next match in user's timezone
-                                                                                                                                                                                        next_local = self.cron.next_run(after_local)
+# Find next match in user's timezone
+  next_local = self.cron.next_run(after_local)
 
-                                                                                                                                                                                        # Handle DST edge cases
-                                                                                                                                                                                        next_local = resolve_dst_issues(next_local, self.tz)
+# Handle DST edge cases
+  next_local = resolve_dst_issues(next_local, self.tz)
 
-                                                                                                                                                                                        # Convert back to UTC for storage
-                                                                                                                                                                                        return next_local.astimezone(pytz.UTC)
+# Convert back to UTC for storage
+  return next_local.astimezone(pytz.UTC)
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Critical**: Never store timezone offset (`-05:00`). Store timezone name (`America/New_York`) so DST rules apply correctly.
@@ -3973,123 +3973,123 @@ A cycle creates an impossible situation: Task A waits for B, B waits for C, C wa
                                                                                                                                                                                         **Solution: Pre-computed Next-Fire Index**
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class CronIndexer:
-                                                                                                                                                                                        def __init__(self):
-                                                                                                                                                                                        # Sorted set: score = next_fire_timestamp, value = task_id
-                                                                                                                                                                                        self.next_fire_index = SortedSet()
-                                                                                                                                                                                        # task_id -> CronTask
-                                                                                                                                                                                        self.tasks = {}
+  class CronIndexer:
+  def __init__(self):
+# Sorted set: score = next_fire_timestamp, value = task_id
+  self.next_fire_index = SortedSet()
+# task_id -> CronTask
+  self.tasks = {}
 
-                                                                                                                                                                                        def add_task(self, task: CronTask):
-                                                                                                                                                                                        self.tasks[task.id] = task
-                                                                                                                                                                                        next_fire = task.next_run_utc(datetime.utcnow())
-                                                                                                                                                                                        self.next_fire_index.add((next_fire.timestamp(), task.id))
+  def add_task(self, task: CronTask):
+  self.tasks[task.id] = task
+  next_fire = task.next_run_utc(datetime.utcnow())
+  self.next_fire_index.add((next_fire.timestamp(), task.id))
 
-                                                                                                                                                                                        def get_tasks_firing_in(self, seconds: int) -> List[str]:
-                                                                                                                                                                                        """O(log n + k) where k is number of matching tasks."""
-                                                                                                                                                                                        now = time.time()
-                                                                                                                                                                                        deadline = now + seconds
+  def get_tasks_firing_in(self, seconds: int) -> List[str]:
+  """O(log n + k) where k is number of matching tasks."""
+  now = time.time()
+  deadline = now + seconds
 
-                                                                                                                                                                                        result = []
-                                                                                                                                                                                        for score, task_id in self.next_fire_index.irange_key(now, deadline):
-                                                                                                                                                                                        result.append(task_id)
+  result = []
+  for score, task_id in self.next_fire_index.irange_key(now, deadline):
+  result.append(task_id)
 
-                                                                                                                                                                                        return result
+  return result
 
-                                                                                                                                                                                        def update_after_execution(self, task_id: str):
-                                                                                                                                                                                        """Called after task runs. Compute and index next occurrence."""
-                                                                                                                                                                                        task = self.tasks[task_id]
+  def update_after_execution(self, task_id: str):
+  """Called after task runs. Compute and index next occurrence."""
+  task = self.tasks[task_id]
 
-                                                                                                                                                                                        # Remove old entry
-                                                                                                                                                                                        self.next_fire_index.discard((task.last_scheduled.timestamp(), task_id))
+# Remove old entry
+  self.next_fire_index.discard((task.last_scheduled.timestamp(), task_id))
 
-                                                                                                                                                                                        # Add new entry
-                                                                                                                                                                                        next_fire = task.next_run_utc(datetime.utcnow())
-                                                                                                                                                                                        self.next_fire_index.add((next_fire.timestamp(), task_id))
+# Add new entry
+  next_fire = task.next_run_utc(datetime.utcnow())
+  self.next_fire_index.add((next_fire.timestamp(), task_id))
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Redis Implementation**:
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class RedisCronIndex:
-                                                                                                                                                                                        def __init__(self, redis):
-                                                                                                                                                                                        self.redis = redis
-                                                                                                                                                                                        self.INDEX_KEY = "cron:next_fire"
+  class RedisCronIndex:
+  def __init__(self, redis):
+  self.redis = redis
+  self.INDEX_KEY = "cron:next_fire"
 
-                                                                                                                                                                                        def add_task(self, task_id, next_fire_timestamp):
-                                                                                                                                                                                        self.redis.zadd(self.INDEX_KEY, {task_id: next_fire_timestamp})
+  def add_task(self, task_id, next_fire_timestamp):
+  self.redis.zadd(self.INDEX_KEY, {task_id: next_fire_timestamp})
 
-                                                                                                                                                                                        def get_tasks_firing_in(self, seconds):
-                                                                                                                                                                                        now = time.time()
-                                                                                                                                                                                        deadline = now + seconds
+  def get_tasks_firing_in(self, seconds):
+  now = time.time()
+  deadline = now + seconds
 
-                                                                                                                                                                                        return self.redis.zrangebyscore(
-                                                                                                                                                                                        self.INDEX_KEY,
-                                                                                                                                                                                        min=now,
-                                                                                                                                                                                        max=deadline
-                                                                                                                                                                                        )
+  return self.redis.zrangebyscore(
+  self.INDEX_KEY,
+  min=now,
+  max=deadline
+  )
 
-                                                                                                                                                                                        def update_after_execution(self, task_id, new_next_fire):
-                                                                                                                                                                                        # Atomic update
-                                                                                                                                                                                        self.redis.zadd(self.INDEX_KEY, {task_id: new_next_fire})
+  def update_after_execution(self, task_id, new_next_fire):
+# Atomic update
+  self.redis.zadd(self.INDEX_KEY, {task_id: new_next_fire})
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Sharded Index for Scale**:
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        class ShardedCronIndex:
-                                                                                                                                                                                        """Distribute index across multiple Redis instances."""
+  class ShardedCronIndex:
+  """Distribute index across multiple Redis instances."""
 
-                                                                                                                                                                                        def __init__(self, redis_nodes):
-                                                                                                                                                                                        self.nodes = redis_nodes
-                                                                                                                                                                                        self.num_shards = len(redis_nodes)
+  def __init__(self, redis_nodes):
+  self.nodes = redis_nodes
+  self.num_shards = len(redis_nodes)
 
-                                                                                                                                                                                        def _get_shard(self, task_id):
-                                                                                                                                                                                        return self.nodes[hash(task_id) % self.num_shards]
+  def _get_shard(self, task_id):
+  return self.nodes[hash(task_id) % self.num_shards]
 
-                                                                                                                                                                                        def get_all_tasks_firing_in(self, seconds):
-                                                                                                                                                                                        """Query all shards in parallel."""
-                                                                                                                                                                                        now = time.time()
-                                                                                                                                                                                        deadline = now + seconds
+  def get_all_tasks_firing_in(self, seconds):
+  """Query all shards in parallel."""
+  now = time.time()
+  deadline = now + seconds
 
-                                                                                                                                                                                        with ThreadPoolExecutor(max_workers=self.num_shards) as executor:
-                                                                                                                                                                                        futures = [
-                                                                                                                                                                                        executor.submit(
-                                                                                                                                                                                        node.zrangebyscore,
-                                                                                                                                                                                        "cron:next_fire",
-                                                                                                                                                                                        min=now,
-                                                                                                                                                                                        max=deadline
-                                                                                                                                                                                        )
-                                                                                                                                                                                        for node in self.nodes
-                                                                                                                                                                                        ]
+  with ThreadPoolExecutor(max_workers=self.num_shards) as executor:
+  futures = [
+  executor.submit(
+  node.zrangebyscore,
+  "cron:next_fire",
+  min=now,
+  max=deadline
+  )
+  for node in self.nodes
+  ]
 
-                                                                                                                                                                                        results = []
-                                                                                                                                                                                        for future in futures:
-                                                                                                                                                                                        results.extend(future.result())
+  results = []
+  for future in futures:
+  results.extend(future.result())
 
-                                                                                                                                                                                        return results
+  return results
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Memory Optimization**: Only index next 24 hours
 
                                                                                                                                                                                         ```python
-                                                                                                                                                                                        def maintenance_loop(self):
-                                                                                                                                                                                        """Run periodically to refresh the index."""
-                                                                                                                                                                                        while running:
-                                                                                                                                                                                        # Remove entries older than now (already fired)
-                                                                                                                                                                                        self.redis.zremrangebyscore(self.INDEX_KEY, '-inf', time.time())
+  def maintenance_loop(self):
+  """Run periodically to refresh the index."""
+  while running:
+# Remove entries older than now (already fired)
+  self.redis.zremrangebyscore(self.INDEX_KEY, '-inf', time.time())
 
-                                                                                                                                                                                        # For tasks beyond 24h, only index first occurrence
-                                                                                                                                                                                        far_future = time.time() + 86400
-                                                                                                                                                                                        far_tasks = self.get_tasks_beyond(far_future)
+# For tasks beyond 24h, only index first occurrence
+  far_future = time.time() + 86400
+  far_tasks = self.get_tasks_beyond(far_future)
 
-                                                                                                                                                                                        for task_id in far_tasks:
-                                                                                                                                                                                        # Recompute - may now fall within 24h window
-                                                                                                                                                                                        next_fire = self.compute_next_fire(task_id)
-                                                                                                                                                                                        if next_fire < far_future:
-                                                                                                                                                                                        self.redis.zadd(self.INDEX_KEY, {task_id: next_fire})
+  for task_id in far_tasks:
+# Recompute - may now fall within 24h window
+  next_fire = self.compute_next_fire(task_id)
+  if next_fire < far_future:
+  self.redis.zadd(self.INDEX_KEY, {task_id: next_fire})
 
-                                                                                                                                                                                        time.sleep(3600)  # Run hourly
+  time.sleep(3600)  # Run hourly
                                                                                                                                                                                         ```
 
                                                                                                                                                                                         **Performance Comparison**:

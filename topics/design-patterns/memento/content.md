@@ -54,14 +54,14 @@ The Memento pattern captures and externalizes an object's internal state so that
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Novice Misconception</div>
 <div style="color: #7f1d1d;">"Memento is just serialization - save the object to JSON and load it back."</div>
 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 0.9rem;">
-      This misses the encapsulation guarantee, polymorphic memento support, and the critical separation of concerns between components.
+  This misses the encapsulation guarantee, polymorphic memento support, and the critical separation of concerns between components.
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #bbf7d0;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Expert Understanding</div>
 <div style="color: #14532d;">"Memento preserves encapsulation through interface segregation. The Caretaker stores state without knowing what is inside. This enables polymorphism, security, and incremental storage strategies."</div>
 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bbf7d0; color: #15803d; font-size: 0.9rem;">
-      Different Originators can have different Memento structures. The Caretaker code remains unchanged.
+  Different Originators can have different Memento structures. The Caretaker code remains unchanged.
 </div>
 </div>
 </div>
@@ -85,7 +85,7 @@ The Memento pattern captures and externalizes an object's internal state so that
         + businessOperation(): void
 </div>
 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #93c5fd; font-size: 0.75rem; color: #1e40af;">
-        Sole authority over state semantics
+  Sole authority over state semantics
 </div>
 </div>
 <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
@@ -93,11 +93,11 @@ The Memento pattern captures and externalizes an object's internal state so that
 <div style="font-size: 0.8rem; color: #15803d; margin-top: 12px; font-family: monospace; text-align: left;">
         - state (private/frozen)<br/>
         + getMetadata(): info<br/>
-        # getState(): state *<br/>
+# getState(): state *<br/>
 <span style="font-size: 0.7rem;">* package-private or friend</span>
 </div>
 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #86efac; font-size: 0.75rem; color: #166534;">
-        Dual interface: narrow (public), wide (to Originator)
+  Dual interface: narrow (public), wide (to Originator)
 </div>
 </div>
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
@@ -110,15 +110,15 @@ The Memento pattern captures and externalizes an object's internal state so that
         + redo(): Memento
 </div>
 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fcd34d; font-size: 0.75rem; color: #92400e;">
-        Never inspects memento contents
+  Never inspects memento contents
 </div>
 </div>
 </div>
 <div style="margin-top: 24px; background: #e0e7ff; border-radius: 8px; padding: 16px;">
 <div style="font-weight: 600; color: #3730a3; margin-bottom: 8px;">Information Flow</div>
 <div style="color: #4338ca; font-size: 0.9rem;">
-      Originator --[creates]--> Memento --[stores in]--> Caretaker<br/>
-      Caretaker --[returns]--> Memento --[restored by]--> Originator<br/>
+  Originator --[creates]--> Memento --[stores in]--> Caretaker<br/>
+  Caretaker --[returns]--> Memento --[restored by]--> Originator<br/>
 <strong>Key invariant:</strong> Caretaker never calls Memento.getState()
 </div>
 </div>
@@ -134,25 +134,25 @@ The pattern preserves encapsulation through several language-specific techniques
 <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
 <div style="font-weight: 600; color: #1e40af;">Java / C#: Nested Classes</div>
 <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
-        Memento as private inner class of Originator. The Caretaker receives the Memento through an interface that exposes only metadata methods. The actual state accessor is package-private or internal.
+  Memento as private inner class of Originator. The Caretaker receives the Memento through an interface that exposes only metadata methods. The actual state accessor is package-private or internal.
 </div>
 </div>
 <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
 <div style="font-weight: 600; color: #166534;">C++: Friend Classes</div>
 <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
-        Originator declared as friend of Memento. Only the Originator can access private state retrieval methods. External code sees only public metadata interface.
+  Originator declared as friend of Memento. Only the Originator can access private state retrieval methods. External code sees only public metadata interface.
 </div>
 </div>
 <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
 <div style="font-weight: 600; color: #92400e;">Python: Convention + Module Privacy</div>
 <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
-        Underscore prefix convention (_getState) signals private access. Module-level organization can enforce that only Originator imports the private accessor. Frozen dataclasses ensure immutability.
+  Underscore prefix convention (_getState) signals private access. Module-level organization can enforce that only Originator imports the private accessor. Frozen dataclasses ensure immutability.
 </div>
 </div>
 <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
 <div style="font-weight: 600; color: #6d28d9;">TypeScript: Symbol Keys</div>
 <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
-        Use Symbol() as property key for internal state. Only code with reference to the symbol can access the state. The symbol is shared only between Originator and Memento through module closure.
+  Use Symbol() as property key for internal state. Only code with reference to the symbol can access the state. The symbol is shared only between Originator and Memento through module closure.
 </div>
 </div>
 </div>
@@ -905,17 +905,17 @@ class AdvancedCaretaker(Generic[T]):
 ### Section 1: Encapsulation Preservation
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: How does the Memento pattern preserve encapsulation?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: How does the Memento pattern preserve encapsulation?</summary>
 <div style="margin-top: 16px; color: #334155; padding: 16px; background: #fff; border-radius: 8px;">
 <strong>Answer:</strong> The pattern uses dual interfaces - a narrow interface exposed to the Caretaker (metadata only: timestamp, description, size) and a wide interface accessible only to the Originator (actual state retrieval). The Caretaker stores mementos without knowing their contents. Language mechanisms enforce this: nested classes in Java/C#, friend declarations in C++, module-private symbols in TypeScript, naming conventions in Python.
 
-    <details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
-      <summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: What happens if encapsulation is violated? Give a concrete failure scenario.</summary>
+<details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
+<summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: What happens if encapsulation is violated? Give a concrete failure scenario.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Consider a document editor where the Caretaker inspects memento contents to implement "smart" features like "show changes preview." If the Originator changes its internal representation (e.g., switches from string content to block-based storage), the Caretaker breaks because it assumed a specific structure. Worse, the Caretaker might corrupt state by making "helpful" modifications to mementos it does not understand. Encapsulation violation creates tight coupling that defeats the pattern's purpose.
 
-        <details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
-          <summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Design a memento system where state MUST be partially inspectable by the Caretaker for legitimate reasons. How do you preserve encapsulation?</summary>
+<details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
+<summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Design a memento system where state MUST be partially inspectable by the Caretaker for legitimate reasons. How do you preserve encapsulation?</summary>
 <div style="margin-top: 10px; color: #334155;">
 <strong>Answer:</strong> Use explicit projection interfaces. Define a MementoMetadata interface with sanctioned inspectable fields (file size, word count, thumbnail) that the Originator populates. The Caretaker depends only on this interface, not the concrete Memento. The Originator can change internal state representation freely as long as it maintains the metadata contract. This is Separated Interface pattern combined with Memento.
 
@@ -934,39 +934,39 @@ class AdvancedCaretaker(Generic[T]):
             return self._generate_thumbnail()  # Derived from state
             ```
 
-            The key insight is that inspectable metadata is computed/derived, not raw internal state exposure.
+  The key insight is that inspectable metadata is computed/derived, not raw internal state exposure.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
 ### Section 2: State Snapshots
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: Why must mementos typically use deep copy? When is shallow copy safe?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: Why must mementos typically use deep copy? When is shallow copy safe?</summary>
 <div style="margin-top: 16px; color: #334155; padding: 16px; background: #fff; border-radius: 8px;">
 <strong>Answer:</strong> Shallow copy creates references to the same objects. If the Originator mutates those objects, the memento changes retroactively, corrupting history. Deep copy creates independent object graphs. Shallow copy is safe only when: (1) all nested objects are immutable, or (2) you use copy-on-write semantics, or (3) you accept structural sharing with immutable updates (functional approach).
 
-    <details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
-      <summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Deep copy has O(n) cost. How would you implement efficient snapshots for a large document (100MB+)?</summary>
+<details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
+<summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Deep copy has O(n) cost. How would you implement efficient snapshots for a large document (100MB+)?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Use incremental snapshots with periodic checkpoints. Store only deltas (changes) between states. Every N operations, take a full checkpoint. To restore state K, load nearest checkpoint before K, then replay deltas forward. Trade-off: restoration time increases with delta chain length.
 
-        Alternative: Persistent data structures with structural sharing. Each "mutation" creates a new root but shares unchanged subtrees. Libraries like Immer (JS) or pyrsistent (Python) provide this. Memory is O(change_size), not O(total_size).
+  Alternative: Persistent data structures with structural sharing. Each "mutation" creates a new root but shares unchanged subtrees. Libraries like Immer (JS) or pyrsistent (Python) provide this. Memory is O(change_size), not O(total_size).
 
-        For very large state: Copy-on-write at block level. Mark blocks read-only after snapshot; on mutation, copy only the affected block. This is how ZFS snapshots work.
+  For very large state: Copy-on-write at block level. Mark blocks read-only after snapshot; on mutation, copy only the affected block. This is how ZFS snapshots work.
 
-        <details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
-          <summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your incremental snapshot system has a bug: after restoring an old state and making new edits, delta chains become corrupted. Diagnose and fix.</summary>
+<details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
+<summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your incremental snapshot system has a bug: after restoring an old state and making new edits, delta chains become corrupted. Diagnose and fix.</summary>
 <div style="margin-top: 10px; color: #334155;">
 <strong>Answer:</strong> The bug occurs because deltas are computed relative to a linear history assumption. When you restore and branch, new deltas are computed relative to the restored state, but old forward deltas still reference the original timeline.
 
-            Fix: Track delta parent pointers explicitly. Each delta stores its parent delta/checkpoint ID. On restore + new edit:
-            1. Mark current position as branch point
-            2. New deltas link to restored state as parent
-            3. History becomes a tree, not a list
+  Fix: Track delta parent pointers explicitly. Each delta stores its parent delta/checkpoint ID. On restore + new edit:
+  1. Mark current position as branch point
+  2. New deltas link to restored state as parent
+  3. History becomes a tree, not a list
 
             ```python
             @dataclass
@@ -984,18 +984,18 @@ class AdvancedCaretaker(Generic[T]):
             self.deltas[new_delta.id] = new_delta
             ```
 
-            This converts linear undo to tree-structured undo, preserving all history branches.
+  This converts linear undo to tree-structured undo, preserving all history branches.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
 ### Section 3: Undo/Redo Implementation
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: Explain the standard undo/redo state transitions.</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: Explain the standard undo/redo state transitions.</summary>
 <div style="margin-top: 16px; color: #334155; padding: 16px; background: #fff; border-radius: 8px;">
 <strong>Answer:</strong>
 
@@ -1007,33 +1007,33 @@ class AdvancedCaretaker(Generic[T]):
 
     Key invariant: undo_stack.top + redo_stack = complete linear history. Clearing redo on edit creates linear history; branching history preserves redo stack.
 
-    <details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
-      <summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Design undo for a collaborative editor where multiple users edit simultaneously.</summary>
+<details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
+<summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Design undo for a collaborative editor where multiple users edit simultaneously.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Traditional undo breaks in collaboration because undoing MY change might conflict with YOUR concurrent changes. Three approaches:
 
-        1. **Local undo only:** Each user has personal undo stack. Undo generates compensating operation (not memento restore) that is broadcast like any edit. Does not truly "restore" past state.
+  1. **Local undo only:** Each user has personal undo stack. Undo generates compensating operation (not memento restore) that is broadcast like any edit. Does not truly "restore" past state.
 
-        2. **Selective undo:** Track which user made which changes. Undo removes specific user's operation using operational transformation (OT) or CRDT to maintain consistency. Complex but intuitive to users.
+  2. **Selective undo:** Track which user made which changes. Undo removes specific user's operation using operational transformation (OT) or CRDT to maintain consistency. Complex but intuitive to users.
 
-        3. **Global undo:** Single shared history. Anyone can undo anything. Last writer wins conflicts. Simple but confusing user experience.
+  3. **Global undo:** Single shared history. Anyone can undo anything. Last writer wins conflicts. Simple but confusing user experience.
 
-        Industry standard (Google Docs, Figma) uses local selective undo: you can only undo your own actions, implemented via compensating operations.
+  Industry standard (Google Docs, Figma) uses local selective undo: you can only undo your own actions, implemented via compensating operations.
 
-        <details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
-          <summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: In your selective undo system, User A deletes paragraph P, User B modifies word W inside P, User A undoes. What happens to User B's edit?</summary>
+<details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
+<summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: In your selective undo system, User A deletes paragraph P, User B modifies word W inside P, User A undoes. What happens to User B's edit?</summary>
 <div style="margin-top: 10px; color: #334155;">
 <strong>Answer:</strong> This is the "resurrection conflict" problem. Options:
 
-            1. **Discard B's edit:** Undo "wins." B's work is lost. Simple but user-hostile.
+  1. **Discard B's edit:** Undo "wins." B's work is lost. Simple but user-hostile.
 
-            2. **Resurrect with B's edit:** Restore paragraph P with B's modification included. Requires tracking that B's operation targeted content within P. When P is restored, transform B's operation to apply to restored content.
+  2. **Resurrect with B's edit:** Restore paragraph P with B's modification included. Requires tracking that B's operation targeted content within P. When P is restored, transform B's operation to apply to restored content.
 
-            3. **Conflict marker:** Restore P but flag conflict zone. Notify B their edit location was restored. Let B resolve manually.
+  3. **Conflict marker:** Restore P but flag conflict zone. Notify B their edit location was restored. Let B resolve manually.
 
-            4. **Prevent undo:** Block A's undo because dependent edits exist. Require A to coordinate with B first.
+  4. **Prevent undo:** Block A's undo because dependent edits exist. Require A to coordinate with B first.
 
-            Production systems typically use option 2 (resurrection with transforms) via OT/CRDT. The insight is that undo is not "restore memento" but "generate inverse operation and apply through normal collaborative pipeline."
+  Production systems typically use option 2 (resurrection with transforms) via OT/CRDT. The insight is that undo is not "restore memento" but "generate inverse operation and apply through normal collaborative pipeline."
 
             ```python
             def selective_undo(user_id: str, operation_id: str):
@@ -1048,18 +1048,18 @@ class AdvancedCaretaker(Generic[T]):
             apply_and_broadcast(inverse_op, user_id)
             ```
 
-            This maintains the invariant that all users converge to same state despite concurrent undos.
+  This maintains the invariant that all users converge to same state despite concurrent undos.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
 ### Section 4: Caretaker Role
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: What are the Caretaker's responsibilities and constraints?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: What are the Caretaker's responsibilities and constraints?</summary>
 <div style="margin-top: 16px; color: #334155; padding: 16px; background: #fff; border-radius: 8px;">
 <strong>Answer:</strong>
 
@@ -1069,36 +1069,36 @@ class AdvancedCaretaker(Generic[T]):
 
     The Caretaker treats mementos as opaque tokens. This enables polymorphism: same Caretaker code works with different Originator types.
 
-    <details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
-      <summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: How should the Caretaker handle memory pressure? Design an eviction strategy.</summary>
+<details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
+<summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: How should the Caretaker handle memory pressure? Design an eviction strategy.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Eviction strategies depend on access patterns:
 
-        **LRU (Least Recently Used):** Evict mementos not accessed recently. Good for temporal locality.
+**LRU (Least Recently Used):** Evict mementos not accessed recently. Good for temporal locality.
 
-        **Size-weighted LRU:** Evict large mementos first to free more space. Good when memento sizes vary significantly.
+**Size-weighted LRU:** Evict large mementos first to free more space. Good when memento sizes vary significantly.
 
-        **Keep boundaries:** Never evict first/last N mementos (oldest for audit, newest for immediate undo). Evict from middle.
+**Keep boundaries:** Never evict first/last N mementos (oldest for audit, newest for immediate undo). Evict from middle.
 
-        **Checkpoint preservation:** Evict deltas but keep full checkpoints. Allows restoration at reduced granularity.
+**Checkpoint preservation:** Evict deltas but keep full checkpoints. Allows restoration at reduced granularity.
 
-        **Age-based:** Evict mementos older than threshold. Good for compliance requirements.
+**Age-based:** Evict mementos older than threshold. Good for compliance requirements.
 
-        **Named protection:** User-bookmarked mementos never evicted.
+**Named protection:** User-bookmarked mementos never evicted.
 
-        Production systems combine: LRU for automatic history, protected set for user bookmarks, age-based for compliance.
+  Production systems combine: LRU for automatic history, protected set for user bookmarks, age-based for compliance.
 
-        <details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
-          <summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your eviction system runs in a multi-threaded environment. Users report "phantom undos" where undo restores unexpected states. Debug this.</summary>
+<details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
+<summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your eviction system runs in a multi-threaded environment. Users report "phantom undos" where undo restores unexpected states. Debug this.</summary>
 <div style="margin-top: 10px; color: #334155;">
 <strong>Answer:</strong> Race condition between eviction and undo operations. Scenario:
 
-            1. Thread A: User triggers undo, reads current_index = 5
-            2. Thread B: Memory pressure triggers eviction, removes index 3
-            3. Thread B: Adjusts indices, now old index 5 is index 4
-            4. Thread A: Restores memento at index 5 (now different state!)
+  1. Thread A: User triggers undo, reads current_index = 5
+  2. Thread B: Memory pressure triggers eviction, removes index 3
+  3. Thread B: Adjusts indices, now old index 5 is index 4
+  4. Thread A: Restores memento at index 5 (now different state!)
 
-            Fix: Use proper synchronization.
+  Fix: Use proper synchronization.
 
             ```python
             class ThreadSafeCaretaker:
@@ -1120,7 +1120,7 @@ class AdvancedCaretaker(Generic[T]):
             pass
             ```
 
-            Alternative: Lock-free design using immutable snapshots of the memento list. Each operation creates new list reference; eviction and access never conflict because they work on different list instances.
+  Alternative: Lock-free design using immutable snapshots of the memento list. Each operation creates new list reference; eviction and access never conflict because they work on different list instances.
 
             ```python
             def undo(self) -> Optional[Memento]:
@@ -1134,18 +1134,18 @@ class AdvancedCaretaker(Generic[T]):
             # CAS failed, retry with new snapshot
             ```
 
-            The key insight: phantom undos come from non-atomic read-then-act sequences. Solution is either blocking locks or lock-free atomic operations.
+  The key insight: phantom undos come from non-atomic read-then-act sequences. Solution is either blocking locks or lock-free atomic operations.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 
 ### Section 5: Edge Cases and Failure Modes
 
 <details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: What are common failure modes when implementing Memento?</summary>
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer;">L1: What are common failure modes when implementing Memento?</summary>
 <div style="margin-top: 16px; color: #334155; padding: 16px; background: #fff; border-radius: 8px;">
 <strong>Answer:</strong>
 
@@ -1157,20 +1157,20 @@ class AdvancedCaretaker(Generic[T]):
     6. **Time-sensitive state:** Restored state contains expired timestamps, tokens
     7. **Invariant violations:** Restored state valid in isolation but inconsistent with external systems
 
-    <details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
-      <summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Your application stores mementos to disk. After deployment, you change the Originator's internal structure. How do you handle old mementos?</summary>
+<details style="margin: 16px 0; padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6;">
+<summary style="font-weight: 600; color: #1e40af; cursor: pointer;">L2: Your application stores mementos to disk. After deployment, you change the Originator's internal structure. How do you handle old mementos?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Schema migration for mementos. Options:
 
-        1. **Version field:** Each memento stores schema version. On restore, check version and run migration function if needed.
+  1. **Version field:** Each memento stores schema version. On restore, check version and run migration function if needed.
 
-        2. **Forward-compatible format:** Use extensible serialization (protobuf, JSON with ignored fields). New fields have defaults; old mementos still work.
+  2. **Forward-compatible format:** Use extensible serialization (protobuf, JSON with ignored fields). New fields have defaults; old mementos still work.
 
-        3. **Explicit migration:** On startup, batch-migrate all stored mementos to current schema. Downside: slow startup, complex migration code.
+  3. **Explicit migration:** On startup, batch-migrate all stored mementos to current schema. Downside: slow startup, complex migration code.
 
-        4. **Lazy migration:** Migrate individual mementos when accessed. Store migrated version. Amortizes cost.
+  4. **Lazy migration:** Migrate individual mementos when accessed. Store migrated version. Amortizes cost.
 
-        5. **Discard old:** After major version change, invalidate all old mementos. Simple but loses user history.
+  5. **Discard old:** After major version change, invalidate all old mementos. Simple but loses user history.
 
         ```python
         class VersionedMemento:
@@ -1190,18 +1190,18 @@ class AdvancedCaretaker(Generic[T]):
         return cls(**data)
         ```
 
-        <details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
-          <summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your migrated mementos work for restore, but users report "undo behaves differently after upgrade." The state looks correct but application behavior changed. Diagnose.</summary>
+<details style="margin: 12px 0; padding: 10px; background: #fff; border-radius: 4px; border-left: 3px solid #22c55e;">
+<summary style="font-weight: 600; color: #166534; cursor: pointer;">L3: Your migrated mementos work for restore, but users report "undo behaves differently after upgrade." The state looks correct but application behavior changed. Diagnose.</summary>
 <div style="margin-top: 10px; color: #334155;">
 <strong>Answer:</strong> State is necessary but not sufficient for behavioral equivalence. The bug is that memento captures data but not behavioral context:
 
-            1. **Configuration drift:** Application behavior depends on config values that changed between memento creation and restore. Memento has old data + new config = different behavior.
+  1. **Configuration drift:** Application behavior depends on config values that changed between memento creation and restore. Memento has old data + new config = different behavior.
 
-            2. **Code behavior change:** A bug fix changed how the Originator interprets state. Old state + new code = different results than old state + old code.
+  2. **Code behavior change:** A bug fix changed how the Originator interprets state. Old state + new code = different results than old state + old code.
 
-            3. **External dependency change:** State references external entity (user ID, API version). External entity's behavior changed; restored state now triggers different external behavior.
+  3. **External dependency change:** State references external entity (user ID, API version). External entity's behavior changed; restored state now triggers different external behavior.
 
-            **Solutions:**
+**Solutions:**
 
             - Include behavioral version in memento; warn user when restoring across behavior changes
             - Store relevant configuration snapshot with memento
@@ -1229,11 +1229,11 @@ class AdvancedCaretaker(Generic[T]):
             return warnings
             ```
 
-            The key insight: Memento captures state, not behavior. Schema migration preserves data fidelity but not behavioral fidelity. True time-travel requires versioned code + versioned data.
+  The key insight: Memento captures state, not behavior. Schema migration preserves data fidelity but not behavioral fidelity. True time-travel requires versioned code + versioned data.
 </div>
-        </details>
+</details>
 </div>
-    </details>
+</details>
 </div>
 </details>
 

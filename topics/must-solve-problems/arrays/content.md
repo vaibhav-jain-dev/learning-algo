@@ -61,28 +61,28 @@ The two-pointer technique uses two indices that move toward each other or in the
 Finding pair with target sum = 13 in sorted array:
 
 Step 1:  L                          R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 1 + 15 = 16 > 13, move R left
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 1 + 15 = 16 > 13, move R left
 
 Step 2:  L                      R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 1 + 14 = 15 > 13, move R left
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 1 + 14 = 15 > 13, move R left
 
 Step 3:  L                  R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 1 + 9 = 10 < 13, move L right
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 1 + 9 = 10 < 13, move L right
 
 Step 4:     L              R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 2 + 9 = 11 < 13, move L right
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 2 + 9 = 11 < 13, move L right
 
 Step 5:        L           R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 3 + 9 = 12 < 13, move L right
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 3 + 9 = 12 < 13, move L right
 
 Step 6:           L        R
-         [1, 2, 3, 4, 6, 8, 9, 14, 15]
-         Sum = 4 + 9 = 13 = target! FOUND!
+  [1, 2, 3, 4, 6, 8, 9, 14, 15]
+  Sum = 4 + 9 = 13 = target! FOUND!
 
 Key Insight: Each step eliminates either the smallest or largest
 remaining element, guaranteeing O(n) time complexity.
@@ -99,19 +99,19 @@ Find maximum sum of subarray with size k=3:
 Array: [2, 1, 5, 1, 3, 2]
 
 Window 1: [2, 1, 5] 1, 3, 2    Sum = 8
-           -------
+  -------
 Window 2:  2 [1, 5, 1] 3, 2    Sum = 7  (remove 2, add 1)
-              -------
+  -------
 Window 3:  2, 1 [5, 1, 3] 2    Sum = 9  (remove 1, add 3) MAX!
-                 -------
+  -------
 Window 4:  2, 1, 5 [1, 3, 2]   Sum = 6  (remove 5, add 2)
-                    -------
+  -------
 
 Answer: 9
 
 Optimization: Instead of recalculating sum O(k) each time,
-              slide window by subtracting left, adding right O(1)
-              Total: O(n) instead of O(n*k)
+  slide window by subtracting left, adding right O(1)
+  Total: O(n) instead of O(n*k)
 </pre>
 </div>
 
@@ -133,7 +133,7 @@ Range Sum Query: sum(index 1 to 3)
 Zero-Sum Subarray Detection:
 Array:       [4,  2, -3,  1,  6]
 Prefix Sum:  [4,  6,  3,  4, 10]
-                         ^
+  ^
 Same prefix sum (4) at index 0 and 3!
 Subarray [2, -3, 1] between indices 1-3 sums to 0.
 
@@ -254,8 +254,8 @@ Index:   0   1   2   3   4   5   6   7   8
 Value:  -2   1  -3   4  -1   2   1  -5   4
 Current:-2   1  -2   4   3   5   6   1   5
 MaxSum: -2   1   1   4   4   5   6   6   6
-                     ↑           ↑
-              Reset to 4    Maximum found!
+  ↑           ↑
+  Reset to 4    Maximum found!
 
 Decision at each step:
 - Current = max(array[i], current + array[i])
@@ -325,9 +325,9 @@ Input intervals (sorted by start):
 Timeline:
 1---2     No overlap with previous
     3-----5
-       4--------7  Overlaps! Merge [3,5] + [4,7] = [3,7]
-          6--------8  Overlaps! Merge [3,7] + [6,8] = [3,8]
-                  9---10  No overlap
+  4--------7  Overlaps! Merge [3,5] + [4,7] = [3,7]
+  6--------8  Overlaps! Merge [3,7] + [6,8] = [3,8]
+  9---10  No overlap
 
 Result: [1,2], [3,8], [9,10]
 

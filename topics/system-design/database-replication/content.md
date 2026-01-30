@@ -32,7 +32,7 @@ The key challenge is keeping all copies synchronized - when you update the origi
 <div style="color: #1e40af; font-weight: 600; font-size: 16px; margin-bottom: 16px; text-align: center;">SINGLE-PRIMARY (Master-Slave)</div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600;">
-          PRIMARY (Writes)
+  PRIMARY (Writes)
 </div>
 <div style="display: flex; gap: 8px; color: #6366f1;">
 <span style="font-size: 20px;">|</span>
@@ -53,14 +53,14 @@ The key challenge is keeping all copies synchronized - when you update the origi
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 <div style="display: flex; gap: 16px;">
 <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
-            PRIMARY A
+  PRIMARY A
 </div>
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d97706;">
 <span style="font-size: 12px;">sync</span>
 <span>⟷</span>
 </div>
 <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;">
-            PRIMARY B
+  PRIMARY B
 </div>
 </div>
 <div style="display: flex; gap: 40px; color: #92400e; font-size: 16px;">
@@ -323,13 +323,13 @@ class ReplicationManager:
 <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
-        Region US-EAST
+  Region US-EAST
 </div>
 <div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #1e40af;">
-        Primary A
+  Primary A
 </div>
 <div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
-        User: Alice = 100
+  User: Alice = 100
 </div>
 </div>
 
@@ -344,13 +344,13 @@ class ReplicationManager:
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 600;">
-        Region EU-WEST
+  Region EU-WEST
 </div>
 <div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; font-size: 14px; color: #166534;">
-        Primary B
+  Primary B
 </div>
 <div style="background: #fef3c7; padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #92400e;">
-        User: Alice = 150
+  User: Alice = 150
 </div>
 </div>
 </div>
@@ -1074,10 +1074,10 @@ class ReplicationCoordinator:
 <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">1. Read-Your-Writes Routing</div>
 <div style="color: #475569; font-size: 14px;">Track recent write timestamps per session. Route reads to primary for N seconds after write, then allow replica reads.</div>
 <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
-        if (now - last_write) &lt; 5s:<br>
-          &nbsp;&nbsp;return read_from_primary()<br>
-            else:<br>
-              &nbsp;&nbsp;return read_from_replica()
+  if (now - last_write) &lt; 5s:<br>
+  &nbsp;&nbsp;return read_from_primary()<br>
+  else:<br>
+  &nbsp;&nbsp;return read_from_replica()
 </div>
 </div>
 
@@ -1085,8 +1085,8 @@ class ReplicationCoordinator:
 <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">2. Causal Consistency Tokens</div>
 <div style="color: #475569; font-size: 14px;">Return write position (LSN/GTID) with write response. Client includes token with subsequent reads. Replica waits until caught up.</div>
 <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
-              write_response.token = gtid<br>
-                read(token) => wait_for(replica.gtid >= token)
+  write_response.token = gtid<br>
+  read(token) => wait_for(replica.gtid >= token)
 </div>
 </div>
 
@@ -1094,8 +1094,8 @@ class ReplicationCoordinator:
 <div style="color: #92400e; font-weight: 600; margin-bottom: 12px;">3. Lag-Aware Load Balancing</div>
 <div style="color: #475569; font-size: 14px;">Monitor each replica's lag. Exclude replicas exceeding threshold. Route to lowest-lag replica for time-sensitive reads.</div>
 <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
-                replicas = filter(r.lag &lt; 1s)<br>
-                  return min(replicas, key=lag)
+  replicas = filter(r.lag &lt; 1s)<br>
+  return min(replicas, key=lag)
 </div>
 </div>
 
@@ -1103,14 +1103,14 @@ class ReplicationCoordinator:
 <div style="color: #9d174d; font-weight: 600; margin-bottom: 12px;">4. Parallel Replication</div>
 <div style="color: #475569; font-size: 14px;">Apply transactions in parallel on replica. MySQL 5.7+ supports parallel apply per schema. MySQL 8.0+ supports writeset-based parallelism.</div>
 <div style="background: white; padding: 12px; border-radius: 6px; margin-top: 12px; font-family: monospace; font-size: 12px; color: #1e293b;">
-                  slave_parallel_workers = 16<br>
-                    slave_parallel_type = LOGICAL_CLOCK
+  slave_parallel_workers = 16<br>
+  slave_parallel_type = LOGICAL_CLOCK
 </div>
 </div>
 </div>
 </div>
 
-            ### Replication Lag Implementation
+### Replication Lag Implementation
 
             ```python
             from dataclasses import dataclass
@@ -1346,7 +1346,7 @@ class ReplicationCoordinator:
             return False
             ```
 
-            ### Replication Lag Interview Questions (3 Levels Deep)
+### Replication Lag Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is replication lag and why is it problematic?</h4>
@@ -1366,11 +1366,11 @@ class ReplicationCoordinator:
 </div>
 </div>
 
-            ---
+  ---
 
-            ## Section 5: Failover Strategies
+## Section 5: Failover Strategies
 
-            ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color: #10b981; font-weight: 600;">Failover</span> is the process of promoting a replica to become the new primary when the current primary fails. It's one of the most critical operations in a replicated database system.
 
@@ -1444,7 +1444,7 @@ class ReplicationCoordinator:
 </div>
 </div>
 
-            ### Split-Brain Prevention
+### Split-Brain Prevention
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">Split-Brain: The Worst-Case Scenario</h4>
@@ -1473,7 +1473,7 @@ class ReplicationCoordinator:
 </div>
 </div>
 
-            ### Failover Implementation
+### Failover Implementation
 
             ```python
             from enum import Enum
@@ -1774,9 +1774,9 @@ class ReplicationCoordinator:
             )
             ```
 
-            ---
+  ---
 
-            ## Common Pitfalls
+## Common Pitfalls
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 <h4 style="color: #991b1b; margin-top: 0;">Critical Replication Anti-Patterns</h4>
@@ -1814,9 +1814,9 @@ class ReplicationCoordinator:
 </div>
 </div>
 
-            ---
+  ---
 
-            ## Quick Reference
+## Quick Reference
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0; font-size: 18px;">Database Replication Cheat Sheet</h4>
@@ -1881,9 +1881,9 @@ class ReplicationCoordinator:
 </div>
 </div>
 
-            ---
+  ---
 
-            ## Related Topics
+## Related Topics
 
             - [[database-sharding]](/topic/system-design/database-sharding) - Horizontal partitioning for write scalability
             - [[cap-theorem]](/topic/system-design/cap-theorem) - Understanding consistency trade-offs

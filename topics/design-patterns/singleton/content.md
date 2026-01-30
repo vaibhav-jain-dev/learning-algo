@@ -256,7 +256,7 @@ public class DCLSingleton {
 <div style="font-family: monospace; font-size: 14px; color: #334155;">
 <div style="margin-bottom: 8px;"><span style="color: #64748b;">// What you write:</span></div>
 <div>instance = new DCLSingleton();</div>
-      <br/>
+  <br/>
 <div style="margin-bottom: 8px;"><span style="color: #64748b;">// What JVM might execute (reordered):</span></div>
 <div>1. memory = allocate()           <span style="color: #64748b;">// Allocate memory</span></div>
 <div>2. instance = memory             <span style="color: #dc2626; font-weight: 600;">// Assign reference (non-null now!)</span></div>
@@ -269,7 +269,7 @@ Thread B calls <code>getInstance()</code> between steps 2 and 3. It sees <code>i
 </p>
 </div>
 
-  ### 4. Bill Pugh Solution (Initialization-on-Demand Holder)
+### 4. Bill Pugh Solution (Initialization-on-Demand Holder)
 
 <div style="background: linear-gradient(135deg, #059669 0%, #34d399 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
 <h4 style="margin-top: 0; color: white;">Bill Pugh Solution: The Elegant Approach</h4>
@@ -876,15 +876,15 @@ def test_something():
 <h6 style="color: #1e40af; margin-top: 0;">Level 3: Design a singleton that can be configured with different implementations at startup (like a test mode vs production mode) while maintaining thread safety and singleton guarantees.</h6>
 
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Use a configurable holder pattern with interface-based design:
-        <br/><br/>
+  <br/><br/>
 <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">public interface Service { void doWork(); }</code>
-        <br/><br/>
-        Create a holder that accepts configuration before first access:
-        <br/><br/>
+  <br/><br/>
+  Create a holder that accepts configuration before first access:
+  <br/><br/>
 <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">ServiceHolder.configure(ProductionService::new);</code> // Call once at startup
-        <br/>
+  <br/>
 <code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">Service svc = ServiceHolder.getInstance();</code>
-        <br/><br/>
+  <br/><br/>
 The holder uses <code>AtomicReference</code> for the factory and lazy initialization for the instance. The <code>configure()</code> method uses compareAndSet to ensure it's only called once - subsequent calls throw an exception. This pattern is used by logging frameworks like SLF4J where you configure the logging implementation at startup. For testing, call <code>ServiceHolder.configure(MockService::new)</code> before any code accesses the singleton. Key invariant: configuration must happen before first access, enforced by throwing if <code>getInstance()</code> is called before <code>configure()</code> or if <code>configure()</code> is called after <code>getInstance()</code>.</p>
 </div>
 </div>
@@ -908,23 +908,23 @@ The holder uses <code>AtomicReference</code> for the factory and lazy initializa
 <h6 style="color: #1e40af; margin-top: 0;">Level 3: Design a testing strategy for a system where 50+ classes depend on a DatabaseConnection singleton, some of which need real database access in integration tests while unit tests need mocks.</h6>
 
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Implement a <span style="color: #10b981; font-weight: 600;">layered singleton with environment-aware initialization</span>:
-        <br/><br/>
+  <br/><br/>
 (1) <strong>Interface Layer:</strong> Define <code>DatabaseConnection</code> interface with all public methods.
-        <br/><br/>
+  <br/><br/>
 (2) <strong>Provider Pattern:</strong> Create <code>DatabaseConnectionProvider</code> singleton that returns the appropriate implementation:
-        <br/>
+  <br/>
         - In production: returns the real pooled connection
-        <br/>
+  <br/>
 - In unit tests: returns a mock (detect via <code>System.getProperty("test.mode")</code> or TestNG/JUnit runner detection)
-        <br/>
+  <br/>
         - In integration tests: returns a test database connection (H2 in-memory or testcontainers)
-        <br/><br/>
+  <br/><br/>
 (3) <strong>Scoped Instances:</strong> For unit tests, use thread-local or context-var scoped instances so parallel tests don't interfere.
-        <br/><br/>
+  <br/><br/>
 (4) <strong>Reset Hooks:</strong> Integration tests get a fresh database state via <code>@BeforeEach</code> that truncates tables or restores from snapshot.
-        <br/><br/>
+  <br/><br/>
 (5) <strong>Gradual Migration:</strong> New code uses constructor injection with the provider as default. Old code continues using <code>getInstance()</code> which delegates to the provider.
-        <br/><br/>
+  <br/><br/>
 This approach lets you run: unit tests (fast, mocked), integration tests (real DB, isolated), and E2E tests (production config) - all with the same codebase and minimal changes to existing code.</p>
 </div>
 </div>
@@ -1070,7 +1070,7 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">1. The God Singleton</div>
 <div style="color: #7f1d1d; font-size: 14px; line-height: 1.6;">
 <strong>Problem:</strong> A singleton that does everything - config, logging, caching, database, business logic.
-      <br/>
+  <br/>
 <strong>Solution:</strong> Follow Single Responsibility Principle. Create separate singletons or use [[facade]](/topic/design-patterns/facade) to coordinate them.
 </div>
 </div>
@@ -1079,7 +1079,7 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">2. Singleton for Convenience</div>
 <div style="color: #7f1d1d; font-size: 14px; line-height: 1.6;">
 <strong>Problem:</strong> Using singleton just to avoid passing objects around, not because single instance is required.
-      <br/>
+  <br/>
 <strong>Solution:</strong> Use dependency injection. If you need easy access, that's what DI containers are for.
 </div>
 </div>
@@ -1088,7 +1088,7 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">3. Mutable Singleton State</div>
 <div style="color: #7f1d1d; font-size: 14px; line-height: 1.6;">
 <strong>Problem:</strong> Singleton that allows arbitrary state modification from anywhere in the codebase.
-      <br/>
+  <br/>
 <strong>Solution:</strong> Prefer immutable singletons or restrict mutation to specific methods with clear semantics.
 </div>
 </div>
@@ -1097,7 +1097,7 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">4. User-Specific Data in Singleton</div>
 <div style="color: #7f1d1d; font-size: 14px; line-height: 1.6;">
 <strong>Problem:</strong> Storing user session, preferences, or context in a singleton shared across all users.
-      <br/>
+  <br/>
 <strong>Solution:</strong> Use request-scoped or session-scoped containers. Store user data in thread-locals or context objects.
 </div>
 </div>
@@ -1106,7 +1106,7 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">5. Singleton Masking Design Problems</div>
 <div style="color: #7f1d1d; font-size: 14px; line-height: 1.6;">
 <strong>Problem:</strong> Adding a singleton to "fix" a problem caused by poor design elsewhere.
-      <br/>
+  <br/>
 <strong>Solution:</strong> Address the root cause. Often the real problem is missing abstraction or incorrect object ownership.
 </div>
 </div>

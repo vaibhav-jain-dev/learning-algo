@@ -336,7 +336,7 @@ Ranking functions assign a position to each row based on the ORDER BY expression
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Ranking Function Comparison with Ties</h4>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px; overflow: hidden;">
-      <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border: 2px solid #e2e8f0;">
 <th style="padding: 16px; text-align: left; font-weight: 600;">Name</th>
 <th style="padding: 16px; text-align: center; font-weight: 600;">Score</th>
@@ -345,8 +345,8 @@ Ranking functions assign a position to each row based on the ORDER BY expression
 <th style="padding: 16px; text-align: center; font-weight: 600;">DENSE_RANK()</th>
 <th style="padding: 16px; text-align: center; font-weight: 600;">NTILE(3)</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f8fafc;">
 <td style="padding: 14px; border-bottom: 1px solid #e2e8f0;">Alice</td>
 <td style="padding: 14px; text-align: center; border-bottom: 1px solid #e2e8f0; font-weight: bold;">95</td>
@@ -395,7 +395,7 @@ Ranking functions assign a position to each row based on the ORDER BY expression
 <td style="padding: 14px; text-align: center; color: #f59e0b; font-weight: bold;">4</td>
 <td style="padding: 14px; text-align: center; color: #8b5cf6; font-weight: bold;">3</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
@@ -736,15 +736,15 @@ WHERE sale_date - LAG(sale_date) OVER (ORDER BY sale_date) > 3;
 <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Running Total Visualization</h4>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px; overflow: hidden;">
-      <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: 2px solid #e2e8f0;">
 <th style="padding: 14px; text-align: left;">Date</th>
 <th style="padding: 14px; text-align: right;">Amount</th>
 <th style="padding: 14px; text-align: right;">Running Total</th>
 <th style="padding: 14px; text-align: left;">Frame Used</th>
 </tr>
-      </thead>
-      <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f0fdf4;">
 <td style="padding: 12px; border-bottom: 1px solid #d1fae5;">Jan 15</td>
 <td style="padding: 12px; text-align: right; border-bottom: 1px solid #d1fae5;">$5,000</td>
@@ -769,7 +769,7 @@ WHERE sale_date - LAG(sale_date) OVER (ORDER BY sale_date) > 3;
 <td style="padding: 12px; text-align: right; font-weight: bold; color: #059669;">$18,700</td>
 <td style="padding: 12px; font-size: 12px; color: #475569;">[Jan 15, Jan 18, Jan 22, Feb 10]</td>
 </tr>
-      </tbody>
+  </tbody>
 </table>
 </div>
 </div>

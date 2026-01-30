@@ -307,8 +307,8 @@ Understanding <span style="color: #22c55e; font-weight: 600;">stateless</span> v
 <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATELESS SERVER (Recommended)</div>
 <div style="color: #15803d; font-size: 13px; margin-bottom: 16px;">Each request contains all information needed. Server does not remember previous requests.</div>
 <div style="background: #f0fdf4; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #166534; margin-bottom: 16px;">
-        GET /api/orders<br>
-          Authorization: Bearer eyJhbG...<br>
+  GET /api/orders<br>
+  Authorization: Bearer eyJhbG...<br>
 <span style="color: #15803d;"># Token contains user identity</span>
 </div>
 <div style="color: #166534; font-size: 13px;">
@@ -322,8 +322,8 @@ Understanding <span style="color: #22c55e; font-weight: 600;">stateless</span> v
 <div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATEFUL SERVER (Avoid)</div>
 <div style="color: #b91c1c; font-size: 13px; margin-bottom: 16px;">Server maintains session data between requests. Client must connect to same server.</div>
 <div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #dc2626; margin-bottom: 16px;">
-            GET /api/orders<br>
-              Cookie: session_id=abc123<br>
+  GET /api/orders<br>
+  Cookie: session_id=abc123<br>
 <span style="color: #b91c1c;"># Server looks up session</span>
 </div>
 <div style="color: #dc2626; font-size: 13px;">
@@ -336,7 +336,7 @@ Understanding <span style="color: #22c55e; font-weight: 600;">stateless</span> v
 </div>
 </div>
 
-        ### Critical Assumption
+### Critical Assumption
 
 <div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 <h4 style="color: #b45309; margin-top: 0;">When Stateful is Acceptable</h4>
@@ -345,7 +345,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-        ### Externalizing State
+### Externalizing State
 
         ```python
         # STATEFUL (Hard to scale)
@@ -395,9 +395,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-        ---
+  ---
 
-        ## REST Architecture Deep Dive
+## REST Architecture Deep Dive
 
 <span style="color: #22c55e; font-weight: 600;">REST (Representational State Transfer)</span> is the dominant architectural style for web APIs. Understanding its constraints is essential for [[API Design]](/topics/system-design/api-design).
 
@@ -431,7 +431,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-        ### REST Maturity Model (Richardson)
+### REST Maturity Model (Richardson)
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">REST Maturity Levels</h4>
@@ -467,7 +467,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-        ### REST API Example
+### REST API Example
 
         ```python
         from flask import Flask, request, jsonify
@@ -564,9 +564,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               return '', 204  # No content
               ```
 
-              ---
+  ---
 
-              ## WebSockets Deep Dive
+## WebSockets Deep Dive
 
 <span style="color: #22c55e; font-weight: 600;">WebSockets</span> provide full-duplex communication channels over a single TCP connection. Unlike HTTP's request-response model, WebSockets allow both client and server to send messages independently at any time.
 
@@ -606,7 +606,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-              ### WebSocket Handshake
+### WebSocket Handshake
 
               ```http
               # Client Request (HTTP Upgrade)
@@ -625,7 +625,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
               ```
 
-              ### WebSocket vs HTTP Comparison
+### WebSocket vs HTTP Comparison
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP vs WebSocket</h4>
@@ -641,7 +641,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li>Works with CDNs, proxies</li>
 </ul>
 <div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af;">
-                      *HTTP/2 uses multiplexing over single connection
+*HTTP/2 uses multiplexing over single connection
 </div>
 </div>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
@@ -655,13 +655,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li>Requires sticky sessions or pub/sub</li>
 </ul>
 <div style="background: #f0fdf4; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
-                      Ideal for: chat, gaming, live data, collaborative editing
+  Ideal for: chat, gaming, live data, collaborative editing
 </div>
 </div>
 </div>
 </div>
 
-              ### WebSocket Server Implementation
+### WebSocket Server Implementation
 
               ```python
               import asyncio
@@ -756,7 +756,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               await ws.send(json.dumps(data))
               ```
 
-              ### JavaScript WebSocket Client
+### JavaScript WebSocket Client
 
               ```javascript
               class WebSocketClient {
@@ -851,7 +851,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               ws.send({ type: 'direct', recipient_id: '456', content: 'Hello!' });
               ```
 
-              ### Scaling WebSockets
+### Scaling WebSockets
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Scaling Architecture</h4>
@@ -891,11 +891,11 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-              See [[Message Queues]](/topics/system-design/message-queues) for more on pub/sub patterns.
+  See [[Message Queues]](/topics/system-design/message-queues) for more on pub/sub patterns.
 
-              ---
+  ---
 
-              ## Server-Sent Events (SSE)
+## Server-Sent Events (SSE)
 
 <span style="color: #22c55e; font-weight: 600;">Server-Sent Events (SSE)</span> provide a lightweight mechanism for servers to push data to clients over HTTP. Unlike WebSockets, SSE is unidirectional (server to client only) but simpler to implement and works over standard HTTP.
 
@@ -964,7 +964,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-              ### When to Use SSE vs WebSocket
+### When to Use SSE vs WebSocket
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">SSE vs WebSocket Decision Guide</h4>
@@ -998,7 +998,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 
-              ### SSE Server Implementation
+### SSE Server Implementation
 
               ```python
               from flask import Flask, Response, request
@@ -1075,7 +1075,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               return {'status': 'user_offline'}, 404
               ```
 
-              ### SSE Client Implementation
+### SSE Client Implementation
 
               ```javascript
               class SSEClient {
@@ -1145,14 +1145,14 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
               });
               ```
 
-              ---
+  ---
 
-              ## Communication Patterns Summary
+## Communication Patterns Summary
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CHOOSING THE RIGHT PATTERN</h3>
 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                  <thead>
+  <thead>
 <tr style="background: #e2e8f0;">
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Pattern</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Direction</th>
@@ -1160,8 +1160,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Complexity</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Best For</th>
 </tr>
-                  </thead>
-                  <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f8fafc;">
 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #166534;">REST</td>
 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Request-Response</td>
@@ -1197,13 +1197,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <td style="padding: 12px;">High</td>
 <td style="padding: 12px;">Chat, gaming, collaboration</td>
 </tr>
-                  </tbody>
+  </tbody>
 </table>
 </div>
 
-              ---
+  ---
 
-              ## Common Pitfalls
+## Common Pitfalls
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Storing Session in Server Memory</div>
@@ -1235,22 +1235,22 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <div style="color: #7f1d1d; font-size: 14px;">Proxies and load balancers may close idle SSE connections. Send periodic heartbeat events to keep connections alive.</div>
 </div>
 
-              ---
+  ---
 
-              ## 3-Level Interview Questions
+## 3-Level Interview Questions
 
-              ### Level 1: Fundamentals
+### Level 1: Fundamentals
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
-                **Q1: What is the difference between stateless and stateful servers?**
+**Q1: What is the difference between stateless and stateful servers?**
 
 <span style="color: #22c55e; font-weight: 600;">A:</span> A <span style="color: #22c55e; font-weight: 600;">stateless server</span> does not store any client session information between requests - each request must contain all information needed to process it (typically via tokens). A <span style="color: #22c55e; font-weight: 600;">stateful server</span> maintains session data between requests, requiring clients to connect to the same server (sticky sessions).
 
-                **Why does this matter?** Stateless servers enable horizontal scaling because any server can handle any request. Load balancers can use simple round-robin. Stateful servers require sticky sessions or session replication, making scaling complex.
+**Why does this matter?** Stateless servers enable horizontal scaling because any server can handle any request. Load balancers can use simple round-robin. Stateful servers require sticky sessions or session replication, making scaling complex.
 
-                <details>
-                  <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1: How do stateless servers handle user authentication?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1: How do stateless servers handle user authentication?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px;">
 
 **A:** Stateless servers use <span style="color: #22c55e; font-weight: 600;">self-contained tokens</span> (JWT) that include user identity and claims. The token is signed by the server, so any server can validate it without querying a central session store. Each request includes the token in the Authorization header.
@@ -1259,64 +1259,64 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
                     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                     ```
 
-                    <details>
-                      <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1.1: What are the security trade-offs of JWT vs server-side sessions?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1.1: What are the security trade-offs of JWT vs server-side sessions?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px;">
 
-                        **A:**
+**A:**
                         - **JWT Pros**: Stateless, no database lookup, works across services
                         - **JWT Cons**: Cannot be revoked until expiry (unless using blocklist), token size larger than session ID, secrets must be managed carefully
                         - **Server-side sessions Pros**: Instant revocation, smaller cookie size, can store arbitrary data
                         - **Server-side sessions Cons**: Requires shared storage (Redis), database lookup per request, harder to scale
 
-                        **Best Practice**: Use short-lived JWTs (15 min) with refresh tokens stored server-side. This balances scalability with revocation capability.
+**Best Practice**: Use short-lived JWTs (15 min) with refresh tokens stored server-side. This balances scalability with revocation capability.
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
-                <details>
-                  <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.2: When is stateful acceptable?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.2: When is stateful acceptable?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px;">
 
-                    **A:** Stateful is acceptable when:
-                    1. **Connection state is inherent** - WebSocket connections, game servers, streaming
-                    2. **Performance justifies complexity** - In-memory caching of user data provides significant speedup
-                    3. **Coordination overhead exceeds benefits** - External state stores add latency that matters
+**A:** Stateful is acceptable when:
+  1. **Connection state is inherent** - WebSocket connections, game servers, streaming
+  2. **Performance justifies complexity** - In-memory caching of user data provides significant speedup
+  3. **Coordination overhead exceeds benefits** - External state stores add latency that matters
 
-                    <details>
-                      <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.2.1: How do you scale stateful WebSocket servers?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.2.1: How do you scale stateful WebSocket servers?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px;">
 
 **A:** Use a <span style="color: #22c55e; font-weight: 600;">pub/sub layer</span> (Redis Pub/Sub, Kafka) to coordinate between servers:
-                        1. Each server maintains connections to its clients
-                        2. When a message needs to reach a user on another server, publish to a channel
-                        3. All servers subscribe and deliver messages to their local clients
-                        4. Use sticky sessions at the load balancer (IP hash or cookie) to maintain connection affinity
-                        5. Store connection metadata (user -> server mapping) in Redis for routing
+  1. Each server maintains connections to its clients
+  2. When a message needs to reach a user on another server, publish to a channel
+  3. All servers subscribe and deliver messages to their local clients
+  4. Use sticky sessions at the load balancer (IP hash or cookie) to maintain connection affinity
+  5. Store connection metadata (user -> server mapping) in Redis for routing
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
 </div>
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
-                **Q2: Explain the REST architectural constraints.**
+**Q2: Explain the REST architectural constraints.**
 
 <span style="color: #22c55e; font-weight: 600;">A:</span> REST (Representational State Transfer) has six constraints:
-                1. **Client-Server** - Separation of concerns between UI and data
-                2. **Stateless** - Each request contains all context needed
-                3. **Cacheable** - Responses must define cacheability
-                4. **Uniform Interface** - Standardized resource identification and manipulation
-                5. **Layered System** - Client doesn't know if connected directly to server
-                6. **Code on Demand** (optional) - Server can send executable code
+  1. **Client-Server** - Separation of concerns between UI and data
+  2. **Stateless** - Each request contains all context needed
+  3. **Cacheable** - Responses must define cacheability
+  4. **Uniform Interface** - Standardized resource identification and manipulation
+  5. **Layered System** - Client doesn't know if connected directly to server
+  6. **Code on Demand** (optional) - Server can send executable code
 
-                <details>
-                  <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1: What is HATEOAS and why is it rarely implemented?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1: What is HATEOAS and why is it rarely implemented?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px;">
 
 **A:** <span style="color: #22c55e; font-weight: 600;">HATEOAS</span> (Hypermedia as the Engine of Application State) means responses include links to related actions, making APIs self-documenting and discoverable.
@@ -1333,36 +1333,36 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
                     }
                     ```
 
-                    **Why rarely implemented:**
+**Why rarely implemented:**
                     - Adds response size and complexity
                     - Most clients are tightly coupled anyway (mobile apps)
                     - GraphQL provides similar flexibility differently
                     - Caching becomes harder with dynamic links
 
-                    <details>
-                      <summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1.1: How does GraphQL solve the problems HATEOAS addresses?</summary>
+<details>
+<summary style="color: #166534; cursor: pointer; font-weight: 600;">Follow-up L1.1.1: How does GraphQL solve the problems HATEOAS addresses?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px;">
 
-                        **A:** GraphQL addresses discoverability and flexibility differently:
+**A:** GraphQL addresses discoverability and flexibility differently:
                         - **Schema introspection** replaces HATEOAS links for discoverability
                         - **Client-specified queries** let clients request exactly what they need
                         - **Single endpoint** with typed schema vs multiple REST endpoints
                         - **Strong typing** provides compile-time validation
 
-                        However, GraphQL has trade-offs: harder to cache at HTTP level, complexity in authorization, potential for expensive queries (N+1 problems without DataLoader).
+  However, GraphQL has trade-offs: harder to cache at HTTP level, complexity in authorization, potential for expensive queries (N+1 problems without DataLoader).
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
 </div>
 
-              ### Level 2: Design & Trade-offs
+### Level 2: Design & Trade-offs
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-                **Q3: When would you choose WebSocket over SSE?**
+**Q3: When would you choose WebSocket over SSE?**
 
 <span style="color: #3b82f6; font-weight: 600;">A:</span> Choose <span style="color: #22c55e; font-weight: 600;">WebSocket</span> when you need:
                 - **Bidirectional communication** (chat, gaming)
@@ -1376,15 +1376,15 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                 - Standard HTTP infrastructure compatibility matters
                 - Simplicity is preferred
 
-                <details>
-                  <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1: How does SSE handle reconnection and missed messages?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1: How does SSE handle reconnection and missed messages?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px;">
 
-                    **A:** SSE has built-in reconnection support:
+**A:** SSE has built-in reconnection support:
 
-                    1. **Auto-reconnect**: Browser automatically reconnects on disconnect
-                    2. **Last-Event-ID**: Server assigns IDs to events; on reconnect, browser sends `Last-Event-ID` header
-                    3. **Server resumes**: Server queries stored events after that ID and resends
+  1. **Auto-reconnect**: Browser automatically reconnects on disconnect
+  2. **Last-Event-ID**: Server assigns IDs to events; on reconnect, browser sends `Last-Event-ID` header
+  3. **Server resumes**: Server queries stored events after that ID and resends
 
                     ```python
                     def format_sse(data, event_id):
@@ -1398,52 +1398,52 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                     yield format_sse(event.data, event.id)
                     ```
 
-                    <details>
-                      <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1.1: What are the challenges of implementing this at scale?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1.1: What are the challenges of implementing this at scale?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px;">
 
-                        **A:** Challenges at scale:
-                        1. **Event storage**: Must persist events for replay window (Redis with TTL, or dedicated event store)
-                        2. **Ordering**: Events must be globally ordered across servers (use Redis atomic increment for IDs)
-                        3. **Memory**: Long replay windows increase storage requirements
-                        4. **Cleanup**: Need efficient event expiration
-                        5. **Load balancer affinity**: May not be needed since reconnection includes last-event-id
+**A:** Challenges at scale:
+  1. **Event storage**: Must persist events for replay window (Redis with TTL, or dedicated event store)
+  2. **Ordering**: Events must be globally ordered across servers (use Redis atomic increment for IDs)
+  3. **Memory**: Long replay windows increase storage requirements
+  4. **Cleanup**: Need efficient event expiration
+  5. **Load balancer affinity**: May not be needed since reconnection includes last-event-id
 
-                        **Solutions:**
+**Solutions:**
                         - Use Kafka for ordered, persistent event storage with consumer offset tracking
                         - Implement sliding window (last N events or time-based)
                         - Use consistent hashing for event storage partitioning
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
-                <details>
-                  <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.2: What infrastructure considerations differ between SSE and WebSocket?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.2: What infrastructure considerations differ between SSE and WebSocket?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px;">
 
-                    **A:** Key infrastructure differences:
+**A:** Key infrastructure differences:
 
-                    | Aspect | SSE | WebSocket |
-                    |--------|-----|-----------|
-                    | Load Balancer | Standard HTTP, no special config | Needs WS support, sticky sessions |
-                    | Proxy/CDN | Works with HTTP proxies | May need configuration |
-                    | Firewalls | Port 80/443, rarely blocked | May be blocked by corporate firewalls |
-                    | TLS | Standard HTTPS | WSS requires similar setup |
-                    | Connection limits | HTTP/2 multiplexing helps | Each connection is separate |
+  | Aspect | SSE | WebSocket |
+  |--------|-----|-----------|
+  | Load Balancer | Standard HTTP, no special config | Needs WS support, sticky sessions |
+  | Proxy/CDN | Works with HTTP proxies | May need configuration |
+  | Firewalls | Port 80/443, rarely blocked | May be blocked by corporate firewalls |
+  | TLS | Standard HTTPS | WSS requires similar setup |
+  | Connection limits | HTTP/2 multiplexing helps | Each connection is separate |
 
-                    <details>
-                      <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.2.1: How do you handle WebSocket connections behind corporate proxies that don't support upgrades?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.2.1: How do you handle WebSocket connections behind corporate proxies that don't support upgrades?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px;">
 
-                        **A:** Strategies for WebSocket fallback:
-                        1. **Long polling fallback**: Libraries like Socket.IO auto-fallback to HTTP long polling
-                        2. **HTTPS WebSocket**: WSS (port 443) is less likely to be blocked than WS (port 80)
-                        3. **Tunneling**: Wrap WebSocket in HTTPS CONNECT tunnel
-                        4. **Alternative ports**: Some proxies allow WebSocket on non-standard ports
+**A:** Strategies for WebSocket fallback:
+  1. **Long polling fallback**: Libraries like Socket.IO auto-fallback to HTTP long polling
+  2. **HTTPS WebSocket**: WSS (port 443) is less likely to be blocked than WS (port 80)
+  3. **Tunneling**: Wrap WebSocket in HTTPS CONNECT tunnel
+  4. **Alternative ports**: Some proxies allow WebSocket on non-standard ports
 
-                        **Socket.IO example:**
+**Socket.IO example:**
                         ```javascript
                         const io = require('socket.io')(server, {
                         transports: ['websocket', 'polling'],  // Try WS first, fallback to polling
@@ -1451,33 +1451,33 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                         });
                         ```
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
 </div>
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-                **Q4: Design a notification system that delivers messages in real-time but also handles offline users.**
+**Q4: Design a notification system that delivers messages in real-time but also handles offline users.**
 
 <span style="color: #3b82f6; font-weight: 600;">A:</span> This requires combining <span style="color: #22c55e; font-weight: 600;">real-time delivery</span> with <span style="color: #22c55e; font-weight: 600;">persistent storage</span>:
 
-                1. **Dual write**: When notification created, write to database AND publish to real-time channel
-                2. **Online users**: Receive via WebSocket/SSE immediately
-                3. **Offline users**: On next connection, query database for unread notifications
-                4. **Read receipts**: Mark delivered when user acknowledges
+  1. **Dual write**: When notification created, write to database AND publish to real-time channel
+  2. **Online users**: Receive via WebSocket/SSE immediately
+  3. **Offline users**: On next connection, query database for unread notifications
+  4. **Read receipts**: Mark delivered when user acknowledges
 
-                <details>
-                  <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1: How do you ensure exactly-once delivery?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1: How do you ensure exactly-once delivery?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px;">
 
 **A:** True exactly-once is impossible in distributed systems; achieve <span style="color: #22c55e; font-weight: 600;">effectively-once</span> through:
 
-                    1. **Idempotent delivery**: Include notification ID, client deduplicates
-                    2. **Acknowledgment**: Client ACKs receipt, server marks delivered
-                    3. **Outbox pattern**: Write notification + outbox entry in same transaction, separate process publishes
+  1. **Idempotent delivery**: Include notification ID, client deduplicates
+  2. **Acknowledgment**: Client ACKs receipt, server marks delivered
+  3. **Outbox pattern**: Write notification + outbox entry in same transaction, separate process publishes
 
                     ```python
                     # Outbox pattern
@@ -1492,18 +1492,18 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                     # Separate publisher reads outbox, publishes, marks processed
                     ```
 
-                    <details>
-                      <summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1.1: How does the outbox pattern prevent duplicates when the publisher crashes?</summary>
+<details>
+<summary style="color: #1e40af; cursor: pointer; font-weight: 600;">Follow-up L2.1.1: How does the outbox pattern prevent duplicates when the publisher crashes?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px;">
 
-                        **A:** The outbox pattern provides at-least-once semantics:
+**A:** The outbox pattern provides at-least-once semantics:
 
-                        1. Publisher processes outbox entries in order
-                        2. For each entry: publish to message queue, mark as processed
-                        3. If crash between publish and mark, entry reprocessed on restart
-                        4. Consumers must be idempotent (dedupe by ID)
+  1. Publisher processes outbox entries in order
+  2. For each entry: publish to message queue, mark as processed
+  3. If crash between publish and mark, entry reprocessed on restart
+  4. Consumers must be idempotent (dedupe by ID)
 
-                        **Preventing duplicates at consumer:**
+**Preventing duplicates at consumer:**
                         ```python
                         def handle_notification(event):
                         # Idempotent check
@@ -1517,83 +1517,83 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                         Delivery.create(event.id)
                         ```
 
-                        **Ordering guarantee**: Single partition per user ensures order within user's notifications.
+**Ordering guarantee**: Single partition per user ensures order within user's notifications.
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
 </div>
 
-              ### Level 3: Advanced Architecture
+### Level 3: Advanced Architecture
 
 <div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
 
-                **Q5: Design the client-server architecture for a real-time collaborative document editor like Google Docs.**
+**Q5: Design the client-server architecture for a real-time collaborative document editor like Google Docs.**
 
 <span style="color: #6b21a8; font-weight: 600;">A:</span> This is a complex system requiring:
 
-                1. **Real-time sync**: WebSockets for bidirectional communication
-                2. **Conflict resolution**: Operational Transformation (OT) or CRDTs
-                3. **Persistence**: Database for document storage, change log
-                4. **Presence**: Show who's viewing/editing where
+  1. **Real-time sync**: WebSockets for bidirectional communication
+  2. **Conflict resolution**: Operational Transformation (OT) or CRDTs
+  3. **Persistence**: Database for document storage, change log
+  4. **Presence**: Show who's viewing/editing where
 
-                <details>
-                  <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1: How would you implement operational transformation at scale?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1: How would you implement operational transformation at scale?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px;">
 
 **A:** <span style="color: #22c55e; font-weight: 600;">Operational Transformation (OT)</span> transforms concurrent operations to maintain consistency:
 
-                    1. **Client sends operation** with base version
-                    2. **Server transforms** operation against any concurrent operations
-                    3. **Server broadcasts** transformed operation to other clients
-                    4. **Clients transform** their pending operations against received operations
+  1. **Client sends operation** with base version
+  2. **Server transforms** operation against any concurrent operations
+  3. **Server broadcasts** transformed operation to other clients
+  4. **Clients transform** their pending operations against received operations
 
-                    **At scale:**
+**At scale:**
                     - **Single document owner**: Route all ops for a document to same server (consistent hashing)
                     - **Operation log**: Store operation history for transformation and replay
                     - **Checkpointing**: Periodically snapshot document state to limit replay
 
-                    <details>
-                      <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1.1: What are the trade-offs between OT and CRDTs for this use case?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1.1: What are the trade-offs between OT and CRDTs for this use case?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px;">
 
-                        **A:**
+**A:**
 
-                        | Aspect | OT | CRDT |
-                        |--------|-----|------|
-                        | **Complexity** | Complex transformation logic | Complex data structures |
-                        | **Server requirement** | Needs central server for ordering | Can work peer-to-peer |
-                        | **Latency** | Server round-trip for confirmation | Immediate local application |
-                        | **Memory** | Store operation log | Metadata per element |
-                        | **Consistency** | Strong (with server) | Eventual |
+  | Aspect | OT | CRDT |
+  |--------|-----|------|
+  | **Complexity** | Complex transformation logic | Complex data structures |
+  | **Server requirement** | Needs central server for ordering | Can work peer-to-peer |
+  | **Latency** | Server round-trip for confirmation | Immediate local application |
+  | **Memory** | Store operation log | Metadata per element |
+  | **Consistency** | Strong (with server) | Eventual |
 
-                        **Google Docs uses OT** because:
+**Google Docs uses OT** because:
                         - Central server already needed for auth/storage
                         - Strong consistency preferred for documents
                         - Well-understood implementation from Wave
 
-                        **CRDTs better for:**
+**CRDTs better for:**
                         - Peer-to-peer apps (offline-first)
                         - Eventually consistent systems
                         - When server coordination is expensive
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
-                <details>
-                  <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2: How do you handle offline editing?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2: How do you handle offline editing?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px;">
 
-                    **A:** Offline editing requires:
+**A:** Offline editing requires:
 
-                    1. **Local storage**: IndexedDB stores document and operation queue
-                    2. **Operation queue**: Collect operations while offline
-                    3. **Sync on reconnect**: Send queued operations, receive missed operations
-                    4. **Conflict resolution**: Transform queued ops against received ops
+  1. **Local storage**: IndexedDB stores document and operation queue
+  2. **Operation queue**: Collect operations while offline
+  3. **Sync on reconnect**: Send queued operations, receive missed operations
+  4. **Conflict resolution**: Transform queued ops against received ops
 
                     ```javascript
                     class OfflineManager {
@@ -1616,18 +1616,18 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                     }
                     ```
 
-                    <details>
-                      <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2.1: How do you handle the case where two users make conflicting edits to the same paragraph offline?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2.1: How do you handle the case where two users make conflicting edits to the same paragraph offline?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px;">
 
-                        **A:** This is the hardest case. Options:
+**A:** This is the hardest case. Options:
 
-                        1. **Automatic merge** (OT/CRDT): Both edits preserved, may result in nonsensical text
-                        2. **Last-write-wins**: Lose one user's changes (bad UX)
-                        3. **Branch and merge**: Create conflict branches, prompt user to resolve
-                        4. **Paragraph-level locking**: Warn when both editing same section
+  1. **Automatic merge** (OT/CRDT): Both edits preserved, may result in nonsensical text
+  2. **Last-write-wins**: Lose one user's changes (bad UX)
+  3. **Branch and merge**: Create conflict branches, prompt user to resolve
+  4. **Paragraph-level locking**: Warn when both editing same section
 
-                        **Best practice for documents:**
+**Best practice for documents:**
                         - Use character-level OT (Google Docs approach)
                         - Both edits merge character by character
                         - Result may be weird but no data lost
@@ -1643,53 +1643,53 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                         (depends on operation ordering)
                         ```
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
 </div>
 
 <div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
 
-                **Q6: How would you design a system that needs to handle 10 million concurrent WebSocket connections?**
+**Q6: How would you design a system that needs to handle 10 million concurrent WebSocket connections?**
 
 <span style="color: #6b21a8; font-weight: 600;">A:</span> This requires careful architecture across multiple dimensions:
 
-                1. **Connection handling**: ~100K connections per server, need 100+ servers
-                2. **Message routing**: Pub/sub layer (Redis Cluster, Kafka)
-                3. **State management**: External store for session data
-                4. **Load balancing**: Layer 4 (TCP) for WebSocket, sticky sessions
+  1. **Connection handling**: ~100K connections per server, need 100+ servers
+  2. **Message routing**: Pub/sub layer (Redis Cluster, Kafka)
+  3. **State management**: External store for session data
+  4. **Load balancing**: Layer 4 (TCP) for WebSocket, sticky sessions
 
-                <details>
-                  <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1: How do you handle the memory requirements for 100K connections per server?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1: How do you handle the memory requirements for 100K connections per server?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px;">
 
-                    **A:** Memory optimization strategies:
+**A:** Memory optimization strategies:
 
-                    1. **Event-driven architecture**: Use epoll/kqueue, not thread-per-connection
-                    2. **Minimize per-connection state**: Store only connection ID and user ID in memory
-                    3. **Buffer management**: Small read/write buffers, expand on demand
-                    4. **Language choice**: Go/Rust/C++ for lower memory footprint than JVM/Node
+  1. **Event-driven architecture**: Use epoll/kqueue, not thread-per-connection
+  2. **Minimize per-connection state**: Store only connection ID and user ID in memory
+  3. **Buffer management**: Small read/write buffers, expand on demand
+  4. **Language choice**: Go/Rust/C++ for lower memory footprint than JVM/Node
 
-                    **Calculation:**
+**Calculation:**
                     - Base connection: ~10KB (TCP buffers + metadata)
                     - 100K connections: ~1GB
                     - Application state: +2KB per connection = +200MB
                     - Safety margin: 2x = ~2.5GB per 100K connections
 
-                    <details>
-                      <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1.1: How do you handle graceful shutdown without dropping 100K connections?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.1.1: How do you handle graceful shutdown without dropping 100K connections?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px;">
 
-                        **A:** Graceful shutdown strategy:
+**A:** Graceful shutdown strategy:
 
-                        1. **Stop accepting new connections**: Remove from load balancer pool
-                        2. **Drain existing connections**:
+  1. **Stop accepting new connections**: Remove from load balancer pool
+  2. **Drain existing connections**:
                         - Send "reconnect" message to clients with alternate server
                         - Wait for clients to disconnect (timeout: 30s)
-                        3. **Force close**: Remaining connections closed
-                        4. **Health checks**: Load balancer detects draining status
+  3. **Force close**: Remaining connections closed
+  4. **Health checks**: Load balancer detects draining status
 
                         ```go
                         func gracefulShutdown(server *WebSocketServer) {
@@ -1714,20 +1714,20 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                         }
                         ```
 
-                        **Client-side**: Clients should handle reconnect messages gracefully, reconnecting with backoff.
+**Client-side**: Clients should handle reconnect messages gracefully, reconnecting with backoff.
 </div>
-                    </details>
+</details>
 
 </div>
-                </details>
+</details>
 
-                <details>
-                  <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2: How do you route a message to a specific user when they could be on any of 100 servers?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2: How do you route a message to a specific user when they could be on any of 100 servers?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px;">
 
-                    **A:** Two main approaches:
+**A:** Two main approaches:
 
-                    **1. User-Server Registry (Redis)**
+**1. User-Server Registry (Redis)**
                     ```python
                     # On connect
                     redis.set(f"user:{user_id}:server", server_id, ex=connection_timeout)
@@ -1738,7 +1738,7 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                     redis.publish(f"server:{server_id}", message)
                     ```
 
-                    **2. Pub/Sub Per-User Channel**
+**2. Pub/Sub Per-User Channel**
                     ```python
                     # Each server subscribes to its user channels
                     async def on_connect(user_id, websocket):
@@ -1749,52 +1749,52 @@ Choose <span style="color: #22c55e; font-weight: 600;">SSE</span> when:
                     # Server subscribed to that user's channel receives and delivers
                     ```
 
-                    <details>
-                      <summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2.1: What are the trade-offs of Redis Pub/Sub vs Kafka for this use case?</summary>
+<details>
+<summary style="color: #6b21a8; cursor: pointer; font-weight: 600;">Follow-up L3.2.1: What are the trade-offs of Redis Pub/Sub vs Kafka for this use case?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px;">
 
-                        **A:**
+**A:**
 
-                        | Aspect | Redis Pub/Sub | Kafka |
-                        |--------|--------------|-------|
-                        | **Delivery** | Fire-and-forget | Persistent, replayable |
-                        | **Ordering** | Per connection | Per partition |
-                        | **Scale** | Single node limit ~1M msgs/s | Horizontal scale, millions msgs/s |
-                        | **Memory** | Messages in memory briefly | Disk-based log |
-                        | **Offline users** | Message lost | Can replay from offset |
-                        | **Complexity** | Simple | Complex (topics, partitions, consumers) |
+  | Aspect | Redis Pub/Sub | Kafka |
+  |--------|--------------|-------|
+  | **Delivery** | Fire-and-forget | Persistent, replayable |
+  | **Ordering** | Per connection | Per partition |
+  | **Scale** | Single node limit ~1M msgs/s | Horizontal scale, millions msgs/s |
+  | **Memory** | Messages in memory briefly | Disk-based log |
+  | **Offline users** | Message lost | Can replay from offset |
+  | **Complexity** | Simple | Complex (topics, partitions, consumers) |
 
-                        **Recommendation:**
+**Recommendation:**
                         - **Redis Pub/Sub**: Real-time only, offline handled separately
                         - **Kafka**: Need persistence, ordering, replay (chat history, audit)
                         - **Hybrid**: Kafka for persistence, Redis for real-time routing
 
-                        For 10M connections with reliable delivery:
-                        1. Write message to Kafka (persistent)
-                        2. Publish to Redis (real-time delivery attempt)
-                        3. On reconnect, consumer reads Kafka from last offset
+  For 10M connections with reliable delivery:
+  1. Write message to Kafka (persistent)
+  2. Publish to Redis (real-time delivery attempt)
+  3. On reconnect, consumer reads Kafka from last offset
 </div>
-                    </details>
-
-</div>
-                </details>
+</details>
 
 </div>
+</details>
 
-              ---
+</div>
 
-              ## Client-Server vs Alternatives
+  ---
 
-              | Architecture | Description | When to Use |
-              |-------------|-------------|-------------|
-              | **Client-Server** | Clear client/server roles | Most web/mobile apps |
-              | **Peer-to-Peer** | All nodes equal | File sharing, blockchain |
-              | **Serverless** | No managed servers | Event-driven, sporadic traffic |
-              | **Edge Computing** | Processing at network edge | IoT, low-latency needs |
+## Client-Server vs Alternatives
 
-              ---
+  | Architecture | Description | When to Use |
+  |-------------|-------------|-------------|
+  | **Client-Server** | Clear client/server roles | Most web/mobile apps |
+  | **Peer-to-Peer** | All nodes equal | File sharing, blockchain |
+  | **Serverless** | No managed servers | Event-driven, sporadic traffic |
+  | **Edge Computing** | Processing at network edge | IoT, low-latency needs |
 
-              ## Related Topics
+  ---
+
+## Related Topics
 
               - [[Load Balancing]](/topics/system-design/load-balancing) - Distributing requests across servers
               - [[API Design]](/topics/system-design/api-design) - REST, GraphQL, and API patterns

@@ -715,31 +715,31 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
 <h4 style="color: #4facfe; margin: 0 0 12px 0;">Log Format (JSON):</h4>
 <pre style="background: #f1f5f9; border-radius: 8px; padding: 16px; color: #1e293b; font-size: 0.85em; overflow-x: auto; margin: 0;"><code>{
-        "timestamp": "2024-01-15T10:30:00.123Z",
-        "level": "info",
-        "service": "order-service",
-        "version": "2.1.0",
-        "environment": "production",
+  "timestamp": "2024-01-15T10:30:00.123Z",
+  "level": "info",
+  "service": "order-service",
+  "version": "2.1.0",
+  "environment": "production",
 <span style="color: #8b949e;">// Tracing context</span>
-        "trace_id": "abc123",
-        "span_id": "def456",
-        "parent_span_id": "ghi789",
+  "trace_id": "abc123",
+  "span_id": "def456",
+  "parent_span_id": "ghi789",
 <span style="color: #8b949e;">// Business context</span>
-        "operation": "create_order",
-        "entity_type": "order",
-        "entity_id": "order_123",
-        "user_id": "user_456",
+  "operation": "create_order",
+  "entity_type": "order",
+  "entity_id": "order_123",
+  "user_id": "user_456",
 <span style="color: #8b949e;">// Message</span>
-        "message": "Order created successfully",
-        "details": {
-        "order_number": "ORD-1234567890",
-        "total": 150.00,
-        "items_count": 3
-        },
-        "duration_ms": 145,
-        "error_code": null,
-        "error_message": null,
-        "stack_trace": null
+  "message": "Order created successfully",
+  "details": {
+  "order_number": "ORD-1234567890",
+  "total": 150.00,
+  "items_count": 3
+  },
+  "duration_ms": 145,
+  "error_code": null,
+  "error_message": null,
+  "stack_trace": null
 }</code></pre>
 </div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
@@ -910,7 +910,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #fff; border-radius: 4px; display: inline-block;"></span>
-        Service Manifest
+  Service Manifest
 </h4>
 <ul style="color: #e0e0e0; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: #a0a0a0; margin-right: 8px;">[ ]</span> service.yaml in every service repo</li>
@@ -922,7 +922,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #fff; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #fff; border-radius: 4px; display: inline-block;"></span>
-        API Documentation
+  API Documentation
 </h4>
 <ul style="color: #fff; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: rgba(255,255,255,0.6); margin-right: 8px;">[ ]</span> OpenAPI spec with x-ai-context extensions</li>
@@ -934,7 +934,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
-        Code Documentation
+  Code Documentation
 </h4>
 <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Package-level AI context comments</li>
@@ -946,7 +946,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
-        Naming Conventions
+  Naming Conventions
 </h4>
 <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Consistent service naming</li>
@@ -958,7 +958,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
-        Observability
+  Observability
 </h4>
 <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> Structured JSON logging</li>
@@ -970,7 +970,7 @@ patterns:
 <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 10px; padding: 16px;">
 <h4 style="color: #1a1a2e; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px;">
 <span style="width: 20px; height: 20px; border: 2px solid #1a1a2e; border-radius: 4px; display: inline-block;"></span>
-        Service Catalog
+  Service Catalog
 </h4>
 <ul style="color: #1a1a2e; margin: 0; padding-left: 28px; font-size: 0.9em; list-style: none;">
 <li style="margin-bottom: 4px;"><span style="color: rgba(0,0,0,0.5); margin-right: 8px;">[ ]</span> All services registered</li>

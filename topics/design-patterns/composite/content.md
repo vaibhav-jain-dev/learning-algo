@@ -452,32 +452,32 @@ Use cases: Finding nearest match, shortest path, rendering layers
     return aggregate(child.operation() for child in self._children)
     ```
 
-    ### Hybrid Approaches in Production Systems
+### Hybrid Approaches in Production Systems
 
     **React's Approach:** Uses transparency with runtime validation. All elements can theoretically have children, but primitive DOM elements (like `<input>`) warn when children are passed.
 
-      **Java AWT/Swing:** Uses safety. `Container` extends `Component` and adds child management. Non-containers simply lack these methods.
+**Java AWT/Swing:** Uses safety. `Container` extends `Component` and adds child management. Non-containers simply lack these methods.
 
-      **DOM API:** Uses transparency with lenient behavior. All nodes have `childNodes`, but text nodes return empty NodeList instead of throwing.
+**DOM API:** Uses transparency with lenient behavior. All nodes have `childNodes`, but text nodes return empty NodeList instead of throwing.
 
-      ### Interview Questions: Leaf vs Composite
+### Interview Questions: Leaf vs Composite
 
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #c4b5fd;">
 
-        **Level 1: Why do we need separate Leaf and Composite classes if they implement the same interface?**
+**Level 1: Why do we need separate Leaf and Composite classes if they implement the same interface?**
 
-        The separation exists because of fundamentally different internal behaviors:
+  The separation exists because of fundamentally different internal behaviors:
 
-        1. **State differences**: Composites maintain a child collection; leaves have no such overhead
-        2. **Operation semantics**: For aggregation operations, leaves return atomic values while composites aggregate over children
-        3. **Memory efficiency**: Leaves avoid the collection allocation overhead
-        4. **Type safety**: Separate classes enable compile-time prevention of invalid operations (in safety design)
+  1. **State differences**: Composites maintain a child collection; leaves have no such overhead
+  2. **Operation semantics**: For aggregation operations, leaves return atomic values while composites aggregate over children
+  3. **Memory efficiency**: Leaves avoid the collection allocation overhead
+  4. **Type safety**: Separate classes enable compile-time prevention of invalid operations (in safety design)
 
-        The shared interface enables polymorphic treatment despite different implementations.
+  The shared interface enables polymorphic treatment despite different implementations.
 
-        **Level 2: How would you design a Composite where the leaf/composite distinction can change at runtime?**
+**Level 2: How would you design a Composite where the leaf/composite distinction can change at runtime?**
 
-        This is the "dynamic composite" problem. A node that starts as a leaf should be promotable to a composite:
+  This is the "dynamic composite" problem. A node that starts as a leaf should be promotable to a composite:
 
         ```python
         class FlexibleComponent:
@@ -510,13 +510,13 @@ Use cases: Finding nearest match, shortest path, rendering layers
         child.parent = self
         ```
 
-        **Real-world example**: macOS Finder allows converting empty folders to file bundles and vice versa. VSCode allows files to become "virtual folders" when opened as workspace roots.
+**Real-world example**: macOS Finder allows converting empty folders to file bundles and vice versa. VSCode allows files to become "virtual folders" when opened as workspace roots.
 
-        **Level 3: Design a type system that statically guarantees composite operations are only called on composites while maintaining polymorphic operation dispatch.**
+**Level 3: Design a type system that statically guarantees composite operations are only called on composites while maintaining polymorphic operation dispatch.**
 
-        This requires encoding the leaf/composite distinction in the type system:
+  This requires encoding the leaf/composite distinction in the type system:
 
-        **Approach 1: Phantom Types (TypeScript/Scala)**
+**Approach 1: Phantom Types (TypeScript/Scala)**
         ```typescript
         type NodeType = 'leaf' | 'composite';
 
@@ -544,7 +544,7 @@ Use cases: Finding nearest match, shortest path, rendering layers
                     }
                     ```
 
-                    **Approach 2: Visitor with Type-Safe Dispatch**
+**Approach 2: Visitor with Type-Safe Dispatch**
                     ```python
                     from typing import TypeVar, Generic
 
@@ -578,7 +578,7 @@ Use cases: Finding nearest match, shortest path, rendering layers
                     composite._children.append(self.child)
                     ```
 
-                    **Approach 3: Rust-style Enums with Pattern Matching**
+**Approach 3: Rust-style Enums with Pattern Matching**
                     ```rust
                     enum Component {
                     Leaf { name: String, data: Vec<u8> },
@@ -600,17 +600,17 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         }
                         ```
 
-                        Each approach trades off ergonomics, compile-time safety, and expressiveness differently.
+  Each approach trades off ergonomics, compile-time safety, and expressiveness differently.
 
 </div>
 
-                      ---
+  ---
 
-                      ## File System: The Canonical Example
+## File System: The Canonical Example
 
-                      ### Real File System Internals
+### Real File System Internals
 
-                      Understanding how actual file systems implement composite-like structures illuminates design decisions:
+  Understanding how actual file systems implement composite-like structures illuminates design decisions:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #cbd5e1;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">Unix Inode Architecture</div>
@@ -634,7 +634,7 @@ Use cases: Finding nearest match, shortest path, rendering layers
 </div>
 </div>
 
-                      ### Complete File System Implementation
+### Complete File System Implementation
 
                       ```python
                       from abc import ABC, abstractmethod
@@ -1055,25 +1055,25 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       self.results.append(symlink)
                       ```
 
-                      ### Interview Questions: File System
+### Interview Questions: File System
 
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #c4b5fd;">
 
-                        **Level 1: Why is a file system a good example of the Composite pattern?**
+**Level 1: Why is a file system a good example of the Composite pattern?**
 
-                        File systems exemplify Composite because:
+  File systems exemplify Composite because:
 
-                        1. **Natural hierarchy**: Directories contain files and other directories, forming a tree
-                        2. **Uniform operations**: Both files and directories support `getSize()`, `delete()`, `move()`, `copy()`, permissions
-                        3. **Recursive structure**: A directory's size is the sum of its contents' sizes
-                        4. **Part-whole semantics**: A directory IS a collection of file system elements
-                        5. **Variable depth**: Nesting can be arbitrarily deep
+  1. **Natural hierarchy**: Directories contain files and other directories, forming a tree
+  2. **Uniform operations**: Both files and directories support `getSize()`, `delete()`, `move()`, `copy()`, permissions
+  3. **Recursive structure**: A directory's size is the sum of its contents' sizes
+  4. **Part-whole semantics**: A directory IS a collection of file system elements
+  5. **Variable depth**: Nesting can be arbitrarily deep
 
-                        The pattern enables treating a single file and a complex directory tree identically through the common interface.
+  The pattern enables treating a single file and a complex directory tree identically through the common interface.
 
-                        **Level 2: How would you implement efficient size caching in a file system Composite, handling invalidation correctly?**
+**Level 2: How would you implement efficient size caching in a file system Composite, handling invalidation correctly?**
 
-                        Size caching requires a cache invalidation strategy that propagates changes up the tree:
+  Size caching requires a cache invalidation strategy that propagates changes up the tree:
 
                         ```python
                         class CachedDirectory(Directory):
@@ -1117,19 +1117,19 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         self.parent._invalidate_size_cache()
                         ```
 
-                        **Trade-offs**:
+**Trade-offs**:
                         - Write operations become O(depth) due to cache invalidation
                         - Read operations become O(1) after initial computation
                         - Memory overhead: one integer per directory
                         - Suitable when reads >> writes
 
-                        **Alternative**: Event-based invalidation using [[observer]](/topic/design-patterns/observer) pattern.
+**Alternative**: Event-based invalidation using [[observer]](/topic/design-patterns/observer) pattern.
 
-                        **Level 3: Design a distributed file system's metadata layer using the Composite pattern, handling partition tolerance and consistency.**
+**Level 3: Design a distributed file system's metadata layer using the Composite pattern, handling partition tolerance and consistency.**
 
-                        A distributed file system metadata layer must handle network partitions while maintaining a coherent tree structure:
+  A distributed file system metadata layer must handle network partitions while maintaining a coherent tree structure:
 
-                        **Architecture:**
+**Architecture:**
 
                         ```python
                         from typing import Dict, Set, Tuple
@@ -1312,27 +1312,27 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         return self._local_read_children(dir_id)
                         ```
 
-                        **Key design decisions**:
-                        1. **Vector clocks** for causality tracking and conflict detection
-                        2. **Tombstones** for deletion to handle create-delete-create races
-                        3. **Consistent hashing** for partition assignment
-                        4. **Tunable consistency** levels per operation
-                        5. **Conflict resolution** with deterministic merge semantics
+**Key design decisions**:
+  1. **Vector clocks** for causality tracking and conflict detection
+  2. **Tombstones** for deletion to handle create-delete-create races
+  3. **Consistent hashing** for partition assignment
+  4. **Tunable consistency** levels per operation
+  5. **Conflict resolution** with deterministic merge semantics
 
-                        **CAP theorem implications**:
+**CAP theorem implications**:
                         - During partition: Choose AP (availability) with eventual consistency
                         - After partition heals: Reconcile conflicts using vector clocks
                         - Strong consistency operations block during partitions
 
 </div>
 
-                      ---
+  ---
 
-                      ## UI Component Hierarchies
+## UI Component Hierarchies
 
-                      ### React Virtual DOM as Composite
+### React Virtual DOM as Composite
 
-                      React's component model is a sophisticated Composite implementation:
+  React's component model is a sophisticated Composite implementation:
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #93c5fd;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">React Element Structure</div>
@@ -1356,7 +1356,7 @@ Use cases: Finding nearest match, shortest path, rendering layers
 </div>
 </div>
 
-                      ### UI Component Implementation
+### UI Component Implementation
 
                       ```python
                       from abc import ABC, abstractmethod
@@ -1762,28 +1762,28 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       return total_width, max_height + 2 * self.padding
                       ```
 
-                      ### Interview Questions: UI Component Hierarchies
+### Interview Questions: UI Component Hierarchies
 
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #c4b5fd;">
 
-                        **Level 1: How does event handling work in a UI component hierarchy?**
+**Level 1: How does event handling work in a UI component hierarchy?**
 
-                        Events in UI hierarchies follow two phases:
+  Events in UI hierarchies follow two phases:
 
-                        1. **Capture phase (top-down)**: Event travels from root to target
+  1. **Capture phase (top-down)**: Event travels from root to target
                         - Each ancestor can intercept before target receives it
                         - Used for global shortcuts, focus management
 
-                        2. **Bubble phase (bottom-up)**: Event bubbles from target to root
+  2. **Bubble phase (bottom-up)**: Event bubbles from target to root
                         - Target handles first, then parent, then grandparent...
                         - Each handler can `stopPropagation()` to halt bubbling
                         - Most common pattern for event handling
 
-                        Hit testing determines the target by traversing the tree, typically checking children before parents (so overlapping children take precedence).
+  Hit testing determines the target by traversing the tree, typically checking children before parents (so overlapping children take precedence).
 
-                        **Level 2: How would you implement efficient dirty-flag based rendering for a deeply nested UI tree?**
+**Level 2: How would you implement efficient dirty-flag based rendering for a deeply nested UI tree?**
 
-                        Dirty-flag optimization avoids re-rendering unchanged subtrees:
+  Dirty-flag optimization avoids re-rendering unchanged subtrees:
 
                         ```python
                         class OptimizedContainer(Container):
@@ -1827,17 +1827,17 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         return result
                         ```
 
-                        **Key optimizations**:
-                        1. **Dirty flag propagation**: Changes only mark ancestors dirty, not siblings
-                        2. **Render caching**: Unchanged subtrees use cached bitmaps
-                        3. **Incremental updates**: Only re-render dirty subtrees
-                        4. **Batching**: Accumulate changes, render once per frame
+**Key optimizations**:
+  1. **Dirty flag propagation**: Changes only mark ancestors dirty, not siblings
+  2. **Render caching**: Unchanged subtrees use cached bitmaps
+  3. **Incremental updates**: Only re-render dirty subtrees
+  4. **Batching**: Accumulate changes, render once per frame
 
-                        React's reconciliation uses a similar approach with virtual DOM diffing.
+  React's reconciliation uses a similar approach with virtual DOM diffing.
 
-                        **Level 3: Design a UI framework's layout system that supports constraint-based layouts, handling circular dependencies gracefully.**
+**Level 3: Design a UI framework's layout system that supports constraint-based layouts, handling circular dependencies gracefully.**
 
-                        Constraint-based layouts (like iOS Auto Layout) require solving a system of linear constraints:
+  Constraint-based layouts (like iOS Auto Layout) require solving a system of linear constraints:
 
                         ```python
                         from typing import Dict, Set, Tuple, Optional
@@ -2035,24 +2035,24 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         return constraints
                         ```
 
-                        **Handling circular dependencies**:
-                        1. **Detection**: Build dependency graph during constraint addition
-                        2. **Prevention**: Reject constraints that create cycles
-                        3. **Resolution**: For soft constraints, use priority to break cycles
-                        4. **Feedback**: Provide clear error messages identifying the cycle
+**Handling circular dependencies**:
+  1. **Detection**: Build dependency graph during constraint addition
+  2. **Prevention**: Reject constraints that create cycles
+  3. **Resolution**: For soft constraints, use priority to break cycles
+  4. **Feedback**: Provide clear error messages identifying the cycle
 
-                        **Real-world systems**:
+**Real-world systems**:
                         - Apple Auto Layout uses Cassowary algorithm
                         - Android ConstraintLayout uses custom solver
                         - CSS Flexbox avoids cycles via unidirectional flow
 
 </div>
 
-                      ---
+  ---
 
-                      ## Recursive Operations
+## Recursive Operations
 
-                      ### Operation Propagation Patterns
+### Operation Propagation Patterns
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 1rem; font-size: 1.1rem;">Types of Recursive Operations</div>
@@ -2080,9 +2080,9 @@ Use cases: Finding nearest match, shortest path, rendering layers
 </div>
 </div>
 
-                      ### Stack Overflow Prevention
+### Stack Overflow Prevention
 
-                      Deeply nested composites can cause stack overflow with naive recursion:
+  Deeply nested composites can cause stack overflow with naive recursion:
 
                       ```python
                       class SafeTraversal:
@@ -2160,9 +2160,9 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       return accumulator
                       ```
 
-                      ### Parallel Recursive Operations
+### Parallel Recursive Operations
 
-                      For large trees, parallel processing can significantly improve performance:
+  For large trees, parallel processing can significantly improve performance:
 
                       ```python
                       from concurrent.futures import ThreadPoolExecutor, Future
@@ -2242,29 +2242,29 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       return results
                       ```
 
-                      ### Interview Questions: Recursive Operations
+### Interview Questions: Recursive Operations
 
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #c4b5fd;">
 
-                        **Level 1: What are the time and space complexities of common Composite operations?**
+**Level 1: What are the time and space complexities of common Composite operations?**
 
-                        For a tree with n total nodes, d maximum depth, and b average branching factor:
+  For a tree with n total nodes, d maximum depth, and b average branching factor:
 
-                        | Operation | Time | Space | Notes |
-                        |-----------|------|-------|-------|
-                        | `getSize()` | O(n) | O(d) stack | Must visit all nodes |
-                        | `add(child)` | O(d) | O(1) | Cycle check walks ancestors |
-                        | `remove(child)` | O(1) | O(1) | Direct removal |
-                        | `search(name)` | O(n) | O(d) | Worst case: check all |
-                        | `getPath()` | O(d) | O(d) | Walk to root |
-                        | `clone()` | O(n) | O(n) | Copy all nodes |
-                        | `render()` | O(n) | O(d) | Visit all nodes |
+  | Operation | Time | Space | Notes |
+  |-----------|------|-------|-------|
+  | `getSize()` | O(n) | O(d) stack | Must visit all nodes |
+  | `add(child)` | O(d) | O(1) | Cycle check walks ancestors |
+  | `remove(child)` | O(1) | O(1) | Direct removal |
+  | `search(name)` | O(n) | O(d) | Worst case: check all |
+  | `getPath()` | O(d) | O(d) | Walk to root |
+  | `clone()` | O(n) | O(n) | Copy all nodes |
+  | `render()` | O(n) | O(d) | Visit all nodes |
 
-                        The space complexity reflects call stack depth for recursive implementations.
+  The space complexity reflects call stack depth for recursive implementations.
 
-                        **Level 2: How would you implement a lazy-loading Composite where children are fetched on-demand?**
+**Level 2: How would you implement a lazy-loading Composite where children are fetched on-demand?**
 
-                        Lazy loading defers child retrieval until accessed:
+  Lazy loading defers child retrieval until accessed:
 
                         ```python
                         from typing import Callable, List, Optional
@@ -2351,16 +2351,16 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         return LazyDirectory(path.split('/')[-1], loader)
                         ```
 
-                        **Trade-offs**:
+**Trade-offs**:
                         - Pro: Reduced memory for large trees
                         - Pro: Faster initial load
                         - Con: Latency on first access
                         - Con: Complex error handling
                         - Con: Stale data if source changes
 
-                        **Level 3: Design an incremental computation system for Composite that efficiently recomputes aggregates when leaves change.**
+**Level 3: Design an incremental computation system for Composite that efficiently recomputes aggregates when leaves change.**
 
-                        Incremental computation avoids full recomputation by propagating deltas:
+  Incremental computation avoids full recomputation by propagating deltas:
 
                         ```python
                         from abc import ABC, abstractmethod
@@ -2547,24 +2547,24 @@ Use cases: Finding nearest match, shortest path, rendering layers
                         self._query(2*node+1, mid+1, end, left, right))
                         ```
 
-                        **Performance comparison**:
-                        | Scenario | Naive | Incremental |
-                        |----------|-------|-------------|
-                        | Initial build | O(n) | O(n) |
-                        | Single leaf update | O(n) | O(depth) |
-                        | k updates | O(k*n) | O(k*depth) |
-                        | Query aggregate | O(n) | O(1) |
+**Performance comparison**:
+  | Scenario | Naive | Incremental |
+  |----------|-------|-------------|
+  | Initial build | O(n) | O(n) |
+  | Single leaf update | O(n) | O(depth) |
+  | k updates | O(k*n) | O(k*depth) |
+  | Query aggregate | O(n) | O(1) |
 
-                        **Use cases**:
+**Use cases**:
                         - Real-time dashboards with aggregated metrics
                         - Spreadsheet cell dependencies
                         - Game engine scene graphs with bounding volume hierarchies
 
 </div>
 
-                      ---
+  ---
 
-                      ## Go Implementation: Expression Evaluator
+## Go Implementation: Expression Evaluator
 
                       ```go
                       package main
@@ -2987,9 +2987,9 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       }
                       ```
 
-                      ---
+  ---
 
-                      ## Design Trade-offs Summary
+## Design Trade-offs Summary
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fcd34d;">
 <div style="font-weight: 700; color: #92400e; margin-bottom: 1rem; font-size: 1.1rem;">Critical Design Decisions</div>
@@ -3025,9 +3025,9 @@ Use cases: Finding nearest match, shortest path, rendering layers
 </div>
 </div>
 
-                      ---
+  ---
 
-                      ## Related Patterns
+## Related Patterns
 
                       - [[decorator]](/topic/design-patterns/decorator) - Similar recursive structure, but adds responsibilities rather than aggregating children
                       - [[iterator]](/topic/design-patterns/iterator) - Provides uniform traversal over composite structures
@@ -3036,9 +3036,9 @@ Use cases: Finding nearest match, shortest path, rendering layers
                       - [[flyweight]](/topic/design-patterns/flyweight) - Can share leaf node state to reduce memory in large composites
                       - [[interpreter]](/topic/design-patterns/interpreter) - Often uses Composite for abstract syntax trees
 
-                      ---
+  ---
 
-                      ## Quick Reference
+## Quick Reference
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #bbf7d0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">

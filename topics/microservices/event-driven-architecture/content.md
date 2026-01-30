@@ -152,11 +152,11 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Event Types
+## Event Types
 
-          ### Event Classification
+### Event Classification
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT TYPES</h4>
@@ -412,7 +412,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="margin-top: 12px; background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Example Calculation:</div>
 <div style="font-size: 10px; color: #1e293b;">
-        Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | With buffer: 12-15 partitions
+  Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | With buffer: 12-15 partitions
 </div>
 </div>
 </div>
@@ -486,8 +486,8 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="margin-bottom: 8px;"><span style="color: #7ee787;">3.</span> Apply each event to build current state</div>
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 9px; color: #64748b; margin-top: 8px;">
-        for event in events:<br/>
-        &nbsp;&nbsp;order.Apply(event)
+  for event in events:<br/>
+  &nbsp;&nbsp;order.Apply(event)
 </div>
 </div>
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
@@ -502,7 +502,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 [E1][E2]...[E100][<span style="color: #8957e5;">Snapshot@100</span>][E101]...[E150]
 </div>
 <div style="margin-top: 8px; font-size: 9px; color: #64748b;">
-        Load snapshot v100, apply events 101-150
+  Load snapshot v100, apply events 101-150
 </div>
 </div>
 </div>
@@ -658,7 +658,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 &nbsp;&nbsp;{<span style="color: #a5d6ff;">"order_id"</span>: <span style="color: #58a6ff;">string</span>},<br/>
 &nbsp;&nbsp;{<span style="color: #a5d6ff;">"customer_id"</span>: <span style="color: #58a6ff;">string</span>},<br/>
 &nbsp;&nbsp;{<span style="color: #a5d6ff;">"total"</span>: <span style="color: #58a6ff;">double</span>}<br/>
-        ]}
+  ]}
 </div>
 </div>
 <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px;">
@@ -668,7 +668,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 &nbsp;&nbsp;... <span style="color: #64748b;">(same as v1)</span><br/>
 &nbsp;&nbsp;{<span style="color: #a5d6ff;">"currency"</span>: <span style="color: #58a6ff;">string</span>,<br/>
 &nbsp;&nbsp;&nbsp;<span style="color: #f78166;">"default"</span>: <span style="color: #a5d6ff;">"USD"</span>}<br/>
-        ]}
+  ]}
 </div>
 </div>
 </div>
@@ -718,20 +718,20 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #7ee787; font-size: 10px; margin-bottom: 8px;">Producer: Include trace context</div>
 <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
-        event := Event{<br/>
-        &nbsp;&nbsp;TraceID: span.TraceID(),<br/>
-        &nbsp;&nbsp;SpanID: span.SpanID(),<br/>
-        &nbsp;&nbsp;CorrelationID: ctx.Value(...)<br/>
-        }
+  event := Event{<br/>
+  &nbsp;&nbsp;TraceID: span.TraceID(),<br/>
+  &nbsp;&nbsp;SpanID: span.SpanID(),<br/>
+  &nbsp;&nbsp;CorrelationID: ctx.Value(...)<br/>
+  }
 </div>
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
 <div style="color: #58a6ff; font-size: 10px; margin-bottom: 8px;">Consumer: Continue trace</div>
 <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
-        parentCtx := trace.Context...<br/>
-        ctx, span := tracer.Start(<br/>
-        &nbsp;&nbsp;parentCtx, "process-event"<br/>
-        )
+  parentCtx := trace.Context...<br/>
+  ctx, span := tracer.Start(<br/>
+  &nbsp;&nbsp;parentCtx, "process-event"<br/>
+  )
 </div>
 </div>
 </div>

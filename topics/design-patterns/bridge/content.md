@@ -22,8 +22,8 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
 <div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #ef4444;">
 <strong style="color: #dc2626;">Without Bridge (Class Explosion):</strong>
 <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 8px;">
-      BasicTVRemote, BasicRadioRemote, BasicStreamingRemote,<br>
-        AdvancedTVRemote, AdvancedRadioRemote, AdvancedStreamingRemote<br>
+  BasicTVRemote, BasicRadioRemote, BasicStreamingRemote,<br>
+  AdvancedTVRemote, AdvancedRadioRemote, AdvancedStreamingRemote<br>
 <strong>= 6 classes (2 remotes x 3 devices)</strong>
 </div>
 </div>
@@ -31,7 +31,7 @@ The Bridge pattern separates an abstraction from its implementation, allowing th
 <div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #22c55e;">
 <strong style="color: #166534;">With Bridge (Composition):</strong>
 <div style="color: #14532d; font-size: 0.9rem; margin-top: 8px;">
-          2 Remote classes + 3 Device classes<br>
+  2 Remote classes + 3 Device classes<br>
 <strong>= 5 classes total, any combination works!</strong>
 </div>
 </div>
@@ -46,96 +46,96 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 </div>
 </div>
 
-      ---
+  ---
 
-      ## Real Company Usage
+## Real Company Usage
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-        | Company | How They Use Bridge Pattern |
-        |---------|----------------------------|
-        | **JDBC (Java)** | Driver interface (Bridge) connects to different databases (MySQL, PostgreSQL, Oracle) |
-        | **Graphics Libraries** | Shapes (abstraction) render through different backends (OpenGL, DirectX, Vulkan) |
-        | **Notification Systems** | Notification types (urgent, normal) sent via different channels (email, SMS, push) |
-        | **Cloud Providers** | Storage abstraction works with S3, GCS, Azure Blob implementations |
-        | **Payment Systems** | Payment methods (card, wallet) process through different gateways (Stripe, PayPal) |
-        | **Logging Frameworks** | Logger levels (debug, info) output to different destinations (file, console, remote) |
+  | Company | How They Use Bridge Pattern |
+  |---------|----------------------------|
+  | **JDBC (Java)** | Driver interface (Bridge) connects to different databases (MySQL, PostgreSQL, Oracle) |
+  | **Graphics Libraries** | Shapes (abstraction) render through different backends (OpenGL, DirectX, Vulkan) |
+  | **Notification Systems** | Notification types (urgent, normal) sent via different channels (email, SMS, push) |
+  | **Cloud Providers** | Storage abstraction works with S3, GCS, Azure Blob implementations |
+  | **Payment Systems** | Payment methods (card, wallet) process through different gateways (Stripe, PayPal) |
+  | **Logging Frameworks** | Logger levels (debug, info) output to different destinations (file, console, remote) |
 
 </div>
 
-      ---
+  ---
 
-      ## The Class Explosion Problem
+## The Class Explosion Problem
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Why Bridge Matters: Avoiding Class Explosion</h4>
 
 <p style="color: #334155; text-align: center; margin-bottom: 20px;">
-          Imagine shapes that need to be drawn in different colors:
+  Imagine shapes that need to be drawn in different colors:
 </p>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
 
-          <!-- Without Bridge -->
+  <!-- Without Bridge -->
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
 <h5 style="color: #dc2626; margin-top: 0;">Without Bridge (Inheritance)</h5>
 <div style="font-family: monospace; font-size: 0.8rem; color: #7f1d1d; line-height: 1.8;">
-              Shape<br>
-                ├── RedCircle<br>
-                  ├── BlueCircle<br>
-                    ├── GreenCircle<br>
-                      ├── RedSquare<br>
-                        ├── BlueSquare<br>
-                          ├── GreenSquare<br>
-                            ├── RedTriangle<br>
-                              ├── BlueTriangle<br>
-                                └── GreenTriangle<br>
+  Shape<br>
+  ├── RedCircle<br>
+  ├── BlueCircle<br>
+  ├── GreenCircle<br>
+  ├── RedSquare<br>
+  ├── BlueSquare<br>
+  ├── GreenSquare<br>
+  ├── RedTriangle<br>
+  ├── BlueTriangle<br>
+  └── GreenTriangle<br>
 </div>
 <div style="background: #fee2e2; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #991b1b; font-weight: 600;">
-                                  3 shapes x 3 colors = 9 classes
+  3 shapes x 3 colors = 9 classes
 </div>
 <div style="color: #b91c1c; font-size: 0.85rem; margin-top: 8px;">
-                                  Add 1 color? +3 classes<br>
-                                    Add 1 shape? +3 classes
+  Add 1 color? +3 classes<br>
+  Add 1 shape? +3 classes
 </div>
 </div>
 
-                                <!-- With Bridge -->
+  <!-- With Bridge -->
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin-top: 0;">With Bridge (Composition)</h5>
 <div style="font-family: monospace; font-size: 0.8rem; color: #14532d; line-height: 1.8;">
-                                    Shape (has Color)<br>
-                                      ├── Circle<br>
-                                        ├── Square<br>
-                                          └── Triangle<br>
-                                            <br>
-                                              Color (interface)<br>
-                                                ├── Red<br>
-                                                  ├── Blue<br>
-                                                    └── Green<br>
+  Shape (has Color)<br>
+  ├── Circle<br>
+  ├── Square<br>
+  └── Triangle<br>
+  <br>
+  Color (interface)<br>
+  ├── Red<br>
+  ├── Blue<br>
+  └── Green<br>
 </div>
 <div style="background: #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #166534; font-weight: 600;">
-                                                      3 shapes + 3 colors = 6 classes
+  3 shapes + 3 colors = 6 classes
 </div>
 <div style="color: #15803d; font-size: 0.85rem; margin-top: 8px;">
-                                                      Add 1 color? +1 class<br>
-                                                        Add 1 shape? +1 class
+  Add 1 color? +1 class<br>
+  Add 1 shape? +1 class
 </div>
 </div>
 
 </div>
 </div>
 
-                                                ---
+  ---
 
-                                                ## Pattern Structure
+## Pattern Structure
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Bridge Pattern Structure</h4>
 
 <div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin: 24px 0;">
 
-                                                    <!-- Abstraction Side -->
+  <!-- Abstraction Side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="color: #3b82f6; font-weight: 600; font-size: 0.9rem;">ABSTRACTION</div>
 
@@ -157,14 +157,14 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 </div>
 </div>
 
-                                                      <!-- Bridge Arrow -->
+  <!-- Bridge Arrow -->
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px;">
 <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 4px;">has-a</div>
 <div style="color: #64748b; font-size: 2rem;">&#8594;</div>
 <div style="color: #64748b; font-size: 0.8rem; margin-top: 4px;">(bridge)</div>
 </div>
 
-                                                      <!-- Implementation Side -->
+  <!-- Implementation Side -->
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 <div style="color: #22c55e; font-weight: 600; font-size: 0.9rem;">IMPLEMENTATION</div>
 
@@ -179,10 +179,10 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 
 <div style="display: flex; gap: 12px;">
 <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
-                                                            ConcreteImplA
+  ConcreteImplA
 </div>
 <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center;">
-                                                            ConcreteImplB
+  ConcreteImplB
 </div>
 </div>
 </div>
@@ -195,35 +195,35 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## When to Use Bridge Pattern
+## When to Use Bridge Pattern
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
 
-                                                    ### Good Use Cases
+### Good Use Cases
 
-                                                    1. **Two Dimensions of Variation** - When both abstraction and implementation can change
-                                                    2. **Avoiding Class Explosion** - M abstractions x N implementations would create M*N classes
-                                                    3. **Runtime Binding** - Need to switch implementations at runtime
-                                                    4. **Cross-Platform Code** - Same abstraction, different platform implementations
-                                                    5. **Database Drivers** - Same query interface, different database backends
-                                                    6. **UI Themes** - Same components, different rendering engines
+  1. **Two Dimensions of Variation** - When both abstraction and implementation can change
+  2. **Avoiding Class Explosion** - M abstractions x N implementations would create M*N classes
+  3. **Runtime Binding** - Need to switch implementations at runtime
+  4. **Cross-Platform Code** - Same abstraction, different platform implementations
+  5. **Database Drivers** - Same query interface, different database backends
+  6. **UI Themes** - Same components, different rendering engines
 
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Anti-Patterns: When NOT to Use
+## Anti-Patterns: When NOT to Use
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
 
-                                                    ### Common Mistakes
+### Common Mistakes
 
-                                                    1. **Single Dimension** - If only implementation varies, use simple Strategy pattern
-                                                    2. **Stable Abstraction** - If abstraction won't change, inheritance might be simpler
-                                                    3. **Over-Abstraction** - Adding bridge for hypothetical future flexibility
-                                                    4. **Confusion with Adapter** - Adapter makes interfaces compatible; Bridge separates concerns
+  1. **Single Dimension** - If only implementation varies, use simple Strategy pattern
+  2. **Stable Abstraction** - If abstraction won't change, inheritance might be simpler
+  3. **Over-Abstraction** - Adding bridge for hypothetical future flexibility
+  4. **Confusion with Adapter** - Adapter makes interfaces compatible; Bridge separates concerns
 
 </div>
 
@@ -241,11 +241,11 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
                                                   def render(self): pass
                                                   ```
 
-                                                  ---
+  ---
 
-                                                  ## Python Implementation
+## Python Implementation
 
-                                                  ### Classic Bridge: Notification System
+### Classic Bridge: Notification System
 
                                                   ```python
                                                   from abc import ABC, abstractmethod
@@ -464,7 +464,7 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
                                                   )
                                                   ```
 
-                                                  ### Production Example: Database Abstraction
+### Production Example: Database Abstraction
 
                                                   ```python
                                                   from abc import ABC, abstractmethod
@@ -719,9 +719,9 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
                                                   user_repo.save({"name": "Test User", "email": "test@example.com"})
                                                   ```
 
-                                                  ---
+  ---
 
-                                                  ## Bridge vs Related Patterns
+## Bridge vs Related Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -766,26 +766,26 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 </div>
 </div>
 
-                                                        ---
+  ---
 
-                                                        ## Interview Questions
+## Interview Questions
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-                                                          ### Conceptual Questions
+### Conceptual Questions
 
-                                                          <details style="margin-bottom: 12px;">
-                                                            <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What problem does Bridge solve that inheritance cannot?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: What problem does Bridge solve that inheritance cannot?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>The Class Explosion Problem:</strong>
-                                                              <br><br>
-                                                                  With inheritance, if you have M abstractions and N implementations, you need M x N classes:
+  <br><br>
+  With inheritance, if you have M abstractions and N implementations, you need M x N classes:
 <ul>
 <li>3 shapes x 4 colors = 12 classes</li>
 <li>Add 1 color = 3 more classes</li>
 </ul>
 
-                                                                  With Bridge (composition), you need M + N classes:
+  With Bridge (composition), you need M + N classes:
 <ul>
 <li>3 shapes + 4 colors = 7 classes</li>
 <li>Add 1 color = 1 more class</li>
@@ -798,35 +798,35 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 <li>Better adherence to Single Responsibility Principle</li>
 </ul>
 </div>
-                                                              </details>
+</details>
 
-                                                              <details style="margin-bottom: 12px;">
-                                                                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: How is Bridge different from Strategy?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: How is Bridge different from Strategy?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Strategy:</strong> Single dimension of variation (just algorithms)
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
-                                                                    Context --uses--> Strategy
-                                                                    |
-                                                                    +------+------+
-                                                                    |             |
-                                                                    StrategyA     StrategyB
+  Context --uses--> Strategy
+  |
+  +------+------+
+  |             |
+  StrategyA     StrategyB
 </pre>
 
 <strong>Bridge:</strong> Two dimensions of variation (abstraction AND implementation)
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0;">
-                                                                    Abstraction --has--> Implementor
-                                                                    |                    |
-                                                                    +-----+-----+        +-----+-----+
-                                                                    |                    |
-                                                                    RefinedA  RefinedB    ImplA    ImplB
+  Abstraction --has--> Implementor
+  |                    |
+  +-----+-----+        +-----+-----+
+  |                    |
+  RefinedA  RefinedB    ImplA    ImplB
 </pre>
 
 <strong>Rule of thumb:</strong> If your abstraction hierarchy is just Context with no subclasses, you probably want Strategy, not Bridge.
 </div>
-                                                              </details>
+</details>
 
-                                                              <details style="margin-bottom: 12px;">
-                                                                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: When would you choose Bridge over Adapter?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: When would you choose Bridge over Adapter?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Bridge:</strong> Use during initial design
 <ul>
@@ -844,54 +844,54 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 
 <strong>Key difference:</strong> Bridge is intentional separation; Adapter is a compatibility fix.
 </div>
-                                                              </details>
+</details>
 
-                                                              ### Coding Questions
+### Coding Questions
 
-                                                              <details style="margin-bottom: 12px;">
-                                                                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Design a logging system using Bridge</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Design a logging system using Bridge</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
-                                                                    # Implementation - WHERE to log
-                                                                    class LogOutput(ABC):
-                                                                    @abstractmethod
-                                                                    def write(self, message: str): pass
+# Implementation - WHERE to log
+  class LogOutput(ABC):
+  @abstractmethod
+  def write(self, message: str): pass
 
-                                                                    class FileOutput(LogOutput):
-                                                                    def write(self, message): print(f"[FILE] {message}")
+  class FileOutput(LogOutput):
+  def write(self, message): print(f"[FILE] {message}")
 
-                                                                    class ConsoleOutput(LogOutput):
-                                                                    def write(self, message): print(f"[CONSOLE] {message}")
+  class ConsoleOutput(LogOutput):
+  def write(self, message): print(f"[CONSOLE] {message}")
 
-                                                                    class RemoteOutput(LogOutput):
-                                                                    def write(self, message): print(f"[REMOTE] {message}")
+  class RemoteOutput(LogOutput):
+  def write(self, message): print(f"[REMOTE] {message}")
 
-                                                                    # Abstraction - WHAT to log
-                                                                    class Logger(ABC):
-                                                                    def __init__(self, output: LogOutput):
-                                                                    self._output = output
+# Abstraction - WHAT to log
+  class Logger(ABC):
+  def __init__(self, output: LogOutput):
+  self._output = output
 
-                                                                    @abstractmethod
-                                                                    def log(self, message: str): pass
+  @abstractmethod
+  def log(self, message: str): pass
 
-                                                                    class SimpleLogger(Logger):
-                                                                    def log(self, message):
-                                                                    self._output.write(message)
+  class SimpleLogger(Logger):
+  def log(self, message):
+  self._output.write(message)
 
-                                                                    class TimestampLogger(Logger):
-                                                                    def log(self, message):
-                                                                    from datetime import datetime
-                                                                    self._output.write(f"[{datetime.now()}] {message}")
+  class TimestampLogger(Logger):
+  def log(self, message):
+  from datetime import datetime
+  self._output.write(f"[{datetime.now()}] {message}")
 
-                                                                    # Usage
-                                                                    logger = TimestampLogger(FileOutput())
-                                                                    logger.log("Application started")
+# Usage
+  logger = TimestampLogger(FileOutput())
+  logger.log("Application started")
 </pre>
 </div>
-                                                              </details>
+</details>
 
-                                                              <details style="margin-bottom: 12px;">
-                                                                <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you test a Bridge implementation?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you test a Bridge implementation?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Testing strategies:</strong>
 <ol>
@@ -900,34 +900,34 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 <li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
 </ol>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
-                                                                    def test_alert_notification_formats_message():
-                                                                    mock_sender = Mock(spec=NotificationSender)
-                                                                    mock_sender.send.return_value = True
+  def test_alert_notification_formats_message():
+  mock_sender = Mock(spec=NotificationSender)
+  mock_sender.send.return_value = True
 
-                                                                    alert = AlertNotification(mock_sender, severity="HIGH")
-                                                                    alert.notify("user@test.com", "Test", "Message")
+  alert = AlertNotification(mock_sender, severity="HIGH")
+  alert.notify("user@test.com", "Test", "Message")
 
-                                                                    # Verify abstraction formatted the message
-                                                                    call_args = mock_sender.send.call_args
-                                                                    assert "[HIGH] ALERT:" in call_args[0][1]
+# Verify abstraction formatted the message
+  call_args = mock_sender.send.call_args
+  assert "[HIGH] ALERT:" in call_args[0][1]
 
-                                                                    def test_email_sender_sends_email():
-                                                                    sender = EmailSender("smtp.test.com")
-                                                                    result = sender.send("to@test.com", "Subject", "Body")
-                                                                    assert result == True
+  def test_email_sender_sends_email():
+  sender = EmailSender("smtp.test.com")
+  result = sender.send("to@test.com", "Subject", "Body")
+  assert result == True
 </pre>
 </div>
-                                                              </details>
+</details>
 
 </div>
 
-                                                            ---
+  ---
 
-                                                            ## Common Mistakes
+## Common Mistakes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
-                                                              ### Mistake 1: Bridge Without Two Hierarchies
+### Mistake 1: Bridge Without Two Hierarchies
 
                                                               ```python
                                                               # BAD: Only implementation varies (use Strategy instead)
@@ -949,7 +949,7 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
                                                               class InventoryReport(Report): pass  # Refined abstraction
                                                               ```
 
-                                                              ### Mistake 2: Leaking Implementation Details
+### Mistake 2: Leaking Implementation Details
 
                                                               ```python
                                                               # BAD: Abstraction exposes implementation details
@@ -964,7 +964,7 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
                                                               return self._sender.send(recipient, message)
                                                               ```
 
-                                                              ### Mistake 3: Tight Coupling in Abstraction
+### Mistake 3: Tight Coupling in Abstraction
 
                                                               ```python
                                                               # BAD: Abstraction depends on concrete implementation
@@ -980,29 +980,29 @@ The <strong>Remote (Abstraction)</strong> doesn't care about the device details.
 
 </div>
 
-                                                            ---
+  ---
 
-                                                            ## Key Takeaways
+## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
-                                                              1. **Bridge = Two Hierarchies** - Abstraction AND Implementation both vary
+  1. **Bridge = Two Hierarchies** - Abstraction AND Implementation both vary
 
-                                                              2. **Prevents Class Explosion** - M + N classes instead of M x N
+  2. **Prevents Class Explosion** - M + N classes instead of M x N
 
-                                                              3. **Composition Over Inheritance** - Abstraction holds reference to implementation
+  3. **Composition Over Inheritance** - Abstraction holds reference to implementation
 
-                                                              4. **Design-Time Pattern** - Plan for it upfront, unlike Adapter
+  4. **Design-Time Pattern** - Plan for it upfront, unlike Adapter
 
-                                                              5. **Runtime Flexibility** - Can switch implementations without changing abstractions
+  5. **Runtime Flexibility** - Can switch implementations without changing abstractions
 
-                                                              6. **Not Always Needed** - If only one dimension varies, use simpler patterns
+  6. **Not Always Needed** - If only one dimension varies, use simpler patterns
 
 </div>
 
-                                                            ---
+  ---
 
-                                                            ## Related Patterns
+## Related Patterns
 
                                                             - [Adapter](/topic/design-patterns/adapter) - Makes interfaces compatible (after the fact)
                                                             - [Strategy](/topic/design-patterns/strategy) - Swappable algorithms (single dimension)

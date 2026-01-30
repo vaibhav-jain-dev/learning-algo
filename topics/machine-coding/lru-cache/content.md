@@ -242,7 +242,7 @@ def remove(node):
 </div>
 </div>
 
-        ### Interview Questions: Architecture
+### Interview Questions: Architecture
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why can't we use just a HashMap for LRU Cache?</div>
@@ -261,9 +261,9 @@ def remove(node):
 
   ---
 
-  ## O(1) Operations: Deep Dive
+## O(1) Operations: Deep Dive
 
-  ### GET Operation
+### GET Operation
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #6ee7b7; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <div style="font-weight: 600; color: #047857; font-size: 15px; margin-bottom: 16px;">GET(key) - Retrieve value and update recency</div>
@@ -326,20 +326,20 @@ def remove(node):
 <div style="flex: 1; min-width: 250px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 14px;">
 <div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key EXISTS (Update Path)</div>
 <div style="color: #15803d; font-size: 12px; line-height: 1.7;">
-          2a. Update node.value<br>
-            2b. Move node to front (same as GET)<br>
-              2c. Return
+  2a. Update node.value<br>
+  2b. Move node to front (same as GET)<br>
+  2c. Return
 </div>
 </div>
 
 <div style="flex: 1; min-width: 250px; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 14px;">
 <div style="color: #92400e; font-weight: 600; font-size: 12px; margin-bottom: 8px;">Key NOT EXISTS (Insert Path)</div>
 <div style="color: #78350f; font-size: 12px; line-height: 1.7;">
-              2a. If size == capacity: evict LRU<br>
-                2b. Create new Node(key, value)<br>
-                  2c. Add to HashMap<br>
-                    2d. Insert after head<br>
-                      2e. Increment size
+  2a. If size == capacity: evict LRU<br>
+  2b. Create new Node(key, value)<br>
+  2c. Add to HashMap<br>
+  2d. Insert after head<br>
+  2e. Increment size
 </div>
 </div>
 </div>
@@ -354,7 +354,7 @@ def remove(node):
 </div>
 </div>
 
-            ### Pointer Update Sequence (Critical)
+### Pointer Update Sequence (Critical)
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The order of pointer updates matters! Updating in the wrong order can lose references.</span>
 
@@ -376,7 +376,7 @@ def remove(node):
             node.next = ???             # Can't access old first node anymore!
             ```
 
-            ### Interview Questions: O(1) Operations
+### Interview Questions: O(1) Operations
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Walk me through what happens internally when we call get(key) on an existing key.</div>
@@ -393,11 +393,11 @@ def remove(node):
 </div>
 </div>
 
-            ---
+  ---
 
-            ## Code Implementation
+## Code Implementation
 
-            ### Python Implementation
+### Python Implementation
 
             ```python
             from typing import Optional, Dict
@@ -597,7 +597,7 @@ def remove(node):
             print("All assertions passed!")
             ```
 
-            ### Java Implementation (Thread-Safe Version)
+### Java Implementation (Thread-Safe Version)
 
             ```java
             import java.util.HashMap;
@@ -754,7 +754,7 @@ def remove(node):
                                       }
                                       ```
 
-                                      ### Go Implementation
+### Go Implementation
 
                                       ```go
                                       package lru
@@ -877,11 +877,11 @@ def remove(node):
                                       }
                                       ```
 
-                                      ---
+  ---
 
-                                      ## Thread Safety Deep Dive
+## Thread Safety Deep Dive
 
-                                      ### The Challenge
+### The Challenge
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU Cache operations appear to be simple reads (get) and writes (put), but get actually MUTATES the data structure by updating access order. This makes thread-safe implementation non-trivial.</span>
 
@@ -893,10 +893,10 @@ def remove(node):
 <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
 <div style="font-weight: 600; color: #92400e; font-size: 12px;">Thread A: get(key1)</div>
 <div style="color: #78350f; font-size: 11px; font-family: monospace;">
-                                                1. Read node from map<br>
-                                                  2. Remove node from list<br>
+  1. Read node from map<br>
+  2. Remove node from list<br>
 <span style="color: #dc2626;">--CONTEXT SWITCH--</span><br>
-                                                      3. Add node to front
+  3. Add node to front
 </div>
 </div>
 </div>
@@ -906,8 +906,8 @@ def remove(node):
 <div style="font-weight: 600; color: #1e40af; font-size: 12px;">Thread B: put(key2)</div>
 <div style="color: #1e3a8a; font-size: 11px; font-family: monospace;">
 <span style="color: #dc2626;">--RUNS DURING SWITCH--</span><br>
-                                                        1. Check capacity (full)<br>
-                                                          2. Evict tail.prev<br>
+  1. Check capacity (full)<br>
+  2. Evict tail.prev<br>
 <span style="color: #dc2626; font-weight: bold;">BUG: May evict wrong node!</span>
 </div>
 </div>
@@ -919,7 +919,7 @@ def remove(node):
 </div>
 </div>
 
-                                                  ### Synchronization Strategies
+### Synchronization Strategies
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
@@ -978,22 +978,22 @@ def remove(node):
 </div>
 </div>
 
-                                                  ### Production Approaches
+### Production Approaches
 
-                                                  **Caffeine (Java)** uses a sophisticated approach:
+**Caffeine (Java)** uses a sophisticated approach:
                                                   - Window TinyLFU admission policy (better than pure LRU)
                                                   - Concurrent hash table with compare-and-swap
                                                   - Buffer writes to avoid contention
                                                   - Background thread processes access order updates
 
-                                                  **Guava Cache** uses:
+**Guava Cache** uses:
                                                   - Segmented design (like ConcurrentHashMap)
                                                   - Each segment has its own LRU order
                                                   - Global LRU is approximated, not exact
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">In interviews, implement simple global lock first, then discuss trade-offs. Mentioning Caffeine/Guava shows production awareness.</span>
 
-                                                  ### Interview Questions: Thread Safety
+### Interview Questions: Thread Safety
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why does get() need a write lock in thread-safe LRU Cache?</div>
@@ -1010,15 +1010,15 @@ def remove(node):
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Cache Eviction Policies Comparison
+## Cache Eviction Policies Comparison
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU is just one eviction policy. Understanding alternatives shows depth and helps choose the right tool for specific workloads.</span>
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                                                      <thead>
+  <thead>
 <tr style="background: #e2e8f0;">
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Policy</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Evicts</th>
@@ -1026,8 +1026,8 @@ def remove(node):
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Cons</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Use Case</th>
 </tr>
-                                                      </thead>
-                                                      <tbody>
+  </thead>
+  <tbody>
 <tr>
 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #059669;">LRU</td>
 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">Least recently accessed</td>
@@ -1070,16 +1070,16 @@ def remove(node):
 <td style="padding: 12px;">Complex, approximate</td>
 <td style="padding: 12px;">Caffeine, modern caches</td>
 </tr>
-                                                      </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                  ### LRU Scan Pollution Problem
+### LRU Scan Pollution Problem
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Scan Pollution Example</div>
 <div style="color: #7f1d1d; font-size: 13px; margin-bottom: 16px;">
-                                                      Consider a database with a hot set (frequently accessed) and a full table scan:
+  Consider a database with a hot set (frequently accessed) and a full table scan:
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1100,11 +1100,11 @@ def remove(node):
 </div>
 </div>
 
-                                                  ### LFU Implementation Insight
+### LFU Implementation Insight
 
-                                                  See [[LFU Cache]](/topic/machine-coding/lfu-cache) for detailed implementation. Key difference: LFU uses frequency counts and requires O(1) access to minimum frequency bucket.
+  See [[LFU Cache]](/topic/machine-coding/lfu-cache) for detailed implementation. Key difference: LFU uses frequency counts and requires O(1) access to minimum frequency bucket.
 
-                                                  ### Interview Questions: Eviction Policies
+### Interview Questions: Eviction Policies
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: When would LFU be better than LRU?</div>
@@ -1121,13 +1121,13 @@ def remove(node):
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Distributed Caching
+## Distributed Caching
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Scaling LRU Cache beyond a single machine introduces fundamental distributed systems challenges: consistency, partition tolerance, and coordination overhead.</span>
 
-                                                  ### Architecture Patterns
+### Architecture Patterns
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
@@ -1191,52 +1191,52 @@ def remove(node):
 </div>
 </div>
 
-                                                              ### Consistent Hashing for Sharding
+### Consistent Hashing for Sharding
 
 <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Consistent hashing minimizes key redistribution when nodes are added/removed. Instead of rehashing all keys, only keys in the affected range move.</span>
 
-                                                              See [[Consistent Hashing]](/topic/system-design/consistent-hashing) for detailed explanation.
+  See [[Consistent Hashing]](/topic/system-design/consistent-hashing) for detailed explanation.
 
-                                                              Key insight for LRU: Each shard maintains its own LRU order independently. There's no global LRU across the cluster - this is acceptable because:
-                                                              1. Global LRU would require cross-node coordination (slow)
-                                                              2. Per-shard LRU approximates global LRU well enough
-                                                              3. Hot keys naturally stay cached on their designated shards
+  Key insight for LRU: Each shard maintains its own LRU order independently. There's no global LRU across the cluster - this is acceptable because:
+  1. Global LRU would require cross-node coordination (slow)
+  2. Per-shard LRU approximates global LRU well enough
+  3. Hot keys naturally stay cached on their designated shards
 
-                                                              ### Cache Invalidation
+### Cache Invalidation
 
 <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
 <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton</div>
 </div>
 
-                                                              **Invalidation Strategies:**
+**Invalidation Strategies:**
 
-                                                              | Strategy | Mechanism | Trade-off |
-                                                              |----------|-----------|-----------|
-                                                              | **TTL (Time-to-Live)** | Entries expire after fixed duration | Simple but may serve stale data |
-                                                              | **Write-Through** | Update cache on every write | Consistent but slower writes |
-                                                              | **Write-Behind** | Async cache update after write | Fast writes, brief inconsistency |
-                                                              | **Pub/Sub Invalidation** | Broadcast invalidation messages | Consistent, requires messaging infra |
-                                                              | **Version/ETag** | Check version on read | Reduces bandwidth, adds latency |
+  | Strategy | Mechanism | Trade-off |
+  |----------|-----------|-----------|
+  | **TTL (Time-to-Live)** | Entries expire after fixed duration | Simple but may serve stale data |
+  | **Write-Through** | Update cache on every write | Consistent but slower writes |
+  | **Write-Behind** | Async cache update after write | Fast writes, brief inconsistency |
+  | **Pub/Sub Invalidation** | Broadcast invalidation messages | Consistent, requires messaging infra |
+  | **Version/ETag** | Check version on read | Reduces bandwidth, adds latency |
 
-                                                              ### Real-World Systems
+### Real-World Systems
 
-                                                              **Redis:**
+**Redis:**
                                                               - Single-threaded (no lock contention)
                                                               - Approximates LRU with sampling (configurable sample size)
                                                               - `maxmemory-policy`: allkeys-lru, volatile-lru, allkeys-lfu, etc.
                                                               - Cluster mode: sharded by key hash slot
 
-                                                              **Memcached:**
+**Memcached:**
                                                               - LRU per slab class (items grouped by size)
                                                               - No native clustering (client-side sharding)
                                                               - Simple protocol, very fast
 
-                                                              **Caffeine (JVM):**
+**Caffeine (JVM):**
                                                               - Window TinyLFU policy
                                                               - Near-optimal hit rates
                                                               - Async maintenance for high throughput
 
-                                                              ### Interview Questions: Distributed Caching
+### Interview Questions: Distributed Caching
 
 <div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: How would you distribute an LRU cache across multiple servers?</div>
@@ -1253,22 +1253,22 @@ def remove(node):
 </div>
 </div>
 
-                                                              ---
+  ---
 
-                                                              ## Edge Cases and Common Bugs
+## Edge Cases and Common Bugs
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 16px;">Common Implementation Bugs</div>
 
 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                                                                  <thead>
+  <thead>
 <tr style="background: #fee2e2;">
 <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Bug</th>
 <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Symptom</th>
 <th style="padding: 10px; text-align: left; border-bottom: 2px solid #fca5a5;">Fix</th>
 </tr>
-                                                                  </thead>
-                                                                  <tbody>
+  </thead>
+  <tbody>
 <tr>
 <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Forget to delete from HashMap on eviction</td>
 <td style="padding: 10px; border-bottom: 1px solid #fecaca;">Memory leak, size never decreases</td>
@@ -1299,11 +1299,11 @@ def remove(node):
 <td style="padding: 10px;">Can't remove from HashMap on evict</td>
 <td style="padding: 10px;">Store key in Node class</td>
 </tr>
-                                                                  </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                              ### Critical Edge Cases to Test
+### Critical Edge Cases to Test
 
                                                               ```python
                                                               def test_edge_cases():
@@ -1352,11 +1352,11 @@ def remove(node):
                                                               assert cache.get(1) == -1
                                                               ```
 
-                                                              ---
+  ---
 
-                                                              ## Interview Execution Guide
+## Interview Execution Guide
 
-                                                              ### 45-Minute Timeline
+### 45-Minute Timeline
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1403,40 +1403,40 @@ def remove(node):
 </div>
 </div>
 
-                                                              ### What Differentiates Candidates
+### What Differentiates Candidates
 
-                                                              | Level | Expectation |
-                                                              |-------|-------------|
-                                                              | **Junior** | Completes working solution with prompting, handles basic cases |
-                                                              | **Mid** | Clean code with helper methods, discusses trade-offs, handles edge cases |
-                                                              | **Senior** | Thread-safety discussion, production considerations, alternative algorithms |
-                                                              | **Staff+** | Distributed design, cache coherence, real-world system references |
+  | Level | Expectation |
+  |-------|-------------|
+  | **Junior** | Completes working solution with prompting, handles basic cases |
+  | **Mid** | Clean code with helper methods, discusses trade-offs, handles edge cases |
+  | **Senior** | Thread-safety discussion, production considerations, alternative algorithms |
+  | **Staff+** | Distributed design, cache coherence, real-world system references |
 
-                                                              ### Follow-up Questions to Prepare
+### Follow-up Questions to Prepare
 
-                                                              1. **Thread-safety**: "How would you make this thread-safe?" (locks, concurrent data structures)
-                                                              2. **TTL**: "Add expiration support" (timestamp per entry, lazy vs eager eviction)
-                                                              3. **Delete operation**: "Add explicit delete" (trivial addition)
-                                                              4. **Distributed**: "Scale to multiple machines" (consistent hashing, per-shard LRU)
-                                                              5. **LFU comparison**: "When would LFU be better?" (frequency matters, scan resistance)
-                                                              6. **Memory**: "Reduce memory usage" (intrusive list, object pooling)
-                                                              7. **Generics**: "Support any key/value type" (generics, comparable keys)
+  1. **Thread-safety**: "How would you make this thread-safe?" (locks, concurrent data structures)
+  2. **TTL**: "Add expiration support" (timestamp per entry, lazy vs eager eviction)
+  3. **Delete operation**: "Add explicit delete" (trivial addition)
+  4. **Distributed**: "Scale to multiple machines" (consistent hashing, per-shard LRU)
+  5. **LFU comparison**: "When would LFU be better?" (frequency matters, scan resistance)
+  6. **Memory**: "Reduce memory usage" (intrusive list, object pooling)
+  7. **Generics**: "Support any key/value type" (generics, comparable keys)
 
-                                                              ---
+  ---
 
-                                                              ## Time and Space Complexity
+## Time and Space Complexity
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                                                                  <thead>
+  <thead>
 <tr style="background: #e2e8f0;">
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Operation</th>
 <th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Average)</th>
 <th style="padding: 12px; text-align: center; border-bottom: 2px solid #cbd5e1;">Time (Worst)</th>
 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Notes</th>
 </tr>
-                                                                  </thead>
-                                                                  <tbody>
+  </thead>
+  <tbody>
 <tr>
 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">get(key)</td>
 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #059669; font-weight: 600;">O(1)</td>
@@ -1460,18 +1460,18 @@ def remove(node):
 <td style="padding: 12px; text-align: center;" colspan="2"><span style="color: #059669; font-weight: 600;">O(capacity)</span></td>
 <td style="padding: 12px; font-size: 12px;">HashMap + List nodes</td>
 </tr>
-                                                                  </tbody>
+  </tbody>
 </table>
 </div>
 
-                                                              **Per-Entry Memory (approximate, 64-bit system):**
+**Per-Entry Memory (approximate, 64-bit system):**
                                                               - HashMap entry: 32-48 bytes (key, value ref, hash, next)
                                                               - List node: 24-40 bytes (key copy, value, prev, next)
                                                               - Total: ~60-90 bytes per entry (varies by language/implementation)
 
-                                                              ---
+  ---
 
-                                                              ## Related Topics
+## Related Topics
 
                                                               - [[Hash Map]](/topic/data-structures/hash-map) - Underlying lookup structure
                                                               - [[Doubly Linked List]](/topic/data-structures/doubly-linked-list) - Underlying order structure
@@ -1480,9 +1480,9 @@ def remove(node):
                                                               - [[Redis]](/topic/system-design/redis) - Production cache implementation
                                                               - [[Caching Strategies]](/topic/system-design/caching) - Broader caching patterns
 
-                                                              ---
+  ---
 
-                                                              ## Summary
+## Summary
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #6ee7b7; border-radius: 12px; padding: 20px; margin: 20px 0;">
 <div style="font-weight: 600; color: #047857; font-size: 16px; margin-bottom: 12px;">Key Takeaways</div>

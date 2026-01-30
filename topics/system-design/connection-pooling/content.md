@@ -467,20 +467,20 @@ Connections can become "half-open" - the client believes the connection is alive
 <div>
 <strong style="color: #334155;">TCP Keepalive (OS Level)</strong>
 <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
-        # Linux - in /etc/sysctl.conf
-        net.ipv4.tcp_keepalive_time = 60
-        net.ipv4.tcp_keepalive_intvl = 10
+# Linux - in /etc/sysctl.conf
+  net.ipv4.tcp_keepalive_time = 60
+  net.ipv4.tcp_keepalive_intvl = 10
 net.ipv4.tcp_keepalive_probes = 6</pre>
 <p style="color: #64748b; font-size: 13px; margin-top: 8px;">Sends keepalive after 60s idle, retries every 10s, gives up after 6 failures (120s total)</p>
 </div>
 <div>
 <strong style="color: #334155;">Application Keepalive (Pool Level)</strong>
 <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
-        # HikariCP configuration
-        keepaliveTime: 30000  # 30 seconds
-        validationTimeout: 5000  # 5 seconds
+# HikariCP configuration
+  keepaliveTime: 30000  # 30 seconds
+  validationTimeout: 5000  # 5 seconds
 
-        # PgBouncer
+# PgBouncer
 server_idle_timeout = 60</pre>
 <p style="color: #64748b; font-size: 13px; margin-top: 8px;">Pool sends lightweight ping to keep connections alive and detect failures proactively</p>
 </div>
@@ -608,25 +608,25 @@ Pool exhaustion occurs when all connections are checked out and new requests can
 <div>
 <strong style="color: #334155;">HikariCP Leak Detection</strong>
 <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
-        # Warn if connection held > 60 seconds
-        leakDetectionThreshold: 60000
+# Warn if connection held > 60 seconds
+  leakDetectionThreshold: 60000
 
-        # Log output includes stack trace
-        # where connection was acquired:
-        # Connection leak detection triggered
-        # for connection ..., stack trace
+# Log output includes stack trace
+# where connection was acquired:
+# Connection leak detection triggered
+# for connection ..., stack trace
 # follows</pre>
 </div>
 <div>
 <strong style="color: #334155;">Application-Level Tracking</strong>
 <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
-        # Store checkout location
-        checkout_info = {
-        'thread': threading.current_thread(),
-        'stack': traceback.extract_stack(),
-        'time': time.time(),
-        'connection_id': conn.id
-        }
+# Store checkout location
+  checkout_info = {
+  'thread': threading.current_thread(),
+  'stack': traceback.extract_stack(),
+  'time': time.time(),
+  'connection_id': conn.id
+  }
 active_checkouts[conn.id] = checkout_info</pre>
 </div>
 </div>
@@ -678,11 +678,11 @@ active_checkouts[conn.id] = checkout_info</pre>
 <li><strong>Database-side verification</strong>: Query pg_stat_activity/information_schema.processlist to see actual connection states</li>
 </ol>
 <pre style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 12px; overflow-x: auto;">
-      -- PostgreSQL: Find long-running idle connections
-      SELECT pid, usename, application_name, state,
-      query_start, now() - query_start as duration
-      FROM pg_stat_activity
-      WHERE state = 'idle'
+  -- PostgreSQL: Find long-running idle connections
+  SELECT pid, usename, application_name, state,
+  query_start, now() - query_start as duration
+  FROM pg_stat_activity
+  WHERE state = 'idle'
 AND now() - query_start > interval '5 minutes';</pre>
 
 <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px;">
@@ -899,15 +899,15 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
 <div>
 <strong style="color: #1e293b;">Implementation Sketch:</strong>
 <pre style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto;">
-            public class TenantAwareDataSource extends AbstractRoutingDataSource {
-            @Override
-            protected Object determineCurrentLookupKey() {
-            return TenantContext.getCurrentTenant();
-            }
+  public class TenantAwareDataSource extends AbstractRoutingDataSource {
+  @Override
+  protected Object determineCurrentLookupKey() {
+  return TenantContext.getCurrentTenant();
+  }
 
-            // Lazy-initialize pools for new tenants
-            // Evict pools for inactive tenants after timeout
-            // Implement pool size limits per tenant tier
+  // Lazy-initialize pools for new tenants
+  // Evict pools for inactive tenants after timeout
+  // Implement pool size limits per tenant tier
 }</pre>
 </div>
 </div>
@@ -1487,29 +1487,29 @@ if metrics['utilization'] > 0.8:
 <strong style="color: #1e293b;">Creating Pool Per Request</strong>
 <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">The pool must be a singleton. Creating a new pool per request means creating new connections per request, negating all pooling benefits.</p>
 <pre style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #7f1d1d;">
-        # WRONG - creates pool every request
-        def handle_request():
-        pool = ConnectionPool(factory, config)  # New pool!
-        with pool.connection() as conn:
-        # ...
+# WRONG - creates pool every request
+  def handle_request():
+  pool = ConnectionPool(factory, config)  # New pool!
+  with pool.connection() as conn:
+# ...
 pool.close()  # Connections destroyed</pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
 <strong style="color: #1e293b;">Holding Connections During External Calls</strong>
 <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Never hold a database connection while calling external APIs, reading files, or doing compute. This ties up connections for non-database work.</p>
 <pre style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #7f1d1d;">
-        # WRONG - holds connection during HTTP call
-        with pool.connection() as conn:
-        user = fetch_user(conn, user_id)
-        enriched = call_external_api(user)  # 2s API call holding connection!
-        save_enriched(conn, enriched)
+# WRONG - holds connection during HTTP call
+  with pool.connection() as conn:
+  user = fetch_user(conn, user_id)
+  enriched = call_external_api(user)  # 2s API call holding connection!
+  save_enriched(conn, enriched)
 
-        # RIGHT - release between phases
-        user = None
-        with pool.connection() as conn:
-        user = fetch_user(conn, user_id)
-        enriched = call_external_api(user)  # No connection held
-        with pool.connection() as conn:
+# RIGHT - release between phases
+  user = None
+  with pool.connection() as conn:
+  user = fetch_user(conn, user_id)
+  enriched = call_external_api(user)  # No connection held
+  with pool.connection() as conn:
 save_enriched(conn, enriched)</pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #dc2626;">
@@ -1558,7 +1558,7 @@ save_enriched(conn, enriched)</pre>
 <div>
 <h5 style="color: #334155; margin-bottom: 12px;">Pool Sizing Formula</h5>
 <div style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 14px;">
-        pool_size = (cpu_cores * 2) + 1
+  pool_size = (cpu_cores * 2) + 1
 </div>
 <p style="color: #64748b; font-size: 13px; margin-top: 8px;">Example: 8-core database = 17 connections optimal</p>
 </div>

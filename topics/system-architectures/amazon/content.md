@@ -6,7 +6,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-  ### Core Requirements
+### Core Requirements
   - **Product Catalog**: Millions of products with categories, attributes, images
   - **Search & Discovery**: Full-text search, filters, recommendations
   - **Shopping Cart**: Persistent cart across sessions/devices
@@ -107,14 +107,14 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-          <!-- API Gateway -->
+  <!-- API Gateway -->
 <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
 <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth, Routing</span>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-            <!-- Microservices Layer -->
+  <!-- Microservices Layer -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
 <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">SERVICE MESH (Envoy/Istio)</div>
 
@@ -139,7 +139,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-                                <!-- Event Streaming Layer -->
+  <!-- Event Streaming Layer -->
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 16px; padding: 16px; width: 100%; max-width: 800px; text-align: center;">
 <strong style="color: #d97706;">MESSAGE BUS (Kafka)</strong>
 <div style="color: #475569; font-size: 12px; margin-top: 4px;">EVENT STREAMING LAYER</div>
@@ -147,7 +147,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-                                <!-- Data Layer -->
+  <!-- Data Layer -->
 <div style="background: #f1f5f9; border: 2px solid #7c3aed; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>DynamoDB</strong><br><span style="font-size: 11px;">(Catalog)</span></div>
@@ -163,31 +163,31 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                      ---
+  ---
 
-                                      ## Phase 1: Starting Phase (Low Budget)
+## Phase 1: Starting Phase (Low Budget)
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                          ### Assumptions
+### Assumptions
                                           - **Users**: 1,000 - 50,000 monthly active users
                                           - **Products**: 10,000 - 100,000 SKUs
                                           - **Orders**: 100 - 1,000 orders/day
                                           - **Budget**: $500 - $3,000/month
                                           - **Team**: 3-8 developers
 
-                                          ### Monolithic Architecture
+### Monolithic Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
-                                              <!-- Monolith Container -->
+  <!-- Monolith Container -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
 <h4 style="text-align: center; color: #1d4ed8; margin: 0 0 16px 0;">E-COMMERCE MONOLITH</h4>
 
-                                                <!-- Presentation Layer -->
+  <!-- Presentation Layer -->
 <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
 <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">PRESENTATION LAYER</div>
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
@@ -197,7 +197,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                      <!-- Business Logic Layer -->
+  <!-- Business Logic Layer -->
 <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
 <div style="text-align: center; color: #16a34a; font-weight: bold; margin-bottom: 12px;">BUSINESS LOGIC LAYER</div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
@@ -216,7 +216,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                      <!-- Data Access Layer -->
+  <!-- Data Access Layer -->
 <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
 <strong style="color: #7c3aed;">DATA ACCESS LAYER</strong><br>
 <span style="font-size: 12px; color: #475569;">(ORM: Django ORM / SQLAlchemy / TypeORM)</span>
@@ -225,7 +225,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
-                                                      <!-- Databases -->
+  <!-- Databases -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
 <strong>PostgreSQL</strong>
@@ -242,7 +242,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      #### Tech Stack
+#### Tech Stack
                                                       - **Backend**: Django/Rails/Laravel or Node.js
                                                       - **Database**: PostgreSQL (all data)
                                                       - **Cache**: Redis (sessions, cart)
@@ -251,7 +251,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
                                                       - **Payments**: Stripe/Razorpay integration
                                                       - **Hosting**: Single EC2 or Heroku
 
-                                                      #### Abstract Code Structure
+#### Abstract Code Structure
 
                                                       ```python
                                                       # Django-style monolith structure
@@ -326,7 +326,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
                                                       return order
                                                       ```
 
-                                                      ### Simple Microservices (Phase 1)
+### Simple Microservices (Phase 1)
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 <p style="color: #f0883e;"><strong>Not Recommended:</strong> At this scale, stick with monolith. If team insists:</p>
@@ -351,21 +351,21 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Phase 2: Medium User Phase
+## Phase 2: Medium User Phase
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                                      ### Assumptions
+### Assumptions
                                                       - **Users**: 500,000 - 5M monthly active users
                                                       - **Products**: 1M - 10M SKUs
                                                       - **Orders**: 10,000 - 100,000 orders/day
                                                       - **Budget**: $20,000 - $100,000/month
                                                       - **Team**: 20-50 developers
 
-                                                      ### Modular Monolith Architecture
+### Modular Monolith Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -401,7 +401,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### Microservices Architecture
+### Microservices Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">DOMAIN-DRIVEN MICROSERVICES</h4>
@@ -460,7 +460,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      #### Service Communication Patterns
+#### Service Communication Patterns
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0;">
 
@@ -487,21 +487,21 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Phase 3: High User Base Phase
+## Phase 3: High User Base Phase
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                                                      ### Assumptions
+### Assumptions
                                                       - **Users**: 300M+ monthly active users
                                                       - **Products**: 500M+ SKUs
                                                       - **Orders**: 10M+ orders/day (100K+/min peak)
                                                       - **Budget**: $5M+/month
                                                       - **Team**: 1000+ engineers
 
-                                                      ### Global Architecture
+### Global Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -548,7 +548,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### Data Partitioning Strategy
+### Data Partitioning Strategy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">SHARDING STRATEGIES</h4>
@@ -598,7 +598,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### Checkout Flow (High Scale)
+### Checkout Flow (High Scale)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">SAGA PATTERN FOR DISTRIBUTED CHECKOUT</h4>
@@ -653,7 +653,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### Recommendation Engine
+### Recommendation Engine
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -704,32 +704,32 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## AWS Technologies & Alternatives
+## AWS Technologies & Alternatives
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                                    | Component | AWS Service | Alternative | Trade-offs |
-                                                    |-----------|-------------|-------------|------------|
-                                                    | **Product Catalog** | DynamoDB | MongoDB Atlas | DynamoDB: Better scaling, MongoDB: Flexible queries |
-                                                    | **Orders DB** | Aurora PostgreSQL | CockroachDB | Aurora: AWS integration, Cockroach: Multi-region |
-                                                    | **Search** | OpenSearch | Algolia | OpenSearch: Control, Algolia: Managed + faster |
-                                                    | **Cache** | ElastiCache Redis | Redis Enterprise | ElastiCache: Managed, Enterprise: Better clustering |
-                                                    | **CDN** | CloudFront | Fastly | CloudFront: AWS integration, Fastly: Edge compute |
-                                                    | **Message Queue** | MSK (Kafka) | Confluent Cloud | MSK: Cost, Confluent: Features + support |
-                                                    | **Container** | EKS | GKE | EKS: AWS integration, GKE: Better K8s experience |
-                                                    | **Recommendations** | SageMaker | Vertex AI | SageMaker: AWS ecosystem, Vertex: AutoML |
+  | Component | AWS Service | Alternative | Trade-offs |
+  |-----------|-------------|-------------|------------|
+  | **Product Catalog** | DynamoDB | MongoDB Atlas | DynamoDB: Better scaling, MongoDB: Flexible queries |
+  | **Orders DB** | Aurora PostgreSQL | CockroachDB | Aurora: AWS integration, Cockroach: Multi-region |
+  | **Search** | OpenSearch | Algolia | OpenSearch: Control, Algolia: Managed + faster |
+  | **Cache** | ElastiCache Redis | Redis Enterprise | ElastiCache: Managed, Enterprise: Better clustering |
+  | **CDN** | CloudFront | Fastly | CloudFront: AWS integration, Fastly: Edge compute |
+  | **Message Queue** | MSK (Kafka) | Confluent Cloud | MSK: Cost, Confluent: Features + support |
+  | **Container** | EKS | GKE | EKS: AWS integration, GKE: Better K8s experience |
+  | **Recommendations** | SageMaker | Vertex AI | SageMaker: AWS ecosystem, Vertex: AutoML |
 
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Distributed Systems Considerations
+## Distributed Systems Considerations
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                                    ### 1. Inventory Consistency
+### 1. Inventory Consistency
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -756,7 +756,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                    ### 2. Cart Consistency Across Devices
+### 2. Cart Consistency Across Devices
 
                                                     ```
                                                     Device A                    Device B
@@ -775,7 +775,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
                                                     Strategy: Redis + WebSocket for real-time sync
                                                     ```
 
-                                                    ### 3. Search Index Consistency
+### 3. Search Index Consistency
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
@@ -793,7 +793,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                    ### 4. Rate Limiting Strategy
+### 4. Rate Limiting Strategy
 
                                                     ```
                                                     ┌─────────────────────────────────────────────────────┐
@@ -811,19 +811,19 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Interview Deep Dive Questions
+## Interview Deep Dive Questions
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-                                                    Interviewers use these probing questions to test your depth of understanding. Here are the questions, what they're really probing, and how to answer effectively.
+  Interviewers use these probing questions to test your depth of understanding. Here are the questions, what they're really probing, and how to answer effectively.
 
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                                    ### 1. "Why DynamoDB for cart instead of Redis?"
+### 1. "Why DynamoDB for cart instead of Redis?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -848,9 +848,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 <p style="color: #8b949e; font-size: 13px; margin: 0;">"At < 10K DAU, Redis with AOF persistence is fine. Cart loss is annoying but not catastrophic. You can even use PostgreSQL with a `carts` table - it handles 1000s of concurrent carts easily."</p>
 </div>
 
-                                                    ---
+  ---
 
-                                                    ### 2. "How do you prevent overselling during flash sales?"
+### 2. "How do you prevent overselling during flash sales?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -875,9 +875,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 <p style="color: #8b949e; font-size: 13px; margin: 0;">"At 1000 orders/day, PostgreSQL `SELECT FOR UPDATE` with a short transaction is sufficient. You won't hit lock contention. Even simpler: just let occasional oversells happen and handle via customer service - it's cheaper than engineering complexity."</p>
 </div>
 
-                                                    ---
+  ---
 
-                                                    ### 3. "Why not just use PostgreSQL for everything?"
+### 3. "Why not just use PostgreSQL for everything?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -902,9 +902,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 <p style="color: #8b949e; font-size: 13px; margin: 0;">"Under 1M products and 100K users, PostgreSQL handles everything beautifully. Use JSONB columns for flexible product attributes, `tsvector` for search, and you're set for years. I've seen $10M/year e-commerce sites run on a single well-tuned PostgreSQL instance."</p>
 </div>
 
-                                                    ---
+  ---
 
-                                                    ### 4. "How would you handle Prime Day traffic (100x spike)?"
+### 4. "How would you handle Prime Day traffic (100x spike)?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -929,9 +929,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 <p style="color: #8b949e; font-size: 13px; margin: 0;">"For a 10x spike (typical holiday rush for SMB e-commerce), just over-provision 3x during sale period. A $200/month server becoming $600/month for a week is nothing compared to engineering complexity. Use Cloudflare in front for DDoS and caching."</p>
 </div>
 
-                                                    ---
+  ---
 
-                                                    ### 5. "Why Kafka for order events instead of SQS?"
+### 5. "Why Kafka for order events instead of SQS?"
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0;">
 
@@ -958,33 +958,33 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Why This Technology?
+## Why This Technology?
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-                                                    Understanding **why** specific technologies are chosen demonstrates architectural maturity. Interviewers want to see you can reason about trade-offs, not just list technologies.
+  Understanding **why** specific technologies are chosen demonstrates architectural maturity. Interviewers want to see you can reason about trade-offs, not just list technologies.
 
 </div>
 
-                                                  ### Decision Matrix
+### Decision Matrix
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto;">
 
-                                                    | Component | Technology | Why This? | Alternative | When Alternative Wins |
-                                                    |-----------|------------|-----------|-------------|----------------------|
-                                                    | **Product Catalog** | DynamoDB | Single-digit ms at any scale, flexible schema per category, auto-sharding | MongoDB | Need complex queries, aggregations, or $lookup joins |
-                                                    | **Orders** | Aurora PostgreSQL | ACID for money, complex reporting queries, familiar SQL | CockroachDB | Multi-region active-active writes required |
-                                                    | **Cart** | DynamoDB + Redis | Durability (DynamoDB) + Speed (Redis cache) | Redis only | Cart loss acceptable, < 50K users |
-                                                    | **Search** | OpenSearch | Full-text, facets, relevance tuning, integrates with product catalog | Algolia | Need instant search, smaller catalog < 1M |
-                                                    | **CDN** | CloudFront | AWS integration, Lambda@Edge, cost-effective | Fastly | Need edge compute, real-time purging |
-                                                    | **Events** | Kafka (MSK) | Event replay, multiple consumers, high throughput | SQS | Simple queue needed, no replay requirement |
-                                                    | **Cache** | ElastiCache Redis | Sub-ms latency, rich data structures, pub/sub | Memcached | Simple key-value only, multi-threaded needed |
+  | Component | Technology | Why This? | Alternative | When Alternative Wins |
+  |-----------|------------|-----------|-------------|----------------------|
+  | **Product Catalog** | DynamoDB | Single-digit ms at any scale, flexible schema per category, auto-sharding | MongoDB | Need complex queries, aggregations, or $lookup joins |
+  | **Orders** | Aurora PostgreSQL | ACID for money, complex reporting queries, familiar SQL | CockroachDB | Multi-region active-active writes required |
+  | **Cart** | DynamoDB + Redis | Durability (DynamoDB) + Speed (Redis cache) | Redis only | Cart loss acceptable, < 50K users |
+  | **Search** | OpenSearch | Full-text, facets, relevance tuning, integrates with product catalog | Algolia | Need instant search, smaller catalog < 1M |
+  | **CDN** | CloudFront | AWS integration, Lambda@Edge, cost-effective | Fastly | Need edge compute, real-time purging |
+  | **Events** | Kafka (MSK) | Event replay, multiple consumers, high throughput | SQS | Simple queue needed, no replay requirement |
+  | **Cache** | ElastiCache Redis | Sub-ms latency, rich data structures, pub/sub | Memcached | Simple key-value only, multi-threaded needed |
 
 </div>
 
-                                                  ### Deep Dive: Critical Decisions
+### Deep Dive: Critical Decisions
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
 
@@ -1110,9 +1110,9 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## When Simpler Solutions Work
+## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
@@ -1143,11 +1143,11 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### When MongoDB Alone is Enough
+### When MongoDB Alone is Enough
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 
-                                                        **Use MongoDB as your single database when:**
+**Use MongoDB as your single database when:**
                                                         - < 100K products with variable attributes
                                                         - < 5K orders/day (MongoDB transactions work fine)
                                                         - Need flexible schema for product variations
@@ -1174,11 +1174,11 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### When You Don't Need Elasticsearch
+### When You Don't Need Elasticsearch
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 
-                                                        **PostgreSQL full-text search handles:**
+**PostgreSQL full-text search handles:**
                                                         - < 1M products easily
                                                         - Basic text search with ranking
                                                         - Category filtering with GIN indexes
@@ -1203,7 +1203,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
                                                         -- This handles 90% of e-commerce search use cases
                                                         ```
 
-                                                        **Only add Elasticsearch when you need:**
+**Only add Elasticsearch when you need:**
                                                         - Fuzzy matching and typo tolerance
                                                         - Complex faceted navigation (10+ filters)
                                                         - Real-time search suggestions
@@ -1211,24 +1211,24 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 </div>
 
-                                                      ### Simpler Alternatives Table
+### Simpler Alternatives Table
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-                                                        | Complex Solution | Simpler Alternative | Use Simpler When |
-                                                        |-----------------|---------------------|------------------|
-                                                        | **Kafka + multiple services** | SQS + Lambda | < 10K orders/day, no event replay needed |
-                                                        | **DynamoDB + OpenSearch** | PostgreSQL + pg_trgm | < 1M products, < 100K DAU |
-                                                        | **Microservices** | Modular monolith | < 20 developers, single deployment unit OK |
-                                                        | **Redis cluster** | Single Redis instance | < 50K concurrent users, < 100GB cache |
-                                                        | **Kubernetes (EKS)** | ECS or even EC2 + Docker Compose | < 10 services, predictable load |
-                                                        | **Aurora Global** | Aurora single-region + read replicas | Users in one geography |
-                                                        | **Custom ML recommendations** | Algolia Recommend or simple "also bought" | < 100K products |
-                                                        | **Event sourcing** | Simple CRUD with audit log | Don't need to replay history |
+  | Complex Solution | Simpler Alternative | Use Simpler When |
+  |-----------------|---------------------|------------------|
+  | **Kafka + multiple services** | SQS + Lambda | < 10K orders/day, no event replay needed |
+  | **DynamoDB + OpenSearch** | PostgreSQL + pg_trgm | < 1M products, < 100K DAU |
+  | **Microservices** | Modular monolith | < 20 developers, single deployment unit OK |
+  | **Redis cluster** | Single Redis instance | < 50K concurrent users, < 100GB cache |
+  | **Kubernetes (EKS)** | ECS or even EC2 + Docker Compose | < 10 services, predictable load |
+  | **Aurora Global** | Aurora single-region + read replicas | Users in one geography |
+  | **Custom ML recommendations** | Algolia Recommend or simple "also bought" | < 100K products |
+  | **Event sourcing** | Simple CRUD with audit log | Don't need to replay history |
 
 </div>
 
-                                                      ### Scale Thresholds - When to Upgrade
+### Scale Thresholds - When to Upgrade
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1267,13 +1267,13 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Trade-off Analysis & Mitigation
+## Trade-off Analysis & Mitigation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                                    Every architectural decision has costs. Here's how to acknowledge and manage them.
+  Every architectural decision has costs. Here's how to acknowledge and manage them.
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin: 20px 0;">
 
@@ -1364,22 +1364,22 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Interview Tips
+## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                    ### Key Discussion Points
+### Key Discussion Points
 
-                                                    1. **Start with requirements clarification** - Is this B2C or B2B? What's the product type? What geography?
-                                                    2. **State your scale assumptions explicitly** - "I'm designing for 10M DAU, 500M products"
-                                                    3. **Discuss trade-offs proactively** - "DynamoDB gives us latency but costs us query flexibility"
-                                                    4. **Address hot partitions** - Popular products need caching strategies
-                                                    5. **Payment reliability** - Idempotency, exactly-once semantics, PCI compliance
-                                                    6. **Search relevance** - How to rank products, personalization, handling typos
+  1. **Start with requirements clarification** - Is this B2C or B2B? What's the product type? What geography?
+  2. **State your scale assumptions explicitly** - "I'm designing for 10M DAU, 500M products"
+  3. **Discuss trade-offs proactively** - "DynamoDB gives us latency but costs us query flexibility"
+  4. **Address hot partitions** - Popular products need caching strategies
+  5. **Payment reliability** - Idempotency, exactly-once semantics, PCI compliance
+  6. **Search relevance** - How to rank products, personalization, handling typos
 
-                                                    ### Common Follow-ups
+### Common Follow-ups
 
                                                     - How would you handle Prime Day traffic (100x spike)?
                                                     - How do you ensure inventory accuracy across warehouses?
@@ -1427,7 +1427,7 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                                                    ### The Perfect Interview Flow
+### The Perfect Interview Flow
 
                                                     ```
                                                     1. CLARIFY (2-3 min)

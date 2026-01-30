@@ -351,8 +351,8 @@ class BloomOptimizedShortener:
 <div>hash(url + "2") -> success</div>
 </div>
 <div style="color: #fff; font-size: 12px; margin-top: 12px;">
-        Pros: Simple, deterministic<br/>
-        Cons: Clustering, predictable
+  Pros: Simple, deterministic<br/>
+  Cons: Clustering, predictable
 </div>
 </div>
 
@@ -364,8 +364,8 @@ class BloomOptimizedShortener:
 <div>random_code() -> success</div>
 </div>
 <div style="color: #fff; font-size: 12px; margin-top: 12px;">
-        Pros: No clustering, unpredictable<br/>
-        Cons: Non-deterministic, can't dedupe
+  Pros: No clustering, unpredictable<br/>
+  Cons: Non-deterministic, can't dedupe
 </div>
 </div>
 
@@ -377,8 +377,8 @@ class BloomOptimizedShortener:
 <div>(increases code length)</div>
 </div>
 <div style="color: #fff; font-size: 12px; margin-top: 12px;">
-        Pros: Eventually succeeds<br/>
-        Cons: Inconsistent code lengths
+  Pros: Eventually succeeds<br/>
+  Cons: Inconsistent code lengths
 </div>
 </div>
 
@@ -914,7 +914,7 @@ class ULIDGenerator:
 </div>
 </div>
 
-  ### Implementation: Custom Alias Validator
+### Implementation: Custom Alias Validator
 
 ```python
 import re
@@ -1037,7 +1037,7 @@ class CustomAliasValidator:
         return False
 ```
 
-  ### Namespace Separation Strategy
+### Namespace Separation Strategy
 
 <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
@@ -1288,63 +1288,63 @@ class CustomDomainManager:
 
   **Level 1**: How would you implement custom short code (vanity URL) support?
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      Custom aliases require additional validation beyond auto-generated codes:
+  Custom aliases require additional validation beyond auto-generated codes:
 
-      1. **Validation layer**: Check length (min 4 chars), allowed characters (alphanumeric, hyphens, underscores), reserved words, offensive content
-      2. **Namespace separation**: Ensure custom aliases don't conflict with auto-generated codes (e.g., require hyphens or different lengths)
-      3. **Uniqueness check**: Query database before creation, handle race conditions with unique constraints
-      4. **Normalization**: Convert to lowercase for case-insensitive matching
+  1. **Validation layer**: Check length (min 4 chars), allowed characters (alphanumeric, hyphens, underscores), reserved words, offensive content
+  2. **Namespace separation**: Ensure custom aliases don't conflict with auto-generated codes (e.g., require hyphens or different lengths)
+  3. **Uniqueness check**: Query database before creation, handle race conditions with unique constraints
+  4. **Normalization**: Convert to lowercase for case-insensitive matching
 
 The key trade-off is between <span style="color:#22c55e;font-weight:bold">user flexibility</span> (allowing many formats) and <span style="color:#22c55e;font-weight:bold">system simplicity</span> (predictable URL structure).
 
 </div>
-  </details>
+</details>
 
   **Level 2**: Your custom alias system allows users to create any alias. An attacker creates aliases like `login`, `admin`, `api` - all linking to phishing sites. How would you prevent this while maintaining a good user experience?
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      Multi-layered defense strategy:
+  Multi-layered defense strategy:
 
-      1. **Reserved word blocklist**: Maintain a comprehensive list of system routes, common phishing targets (`paypal`, `google`, `amazon`), and technical terms (`null`, `undefined`)
+  1. **Reserved word blocklist**: Maintain a comprehensive list of system routes, common phishing targets (`paypal`, `google`, `amazon`), and technical terms (`null`, `undefined`)
 
-      2. **Trademark protection**:
+  2. **Trademark protection**:
       - Partner with brand protection services
       - Require verification for brand names
       - Implement [[DMCA takedown process]](/topics/legal/dmca-compliance)
 
-      3. **Proactive scanning**:
+  3. **Proactive scanning**:
       - Scan destination URLs against [[Safe Browsing API]](/topics/security/safe-browsing)
       - Monitor click patterns for phishing indicators
       - Machine learning on URL features
 
-      4. **Tiered access**:
+  4. **Tiered access**:
       - Free users: limited to lowercase alphanumeric
       - Verified accounts: expanded character set
       - Enterprise: brand protection included
 
-      5. **Reputation system**: New accounts have alias restrictions lifted gradually based on behavior.
+  5. **Reputation system**: New accounts have alias restrictions lifted gradually based on behavior.
 
-      The trade-off: Too restrictive blocks legitimate use cases. Consider implementing an appeal process and manual review queue for edge cases.
+  The trade-off: Too restrictive blocks legitimate use cases. Consider implementing an appeal process and manual review queue for edge cases.
 
 </div>
-  </details>
+</details>
 
   **Level 3**: Design a custom alias system that (a) allows millions of users to create aliases concurrently, (b) prevents race conditions where two users try to claim the same alias simultaneously, (c) provides instant feedback on alias availability as users type, and (d) handles the case where a user's session crashes between checking availability and confirming creation. Consider the distributed systems implications across multiple data centers.
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      **Architecture for concurrent alias creation at scale:**
+**Architecture for concurrent alias creation at scale:**
 
-      1. **Real-time availability check (debounced, 200ms)**:
+  1. **Real-time availability check (debounced, 200ms)**:
       ```
       User types -> Debounce -> Check Bloom filter (local)
       -> If "maybe exists": check Redis (regional)
@@ -1354,7 +1354,7 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
       - Regional Redis cache reduces cross-region latency
       - Accept false positives (say unavailable when actually available) over false negatives
 
-      2. **Reservation system with TTL**:
+  2. **Reservation system with TTL**:
       ```python
       async def reserve_alias(alias: str, user_id: str) -> bool:
       # Atomic reservation with 5-minute TTL
@@ -1370,7 +1370,7 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
       - Reservation auto-expires if abandoned
       - Prevents squatting during checkout flow
 
-      3. **Distributed race condition handling**:
+  3. **Distributed race condition handling**:
       ```python
       async def create_alias(alias: str, user_id: str, url: str) -> bool:
       # Check reservation ownership
@@ -1396,20 +1396,20 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
       return True
       ```
 
-      4. **Multi-region consistency**:
+  4. **Multi-region consistency**:
       - Use [[CRDTs]](/topics/system-design/crdts) for Bloom filter synchronization
       - Primary region owns alias creation (consistent hashing by first char)
       - [[Cross-region replication]](/topics/system-design/replication) with conflict resolution (first-write-wins based on vector clock)
 
-      5. **Session crash recovery**:
+  5. **Session crash recovery**:
       - Reservation TTL ensures automatic cleanup
       - If user had completed payment but session crashed: reconciliation job checks for "orphaned payments" and completes registration
       - Idempotency keys prevent double-creation on retry
 
-      **Key insight**: The system is eventually consistent for reads (Bloom filter may lag) but strongly consistent for writes (database unique constraint is the source of truth). This matches user expectations: instant feedback is "best effort," but actual creation is guaranteed unique.
+**Key insight**: The system is eventually consistent for reads (Bloom filter may lag) but strongly consistent for writes (database unique constraint is the source of truth). This matches user expectations: instant feedback is "best effort," but actual creation is guaranteed unique.
 
 </div>
-  </details>
+</details>
 
 </div>
 
@@ -1417,31 +1417,31 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
 
   **Level 1**: Should custom aliases be case-sensitive or case-insensitive?
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      **Case-insensitive is the better choice** for custom aliases:
+**Case-insensitive is the better choice** for custom aliases:
 
-      1. **User experience**: Users typing from memory often get case wrong
-      2. **Verbal sharing**: "go to short dot url slash My-Brand" - ambiguous capitalization
-      3. **Email clients**: Some lowercase all URLs
-      4. **Consistency**: `MyBrand`, `mybrand`, `MYBRAND` should all work
+  1. **User experience**: Users typing from memory often get case wrong
+  2. **Verbal sharing**: "go to short dot url slash My-Brand" - ambiguous capitalization
+  3. **Email clients**: Some lowercase all URLs
+  4. **Consistency**: `MyBrand`, `mybrand`, `MYBRAND` should all work
 
-      Implementation: Normalize to lowercase at creation time, store lowercase, query lowercase.
+  Implementation: Normalize to lowercase at creation time, store lowercase, query lowercase.
 
-      Trade-off: Reduces namespace by ~26x (since A-Z collapse to a-z), but for human-readable aliases this is acceptable.
+  Trade-off: Reduces namespace by ~26x (since A-Z collapse to a-z), but for human-readable aliases this is acceptable.
 
 </div>
-  </details>
+</details>
 
   **Level 2**: Your marketing team wants case-sensitivity preserved for display purposes (showing `MyBrand` in analytics) while maintaining case-insensitive matching. How would you implement this?
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      **Dual-storage approach:**
+**Dual-storage approach:**
 
       ```sql
       CREATE TABLE custom_aliases (
@@ -1474,33 +1474,33 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
       """, alias.lower())
       ```
 
-      Cache key uses normalized form; cache value includes display form for analytics.
+  Cache key uses normalized form; cache value includes display form for analytics.
 
 </div>
-  </details>
+</details>
 
   **Level 3**: You've implemented case-insensitive custom aliases. Now a premium customer complains: they created `GitHub-Repo` but a competitor later created `github-repo` (normalized to same value) and your system rejected it. The competitor argues they should have access to the lowercase version. Design a policy and technical system that fairly resolves such conflicts, considers trademark implications, and scales to millions of aliases without requiring manual review for every case.
 
-  <details style="margin-top: 12px;">
-    <summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
+<details style="margin-top: 12px;">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500;">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7;">
 
-      **Policy Framework:**
+**Policy Framework:**
 
-      1. **First-come-first-served for normalized form**: Whoever creates any case variant first owns the normalized namespace. This is simple, predictable, and legally defensible.
+  1. **First-come-first-served for normalized form**: Whoever creates any case variant first owns the normalized namespace. This is simple, predictable, and legally defensible.
 
-      2. **Trademark override process**:
+  2. **Trademark override process**:
       - Trademark holder can file claim with documentation
       - System flags alias for review
       - If legitimate, transfer ownership (with notification to original creator)
       - Time limit: claims must be filed within 30 days of creation
 
-      3. **Preventive measures**:
+  3. **Preventive measures**:
       - Known trademark database check at creation time
       - Require verification for exact trademark matches
       - Warning message: "This alias may conflict with existing trademarks"
 
-      **Technical Implementation:**
+**Technical Implementation:**
 
       ```python
       @dataclass
@@ -1582,18 +1582,18 @@ The key trade-off is between <span style="color:#22c55e;font-weight:bold">user f
       await self.mark_generic_term(claim.alias)
       ```
 
-      **ML-Assisted Review Queue:**
+**ML-Assisted Review Queue:**
       - Auto-approve: Exact match to registered trademark + claimant is trademark registrant
       - Auto-reject: No trademark registration + alias existed 30+ days
       - Human review: Everything else, prioritized by trademark class and alias popularity
 
-      **Scaling considerations:**
+**Scaling considerations:**
       - 99% of aliases never disputed (auto-handled by first-come policy)
       - ~0.9% rejected automatically (no trademark registration)
       - ~0.1% require human review (O(thousands/year) at scale, manageable)
 
 </div>
-  </details>
+</details>
 
 </div>
 
@@ -1646,7 +1646,7 @@ Redirect status codes fundamentally affect your analytics capabilities.
 
 </div>
 
-          ### Multi-Dimensional Analytics Data Model
+### Multi-Dimensional Analytics Data Model
 
 ```python
 from dataclasses import dataclass, field
@@ -1732,7 +1732,7 @@ class URLAnalytics:
     hourly_clicks: List[int] = field(default_factory=list)
 ```
 
-          ### Real-Time vs. Batch Analytics Pipeline
+### Real-Time vs. Batch Analytics Pipeline
 
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 

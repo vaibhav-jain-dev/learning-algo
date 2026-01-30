@@ -6,7 +6,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff4500;">
 
-  ### Core Requirements
+### Core Requirements
   - **Subreddits**: Community creation and management
   - **Posts**: Text, links, images, videos with voting
   - **Comments**: Threaded discussions with voting
@@ -47,14 +47,14 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
-          <!-- API Gateway -->
+  <!-- API Gateway -->
 <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
 <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth</span>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
-            <!-- Services Layer -->
+  <!-- Services Layer -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
 <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Post</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
@@ -70,7 +70,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
-                        <!-- Data Layer -->
+  <!-- Data Layer -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
 <strong>PostgreSQL</strong><br><span style="font-size: 11px;">(Data)</span>
@@ -87,30 +87,30 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                          ---
+  ---
 
-                          ## Phase 1: Starting Phase (Low Budget)
+## Phase 1: Starting Phase (Low Budget)
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                              ### Assumptions
+### Assumptions
                               - **Users**: 10,000 - 100,000 monthly active
                               - **Posts**: 10,000 posts/day
                               - **Comments**: 50,000 comments/day
                               - **Budget**: $500 - $2,000/month
 
-                              ### Monolithic Architecture
+### Monolithic Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 
-                                  <!-- Monolith Container -->
+  <!-- Monolith Container -->
 <div style="background: #f1f5f9; border: 2px solid #ff4500; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
 <h4 style="text-align: center; color: #dc2626; margin: 0 0 16px 0;">REDDIT MONOLITH</h4>
 
-                                    <!-- Modules Layer -->
+  <!-- Modules Layer -->
 <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
 <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 12px;">MODULES</div>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
@@ -127,7 +127,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 </div>
 </div>
 
-                                    <!-- Data Access Layer -->
+  <!-- Data Access Layer -->
 <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
 <strong style="color: #7c3aed;">DATA ACCESS</strong>
 </div>
@@ -135,7 +135,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
-                                  <!-- Databases -->
+  <!-- Databases -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
 <strong>PostgreSQL</strong>
@@ -152,7 +152,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                              #### Data Model
+#### Data Model
 
                               ```sql
                               -- Core Tables
@@ -199,7 +199,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
                               );
                               ```
 
-                              #### Abstract Code
+#### Abstract Code
 
                               ```python
                               class VotingService:
@@ -248,20 +248,20 @@ Design a social news aggregation and discussion platform like Reddit with subred
 </div>
 </div>
 
-                          ---
+  ---
 
-                          ## Phase 2: Medium User Phase
+## Phase 2: Medium User Phase
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                              ### Assumptions
+### Assumptions
                               - **Users**: 5M - 50M monthly active
                               - **Posts**: 500K posts/day
                               - **Votes**: 50M votes/day
                               - **Budget**: $50,000 - $200,000/month
 
-                              ### Microservices Architecture
+### Microservices Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
@@ -302,7 +302,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                              ### Feed Generation
+### Feed Generation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">FEED RANKING ALGORITHM</h4>
@@ -368,7 +368,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                              ### Comment Threading
+### Comment Threading
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -431,20 +431,20 @@ Design a social news aggregation and discussion platform like Reddit with subred
 </div>
 </div>
 
-                          ---
+  ---
 
-                          ## Phase 3: High User Base Phase
+## Phase 3: High User Base Phase
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                              ### Assumptions
+### Assumptions
                               - **Users**: 500M+ monthly active
                               - **Posts**: 10M posts/day
                               - **Votes**: 2B votes/day
                               - **Budget**: $5M+/month
 
-                              ### Global Architecture
+### Global Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -487,7 +487,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                              ### Vote Aggregation at Scale
+### Vote Aggregation at Scale
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HIGH-THROUGHPUT VOTING SYSTEM</h4>
@@ -582,30 +582,30 @@ Design a social news aggregation and discussion platform like Reddit with subred
 </div>
 </div>
 
-                          ---
+  ---
 
-                          ## AWS Technologies & Alternatives
+## AWS Technologies & Alternatives
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                            | Component | AWS Service | Alternative | Trade-offs |
-                            |-----------|-------------|-------------|------------|
-                            | **Posts/Comments DB** | Aurora PostgreSQL | CockroachDB | Aurora: Managed, Cockroach: Multi-region native |
-                            | **Vote Storage** | DynamoDB | Cassandra | DynamoDB: Simpler, Cassandra: Better write throughput |
-                            | **Cache** | ElastiCache Redis | Redis Enterprise | ElastiCache: Managed, Enterprise: Multi-active |
-                            | **Feed Storage** | ElastiCache + DynamoDB | Cassandra | DynamoDB: Less ops, Cassandra: Better for time-series |
-                            | **Search** | OpenSearch | Algolia | OpenSearch: Control, Algolia: Better relevance |
-                            | **Media** | S3 + CloudFront | Cloudflare R2 | S3: Ecosystem, R2: No egress fees |
+  | Component | AWS Service | Alternative | Trade-offs |
+  |-----------|-------------|-------------|------------|
+  | **Posts/Comments DB** | Aurora PostgreSQL | CockroachDB | Aurora: Managed, Cockroach: Multi-region native |
+  | **Vote Storage** | DynamoDB | Cassandra | DynamoDB: Simpler, Cassandra: Better write throughput |
+  | **Cache** | ElastiCache Redis | Redis Enterprise | ElastiCache: Managed, Enterprise: Multi-active |
+  | **Feed Storage** | ElastiCache + DynamoDB | Cassandra | DynamoDB: Less ops, Cassandra: Better for time-series |
+  | **Search** | OpenSearch | Algolia | OpenSearch: Control, Algolia: Better relevance |
+  | **Media** | S3 + CloudFront | Cloudflare R2 | S3: Ecosystem, R2: No egress fees |
 
 </div>
 
-                          ---
+  ---
 
-                          ## Distributed Systems Considerations
+## Distributed Systems Considerations
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                            ### 1. Vote Consistency
+### 1. Vote Consistency
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
@@ -630,7 +630,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                            ### 2. Hot Posts Problem
+### 2. Hot Posts Problem
 
                             ```
                             Scenario: Viral post with 100K comments/minute
@@ -659,7 +659,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
                             └─────────────────────────────────────────┘
                             ```
 
-                            ### 3. Subreddit Sharding
+### 3. Subreddit Sharding
 
                             ```python
                             # Consistent hashing for subreddit sharding
@@ -679,106 +679,106 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                          ---
+  ---
 
-                          ## Interview Deep Dive Questions
+## Interview Deep Dive Questions
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff4500;">
 
-                            ### 1. "Why not show real-time vote counts?"
+### 1. "Why not show real-time vote counts?"
 
 <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **What They're Probing**: Understanding of eventual consistency trade-offs, performance at scale, and user experience pragmatism.
+**What They're Probing**: Understanding of eventual consistency trade-offs, performance at scale, and user experience pragmatism.
 
-                              **Strong Answer**:
-                              > "Real-time vote counts at Reddit's scale (2B votes/day) would require synchronous writes and invalidation across all cache layers for every vote. The user doesn't actually need millisecond accuracy - seeing '1.2k upvotes' vs '1,247 upvotes' doesn't change behavior. We can batch vote aggregations every 100ms, giving us 10x write throughput while maintaining a 'feels real-time' experience. The key insight is that votes are high-write, low-consistency-requirement data - perfect for eventual consistency."
+**Strong Answer**:
+  > "Real-time vote counts at Reddit's scale (2B votes/day) would require synchronous writes and invalidation across all cache layers for every vote. The user doesn't actually need millisecond accuracy - seeing '1.2k upvotes' vs '1,247 upvotes' doesn't change behavior. We can batch vote aggregations every 100ms, giving us 10x write throughput while maintaining a 'feels real-time' experience. The key insight is that votes are high-write, low-consistency-requirement data - perfect for eventual consistency."
 
-                              **When Simpler Works**:
-                              > "At 10K users, store vote counts directly in the post row. A PostgreSQL `UPDATE posts SET score = score + 1` with row-level locking handles hundreds of concurrent votes fine. Add Redis caching when you hit 1000+ votes/second on hot posts."
+**When Simpler Works**:
+  > "At 10K users, store vote counts directly in the post row. A PostgreSQL `UPDATE posts SET score = score + 1` with row-level locking handles hundreds of concurrent votes fine. Add Redis caching when you hit 1000+ votes/second on hot posts."
 
 </div>
 
-                            ### 2. "How does the hot ranking algorithm actually work?"
+### 2. "How does the hot ranking algorithm actually work?"
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **What They're Probing**: Algorithm design thinking, understanding of decay functions, and ability to explain complex math simply.
+**What They're Probing**: Algorithm design thinking, understanding of decay functions, and ability to explain complex math simply.
 
-                              **Strong Answer**:
-                              > "Reddit's hot score combines logarithmic vote scaling with linear time decay. The formula `log10(score) + (timestamp / 45000)` means a post needs 10x more votes to overcome 12.5 hours of age. This creates natural content cycling - viral content rises fast but decays predictably. The logarithm prevents vote brigading from dominating (10,000 votes isn't 10x better than 1,000). I'd precompute hot scores on write, store in a sorted set, and recalculate periodically for older posts."
+**Strong Answer**:
+  > "Reddit's hot score combines logarithmic vote scaling with linear time decay. The formula `log10(score) + (timestamp / 45000)` means a post needs 10x more votes to overcome 12.5 hours of age. This creates natural content cycling - viral content rises fast but decays predictably. The logarithm prevents vote brigading from dominating (10,000 votes isn't 10x better than 1,000). I'd precompute hot scores on write, store in a sorted set, and recalculate periodically for older posts."
 
-                              **When Simpler Works**:
-                              > "For a small community forum, `ORDER BY (upvotes - downvotes) * 0.5 + EXTRACT(EPOCH FROM created_at) / 86400` gives you decent hot ranking. Add a materialized view refreshed every 5 minutes. No Kafka, no precomputation needed until you're generating 10K+ posts/day."
+**When Simpler Works**:
+  > "For a small community forum, `ORDER BY (upvotes - downvotes) * 0.5 + EXTRACT(EPOCH FROM created_at) / 86400` gives you decent hot ranking. Add a materialized view refreshed every 5 minutes. No Kafka, no precomputation needed until you're generating 10K+ posts/day."
 
 </div>
 
-                            ### 3. "Why separate read and write paths for voting?"
+### 3. "Why separate read and write paths for voting?"
 
 <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **What They're Probing**: CQRS understanding, performance optimization strategies, and recognizing when complexity pays off.
+**What They're Probing**: CQRS understanding, performance optimization strategies, and recognizing when complexity pays off.
 
-                              **Strong Answer**:
-                              > "Votes have asymmetric read/write patterns: writes are bursty (viral posts), reads are constant (every page view shows scores). CQRS lets us optimize each path independently. Writes go to Kafka for buffering and batch processing - we can absorb 100K vote spikes without database pressure. Reads come from Redis with eventual consistency. The separation also enables different scaling: add more Kafka partitions for write throughput, add Redis replicas for read capacity. The key is the write path updates the read model asynchronously."
+**Strong Answer**:
+  > "Votes have asymmetric read/write patterns: writes are bursty (viral posts), reads are constant (every page view shows scores). CQRS lets us optimize each path independently. Writes go to Kafka for buffering and batch processing - we can absorb 100K vote spikes without database pressure. Reads come from Redis with eventual consistency. The separation also enables different scaling: add more Kafka partitions for write throughput, add Redis replicas for read capacity. The key is the write path updates the read model asynchronously."
 
-                              **When Simpler Works**:
-                              > "Below 1M monthly users, a single PostgreSQL instance handles both paths. Use `SELECT ... FOR UPDATE SKIP LOCKED` for vote deduplication, and application-level caching with a 30-second TTL. The complexity of CQRS adds operational overhead that isn't worth it until you're seeing clear database contention."
+**When Simpler Works**:
+  > "Below 1M monthly users, a single PostgreSQL instance handles both paths. Use `SELECT ... FOR UPDATE SKIP LOCKED` for vote deduplication, and application-level caching with a 30-second TTL. The complexity of CQRS adds operational overhead that isn't worth it until you're seeing clear database contention."
 
 </div>
 
-                            ### 4. "How do you handle the 'thundering herd' on viral posts?"
+### 4. "How do you handle the 'thundering herd' on viral posts?"
 
 <div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **What They're Probing**: Cache stampede prevention, rate limiting strategies, and graceful degradation thinking.
+**What They're Probing**: Cache stampede prevention, rate limiting strategies, and graceful degradation thinking.
 
-                              **Strong Answer**:
-                              > "Three-layer defense: First, probabilistic cache refresh - instead of all requests hitting DB when cache expires, use `if random() < 0.01 and ttl < 10s: refresh_async()`. Second, request coalescing - use a distributed lock so only one request fetches from DB while others wait on the same promise. Third, stale-while-revalidate - serve slightly stale data while refreshing in background. For truly viral posts (100K+ concurrent), we circuit-break to sampling mode: show top 200 comments only, disable real-time updates, and use edge caching with 30-second TTL."
+**Strong Answer**:
+  > "Three-layer defense: First, probabilistic cache refresh - instead of all requests hitting DB when cache expires, use `if random() < 0.01 and ttl < 10s: refresh_async()`. Second, request coalescing - use a distributed lock so only one request fetches from DB while others wait on the same promise. Third, stale-while-revalidate - serve slightly stale data while refreshing in background. For truly viral posts (100K+ concurrent), we circuit-break to sampling mode: show top 200 comments only, disable real-time updates, and use edge caching with 30-second TTL."
 
-                              **When Simpler Works**:
-                              > "For a forum with occasional popular threads, simple cache-aside with mutex is enough: `if cache miss: if acquire_lock(): fetch_and_cache() else: wait_for_cache()`. The singleflight pattern in Go or similar constructs handle this elegantly without distributed locks."
+**When Simpler Works**:
+  > "For a forum with occasional popular threads, simple cache-aside with mutex is enough: `if cache miss: if acquire_lock(): fetch_and_cache() else: wait_for_cache()`. The singleflight pattern in Go or similar constructs handle this elegantly without distributed locks."
 
 </div>
 
-                            ### 5. "Why use Cassandra for votes instead of PostgreSQL?"
+### 5. "Why use Cassandra for votes instead of PostgreSQL?"
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **What They're Probing**: Database selection rationale, understanding of write patterns, and cost-benefit analysis.
+**What They're Probing**: Database selection rationale, understanding of write patterns, and cost-benefit analysis.
 
-                              **Strong Answer**:
-                              > "Votes are append-heavy, time-series-like data with a simple access pattern: write once, read by user+target compound key. Cassandra excels here because: 1) Linear write scaling - add nodes for more throughput without sharding complexity. 2) Tunable consistency - we can use LOCAL_QUORUM for writes and ONE for reads. 3) Natural TTL support for vote history cleanup. 4) No single-point-of-failure - important when votes are happening 24/7. PostgreSQL would require manual sharding and has write amplification from its MVCC model that hurts at this scale."
+**Strong Answer**:
+  > "Votes are append-heavy, time-series-like data with a simple access pattern: write once, read by user+target compound key. Cassandra excels here because: 1) Linear write scaling - add nodes for more throughput without sharding complexity. 2) Tunable consistency - we can use LOCAL_QUORUM for writes and ONE for reads. 3) Natural TTL support for vote history cleanup. 4) No single-point-of-failure - important when votes are happening 24/7. PostgreSQL would require manual sharding and has write amplification from its MVCC model that hurts at this scale."
 
-                              **When Simpler Works**:
-                              > "PostgreSQL with a partitioned votes table (by month) handles 10M votes/day comfortably. Use `INSERT ... ON CONFLICT DO UPDATE` for idempotency. The operational simplicity of one database type beats Cassandra's performance until you're genuinely hitting PostgreSQL's write limits. I'd consider Cassandra only after seeing sustained 5K+ writes/second."
-
-</div>
+**When Simpler Works**:
+  > "PostgreSQL with a partitioned votes table (by month) handles 10M votes/day comfortably. Use `INSERT ... ON CONFLICT DO UPDATE` for idempotency. The operational simplicity of one database type beats Cassandra's performance until you're genuinely hitting PostgreSQL's write limits. I'd consider Cassandra only after seeing sustained 5K+ writes/second."
 
 </div>
 
-                          ---
+</div>
 
-                          ## Why This Technology?
+  ---
+
+## Why This Technology?
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                            ### Decision Matrix
+### Decision Matrix
 
-                            | Decision Point | Options Considered | Chosen | Rationale |
-                            |----------------|-------------------|--------|-----------|
-                            | **Vote Storage** | PostgreSQL, DynamoDB, Cassandra | Cassandra (scale) / PostgreSQL (start) | Write throughput at scale; start simple |
-                            | **Comment Threading** | Adjacency List, Nested Sets, Closure Table, Materialized Path | Materialized Path | Balance of read/write performance; easy depth queries |
-                            | **Feed Ranking** | Real-time calculation, Pre-computed scores, Hybrid | Hybrid with Redis Sorted Sets | Hot scores pre-computed on write; personalization at read time |
-                            | **Caching Layer** | Memcached, Redis, Redis Cluster | Redis Cluster | Sorted sets for feeds, pub/sub for real-time, Lua for atomic ops |
-                            | **Search** | PostgreSQL FTS, Elasticsearch, Algolia | Elasticsearch | Faceted search, relevance tuning, horizontal scaling |
-                            | **Event Streaming** | RabbitMQ, Kafka, AWS Kinesis | Kafka | Replay capability, partitioning by subreddit, exactly-once semantics |
+  | Decision Point | Options Considered | Chosen | Rationale |
+  |----------------|-------------------|--------|-----------|
+  | **Vote Storage** | PostgreSQL, DynamoDB, Cassandra | Cassandra (scale) / PostgreSQL (start) | Write throughput at scale; start simple |
+  | **Comment Threading** | Adjacency List, Nested Sets, Closure Table, Materialized Path | Materialized Path | Balance of read/write performance; easy depth queries |
+  | **Feed Ranking** | Real-time calculation, Pre-computed scores, Hybrid | Hybrid with Redis Sorted Sets | Hot scores pre-computed on write; personalization at read time |
+  | **Caching Layer** | Memcached, Redis, Redis Cluster | Redis Cluster | Sorted sets for feeds, pub/sub for real-time, Lua for atomic ops |
+  | **Search** | PostgreSQL FTS, Elasticsearch, Algolia | Elasticsearch | Faceted search, relevance tuning, horizontal scaling |
+  | **Event Streaming** | RabbitMQ, Kafka, AWS Kinesis | Kafka | Replay capability, partitioning by subreddit, exactly-once semantics |
 
-                            ### Technology Justification Deep Dive
+### Technology Justification Deep Dive
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **Why Materialized Path for Comments?**
+**Why Materialized Path for Comments?**
 
                               ```
                               Alternatives Analysis:
@@ -808,18 +808,18 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                          ---
+  ---
 
-                          ## When Simpler Solutions Work
+## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-                              ### PostgreSQL JSONB for Comments
+### PostgreSQL JSONB for Comments
 
 <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                                **When It Works**: Under 1M total comments, posts with < 500 comments average
+**When It Works**: Under 1M total comments, posts with < 500 comments average
 
                                 ```sql
                                 -- Store entire comment tree as JSONB
@@ -844,15 +844,15 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 WHERE id = 123;
                                 ```
 
-                                **Why It Breaks**: JSONB updates rewrite the entire column. At 500+ comments, you're moving megabytes per comment. Switch to normalized tables with materialized path when you see post sizes exceeding 100KB regularly.
+**Why It Breaks**: JSONB updates rewrite the entire column. At 500+ comments, you're moving megabytes per comment. Switch to normalized tables with materialized path when you see post sizes exceeding 100KB regularly.
 
 </div>
 
-                              ### When You Don't Need Redis for Votes
+### When You Don't Need Redis for Votes
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                                **When It Works**: Under 100K daily active users, < 1M votes/day
+**When It Works**: Under 100K daily active users, < 1M votes/day
 
                                 ```sql
                                 -- Votes directly in PostgreSQL
@@ -879,30 +879,30 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 WHERE id = 456;
                                 ```
 
-                                **Why It Breaks**: Row-level locks on hot posts cause contention. When you see `lock wait` times exceeding 50ms on popular posts, introduce Redis for optimistic counting with async reconciliation.
+**Why It Breaks**: Row-level locks on hot posts cause contention. When you see `lock wait` times exceeding 50ms on popular posts, introduce Redis for optimistic counting with async reconciliation.
 
 </div>
 
-                              ### Simpler Alternatives Reference
+### Simpler Alternatives Reference
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-                                | Full Solution | Simpler Alternative | Switch When |
-                                |--------------|---------------------|-------------|
-                                | Kafka + Vote Aggregator | PostgreSQL triggers | > 5K votes/second sustained |
-                                | Elasticsearch | PostgreSQL pg_trgm + GIN | > 10M searchable posts |
-                                | Redis Sorted Sets for feeds | Materialized views | > 1M feed generations/day |
-                                | Cassandra for votes | Partitioned PostgreSQL | > 50M votes/day |
-                                | CDN + Edge caching | Nginx proxy_cache | > 10K requests/second |
-                                | Microservices | Modular monolith | Team > 20 engineers |
+  | Full Solution | Simpler Alternative | Switch When |
+  |--------------|---------------------|-------------|
+  | Kafka + Vote Aggregator | PostgreSQL triggers | > 5K votes/second sustained |
+  | Elasticsearch | PostgreSQL pg_trgm + GIN | > 10M searchable posts |
+  | Redis Sorted Sets for feeds | Materialized views | > 1M feed generations/day |
+  | Cassandra for votes | Partitioned PostgreSQL | > 50M votes/day |
+  | CDN + Edge caching | Nginx proxy_cache | > 10K requests/second |
+  | Microservices | Modular monolith | Team > 20 engineers |
 
 </div>
 
-                              ### The $300/month Forum
+### The $300/month Forum
 
 <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid #ff4500; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                                **Scenario**: 50K monthly users, 1K posts/day, 10K comments/day
+**Scenario**: 50K monthly users, 1K posts/day, 10K comments/day
 
                                 ```
                                 Architecture:
@@ -932,7 +932,7 @@ Design a social news aggregation and discussion platform like Reddit with subred
                                 - Comment threads 1000 deep: Works with recursive CTE
                                 ```
 
-                                **Growth Triggers**:
+**Growth Triggers**:
                                 - Database CPU > 70% sustained → Add read replica
                                 - Application memory > 3GB → Upgrade or add instance
                                 - Redis hit rate < 80% → Increase cache size
@@ -943,27 +943,27 @@ Design a social news aggregation and discussion platform like Reddit with subred
 </div>
 </div>
 
-                          ---
+  ---
 
-                          ## Trade-off Analysis & Mitigation
+## Trade-off Analysis & Mitigation
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                            ### Core Trade-offs
+### Core Trade-offs
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              | Trade-off | Choice Made | What We Lose | Mitigation |
-                              |-----------|-------------|--------------|------------|
-                              | **Vote Consistency** | Eventual (100ms lag) | Real-time accuracy | Optimistic UI updates; reconcile on refresh |
-                              | **Comment Loading** | Lazy load children | Full tree view | "Load more replies" with prefetch hints |
-                              | **Feed Freshness** | 60s cache TTL | Instant new post visibility | WebSocket push for subscribed subreddits |
-                              | **Search Indexing** | Async (5-30s delay) | Immediate searchability | Show "Post submitted" with direct link |
-                              | **Media Processing** | Async transcode | Immediate media display | Progressive loading with blur placeholder |
+  | Trade-off | Choice Made | What We Lose | Mitigation |
+  |-----------|-------------|--------------|------------|
+  | **Vote Consistency** | Eventual (100ms lag) | Real-time accuracy | Optimistic UI updates; reconcile on refresh |
+  | **Comment Loading** | Lazy load children | Full tree view | "Load more replies" with prefetch hints |
+  | **Feed Freshness** | 60s cache TTL | Instant new post visibility | WebSocket push for subscribed subreddits |
+  | **Search Indexing** | Async (5-30s delay) | Immediate searchability | Show "Post submitted" with direct link |
+  | **Media Processing** | Async transcode | Immediate media display | Progressive loading with blur placeholder |
 
 </div>
 
-                            ### Mitigation Strategies Deep Dive
+### Mitigation Strategies Deep Dive
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1013,83 +1013,83 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 </div>
 
-                            ### Failure Modes & Recovery
+### Failure Modes & Recovery
 
 <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid #f0883e; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              | Failure | Impact | Detection | Recovery |
-                              |---------|--------|-----------|----------|
-                              | Redis cluster down | No caching, DB overload | Health checks, latency spike | Circuit breaker → serve stale, shed load |
-                              | Kafka lag > 10s | Vote counts delayed | Consumer lag metrics | Scale consumers, increase batch size |
-                              | PostgreSQL replica lag | Stale reads | Replication lag monitor | Route to primary, alert on-call |
-                              | S3 unavailable | No media | 5xx from CloudFront | Serve placeholder, queue retry |
-                              | Elasticsearch down | Search broken | Health endpoint | Fallback to PostgreSQL pg_trgm |
+  | Failure | Impact | Detection | Recovery |
+  |---------|--------|-----------|----------|
+  | Redis cluster down | No caching, DB overload | Health checks, latency spike | Circuit breaker → serve stale, shed load |
+  | Kafka lag > 10s | Vote counts delayed | Consumer lag metrics | Scale consumers, increase batch size |
+  | PostgreSQL replica lag | Stale reads | Replication lag monitor | Route to primary, alert on-call |
+  | S3 unavailable | No media | 5xx from CloudFront | Serve placeholder, queue retry |
+  | Elasticsearch down | Search broken | Health endpoint | Fallback to PostgreSQL pg_trgm |
 
 </div>
 
 </div>
 
-                          ---
+  ---
 
-                          ## Interview Tips
+## Interview Tips
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-                            ### Key Discussion Points
+### Key Discussion Points
 
-                            1. **Vote count accuracy**: Eventual consistency is acceptable - users don't need millisecond precision
-                            2. **Feed personalization**: Balance relevance vs freshness vs diversity - avoid filter bubbles
-                            3. **Spam detection**: Layered approach - rate limits → heuristics → ML → community reports
-                            4. **Rate limiting**: Token bucket per-user, sliding window per-IP, separate limits for reads/writes
-                            5. **Moderation at scale**: Automod rules + ML flagging + human review queue with SLAs
+  1. **Vote count accuracy**: Eventual consistency is acceptable - users don't need millisecond precision
+  2. **Feed personalization**: Balance relevance vs freshness vs diversity - avoid filter bubbles
+  3. **Spam detection**: Layered approach - rate limits → heuristics → ML → community reports
+  4. **Rate limiting**: Token bucket per-user, sliding window per-IP, separate limits for reads/writes
+  5. **Moderation at scale**: Automod rules + ML flagging + human review queue with SLAs
 
-                            ### Common Follow-ups
+### Common Follow-ups
 
                             - **"How would you handle a subreddit going viral?"** → Edge caching, request coalescing, graceful degradation
                             - **"How do you prevent vote manipulation?"** → Device fingerprinting, velocity limits, graph analysis for bot rings
                             - **"How would you implement Reddit Premium?"** → Feature flags, separate CDN tier, no-ads rendering path
 
-                            ### Red Flags to Avoid
+### Red Flags to Avoid
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              | Red Flag | Why It's Bad | Better Approach |
-                              |----------|--------------|-----------------|
-                              | "We need Kafka from day one" | Over-engineering; PostgreSQL LISTEN/NOTIFY works for 90% of cases | "Start with PostgreSQL notifications, add Kafka when we need replay or multi-consumer" |
-                              | "Microservices because Netflix uses them" | Cargo culting; ignores team size and operational cost | "Modular monolith with clear boundaries, extract services when team/scale demands" |
-                              | "Real-time vote counts via WebSocket" | Massive fan-out cost for low-value feature | "Polling with smart refresh, WebSocket only for user's own actions" |
-                              | "Shard by user_id for everything" | Wrong access patterns; posts are accessed by subreddit, not author | "Shard votes by post_id, posts by subreddit, users stay unsharded longest" |
-                              | "NoSQL because we need scale" | SQL scales fine with proper indexing and read replicas | "PostgreSQL to 10TB, evaluate migration at clear pain points" |
-                              | "Cache everything for 1 hour" | Stale data, cache invalidation nightmares | "Tiered TTLs based on data volatility: user profiles 1hr, feeds 60s, scores 5s" |
+  | Red Flag | Why It's Bad | Better Approach |
+  |----------|--------------|-----------------|
+  | "We need Kafka from day one" | Over-engineering; PostgreSQL LISTEN/NOTIFY works for 90% of cases | "Start with PostgreSQL notifications, add Kafka when we need replay or multi-consumer" |
+  | "Microservices because Netflix uses them" | Cargo culting; ignores team size and operational cost | "Modular monolith with clear boundaries, extract services when team/scale demands" |
+  | "Real-time vote counts via WebSocket" | Massive fan-out cost for low-value feature | "Polling with smart refresh, WebSocket only for user's own actions" |
+  | "Shard by user_id for everything" | Wrong access patterns; posts are accessed by subreddit, not author | "Shard votes by post_id, posts by subreddit, users stay unsharded longest" |
+  | "NoSQL because we need scale" | SQL scales fine with proper indexing and read replicas | "PostgreSQL to 10TB, evaluate migration at clear pain points" |
+  | "Cache everything for 1 hour" | Stale data, cache invalidation nightmares | "Tiered TTLs based on data volatility: user profiles 1hr, feeds 60s, scores 5s" |
 
 </div>
 
-                            ### Impressive Statements
+### Impressive Statements
 
 <div style="background: rgba(46, 160, 67, 0.1); border: 1px solid #2ea043; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              | Topic | Statement | Why It Impresses |
-                              |-------|-----------|------------------|
-                              | **Consistency** | "For votes, we can accept a 100ms consistency window because the UX cost of stronger consistency exceeds the value of real-time accuracy" | Shows cost-benefit thinking, not just technical knowledge |
-                              | **Scaling** | "I'd keep everything in PostgreSQL until we see specific bottlenecks - premature optimization with specialized databases adds operational complexity without proven benefit" | Demonstrates pragmatism and operational awareness |
-                              | **Caching** | "Cache invalidation is harder than caching - I'd use event-driven selective invalidation rather than TTL-based expiry to maintain consistency guarantees" | Shows deep understanding of distributed systems challenges |
-                              | **Trade-offs** | "The hot ranking formula trades computational complexity for content freshness - we precompute on write to shift work from the read path" | Demonstrates understanding of read/write trade-offs |
-                              | **Failure modes** | "When Redis fails, we circuit-break to database with rate limiting rather than complete outage - graceful degradation over hard failure" | Shows production mindset and resilience thinking |
-                              | **Growth** | "At 10K users, I'd use PostgreSQL JSONB for comments. At 1M, normalize to tables with materialized paths. At 100M, consider comment service with Cassandra" | Demonstrates ability to right-size solutions |
+  | Topic | Statement | Why It Impresses |
+  |-------|-----------|------------------|
+  | **Consistency** | "For votes, we can accept a 100ms consistency window because the UX cost of stronger consistency exceeds the value of real-time accuracy" | Shows cost-benefit thinking, not just technical knowledge |
+  | **Scaling** | "I'd keep everything in PostgreSQL until we see specific bottlenecks - premature optimization with specialized databases adds operational complexity without proven benefit" | Demonstrates pragmatism and operational awareness |
+  | **Caching** | "Cache invalidation is harder than caching - I'd use event-driven selective invalidation rather than TTL-based expiry to maintain consistency guarantees" | Shows deep understanding of distributed systems challenges |
+  | **Trade-offs** | "The hot ranking formula trades computational complexity for content freshness - we precompute on write to shift work from the read path" | Demonstrates understanding of read/write trade-offs |
+  | **Failure modes** | "When Redis fails, we circuit-break to database with rate limiting rather than complete outage - graceful degradation over hard failure" | Shows production mindset and resilience thinking |
+  | **Growth** | "At 10K users, I'd use PostgreSQL JSONB for comments. At 1M, normalize to tables with materialized paths. At 100M, consider comment service with Cassandra" | Demonstrates ability to right-size solutions |
 
 </div>
 
-                            ### Closing Strong
+### Closing Strong
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              **"What would you build first?"**
+**"What would you build first?"**
 
-                              > "The core voting and feed loop - that's Reddit's flywheel. A user can vote, see updated scores, and get a personalized feed. Everything else (awards, chat, video) are features on top. I'd nail the data model for posts, comments, and votes, get the hot ranking working, then iterate. Shipping a working MVP in PostgreSQL + Redis beats architecting a perfect distributed system that takes 6 months to build."
+  > "The core voting and feed loop - that's Reddit's flywheel. A user can vote, see updated scores, and get a personalized feed. Everything else (awards, chat, video) are features on top. I'd nail the data model for posts, comments, and votes, get the hot ranking working, then iterate. Shipping a working MVP in PostgreSQL + Redis beats architecting a perfect distributed system that takes 6 months to build."
 
-                              **"Where does this design break?"**
+**"Where does this design break?"**
 
-                              > "Three places: First, single-subreddit hotspots - r/all or viral AMAs can overwhelm any caching strategy; we'd need request sampling and edge compute. Second, real-time features like chat and live threads require WebSocket infrastructure we haven't designed. Third, global latency - this design assumes single-region; multi-region would need conflict resolution for votes and eventually consistent subreddit state."
+  > "Three places: First, single-subreddit hotspots - r/all or viral AMAs can overwhelm any caching strategy; we'd need request sampling and edge compute. Second, real-time features like chat and live threads require WebSocket infrastructure we haven't designed. Third, global latency - this design assumes single-region; multi-region would need conflict resolution for votes and eventually consistent subreddit state."
 
 </div>
 

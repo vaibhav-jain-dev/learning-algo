@@ -56,32 +56,32 @@ The Builder pattern separates the construction of a complex object from its repr
 
     ---
 
-    ## Real Company Usage
+## Real Company Usage
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-      | Company | How They Use Builder Pattern |
-      |---------|------------------------------|
-      | **Stripe** | API request builders for complex payment configurations |
-      | **AWS SDK** | Service client builders (S3ClientBuilder, DynamoDBClientBuilder) |
-      | **Elasticsearch** | Query builders for complex search queries |
-      | **OkHttp** | Request.Builder for HTTP requests with headers, body, timeouts |
-      | **Retrofit** | Retrofit.Builder for API client configuration |
-      | **Protocol Buffers** | Message builders for creating complex protobuf messages |
-      | **StringBuilder** | Classic example in Java/C# for efficient string construction |
+  | Company | How They Use Builder Pattern |
+  |---------|------------------------------|
+  | **Stripe** | API request builders for complex payment configurations |
+  | **AWS SDK** | Service client builders (S3ClientBuilder, DynamoDBClientBuilder) |
+  | **Elasticsearch** | Query builders for complex search queries |
+  | **OkHttp** | Request.Builder for HTTP requests with headers, body, timeouts |
+  | **Retrofit** | Retrofit.Builder for API client configuration |
+  | **Protocol Buffers** | Message builders for creating complex protobuf messages |
+  | **StringBuilder** | Classic example in Java/C# for efficient string construction |
 
 </div>
 
     ---
 
-    ## Pattern Structure
+## Pattern Structure
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
 <h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem;">Builder Pattern Structure</h4>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 24px 0;">
 
-        <!-- Director -->
+  <!-- Director -->
 <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; width: 220px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
 <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Director</div>
 <div style="padding: 16px; color: #1e3a8a; font-size: 0.9rem;">
@@ -92,7 +92,7 @@ The Builder pattern separates the construction of a complex object from its repr
 
 <div style="color: #64748b; font-size: 1rem;">uses &#8595;</div>
 
-          <!-- Builder Interface -->
+  <!-- Builder Interface -->
 <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; width: 260px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
 <div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0;">Builder (interface)</div>
 <div style="padding: 16px; color: #166534; font-size: 0.9rem;">
@@ -105,18 +105,18 @@ The Builder pattern separates the construction of a complex object from its repr
 
 <div style="color: #22c55e; font-size: 1.5rem;">&#9651;</div>
 
-                <!-- Concrete Builders -->
+  <!-- Concrete Builders -->
 <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; width: 180px;">
 <div style="background: #86efac; color: #166534; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderA</div>
 <div style="padding: 12px; color: #166534; font-size: 0.85rem;">
-                      Builds ProductA
+  Builds ProductA
 </div>
 </div>
 <div style="background: #fef3c7; border: 2px solid #fcd34d; border-radius: 12px; width: 180px;">
 <div style="background: #fcd34d; color: #92400e; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem;">ConcreteBuilderB</div>
 <div style="padding: 12px; color: #92400e; font-size: 0.85rem;">
-                      Builds ProductB
+  Builds ProductB
 </div>
 </div>
 </div>
@@ -129,26 +129,26 @@ The Builder pattern separates the construction of a complex object from its repr
 </div>
 </div>
 
-            ---
+  ---
 
-            ## When to Use Builder Pattern
+## When to Use Builder Pattern
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #22c55e;">
 
-              ### Good Use Cases
+### Good Use Cases
 
-              1. **Many Constructor Parameters** - Objects with 4+ parameters, especially optional ones
-              2. **Immutable Objects** - Build complex immutable objects step by step
-              3. **Fluent APIs** - Create readable, chainable configuration code
-              4. **Telescoping Constructor Problem** - Avoid multiple constructor overloads
-              5. **Complex Object Graphs** - Objects with nested complex structures
-              6. **Test Data Builders** - Create test fixtures with sensible defaults
+  1. **Many Constructor Parameters** - Objects with 4+ parameters, especially optional ones
+  2. **Immutable Objects** - Build complex immutable objects step by step
+  3. **Fluent APIs** - Create readable, chainable configuration code
+  4. **Telescoping Constructor Problem** - Avoid multiple constructor overloads
+  5. **Complex Object Graphs** - Objects with nested complex structures
+  6. **Test Data Builders** - Create test fixtures with sensible defaults
 
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-              ### The Telescoping Constructor Problem
+### The Telescoping Constructor Problem
 
               ```python
               # BAD: Telescoping constructors
@@ -173,18 +173,18 @@ The Builder pattern separates the construction of a complex object from its repr
 
 </div>
 
-            ---
+  ---
 
-            ## Anti-Patterns: When NOT to Use
+## Anti-Patterns: When NOT to Use
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ef4444;">
 
-              ### Common Mistakes
+### Common Mistakes
 
-              1. **Simple Objects** - Don't use builder for objects with 2-3 required parameters
-              2. **Mutable Objects** - If object can be modified after creation, builder adds unnecessary complexity
-              3. **Over-Engineering** - If you never need different configurations, skip the pattern
-              4. **When Dataclasses Suffice** - Python dataclasses with defaults often eliminate the need
+  1. **Simple Objects** - Don't use builder for objects with 2-3 required parameters
+  2. **Mutable Objects** - If object can be modified after creation, builder adds unnecessary complexity
+  3. **Over-Engineering** - If you never need different configurations, skip the pattern
+  4. **When Dataclasses Suffice** - Python dataclasses with defaults often eliminate the need
 
 </div>
 
@@ -204,11 +204,11 @@ The Builder pattern separates the construction of a complex object from its repr
             point = Point(10, 20)  # Simple and clear
             ```
 
-            ---
+  ---
 
-            ## Python Implementation
+## Python Implementation
 
-            ### Fluent Builder (Most Common)
+### Fluent Builder (Most Common)
 
             ```python
             from __future__ import annotations
@@ -354,7 +354,7 @@ The Builder pattern separates the construction of a complex object from its repr
             print(f"Priority: {email.priority.value}")
             ```
 
-            ### Builder with Director
+### Builder with Director
 
             ```python
             from abc import ABC, abstractmethod
@@ -563,7 +563,7 @@ The Builder pattern separates the construction of a complex object from its repr
             print(f"Server: {server.specs()}")
             ```
 
-            ### Production-Grade: HTTP Request Builder
+### Production-Grade: HTTP Request Builder
 
             ```python
             from dataclasses import dataclass, field
@@ -764,9 +764,9 @@ The Builder pattern separates the construction of a complex object from its repr
             print(f"Form: {form_request.method.value} {form_request.url}")
             ```
 
-            ---
+  ---
 
-            ## Builder vs Related Patterns
+## Builder vs Related Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #cbd5e1;">
 
@@ -802,18 +802,18 @@ The Builder pattern separates the construction of a complex object from its repr
 </div>
 </div>
 
-                  ---
+  ---
 
-                  ## Interview Questions
+## Interview Questions
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
-                    ### Conceptual Questions
+### Conceptual Questions
 
-                    <details style="margin-bottom: 12px;">
-                      <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: When would you use Builder over a constructor with default parameters?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q1: When would you use Builder over a constructor with default parameters?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                        Use Builder when:
+  Use Builder when:
 <ul>
 <li><strong>Many optional parameters:</strong> 4+ parameters become hard to remember</li>
 <li><strong>Complex validation:</strong> Builder can validate in build() before creating object</li>
@@ -821,40 +821,40 @@ The Builder pattern separates the construction of a complex object from its repr
 <li><strong>Readable code:</strong> <code>.timeout(30).retries(3)</code> is clearer than positional args</li>
 <li><strong>Different representations:</strong> Same process creates different products</li>
 </ul>
-                        Use constructor with defaults when:
+  Use constructor with defaults when:
 <ul>
 <li>Object has few parameters (2-3)</li>
 <li>Most parameters are required</li>
 <li>Simple objects with straightforward construction</li>
 </ul>
 </div>
-                    </details>
+</details>
 
-                    <details style="margin-bottom: 12px;">
-                      <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: What's the role of the Director in the Builder pattern?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q2: What's the role of the Director in the Builder pattern?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
-                        The Director encapsulates construction algorithms:
+  The Director encapsulates construction algorithms:
 <ul>
 <li><strong>Knows the steps:</strong> Which builder methods to call and in what order</li>
 <li><strong>Defines presets:</strong> build_gaming_pc(), build_office_pc()</li>
 <li><strong>Optional:</strong> Client can use builder directly without director</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
-                          # With Director - encapsulated knowledge
-                          director.build_gaming_pc()
+# With Director - encapsulated knowledge
+  director.build_gaming_pc()
 
-                          # Without Director - client knows the steps
-                          builder.set_cpu().set_gpu().set_ram().build()
+# Without Director - client knows the steps
+  builder.set_cpu().set_gpu().set_ram().build()
 </pre>
 <strong>In practice:</strong> Modern fluent builders often skip the Director, letting clients chain methods directly.
 </div>
-                    </details>
+</details>
 
-                    <details style="margin-bottom: 12px;">
-                      <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How do you make a Builder thread-safe?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q3: How do you make a Builder thread-safe?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Best practice:</strong> Create a new builder instance per thread.
-                        <br><br>
+  <br><br>
 <strong>If sharing is needed:</strong>
 <ul>
 <li>Make builder immutable (each method returns a new builder)</li>
@@ -862,125 +862,125 @@ The Builder pattern separates the construction of a complex object from its repr
 <li>Use thread-local storage</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
-                              # Immutable builder approach
-                              class ImmutableBuilder:
-                              def __init__(self, **kwargs):
-                              self._values = kwargs
+# Immutable builder approach
+  class ImmutableBuilder:
+  def __init__(self, **kwargs):
+  self._values = kwargs
 
-                              def with_name(self, name):
-                              return ImmutableBuilder(**self._values, name=name)
+  def with_name(self, name):
+  return ImmutableBuilder(**self._values, name=name)
 
-                              def with_age(self, age):
-                              return ImmutableBuilder(**self._values, age=age)
+  def with_age(self, age):
+  return ImmutableBuilder(**self._values, age=age)
 </pre>
 </div>
-                        </details>
+</details>
 
-                        ### Coding Questions
+### Coding Questions
 
-                        <details style="margin-bottom: 12px;">
-                          <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a SQL Query Builder</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q4: Implement a SQL Query Builder</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto;">
-                              class QueryBuilder:
-                              def __init__(self):
-                              self._select = ["*"]
-                              self._from = ""
-                              self._where = []
-                              self._order_by = []
-                              self._limit = None
+  class QueryBuilder:
+  def __init__(self):
+  self._select = ["*"]
+  self._from = ""
+  self._where = []
+  self._order_by = []
+  self._limit = None
 
-                              def select(self, *columns):
-                              self._select = list(columns)
-                              return self
+  def select(self, *columns):
+  self._select = list(columns)
+  return self
 
-                              def from_table(self, table):
-                              self._from = table
-                              return self
+  def from_table(self, table):
+  self._from = table
+  return self
 
-                              def where(self, condition):
-                              self._where.append(condition)
-                              return self
+  def where(self, condition):
+  self._where.append(condition)
+  return self
 
-                              def order_by(self, column, direction="ASC"):
-                              self._order_by.append(f"{column} {direction}")
-                              return self
+  def order_by(self, column, direction="ASC"):
+  self._order_by.append(f"{column} {direction}")
+  return self
 
-                              def limit(self, count):
-                              self._limit = count
-                              return self
+  def limit(self, count):
+  self._limit = count
+  return self
 
-                              def build(self):
-                              if not self._from:
-                              raise ValueError("FROM clause required")
+  def build(self):
+  if not self._from:
+  raise ValueError("FROM clause required")
 
-                              query = f"SELECT {', '.join(self._select)}"
-                              query += f" FROM {self._from}"
+  query = f"SELECT {', '.join(self._select)}"
+  query += f" FROM {self._from}"
 
-                              if self._where:
-                              query += f" WHERE {' AND '.join(self._where)}"
-                              if self._order_by:
-                              query += f" ORDER BY {', '.join(self._order_by)}"
-                              if self._limit:
-                              query += f" LIMIT {self._limit}"
+  if self._where:
+  query += f" WHERE {' AND '.join(self._where)}"
+  if self._order_by:
+  query += f" ORDER BY {', '.join(self._order_by)}"
+  if self._limit:
+  query += f" LIMIT {self._limit}"
 
-                              return query
+  return query
 
-                              # Usage
-                              query = (
-                              QueryBuilder()
-                              .select("id", "name", "email")
-                              .from_table("users")
-                              .where("status = 'active'")
-                              .where("age > 18")
-                              .order_by("created_at", "DESC")
-                              .limit(10)
-                              .build()
-                              )
+# Usage
+  query = (
+  QueryBuilder()
+  .select("id", "name", "email")
+  .from_table("users")
+  .where("status = 'active'")
+  .where("age > 18")
+  .order_by("created_at", "DESC")
+  .limit(10)
+  .build()
+  )
 </pre>
 </div>
-                        </details>
+</details>
 
-                        <details style="margin-bottom: 12px;">
-                          <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you add validation to a Builder?</summary>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0;">Q5: How would you add validation to a Builder?</summary>
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Two approaches:</strong>
-                            <br><br>
+  <br><br>
 <strong>1. Validate in build() - Recommended:</strong>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
-                                  def build(self):
-                                  errors = []
-                                  if not self._url:
-                                  errors.append("URL is required")
-                                  if self._timeout < 0:
-                                  errors.append("Timeout must be positive")
-                                  if errors:
-                                  raise ValueError(f"Invalid config: {errors}")
-                                  return Request(...)
+  def build(self):
+  errors = []
+  if not self._url:
+  errors.append("URL is required")
+  if self._timeout < 0:
+  errors.append("Timeout must be positive")
+  if errors:
+  raise ValueError(f"Invalid config: {errors}")
+  return Request(...)
 </pre>
 
 <strong>2. Validate eagerly in setters:</strong>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
-                                  def timeout(self, seconds):
-                                  if seconds < 0:
-                                  raise ValueError("Timeout must be positive")
-                                  self._timeout = seconds
-                                  return self
+  def timeout(self, seconds):
+  if seconds < 0:
+  raise ValueError("Timeout must be positive")
+  self._timeout = seconds
+  return self
 </pre>
 
 <strong>Best practice:</strong> Validate in build() for interdependent validations, in setters for simple constraints.
 </div>
-                            </details>
+</details>
 
 </div>
 
-                          ---
+  ---
 
-                          ## Common Mistakes
+## Common Mistakes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 
-                            ### Mistake 1: Forgetting to Reset Builder State
+### Mistake 1: Forgetting to Reset Builder State
 
                             ```python
                             # BAD: Reusing builder without reset
@@ -993,7 +993,7 @@ The Builder pattern separates the construction of a complex object from its repr
                             email2 = EmailBuilder().to("b@example.com").subject("Hello").build()
                             ```
 
-                            ### Mistake 2: Returning Mutable Internal State
+### Mistake 2: Returning Mutable Internal State
 
                             ```python
                             # BAD: Exposing internal list
@@ -1005,7 +1005,7 @@ The Builder pattern separates the construction of a complex object from its repr
                             return Product(items=list(self._items))  # Defensive copy
                             ```
 
-                            ### Mistake 3: Not Validating Required Fields
+### Mistake 3: Not Validating Required Fields
 
                             ```python
                             # BAD: Silent failures
@@ -1021,29 +1021,29 @@ The Builder pattern separates the construction of a complex object from its repr
 
 </div>
 
-                          ---
+  ---
 
-                          ## Key Takeaways
+## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #93c5fd;">
 
-                            1. **Builder separates construction from representation** - Same process can create different objects
+  1. **Builder separates construction from representation** - Same process can create different objects
 
-                            2. **Fluent interface is key** - Return `self` from each method for readable chaining
+  2. **Fluent interface is key** - Return `self` from each method for readable chaining
 
-                            3. **Validate in build()** - Ensure object is valid before returning
+  3. **Validate in build()** - Ensure object is valid before returning
 
-                            4. **Director is optional** - Modern builders often skip it for simplicity
+  4. **Director is optional** - Modern builders often skip it for simplicity
 
-                            5. **Don't over-engineer** - If a simple constructor works, use it
+  5. **Don't over-engineer** - If a simple constructor works, use it
 
-                            6. **Create immutable products** - Builder collects mutable state, product is frozen
+  6. **Create immutable products** - Builder collects mutable state, product is frozen
 
 </div>
 
-                          ---
+  ---
 
-                          ## Related Patterns
+## Related Patterns
 
                           - [Factory Method](/topic/design-patterns/factory-method) - Single-step creation
                           - [Abstract Factory](/topic/design-patterns/abstract-factory) - Product families

@@ -6,7 +6,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
 
-  ### Core Requirements
+### Core Requirements
   - **Listings**: Property creation, photos, amenities, pricing
   - **Search**: Location, dates, filters, map view
   - **Booking**: Availability, reservation, payments
@@ -46,33 +46,33 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     <!-- Services Row -->
 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; width: 100%;">
 
-      <!-- Listing Service -->
+  <!-- Listing Service -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">LISTING SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; CRUD Operations<br/>
-          &#8226; Photo Management<br/>
-          &#8226; Amenities & Pricing
+  &#8226; CRUD Operations<br/>
+  &#8226; Photo Management<br/>
+  &#8226; Amenities & Pricing
 </div>
 </div>
 
-      <!-- Search Service -->
+  <!-- Search Service -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
 <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">SEARCH SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Geo-spatial Queries<br/>
-          &#8226; Faceted Filters<br/>
-          &#8226; ML-based Rankings
+  &#8226; Geo-spatial Queries<br/>
+  &#8226; Faceted Filters<br/>
+  &#8226; ML-based Rankings
 </div>
 </div>
 
-      <!-- Booking Service -->
+  <!-- Booking Service -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">BOOKING SERVICE</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-          &#8226; Reservations<br/>
-          &#8226; Availability Checks<br/>
-          &#8226; Payment Processing
+  &#8226; Reservations<br/>
+  &#8226; Availability Checks<br/>
+  &#8226; Payment Processing
 </div>
 </div>
 
@@ -119,8 +119,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: #f0883e; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">50,000 listings</div>
 </div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
-        &#8226; Parse "Paris" to bounding box / polygon coordinates<br/>
-        &#8226; Filter listings within geographic area using spatial index<br/>
+  &#8226; Parse "Paris" to bounding box / polygon coordinates<br/>
+  &#8226; Filter listings within geographic area using spatial index<br/>
 &#8226; Use Elasticsearch <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">geo_shape</code> query
 </div>
 </div>
@@ -135,9 +135,9 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: #58a6ff; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">15,000 listings</div>
 </div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
-        &#8226; Check calendar for Dec 15-20 date range<br/>
-        &#8226; Exclude listings with existing bookings or host blocks<br/>
-        &#8226; Consider minimum stay requirements (e.g., 3-night minimum)
+  &#8226; Check calendar for Dec 15-20 date range<br/>
+  &#8226; Exclude listings with existing bookings or host blocks<br/>
+  &#8226; Consider minimum stay requirements (e.g., 3-night minimum)
 </div>
 </div>
 
@@ -152,8 +152,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 </div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
 &#8226; Filter: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">guests >= 2</code><br/>
-        &#8226; Apply price range, property type, amenities filters<br/>
-        &#8226; Apply Instant Book, Superhost, accessibility filters
+  &#8226; Apply price range, property type, amenities filters<br/>
+  &#8226; Apply Instant Book, Superhost, accessibility filters
 </div>
 </div>
 
@@ -168,12 +168,12 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 </div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.5;">
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
-          Ranking Score = w1 * quality_score<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w2 * review_score<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w3 * response_rate<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w4 * price_competitiveness<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w5 * booking_likelihood (ML)<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w6 * freshness_boost
+  Ranking Score = w1 * quality_score<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w2 * review_score<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w3 * response_rate<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w4 * price_competitiveness<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w5 * booking_likelihood (ML)<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w6 * freshness_boost
 </div>
 </div>
 </div>
@@ -189,13 +189,13 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Assumptions
+### Assumptions
     - **Listings**: 1,000 - 50,000
     - **Users**: 10,000 - 100,000
     - **Bookings**: 100 - 1,000/day
     - **Budget**: $3,000 - $15,000/month
 
-    ### Monolithic Architecture
+### Monolithic Architecture
 
     ```python
     class BookingService:
@@ -257,18 +257,18 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Availability Calendar
+### Availability Calendar
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Calendar Storage Strategy</h4>
 
-      <!-- Option 1: Date-based rows -->
+  <!-- Option 1: Date-based rows -->
 <div style="margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Option 1: Date-based rows (Simple)</div>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-            <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">date</th>
@@ -276,8 +276,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">price</th>
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">min_nights</th>
 </tr>
-            </thead>
-            <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f1f5f9;">
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
@@ -299,17 +299,17 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">$175</td>
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2</td>
 </tr>
-            </tbody>
+  </tbody>
 </table>
 </div>
 </div>
 
-      <!-- Option 2: Range-based -->
+  <!-- Option 2: Range-based -->
 <div style="margin-bottom: 24px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Option 2: Range-based (Better for queries)</div>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-            <thead>
+  <thead>
 <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">start_date</th>
@@ -317,8 +317,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">type</th>
 <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">booking_id</th>
 </tr>
-            </thead>
-            <tbody>
+  </thead>
+  <tbody>
 <tr style="background: #f1f5f9;">
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
 <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
@@ -333,25 +333,25 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <td style="border: 1px solid #30363d; padding: 10px; color: #f0883e;">blocked</td>
 <td style="border: 1px solid #30363d; padding: 10px; color: #484f58;">null</td>
 </tr>
-            </tbody>
+  </tbody>
 </table>
 </div>
 </div>
 
-      <!-- Query Example -->
+  <!-- Query Example -->
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Query: Available Dec 15-20?</div>
 <pre style="margin: 0; color: #c9d1d9; font-size: 11px; overflow-x: auto;"><code>SELECT NOT EXISTS(
-            SELECT 1 FROM calendar_blocks
-            WHERE listing_id = L1
-            AND start_date < '2024-12-20'
-            AND end_date > '2024-12-15'
+  SELECT 1 FROM calendar_blocks
+  WHERE listing_id = L1
+  AND start_date < '2024-12-20'
+  AND end_date > '2024-12-15'
 )</code></pre>
 </div>
 
 </div>
 
-    ### Dynamic Pricing
+### Dynamic Pricing
 
     ```python
     class PricingService:
@@ -395,13 +395,13 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Assumptions
+### Assumptions
     - **Listings**: 7M+ active
     - **Users**: 150M+
     - **Bookings**: 500K+/day
     - **Searches**: 50M+/day
 
-    ### Booking Flow at Scale
+### Booking Flow at Scale
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
@@ -412,7 +412,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="color: #8b949e; font-size: 12px;">Two guests try to book same listing for same dates simultaneously</div>
 </div>
 
-      <!-- Two Guests -->
+  <!-- Two Guests -->
 <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 12px 24px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Guest A</div>
@@ -424,18 +424,18 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 </div>
 </div>
 
-      <!-- Arrow -->
+  <!-- Arrow -->
 <div style="text-align: center; color: #484f58; font-size: 20px; margin: 8px 0;">&#8595; &#8595;</div>
 
-      <!-- Booking Service -->
+  <!-- Booking Service -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 14px;">BOOKING SERVICE</div>
 </div>
 
-      <!-- Arrow -->
+  <!-- Arrow -->
 <div style="text-align: center; color: #484f58; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
-      <!-- Redis Lock -->
+  <!-- Redis Lock -->
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">Distributed Lock (Redis)</div>
 <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; text-align: center;">
@@ -444,34 +444,34 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="color: rgba(255,255,255,0.8); font-size: 11px; text-align: center; margin-top: 10px;">First request wins, second waits or fails fast</div>
 </div>
 
-      <!-- Arrow -->
+  <!-- Arrow -->
 <div style="text-align: center; color: #484f58; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
-      <!-- Results -->
+  <!-- Results -->
 <div style="display: flex; gap: 20px; justify-content: center;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 16px; flex: 1; max-width: 200px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 10px;">Guest A - SUCCESS</div>
 <div style="color: rgba(255,255,255,0.8); font-size: 10px; line-height: 1.6;">
-            &#10003; Lock acquired<br/>
-            &#10003; Check availability<br/>
-            &#10003; Create booking<br/>
-            &#10003; Block dates<br/>
-            &#10003; Release lock
+  &#10003; Lock acquired<br/>
+  &#10003; Check availability<br/>
+  &#10003; Create booking<br/>
+  &#10003; Block dates<br/>
+  &#10003; Release lock
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #6e7681 0%, #484f58 100%); border-radius: 12px; padding: 16px; flex: 1; max-width: 200px;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 10px;">Guest B - DENIED</div>
 <div style="color: rgba(255,255,255,0.7); font-size: 10px; line-height: 1.6;">
-            &#10007; Lock denied<br/>
-            &#10007; Return: "Not available"<br/>
-            &nbsp;&nbsp;&nbsp;or retry after TTL
+  &#10007; Lock denied<br/>
+  &#10007; Return: "Not available"<br/>
+  &nbsp;&nbsp;&nbsp;or retry after TTL
 </div>
 </div>
 </div>
 
 </div>
 
-    ### Search Sharding
+### Search Sharding
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 16px 0;">
 
@@ -479,13 +479,13 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="color: #8b949e; font-size: 12px; text-align: center; margin-bottom: 20px;">Elasticsearch Cluster per Region</div>
 
-      <!-- Regional Clusters -->
+  <!-- Regional Clusters -->
 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 24px;">
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #1f6feb; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
 <div style="color: #1f6feb; font-weight: bold; font-size: 13px; margin-bottom: 8px;">US Cluster</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-            US listings<br/>
+  US listings<br/>
 <span style="color: #1d4ed8; font-weight: bold;">2M docs</span>
 </div>
 </div>
@@ -493,7 +493,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #238636; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
 <div style="color: #238636; font-weight: bold; font-size: 13px; margin-bottom: 8px;">EU Cluster</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-            EU listings<br/>
+  EU listings<br/>
 <span style="color: #3fb950; font-weight: bold;">3M docs</span>
 </div>
 </div>
@@ -501,31 +501,31 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
 <div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">APAC Cluster</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-            APAC listings<br/>
+  APAC listings<br/>
 <span style="color: #d2a8ff; font-weight: bold;">2M docs</span>
 </div>
 </div>
 
 </div>
 
-      <!-- Query Routing & Benefits -->
+  <!-- Query Routing & Benefits -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Query Routing</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-            &#8226; Parse search location from query<br/>
-            &#8226; Route to appropriate regional cluster<br/>
-            &#8226; Cross-region queries handled separately
+  &#8226; Parse search location from query<br/>
+  &#8226; Route to appropriate regional cluster<br/>
+  &#8226; Cross-region queries handled separately
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Benefits</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-            &#8226; Reduced index size per cluster<br/>
-            &#8226; Lower latency for regional searches<br/>
-            &#8226; Independent scaling per region
+  &#8226; Reduced index size per cluster<br/>
+  &#8226; Lower latency for regional searches<br/>
+  &#8226; Independent scaling per region
 </div>
 </div>
 
@@ -559,31 +559,31 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### 1. Consistency for Bookings
+### 1. Consistency for Bookings
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0;">
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Strong Consistency Required</div>
 <div style="color: rgba(255,255,255,0.85); font-size: 11px; line-height: 1.7;">
-        &#8226; Availability checks<br/>
-        &#8226; Booking creation<br/>
-        &#8226; Payment processing
+  &#8226; Availability checks<br/>
+  &#8226; Booking creation<br/>
+  &#8226; Payment processing
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #6e7681 0%, #484f58 100%); border-radius: 10px; padding: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Eventual Consistency OK</div>
 <div style="color: rgba(255,255,255,0.85); font-size: 11px; line-height: 1.7;">
-        &#8226; Search results<br/>
-        &#8226; Reviews display<br/>
-        &#8226; Analytics data
+  &#8226; Search results<br/>
+  &#8226; Reviews display<br/>
+  &#8226; Analytics data
 </div>
 </div>
 
 </div>
 
-  ### 2. Overbooking Prevention
+### 2. Overbooking Prevention
 
   ```python
   # Idempotent booking with optimistic locking
@@ -631,7 +631,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
 
-  ### 1. "How do you prevent double-booking?"
+### 1. "How do you prevent double-booking?"
 
   **What They're Probing**: Understanding of race conditions, distributed locking, and consistency guarantees in concurrent systems.
 
@@ -683,7 +683,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### 2. "Why Elasticsearch for search over PostgreSQL full-text?"
+### 2. "Why Elasticsearch for search over PostgreSQL full-text?"
 
   **What They're Probing**: Understanding of search technology trade-offs, when specialized tools matter, and avoiding over-engineering.
 
@@ -745,7 +745,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### 3. "How do you handle availability calendars at scale?"
+### 3. "How do you handle availability calendars at scale?"
 
   **What They're Probing**: Data modeling decisions, storage trade-offs, and understanding of query patterns.
 
@@ -844,7 +844,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### 4. "How would you implement dynamic pricing?"
+### 4. "How would you implement dynamic pricing?"
 
   **What They're Probing**: Understanding of pricing strategies, ML integration, and balancing host control with optimization.
 
@@ -976,7 +976,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### 5. "How do you ensure search results stay fresh when listings change?"
+### 5. "How do you ensure search results stay fresh when listings change?"
 
   **What They're Probing**: Understanding of data synchronization, eventual consistency, and cache invalidation strategies.
 
@@ -1140,7 +1140,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-  ### Technology Decision Matrix
+### Technology Decision Matrix
 
   | Decision Point | Technology | Why This Choice | When to Reconsider |
   |---------------|------------|-----------------|-------------------|
@@ -1152,39 +1152,39 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   | **Image Storage** | S3 + CloudFront | Infinite scale, global CDN | < 100K images: Cloudflare R2 (cheaper) |
   | **Payments** | Stripe | Marketplace payouts, escrow, compliance | Regional: Local PSP might be required |
 
-  ### Key Decision Drivers
+### Key Decision Drivers
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #58a6ff; border-radius: 0 12px 12px 0; padding: 16px;">
 <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Elasticsearch over PostgreSQL Full-Text</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
-        &#9679; Geo-spatial + text + filters combined: ES wins<br/>
-        &#9679; Custom relevance scoring: ES has function_score<br/>
-        &#9679; Synonyms, fuzzy matching: ES built-in<br/>
-        &#9679; < 10K docs with simple queries: PostgreSQL fine<br/>
-        &#9679; Operational simplicity priority: PostgreSQL wins
+  &#9679; Geo-spatial + text + filters combined: ES wins<br/>
+  &#9679; Custom relevance scoring: ES has function_score<br/>
+  &#9679; Synonyms, fuzzy matching: ES built-in<br/>
+  &#9679; < 10K docs with simple queries: PostgreSQL fine<br/>
+  &#9679; Operational simplicity priority: PostgreSQL wins
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #f85149; border-radius: 0 12px 12px 0; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Redis for Locking over Database Locks</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
-        &#9679; Multiple service instances: Redis required<br/>
-        &#9679; Lock with TTL (prevent deadlocks): Redis native<br/>
-        &#9679; Single monolith: SELECT FOR UPDATE sufficient<br/>
-        &#9679; < 100 concurrent requests: Database locks fine
+  &#9679; Multiple service instances: Redis required<br/>
+  &#9679; Lock with TTL (prevent deadlocks): Redis native<br/>
+  &#9679; Single monolith: SELECT FOR UPDATE sufficient<br/>
+  &#9679; < 100 concurrent requests: Database locks fine
 </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #3fb950; border-radius: 0 12px 12px 0; padding: 16px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Kafka over Simpler Queues</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
-        &#9679; Event replay for debugging: Kafka required<br/>
-        &#9679; Multiple consumers per event: Kafka excels<br/>
-        &#9679; Exactly-once semantics needed: Kafka Streams<br/>
-        &#9679; Simple job queue: Redis + Bull sufficient<br/>
-        &#9679; < 1K msgs/min: PostgreSQL-backed queue fine
+  &#9679; Event replay for debugging: Kafka required<br/>
+  &#9679; Multiple consumers per event: Kafka excels<br/>
+  &#9679; Exactly-once semantics needed: Kafka Streams<br/>
+  &#9679; Simple job queue: Redis + Bull sufficient<br/>
+  &#9679; < 1K msgs/min: PostgreSQL-backed queue fine
 </div>
 </div>
 
@@ -1199,7 +1199,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### The "$400/month Rental Platform" Architecture
+### The "$400/month Rental Platform" Architecture
 
     For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach houses in Outer Banks"):
 
@@ -1230,7 +1230,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
-        <!-- Vercel/Railway -->
+  <!-- Vercel/Railway -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #1f6feb; border-radius: 10px; padding: 16px;">
 <div style="display: flex; justify-content: space-between; align-items: center;">
 <div>
@@ -1241,10 +1241,10 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 </div>
 </div>
 
-        <!-- Arrow -->
+  <!-- Arrow -->
 <div style="text-align: center; color: #484f58;">&#8595;</div>
 
-        <!-- PostgreSQL -->
+  <!-- PostgreSQL -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 16px;">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
 <div>
@@ -1253,17 +1253,17 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: #3fb950; color: #000; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">$25/month</div>
 </div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
-            &#8226; Listings table with PostGIS for geo queries<br/>
-            &#8226; Calendar table (date-per-row, it's fine!)<br/>
-            &#8226; GIN index for amenities JSONB<br/>
-            &#8226; Full-text search with ts_vector
+  &#8226; Listings table with PostGIS for geo queries<br/>
+  &#8226; Calendar table (date-per-row, it's fine!)<br/>
+  &#8226; GIN index for amenities JSONB<br/>
+  &#8226; Full-text search with ts_vector
 </div>
 </div>
 
-        <!-- Arrow -->
+  <!-- Arrow -->
 <div style="text-align: center; color: #484f58;">&#8595;</div>
 
-        <!-- Stripe + Cloudflare -->
+  <!-- Stripe + Cloudflare -->
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 16px;">
 <div style="display: flex; justify-content: space-between; align-items: center;">
 <div>
@@ -1277,12 +1277,12 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 </div>
 
 <div style="background: #238636; color: #fff; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center; font-weight: bold;">
-        Total: ~$100/month (scales to 10K listings easily)
+  Total: ~$100/month (scales to 10K listings easily)
 </div>
 
 </div>
 
-    ### When You DON'T Need Elasticsearch
+### When You DON'T Need Elasticsearch
 
     | Scenario | PostgreSQL Solution | Performance |
     |----------|-------------------|-------------|
@@ -1304,7 +1304,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     -- Execution time: 45ms with proper indexes
     ```
 
-    ### When You DON'T Need Distributed Locking
+### When You DON'T Need Distributed Locking
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
@@ -1341,7 +1341,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 </div>
 
-    ### When You DON'T Need Kafka
+### When You DON'T Need Kafka
 
     | Use Case | Simpler Alternative | Why It's Fine |
     |----------|-------------------|---------------|
@@ -1350,7 +1350,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     | Analytics events | Direct insert to analytics DB | Batch processing overnight |
     | Email sending | Redis + Bull queue | Simple job queue pattern |
 
-    ### The Vrbo Reality Check
+### The Vrbo Reality Check
 
     > "Vrbo (formerly HomeAway) scaled to millions of listings using relatively simple calendar tables - no fancy availability bitmaps, no Redis caching, no Elasticsearch until much later. Their original architecture was PostgreSQL-heavy with careful indexing. The complexity came when they needed real-time pricing optimization and sub-second search across 2M+ listings."
 
@@ -1364,7 +1364,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Consistency vs. Availability Trade-offs
+### Consistency vs. Availability Trade-offs
 
     | Component | Consistency Level | Trade-off | Mitigation |
     |-----------|------------------|-----------|------------|
@@ -1374,7 +1374,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     | **Reviews** | Eventual (AP) | Delay in appearing | Show "pending" state |
     | **Pricing Updates** | Eventual (AP) | Price mismatch possible | Lock price at booking start |
 
-    ### Search Latency vs. Accuracy Trade-offs
+### Search Latency vs. Accuracy Trade-offs
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
@@ -1408,22 +1408,22 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Recommendation</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
-          &#8226; Search listing page: 30s Redis cache (acceptable stale)<br/>
-          &#8226; Listing detail: Real-time availability check<br/>
-          &#8226; Booking flow: No cache, strong consistency
+  &#8226; Search listing page: 30s Redis cache (acceptable stale)<br/>
+  &#8226; Listing detail: Real-time availability check<br/>
+  &#8226; Booking flow: No cache, strong consistency
 </div>
 </div>
 
 </div>
 
-    ### Double-Booking Prevention: Defense in Depth
+### Double-Booking Prevention: Defense in Depth
 
 <div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;">
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #f85149; border-radius: 0 10px 10px 0; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 1: Distributed Lock (Redis)</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-          &#8226; SETNX with TTL prevents concurrent attempts<br/>
+  &#8226; SETNX with TTL prevents concurrent attempts<br/>
 &#8226; <span style="color: #f0883e;">Failure mode:</span> Lock expires before completion<br/>
 &#8226; <span style="color: #3fb950;">Mitigation:</span> Short TTL (5s) + optimistic locking
 </div>
@@ -1432,7 +1432,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #3fb950; border-radius: 0 10px 10px 0; padding: 16px;">
 <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 2: Database Constraints</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-          &#8226; UNIQUE constraint on (listing_id, date, type='booked')<br/>
+  &#8226; UNIQUE constraint on (listing_id, date, type='booked')<br/>
 &#8226; <span style="color: #f0883e;">Failure mode:</span> None - database rejects duplicates<br/>
 &#8226; <span style="color: #3fb950;">Mitigation:</span> This is your safety net
 </div>
@@ -1441,7 +1441,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #58a6ff; border-radius: 0 10px 10px 0; padding: 16px;">
 <div style="color: #1d4ed8; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 3: Optimistic Locking</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-          &#8226; Version number on calendar, check-and-set<br/>
+  &#8226; Version number on calendar, check-and-set<br/>
 &#8226; <span style="color: #f0883e;">Failure mode:</span> Retry on version mismatch<br/>
 &#8226; <span style="color: #3fb950;">Mitigation:</span> Exponential backoff, max 3 retries
 </div>
@@ -1450,7 +1450,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #a371f7; border-radius: 0 10px 10px 0; padding: 16px;">
 <div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 4: Idempotency Keys</div>
 <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
-          &#8226; Client sends unique booking_request_id<br/>
+  &#8226; Client sends unique booking_request_id<br/>
 &#8226; <span style="color: #f0883e;">Failure mode:</span> Duplicate bookings from retries<br/>
 &#8226; <span style="color: #3fb950;">Mitigation:</span> Check for existing booking with same key
 </div>
@@ -1458,7 +1458,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 </div>
 
-    ### Cost vs. Performance Trade-offs
+### Cost vs. Performance Trade-offs
 
     | Optimization | Cost Increase | Performance Gain | When Worth It |
     |-------------|---------------|------------------|---------------|
@@ -1477,7 +1477,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  ### Key Discussion Points
+### Key Discussion Points
 
   1. **Search ranking**: Balancing relevance, quality, revenue - mention that Airbnb optimizes for booking likelihood, not just relevance
   2. **Availability**: Calendar storage trade-offs (date-per-row vs. range-based) - know both approaches
@@ -1485,7 +1485,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   4. **Dynamic pricing**: Start with rules, add ML when you have data
   5. **Trust & Safety**: Verification, fraud detection, review authenticity
 
-  ### Common Follow-ups
+### Common Follow-ups
 
   - How do you handle last-minute cancellations? (Refund policies, rebooking assistance, host protection)
   - How do you verify listing photos? (ML-based comparison, guest feedback loop, periodic re-verification)
@@ -1493,7 +1493,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### Red Flags (What NOT to Say)
+### Red Flags (What NOT to Say)
 
 <div style="background: rgba(248, 81, 73, 0.1); border-left: 4px solid #f85149; padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0;">
 
@@ -1510,7 +1510,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### Impressive Statements (What TO Say)
+### Impressive Statements (What TO Say)
 
 <div style="background: rgba(56, 139, 253, 0.1); border-left: 4px solid #58a6ff; padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0;">
 
@@ -1529,7 +1529,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
   ---
 
-  ### Scaling Triggers Cheat Sheet
+### Scaling Triggers Cheat Sheet
 
 <div style="background: rgba(136, 87, 229, 0.1); border-left: 4px solid #8957e5; padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0;">
 

@@ -65,16 +65,16 @@ At its core, the State pattern operates through a delegation chain:
 <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Critical Design Decision: Stateful vs Stateless States</div>
 <div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
 <strong>Stateless states</strong> contain no instance data and can be shared across contexts (flyweight pattern). This reduces memory but requires all state-specific data to live in the Context.
-        <br><br>
+  <br><br>
 <strong>Stateful states</strong> carry their own data (e.g., retry count, timeout timestamp). This encapsulates state-specific data but requires creating new state instances on each transition.
 </div>
 </div>
 
-        ---
+  ---
 
-        ## State vs Strategy Pattern
+## State vs Strategy Pattern
 
-        This is one of the most common interview questions because the patterns are structurally identical but semantically different.
+  This is one of the most common interview questions because the patterns are structurally identical but semantically different.
 
 <div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap;">
 <div style="flex: 1; min-width: 300px; background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%); border-radius: 12px; padding: 1.5rem; border: 2px solid #3b82f6;">
@@ -123,7 +123,7 @@ At its core, the State pattern operates through a delegation chain:
 </div>
 </div>
 
-        ### The Litmus Test
+### The Litmus Test
 
         ```python
         # STATE PATTERN - Transitions happen internally
@@ -142,45 +142,45 @@ At its core, the State pattern operates through a delegation chain:
 <div style="background: #f0fdf4; border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0; border: 1px solid #86efac;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Key Insight for Interviews</div>
 <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
-            If you remove the pattern and use conditionals instead:<br>
+  If you remove the pattern and use conditionals instead:<br>
 <strong>State</strong> becomes: <code>if self.status == "pending": ... elif self.status == "shipped": ...</code><br>
 <strong>Strategy</strong> becomes: <code>if payment_type == "credit": ... elif payment_type == "paypal": ...</code><br><br>
-                    The State conditional checks <em>internal object state</em>. The Strategy conditional checks <em>external configuration</em>.
+  The State conditional checks <em>internal object state</em>. The Strategy conditional checks <em>external configuration</em>.
 </div>
 </div>
 
-                ### 3-Level Recursive Interview Questions: State vs Strategy
+### 3-Level Recursive Interview Questions: State vs Strategy
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Can you explain the difference between State and Strategy patterns?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                    Both patterns use composition to delegate behavior to interchangeable objects. The difference is in intent and control flow. State pattern manages internal behavior changes driven by the object's lifecycle - the object itself or its states control transitions. Strategy pattern lets external code choose algorithms - the client decides which strategy to use.
+  Both patterns use composition to delegate behavior to interchangeable objects. The difference is in intent and control flow. State pattern manages internal behavior changes driven by the object's lifecycle - the object itself or its states control transitions. Strategy pattern lets external code choose algorithms - the client decides which strategy to use.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Level 2: If they're structurally identical, how do you decide which to use when reviewing code or designing a system?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                      Ask three questions: (1) Who initiates changes - if internal events trigger changes, it's State; if client code sets the algorithm, it's Strategy. (2) Do the classes know about each other - State classes often reference other states for transitions; Strategy classes are isolated. (3) Is there a defined progression - State typically has valid/invalid transitions; Strategy allows arbitrary switching.
+  Ask three questions: (1) Who initiates changes - if internal events trigger changes, it's State; if client code sets the algorithm, it's Strategy. (2) Do the classes know about each other - State classes often reference other states for transitions; Strategy classes are isolated. (3) Is there a defined progression - State typically has valid/invalid transitions; Strategy allows arbitrary switching.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #8b5cf6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #6d28d9; margin-bottom: 0.75rem;">Level 3: Can you describe a scenario where you might start with Strategy and refactor to State, or vice versa?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7;">
 <strong>Strategy to State:</strong> You build a document editor with rendering strategies (PlainTextRenderer, MarkdownRenderer). Later, you add modes (EditMode, PreviewMode, CommentMode) where the mode determines which renderer to use AND what editing operations are valid. The modes have transitions (Edit->Preview on Ctrl+P). Now you need State pattern because behavior depends on internal mode, not just rendering choice.
-                        <br><br>
+  <br><br>
 <strong>State to Strategy:</strong> You have Order states (Pending, Processing, Shipped) but realize the shipping calculation varies by carrier independently of order state. Extract ShippingStrategy (FedExStrategy, UPSStrategy) - the shipping algorithm is a client choice, not a lifecycle stage.
 </div>
 </div>
 </div>
 </div>
 
-                    ---
+  ---
 
-                    ## State Transitions: The Heart of the Pattern
+## State Transitions: The Heart of the Pattern
 
-                    ### Transition Ownership Models
+### Transition Ownership Models
 
-                    There are three models for who controls state transitions:
+  There are three models for who controls state transitions:
 
 <div style="display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0;">
 <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #3b82f6;">
@@ -196,7 +196,7 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #22c55e;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Model 2: Context-Controlled Transitions</div>
 <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
-                          Context interprets state method return values and decides transitions. States are simpler and independent.
+  Context interprets state method return values and decides transitions. States are simpler and independent.
 </div>
 <div style="background: #bbf7d0; border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.75rem; font-size: 0.85rem; color: #166534;">
 <strong>Trade-off:</strong> Transition logic centralized in Context. Adding new states requires modifying Context.
@@ -206,7 +206,7 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 <div style="background: #fef3c7; border-radius: 10px; padding: 1.25rem; border-left: 4px solid #f59e0b;">
 <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Model 3: Transition Table (External)</div>
 <div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
-                          A separate transition table/configuration defines valid transitions. States and Context query the table.
+  A separate transition table/configuration defines valid transitions. States and Context query the table.
 </div>
 <div style="background: #fde68a; border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.75rem; font-size: 0.85rem; color: #92400e;">
 <strong>Trade-off:</strong> Maximum flexibility and auditability. Adds complexity and indirection.
@@ -214,9 +214,9 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 </div>
 </div>
 
-                    ### Implementing Transition Guards
+### Implementing Transition Guards
 
-                    Transitions often have preconditions. Here's how to implement guards:
+  Transitions often have preconditions. Here's how to implement guards:
 
                     ```python
                     from abc import ABC, abstractmethod
@@ -326,9 +326,9 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
                     pass
                     ```
 
-                    ### Entry and Exit Actions
+### Entry and Exit Actions
 
-                    Robust state machines execute actions when entering or leaving states:
+  Robust state machines execute actions when entering or leaving states:
 
                     ```python
                     class OrderState(ABC):
@@ -374,47 +374,47 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">Edge Case: Failed Entry Actions</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
 What if <code>on_enter</code> throws an exception? You have two choices:
-                        <br><br>
+  <br><br>
 <strong>1. Rollback:</strong> Catch exception, revert to previous state, re-throw. Complex because <code>on_exit</code> already ran.
-                            <br>
+  <br>
 <strong>2. Compensating state:</strong> Transition to an error/recovery state instead of the target state.
-                              <br><br>
-                                  Most production systems use option 2 with an explicit "FailedTransition" or "Error" state that captures the exception details and allows retry or manual intervention.
+  <br><br>
+  Most production systems use option 2 with an explicit "FailedTransition" or "Error" state that captures the exception details and allows retry or manual intervention.
 </div>
 </div>
 
-                              ### 3-Level Recursive Interview Questions: State Transitions
+### 3-Level Recursive Interview Questions: State Transitions
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How do you decide whether states or the context should control transitions?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                  State-controlled transitions work well when transition logic is complex and state-specific - the state knows best when it should end. Context-controlled works when transitions follow simple rules or when you need centralized transition validation. External transition tables work for highly configurable systems where business rules change frequently.
+  State-controlled transitions work well when transition logic is complex and state-specific - the state knows best when it should end. Context-controlled works when transitions follow simple rules or when you need centralized transition validation. External transition tables work for highly configurable systems where business rules change frequently.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle transitions that can fail, especially when side effects have already occurred?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                    Use a two-phase approach: (1) Validation phase - check all guards and preconditions before any side effects. (2) Execution phase - perform side effects only after validation passes. For distributed systems, use the [[Saga pattern]](/topic/system-design/saga-pattern) with compensating transactions. The state machine itself should track whether it's in a "transitioning" meta-state to prevent concurrent modifications.
+  Use a two-phase approach: (1) Validation phase - check all guards and preconditions before any side effects. (2) Execution phase - perform side effects only after validation passes. For distributed systems, use the [[Saga pattern]](/topic/system-design/saga-pattern) with compensating transactions. The state machine itself should track whether it's in a "transitioning" meta-state to prevent concurrent modifications.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #8b5cf6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #6d28d9; margin-bottom: 0.75rem;">Level 3: In a distributed system with eventual consistency, how do you handle state transitions when the state machine is replicated across services?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7;">
-                                      This is where [[Event Sourcing]](/topic/system-design/event-sourcing) becomes essential. Instead of storing current state, store the sequence of state transition events. Each service can rebuild the state machine by replaying events. Use [[optimistic locking]](/topic/system-design/distributed-locking) with version numbers - a transition includes the expected version, and conflicts are detected and retried. For strong consistency, use [[distributed consensus]](/topic/system-design/consensus-algorithms) (Raft/Paxos) to agree on transition order. The key insight is that the state machine becomes a projection of the event log rather than the source of truth.
+  This is where [[Event Sourcing]](/topic/system-design/event-sourcing) becomes essential. Instead of storing current state, store the sequence of state transition events. Each service can rebuild the state machine by replaying events. Use [[optimistic locking]](/topic/system-design/distributed-locking) with version numbers - a transition includes the expected version, and conflicts are detected and retried. For strong consistency, use [[distributed consensus]](/topic/system-design/consensus-algorithms) (Raft/Paxos) to agree on transition order. The key insight is that the state machine becomes a projection of the event log rather than the source of truth.
 </div>
 </div>
 </div>
 </div>
 
-                              ---
+  ---
 
-                              ## Finite State Machines: Formal Foundations
+## Finite State Machines: Formal Foundations
 
-                              A Finite State Machine (FSM) is formally defined as a 5-tuple:
+  A Finite State Machine (FSM) is formally defined as a 5-tuple:
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-family: monospace; font-size: 1rem; color: #1e293b; text-align: center; margin-bottom: 1rem;">
-                                  M = (Q, &Sigma;, &delta;, q<sub>0</sub>, F)
+  M = (Q, &Sigma;, &delta;, q<sub>0</sub>, F)
 </div>
 <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem 1.5rem; font-size: 0.9rem;">
 <div style="font-weight: 600; color: #3b82f6;">Q</div>
@@ -430,33 +430,33 @@ What if <code>on_enter</code> throws an exception? You have two choices:
 </div>
 </div>
 
-                              ### Types of State Machines
+### Types of State Machines
 
 <div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap;">
 <div style="flex: 1; min-width: 280px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 1px solid #93c5fd;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Moore Machine</div>
 <div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">
-                                    Output depends <em>only</em> on current state. Actions are associated with states (entry/exit actions).
+  Output depends <em>only</em> on current state. Actions are associated with states (entry/exit actions).
 </div>
 <div style="background: #bfdbfe; border-radius: 6px; padding: 0.5rem; font-size: 0.85rem; color: #1e40af;">
-                                    Example: Vending machine display shows state (Insert Coin, Select Item, Dispensing)
+  Example: Vending machine display shows state (Insert Coin, Select Item, Dispensing)
 </div>
 </div>
 
 <div style="flex: 1; min-width: 280px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 1px solid #86efac;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Mealy Machine</div>
 <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">
-                                    Output depends on current state <em>and</em> input. Actions are associated with transitions.
+  Output depends on current state <em>and</em> input. Actions are associated with transitions.
 </div>
 <div style="background: #bbf7d0; border-radius: 6px; padding: 0.5rem; font-size: 0.85rem; color: #166534;">
-                                    Example: Parser that emits tokens during specific transitions, not just at states
+  Example: Parser that emits tokens during specific transitions, not just at states
 </div>
 </div>
 </div>
 
-                              ### Table-Driven State Machine Implementation
+### Table-Driven State Machine Implementation
 
-                              For complex state machines, a table-driven approach is more maintainable:
+  For complex state machines, a table-driven approach is more maintainable:
 
                               ```python
                               from dataclasses import dataclass, field
@@ -669,24 +669,24 @@ What if <code>on_enter</code> throws an exception? You have two choices:
                               return transition.target, True
                               ```
 
-                              ### 3-Level Recursive Interview Questions: State Machines
+### 3-Level Recursive Interview Questions: State Machines
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What are the advantages of a table-driven state machine over the classic State pattern implementation?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                  Table-driven machines centralize all transition logic in one place, making it easy to visualize, validate, and modify. You can validate the machine at startup (check reachability, dead ends). It's also easier to serialize/deserialize and to generate from configuration files. The classic pattern distributes logic across many classes, which can make the overall flow harder to understand but keeps state-specific logic encapsulated.
+  Table-driven machines centralize all transition logic in one place, making it easy to visualize, validate, and modify. You can validate the machine at startup (check reachability, dead ends). It's also easier to serialize/deserialize and to generate from configuration files. The classic pattern distributes logic across many classes, which can make the overall flow harder to understand but keeps state-specific logic encapsulated.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How would you implement a state machine that needs to support dynamic/runtime-configurable transitions?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                    Store transition rules in a database or configuration service. The state machine loads rules at startup and can reload on-demand. Use a versioned configuration to handle in-flight entities - an order created under v1 rules continues with v1 rules. Implement rule validation before accepting new configurations. For complex scenarios, use a workflow engine like Temporal or AWS Step Functions that provides this out of the box.
+  Store transition rules in a database or configuration service. The state machine loads rules at startup and can reload on-demand. Use a versioned configuration to handle in-flight entities - an order created under v1 rules continues with v1 rules. Implement rule validation before accepting new configurations. For complex scenarios, use a workflow engine like Temporal or AWS Step Functions that provides this out of the box.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #8b5cf6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #6d28d9; margin-bottom: 0.75rem;">Level 3: How do you test a state machine with hundreds of states and thousands of transitions?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7;">
-                                      Use multiple testing strategies:<br><br>
+  Use multiple testing strategies:<br><br>
 <strong>1. Model-based testing:</strong> Define the state machine formally and generate test cases automatically. Tools like QuickCheck can generate random event sequences and verify invariants hold.<br><br>
 <strong>2. Property-based testing:</strong> Test properties like "final states are always reachable," "no transition leads to undefined state," "cancellation is always possible before shipping."<br><br>
 <strong>3. Path coverage:</strong> Use graph algorithms to find all paths from initial to final states. Generate tests for each path. For large machines, use k-path coverage (paths up to length k).<br><br>
@@ -697,15 +697,15 @@ What if <code>on_enter</code> throws an exception? You have two choices:
 </div>
 </div>
 
-                                                  ---
+  ---
 
-                                                  ## Hierarchical State Machines (Statecharts)
+## Hierarchical State Machines (Statecharts)
 
-                                                  Hierarchical State Machines (HSMs), formalized by David Harel as Statecharts, extend FSMs with:
+  Hierarchical State Machines (HSMs), formalized by David Harel as Statecharts, extend FSMs with:
 
-                                                  1. **Nested states** (superstates containing substates)
-                                                  2. **History** (remembering which substate was active)
-                                                  3. **Parallel regions** (orthogonal states)
+  1. **Nested states** (superstates containing substates)
+  2. **History** (remembering which substate was active)
+  3. **Parallel regions** (orthogonal states)
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
 <div style="text-align: center; margin-bottom: 1.5rem; color: #1e293b; font-weight: 700; font-size: 1.1rem;">Hierarchical Order State Machine</div>
@@ -740,7 +740,7 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 </div>
 </div>
 
-                                                  ### Benefits of Hierarchical States
+### Benefits of Hierarchical States
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0; border: 1px solid #86efac;">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Key Benefits</div>
@@ -752,7 +752,7 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 </ul>
 </div>
 
-                                                  ### Implementation with Nested States
+### Implementation with Nested States
 
                                                   ```python
                                                   from abc import ABC, abstractmethod
@@ -909,9 +909,9 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
                                                   return StateEventResult.TRANSITION, ShippedState()
                                                   ```
 
-                                                  ### History States
+### History States
 
-                                                  History states remember which substate was active when exiting a composite state:
+  History states remember which substate was active when exiting a composite state:
 
                                                   ```python
                                                   @dataclass
@@ -955,38 +955,38 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
                                                   return StateEventResult.TRANSITION, processing
                                                   ```
 
-                                                  ### 3-Level Recursive Interview Questions: Hierarchical States
+### 3-Level Recursive Interview Questions: Hierarchical States
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: When should you use hierarchical states instead of a flat state machine?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                                      Use HSMs when you have groups of states that share common transitions (like "cancel" available in all processing substates), when your flat state machine would have many duplicated transitions, or when states have natural hierarchical relationships. The rule of thumb: if the same transition appears in 3+ states, consider a superstate.
+  Use HSMs when you have groups of states that share common transitions (like "cancel" available in all processing substates), when your flat state machine would have many duplicated transitions, or when states have natural hierarchical relationships. The rule of thumb: if the same transition appears in 3+ states, consider a superstate.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle entry/exit actions in nested states? What's the correct order?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                                        Entry actions execute from outermost to innermost (superstate first, then substate). Exit actions execute from innermost to outermost (substate first, then superstate). This follows the principle that you fully enter a context before entering its contents, and fully exit contents before leaving the context. For a transition from A.a1 to B.b1: exit a1, exit A, enter B, enter b1.
+  Entry actions execute from outermost to innermost (superstate first, then substate). Exit actions execute from innermost to outermost (substate first, then superstate). This follows the principle that you fully enter a context before entering its contents, and fully exit contents before leaving the context. For a transition from A.a1 to B.b1: exit a1, exit A, enter B, enter b1.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #8b5cf6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #6d28d9; margin-bottom: 0.75rem;">Level 3: How would you implement orthogonal regions (parallel states) where an order is simultaneously in "payment processing" and "fraud check" states?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7;">
-                                                          Orthogonal regions represent independent aspects of an entity that evolve in parallel. Implementation approaches:<br><br>
+  Orthogonal regions represent independent aspects of an entity that evolve in parallel. Implementation approaches:<br><br>
 <strong>1. Multiple state references:</strong> The context maintains separate state references for each region. Events are broadcast to all regions. A "join" condition waits for all regions to reach specific states.<br><br>
 <strong>2. Composite state tuple:</strong> State is represented as (PaymentState, FraudState). Transitions occur in one region without affecting the other. The state machine handles the cartesian product of possible combinations.<br><br>
 <strong>3. Actor model:</strong> Each region becomes a separate actor/process. A coordinator actor manages synchronization points.<br><br>
-                                                                          The key complexity is synchronization: what happens if payment succeeds but fraud check fails? You need clear semantics for conflicting outcomes and may need compensating actions.
+  The key complexity is synchronization: what happens if payment succeeds but fraud check fails? You need clear semantics for conflicting outcomes and may need compensating actions.
 </div>
 </div>
 </div>
 </div>
 
-                                                                  ---
+  ---
 
-                                                                  ## Complete Order Workflow Implementation
+## Complete Order Workflow Implementation
 
-                                                                  Here's a production-quality order state machine demonstrating all concepts:
+  Here's a production-quality order state machine demonstrating all concepts:
 
                                                                   ```python
                                                                   from abc import ABC, abstractmethod
@@ -1854,37 +1854,37 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
                                                                   return order
                                                                   ```
 
-                                                                  ### 3-Level Recursive Interview Questions: Order Workflow
+### 3-Level Recursive Interview Questions: Order Workflow
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: How do you handle the case where an order can be cancelled from multiple states (pending, paid, ready for fulfillment)?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                                                      Each state handles the CANCELLED_BY_CUSTOMER event with its own logic. PendingPayment just cancels. PaidState refunds payment. ReadyForFulfillment refunds AND releases inventory. This keeps cancellation logic close to the state-specific concerns. Alternatively, use hierarchical states with a "Cancellable" superstate that handles common cancellation logic.
+  Each state handles the CANCELLED_BY_CUSTOMER event with its own logic. PendingPayment just cancels. PaidState refunds payment. ReadyForFulfillment refunds AND releases inventory. This keeps cancellation logic close to the state-specific concerns. Alternatively, use hierarchical states with a "Cancellable" superstate that handles common cancellation logic.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #3b82f6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you ensure that side effects (sending emails, refunding payments) are only executed once, even if the state machine crashes mid-transition?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
-                                                                        Return side effects as data, not actions. The state machine returns the list of effects, which the caller executes within a database transaction. If the transaction commits, effects are guaranteed to execute (via outbox pattern or transactional messaging). If it rolls back, effects are discarded. For critical effects, use [[idempotency keys]](/topic/system-design/api-gateway) - if a refund effect has ID "refund-order-123", the payment service ignores duplicate requests with that ID.
+  Return side effects as data, not actions. The state machine returns the list of effects, which the caller executes within a database transaction. If the transaction commits, effects are guaranteed to execute (via outbox pattern or transactional messaging). If it rolls back, effects are discarded. For critical effects, use [[idempotency keys]](/topic/system-design/api-gateway) - if a refund effect has ID "refund-order-123", the payment service ignores duplicate requests with that ID.
 </div>
 
 <div style="margin-left: 1.5rem; border-left: 3px solid #8b5cf6; padding-left: 1rem; margin-top: 1rem;">
 <div style="font-weight: 700; color: #6d28d9; margin-bottom: 0.75rem;">Level 3: How do you handle time-based transitions (order expiration, return window closing) in a distributed system where you can't rely on local timers?</div>
 <div style="color: #334155; font-size: 0.95rem; line-height: 1.7;">
-                                                                          Several approaches:<br><br>
+  Several approaches:<br><br>
 <strong>1. Delayed message queues:</strong> When entering PendingPayment, publish a message to a delayed queue that fires after 24 hours. If still pending, transition to expired. Use message deduplication to handle duplicate deliveries.<br><br>
 <strong>2. Scheduled job polling:</strong> A cron job queries for orders in time-sensitive states past their deadline. Scales horizontally with partitioning.<br><br>
 <strong>3. Event scheduling service:</strong> Dedicated service (like AWS EventBridge Scheduler) that fires events at specific times. More reliable than self-managed cron.<br><br>
 <strong>4. Lazy evaluation:</strong> Don't transition proactively. When any event arrives, first check if time-based transitions should have occurred. "Order expired" is detected when customer tries to pay.<br><br>
-                                                                                              The choice depends on SLA requirements. Lazy evaluation is simplest but means expired orders appear valid until touched. Scheduled jobs provide eventual consistency within polling interval.
+  The choice depends on SLA requirements. Lazy evaluation is simplest but means expired orders appear valid until touched. Scheduled jobs provide eventual consistency within polling interval.
 </div>
 </div>
 </div>
 </div>
 
-                                                                                      ---
+  ---
 
-                                                                                      ## Trade-offs and Design Decisions
+## Trade-offs and Design Decisions
 
 <div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 1.5rem 0;">
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; border: 1px solid #e2e8f0;">
@@ -1969,9 +1969,9 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 </div>
 </div>
 
-                                                                                      ---
+  ---
 
-                                                                                      ## Common Pitfalls and Edge Cases
+## Common Pitfalls and Edge Cases
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
 <div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Critical Edge Cases</div>
@@ -1979,8 +1979,8 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 <div style="margin-bottom: 1.25rem;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. Race Conditions in State Transitions</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-                                                                                            Two events arrive simultaneously: PAYMENT_RECEIVED and CANCELLED_BY_CUSTOMER. Without locking, both could be processed against the same initial state, leading to inconsistent outcomes.
-                                                                                            <br><br>
+  Two events arrive simultaneously: PAYMENT_RECEIVED and CANCELLED_BY_CUSTOMER. Without locking, both could be processed against the same initial state, leading to inconsistent outcomes.
+  <br><br>
 <strong>Solution:</strong> Use optimistic locking (version field) or database-level row locks. The second event will fail and can be retried against the new state.
 </div>
 </div>
@@ -1988,8 +1988,8 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 <div style="margin-bottom: 1.25rem;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Orphaned Transitional States</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-                                                                                                Application crashes after entering "PaymentProcessing" but before receiving the webhook. Order is stuck in transitional state forever.
-                                                                                                <br><br>
+  Application crashes after entering "PaymentProcessing" but before receiving the webhook. Order is stuck in transitional state forever.
+  <br><br>
 <strong>Solution:</strong> Set timeouts for transitional states. A scheduled job checks for orders stuck in PaymentProcessing > 1 hour and triggers a timeout event.
 </div>
 </div>
@@ -1997,8 +1997,8 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 <div style="margin-bottom: 1.25rem;">
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Duplicate Events (At-Least-Once Delivery)</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-                                                                                                    Message queue delivers PAYMENT_RECEIVED twice. First delivery transitions Pending->Paid. Second delivery tries to process PAYMENT_RECEIVED in Paid state.
-                                                                                                    <br><br>
+  Message queue delivers PAYMENT_RECEIVED twice. First delivery transitions Pending->Paid. Second delivery tries to process PAYMENT_RECEIVED in Paid state.
+  <br><br>
 <strong>Solution:</strong> Track processed event IDs. Or design states to be idempotent - PAYMENT_RECEIVED in Paid state is a no-op, not an error.
 </div>
 </div>
@@ -2006,16 +2006,16 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 <div>
 <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. State Corruption During Partial Failures</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-                                                                                                        State transitions but side effect (email, refund) fails. Customer is refunded but email doesn't send, causing confusion and support tickets.
-                                                                                                        <br><br>
+  State transitions but side effect (email, refund) fails. Customer is refunded but email doesn't send, causing confusion and support tickets.
+  <br><br>
 <strong>Solution:</strong> Use [[transactional outbox pattern]](/topic/system-design/event-sourcing). Write side effects to database in same transaction as state change. Separate process reads outbox and executes effects with retries.
 </div>
 </div>
 </div>
 
-                                                                                                      ---
+  ---
 
-                                                                                                      ## Testing Strategies
+## Testing Strategies
 
                                                                                                       ```python
                                                                                                       import pytest
@@ -2210,57 +2210,57 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
                                                                                                       pass
                                                                                                       ```
 
-                                                                                                      ---
+  ---
 
-                                                                                                      ## Related Patterns
+## Related Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Strategy Pattern]](/topic/design-patterns/strategy)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Structurally identical but client selects algorithm. Consider when behavior varies by configuration, not lifecycle.
+  Structurally identical but client selects algorithm. Consider when behavior varies by configuration, not lifecycle.
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Command Pattern]](/topic/design-patterns/command)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Encapsulate state transitions as command objects for undo/redo, queueing, or logging.
+  Encapsulate state transitions as command objects for undo/redo, queueing, or logging.
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Observer Pattern]](/topic/design-patterns/observer)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Notify external systems of state changes. Often combined with State for event-driven architectures.
+  Notify external systems of state changes. Often combined with State for event-driven architectures.
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Memento Pattern]](/topic/design-patterns/memento)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Capture and restore state snapshots. Essential for undo functionality or state persistence.
+  Capture and restore state snapshots. Essential for undo functionality or state persistence.
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Saga Pattern]](/topic/system-design/saga-pattern)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Orchestrate distributed transactions as a sequence of local transactions with compensating actions.
+  Orchestrate distributed transactions as a sequence of local transactions with compensating actions.
 </div>
 </div>
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 1.25rem; border: 1px solid #e2e8f0;">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">[[Event Sourcing]](/topic/system-design/event-sourcing)</div>
 <div style="font-size: 0.9rem; color: #475569; line-height: 1.6;">
-                                                                                                            Store state changes as events. The state machine becomes a projection of the event stream.
+  Store state changes as events. The state machine becomes a projection of the event stream.
 </div>
 </div>
 </div>
 
-                                                                                                      ---
+  ---
 
-                                                                                                      ## Key Interview Takeaways
+## Key Interview Takeaways
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
 <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Summary for Interviews</div>

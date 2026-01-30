@@ -171,10 +171,10 @@ The choice between monolithic and microservices architectures represents one of 
 <p><strong style="color: #fecaca;">Durability:</strong> Committed data survives crashes</p>
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: monospace; font-size: 0.8em; color: #64748b;">
-        BEGIN TRANSACTION;<br/>
-        UPDATE accounts SET balance = balance - 100 WHERE id = 1;<br/>
-        UPDATE accounts SET balance = balance + 100 WHERE id = 2;<br/>
-        COMMIT; -- Both or neither
+  BEGIN TRANSACTION;<br/>
+  UPDATE accounts SET balance = balance - 100 WHERE id = 1;<br/>
+  UPDATE accounts SET balance = balance + 100 WHERE id = 2;<br/>
+  COMMIT; -- Both or neither
 </div>
 </div>
 <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
@@ -185,13 +185,13 @@ The choice between monolithic and microservices architectures represents one of 
 <p><strong style="color: #d1fae5;">Eventually consistent:</strong> System will become consistent given enough time</p>
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: monospace; font-size: 0.8em; color: #64748b;">
-        // Service A: Debit<br/>
-        debitAccount(userId, 100); // Commits<br/>
-        publishEvent("MoneyDebited");<br/><br/>
-        // Service B: Credit (async)<br/>
-        onEvent("MoneyDebited") {<br/>
-        &nbsp;&nbsp;creditAccount(targetId, 100);<br/>
-        } // Eventually consistent
+  // Service A: Debit<br/>
+  debitAccount(userId, 100); // Commits<br/>
+  publishEvent("MoneyDebited");<br/><br/>
+  // Service B: Credit (async)<br/>
+  onEvent("MoneyDebited") {<br/>
+  &nbsp;&nbsp;creditAccount(targetId, 100);<br/>
+  } // Eventually consistent
 </div>
 </div>
 </div>
@@ -249,11 +249,11 @@ The choice between monolithic and microservices architectures represents one of 
 <p style="margin-top: 12px;"><strong>Expected Answer:</strong></p>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px; margin-top: 12px; font-size: 0.9em;">
 <strong>Forward transactions:</strong><br/>
-      1. Order Service: Create order (PENDING)<br/>
-      2. Inventory Service: Reserve items -> emit InventoryReserved<br/>
-      3. Payment Service: Charge customer -> emit PaymentCompleted<br/>
-      4. Shipping Service: Create shipment -> emit ShipmentCreated<br/>
-      5. Order Service: Update order (CONFIRMED)<br/><br/>
+  1. Order Service: Create order (PENDING)<br/>
+  2. Inventory Service: Reserve items -> emit InventoryReserved<br/>
+  3. Payment Service: Charge customer -> emit PaymentCompleted<br/>
+  4. Shipping Service: Create shipment -> emit ShipmentCreated<br/>
+  5. Order Service: Update order (CONFIRMED)<br/><br/>
 <strong>Compensating transactions (if payment fails at step 3):</strong><br/>
       - Inventory Service: Release reservation (compensates step 2)<br/>
       - Order Service: Mark order CANCELLED (compensates step 1)<br/><br/>

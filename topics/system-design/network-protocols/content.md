@@ -106,7 +106,7 @@ TCP's congestion control algorithms determine throughput and fairness across the
 </div>
 </div>
 
-    ### TCP Edge Cases and Failure Modes
+### TCP Edge Cases and Failure Modes
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 <h4 style="color: #991b1b; margin-top: 0;">Production Edge Cases</h4>
@@ -114,31 +114,31 @@ TCP's congestion control algorithms determine throughput and fairness across the
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>TIME_WAIT Exhaustion</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-            High-volume servers creating many short connections exhaust ephemeral ports. Each closed connection holds a port for 2*MSL. Solutions: connection pooling, SO_REUSEADDR, tcp_tw_reuse (Linux), or move to long-lived connections.
+  High-volume servers creating many short connections exhaust ephemeral ports. Each closed connection holds a port for 2*MSL. Solutions: connection pooling, SO_REUSEADDR, tcp_tw_reuse (Linux), or move to long-lived connections.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Head-of-Line Blocking</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-            A single lost packet blocks all subsequent data until retransmission completes. For multiplexed protocols (HTTP/2 over TCP), one slow stream blocks all streams. This motivated QUIC's move to UDP with per-stream reliability.
+  A single lost packet blocks all subsequent data until retransmission completes. For multiplexed protocols (HTTP/2 over TCP), one slow stream blocks all streams. This motivated QUIC's move to UDP with per-stream reliability.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Receive Window Zero</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-            Slow receiver fills its buffer, advertises zero window. Sender enters persist mode, sending window probes. If application is deadlocked waiting for data it can't read, connection stalls indefinitely. Monitor for connections stuck in persist state.
+  Slow receiver fills its buffer, advertises zero window. Sender enters persist mode, sending window probes. If application is deadlocked waiting for data it can't read, connection stalls indefinitely. Monitor for connections stuck in persist state.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>SYN Flood Attacks</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-            Attackers send SYN packets with spoofed IPs, filling the SYN backlog. Server can't accept legitimate connections. Mitigations: SYN cookies (stateless until ACK), increased backlog, rate limiting, [[load-balancing]](/topics/system-design/load-balancing) with SYN proxy.
+  Attackers send SYN packets with spoofed IPs, filling the SYN backlog. Server can't accept legitimate connections. Mitigations: SYN cookies (stateless until ACK), increased backlog, rate limiting, [[load-balancing]](/topics/system-design/load-balancing) with SYN proxy.
 </div>
 </div>
 </div>
 </div>
 
-    ### TCP Interview Questions (3-Level Deep)
+### TCP Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: Explain the TCP three-way handshake</h4>
@@ -159,7 +159,7 @@ TCP's congestion control algorithms determine throughput and fairness across the
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do SYN cookies work and what are their limitations?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Answer:</strong> SYN cookies encode connection state in the ISN itself: timestamp (5 bits), MSS index (3 bits), hash of connection tuple (24 bits). Server doesn't store state until ACK arrives with valid cookie.
-                <br><br>
+  <br><br>
 <strong>Limitations:</strong> (1) Only 8 MSS values possible, losing precision; (2) TCP options in SYN are lost (no window scaling, SACK, timestamps); (3) Cannot detect duplicate SYNs; (4) Slight CPU overhead for crypto hash per SYN. Modern variant: TCP Fast Open with cookies for repeat clients.
 </div>
 </div>
@@ -185,7 +185,7 @@ TCP's congestion control algorithms determine throughput and fairness across the
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How does BBR achieve better throughput and what are its fairness concerns?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Answer:</strong> BBR models the path: estimates bottleneck bandwidth (BtlBw) by tracking max delivery rate, estimates min RTT (RTprop) by tracking min RTT when not probing. Sends at BtlBw rate, targeting 2*BDP inflight.
-                    <br><br>
+  <br><br>
 <strong>Fairness issues:</strong> (1) BBRv1 is unfair to Reno/CUBIC - can take 40%+ of bandwidth in competition; (2) BBR vs BBR flows with different RTTs favor lower-RTT flows; (3) ProbeRTT phase causes synchronized throughput drops. BBRv2 adds loss-based signals for fairness, but sacrifices some throughput gains.
 </div>
 </div>
@@ -211,7 +211,7 @@ TCP's congestion control algorithms determine throughput and fairness across the
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you diagnose and fix TCP buffer tuning issues in production?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Diagnosis:</strong> Check net.ipv4.tcp_rmem/tcp_wmem settings. Use ss -i to see cwnd, rtt, delivery_rate. If cwnd is small but no retransmits, receive window is limiting. If retransmits are high, it's network loss not buffer issues.
-                        <br><br>
+  <br><br>
 <strong>Tuning:</strong> Set tcp_rmem/tcp_wmem max >= 2*BDP for expected paths. Enable tcp_window_scaling. For many connections, use tcp_moderate_rcvbuf for auto-tuning. <strong>Caution:</strong> Large buffers * many connections = memory exhaustion. Use tcp_mem limits.
 </div>
 </div>
@@ -220,13 +220,13 @@ TCP's congestion control algorithms determine throughput and fairness across the
 </div>
 </div>
 
-                ---
+  ---
 
-                ## UDP: User Datagram Protocol
+## UDP: User Datagram Protocol
 
-                ### Internal Mechanisms
+### Internal Mechanisms
 
-                UDP provides minimal transport: just multiplexing (ports) and optional checksums. Everything else is the application's responsibility.
+  UDP provides minimal transport: just multiplexing (ports) and optional checksums. Everything else is the application's responsibility.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">UDP Header Structure</h4>
@@ -250,7 +250,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 </div>
 </div>
 
-                        ### When UDP Outperforms TCP
+### When UDP Outperforms TCP
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
@@ -287,7 +287,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 </table>
 </div>
 
-                        ### Building Reliability on UDP
+### Building Reliability on UDP
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">Application-Layer Reliability Mechanisms</h4>
@@ -295,7 +295,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Sequence Numbers + ACKs</h5>
 <div style="font-size: 13px; color: #475569;">
-                                Application adds sequence number to each packet. Receiver tracks gaps and requests retransmits. Allows selective reliability - only retransmit what matters.
+  Application adds sequence number to each packet. Receiver tracks gaps and requests retransmits. Allows selective reliability - only retransmit what matters.
 </div>
 <div style="background: #dcfce7; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
 <strong>Used by:</strong> QUIC, game protocols
@@ -304,7 +304,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Forward Error Correction (FEC)</h5>
 <div style="font-size: 13px; color: #475569;">
-                                Send redundant packets using Reed-Solomon or similar codes. Receiver can reconstruct lost packets without retransmission. Trades bandwidth for latency.
+  Send redundant packets using Reed-Solomon or similar codes. Receiver can reconstruct lost packets without retransmission. Trades bandwidth for latency.
 </div>
 <div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af;">
 <strong>Used by:</strong> QUIC (optional), WebRTC, video codecs
@@ -313,7 +313,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
 <h5 style="color: #9a3412; margin: 0 0 12px 0;">Idempotent Operations</h5>
 <div style="font-size: 13px; color: #475569;">
-                                Design requests so duplicates and reordering don't matter. Include request ID for deduplication. Response can be safely retried.
+  Design requests so duplicates and reordering don't matter. Include request ID for deduplication. Response can be safely retried.
 </div>
 <div style="background: #ffedd5; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #9a3412;">
 <strong>Used by:</strong> DNS, NTP, stateless RPCs
@@ -322,7 +322,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
 <h5 style="color: #7c3aed; margin: 0 0 12px 0;">Deadline-Based Delivery</h5>
 <div style="font-size: 13px; color: #475569;">
-                                Each packet has timestamp/deadline. Receiver drops packets past deadline rather than buffering. No retransmit of stale data.
+  Each packet has timestamp/deadline. Receiver drops packets past deadline rather than buffering. No retransmit of stale data.
 </div>
 <div style="background: #f3e8ff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #7c3aed;">
 <strong>Used by:</strong> Real-time audio/video, gaming
@@ -331,7 +331,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 </div>
 </div>
 
-                        ### UDP Interview Questions (3-Level Deep)
+### UDP Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: When would you use UDP over TCP?</h4>
@@ -352,7 +352,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: Why did QUIC choose UDP? What obstacles does this create?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Why UDP:</strong> (1) Kernel TCP stacks ossified - can't deploy new algorithms without OS updates; (2) Middleboxes (NATs, firewalls) mangle unknown TCP options; (3) Per-stream reliability impossible in TCP; (4) Connection migration impossible with TCP's 4-tuple identity.
-                                    <br><br>
+  <br><br>
 <strong>Obstacles:</strong> (1) NAT rebinding - UDP NAT mappings timeout faster (30s) than TCP; QUIC needs keepalives; (2) Firewalls blocking UDP/443; (3) No hardware offload initially; (4) Some networks rate-limit UDP; (5) Reimplementing congestion control correctly is hard.
 </div>
 </div>
@@ -372,7 +372,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Attack:</strong> Attacker sends small requests with spoofed source IP (victim's IP) to servers that respond with large replies. DNS (70x), NTP (556x), Memcached (51000x) amplification factors. Victim flooded with traffic.
-                                      <br><br>
+  <br><br>
 <strong>Mitigations:</strong> BCP38 source address validation, rate limiting responses, disabling unnecessary UDP services, response rate limiting (RRL) for DNS.
 </div>
 
@@ -380,7 +380,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you design a UDP protocol that's amplification-resistant?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Design principles:</strong> (1) Response must not exceed request size until source IP verified; (2) Require proof-of-work or puzzle for expensive operations; (3) Use challenge-response before amplifying (like TCP SYN cookies); (4) Rate-limit by source IP at application layer.
-                                            <br><br>
+  <br><br>
 <strong>QUIC's approach:</strong> Server sends Retry packet with address validation token before sending large handshake data. Client must echo token, proving it can receive at claimed IP. Initial packet minimum size (1200 bytes) limits amplification to 3x.
 </div>
 </div>
@@ -389,13 +389,13 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 </div>
 </div>
 
-                                    ---
+  ---
 
-                                    ## HTTP/2: Binary Framing and Multiplexing
+## HTTP/2: Binary Framing and Multiplexing
 
-                                    ### Internal Mechanisms
+### Internal Mechanisms
 
-                                    HTTP/2 fundamentally restructures HTTP communication while maintaining semantic compatibility with HTTP/1.1.
+  HTTP/2 fundamentally restructures HTTP communication while maintaining semantic compatibility with HTTP/1.1.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP/2 Frame Structure</h4>
@@ -409,7 +409,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <div style="background: #3b82f6; padding: 10px; border-radius: 4px; color: white;">Stream ID<br><span style="font-size: 10px;">31 bits</span></div>
 </div>
 <div style="background: #e0f2fe; padding: 16px; border-radius: 4px; margin-top: 8px; text-align: center;">
-                                                      Frame Payload (variable length)
+  Frame Payload (variable length)
 </div>
 </div>
 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; max-width: 600px;">
@@ -432,7 +432,7 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 </div>
 </div>
 
-                                                        ### Multiplexing and Stream Prioritization
+### Multiplexing and Stream Prioritization
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">HTTP/1.1 vs HTTP/2 Connection Usage</h4>
@@ -486,12 +486,12 @@ UDP assumes the <strong>application knows better than the transport layer</stron
 <h4 style="color: #7c3aed; margin-top: 0;">Design Trade-off: Stream Prioritization</h4>
 <div style="color: #1e293b;">
 HTTP/2 supports priority through dependency trees and weights. However, <strong>prioritization is advisory</strong> - servers may ignore it. Many CDNs and servers have poor or no priority support. Chrome deprecated complex priority trees in favor of simple urgency/incremental hints (Priority header) due to inconsistent implementation.
-                                                            <br><br>
+  <br><br>
 <strong>Implication:</strong> Don't rely on HTTP/2 priorities for correctness. Use them as optimization hints only.
 </div>
 </div>
 
-                                                            ### HPACK Header Compression
+### HPACK Header Compression
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">HPACK Compression Mechanism</h4>
@@ -499,19 +499,19 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Static Table</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                    61 predefined header name-value pairs. Index 2 = ":method: GET", Index 7 = ":scheme: https". Single byte reference.
+  61 predefined header name-value pairs. Index 2 = ":method: GET", Index 7 = ":scheme: https". Single byte reference.
 </div>
 </div>
 <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Dynamic Table</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                    Connection-specific table built from headers seen. "Authorization: Bearer xyz" added on first use, referenced by index thereafter. FIFO eviction.
+  Connection-specific table built from headers seen. "Authorization: Bearer xyz" added on first use, referenced by index thereafter. FIFO eviction.
 </div>
 </div>
 <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 1px solid #fde68a;">
 <h5 style="color: #b45309; margin: 0 0 12px 0;">Huffman Coding</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                    Static Huffman table for literals. Optimized for HTTP header byte frequencies. ~30% savings on string values.
+  Static Huffman table for literals. Optimized for HTTP header byte frequencies. ~30% savings on string values.
 </div>
 </div>
 </div>
@@ -520,7 +520,7 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 </div>
 </div>
 
-                                                            ### HTTP/2 Interview Questions (3-Level Deep)
+### HTTP/2 Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: How does HTTP/2 improve over HTTP/1.1?</h4>
@@ -541,7 +541,7 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How does HTTP/3 solve this, and what new problems does it introduce?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Solution:</strong> HTTP/3 uses QUIC over UDP. Each QUIC stream has independent reliability - loss in stream A doesn't block stream B. Only the affected stream waits for retransmission.
-                                                                        <br><br>
+  <br><br>
 <strong>New problems:</strong> (1) UDP often blocked/rate-limited - needs TCP fallback; (2) No hardware offload initially - higher CPU; (3) User-space implementation means more syscalls; (4) NAT rebinding happens faster for UDP; (5) Kernel bypass (DPDK) needed for high performance, adding complexity; (6) QPACK header compression needs careful synchronization to avoid HOL blocking in the compression state.
 </div>
 </div>
@@ -567,11 +567,11 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: What alternatives replaced Server Push?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>103 Early Hints:</strong> Server sends 103 response with Link headers hinting resources to preload. Client decides whether to fetch - respects cache. Simpler, cache-aware, widely supported.
-                                                                            <br><br>
+  <br><br>
 <strong>Resource hints:</strong> Preload, prefetch, preconnect in HTML. Client-controlled, cache-aware.
-                                                                                <br><br>
+  <br><br>
 <strong>Service Workers:</strong> Can prefetch/cache resources intelligently based on app knowledge.
-                                                                                    <br><br>
+  <br><br>
 <strong>Lesson:</strong> Server Push tried to optimize something the server doesn't have enough information about (client cache state). Better solutions give hints and let the client decide.
 </div>
 </div>
@@ -580,13 +580,13 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 </div>
 </div>
 
-                                                                            ---
+  ---
 
-                                                                            ## HTTP/3 and QUIC
+## HTTP/3 and QUIC
 
-                                                                            ### QUIC Internal Architecture
+### QUIC Internal Architecture
 
-                                                                            QUIC (Quick UDP Internet Connections) reimagines transport for the modern internet, combining ideas from TCP, TLS, and HTTP/2.
+  QUIC (Quick UDP Internet Connections) reimagines transport for the modern internet, combining ideas from TCP, TLS, and HTTP/2.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">QUIC Protocol Stack</h4>
@@ -610,14 +610,14 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 </div>
 </div>
 
-                                                                            ### QUIC Key Innovations
+### QUIC Key Innovations
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">0-RTT Connection Establishment</h5>
 <div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
-                                                                                    First connection: 1-RTT (vs TCP+TLS 3-RTT). Subsequent connections: 0-RTT using cached keys. Client sends encrypted data in first packet.
+  First connection: 1-RTT (vs TCP+TLS 3-RTT). Subsequent connections: 0-RTT using cached keys. Client sends encrypted data in first packet.
 </div>
 <div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-size: 12px; color: #991b1b;">
 <strong>Risk:</strong> 0-RTT data can be replayed. Only safe for idempotent requests. Servers must track seen tickets or accept replay risk.
@@ -626,7 +626,7 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Connection Migration</h5>
 <div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
-                                                                                    Connections identified by Connection ID, not 4-tuple. When IP changes (WiFi to cellular), connection survives. No re-handshake needed.
+  Connections identified by Connection ID, not 4-tuple. When IP changes (WiFi to cellular), connection survives. No re-handshake needed.
 </div>
 <div style="background: #dbeafe; border-radius: 8px; padding: 12px; font-size: 12px; color: #1e40af;">
 <strong>Implementation:</strong> Multiple Connection IDs per connection. Retire old IDs to prevent tracking. Path validation before migration.
@@ -635,7 +635,7 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
 <h5 style="color: #7c3aed; margin: 0 0 12px 0;">Per-Stream Flow Control</h5>
 <div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
-                                                                                    Independent flow control windows per stream AND connection-level. Slow consumer on one stream doesn't block others. More granular than TCP.
+  Independent flow control windows per stream AND connection-level. Slow consumer on one stream doesn't block others. More granular than TCP.
 </div>
 <div style="background: #f3e8ff; border-radius: 8px; padding: 12px; font-size: 12px; color: #7c3aed;">
 <strong>Complexity:</strong> More state to track. Deadlock possible if stream windows exhausted while connection window available.
@@ -644,7 +644,7 @@ HTTP/2 supports priority through dependency trees and weights. However, <strong>
 <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
 <h5 style="color: #9a3412; margin: 0 0 12px 0;">Integrated Encryption</h5>
 <div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
-                                                                                    All QUIC packets encrypted (except initial handshake). Even packet numbers and ACK frames encrypted. Prevents ossification by middleboxes.
+  All QUIC packets encrypted (except initial handshake). Even packet numbers and ACK frames encrypted. Prevents ossification by middleboxes.
 </div>
 <div style="background: #ffedd5; border-radius: 8px; padding: 12px; font-size: 12px; color: #9a3412;">
 <strong>Trade-off:</strong> Network operators can't inspect traffic. Debugging harder. No selective ACK visibility for network diagnostics.
@@ -660,7 +660,7 @@ QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting
 </div>
 </div>
 
-                                                                            ### HTTP/3 Interview Questions (3-Level Deep)
+### HTTP/3 Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: What is QUIC and why was it created?</h4>
@@ -681,9 +681,9 @@ QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: What are the security implications of 0-RTT and how do you mitigate them?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Replay attacks:</strong> Attacker captures 0-RTT data and replays it. Server processes request twice. Catastrophic for non-idempotent operations (payments, votes).
-                                                                                        <br><br>
+  <br><br>
 <strong>Mitigations:</strong> (1) Single-use session tickets - server tracks used tickets (requires shared state); (2) Strike registers - probabilistic tracking of used tickets; (3) Time-bounded tickets - limit replay window; (4) Application-layer idempotency keys; (5) Only allow safe methods (GET) in 0-RTT.
-                                                                                            <br><br>
+  <br><br>
 <strong>Trade-off:</strong> Strict anti-replay requires server state sharing across replicas, negating some scalability benefits. Most deployments accept bounded replay window.
 </div>
 </div>
@@ -709,9 +709,9 @@ QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do browsers handle QUIC blocking, and what's the performance impact?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Happy Eyeballs for QUIC:</strong> Browser races QUIC and TCP connections. If QUIC fails/slow, TCP wins. Subsequent requests use winner. QUIC failures cached temporarily to avoid repeated probing overhead.
-                                                                                                <br><br>
+  <br><br>
 <strong>Performance impact:</strong> Racing adds ~1 connection worth of overhead. On networks blocking QUIC, adds RTT delay before TCP fallback. Chrome reports ~5-7% of connections fall back to TCP.
-                                                                                                    <br><br>
+  <br><br>
 <strong>Alt-Svc learning:</strong> Server advertises QUIC support via Alt-Svc header. Browser caches this, tries QUIC on next visit. If blocked, falls back and clears cache. Results in good long-term behavior but suboptimal first visits.
 </div>
 </div>
@@ -720,13 +720,13 @@ QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting
 </div>
 </div>
 
-                                                                                            ---
+  ---
 
-                                                                                            ## WebSockets
+## WebSockets
 
-                                                                                            ### Protocol Internals
+### Protocol Internals
 
-                                                                                            WebSocket provides full-duplex communication over a single TCP connection, upgrading from HTTP.
+  WebSocket provides full-duplex communication over a single TCP connection, upgrading from HTTP.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Handshake and Frame Format</h4>
@@ -735,19 +735,19 @@ QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting
 <h5 style="color: #166534; margin: 0 0 12px 0;">HTTP Upgrade Handshake</h5>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px;">
 <div style="color: #166534; margin-bottom: 8px;">Client Request:</div>
-                                                                                                    GET /chat HTTP/1.1<br>
-                                                                                                      Upgrade: websocket<br>
-                                                                                                        Connection: Upgrade<br>
-                                                                                                          Sec-WebSocket-Key: dGhlIHNhbXBsZQ==<br>
-                                                                                                            Sec-WebSocket-Version: 13<br><br>
+  GET /chat HTTP/1.1<br>
+  Upgrade: websocket<br>
+  Connection: Upgrade<br>
+  Sec-WebSocket-Key: dGhlIHNhbXBsZQ==<br>
+  Sec-WebSocket-Version: 13<br><br>
 <div style="color: #1e40af; margin-bottom: 8px;">Server Response:</div>
-                                                                                                                HTTP/1.1 101 Switching Protocols<br>
-                                                                                                                  Upgrade: websocket<br>
-                                                                                                                    Connection: Upgrade<br>
-                                                                                                                      Sec-WebSocket-Accept: s3pPLMBiTxaQ9k...
+  HTTP/1.1 101 Switching Protocols<br>
+  Upgrade: websocket<br>
+  Connection: Upgrade<br>
+  Sec-WebSocket-Accept: s3pPLMBiTxaQ9k...
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 8px;">
-                                                                                                                      Accept = Base64(SHA1(Key + GUID))
+  Accept = Base64(SHA1(Key + GUID))
 </div>
 </div>
 <div>
@@ -777,7 +777,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                  ### Scaling WebSocket Connections
+### Scaling WebSocket Connections
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">WebSocket Scaling Challenges</h4>
@@ -785,31 +785,31 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
 <h5 style="color: #991b1b; margin: 0 0 12px 0;">Connection State</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                          Each connection consumes memory (~5-50KB per connection). 100K connections = 500MB-5GB just for connection state. File descriptors also limited (ulimit).
+  Each connection consumes memory (~5-50KB per connection). 100K connections = 500MB-5GB just for connection state. File descriptors also limited (ulimit).
 </div>
 </div>
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
 <h5 style="color: #991b1b; margin: 0 0 12px 0;">Sticky Sessions</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                          WebSocket requires routing to same server. Traditional round-robin load balancing breaks. Need IP hash, cookie-based, or connection ID routing.
+  WebSocket requires routing to same server. Traditional round-robin load balancing breaks. Need IP hash, cookie-based, or connection ID routing.
 </div>
 </div>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Pub/Sub Backend</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                          Broadcasting to users on different servers requires [[message-queues]](/topics/system-design/message-queues) backend. Redis Pub/Sub, Kafka, or dedicated solutions like Socket.IO adapters.
+  Broadcasting to users on different servers requires [[message-queues]](/topics/system-design/message-queues) backend. Redis Pub/Sub, Kafka, or dedicated solutions like Socket.IO adapters.
 </div>
 </div>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Graceful Shutdown</h5>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                          Deploy requires draining connections. Send close frame, wait for client reconnect to new server. Blue-green deployments need connection migration strategy.
+  Deploy requires draining connections. Send close frame, wait for client reconnect to new server. Blue-green deployments need connection migration strategy.
 </div>
 </div>
 </div>
 </div>
 
-                                                                                                                  ### WebSocket Interview Questions (3-Level Deep)
+### WebSocket Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: When would you use WebSocket vs HTTP polling?</h4>
@@ -824,7 +824,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Reconnection:</strong> Exponential backoff with jitter to avoid thundering herd. Client stores last message ID, server resends missed messages on reconnect. Handle connection state machine: CONNECTING, OPEN, CLOSING, CLOSED.
-                                                                                                                            <br><br>
+  <br><br>
 <strong>Ordering:</strong> Include sequence numbers. Client buffers out-of-order messages. Request retransmit for gaps. Or use server-side ordering with Lamport timestamps for distributed scenarios.
 </div>
 
@@ -832,13 +832,13 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: Design a WebSocket system handling 1M concurrent connections across multiple servers</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Connection tier:</strong> Dedicated WebSocket servers (10 servers, 100K connections each). Use epoll/kqueue for efficient I/O multiplexing. Tune kernel: file descriptors, memory, TCP buffers.
-                                                                                                                                  <br><br>
+  <br><br>
 <strong>Routing:</strong> Consistent hashing on user ID for sticky routing. Connection registry in Redis: user_id -> server_id. For geographic distribution, route to nearest region.
-                                                                                                                                      <br><br>
+  <br><br>
 <strong>Pub/Sub:</strong> Redis Cluster or Kafka for cross-server messaging. Each server subscribes to relevant channels. Fan-out on each server to local connections.
-                                                                                                                                          <br><br>
+  <br><br>
 <strong>Presence:</strong> Heartbeat every 30s. Server tracks last_seen. Distributed presence aggregation for "who's online" queries.
-                                                                                                                                              <br><br>
+  <br><br>
 <strong>Deployment:</strong> Rolling deploys with connection draining. Send reconnect hints before shutdown. Client connects to new server with resume token.
 </div>
 </div>
@@ -858,7 +858,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Attack:</strong> Attacker's JS opens WebSocket to attacker.com. Sends crafted frame that looks like "GET /jquery.js HTTP/1.1" followed by fake response. Transparent proxy caches the fake response. Subsequent requests for jquery.js get poisoned content.
-                                                                                                                                                <br><br>
+  <br><br>
 <strong>Masking solution:</strong> Client generates random 32-bit mask per frame. Proxy can't predict mask, so can't construct frames that decode to valid HTTP.
 </div>
 
@@ -866,9 +866,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: Why is masking only required client-to-server, and what are the performance implications?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Direction:</strong> Attack requires attacker-controlled client. Server-to-client doesn't have this threat model - server is trusted. If server is compromised, they have worse attacks than cache poisoning.
-                                                                                                                                                      <br><br>
+  <br><br>
 <strong>Performance:</strong> Masking requires XOR of every byte - ~3-5% CPU overhead for client. Server must unmask, similar overhead. For high-throughput scenarios (binary data streaming), this matters. Some propose "permessage-deflate" extension which compresses before masking, reducing bytes to mask.
-                                                                                                                                                          <br><br>
+  <br><br>
 <strong>Alternative:</strong> If proxy isn't present (direct TLS connection), masking is security theater. But WebSocket spec requires it unconditionally for simplicity - can't reliably detect proxy presence.
 </div>
 </div>
@@ -877,13 +877,13 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                  ---
+  ---
 
-                                                                                                                                                  ## gRPC
+## gRPC
 
-                                                                                                                                                  ### Protocol Internals
+### Protocol Internals
 
-                                                                                                                                                  gRPC is a high-performance RPC framework using HTTP/2 transport and Protocol Buffers serialization.
+  gRPC is a high-performance RPC framework using HTTP/2 transport and Protocol Buffers serialization.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">gRPC Protocol Layers</h4>
@@ -911,7 +911,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                  ### gRPC Streaming Patterns
+### gRPC Streaming Patterns
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">Four Communication Patterns</h4>
@@ -919,43 +919,43 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Unary RPC</h5>
 <div style="font-family: monospace; font-size: 12px; background: #dcfce7; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                                                                                                                                                          rpc GetUser(GetUserRequest)<br>&nbsp;&nbsp;returns (User);
+  rpc GetUser(GetUserRequest)<br>&nbsp;&nbsp;returns (User);
 </div>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                                                            Single request, single response. Like HTTP request/response. Most common pattern.
+  Single request, single response. Like HTTP request/response. Most common pattern.
 </div>
 </div>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Server Streaming</h5>
 <div style="font-family: monospace; font-size: 12px; background: #dbeafe; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                                                                                                                                                            rpc ListUsers(ListRequest)<br>&nbsp;&nbsp;returns (stream User);
+  rpc ListUsers(ListRequest)<br>&nbsp;&nbsp;returns (stream User);
 </div>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                                                              Single request, multiple responses. Good for large result sets, real-time updates.
+  Single request, multiple responses. Good for large result sets, real-time updates.
 </div>
 </div>
 <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
 <h5 style="color: #9a3412; margin: 0 0 12px 0;">Client Streaming</h5>
 <div style="font-family: monospace; font-size: 12px; background: #ffedd5; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                                                                                                                                                              rpc UploadLogs(stream LogEntry)<br>&nbsp;&nbsp;returns (UploadResult);
+  rpc UploadLogs(stream LogEntry)<br>&nbsp;&nbsp;returns (UploadResult);
 </div>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                                                                Multiple requests, single response. Good for uploads, aggregation.
+  Multiple requests, single response. Good for uploads, aggregation.
 </div>
 </div>
 <div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
 <h5 style="color: #7c3aed; margin: 0 0 12px 0;">Bidirectional Streaming</h5>
 <div style="font-family: monospace; font-size: 12px; background: #f3e8ff; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                                                                                                                                                                rpc Chat(stream Message)<br>&nbsp;&nbsp;returns (stream Message);
+  rpc Chat(stream Message)<br>&nbsp;&nbsp;returns (stream Message);
 </div>
 <div style="font-size: 13px; color: #475569;">
-                                                                                                                                                                  Both stream independently. Chat, real-time collaboration, game state sync.
+  Both stream independently. Chat, real-time collaboration, game state sync.
 </div>
 </div>
 </div>
 </div>
 
-                                                                                                                                                          ### Protocol Buffers Schema Evolution
+### Protocol Buffers Schema Evolution
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">Safe vs Breaking Changes</h4>
@@ -992,14 +992,14 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h4 style="color: #7c3aed; margin-top: 0;">Design Trade-off: gRPC vs REST</h4>
 <div style="color: #1e293b;">
 <strong>gRPC advantages:</strong> ~10x smaller payloads, ~10x faster serialization, strong typing, streaming, generated clients.
-                                                                                                                                                              <br><br>
+  <br><br>
 <strong>REST advantages:</strong> Browser-native, human-readable, easier debugging, universal tooling, cacheable by default, no generated code needed.
-                                                                                                                                                                  <br><br>
+  <br><br>
 <strong>Recommendation:</strong> gRPC for service-to-service, REST for public APIs. Consider gRPC-Web or gRPC-gateway for browser clients needing gRPC backend.
 </div>
 </div>
 
-                                                                                                                                                                  ### gRPC Interview Questions (3-Level Deep)
+### gRPC Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: What are the benefits of gRPC over REST?</h4>
@@ -1014,7 +1014,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Deadlines:</strong> Client sets deadline (absolute time). Each hop reduces remaining time. If deadline expires, call returns DEADLINE_EXCEEDED. Deadline propagates automatically through call chain - service A calls B calls C, C's deadline reflects original minus transit time.
-                                                                                                                                                                            <br><br>
+  <br><br>
 <strong>Cancellation:</strong> When client cancels, RST_STREAM sent. Server receives cancellation, can cancel downstream calls. Prevents wasted work.
 </div>
 
@@ -1022,9 +1022,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: What happens when deadline propagation conflicts with retry policies?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Conflict:</strong> Original deadline is 5s. First attempt takes 3s and fails. Retry budget allows retry, but only 2s remaining. Should we retry with likely timeout, or fail immediately?
-                                                                                                                                                                                  <br><br>
+  <br><br>
 <strong>Solutions:</strong> (1) Hedging instead of retry - start parallel request before timeout; (2) Per-attempt deadline separate from overall deadline; (3) Deadline budget accounting - only retry if budget allows meaningful attempt; (4) Circuit breaker - if service consistently timing out, fail fast.
-                                                                                                                                                                                      <br><br>
+  <br><br>
 <strong>gRPC behavior:</strong> Service config can specify maxAttempts, retryableStatusCodes, and hedgingPolicy. Library handles budget tracking. But: deadlines are end-to-end, retries consume budget. Design for total latency including retries.
 </div>
 </div>
@@ -1044,7 +1044,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Status + Details:</strong> gRPC Status includes repeated Any details field. Pack structured error messages (BadRequest, DebugInfo, etc.) from google.rpc.error_details.proto. Client unpacks and handles specific error types.
-                                                                                                                                                                                        <br><br>
+  <br><br>
 <strong>Example:</strong> INVALID_ARGUMENT status with BadRequest detail containing FieldViolation for each invalid field (field name, description).
 </div>
 
@@ -1052,9 +1052,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you handle partial failures in streaming RPCs?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Challenge:</strong> Client streams 100 records. 95 succeed, 5 fail validation. Stream must complete to get final status. How to report partial success?
-                                                                                                                                                                                              <br><br>
+  <br><br>
 <strong>Patterns:</strong> (1) Include status in each response message - client tracks failures as they stream; (2) Bidirectional stream - server immediately responds with per-item status; (3) Final status with details array listing failed items; (4) Atomic semantics - all or nothing with transaction.
-                                                                                                                                                                                                  <br><br>
+  <br><br>
 <strong>Trade-offs:</strong> Per-message status adds overhead but enables early failure detection. Batched final status is simpler but client doesn't know until end. Atomic is safest but limits throughput. Choose based on failure probability and recovery needs.
 </div>
 </div>
@@ -1063,13 +1063,13 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                                          ## Connection Pooling
+## Connection Pooling
 
-                                                                                                                                                                                          ### Why Connection Pooling Matters
+### Why Connection Pooling Matters
 
-                                                                                                                                                                                          Connection establishment is expensive: TCP handshake (1 RTT), TLS handshake (1-2 RTT), protocol negotiation. Pooling amortizes this cost.
+  Connection establishment is expensive: TCP handshake (1 RTT), TLS handshake (1-2 RTT), protocol negotiation. Pooling amortizes this cost.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Connection Lifecycle Costs</h4>
@@ -1096,7 +1096,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                                                          ### Pool Configuration Parameters
+### Pool Configuration Parameters
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; margin: 0 0 24px 0;">Critical Pool Settings</h4>
@@ -1136,7 +1136,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                                                                          ### Connection Pool Anti-patterns
+### Connection Pool Anti-patterns
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 <h4 style="color: #991b1b; margin-top: 0;">Common Mistakes</h4>
@@ -1144,31 +1144,31 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Pool per request</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-                                                                                                                                                                                                                  Creating new pool for each request defeats the purpose. Pool should be singleton/application-scoped. Often caused by wrong dependency injection scope.
+  Creating new pool for each request defeats the purpose. Pool should be singleton/application-scoped. Often caused by wrong dependency injection scope.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Connection leaks</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-                                                                                                                                                                                                                  Not returning connections to pool (missing close/release). Pool exhausts, new requests block. Use try-with-resources or equivalent. Monitor pool metrics.
+  Not returning connections to pool (missing close/release). Pool exhausts, new requests block. Use try-with-resources or equivalent. Monitor pool metrics.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Ignoring server-side limits</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-                                                                                                                                                                                                                  100 app servers with 50-connection pools = 5000 connections to database. Database might support only 1000. Coordinate pool sizes with backend capacity.
+  100 app servers with 50-connection pools = 5000 connections to database. Database might support only 1000. Coordinate pool sizes with backend capacity.
 </div>
 </div>
 <div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
 <strong>Stale connection usage</strong>
 <div style="color: #475569; font-size: 13px; margin-top: 8px;">
-                                                                                                                                                                                                                  Connection appears healthy but server closed it (idle timeout). First query fails. Solution: test-on-borrow, shorter idle timeout than server's, or maxLifetime.
+  Connection appears healthy but server closed it (idle timeout). First query fails. Solution: test-on-borrow, shorter idle timeout than server's, or maxLifetime.
 </div>
 </div>
 </div>
 </div>
 
-                                                                                                                                                                                                          ### Connection Pooling Interview Questions (3-Level Deep)
+### Connection Pooling Interview Questions (3-Level Deep)
 
 <div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
 <h4 style="color: #7c3aed; margin-top: 0;">Level 1: Why use connection pooling?</h4>
@@ -1183,7 +1183,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Formula:</strong> pool_size = throughput * avg_latency. If you need 1000 req/s and average latency is 10ms, you need 10 connections (plus buffer for variance).
-                                                                                                                                                                                                                    <br><br>
+  <br><br>
 <strong>For databases:</strong> connections = (core_count * 2) + effective_spindle_count. Most apps use pools far larger than optimal, causing contention.
 </div>
 
@@ -1191,11 +1191,11 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you handle connection pool exhaustion during traffic spikes?</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Detection:</strong> Monitor pool wait time, active connections, queue depth. Alert when approaching limits.
-                                                                                                                                                                                                                          <br><br>
+  <br><br>
 <strong>Short-term:</strong> Queue with timeout - fail fast rather than block indefinitely. Return 503 with Retry-After to enable client backoff.
-                                                                                                                                                                                                                              <br><br>
+  <br><br>
 <strong>Strategies:</strong> (1) Adaptive pool sizing - grow under load, shrink during calm; (2) [[rate-limiting]](/topics/system-design/rate-limiting) to prevent overload; (3) [[circuit-breaker]](/topics/system-design/circuit-breaker) to fail fast when backend overwhelmed; (4) Request prioritization - shed low-priority traffic first.
-                                                                                                                                                                                                                                  <br><br>
+  <br><br>
 <strong>Prevention:</strong> [[load-testing]](/topics/system-design/load-testing) to find limits. Capacity planning with headroom. Autoscaling triggers before exhaustion.
 </div>
 </div>
@@ -1215,9 +1215,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <div style="margin-left: 16px; margin-top: 12px;">
 <div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
 <strong>Server-side timeout:</strong> Server's idle timeout shorter than client's pool timeout. Client thinks connection valid, server already closed.
-                                                                                                                                                                                                                                    <br><br>
+  <br><br>
 <strong>Network issues:</strong> Firewall drops idle connections. NAT rebinding. Network partition.
-                                                                                                                                                                                                                                        <br><br>
+  <br><br>
 <strong>Server restart:</strong> Server process restarted, existing connections become half-open.
 </div>
 
@@ -1225,9 +1225,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <h6 style="color: #5b21b6; margin-top: 0;">Level 3: Design a connection validation strategy that balances reliability vs latency</h6>
 <div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
 <strong>Naive approach:</strong> Validate every borrow (SELECT 1). Adds latency to every request.
-                                                                                                                                                                                                                                              <br><br>
+  <br><br>
 <strong>Better approaches:</strong> (1) Validate if idle > N seconds - recent connections likely valid; (2) Background thread validates all connections periodically - moves latency off critical path; (3) Set maxLifetime slightly below server timeout - preemptive closure; (4) TCP keepalive - OS-level connection validation.
-                                                                                                                                                                                                                                                  <br><br>
+  <br><br>
 <strong>Hybrid strategy:</strong> Background validation every 30s. On borrow, validate only if idle > 10s. maxLifetime = server_timeout - 30s. This catches most stale connections with minimal latency impact. Accept occasional first-request failure with automatic retry.
 </div>
 </div>
@@ -1236,9 +1236,9 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 </div>
 </div>
 
-                                                                                                                                                                                                                                          ---
+  ---
 
-                                                                                                                                                                                                                                          ## Protocol Selection Decision Tree
+## Protocol Selection Decision Tree
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Choosing the Right Protocol</h4>
@@ -1252,7 +1252,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <strong style="color: #166534;">Need gRPC backend:</strong> gRPC-Web with Envoy proxy
 </div>
 <div style="color: #64748b;">
-                                                                                                                                                                                                                                                        Browsers don't support arbitrary TCP/UDP. Limited to HTTP, WebSocket, WebRTC.
+  Browsers don't support arbitrary TCP/UDP. Limited to HTTP, WebSocket, WebRTC.
 </div>
 </div>
 </div>
@@ -1266,7 +1266,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <strong style="color: #166534;">Async processing:</strong> [[Message queues]](/topics/system-design/message-queues)
 </div>
 <div style="color: #64748b;">
-                                                                                                                                                                                                                                                              Internal APIs can use binary protocols. Prioritize performance and type safety.
+  Internal APIs can use binary protocols. Prioritize performance and type safety.
 </div>
 </div>
 </div>
@@ -1279,7 +1279,7 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <strong style="color: #166534;">Financial data:</strong> Multicast UDP or dedicated lines
 </div>
 <div style="color: #64748b;">
-                                                                                                                                                                                                                                                                  TCP's reliability adds latency. Accept some loss for lower latency.
+  TCP's reliability adds latency. Accept some loss for lower latency.
 </div>
 </div>
 </div>
@@ -1292,16 +1292,16 @@ WebSocket assumes <strong>infrastructure supports long-lived connections</strong
 <strong style="color: #166534;">High-performance clients:</strong> Offer both REST and gRPC
 </div>
 <div style="color: #64748b;">
-                                                                                                                                                                                                                                                                      Public APIs prioritize usability, documentation, tooling support.
+  Public APIs prioritize usability, documentation, tooling support.
 </div>
 </div>
 </div>
 </div>
 </div>
 
-                                                                                                                                                                                                                                                            ---
+  ---
 
-                                                                                                                                                                                                                                                            ## Related Topics
+## Related Topics
 
 <div style="background: #f1f5f9; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">

@@ -138,7 +138,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Interview Questions: Nines of Availability (3 Levels Deep)
+### Interview Questions: Nines of Availability (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What does "five nines" availability mean and why is it so hard to achieve?</h4>
@@ -158,11 +158,11 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Section 2: MTBF and MTTR Deep Dive
+## Section 2: MTBF and MTTR Deep Dive
 
-          ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color: #22c55e; font-weight: 600;">MTBF (Mean Time Between Failures)</span> and <span style="color: #22c55e; font-weight: 600;">MTTR (Mean Time To Recovery)</span> are the two fundamental levers for improving availability. Understanding their relationship is crucial for making informed architecture decisions.
 
@@ -194,9 +194,9 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### MTTR Breakdown
+### MTTR Breakdown
 
-          MTTR is composed of multiple phases, each of which can be optimized:
+  MTTR is composed of multiple phases, each of which can be optimized:
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Components of MTTR</h4>
@@ -248,7 +248,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### MTBF and MTTR Calculations
+### MTBF and MTTR Calculations
 
           ```python
           from dataclasses import dataclass
@@ -439,7 +439,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
           return target_availability ** (1 / num_components_in_series)
           ```
 
-          ### Interview Questions: MTBF and MTTR (3 Levels Deep)
+### Interview Questions: MTBF and MTTR (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What's the relationship between MTBF, MTTR, and availability?</h4>
@@ -459,11 +459,11 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Section 3: Failover Strategies
+## Section 3: Failover Strategies
 
-          ### Deep Mechanics
+### Deep Mechanics
 
 <span style="color: #22c55e; font-weight: 600;">Failover</span> is the process of switching to a redundant system when the primary system fails. The failover strategy you choose dramatically affects both availability and cost.
 
@@ -507,7 +507,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Detailed Failover Comparison
+### Detailed Failover Comparison
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Failover Strategy Deep Dive</h4>
@@ -593,7 +593,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Failover Implementation
+### Failover Implementation
 
           ```python
           from enum import Enum
@@ -855,7 +855,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
           self._initiate_failback()
           ```
 
-          ### Interview Questions: Failover Strategies (3 Levels Deep)
+### Interview Questions: Failover Strategies (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What's the difference between cold, warm, and hot failover?</h4>
@@ -875,11 +875,11 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Section 4: Redundancy Patterns
+## Section 4: Redundancy Patterns
 
-          ### Active-Passive vs Active-Active
+### Active-Passive vs Active-Active
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <h4 style="color: #1e293b; margin-top: 0; font-size: 20px;">Redundancy Architecture Patterns</h4>
@@ -955,7 +955,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Multi-Region Active-Active Architecture
+### Multi-Region Active-Active Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
 <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Global Active-Active Deployment</h4>
@@ -1003,7 +1003,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Redundancy Implementation Patterns
+### Redundancy Implementation Patterns
 
           ```python
           from enum import Enum
@@ -1324,7 +1324,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
           break
           ```
 
-          ### Interview Questions: Redundancy Patterns (3 Levels Deep)
+### Interview Questions: Redundancy Patterns (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: When would you choose active-passive over active-active redundancy?</h4>
@@ -1344,11 +1344,11 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Section 5: SLA, SLO, and SLI Framework
+## Section 5: SLA, SLO, and SLI Framework
 
-          ### Deep Mechanics
+### Deep Mechanics
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
 <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">The Availability Measurement Hierarchy</h4>
@@ -1383,7 +1383,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Error Budget
+### Error Budget
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Error Budget: Balancing Reliability and Velocity</h4>
@@ -1417,7 +1417,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ### Interview Questions: SLA/SLO/SLI (3 Levels Deep)
+### Interview Questions: SLA/SLO/SLI (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What's the difference between SLA, SLO, and SLI? Why have all three?</h4>
@@ -1437,11 +1437,11 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Real-Life Failure Story
+## Real-Life Failure Story
 
-          ### The AWS S3 Outage (February 28, 2017)
+### The AWS S3 Outage (February 28, 2017)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
 <h4 style="margin-top: 0; color: #f97316; font-size: 18px;">The Day the Internet Broke</h4>
@@ -1513,9 +1513,9 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Common Mistakes
+## Common Mistakes
 
 <div style="background: #fef2f2; border: 2px solid #fecaca; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">Availability Anti-Patterns</h4>
@@ -1543,9 +1543,9 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Quick Reference Card
+## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Availability Cheat Sheet</h4>
@@ -1623,9 +1623,9 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a;">
 </div>
 </div>
 
-          ---
+  ---
 
-          ## Related Topics
+## Related Topics
 
           - [[load-balancing]](/topic/system-design/load-balancing) - Distributing traffic across redundant instances
           - [[database-replication]](/topic/system-design/database-replication) - Keeping data synchronized across replicas

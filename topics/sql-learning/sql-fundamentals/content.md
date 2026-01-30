@@ -393,19 +393,19 @@ GROUP BY organizes rows into groups for aggregate calculations. HAVING filters g
 <div style="color: #1e40af; font-weight: bold; font-size: 16px; margin-bottom: 12px;">WHERE</div>
 <div style="color: #475569; font-size: 14px; margin-bottom: 16px;">Filters individual rows BEFORE grouping</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #1e293b;">
-        SELECT category, COUNT(*)<br/>
-        FROM products<br/>
+  SELECT category, COUNT(*)<br/>
+  FROM products<br/>
 <span style="color: #3b82f6; font-weight: bold;">WHERE price > 50</span><br/>
-        GROUP BY category;
+  GROUP BY category;
 </div>
 </div>
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
 <div style="color: #b45309; font-weight: bold; font-size: 16px; margin-bottom: 12px;">HAVING</div>
 <div style="color: #475569; font-size: 14px; margin-bottom: 16px;">Filters groups AFTER aggregation</div>
 <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #1e293b;">
-        SELECT category, COUNT(*)<br/>
-        FROM products<br/>
-        GROUP BY category<br/>
+  SELECT category, COUNT(*)<br/>
+  FROM products<br/>
+  GROUP BY category<br/>
 <span style="color: #f59e0b; font-weight: bold;">HAVING COUNT(*) >= 2</span>;
 </div>
 </div>
@@ -769,13 +769,13 @@ JOIN monthly_orders m2
 <div>
 <h4 style="color: #1e293b; margin: 0 0 12px 0;">Query Structure</h4>
 <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8;">
-        SELECT columns<br/>
-        FROM table<br/>
-        WHERE row_conditions<br/>
-        GROUP BY columns<br/>
-        HAVING group_conditions<br/>
-        ORDER BY columns<br/>
-        LIMIT n OFFSET m;
+  SELECT columns<br/>
+  FROM table<br/>
+  WHERE row_conditions<br/>
+  GROUP BY columns<br/>
+  HAVING group_conditions<br/>
+  ORDER BY columns<br/>
+  LIMIT n OFFSET m;
 </div>
 </div>
 <div>

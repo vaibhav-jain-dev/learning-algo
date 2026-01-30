@@ -6,7 +6,7 @@ Design a smart parking management system for multi-level parking lots with real-
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00bcd4;">
 
-  ### Core Requirements
+### Core Requirements
   - **Spot Management**: Track available/occupied spots
   - **Vehicle Entry/Exit**: Automated ticketing
   - **Reservations**: Book spots in advance
@@ -907,17 +907,17 @@ class PaymentService:
 <div style="background: #f8fafc; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
 <div style="color: #fca5a5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Aggregate Counts</div>
 <div style="color: #8b949e; font-size: 11px; font-family: monospace; line-height: 1.6;">
-          lot:{id}:available = 234<br/>
-          lot:{id}:total = 500<br/>
-          lot:{id}:level:1:available = 45
+  lot:{id}:available = 234<br/>
+  lot:{id}:total = 500<br/>
+  lot:{id}:level:1:available = 45
 </div>
 </div>
 <div style="background: #f8fafc; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
 <div style="color: #fca5a5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">By Type Breakdown</div>
 <div style="color: #8b949e; font-size: 11px; font-family: monospace; line-height: 1.6;">
-          lot:{id}:type:COMPACT = 78<br/>
-          lot:{id}:type:REGULAR = 110<br/>
-          lot:{id}:type:EV = 12
+  lot:{id}:type:COMPACT = 78<br/>
+  lot:{id}:type:REGULAR = 110<br/>
+  lot:{id}:type:EV = 12
 </div>
 </div>
 </div>
@@ -1393,7 +1393,7 @@ class DynamicPricingService:
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 
-      <!-- ParkingLot Entity -->
+  <!-- ParkingLot Entity -->
 <div style="background: linear-gradient(135deg, #238636 0%, #1a5a28 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 14px 28px; text-align: center;">
 <span style="color: #ffffff; font-weight: bold;">ParkingLot (1)</span>
 </div>
@@ -1404,7 +1404,7 @@ class DynamicPricingService:
 <div style="color: #8b949e; font-size: 18px;">&#8595;</div>
 </div>
 
-      <!-- Level Entity -->
+  <!-- Level Entity -->
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #1a4d8c 100%); border: 2px solid #58a6ff; border-radius: 10px; padding: 14px 28px; text-align: center;">
 <span style="color: #ffffff; font-weight: bold;">Level (M)</span>
 </div>
@@ -1415,7 +1415,7 @@ class DynamicPricingService:
 <div style="color: #8b949e; font-size: 18px;">&#8595;</div>
 </div>
 
-      <!-- Spot Entity -->
+  <!-- Spot Entity -->
 <div style="background: linear-gradient(135deg, #8957e5 0%, #6b3dbd 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 14px 28px; text-align: center;">
 <span style="color: #ffffff; font-weight: bold;">Spot (M)</span>
 </div>
@@ -1426,7 +1426,7 @@ class DynamicPricingService:
 <div style="color: #8b949e; font-size: 18px;">&#8595;</div>
 </div>
 
-      <!-- Ticket Entity -->
+  <!-- Ticket Entity -->
 <div style="background: linear-gradient(135deg, #f0883e 0%, #c76a2e 100%); border: 2px solid #f9826c; border-radius: 10px; padding: 14px 28px; text-align: center;">
 <span style="color: #ffffff; font-weight: bold;">Ticket</span>
 </div>
@@ -1437,7 +1437,7 @@ class DynamicPricingService:
 <div style="color: #8b949e; font-size: 18px;">&#8595;</div>
 </div>
 
-      <!-- Vehicle Entity -->
+  <!-- Vehicle Entity -->
 <div style="background: linear-gradient(135deg, #da3633 0%, #a82828 100%); border: 2px solid #f85149; border-radius: 10px; padding: 14px 28px; text-align: center;">
 <span style="color: #ffffff; font-weight: bold;">Vehicle</span>
 </div>
@@ -1509,7 +1509,7 @@ class DynamicPricingService:
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### The "$100/Month Parking System"
+### The "$100/Month Parking System"
 
     **Reality Check**: Most parking lots in the world run on incredibly simple systems.
 
@@ -1537,7 +1537,7 @@ class DynamicPricingService:
     # Monthly cost: ~$100 for payment processing
     ```
 
-    ### When You DON'T Need IoT Sensors
+### When You DON'T Need IoT Sensors
 
     | Skip Per-Spot Sensors When... | Why |
     |-------------------------------|-----|
@@ -1547,7 +1547,7 @@ class DynamicPricingService:
     | Retrofitting old structure | Wiring costs exceed sensor benefits |
     | Short average stay (<2 hours) | High turnover makes spot-finding less critical |
 
-    ### When You DON'T Need Dynamic Pricing
+### When You DON'T Need Dynamic Pricing
 
     | Skip Dynamic Pricing When... | Why |
     |------------------------------|-----|
@@ -1556,7 +1556,7 @@ class DynamicPricingService:
     | Customer base expects stability | Seniors, regulars dislike variable pricing |
     | Implementation cost > revenue gain | Small lots won't see meaningful lift |
 
-    ### Simpler Alternatives That Work
+### Simpler Alternatives That Work
 
     | Complex Solution | Simpler Alternative | When Simple Wins |
     |-----------------|---------------------|------------------|
@@ -1577,14 +1577,14 @@ class DynamicPricingService:
 <div style="background: linear-gradient(135deg, #f0883e 0%, #f9826c 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-    ### Critical Trade-offs Matrix
+### Critical Trade-offs Matrix
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 <div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">PARKING SYSTEM TRADE-OFFS</div>
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
-        <!-- Row 1 -->
+  <!-- Row 1 -->
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f1f5f9; border-radius: 8px; padding: 12px;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Trade-off</div>
 <div style="color: #3fb950; font-weight: bold; font-size: 12px;">Option A</div>
@@ -1639,7 +1639,7 @@ class DynamicPricingService:
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-  ### Key Discussion Points
+### Key Discussion Points
 
   1. **Spot allocation strategies**: Different approaches for different use cases (nearest entrance vs. distributed load vs. preserve larger spots)
   2. **Sensor trade-offs**: Per-spot vs. entry/exit counters - most lots don't need per-spot tracking
@@ -1648,7 +1648,7 @@ class DynamicPricingService:
   5. **Offline operation**: Edge controllers with event sourcing for resilience
   6. **Dynamic pricing**: Occupancy + time + events, but acknowledge most lots use flat rates
 
-  ### Red Flags to Avoid
+### Red Flags to Avoid
 
   | Red Flag | Why It's Bad | Better Approach |
   |----------|--------------|-----------------|
@@ -1659,7 +1659,7 @@ class DynamicPricingService:
   | "Block cars on payment failure" | Creates operational chaos | "Flag plate, invoice later, let car exit" |
   | Ignoring offline scenarios | Lots must operate without cloud | "Edge controller with local fallback" |
 
-  ### Impressive Statements
+### Impressive Statements
 
   > "Most parking lots just need a counter at entry/exit - no per-spot tracking. I'd start there and add complexity only when the business case justifies the sensor investment."
 
@@ -1671,7 +1671,7 @@ class DynamicPricingService:
 
   > "Dynamic pricing sounds exciting, but most successful lots use simple peak/off-peak rates. True dynamic pricing adds complexity that often doesn't justify the revenue improvement."
 
-  ### Related Topics
+### Related Topics
 
   - [[distributed-locking]](/topics/system-design/distributed-locking) - Concurrent spot allocation
   - [[event-sourcing]](/topics/system-design/event-sourcing) - Offline sync and reconciliation

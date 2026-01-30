@@ -233,7 +233,7 @@ This comprehensive guide walks through designing a large-scale e-commerce platfo
 </div>
 </div>
 
-          #### 3. Inventory Service
+#### 3. Inventory Service
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #3b82f6; margin: 0 0 20px 0; font-size: 14px;">INVENTORY SERVICE</h4>
@@ -277,7 +277,7 @@ This comprehensive guide walks through designing a large-scale e-commerce platfo
 <div style="flex: 1; min-width: 200px;">
 <div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
 <div style="color: #1e293b; font-size: 11px;">
-        Add/remove items | Update quantities | Apply coupons | Calculate totals | Cart persistence
+  Add/remove items | Update quantities | Apply coupons | Calculate totals | Cart persistence
 </div>
 </div>
 <div style="flex: 1; min-width: 200px;">
@@ -432,7 +432,7 @@ This comprehensive guide walks through designing a large-scale e-commerce platfo
 <div style="text-align: center; color: #3b82f6; margin: 8px 0;">v</div>
 <div style="text-align: center;">
 <div style="background: rgba(34,197,94,0.1); border-radius: 8px; padding: 12px; display: inline-block; color: #22c55e; font-size: 11px; font-weight: bold; border: 1px solid #86efac;">
-        Search Results with Facets
+  Search Results with Facets
 </div>
 </div>
 </div>
@@ -674,7 +674,7 @@ This comprehensive guide walks through designing a large-scale e-commerce platfo
 
   ---
 
-  ## Key Design Decisions
+## Key Design Decisions
 
   | Decision | Choice | Rationale |
   |----------|--------|-----------|
@@ -688,7 +688,7 @@ This comprehensive guide walks through designing a large-scale e-commerce platfo
 
   ---
 
-  ## Key Takeaways
+## Key Takeaways
 
   1. **Design for failure** - Every service can fail, plan for graceful degradation
   2. **Eventual consistency is OK** - Not everything needs ACID transactions

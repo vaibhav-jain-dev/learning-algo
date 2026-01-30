@@ -212,10 +212,10 @@ A <span style="color: #10b981; font-weight: 600;">fencing token</span> is a mono
 <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid #6366f1; border-radius: 8px; padding: 16px;">
 <div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">TTL Formula</div>
 <div style="color: #4f46e5; font-size: 14px; font-family: monospace;">
-      TTL = 2 * (expected_operation_time + max_network_latency + clock_drift_allowance)
+  TTL = 2 * (expected_operation_time + max_network_latency + clock_drift_allowance)
 </div>
 <div style="color: #6366f1; font-size: 13px; margin-top: 8px;">
-      Example: 5s operation + 100ms latency + 50ms drift = TTL of ~11 seconds minimum
+  Example: 5s operation + 100ms latency + 50ms drift = TTL of ~11 seconds minimum
 </div>
 </div>
 </div>
@@ -352,7 +352,7 @@ A <span style="color: #10b981; font-weight: 600;">fencing token</span> is a mono
 </div>
 </div>
 
-    ### ZooKeeper Locks (Consensus-Based)
+### ZooKeeper Locks (Consensus-Based)
 
 <span style="color: #10b981; font-weight: 600;">ZooKeeper</span> provides distributed locking through <span style="color: #10b981; font-weight: 600;">ephemeral sequential znodes</span>, offering stronger guarantees than Redis-based approaches.
 
@@ -365,8 +365,8 @@ A <span style="color: #10b981; font-weight: 600;">fencing token</span> is a mono
 <div style="flex: 1; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600;">Create Ephemeral Sequential Znode</div>
 <div style="color: #14532d; font-size: 13px; margin-top: 4px; font-family: monospace;">
-          create -e -s /locks/resource-lock-<br>
-            Result: /locks/resource-lock-0000000001
+  create -e -s /locks/resource-lock-<br>
+  Result: /locks/resource-lock-0000000001
 </div>
 </div>
 </div>
@@ -376,8 +376,8 @@ A <span style="color: #10b981; font-weight: 600;">fencing token</span> is a mono
 <div style="flex: 1; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600;">Get All Children and Sort</div>
 <div style="color: #14532d; font-size: 13px; margin-top: 4px; font-family: monospace;">
-            ls /locks<br>
-              [resource-lock-0000000001, resource-lock-0000000002, ...]
+  ls /locks<br>
+  [resource-lock-0000000001, resource-lock-0000000002, ...]
 </div>
 </div>
 </div>
@@ -387,7 +387,7 @@ A <span style="color: #10b981; font-weight: 600;">fencing token</span> is a mono
 <div style="flex: 1; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600;">Check If Lowest Sequence</div>
 <div style="color: #14532d; font-size: 13px; margin-top: 4px;">
-              If your znode has the lowest sequence number, you have the lock.<br>
+  If your znode has the lowest sequence number, you have the lock.<br>
 The sequence number serves as the <span style="color: #10b981; font-weight: 600;">fencing token</span>!
 </div>
 </div>
@@ -398,7 +398,7 @@ The sequence number serves as the <span style="color: #10b981; font-weight: 600;
 <div style="flex: 1; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600;">Watch Previous Znode (If Not Lowest)</div>
 <div style="color: #14532d; font-size: 13px; margin-top: 4px;">
-                Set a watch on the znode with the next-lower sequence number.<br>
+  Set a watch on the znode with the next-lower sequence number.<br>
 This creates a fair queue and avoids <span style="color: #10b981; font-weight: 600;">herd effect</span>.
 </div>
 </div>
@@ -409,7 +409,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 <div style="flex: 1; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
 <div style="color: #166534; font-weight: 600;">Release by Deleting Znode</div>
 <div style="color: #14532d; font-size: 13px; margin-top: 4px;">
-                  Delete your znode to release lock, or let session expire (ephemeral auto-cleanup)
+  Delete your znode to release lock, or let session expire (ephemeral auto-cleanup)
 </div>
 </div>
 </div>
@@ -437,7 +437,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 </div>
 </div>
 
-        ### Consensus-Based Locking (etcd/Raft)
+### Consensus-Based Locking (etcd/Raft)
 
 <span style="color: #10b981; font-weight: 600;">etcd</span> uses the [[Raft consensus algorithm]](/topic/system-design/consensus-algorithms) to provide strongly consistent distributed locking through its lease mechanism.
 
@@ -471,11 +471,11 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 </div>
 </div>
 
-        ---
+  ---
 
-        ## Implementation
+## Implementation
 
-        ### Redis-Based Distributed Lock with Fencing
+### Redis-Based Distributed Lock with Fencing
 
         ```python
         import redis
@@ -650,7 +650,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
         pass
         ```
 
-        ### Redlock Implementation
+### Redlock Implementation
 
         ```python
         import redis
@@ -756,7 +756,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
         return max(0, self.ttl_ms - elapsed)
         ```
 
-        ### ZooKeeper Lock Implementation
+### ZooKeeper Lock Implementation
 
         ```python
         from kazoo.client import KazooClient
@@ -855,7 +855,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
         lock.close()
         ```
 
-        ### etcd Lock with Lease Management
+### etcd Lock with Lease Management
 
         ```python
         import etcd3
@@ -987,11 +987,11 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
         self.release()
         ```
 
-        ---
+  ---
 
-        ## Real-Life Failure Story
+## Real-Life Failure Story
 
-        ### The GitHub Outage (2012)
+### The GitHub Outage (2012)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
@@ -999,7 +999,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #991b1b; font-weight: 600;">The Incident</div>
 <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
-              GitHub experienced data corruption during a routine database migration. Multiple processes simultaneously wrote to repositories because their distributed locking mechanism failed during a network partition between data centers.
+  GitHub experienced data corruption during a routine database migration. Multiple processes simultaneously wrote to repositories because their distributed locking mechanism failed during a network partition between data centers.
 </div>
 </div>
 
@@ -1025,61 +1025,61 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 </div>
 </div>
 
-        ---
+  ---
 
-        ## Interview Questions - 3-Level Deep Dive
+## Interview Questions - 3-Level Deep Dive
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
-          ### Q1: What's the difference between Redis SETNX and a proper distributed lock?
+### Q1: What's the difference between Redis SETNX and a proper distributed lock?
 
-          **Level 1 Answer:**
+**Level 1 Answer:**
 SETNX (SET if Not eXists) is just an atomic set-if-not-exists operation. A proper distributed lock requires additional mechanisms: <span style="color: #10b981; font-weight: 600;">ownership tracking</span> (unique token), <span style="color: #10b981; font-weight: 600;">TTL for safety</span>, <span style="color: #10b981; font-weight: 600;">atomic release</span> (compare-and-delete), and <span style="color: #10b981; font-weight: 600;">fencing tokens</span>.
 
 <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; margin: 12px 0;">
 
-            **Level 2 Follow-up: Why isn't SETNX with an expiry sufficient?**
+**Level 2 Follow-up: Why isn't SETNX with an expiry sufficient?**
 
 Even with SETNX + EXPIRE (or SET NX EX), you face the <span style="color: #10b981; font-weight: 600;">"pausing problem"</span>: if Client A acquires a lock, then experiences a long GC pause or network delay, the lock expires. Client B acquires the lock and starts working. When Client A resumes, it doesn't know its lock expired and continues operating, causing data corruption.
 
 <div style="background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1; padding: 12px; margin: 12px 0;">
 
-              **Level 3 Follow-up: How do fencing tokens solve this, and why must the storage validate them?**
+**Level 3 Follow-up: How do fencing tokens solve this, and why must the storage validate them?**
 
 <span style="color: #10b981; font-weight: 600;">Fencing tokens</span> are monotonically increasing numbers assigned with each lock acquisition. Client A gets token=33, Client B gets token=34. The storage layer tracks the highest token seen per resource. When Client A tries to write with token=33 after Client B wrote with token=34, the storage rejects it (33 < 34 is stale).
 
-              The storage must validate tokens because the lock service cannot prevent a client from attempting operations after its lock expires - by the time the client acts, the lock service has already moved on. Only the storage, which is the ultimate destination of writes, can enforce this safety check.
+  The storage must validate tokens because the lock service cannot prevent a client from attempting operations after its lock expires - by the time the client acts, the lock service has already moved on. Only the storage, which is the ultimate destination of writes, can enforce this safety check.
 
-              This is why distributed locks require cooperation between lock service AND storage - neither can provide safety alone. Systems like [[ZooKeeper]](/topic/system-design/consensus-algorithms) provide built-in fencing via sequential znode numbers, while Redis requires manual implementation.
+  This is why distributed locks require cooperation between lock service AND storage - neither can provide safety alone. Systems like [[ZooKeeper]](/topic/system-design/consensus-algorithms) provide built-in fencing via sequential znode numbers, while Redis requires manual implementation.
 
 </div>
 </div>
 </div>
 
-        ---
+  ---
 
-        ### Q2: Explain the Redlock algorithm and its criticisms. When should you use it?
+### Q2: Explain the Redlock algorithm and its criticisms. When should you use it?
 
-        **Level 1 Answer:**
+**Level 1 Answer:**
 Redlock acquires locks on N independent Redis masters (typically 5), requiring a <span style="color: #10b981; font-weight: 600;">majority (N/2 + 1)</span> to succeed within a validity period. This provides better safety than single-node Redis because data must be lost on multiple independent machines for the lock to be violated.
 
 <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; margin: 12px 0;">
 
-          **Level 2 Follow-up: What are Martin Kleppmann's specific criticisms?**
+**Level 2 Follow-up: What are Martin Kleppmann's specific criticisms?**
 
-          Kleppmann's analysis identified several fundamental issues:
+  Kleppmann's analysis identified several fundamental issues:
 
-          1. **Timing assumptions**: Redlock assumes bounded network delay and clock drift, but in real systems these can be arbitrarily long (GC pauses, VM migrations, network congestion).
+  1. **Timing assumptions**: Redlock assumes bounded network delay and clock drift, but in real systems these can be arbitrarily long (GC pauses, VM migrations, network congestion).
 
-          2. **No fencing tokens**: Redlock doesn't natively provide fencing tokens, so even correct implementation is vulnerable to the pausing problem.
+  2. **No fencing tokens**: Redlock doesn't natively provide fencing tokens, so even correct implementation is vulnerable to the pausing problem.
 
-          3. **Not true consensus**: Unlike Raft or Paxos, Redlock doesn't have formal safety proofs. It's a probabilistic guarantee based on independence assumptions that may not hold.
+  3. **Not true consensus**: Unlike Raft or Paxos, Redlock doesn't have formal safety proofs. It's a probabilistic guarantee based on independence assumptions that may not hold.
 
-          4. **Clock synchronization**: The algorithm requires reasonably synchronized clocks across Redis instances, but clock drift in distributed systems is notoriously difficult to bound.
+  4. **Clock synchronization**: The algorithm requires reasonably synchronized clocks across Redis instances, but clock drift in distributed systems is notoriously difficult to bound.
 
 <div style="background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1; padding: 12px; margin: 12px 0;">
 
-            **Level 3 Follow-up: Given these criticisms, what's Redlock actually good for?**
+**Level 3 Follow-up: Given these criticisms, what's Redlock actually good for?**
 
 Redlock is appropriate for <span style="color: #10b981; font-weight: 600;">efficiency use cases</span> where occasional duplicate processing is tolerable:
 
@@ -1096,20 +1096,20 @@ For <span style="color: #10b981; font-weight: 600;">correctness use cases</span>
 </div>
 </div>
 
-      ---
+  ---
 
-      ### Q3: How does ZooKeeper implement distributed locks differently from Redis?
+### Q3: How does ZooKeeper implement distributed locks differently from Redis?
 
-      **Level 1 Answer:**
+**Level 1 Answer:**
 ZooKeeper uses <span style="color: #10b981; font-weight: 600;">ephemeral sequential znodes</span> backed by the Zab consensus protocol. Clients create an ephemeral znode with a sequence number, then check if they have the lowest number. The lock automatically releases when the session disconnects, and the sequence number serves as a natural fencing token.
 
 <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; margin: 12px 0;">
 
-        **Level 2 Follow-up: What's the "herd effect" and how does ZooKeeper's lock recipe avoid it?**
+**Level 2 Follow-up: What's the "herd effect" and how does ZooKeeper's lock recipe avoid it?**
 
 The <span style="color: #10b981; font-weight: 600;">herd effect</span> (or "thundering herd") occurs when all waiting clients wake up simultaneously when a lock is released, causing a spike in traffic and contention.
 
-        ZooKeeper's lock recipe avoids this elegantly: instead of all clients watching the lock key, each client watches only the znode with the next-lower sequence number. When a lock is released:
+  ZooKeeper's lock recipe avoids this elegantly: instead of all clients watching the lock key, each client watches only the znode with the next-lower sequence number. When a lock is released:
         - Only the client watching that specific znode wakes up
         - That client is already next in line and acquires the lock
         - Other clients remain sleeping, waiting for their predecessor
@@ -1118,23 +1118,23 @@ This creates a <span style="color: #10b981; font-weight: 600;">fair queue</span>
 
 <div style="background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1; padding: 12px; margin: 12px 0;">
 
-          **Level 3 Follow-up: What happens if a ZooKeeper client experiences a network partition while holding a lock?**
+**Level 3 Follow-up: What happens if a ZooKeeper client experiences a network partition while holding a lock?**
 
-          When a client is partitioned from ZooKeeper:
+  When a client is partitioned from ZooKeeper:
 
-          1. **Session timeout countdown**: ZooKeeper starts counting down the session timeout (typically 2-20 seconds configurable)
+  1. **Session timeout countdown**: ZooKeeper starts counting down the session timeout (typically 2-20 seconds configurable)
 
-          2. **If partition heals quickly**: Session survives, lock retained, no issue
+  2. **If partition heals quickly**: Session survives, lock retained, no issue
 
-          3. **If partition persists past timeout**:
+  3. **If partition persists past timeout**:
           - ZooKeeper deletes all ephemeral znodes for that session
           - Lock is released automatically
           - Next client in queue acquires the lock
           - When original client reconnects, it discovers its session is dead
 
-          4. **The critical safety insight**: During the partition, the client might still be doing work thinking it has the lock. This is why fencing tokens (the sequence number) are essential - operations must include the sequence number so the storage can reject stale writes.
+  4. **The critical safety insight**: During the partition, the client might still be doing work thinking it has the lock. This is why fencing tokens (the sequence number) are essential - operations must include the sequence number so the storage can reject stale writes.
 
-          The key difference from Redis: ZooKeeper's consensus protocol ensures all clients see a consistent view of lock ownership. There's no window where two clients can both believe they hold the lock (unlike Redlock during certain failure modes).
+  The key difference from Redis: ZooKeeper's consensus protocol ensures all clients see a consistent view of lock ownership. There's no window where two clients can both believe they hold the lock (unlike Redlock during certain failure modes).
 
 </div>
 </div>
@@ -1142,42 +1142,42 @@ This creates a <span style="color: #10b981; font-weight: 600;">fair queue</span>
 
     ---
 
-    ### Q4: How would you implement leader election using distributed locks?
+### Q4: How would you implement leader election using distributed locks?
 
     **Level 1 Answer:**
     Leader election is a special case of distributed locking where one node holds the "leader" lock. The basic pattern: try to acquire a lock with TTL, if successful you're the leader. Use heartbeat renewal to extend the lock while performing leader duties. If you lose the lock, stop leader activities immediately.
 
 <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; margin: 12px 0;">
 
-      **Level 2 Follow-up: How do you handle the case where a leader loses its lock but doesn't realize it?**
+**Level 2 Follow-up: How do you handle the case where a leader loses its lock but doesn't realize it?**
 
 This is the <span style="color: #10b981; font-weight: 600;">split-brain problem</span>. Several strategies:
 
-      1. **Fencing tokens on all leader operations**: Every action the leader takes must include its epoch number (fencing token). Followers and storage reject operations from stale epochs.
+  1. **Fencing tokens on all leader operations**: Every action the leader takes must include its epoch number (fencing token). Followers and storage reject operations from stale epochs.
 
-      2. **Pre-vote confirmation**: Before taking action, verify you still hold the lock (though this has a TOCTOU race)
+  2. **Pre-vote confirmation**: Before taking action, verify you still hold the lock (though this has a TOCTOU race)
 
-      3. **Lease-based design**: Structure operations so that anything started must complete within the lease time, with no lingering effects beyond the lease
+  3. **Lease-based design**: Structure operations so that anything started must complete within the lease time, with no lingering effects beyond the lease
 
-      4. **Idempotent operations**: Design leader operations to be safely re-executed, so duplicate leadership is harmless
+  4. **Idempotent operations**: Design leader operations to be safely re-executed, so duplicate leadership is harmless
 
 <div style="background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1; padding: 12px; margin: 12px 0;">
 
-        **Level 3 Follow-up: How does Raft handle leader election, and why is it more robust than lock-based approaches?**
+**Level 3 Follow-up: How does Raft handle leader election, and why is it more robust than lock-based approaches?**
 
-        Raft leader election differs fundamentally from lock-based approaches:
+  Raft leader election differs fundamentally from lock-based approaches:
 
-        1. **Term numbers as epochs**: Each election increments the term. All messages include the term, and nodes reject messages from old terms. This is built into every operation, not just leadership acquisition.
+  1. **Term numbers as epochs**: Each election increments the term. All messages include the term, and nodes reject messages from old terms. This is built into every operation, not just leadership acquisition.
 
-        2. **Voting with log comparison**: A node only votes for candidates whose log is at least as up-to-date as its own. This prevents electing leaders with missing data.
+  2. **Voting with log comparison**: A node only votes for candidates whose log is at least as up-to-date as its own. This prevents electing leaders with missing data.
 
-        3. **Majority requirement**: A leader must continuously communicate with a majority. If it can only reach a minority (network partition), it knows it might not be the real leader and stops accepting writes.
+  3. **Majority requirement**: A leader must continuously communicate with a majority. If it can only reach a minority (network partition), it knows it might not be the real leader and stops accepting writes.
 
-        4. **No external coordination**: Raft is self-contained - nodes coordinate directly without a separate lock service. The consensus mechanism IS the lock.
+  4. **No external coordination**: Raft is self-contained - nodes coordinate directly without a separate lock service. The consensus mechanism IS the lock.
 
-        5. **Automatic step-down**: If a leader discovers a higher term exists, it immediately becomes a follower. There's no window where two nodes think they're leader.
+  5. **Automatic step-down**: If a leader discovers a higher term exists, it immediately becomes a follower. There's no window where two nodes think they're leader.
 
-        For critical systems like databases (CockroachDB, TiDB) or coordination services (etcd, Consul), this built-in leader election is far more robust than bolting on a separate lock service.
+  For critical systems like databases (CockroachDB, TiDB) or coordination services (etcd, Consul), this built-in leader election is far more robust than bolting on a separate lock service.
 
 </div>
 </div>
@@ -1185,7 +1185,7 @@ This is the <span style="color: #10b981; font-weight: 600;">split-brain problem<
 
   ---
 
-  ### Q5: When should you NOT use distributed locking?
+### Q5: When should you NOT use distributed locking?
 
   **Level 1 Answer:**
 Avoid distributed locks when: <span style="color: #10b981; font-weight: 600;">optimistic concurrency</span> works (use version numbers), operations can be made <span style="color: #10b981; font-weight: 600;">idempotent</span>, data can be partitioned to avoid cross-shard coordination, or when [[event sourcing]](/topic/system-design/event-sourcing) can eliminate conflicts entirely.
@@ -1212,33 +1212,33 @@ Avoid distributed locks when: <span style="color: #10b981; font-weight: 600;">op
 
 <div style="background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1; padding: 12px; margin: 12px 0;">
 
-      **Level 3 Follow-up: What about CRDTs? When would they replace both locking and OCC?**
+**Level 3 Follow-up: What about CRDTs? When would they replace both locking and OCC?**
 
 <span style="color: #10b981; font-weight: 600;">CRDTs (Conflict-free Replicated Data Types)</span> eliminate coordination entirely by making all operations commutative:
 
-      **How CRDTs work:**
+**How CRDTs work:**
       - Data structures designed so concurrent updates merge automatically
       - No locks, no conflicts, no coordination needed
       - Examples: G-Counter (grow-only counter), LWW-Register (last-write-wins), OR-Set (observed-remove set)
 
-      **When to use CRDTs:**
+**When to use CRDTs:**
       - Multi-master replication where all replicas accept writes
       - Offline-first applications needing eventual sync
       - Collaborative editing (like Google Docs)
       - High-availability systems that can't afford coordination latency
 
-      **Trade-offs:**
+**Trade-offs:**
       - Limited operation types (can't do arbitrary read-modify-write)
       - Eventually consistent (no linearizability)
       - Memory overhead for tracking causality
       - Some operations impossible (like strong decrement on counter)
 
-      **Real-world example**: Rather than using locks for "like" counts, use a G-Counter CRDT. Each server maintains its own count, and counts merge by taking the max per server. You get approximate real-time counts with zero coordination, perfect for social media scale.
+**Real-world example**: Rather than using locks for "like" counts, use a G-Counter CRDT. Each server maintains its own count, and counts merge by taking the max per server. You get approximate real-time counts with zero coordination, perfect for social media scale.
 
-      The hierarchy of preference:
-      1. Design to not need coordination (CRDTs, idempotency)
-      2. Use optimistic concurrency (version numbers)
-      3. Use distributed locking (when neither above works)
+  The hierarchy of preference:
+  1. Design to not need coordination (CRDTs, idempotency)
+  2. Use optimistic concurrency (version numbers)
+  3. Use distributed locking (when neither above works)
 
 </div>
 </div>
@@ -1401,7 +1401,7 @@ TTL should be long enough to complete the protected operation, but short enough 
 
   ---
 
-  ## Related Topics
+## Related Topics
 
   - [[Consensus Algorithms]](/topic/system-design/consensus-algorithms) - Raft, Paxos, Zab for true safety guarantees
   - [[Database Sharding]](/topic/system-design/database-sharding) - Partitioning to reduce lock contention

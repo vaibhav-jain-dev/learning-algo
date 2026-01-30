@@ -111,11 +111,11 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px; text-align: center;">Without Mediator</div>
 <div style="color: #334155; font-size: 0.9rem; text-align: center;">
 <div style="font-family: monospace; background: #fee2e2; padding: 12px; border-radius: 8px; margin-top: 8px;">
-        A &harr; B<br/>
-        A &harr; C<br/>
-        B &harr; C<br/>
-        <br/>
-        n(n-1)/2 connections
+  A &harr; B<br/>
+  A &harr; C<br/>
+  B &harr; C<br/>
+  <br/>
+  n(n-1)/2 connections
 </div>
 </div>
 </div>
@@ -123,11 +123,11 @@ The Mediator pattern defines an object that encapsulates how a set of objects in
 <div style="font-weight: 700; color: #166534; margin-bottom: 12px; text-align: center;">With Mediator</div>
 <div style="color: #334155; font-size: 0.9rem; text-align: center;">
 <div style="font-family: monospace; background: #d1fae5; padding: 12px; border-radius: 8px; margin-top: 8px;">
-        A &rarr; M<br/>
-        B &rarr; M<br/>
-        C &rarr; M<br/>
-        <br/>
-        n connections
+  A &rarr; M<br/>
+  B &rarr; M<br/>
+  C &rarr; M<br/>
+  <br/>
+  n connections
 </div>
 </div>
 </div>
@@ -626,7 +626,7 @@ if __name__ == "__main__":
 ## Interview Questions
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How do you prevent the mediator from becoming a God object?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q1: How do you prevent the mediator from becoming a God object?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Several strategies:
     1. **Domain-specific mediators:** Split by business domain (UserMediator, OrderMediator)
@@ -653,7 +653,7 @@ if __name__ == "__main__":
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: When would you use Mediator instead of Observer?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q2: When would you use Mediator instead of Observer?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong>
     - **Mediator:** When objects need bidirectional communication and coordination logic is complex
@@ -672,7 +672,7 @@ if __name__ == "__main__":
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you make a mediator fault-tolerant?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q3: How would you make a mediator fault-tolerant?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong>
     1. **Replicate mediator:** Primary-secondary setup with failover
@@ -705,7 +705,7 @@ if __name__ == "__main__":
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: How does Redux implement the Mediator pattern?</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q4: How does Redux implement the Mediator pattern?</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Answer:</strong> Redux Store acts as mediator:
     - **Colleagues:** React components
@@ -736,7 +736,7 @@ if __name__ == "__main__":
 </details>
 
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-  <summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design a mediator for a smart home system.</summary>
+<summary style="font-weight: 600; color: #1e293b; cursor: pointer;">Q5: Design a mediator for a smart home system.</summary>
 <div style="margin-top: 12px; color: #334155;">
 <strong>Key considerations:</strong>
     1. **Devices:** Lights, thermostat, security, music, blinds
