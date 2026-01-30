@@ -5344,11 +5344,15 @@
                 html += '<span class="test-time ' + testTimeClass + '">' + test.time_ms.toFixed(2) + 'ms</span>';
             }
 
+            // Auto-expand failed tests so users can see what went wrong
+            var shouldExpand = (test.status !== 'PASS');
+            var expandIcon = shouldExpand ? '▼' : '▶';
+
             html += '<span class="test-status-badge">' + statusLabel + '</span>';
-            html += '<span class="test-expand-icon">▶</span>';
+            html += '<span class="test-expand-icon">' + expandIcon + '</span>';
             html += '</div>';
 
-            html += '<div class="test-details" style="display:none;">';
+            html += '<div class="test-details" style="display:' + (shouldExpand ? 'block' : 'none') + ';">';
             if (test.error) {
                 html += '<div class="test-error-msg"><strong>Error:</strong> ' + escapeHtmlOutput(test.error) + '</div>';
             } else if (test.status === 'TLE') {
@@ -5715,12 +5719,17 @@
         // Get time limit from problem (default 1000ms)
         var timeLimit = problem.timeLimit || 1000;
 
+        // Check if we need sort package (only for []int return type)
+        var needsSort = returnType === '[]int';
+
         // Add necessary imports - NO reflect package (security blocked)
         if (cleanUserCode.indexOf('"encoding/json"') === -1) {
             code += 'import (\n';
             code += '\t"encoding/json"\n';
             code += '\t"fmt"\n';
-            code += '\t"sort"\n';
+            if (needsSort) {
+                code += '\t"sort"\n';
+            }
             code += '\t"time"\n';
             code += ')\n\n';
         }
@@ -5745,13 +5754,18 @@
         code += '\tTimeLimitMS int          `json:"time_limit_ms"`\n';
         code += '\tResults     []TestResult `json:"results"`\n';
         code += '}\n\n';
-        code += 'func intSlicesEqual(a, b []int) bool {\n';
-        code += '\tif len(a) != len(b) { return false }\n';
-        code += '\tfor i := range a {\n';
-        code += '\t\tif a[i] != b[i] { return false }\n';
-        code += '\t}\n';
-        code += '\treturn true\n';
-        code += '}\n\n';
+
+        // Only add intSlicesEqual helper for []int return types
+        if (returnType === '[]int') {
+            code += 'func intSlicesEqual(a, b []int) bool {\n';
+            code += '\tif len(a) != len(b) { return false }\n';
+            code += '\tfor i := range a {\n';
+            code += '\t\tif a[i] != b[i] { return false }\n';
+            code += '\t}\n';
+            code += '\treturn true\n';
+            code += '}\n\n';
+        }
+
         code += 'func compareOutputTest(actual, expected ' + returnType + ') bool {\n';
 
         // Generate type-specific comparison based on return type
