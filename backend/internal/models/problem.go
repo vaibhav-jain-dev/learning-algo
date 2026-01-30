@@ -38,3 +38,21 @@ type ExecuteResponse struct {
 	ExitCode int    `json:"exit_code"`
 	Duration int64  `json:"duration_ms"`
 }
+
+// StudySession represents a single study session in the roadmap
+type StudySession struct {
+	Time        string `json:"time"`
+	Duration    string `json:"duration"`
+	Topic       string `json:"topic"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Icon        string `json:"icon"`
+	Category    string `json:"category"`
+}
+
+// DayPlan represents a day's study plan in the roadmap
+type DayPlan struct {
+	Day      int            `json:"day"`
+	Title    string         `json:"title"`
+	Sessions []StudySession `json:"sessions"`
+}

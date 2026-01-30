@@ -217,6 +217,7 @@ func main() {
 	// Page routes (HTMX) - Unified routes with tab navigation
 	app.Get("/", h.Home)
 	app.Get("/practice", h.Practice)
+	app.Get("/roadmap", h.Roadmap) // 7-day study roadmap
 
 	// Unified database learning routes (dashboard + lessons in tabs)
 	app.Get("/sql", h.SQL)                      // Combined SQL playground and lessons
